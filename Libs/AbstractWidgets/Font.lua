@@ -115,5 +115,7 @@ function AW.GetFont(font, isDisabled, isFontObj)
         else
             return font_accent_name
         end
+    else
+        assert(nil, "no such font!")
     end
 end

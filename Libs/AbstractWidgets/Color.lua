@@ -225,6 +225,7 @@ local colors = {
 }
 
 function AW.GetColorRGB(name, alpha)
+    assert(colors[name], "no such color!")
     if alpha then
         return colors[name]["t"][1], colors[name]["t"][2], colors[name]["t"][3], alpha
     else
@@ -233,6 +234,7 @@ function AW.GetColorRGB(name, alpha)
 end
 
 function AW.GetColorTable(name, alpha)
+    assert(colors[name], "no such color!")
     if alpha then
         return {colors[name]["t"][1], colors[name]["t"][2], colors[name]["t"][3], alpha}
     else
@@ -241,14 +243,17 @@ function AW.GetColorTable(name, alpha)
 end
 
 function AW.GetColorStr(name)
+    assert(colors[name], "no such color!")
     return colors[name]["s"]
 end
 
 function AW.ColorFontString(fs, name)
+    assert(colors[name], "no such color!")
     fs:SetTextColor(colors[name]["t"][1], colors[name]["t"][2], colors[name]["t"][3])
 end
 
 function AW.WrapTextInColor(text, name)
+    assert(colors[name], "no such color!")
     return WrapTextInColorCode(text, colors[name]["s"])
 end
 
