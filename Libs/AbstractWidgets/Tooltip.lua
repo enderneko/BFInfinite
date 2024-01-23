@@ -4,7 +4,14 @@ local AW = ns.AW
 ---------------------------------------------------------------------
 -- show / hide
 ---------------------------------------------------------------------
-local function ShowTooltips(widget, anchor, x, y, content)
+local anchorOverride = {
+    ["LEFT"] = "RIGHT",
+    ["RIGHT"] = "LEFT",
+    ["BOTTOMLEFT"] = "TOPLEFT",
+    ["BOTTOMRIGHT"] = "TOPRIGHT",
+}
+
+function AW.ShowTooltips(widget, anchor, x, y, content)
     local tooltip = _G[ns.prefix.."Tooltip"]
 
     if type(content) ~= "table" or #content == 0 then
@@ -12,8 +19,16 @@ local function ShowTooltips(widget, anchor, x, y, content)
         return
     end
 
+    x = AW.ConvertPixelsForRegion(x, tooltip)
+    y = AW.ConvertPixelsForRegion(y, tooltip)
+
     tooltip:ClearLines()
-    tooltip:SetOwner(widget, anchor or "ANCHOR_TOP", x or 0, y or 0)
+    if anchorOverride[anchor] then
+        tooltip:SetOwner(widget, "ANCHOR_NONE")
+        tooltip:SetPoint(anchorOverride[anchor], widget, anchor, x, y)
+    else
+        tooltip:SetOwner(widget, anchor or "ANCHOR_TOP", x or 0, y or 0)
+    end
     tooltip:AddLine(content[1], AW.GetColorRGB("accent"))
     for i = 2, #content do
         if content[i] then
@@ -24,13 +39,16 @@ local function ShowTooltips(widget, anchor, x, y, content)
 end
 
 function AW.SetTooltips(widget, anchor, x, y, ...)
-    widget.tooltips = {...}
+    widget._tooltips = {...}
+    widget._tooltipsAnchor = anchor
+    widget._tooltipsX = x
+    widget._tooltipsY = y
 
-    if not widget.tooltipsInited then
+    if not widget._tooltipsInited then
         widget._tooltipsInited = true
 
         widget:HookScript("OnEnter", function()
-            ShowTooltips(widget, anchor, x, y, widget.tooltips)
+            AW.ShowTooltips(widget, anchor, x, y, widget._tooltips)
         end)
         widget:HookScript("OnLeave", function()
             _G[ns.prefix.."Tooltip"]:Hide()
@@ -39,7 +57,11 @@ function AW.SetTooltips(widget, anchor, x, y, ...)
 end
 
 function AW.ClearTooltips(widget)
-    widget.tooltips = nil
+    widget._tooltips = nil
+end
+
+function AW.HideTooltips()
+    _G[ns.prefix.."Tooltip"]:Hide()
 end
 
 ---------------------------------------------------------------------
