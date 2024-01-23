@@ -7,9 +7,8 @@ function AW.CreateEditBox(parent, label, width, height, isTransparent, isMultiLi
     AW.SetWidth(eb, width or 40)
     AW.SetHeight(eb, height or 20)
 
-    eb.label = eb:CreateFontString(nil, "OVERLAY", AW.GetFont("normal", true))
+    eb.label = AW.CreateFontString(eb, label, nil, "normal", true)
     eb.label:SetPoint("LEFT", 4, 0)
-    eb.label:SetText(label)
     
     eb:SetMultiLine(isMultiLine)
     eb:SetNumeric(isNumeric)
