@@ -62,7 +62,7 @@ function AW.ShowDemo()
     eb3:SetEnabled(false)
 
     -- bordered frame -------------------------------------------------------- --
-    local bf1 = AW.CreateBorderedFrame(demo, nil, 150, 150)
+    local bf1 = AW.CreateBorderedFrame(demo, nil, 150, 150, nil, "accent")
     AW.SetPoint(bf1, "RIGHT", -10, 0)
     AW.SetPoint(bf1, "TOP", cb1)
 

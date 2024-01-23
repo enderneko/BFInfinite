@@ -48,7 +48,7 @@ function AW.CreateEditBox(parent, label, width, height, isTransparent, isMultiLi
     end)
 
     if not isTransparent then
-        AW.StylizeFrame(eb, AW.GetColorTable("button"))
+        AW.StylizeFrame(eb, "button")
         
         eb.onEnter = function()
             if not eb:IsEnabled() then return end

@@ -4,13 +4,15 @@ local AW = ns.AW
 ---------------------------------------------------------------------
 -- style
 ---------------------------------------------------------------------
+--- @param color string color name defined in Color.lua
+--- @param borderColor string color name defined in Color.lua
 function AW.StylizeFrame(frame, color, borderColor)
-    if not color then color = AW.GetColorTable("background") end
-    if not borderColor then borderColor = AW.GetColorTable("border") end
+    color = color or "background"
+    borderColor = borderColor or "border"
 
     frame:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(frame)})
-    frame:SetBackdropColor(unpack(color))
-    frame:SetBackdropBorderColor(unpack(borderColor))
+    frame:SetBackdropColor(AW.GetColorRGB(color))
+    frame:SetBackdropBorderColor(AW.GetColorRGB(borderColor))
 end
 
 ---------------------------------------------------------------------
@@ -47,7 +49,7 @@ function AW.CreateHeaderedFrame(parent, name, title, width, height, frameStrata,
     AW.SetPoint(header, "RIGHT")
     AW.SetPoint(header, "BOTTOM", f, "TOP", 0, -1)
     AW.SetHeight(header, 20)
-    AW.StylizeFrame(header, AW.GetColorTable("header"))
+    AW.StylizeFrame(header, "header")
 
     header.text = header:CreateFontString(nil, "OVERLAY", AW.GetFont("accent_title"))
     header.text:SetText(title)
@@ -113,8 +115,8 @@ function AW.CreateBorderedFrame(parent, title, width, height, color, borderColor
 
     local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     f:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(f)})
-    f:SetBackdropColor(unpack(color))
-    f:SetBackdropBorderColor(unpack(borderColor))
+    f:SetBackdropColor(AW.GetColorRGB(color))
+    f:SetBackdropBorderColor(AW.GetColorRGB(borderColor))
 
     AW.SetSize(f, width, height)
 
