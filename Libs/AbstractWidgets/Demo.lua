@@ -62,5 +62,14 @@ function AW.ShowDemo()
     eb3:SetEnabled(false)
 
     -- bordered frame -------------------------------------------------------- --
-    local bf1 = AW.CreateBorderedFrame(demo, nil, 200, 200)
+    local bf1 = AW.CreateBorderedFrame(demo, nil, 150, 150)
+    AW.SetPoint(bf1, "RIGHT", -10, 0)
+    AW.SetPoint(bf1, "TOP", cb1)
+
+    local bf2 = AW.CreateBorderedFrame(demo, "Button Group", 100, 60)
+    AW.SetPoint(bf2, "TOPLEFT", eb3, "BOTTOMLEFT", 0, -27)
+
+    -- font string ----------------------------------------------------------- --
+    local fs1 = AW.CreateFontString(bf1, "Bordered Frame", "gray")
+    AW.SetPoint(fs1, "TOPLEFT", 5, -5)
 end

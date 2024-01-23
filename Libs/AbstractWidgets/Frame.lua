@@ -105,19 +105,31 @@ end
 ---------------------------------------------------------------------
 -- bordered frame
 ---------------------------------------------------------------------
-function AW.CreateBorderedFrame(parent, name, width, height, color, borderColor)
-    color = color or AW.GetColorTable("background")
-    borderColor = borderColor or AW.GetColorTable("accent")
+--- @param color string color name defined in Color.lua
+--- @param borderColor string color name defined in Color.lua
+function AW.CreateBorderedFrame(parent, title, width, height, color, borderColor)
+    color = color or "background"
+    borderColor = borderColor or "border"
 
-    local f = CreateFrame("Frame", name, parent, "BackdropTemplate")
+    local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     f:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(f)})
     f:SetBackdropColor(unpack(color))
     f:SetBackdropBorderColor(unpack(borderColor))
+
+    AW.SetSize(f, width, height)
+
+    if title then
+        f.title = AW.CreateFontString(f, title, "accent", "accent_title")
+        AW.SetPoint(f.title, "BOTTOMLEFT", f, "TOPLEFT", 2, 2)
+    end
 
     function f:UpdatePixels()
         AW.ReSize(f)
         AW.RePoint(f)
         AW.ReBorder(f)
+        if f.title then
+            AW.RePoint(f.title)
+        end
     end
 
     AW.AddToPixelUpdater(f)
