@@ -29,7 +29,8 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
     if noBorder then
         b:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8"})
     else
-        b:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(b)})
+        local n = AW.GetOnePixelForRegion(b)
+        b:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=n, insets={left=n, right=n, top=n, bottom=n}})
     end
     
     if color and string.find(color, "transparent") then -- drop down item
@@ -39,7 +40,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
             fs:SetPoint("LEFT", 5, 0)
             fs:SetPoint("RIGHT", -5, 0)
         end
-        b:SetBackdropBorderColor(1, 1, 1, 0) -- hide boder
+        b:SetBackdropBorderColor(1, 1, 1, 0) -- make border transparent, but still exists
         b:SetPushedTextOffset(0, 0)
     else
         if not noBackground then

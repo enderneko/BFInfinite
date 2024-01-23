@@ -45,7 +45,7 @@ end
 -- 1 pixel
 ---------------------------------------------------------------------
 function AW.GetOnePixelForRegion(region)
-    return AW.GetNearestPixelSize(1, region:GetEffectiveScale())
+    return AW.GetNearestPixelSize(1, region:GetEffectiveScale(), 1)
 end
 
 ---------------------------------------------------------------------
@@ -121,7 +121,20 @@ end
 function AW.ReBorder(region)
     local r, g, b, a = region:GetBackdropColor()
     local br, bg, bb, ba = region:GetBackdropBorderColor()
-    region:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetNearestPixelSize(1, region:GetEffectiveScale(), 1)})
+
+    local n = AW.GetOnePixelForRegion(region)
+    local backdropInfo = region:GetBackdrop()
+    if backdropInfo.edgeSize then
+        backdropInfo.edgeSize = n
+    end
+    if backdropInfo.insets then
+        backdropInfo.insets.left = n
+        backdropInfo.insets.right = n
+        backdropInfo.insets.top = n
+        backdropInfo.insets.bottom = n
+    end
+
+    region:SetBackdrop(backdropInfo)
     region:SetBackdropColor(r, g, b, a)
     region:SetBackdropBorderColor(br, bg, bb, ba)
 end
