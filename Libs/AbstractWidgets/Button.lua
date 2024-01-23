@@ -47,7 +47,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
             bg:SetDrawLayer("BACKGROUND", -8)
             b.bg = bg
             bg:SetAllPoints(b)
-            bg:SetColorTexture(AW.GetColorRGB("button"))
+            bg:SetColorTexture(AW.GetColorRGB("widget"))
         end
 
         b:SetBackdropBorderColor(0, 0, 0, 1)
@@ -201,7 +201,7 @@ function AW.CreateCheckButton(parent, label, onClick)
     cb:SetText(label)
 
     cb:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(cb)})
-    cb:SetBackdropColor(AW.GetColorRGB("button"))
+    cb:SetBackdropColor(AW.GetColorRGB("widget"))
     cb:SetBackdropBorderColor(0, 0, 0, 1)
 
     local checkedTexture = cb:CreateTexture(nil, "ARTWORK")

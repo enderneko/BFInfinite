@@ -48,7 +48,7 @@ function AW.CreateEditBox(parent, label, width, height, isTransparent, isMultiLi
     end)
 
     if not isTransparent then
-        AW.StylizeFrame(eb, "button")
+        AW.StylizeFrame(eb, "widget")
         
         eb.onEnter = function()
             if not eb:IsEnabled() then return end
@@ -56,7 +56,7 @@ function AW.CreateEditBox(parent, label, width, height, isTransparent, isMultiLi
         end
         
         eb.onLeave = function()
-            eb:SetBackdropColor(AW.GetColorRGB("button"))
+            eb:SetBackdropColor(AW.GetColorRGB("widget"))
         end
 
         eb:SetScript("OnEnter", eb.onEnter)
