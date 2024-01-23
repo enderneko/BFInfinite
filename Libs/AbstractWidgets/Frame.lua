@@ -16,7 +16,7 @@ end
 ---------------------------------------------------------------------
 -- titled frame
 ---------------------------------------------------------------------
-function AW.CreateTitledFrame(parent, name, title, width, height, frameStrata, frameLevel, notUserPlaced)
+function AW.CreateHeaderedFrame(parent, name, title, width, height, frameStrata, frameLevel, notUserPlaced)
     local f = CreateFrame("Frame", name, parent, "BackdropTemplate")
     f:Hide()
     f:EnableMouse(true)

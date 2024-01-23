@@ -7,7 +7,7 @@ function AW.ShowDemo()
         return
     end
 
-    local demo = AW.CreateTitledFrame(UIParent, "AW_DEMO", "Test Frame", 400, 400)
+    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Test Frame", 400, 400)
     AW.SetPoint(demo, "BOTTOMLEFT", 270, 270)
     demo:Show()
 
