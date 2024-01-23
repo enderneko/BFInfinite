@@ -63,6 +63,17 @@ function AW.SetHeight(region, height, minPixels)
     region:SetHeight(AW.GetNearestPixelSize(height, region:GetEffectiveScale(), minPixels))
 end
 
+function AW.SetListHeight(region, itemHeight, itemNum, itemSpacing)
+    -- clear old
+    region._height = nil
+    region._minheight = nil
+    -- add new
+    region._itemHeight = itemHeight
+    region._itemNum = itemNum
+    region._itemSpacing = itemSpacing
+    region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*itemNum + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1))
+end
+
 function AW.SetSize(region, width, height, minWidthPixels, minHeightPixels)
     AW.SetWidth(region, width, minWidthPixels)
     AW.SetHeight(region, height, minHeightPixels)
@@ -107,6 +118,9 @@ function AW.ReSize(region)
     end
     if region._height then
         region:SetHeight(AW.GetNearestPixelSize(region._height, region:GetEffectiveScale(), region._minheight))
+    end
+    if region._itemHeight then
+        region:SetHeight(AW.GetNearestPixelSize(region._itemHeight, region:GetEffectiveScale())*region._itemNum + AW.GetNearestPixelSize(region._itemSpacing, region:GetEffectiveScale())*(region._itemNum-1))
     end
 end
 
