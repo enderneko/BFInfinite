@@ -1,0 +1,3 @@
+local addonName, BigFootInfinite = ...
+
+local AW = BigFootInfinite.AW

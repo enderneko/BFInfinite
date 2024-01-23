@@ -1,0 +1,11 @@
+## Interface: 100205
+## Title: BigFootInfinite
+## Version: r1
+## X-Flavor: Mainline
+# SavedVariables: 
+# AddonCompartmentFunc: BigFootInfinite_OnAddonCompartmentClick
+# IconTexture: Interface\icon.tga
+
+Init.lua
+Libs\LoadLibs.xml
+Core.lua
