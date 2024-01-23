@@ -155,6 +155,50 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
 end
 
 ---------------------------------------------------------------------
+-- button group
+---------------------------------------------------------------------
+function AW.CreateButtonGroup(buttons, onClick, selectedFn, unselectedFn, onEnter, onLeave)
+    local function HighlightButton(id)
+        for _, b in pairs(buttons) do
+            if id == b.id then
+                b:SetBackdropColor(unpack(b._hoverColor))
+                b:SetScript("OnEnter", function()
+                    if b._tooltips then AW.ShowTooltips(b, b._tooltipsAnchor, b._tooltipsX, b._tooltipsY, b._tooltips) end
+                    if onEnter then onEnter(b) end
+                end)
+                b:SetScript("OnLeave", function()
+                    AW.HideTooltips()
+                    if onLeave then onLeave(b) end
+                end)
+                if selectedFn then selectedFn(b.id, b) end
+            else
+                b:SetBackdropColor(unpack(b._color))
+                b:SetScript("OnEnter", function() 
+                    if b._tooltips then AW.ShowTooltips(b, b._tooltipsAnchor, b._tooltipsX, b._tooltipsY, b._tooltips) end
+                    b:SetBackdropColor(unpack(b._hoverColor))
+                    if onEnter then onEnter(b) end
+                end)
+                b:SetScript("OnLeave", function() 
+                    AW.HideTooltips()
+                    b:SetBackdropColor(unpack(b._color))
+                    if onLeave then onLeave(b) end
+                end)
+                if unselectedFn then unselectedFn(b.id, b) end
+            end
+        end
+    end
+
+    for _, b in pairs(buttons) do
+        b:SetScript("OnClick", function()
+            HighlightButton(b.id)
+            onClick(b.id, b)
+        end)
+    end
+
+    return HighlightButton
+end
+
+---------------------------------------------------------------------
 -- close button
 ---------------------------------------------------------------------
 function AW.CreateCloseButton(parent, frameToHide, width, height, offset)

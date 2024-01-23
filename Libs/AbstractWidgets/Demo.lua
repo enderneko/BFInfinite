@@ -66,9 +66,6 @@ function AW.ShowDemo()
     AW.SetPoint(bf1, "RIGHT", -10, 0)
     AW.SetPoint(bf1, "TOP", cb1)
 
-    local bf2 = AW.CreateBorderedFrame(demo, "Button Group", 100, 60)
-    AW.SetPoint(bf2, "TOPLEFT", eb3, "BOTTOMLEFT", 0, -27)
-
     -- font string ----------------------------------------------------------- --
     local fs1 = AW.CreateFontString(bf1, "Bordered Frame", "gray")
     AW.SetPoint(fs1, "TOPLEFT", 5, -5)
@@ -76,4 +73,29 @@ function AW.ShowDemo()
     -- titled pane ----------------------------------------------------------- --
     local tp1 = AW.CreateTitledPane(demo, "Titled Pane", 140, 100)
     AW.SetPoint(tp1, "BOTTOMLEFT", bf1, 5, 5)
+
+    -- button group ---------------------------------------------------------- --
+    local bf2 = AW.CreateBorderedFrame(demo, "Button Group", 100, 60)
+    AW.SetPoint(bf2, "TOPLEFT", eb3, "BOTTOMLEFT", 0, -27)
+    AW.SetListHeight(bf2, 20, 3, -1)
+
+    local b6 = AW.CreateButton(bf2, "Item A", "accent-transparent", 100, 20)
+    b6.id = "b6"
+    AW.SetPoint(b6, "TOPLEFT")
+    AW.SetPoint(b6, "RIGHT")
+    
+    local b7 = AW.CreateButton(bf2, "Item B", "accent-transparent", 100, 20)
+    b7.id = "b7"
+    AW.SetPoint(b7, "TOPLEFT", b6, "BOTTOMLEFT", 0, 1)
+    AW.SetPoint(b7, "RIGHT")
+    AW.SetTooltips(b7, "LEFT", -2, 0, "Item B")
+    
+    local b8 = AW.CreateButton(bf2, "Item C", "accent-transparent", 100, 20)
+    b8.id = "b8"
+    AW.SetPoint(b8, "TOPLEFT", b7, "BOTTOMLEFT", 0, 1)
+    AW.SetPoint(b8, "RIGHT")
+
+    AW.CreateButtonGroup({b6, b7, b8}, function(id)
+        print("selected", id)
+    end)
 end
