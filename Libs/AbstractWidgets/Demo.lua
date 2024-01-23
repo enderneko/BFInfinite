@@ -72,4 +72,8 @@ function AW.ShowDemo()
     -- font string ----------------------------------------------------------- --
     local fs1 = AW.CreateFontString(bf1, "Bordered Frame", "gray")
     AW.SetPoint(fs1, "TOPLEFT", 5, -5)
+
+    -- titled pane ----------------------------------------------------------- --
+    local tp1 = AW.CreateTitledPane(demo, "Titled Pane", 140, 100)
+    AW.SetPoint(tp1, "BOTTOMLEFT", bf1, 5, 5)
 end

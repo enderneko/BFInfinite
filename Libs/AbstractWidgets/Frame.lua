@@ -140,5 +140,54 @@ function AW.CreateBorderedFrame(parent, title, width, height, color, borderColor
 end
 
 ---------------------------------------------------------------------
+-- titled pane
+---------------------------------------------------------------------
+--- @param color string color name defined in Color.lua
+function AW.CreateTitledPane(parent, title, width, height, color)
+    color = color or "accent"
+
+    local pane = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    AW.SetSize(pane, width, height)
+
+    -- underline
+    local line = pane:CreateTexture()
+    pane.line = line
+    line:SetColorTexture(AW.GetColorRGB(color, 0.8))
+    AW.SetHeight(line, 1)
+    AW.SetPoint(line, "TOPLEFT", pane, 0, -17)
+    AW.SetPoint(line, "TOPRIGHT", pane, 0, -17)
+    
+    local shadow = pane:CreateTexture()
+    AW.SetHeight(shadow, 1)
+    shadow:SetColorTexture(0, 0, 0, 1)
+    AW.SetPoint(shadow, "TOPLEFT", line, 1, -1)
+    AW.SetPoint(shadow, "TOPRIGHT", line, 1, -1)
+
+    -- title
+    local text = AW.CreateFontString(pane, title, "accent")
+    pane.title = text
+    text:SetJustifyH("LEFT")
+    AW.SetPoint(text, "BOTTOMLEFT", line, "TOPLEFT", 0, 2)
+
+    function pane:SetTitle(t)
+        text:SetText(t)
+    end
+
+    function pane:UpdatePixels()
+        AW.ReSize(pane)
+        AW.RePoint(pane)
+        AW.ReSize(line)
+        AW.RePoint(line)
+        AW.ReSize(shadow)
+        AW.RePoint(shadow)
+        AW.RePoint(text)
+    end
+
+    AW.AddToPixelUpdater(pane)
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- scroll frame
 ---------------------------------------------------------------------
