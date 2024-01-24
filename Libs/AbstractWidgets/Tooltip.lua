@@ -19,22 +19,28 @@ function AW.ShowTooltips(widget, anchor, x, y, content)
         return
     end
 
+    tooltip:SetParent(widget)
+    AW.ReBorder(tooltip)
+
     x = AW.ConvertPixelsForRegion(x, tooltip)
     y = AW.ConvertPixelsForRegion(y, tooltip)
 
     tooltip:ClearLines()
+
     if anchorOverride[anchor] then
         tooltip:SetOwner(widget, "ANCHOR_NONE")
         tooltip:SetPoint(anchorOverride[anchor], widget, anchor, x, y)
     else
         tooltip:SetOwner(widget, anchor or "ANCHOR_TOP", x or 0, y or 0)
     end
+
     tooltip:AddLine(content[1], AW.GetColorRGB("accent"))
     for i = 2, #content do
         if content[i] then
             tooltip:AddLine(content[i], 1, 1, 1)
         end
     end
+
     tooltip:Show()
 end
 
