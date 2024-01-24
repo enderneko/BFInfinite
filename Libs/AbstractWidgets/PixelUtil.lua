@@ -45,7 +45,7 @@ end
 -- 1 pixel
 ---------------------------------------------------------------------
 function AW.GetOnePixelForRegion(region)
-    return AW.GetNearestPixelSize(1, region:GetEffectiveScale(), 1)
+    return AW.GetNearestPixelSize(1, region:GetEffectiveScale())
 end
 
 ---------------------------------------------------------------------
@@ -105,7 +105,7 @@ function AW.SetPoint(region, ...)
     offsetY = offsetY and offsetY or 0
 
     local points = {point, relativeTo or region:GetParent(), relativePoint or point, offsetX, offsetY}
-    tinsert(region._points, points)
+    region._points[point] = points
     region:SetPoint(points[1], points[2], points[3], AW.GetNearestPixelSize(points[4], region:GetEffectiveScale()), AW.GetNearestPixelSize(points[5], region:GetEffectiveScale()))
 end
 
@@ -127,7 +127,7 @@ end
 function AW.RePoint(region)
     if not region._points or #region._points == 0 then return end
     region:ClearAllPoints()
-    for _, t in ipairs(region._points) do
+    for _, t in pairs(region._points) do
         region:SetPoint(t[1], t[2], t[3], AW.GetNearestPixelSize(t[4], region:GetEffectiveScale()), AW.GetNearestPixelSize(t[5], region:GetEffectiveScale()))
     end
 end
