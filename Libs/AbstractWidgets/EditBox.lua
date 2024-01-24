@@ -1,9 +1,10 @@
 local addonName, ns = ...
 local AW = ns.AW
 
-function AW.CreateEditBox(parent, label, width, height, isTransparent, isMultiLine, isNumeric, font)
+function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, font)
     local eb = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
     
+    AW.StylizeFrame(eb, "widget")
     AW.SetWidth(eb, width or 40)
     AW.SetHeight(eb, height or 20)
 
@@ -26,16 +27,12 @@ function AW.CreateEditBox(parent, label, width, height, isTransparent, isMultiLi
     
     eb:SetScript("OnDisable", function()
         eb:SetTextColor(AW.GetColorRGB("disabled"))
-        if not isTransparent then
-            eb:SetBackdropBorderColor(0, 0, 0, 0.5)
-        end
+        eb:SetBackdropBorderColor(0, 0, 0, 0.5)
     end)
     
     eb:SetScript("OnEnable", function()
         eb:SetTextColor(1, 1, 1, 1)
-        if not isTransparent then
-            eb:SetBackdropBorderColor(0, 0, 0, 1)
-        end
+        eb:SetBackdropBorderColor(0, 0, 0, 1)
     end)
 
     eb:SetScript("OnTextChanged", function()
@@ -47,26 +44,25 @@ function AW.CreateEditBox(parent, label, width, height, isTransparent, isMultiLi
         end
     end)
 
-    if not isTransparent then
-        AW.StylizeFrame(eb, "widget")
-        
-        eb.onEnter = function()
-            if not eb:IsEnabled() then return end
-            eb:SetBackdropColor(AW.GetColorRGB("accent", 0.1))
-        end
-        
-        eb.onLeave = function()
-            eb:SetBackdropColor(AW.GetColorRGB("widget"))
-        end
+    eb.highlight = AW.CreateTexture(eb, nil, AW.GetColorTable("accent", 0.1))
+    AW.SetPoint(eb.highlight, "TOPLEFT", 1, -1)
+    AW.SetPoint(eb.highlight, "BOTTOMRIGHT", -1, 1)
+    eb.highlight:Hide()
 
-        eb:SetScript("OnEnter", eb.onEnter)
-        eb:SetScript("OnLeave", eb.onLeave)
-    end
+    eb:SetScript("OnEnter", function()
+        if not eb:IsEnabled() then return end
+        eb.highlight:Show()
+    end)
+
+    eb:SetScript("OnLeave", function()
+        if not eb:IsEnabled() then return end
+        eb.highlight:Hide()
+    end)
 
     function eb:UpdatePixels()
         AW.ReSize(eb)
         AW.RePoint(eb)
-        if not isTransparent then AW.ReBorder(eb) end
+        AW.ReBorder(eb)
     end
 
     AW.AddToPixelUpdater(eb)
