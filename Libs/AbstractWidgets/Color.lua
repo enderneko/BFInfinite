@@ -264,6 +264,8 @@ local buttonColors = {
     ["accent"] = {["normal"]=colors["accent"]["normal"], ["hover"]=colors["accent"]["hover"]},
     ["accent-hover"] = {["normal"]=button_color_normal, ["hover"]=colors["accent"]["hover"]},
     ["accent-transparent"] = {["normal"]={0, 0, 0, 0}, ["hover"]=colors["accent"]["hover"]},
+    ["border-only"] = {["normal"]={0, 0, 0, 0}, ["hover"]={0, 0, 0, 0}},
+    ["none"] = {["normal"]={0, 0, 0, 0}, ["hover"]={0, 0, 0, 0}},
     ["red"] = {["normal"]={0.6, 0.1, 0.1, 0.6}, ["hover"]={0.6, 0.1, 0.1, 1}},
     ["red-hover"] = {["normal"]=button_color_normal, ["hover"]={0.6, 0.1, 0.1, 1}},
     ["green"] = {["normal"]={0.1, 0.6, 0.1, 0.6}, ["hover"]={0.1, 0.6, 0.1, 1}},
