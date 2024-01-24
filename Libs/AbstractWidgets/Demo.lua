@@ -98,4 +98,21 @@ function AW.ShowDemo()
     AW.CreateButtonGroup({b6, b7, b8}, function(id)
         print("selected", id)
     end)
+
+    -- scroll frame ---------------------------------------------------------- --
+    local sf1 = AW.CreateScrollFrame(demo, 150, 150)
+    AW.SetPoint(sf1, "TOPLEFT", bf1, "BOTTOMLEFT", 0, -10)
+    -- AW.SetPoint(sf1, "TOPRIGHT", bf1, "BOTTOMRIGHT", 0, -10)
+
+    sf1.tex = AW.CreateGradientTexture(sf1.scrollContent, "VERTICAL", {0.96, 0.26, 0.41, 1}, {0.24, 0.23, 0.57, 1})
+    AW.SetPoint(sf1.tex, "TOPLEFT", sf1.scrollContent, 1, -1)
+    AW.SetPoint(sf1.tex, "BOTTOMRIGHT", sf1.scrollContent, -1, 1)
+
+    sf1.b1 = AW.CreateButton(sf1.scrollContent, "Entry", "blue", 20, 20)
+    AW.SetPoint(sf1.b1, "TOPLEFT")
+    AW.SetPoint(sf1.b1, "RIGHT")
+
+    sf1:SetContentHeight(200)
+
+    AW_SF1 = sf1
 end

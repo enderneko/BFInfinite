@@ -4,15 +4,23 @@ local AW = ns.AW
 ---------------------------------------------------------------------
 -- style
 ---------------------------------------------------------------------
---- @param color string color name defined in Color.lua
---- @param borderColor string color name defined in Color.lua
+--- @param color string|table color name defined in Color.lua or color table
+--- @param borderColor string|table color name defined in Color.lua or color table
 function AW.StylizeFrame(frame, color, borderColor)
     color = color or "background"
     borderColor = borderColor or "border"
 
     frame:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(frame)})
-    frame:SetBackdropColor(AW.GetColorRGB(color))
-    frame:SetBackdropBorderColor(AW.GetColorRGB(borderColor))
+    if type(color) == "string" then
+        frame:SetBackdropColor(AW.GetColorRGB(color))
+    else
+        frame:SetBackdropColor(unpack(color))
+    end
+    if type(borderColor) == "string" then
+        frame:SetBackdropBorderColor(AW.GetColorRGB(borderColor))
+    else
+        frame:SetBackdropBorderColor(unpack(borderColor))
+    end
 end
 
 ---------------------------------------------------------------------
@@ -191,3 +199,210 @@ end
 ---------------------------------------------------------------------
 -- scroll frame
 ---------------------------------------------------------------------
+function AW.CreateScrollFrame(parent, width, height, color, borderColor)
+    local scrollParent = AW.CreateBorderedFrame(parent, nil, width, height, color, borderColor)
+
+    local scrollFrame = CreateFrame("ScrollFrame", nil, scrollParent)
+    scrollParent.scrollFrame = scrollFrame
+    AW.SetPoint(scrollFrame, "TOPLEFT")
+    AW.SetPoint(scrollFrame, "BOTTOMRIGHT")
+
+    -- content
+    local content = CreateFrame("Frame", nil, scrollFrame, "BackdropTemplate")
+    scrollParent.scrollContent = content
+    AW.SetSize(content, width, 5)
+    scrollFrame:SetScrollChild(content)
+    -- AW.SetPoint(content, "RIGHT") -- update width with scrollFrame
+    
+    -- scrollBar
+    local scrollBar = CreateFrame("Frame", nil, scrollParent, "BackdropTemplate")
+    scrollBar:Hide()
+    AW.SetWidth(scrollBar, 5)
+    AW.SetPoint(scrollBar, "TOPRIGHT")
+    AW.SetPoint(scrollBar, "BOTTOMRIGHT")
+    AW.StylizeFrame(scrollBar, color, borderColor)
+    scrollParent.scrollBar = scrollBar
+    
+    -- scrollBar thumb
+    local scrollThumb = CreateFrame("Frame", nil, scrollBar, "BackdropTemplate")
+    AW.SetWidth(scrollThumb, 5)
+    AW.SetPoint(scrollThumb, "TOP")
+    AW.StylizeFrame(scrollThumb, AW.GetColorTable("accent", 0.8))
+    scrollThumb:EnableMouse(true)
+    scrollThumb:SetMovable(true)
+    scrollThumb:SetHitRectInsets(-5, -5, 0, 0) -- Frame:SetHitRectInsets(left, right, top, bottom)
+    scrollParent.scrollThumb = scrollThumb
+    
+    -- reset content height (reset scroll range)
+    function scrollParent:ResetHeight()
+        AW.SetHeight(content, 5)
+    end
+    
+    -- reset scroll to top
+    function scrollParent:ResetScroll()
+        scrollFrame:SetVerticalScroll(0)
+    end
+    
+    -- scrollFrame:GetVerticalScrollRange may return 0
+    function scrollFrame:GetVerticalScrollRange()
+        local range = content:GetHeight() - scrollFrame:GetHeight()
+        return range > 0 and range or 0
+    end
+    scrollParent.GetVerticalScrollRange = scrollFrame.GetVerticalScrollRange
+
+    -- for mouse wheel
+    function scrollParent:VerticalScroll(step)
+        local scroll = scrollFrame:GetVerticalScroll() + step
+        if scroll <= 0 then
+            scrollFrame:SetVerticalScroll(0)
+        elseif scroll >= scrollFrame:GetVerticalScrollRange() then
+            scrollFrame:SetVerticalScroll(scrollFrame:GetVerticalScrollRange())
+        else
+            scrollFrame:SetVerticalScroll(scroll)
+        end
+    end
+
+    -- NOTE: do not call this if not visible, GetVerticalScrollRange may not be valid.
+    function scrollParent:ScrollToBottom()
+        scrollFrame:SetVerticalScroll(scrollFrame:GetVerticalScrollRange())
+    end
+
+    function scrollParent:SetContentHeight(height, num, spacing)
+        if num and spacing then
+            AW.SetListHeight(content, height, num, spacing)
+        else
+            AW.SetHeight(content, height)
+        end
+    end
+
+    function scrollParent:ClearContent()
+        for _, c in pairs({content:GetChildren()}) do
+            c:SetParent(nil)
+            c:ClearAllPoints()
+            c:Hide()
+        end
+        scrollParent:ResetHeight()
+    end
+
+    function scrollParent:Reset()
+        scrollParent:ResetScroll()
+        scrollParent:ClearContent()
+    end
+    
+    -- on width changed (scrollBar show/hide)
+    scrollFrame:SetScript("OnSizeChanged", function()
+        -- update content width
+        content:SetWidth(scrollFrame:GetWidth())
+    end)
+
+    -- check if it can scroll
+    -- DO NOT USE OnScrollRangeChanged to check whether it can scroll.
+    -- "invisible" widgets should be hidden, then the scroll range is NOT accurate!
+    -- scrollFrame:SetScript("OnScrollRangeChanged", function(self, xOffset, yOffset) end)
+    content:SetScript("OnSizeChanged", function()
+        print("OnSizeChanged")
+        -- set thumb height (%)
+        local p = scrollFrame:GetHeight() / content:GetHeight()
+        p = tonumber(string.format("%.3f", p))
+        if p < 1 then -- can scroll
+            scrollThumb:SetHeight(scrollBar:GetHeight()*p)
+            -- space for scrollBar
+            AW.SetPoint(scrollFrame, "BOTTOMRIGHT", -7, 0)
+            scrollBar:Show()
+        else
+            AW.SetPoint(scrollFrame, "BOTTOMRIGHT")
+            scrollBar:Hide()
+            scrollFrame:SetVerticalScroll(0)
+        end
+    end)
+
+    local function OnVerticalScroll(self, offset)
+        if scrollFrame:GetVerticalScrollRange() ~= 0 then
+            local scrollP = scrollFrame:GetVerticalScroll()/scrollFrame:GetVerticalScrollRange()
+            local yoffset = -((scrollBar:GetHeight()-scrollThumb:GetHeight())*scrollP)
+            scrollThumb:SetPoint("TOP", 0, yoffset)
+        end
+    end
+    scrollFrame:SetScript("OnVerticalScroll", OnVerticalScroll)
+
+    -- dragging and scrolling
+    scrollThumb:SetScript("OnMouseDown", function(self, button)
+        if button ~= "LeftButton" then return end
+        scrollFrame:SetScript("OnVerticalScroll", nil) -- disable OnVerticalScroll
+
+        local offsetY = select(5, scrollThumb:GetPoint(1))
+        local mouseY = select(2, GetCursorPosition())
+        local scale = scrollThumb:GetEffectiveScale() -- https://warcraft.wiki.gg/wiki/API_GetCursorPosition
+        local currentScroll = scrollFrame:GetVerticalScroll()
+        self:SetScript("OnUpdate", function(self)
+            local newMouseY = select(2, GetCursorPosition())
+            ------------------ y offset before dragging + mouse offset
+            local newOffsetY = offsetY + (newMouseY - mouseY) / scale
+
+            -- even scrollThumb:SetPoint is already done in OnVerticalScroll, but it's useful in some cases.
+            if newOffsetY >= 0 then -- top
+                AW.SetPoint(scrollThumb, "TOP")
+                newOffsetY = 0
+            elseif (-newOffsetY) + scrollThumb:GetHeight() >= scrollBar:GetHeight() then -- bottom
+                AW.SetPoint(scrollThumb, "TOP", 0, -(scrollBar:GetHeight() - scrollThumb:GetHeight()))
+                newOffsetY = -(scrollBar:GetHeight() - scrollThumb:GetHeight())
+            else
+                AW.SetPoint(scrollThumb, "TOP", 0, newOffsetY)
+            end
+            local vs = (-newOffsetY / (scrollBar:GetHeight()-scrollThumb:GetHeight())) * scrollFrame:GetVerticalScrollRange()
+            scrollFrame:SetVerticalScroll(vs)
+        end)
+    end)
+
+    scrollThumb:SetScript("OnMouseUp", function(self)
+        scrollFrame:SetScript("OnVerticalScroll", OnVerticalScroll) -- enable OnVerticalScroll
+        self:SetScript("OnUpdate", nil)
+    end)
+
+    local step = 25
+    function scrollParent:SetScrollStep(s)
+        step = s
+    end
+    
+    -- enable mouse wheel scroll
+    scrollParent:EnableMouseWheel(true)
+    scrollParent:SetScript("OnMouseWheel", function(self, delta)
+        if delta == 1 then -- scroll up
+            scrollParent:VerticalScroll(AW.ConvertPixelsForRegion(-step, scrollFrame))
+        elseif delta == -1 then -- scroll down
+            scrollParent:VerticalScroll(AW.ConvertPixelsForRegion(step, scrollFrame))
+        end
+    end)
+
+    function scrollParent:UpdatePixels()
+        AW.ReSize(scrollParent)
+        AW.RePoint(scrollParent)
+        AW.ReBorder(scrollParent)
+
+        AW.ReSize(scrollFrame)
+        AW.RePoint(scrollFrame)
+        content:SetWidth(scrollFrame:GetWidth())
+        
+        AW.ReSize(scrollBar)
+        AW.RePoint(scrollBar)
+        AW.ReBorder(scrollBar)
+        
+        AW.ReSize(scrollThumb)
+        AW.RePoint(scrollThumb)
+        AW.ReBorder(scrollThumb)
+        
+        -- NOTE: children should've been AddToPixelUpdater, so there's no need
+        -- for _, c in pairs({content:GetChildren()}) do
+        --     if c.UpdatePixels() then
+        --         c:UpdatePixels()
+        --     end
+        -- end
+        
+        -- reset scroll
+        scrollParent:ResetScroll()
+    end
+
+    AW.AddToPixelUpdater(scrollParent)
+    
+    return scrollParent
+end
