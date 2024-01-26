@@ -33,4 +33,3 @@ function AW.SetEnabled(isEnabled, ...)
         end
     end
 end
-

@@ -290,3 +290,148 @@ function AW.CreateCheckButton(parent, label, onClick)
 
     return cb
 end
+
+---------------------------------------------------------------------
+-- switch
+---------------------------------------------------------------------
+--- @param labels table {{["text"]=(string), ["value"]=(boolean/string/number), ["onClick"]=(function)}, ...}
+function AW.CreateSwitch(parent, width, height, labels)
+    local switch = AW.CreateBorderedFrame(parent, nil, width, height, "widget")
+
+    switch.highlight = AW.CreateTexture(switch, nil, AW.GetColorTable("accent", 0.1))
+    AW.SetPoint(switch.highlight, "TOPLEFT", 1, -1)
+    AW.SetPoint(switch.highlight, "BOTTOMRIGHT", -1, 1)
+    switch.highlight:Hide()
+
+    switch:SetScript("OnEnter", function()
+        switch.highlight:Show()
+    end)
+    
+    switch:SetScript("OnLeave", function()
+        switch.highlight:Hide()
+    end)
+    
+    local n = #labels
+    local buttonWidth = width / n
+
+    -- buttons
+    local buttons = {}
+    for i, l in pairs(labels) do
+        buttons[i] = AW.CreateButton(switch, labels[i].text, "none", buttonWidth, height)
+        buttons[i].value = labels[i].value or labels[i].text
+        buttons[i].isSelected = false
+       
+        buttons[i].highlight = AW.CreateTexture(buttons[i], nil, AW.GetColorTable("accent", 0.8))
+        AW.SetPoint(buttons[i].highlight, "BOTTOMLEFT", 1, 1)
+        AW.SetPoint(buttons[i].highlight, "BOTTOMRIGHT", -1, 1)
+        AW.SetHeight(buttons[i].highlight, 1)
+
+        -- fill animation -------------------------------------------
+        local fill = buttons[i].highlight:CreateAnimationGroup()
+        buttons[i].fill = fill
+        
+        fill.t = fill:CreateAnimation("Translation")
+        fill.t:SetOffset(0, AW.ConvertPixelsForRegion(height/2-1, buttons[i]))
+        fill.t:SetSmoothing("IN")
+        fill.t:SetDuration(0.1)
+        
+        fill.s = fill:CreateAnimation("Scale")
+        fill.s:SetScaleTo(1, AW.ConvertPixelsForRegion(height-2, buttons[i]))
+        fill.s:SetDuration(0.1)
+        fill.s:SetSmoothing("IN")
+        
+        fill:SetScript("OnFinished", function()
+            AW.SetHeight(buttons[i].highlight, height-2)
+        end)
+        -------------------------------------------------------------
+        
+        -- empty animation ------------------------------------------
+        local empty = buttons[i].highlight:CreateAnimationGroup()
+        buttons[i].empty = empty
+        
+        empty.t = empty:CreateAnimation("Translation")
+        empty.t:SetOffset(0, -AW.ConvertPixelsForRegion(height/2-1, buttons[i]))
+        empty.t:SetSmoothing("IN")
+        empty.t:SetDuration(0.1)
+        
+        empty.s = empty:CreateAnimation("Scale")
+        empty.s:SetScaleTo(1, 1/AW.ConvertPixelsForRegion(height-2, buttons[i]))
+        empty.s:SetDuration(0.1)
+        empty.s:SetSmoothing("IN")
+
+        empty:SetScript("OnFinished", function()
+            AW.SetHeight(buttons[i].highlight, 1)
+        end)
+        -------------------------------------------------------------
+
+        buttons[i]:SetScript("OnClick", function(self)
+            if self.isSelected or fill:IsPlaying() or empty:IsPlaying() then return end
+
+            fill:Play()
+            self.isSelected = true
+            switch.selected = self.value
+            
+            if labels[i].onClick then
+                labels[i].onClick()
+            end
+
+            -- deselect others
+            for j, b in ipairs(buttons) do
+                if j ~= i then
+                    if b.isSelected then b.empty:Play() end
+                    b.isSelected = false
+                end
+            end
+        end)
+
+        buttons[i]:SetScript("OnEnter", function(self)
+            switch:GetScript("OnEnter")()
+        end)
+
+        buttons[i]:SetScript("OnLeave", function(self)
+            switch:GetScript("OnLeave")()
+        end)
+
+        if i == 1 then
+            AW.SetPoint(buttons[i], "TOPLEFT")
+        elseif i == n then
+            AW.SetPoint(buttons[i], "TOPLEFT", buttons[i-1], "TOPRIGHT", -1, 0)
+            AW.SetPoint(buttons[i], "TOPRIGHT")
+        else
+            AW.SetPoint(buttons[i], "TOPLEFT", buttons[i-1], "TOPRIGHT", -1, 0)
+        end
+    end
+
+    function switch:SetSelectedValue(value)
+        for _, b in ipairs(buttons) do
+            if b.value == value then
+                if not b.isSelected then b.fill:Play() end
+                b.isSelected = true
+            else
+                if b.isSelected then b.empty:Play() end
+                b.isSelected = false
+            end
+        end
+    end
+
+    function switch:GetSelectedValue()
+        return switch.selected
+    end
+
+    function switch:UpdatePixels()
+        AW.ReSize(switch)
+        AW.RePoint(switch)
+        AW.ReBorder(switch)
+        AW.RePoint(switch.highlight)
+
+        -- update highlights
+        for _, b in ipairs(buttons) do
+            AW.ReSize(b.highlight)
+            AW.RePoint(b.highlight)
+        end
+    end
+
+    AW.AddToPixelUpdater(switch)
+
+    return switch
+end

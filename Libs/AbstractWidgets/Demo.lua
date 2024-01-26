@@ -53,7 +53,7 @@ function AW.ShowDemo()
     local eb1 = AW.CreateEditBox(demo, "Edit Box", 200, 20)
     AW.SetPoint(eb1, "TOPLEFT", cb3, "BOTTOMLEFT", 0, -10)
 
-    local eb2 = AW.CreateEditBox(demo, "Number Only", 200, 20, false, false, true)
+    local eb2 = AW.CreateEditBox(demo, "Number Only", 200, 20, false, true)
     AW.SetPoint(eb2, "TOPLEFT", eb1, "BOTTOMLEFT", 0, -10)
     
     local eb3 = AW.CreateEditBox(demo, "Edit Box", 200, 20)
@@ -112,7 +112,39 @@ function AW.ShowDemo()
     AW.SetPoint(sf1.b1, "TOPLEFT")
     AW.SetPoint(sf1.b1, "RIGHT")
 
-    sf1:SetContentHeight(200)
+    sf1:SetContentHeight(20)
 
-    AW_SF1 = sf1
+    -- switch ---------------------------------------------------------------- --
+    local sw1 = AW.CreateSwitch(demo, 150, 20, {
+        {
+            ["text"] = "20",
+            ["value"] = 20,
+            ["onClick"] = function()
+                sf1:SetContentHeight(20)
+            end,
+        },
+        {
+            ["text"] = "100",
+            ["value"] = 100,
+            ["onClick"] = function()
+                sf1:SetContentHeight(100)
+            end,
+        },
+        {
+            ["text"] = "200",
+            ["value"] = 200,
+            ["onClick"] = function()
+                sf1:SetContentHeight(200)
+            end,
+        },
+        {
+            ["text"] = "400",
+            ["value"] = 400,
+            ["onClick"] = function()
+                sf1:SetContentHeight(400)
+            end,
+        }
+    })
+    AW.SetPoint(sw1, "TOPLEFT", sf1, "BOTTOMLEFT", 0, -10)
+    sw1:SetSelectedValue(20)
 end

@@ -268,6 +268,7 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     end
 
     function scrollParent:SetContentHeight(height, num, spacing)
+        scrollParent:ResetScroll()
         if num and spacing then
             AW.SetListHeight(content, height, num, spacing)
         else
@@ -300,7 +301,6 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     -- "invisible" widgets should be hidden, then the scroll range is NOT accurate!
     -- scrollFrame:SetScript("OnScrollRangeChanged", function(self, xOffset, yOffset) end)
     content:SetScript("OnSizeChanged", function()
-        print("OnSizeChanged")
         -- set thumb height (%)
         local p = scrollFrame:GetHeight() / content:GetHeight()
         p = tonumber(string.format("%.3f", p))
