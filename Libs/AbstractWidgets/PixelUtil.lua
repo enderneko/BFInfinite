@@ -109,6 +109,11 @@ function AW.SetPoint(region, ...)
     region:SetPoint(points[1], points[2], points[3], AW.GetNearestPixelSize(points[4], region:GetEffectiveScale()), AW.GetNearestPixelSize(points[5], region:GetEffectiveScale()))
 end
 
+function AW.ClearPoints(region)
+    region:ClearAllPoints()
+    if region._points then wipe(region._points) end
+end
+
 ---------------------------------------------------------------------
 -- re-set
 ---------------------------------------------------------------------
