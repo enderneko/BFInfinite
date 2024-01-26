@@ -298,7 +298,7 @@ end
 function AW.CreateSwitch(parent, width, height, labels)
     local switch = AW.CreateBorderedFrame(parent, nil, width, height, "widget")
 
-    switch.highlight = AW.CreateTexture(switch, nil, AW.GetColorTable("accent", 0.1))
+    switch.highlight = AW.CreateTexture(switch, nil, AW.GetColorTable("accent", 0.07))
     AW.SetPoint(switch.highlight, "TOPLEFT", 1, -1)
     AW.SetPoint(switch.highlight, "BOTTOMRIGHT", -1, 1)
     switch.highlight:Hide()

@@ -44,7 +44,7 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
         end
     end)
 
-    eb.highlight = AW.CreateTexture(eb, nil, AW.GetColorTable("accent", 0.1))
+    eb.highlight = AW.CreateTexture(eb, nil, AW.GetColorTable("accent", 0.07))
     AW.SetPoint(eb.highlight, "TOPLEFT", 1, -1)
     AW.SetPoint(eb.highlight, "BOTTOMRIGHT", -1, 1)
     eb.highlight:Hide()
