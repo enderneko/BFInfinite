@@ -1,0 +1,12 @@
+Copyright © 2024 enderneko <enderneko-dev@outlook.com>.
+
+The contents of this module, excluding third-party resources, are copyrighted to its authors with all rights reserved.
+
+The author of this module hereby grants you the following rights:
+
+	1.	You may make modifications to this module for private use only, except if you have been granted explicit
+		permission by the author;
+
+	2.	Do not modify the name of this module, including the module folders.
+
+All rights not explicitly addressed in this license are reserved by the copyright holder.
