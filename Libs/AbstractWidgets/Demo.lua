@@ -7,7 +7,7 @@ function AW.ShowDemo()
         return
     end
 
-    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Test Frame", 400, 400)
+    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 400, 400)
     AW.SetPoint(demo, "BOTTOMLEFT", 270, 270)
     demo:Show()
 
@@ -28,8 +28,6 @@ function AW.ShowDemo()
     b4:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"CENTER", 0, 0}, true, true)
     AW.SetPoint(b4, "TOPLEFT", b3, "TOPRIGHT", 10, 0)
 
-    AW_B4 = b4
-
     local b5 = AW.CreateButton(demo, nil, "accent", 20, 20)
     b5:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"CENTER", 0, 0}, true, true)
     AW.SetPoint(b5, "TOPLEFT", b4, "TOPRIGHT", 10, 0)
@@ -44,7 +42,7 @@ function AW.ShowDemo()
     AW.SetPoint(cb2, "TOPLEFT", cb1, "BOTTOMLEFT", 0, -7)
     cb2:SetEnabled(false)
     
-    local cb3 = AW.CreateCheckButton(demo, "Different lable length", function(checked)
+    local cb3 = AW.CreateCheckButton(demo, "Different label length", function(checked)
         cb2:SetChecked(checked)
     end)
     AW.SetPoint(cb3, "TOPLEFT", cb2, "BOTTOMLEFT", 0, -7)
@@ -52,9 +50,16 @@ function AW.ShowDemo()
     -- edit box -------------------------------------------------------------- --
     local eb1 = AW.CreateEditBox(demo, "Edit Box", 200, 20)
     AW.SetPoint(eb1, "TOPLEFT", cb3, "BOTTOMLEFT", 0, -10)
+    eb1:SetOnTextChanged(function(text)
+        print("TextChanged:", text)
+    end)
+    eb1:SetText("Hello!")
 
     local eb2 = AW.CreateEditBox(demo, "Number Only", 200, 20, false, true)
     AW.SetPoint(eb2, "TOPLEFT", eb1, "BOTTOMLEFT", 0, -10)
+    eb2:SetConfirmButton(function(text)
+        print("ConfirmButtonClicked:", text)
+    end)
     
     local eb3 = AW.CreateEditBox(demo, "Edit Box", 200, 20)
     AW.SetPoint(eb3, "TOPLEFT", eb2, "BOTTOMLEFT", 0, -10)
