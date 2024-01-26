@@ -40,8 +40,11 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
             fs:SetPoint("LEFT", 5, 0)
             fs:SetPoint("RIGHT", -5, 0)
         end
-        b:SetBackdropBorderColor(1, 1, 1, 0) -- make border transparent, but still exists
+        b:SetBackdropBorderColor(0, 0, 0, 0) -- make border transparent, but still exists
         b:SetPushedTextOffset(0, 0)
+    elseif color == "none" then -- transparent color, border, background
+        b:SetBackdropBorderColor(0, 0, 0, 0)
+        b:SetPushedTextOffset(0, -AW.GetOnePixelForRegion(b))
     else
         if not noBackground then
             local bg = b:CreateTexture()
@@ -64,15 +67,15 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         b:SetScript("OnEnter", function(self) self:SetBackdropColor(unpack(self._hoverColor)) end)
         b:SetScript("OnLeave", function(self) self:SetBackdropColor(unpack(self._color)) end)
     end
-
-    if template and strfind(template, "Secure") then
-        b._isSecure = true
-        -- NOTE: ActionButtonUseKeyDown will affect OnClick
-        b:RegisterForClicks("LeftButtonUp", "RightButtonUp", "LeftButtonDown", "RightButtonDown")
-    end
-
+    
     -- click sound
     if not AW.isVanilla then
+        if template and strfind(template, "SecureActionButtonTemplate") then
+            b._isSecure = true
+            -- NOTE: ActionButtonUseKeyDown will affect OnClick
+            b:RegisterForClicks("LeftButtonUp", "RightButtonUp", "LeftButtonDown", "RightButtonDown")
+        end
+        
         b:SetScript("PostClick", function(self, button, down)
             if b._isSecure then
                 if down == GetCVarBool("ActionButtonUseKeyDown") then
