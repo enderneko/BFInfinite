@@ -129,8 +129,16 @@ function AW.ReSize(region)
     end
 end
 
+local function IsEmpty(t)
+    if not t then return true end
+    for _ in pairs(t) do
+        return false
+    end
+    return true
+end
+
 function AW.RePoint(region)
-    if not region._points or #region._points == 0 then return end
+    if IsEmpty(region._points) then return end
     region:ClearAllPoints()
     for _, t in pairs(region._points) do
         region:SetPoint(t[1], t[2], t[3], AW.GetNearestPixelSize(t[4], region:GetEffectiveScale()), AW.GetNearestPixelSize(t[5], region:GetEffectiveScale()))
