@@ -33,3 +33,5 @@ function AW.SetEnabled(isEnabled, ...)
         end
     end
 end
+
+-- TODO: disable all children

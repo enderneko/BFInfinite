@@ -7,7 +7,7 @@ function AW.ShowDemo()
         return
     end
 
-    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 400, 400)
+    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 400, 500)
     AW.SetPoint(demo, "BOTTOMLEFT", 270, 270)
     demo:Show()
 
@@ -178,4 +178,15 @@ function AW.ShowDemo()
     end)
     AW.SetPoint(cb4, "BOTTOMLEFT", sl2, "TOPLEFT", 0, 1)
     cb4:SetChecked(true)
+
+    local sl3 = AW.CreateVerticalSlider(demo, "Vertical Slider", 100, 0, 100, 1, true)
+    AW.SetPoint(sl3, "TOPLEFT", bf2, "BOTTOMLEFT", 30, -10)
+    sl3:UpdateWordWrap()
+    sl3:SetValue(0 * 100) -- for percentage, set value * 100
+    sl3:SetOnValueChanged(function(value)
+        print("VERTICAL_OnSliderValueChanged:", value / 100) -- for percentage, get value / 100
+    end)
+    sl3:SetAfterValueChanged(function(value)
+        print("VERTICAL_AfterSliderValueChanged:", value / 100) -- for percentage, get value / 100
+    end)
 end
