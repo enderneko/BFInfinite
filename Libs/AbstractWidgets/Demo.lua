@@ -158,7 +158,8 @@ function AW.ShowDemo()
     AW.SetPoint(sl1, "TOPLEFT", 5, -40)
     sl1:SetValue(1)
     sl1:SetAfterValueChanged(function(value)
-        
+        demo:SetScale(value)
+        AW.UpdatePixels()
     end)
 
     local sl2 = AW.CreateSlider(demo, "Enabled", 100, 50, 500, 10, true, true)

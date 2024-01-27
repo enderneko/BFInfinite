@@ -226,6 +226,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
     function slider:UpdatePixels()
         AW.ReSize(slider)
         AW.RePoint(slider)
+        AW.ReBorder(slider)
     end
 
     AW.AddToPixelUpdater(slider)
@@ -443,6 +444,7 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
     function slider:UpdatePixels()
         AW.ReSize(slider)
         AW.RePoint(slider)
+        AW.ReBorder(slider)
     end
 
     AW.AddToPixelUpdater(slider)
