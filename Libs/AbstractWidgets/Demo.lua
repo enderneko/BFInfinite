@@ -157,17 +157,24 @@ function AW.ShowDemo()
     local sl1 = AW.CreateSlider(tp1, "Scale", 130, 0.5, 2, 0.1)
     AW.SetPoint(sl1, "TOPLEFT", 5, -40)
     sl1:SetValue(1)
+    sl1:SetAfterValueChanged(function(value)
+        
+    end)
 
     local sl2 = AW.CreateSlider(demo, "Enabled", 100, 50, 500, 10, true, true)
     AW.SetPoint(sl2, "TOPLEFT", bf2, "TOPRIGHT", 10, -25)
     sl2:SetValue(1 * 100) -- for percentage, set value * 100
+    sl2:SetOnValueChanged(function(value)
+        print("OnSliderValueChanged:", value / 100) -- for percentage, get value / 100
+    end)
     sl2:SetAfterValueChanged(function(value)
-        print("SliderValueChanged:", value / 100) -- for percentage, get value / 100
+        print("AfterSliderValueChanged:", value / 100) -- for percentage, get value / 100
     end)
 
-    local cb4 = AW.CreateCheckButton(demo, nil, function(checked)
+    local cb4 = AW.CreateCheckButton(demo, nil, function(checked, self)
         sl2:SetEnabled(checked)
         sl2:SetLabel(checked and "Enabled" or "Disabled")
+        AW.ShowNotificationText(checked and "Enabled" or "Disabled", "red", nil, nil, "BOTTOMLEFT", self, "TOPLEFT", 0, 3)
     end)
     AW.SetPoint(cb4, "BOTTOMLEFT", sl2, "TOPLEFT", 0, 1)
     cb4:SetChecked(true)
