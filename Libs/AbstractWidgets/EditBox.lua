@@ -27,7 +27,7 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
     
     eb:SetScript("OnDisable", function()
         eb:SetTextColor(AW.GetColorRGB("disabled"))
-        eb:SetBackdropBorderColor(0, 0, 0, 0.5)
+        eb:SetBackdropBorderColor(0, 0, 0, 0.7)
     end)
     
     eb:SetScript("OnEnable", function()
@@ -118,6 +118,7 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
         AW.ReSize(eb)
         AW.RePoint(eb)
         AW.ReBorder(eb)
+        -- eb.confirmBtn:UpdatePixels() already called in pixel updater
     end
 
     AW.AddToPixelUpdater(eb)

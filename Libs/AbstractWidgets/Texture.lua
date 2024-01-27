@@ -5,17 +5,21 @@ local AW = ns.AW
 -- texture
 ---------------------------------------------------------------------
 --- @param color table|string
-function AW.CreateTexture(parent, texture, color)
-    if type(color) == "string" then color = AW.GetColorTable(color) end
-    color = color or {0, 0, 0, 1}
+function AW.CreateTexture(parent, texture, color, drawLayer, subLevel)
+    local tex = parent:CreateTexture(nil, drawLayer or "ARTWORK", nil, subLevel)
 
-    local tex = parent:CreateTexture(nil, "ARTWORK")
-    if texture then
-        tex:SetTexture(texture)
-        tex:SetVertexColor(unpack(color))
-    else
-        tex:SetColorTexture(unpack(color))
+    function tex:SetColor(c)
+        if type(c) == "string" then c = AW.GetColorTable(c) end
+        c = c or {0, 0, 0, 1}
+        if texture then
+            tex:SetTexture(texture)
+            tex:SetVertexColor(unpack(c))
+        else
+            tex:SetColorTexture(unpack(c))
+        end
     end
+
+    tex:SetColor(color)
 
     function tex:UpdatePixels()
         AW.ReSize(tex)

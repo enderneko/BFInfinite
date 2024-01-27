@@ -14,5 +14,15 @@ function AW.CreateFontString(parent, text, color, font, isDisabled)
     if color then AW.ColorFontString(fs, color) end
     fs:SetText(text)
 
+    function fs:SetColor(color)
+        AW.ColorFontString(fs, color)
+    end
+
+    function fs:UpdatePixels()
+        AW.RePoint(fs)
+    end
+
+    AW.AddToPixelUpdater(fs)
+
     return fs
 end
