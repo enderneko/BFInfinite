@@ -152,4 +152,23 @@ function AW.ShowDemo()
     })
     AW.SetPoint(sw1, "TOPLEFT", sf1, "BOTTOMLEFT", 0, -10)
     sw1:SetSelectedValue(20)
+
+    -- slider ---------------------------------------------------------------- --
+    local sl1 = AW.CreateSlider(tp1, "Scale", 130, 0.5, 2, 0.1)
+    AW.SetPoint(sl1, "TOPLEFT", 5, -40)
+    sl1:SetValue(1)
+
+    local sl2 = AW.CreateSlider(demo, "Enabled", 100, 50, 500, 10, true, true)
+    AW.SetPoint(sl2, "TOPLEFT", bf2, "TOPRIGHT", 10, -25)
+    sl2:SetValue(1 * 100) -- for percentage, set value * 100
+    sl2:SetAfterValueChanged(function(value)
+        print("SliderValueChanged:", value / 100) -- for percentage, get value / 100
+    end)
+
+    local cb4 = AW.CreateCheckButton(demo, nil, function(checked)
+        sl2:SetEnabled(checked)
+        sl2:SetLabel(checked and "Enabled" or "Disabled")
+    end)
+    AW.SetPoint(cb4, "BOTTOMLEFT", sl2, "TOPLEFT", 0, 1)
+    cb4:SetChecked(true)
 end

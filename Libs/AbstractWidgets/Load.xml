@@ -11,5 +11,6 @@
     <Script file="FontString.lua"/>
     <Script file="Button.lua"/>
     <Script file="EditBox.lua"/>
+    <Script file="Slider.lua"/>
     <Script file="Demo.lua"/>
 </Ui>
