@@ -41,16 +41,17 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
     -----------------------------------------------------------------
 
     -- thumb --------------------------------------------------------
-    local thumbBG = AW.CreateTexture(slider, nil, AW.GetColorTable("black"), "BACKGROUND")
+    local thumbBG = AW.CreateTexture(slider, nil, AW.GetColorTable("black"), "BACKGROUND", 3)
     AW.SetSize(thumbBG, 10, 8)
+    slider:SetThumbTexture(thumbBG)
 
-    local thumb = AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.7), "OVERLAY")
-    -- AW.SetSize(thumb, 8, 8)
-    -- AW.SetPoint(thumb, "BOTTOM", thumbBG, "TOP", 0, -5)
+    local thumbBG2 =  AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.25), "BACKGROUND", 2)
+    AW.SetPoint(thumbBG2, "TOPLEFT", 1, -1)
+    AW.SetPoint(thumbBG2, "BOTTOMRIGHT", thumbBG, "BOTTOMLEFT")
+
+    local thumb = AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.7), "OVERLAY", 7)
     AW.SetPoint(thumb, "TOPLEFT", thumbBG, 1, 0)
     AW.SetPoint(thumb, "BOTTOMRIGHT", thumbBG, -1, 0)
-
-    slider:SetThumbTexture(thumbBG)
     -----------------------------------------------------------------
     
     local oldValue, valueBeforeClick
@@ -96,7 +97,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
     end
     
     -- highlight ----------------------------------------------------
-    local highlight = AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.05))
+    local highlight = AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.05), "BACKGROUND", 1)
     AW.SetPoint(highlight, "TOPLEFT", 1, -1)
     AW.SetPoint(highlight, "BOTTOMRIGHT", -1, 1)
     highlight:Hide()
@@ -183,6 +184,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
         eb:SetEnabled(false)
         thumb:SetColor(AW.GetColorTable("disabled", 0.7))
         thumbBG:SetColor(AW.GetColorTable("black", 0.7))
+        thumbBG2:SetColor(AW.GetColorTable("disabled", 0.25))
         lowText:SetColor("disabled")
         highText:SetColor("disabled")
         percentSign:SetColor("disabled")
@@ -196,6 +198,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
         eb:SetEnabled(true)
         thumb:SetColor(AW.GetColorTable("accent", 0.7))
         thumbBG:SetColor(AW.GetColorTable("black", 1))
+        thumbBG2:SetColor(AW.GetColorTable("accent", 0.25))
         lowText:SetColor("gray")
         highText:SetColor("gray")
         percentSign:SetColor("gray")
