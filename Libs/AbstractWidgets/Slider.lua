@@ -362,12 +362,13 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
     
     -- OnValueChanged -----------------------------------------------
     slider:SetScript("OnValueChanged", function(self, value, userChanged)
+        value = high - value -- NOTE: ORIGINAL: top == 0, NOW: top == max
         if oldValue == value then return end
         
         if math.floor(value) < value then -- decimal
             value = tonumber(string.format("%.2f", value))
         end
-        oldValue = high - value
+        oldValue = value
         
         if userChanged and slider.onValueChanged then
             slider.onValueChanged(oldValue)
