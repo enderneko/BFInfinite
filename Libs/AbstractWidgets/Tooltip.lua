@@ -31,6 +31,7 @@ function AW.ShowTooltips(widget, anchor, x, y, content)
         tooltip:SetOwner(widget, "ANCHOR_NONE")
         tooltip:SetPoint(anchorOverride[anchor], widget, anchor, x, y)
     else
+        if anchor and not strfind(anchor, "^ANCHOR_") then anchor = "ANCHOR_"..anchor end
         tooltip:SetOwner(widget, anchor or "ANCHOR_TOP", x or 0, y or 0)
     end
 

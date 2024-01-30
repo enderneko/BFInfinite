@@ -77,7 +77,9 @@ font_accent:SetJustifyH("CENTER")
 ---------------------------------------------------------------------
 -- update size for all used fonts
 ---------------------------------------------------------------------
+AW.fontSizeOffset = 0
 function AW.UpdateFontSize(offset)
+    AW.fontSizeOffset = offset
     font_title:SetFont(base_font, 14+offset, "")
     font_title_disable:SetFont(base_font, 14+offset, "")
     font:SetFont(base_font, 13+offset, "")

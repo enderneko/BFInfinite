@@ -63,13 +63,30 @@ function AW.SetHeight(region, height, minPixels)
     region:SetHeight(AW.GetNearestPixelSize(height, region:GetEffectiveScale(), minPixels))
 end
 
-function AW.SetListHeight(region, itemHeight, itemNum, itemSpacing)
+-- NOTE: DO NOT USE WITH SetListHeight
+function AW.SetListWidth(region, itemNum, itemWidth, itemSpacing, extraWidth)
+    -- clear old
+    region._width = nil
+    region._minwidth = nil
+    -- add new
+    region._itemNum = itemNum
+    region._itemWidth = itemWidth
+    region._itemSpacing = itemSpacing
+    extraWidth = extraWidth or 0
+    region._extraWidth = extraWidth
+    region:SetWidth(AW.GetNearestPixelSize(itemWidth, region:GetEffectiveScale())*itemNum
+        + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1)
+        + AW.GetNearestPixelSize(extraWidth, region:GetEffectiveScale()))
+end
+
+-- NOTE: DO NOT USE WITH SetListWidth
+function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
     -- clear old
     region._height = nil
     region._minheight = nil
     -- add new
-    region._itemHeight = itemHeight
     region._itemNum = itemNum
+    region._itemHeight = itemHeight
     region._itemSpacing = itemSpacing
     region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*itemNum + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1))
 end
@@ -124,8 +141,11 @@ function AW.ReSize(region)
     if region._height then
         region:SetHeight(AW.GetNearestPixelSize(region._height, region:GetEffectiveScale(), region._minheight))
     end
+    if region._itemWidth then
+        AW.SetListWidth(region, region._itemNum, region._itemWidth, region._itemSpacing, region._extraWidth)
+    end
     if region._itemHeight then
-        region:SetHeight(AW.GetNearestPixelSize(region._itemHeight, region:GetEffectiveScale())*region._itemNum + AW.GetNearestPixelSize(region._itemSpacing, region:GetEffectiveScale())*(region._itemNum-1))
+        AW.SetListHeight(region, region._itemNum, region._itemHeight, region._itemSpacing, region._extraHeight)
     end
 end
 

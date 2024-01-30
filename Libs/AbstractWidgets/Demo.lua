@@ -82,7 +82,7 @@ function AW.ShowDemo()
     -- button group ---------------------------------------------------------- --
     local bf2 = AW.CreateBorderedFrame(demo, "Button Group", 100, 60)
     AW.SetPoint(bf2, "TOPLEFT", eb3, "BOTTOMLEFT", 0, -27)
-    AW.SetListHeight(bf2, 20, 3, -1)
+    AW.SetListHeight(bf2, 3, 20, -1)
 
     local b6 = AW.CreateButton(bf2, "Item A", "accent-transparent", 100, 20)
     b6.id = "b6"

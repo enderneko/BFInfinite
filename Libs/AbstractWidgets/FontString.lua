@@ -8,7 +8,7 @@ local AW = ns.AW
 --- @param font string color name defined in Font.lua
 function AW.CreateFontString(parent, text, color, font, isDisabled)
     font = font or "normal"
-    font = AW.GetFont(font, isDisabled)
+    font = AW.GetFont(font or "normal", isDisabled)
 
     local fs = parent:CreateFontString(nil, "OVERLAY", font)
     if color then AW.ColorFontString(fs, color) end
@@ -91,7 +91,7 @@ function AW.ShowNotificationText(text, color, width, hideDelay, point, relativeT
     local fs = pool:Acquire()
     fs:SetParent(relativeTo) --! IMPORTANT, if parent is nil, then game will crash (The memory could not be "read")
     fs:SetText(text)
-    AW.ColorFontString(fs, color or "accent")
+    AW.ColorFontString(fs, color or "red")
     if width then fs:SetWidth(width) end
     
     -- alignment
