@@ -44,7 +44,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
 
     -- thumb --------------------------------------------------------
     local thumbBG = AW.CreateTexture(slider, nil, AW.GetColorTable("black"), "BACKGROUND", 3)
-    AW.SetSize(thumbBG, 10, 8)
+    AW.SetSize(thumbBG, 10, 10)
     slider:SetThumbTexture(thumbBG)
 
     local thumbBG2 =  AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.25), "BACKGROUND", 2)
@@ -52,8 +52,8 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
     AW.SetPoint(thumbBG2, "BOTTOMRIGHT", thumbBG, "BOTTOMLEFT")
 
     local thumb = AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.7), "OVERLAY", 7)
-    AW.SetPoint(thumb, "TOPLEFT", thumbBG, 1, 0)
-    AW.SetPoint(thumb, "BOTTOMRIGHT", thumbBG, -1, 0)
+    AW.SetPoint(thumb, "TOPLEFT", thumbBG, 1, -1)
+    AW.SetPoint(thumb, "BOTTOMRIGHT", thumbBG, -1, 1)
     -----------------------------------------------------------------
     
     local oldValue, valueBeforeClick
@@ -297,7 +297,7 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
 
     -- thumb --------------------------------------------------------
     local thumbBG = AW.CreateTexture(slider, nil, AW.GetColorTable("black"), "BACKGROUND", 3)
-    AW.SetSize(thumbBG, 8, 10)
+    AW.SetSize(thumbBG, 10, 10)
     slider:SetThumbTexture(thumbBG)
 
     local thumbBG2 =  AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.25), "BACKGROUND", 2)
@@ -305,8 +305,8 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
     AW.SetPoint(thumbBG2, "BOTTOMRIGHT", -1, 1)
 
     local thumb = AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.7), "OVERLAY", 7)
-    AW.SetPoint(thumb, "TOPLEFT", thumbBG, 0, -1)
-    AW.SetPoint(thumb, "BOTTOMRIGHT", thumbBG, 0, 1)
+    AW.SetPoint(thumb, "TOPLEFT", thumbBG, 1, -1)
+    AW.SetPoint(thumb, "BOTTOMRIGHT", thumbBG, -1, 1)
 
     local thumbText = AW.CreateFontString(slider, nil, "accent")
     AW.SetPoint(thumbText, "RIGHT", thumbBG, "LEFT", -2, 0)
