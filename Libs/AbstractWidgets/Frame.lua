@@ -134,17 +134,11 @@ end
 ---------------------------------------------------------------------
 -- bordered frame
 ---------------------------------------------------------------------
---- @param color string color name defined in Color.lua
---- @param borderColor string color name defined in Color.lua
+--- @param color string|table color name / table
+--- @param borderColor string|table color name / table
 function AW.CreateBorderedFrame(parent, title, width, height, color, borderColor, fontColor, font)
-    color = color or "background"
-    borderColor = borderColor or "border"
-
     local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-    f:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(f)})
-    f:SetBackdropColor(AW.GetColorRGB(color))
-    f:SetBackdropBorderColor(AW.GetColorRGB(borderColor))
-
+    AW.StylizeFrame(f, color, borderColor)
     AW.SetSize(f, width, height)
 
     if title then
