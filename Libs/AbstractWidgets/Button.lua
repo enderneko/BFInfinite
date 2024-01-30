@@ -4,6 +4,9 @@ local AW = ns.AW
 ---------------------------------------------------------------------
 -- button
 ---------------------------------------------------------------------
+--- @param color string if strfind(color, "transparent"), border is transparent, but still exists
+--- @param noBorder boolean no edgeFile for backdrop
+--- @param noBackground boolean remove background texture, not background color
 function AW.CreateButton(parent, text, color, width, height, template, noBorder, noBackground, fontNormal, fontDisable)
     local b = CreateFrame("Button", nil, parent, template and template..",BackdropTemplate" or "BackdropTemplate")
     if parent then b:SetFrameLevel(parent:GetFrameLevel()+1) end
@@ -15,14 +18,15 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
     b._hoverColor = AW.GetButtonHoverColor(color)
 
     local fs = b:GetFontString()
-    b.fs = fs
+    b.text = fs
     if fs then
         fs:SetWordWrap(false)
-        fs:SetPoint("LEFT")
-        fs:SetPoint("RIGHT")
+        AW.ClearPoints(fs)
+        AW.SetPoint(fs, "LEFT", 1, 0)
+        AW.SetPoint(fs, "RIGHT", -1, 0)
 
-        function b:SetTextColor(...)
-            fs:SetTextColor(...)
+        function b:SetTextColor(r, g, b, a)
+            fs:SetTextColor(r, g, b, a)
         end
     end
     
@@ -37,8 +41,9 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         b._isTransparent = true
         if fs then
             fs:SetJustifyH("LEFT")
-            fs:SetPoint("LEFT", 5, 0)
-            fs:SetPoint("RIGHT", -5, 0)
+            AW.ClearPoints(fs)
+            AW.SetPoint(fs, "LEFT", 5, 0)
+            AW.SetPoint(fs, "RIGHT", -5, 0)
         end
         b:SetBackdropBorderColor(0, 0, 0, 0) -- make border transparent, but still exists
         b:SetPushedTextOffset(0, 0)
@@ -102,9 +107,9 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         end
         -- update fontstring point
         if fs then
-            fs:ClearAllPoints()
-            fs:SetPoint("LEFT", size[2]+point[2]+point[2], 0)
-            fs:SetPoint("RIGHT", -point[2], 0)
+            AW.ClearPoints(fs)
+            AW.SetPoint(fs, "LEFT", b.tex, "RIGHT", 2, 0)
+            AW.SetPoint(fs, "RIGHT", -2, 0)
         end
         -- push effect
         if not noPushDownEffect then
@@ -122,13 +127,13 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         -- enable / disable
         b:HookScript("OnEnable", function()
             b.tex:SetDesaturated(false)
-            b.tex:SetVertexColor(1, 1, 1)
+            b.tex:SetVertexColor(AW.GetColorRGB("white"))
             b:SetScript("OnMouseDown", b.onMouseDown)
             b:SetScript("OnMouseUp", b.onMouseUp)
         end)
         b:HookScript("OnDisable", function()
             b.tex:SetDesaturated(true)
-            b.tex:SetVertexColor(0.5, 0.5, 0.5)
+            b.tex:SetVertexColor(AW.GetColorRGB("disabled"))
             b:SetScript("OnMouseDown", nil)
             b:SetScript("OnMouseUp", nil)
         end)
@@ -140,6 +145,10 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         
         if not noBorder then
             AW.ReBorder(b)
+        end
+
+        if b.text then
+            AW.RePoint(b.text)
         end
 
         if b.tex then
