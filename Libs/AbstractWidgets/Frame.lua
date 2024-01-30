@@ -384,8 +384,12 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     end)
 
     function scrollParent:UpdatePixels()
-        -- scrollParent / scrollBar / scrollThumb / children already AddToPixelUpdater
-        AW.ReSize(scrollFrame)
+        -- scrollBar / scrollThumb / children already AddToPixelUpdater
+        --! scrollParent's UpdatePixels is Overrided here
+        AW.ReSize(scrollParent)
+        AW.RePoint(scrollParent)
+        AW.ReBorder(scrollParent)
+
         AW.RePoint(scrollFrame)
         content:SetWidth(scrollFrame:GetWidth())
         
