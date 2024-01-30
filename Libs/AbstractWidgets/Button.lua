@@ -349,8 +349,18 @@ function AW.CreateSwitch(parent, width, height, labels)
         fill.s:SetDuration(0.1)
         fill.s:SetSmoothing("IN")
         
+        fill:SetScript("OnPlay", function()
+            AW.ClearPoints(buttons[i].highlight)
+            AW.SetPoint(buttons[i].highlight, "BOTTOMLEFT", 1, 1)
+            AW.SetPoint(buttons[i].highlight, "BOTTOMRIGHT", -1, 1)
+        end)
+
         fill:SetScript("OnFinished", function()
             AW.SetHeight(buttons[i].highlight, height-2)
+            -- to ensure highlight always fill the whole button exactly
+            AW.ClearPoints(buttons[i].highlight)
+            AW.SetPoint(buttons[i].highlight, "TOPLEFT", 1, -1)
+            AW.SetPoint(buttons[i].highlight, "BOTTOMRIGHT", -1, 1)
         end)
         -------------------------------------------------------------
         
@@ -367,6 +377,12 @@ function AW.CreateSwitch(parent, width, height, labels)
         empty.s:SetScaleTo(1, 1/AW.ConvertPixelsForRegion(height-2, buttons[i]))
         empty.s:SetDuration(0.1)
         empty.s:SetSmoothing("IN")
+
+        empty:SetScript("OnPlay", function()
+            AW.ClearPoints(buttons[i].highlight)
+            AW.SetPoint(buttons[i].highlight, "BOTTOMLEFT", 1, 1)
+            AW.SetPoint(buttons[i].highlight, "BOTTOMRIGHT", -1, 1)
+        end)
 
         empty:SetScript("OnFinished", function()
             AW.SetHeight(buttons[i].highlight, 1)
@@ -434,10 +450,10 @@ function AW.CreateSwitch(parent, width, height, labels)
         AW.RePoint(switch.highlight)
 
         -- update highlights
-        for _, b in ipairs(buttons) do
-            AW.ReSize(b.highlight)
-            AW.RePoint(b.highlight)
-        end
+        -- for _, b in ipairs(buttons) do
+        --     AW.ReSize(b.highlight)
+        --     AW.RePoint(b.highlight)
+        -- end
     end
 
     AW.AddToPixelUpdater(switch)
