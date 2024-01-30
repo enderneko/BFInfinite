@@ -279,7 +279,7 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     function scrollParent:SetContentHeight(height, num, spacing, extraHeight)
         scrollParent:ResetScroll()
         if num and spacing then
-            AW.SetListHeight(content, height, num, spacing, extraHeight)
+            AW.SetListHeight(content, num, height, spacing, extraHeight)
         else
             AW.SetHeight(content, height)
         end
