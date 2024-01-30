@@ -24,6 +24,25 @@ function AW.StylizeFrame(frame, color, borderColor)
 end
 
 ---------------------------------------------------------------------
+-- normal frame
+---------------------------------------------------------------------
+function AW.CreateFrame(parent, width, height)
+    local f = CreateFrame("Frame", nil, parent)
+
+    if width then AW.SetWidth(f, width) end
+    if height then AW.SetWidth(f, height) end
+
+    function f:UpdatePixels()
+        AW.ReSize(f)
+        AW.RePoint(f)
+    end
+
+    AW.AddToPixelUpdater(f)
+
+    return f
+end
+
+---------------------------------------------------------------------
 -- titled frame
 ---------------------------------------------------------------------
 function AW.CreateHeaderedFrame(parent, name, title, width, height, frameStrata, frameLevel, notUserPlaced)
@@ -117,7 +136,7 @@ end
 ---------------------------------------------------------------------
 --- @param color string color name defined in Color.lua
 --- @param borderColor string color name defined in Color.lua
-function AW.CreateBorderedFrame(parent, title, width, height, color, borderColor)
+function AW.CreateBorderedFrame(parent, title, width, height, color, borderColor, fontColor, font)
     color = color or "background"
     borderColor = borderColor or "border"
 
@@ -129,7 +148,7 @@ function AW.CreateBorderedFrame(parent, title, width, height, color, borderColor
     AW.SetSize(f, width, height)
 
     if title then
-        f.title = AW.CreateFontString(f, title, "accent", "accent_title")
+        f.title = AW.CreateFontString(f, title, fontColor or "accent", font or "accent_title")
         AW.SetPoint(f.title, "BOTTOMLEFT", f, "TOPLEFT", 2, 2)
     end
 
@@ -216,6 +235,7 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     
     -- scrollBar
     local scrollBar = CreateFrame("Frame", nil, scrollParent, "BackdropTemplate")
+    AW.CreateBorderedFrame(scrollParent, nil, 5, )
     scrollBar:Hide()
     AW.SetWidth(scrollBar, 5)
     AW.SetPoint(scrollBar, "TOPRIGHT")
@@ -375,9 +395,9 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     end)
 
     function scrollParent:UpdatePixels()
-        AW.ReSize(scrollParent)
-        AW.RePoint(scrollParent)
-        AW.ReBorder(scrollParent)
+        -- AW.ReSize(scrollParent)
+        -- AW.RePoint(scrollParent)
+        -- AW.ReBorder(scrollParent)
 
         AW.ReSize(scrollFrame)
         AW.RePoint(scrollFrame)
@@ -391,7 +411,7 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
         AW.RePoint(scrollThumb)
         AW.ReBorder(scrollThumb)
         
-        -- NOTE: children should've been AddToPixelUpdater, so there's no need
+        -- NOTE: children have been AddToPixelUpdater, so there's no need
         -- for _, c in pairs({content:GetChildren()}) do
         --     if c.UpdatePixels() then
         --         c:UpdatePixels()
