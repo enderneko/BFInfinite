@@ -88,12 +88,16 @@ function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
     region._itemNum = itemNum
     region._itemHeight = itemHeight
     region._itemSpacing = itemSpacing
-    region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*itemNum + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1))
+    extraHeight = extraHeight or 0
+    region._extraHeight = extraHeight
+    region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*itemNum
+        + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1)
+        + AW.GetNearestPixelSize(extraHeight, region:GetEffectiveScale()))
 end
 
 function AW.SetSize(region, width, height, minWidthPixels, minHeightPixels)
-    AW.SetWidth(region, width, minWidthPixels)
-    AW.SetHeight(region, height, minHeightPixels)
+    if width then AW.SetWidth(region, width, minWidthPixels) end
+    if height then AW.SetHeight(region, height, minHeightPixels) end
 end
 
 ---------------------------------------------------------------------

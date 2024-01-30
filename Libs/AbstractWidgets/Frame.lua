@@ -234,24 +234,19 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     -- AW.SetPoint(content, "RIGHT") -- update width with scrollFrame
     
     -- scrollBar
-    local scrollBar = CreateFrame("Frame", nil, scrollParent, "BackdropTemplate")
-    AW.CreateBorderedFrame(scrollParent, nil, 5, )
-    scrollBar:Hide()
-    AW.SetWidth(scrollBar, 5)
+    local scrollBar = AW.CreateBorderedFrame(scrollParent, nil, 5, nil, color, borderColor)
+    scrollParent.scrollBar = scrollBar
     AW.SetPoint(scrollBar, "TOPRIGHT")
     AW.SetPoint(scrollBar, "BOTTOMRIGHT")
-    AW.StylizeFrame(scrollBar, color, borderColor)
-    scrollParent.scrollBar = scrollBar
+    scrollBar:Hide()
     
     -- scrollBar thumb
-    local scrollThumb = CreateFrame("Frame", nil, scrollBar, "BackdropTemplate")
-    AW.SetWidth(scrollThumb, 5)
+    local scrollThumb = AW.CreateBorderedFrame(scrollBar, nil, 5, nil, AW.GetColorTable("accent", 0.8))
+    scrollParent.scrollThumb = scrollThumb
     AW.SetPoint(scrollThumb, "TOP")
-    AW.StylizeFrame(scrollThumb, AW.GetColorTable("accent", 0.8))
     scrollThumb:EnableMouse(true)
     scrollThumb:SetMovable(true)
     scrollThumb:SetHitRectInsets(-5, -5, 0, 0) -- Frame:SetHitRectInsets(left, right, top, bottom)
-    scrollParent.scrollThumb = scrollThumb
     
     -- reset content height (reset scroll range)
     function scrollParent:ResetHeight()
@@ -287,10 +282,10 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
         scrollFrame:SetVerticalScroll(scrollFrame:GetVerticalScrollRange())
     end
 
-    function scrollParent:SetContentHeight(height, num, spacing)
+    function scrollParent:SetContentHeight(height, num, spacing, extraHeight)
         scrollParent:ResetScroll()
         if num and spacing then
-            AW.SetListHeight(content, height, num, spacing)
+            AW.SetListHeight(content, height, num, spacing, extraHeight)
         else
             AW.SetHeight(content, height)
         end
@@ -395,28 +390,10 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     end)
 
     function scrollParent:UpdatePixels()
-        -- AW.ReSize(scrollParent)
-        -- AW.RePoint(scrollParent)
-        -- AW.ReBorder(scrollParent)
-
+        -- scrollParent / scrollBar / scrollThumb / children already AddToPixelUpdater
         AW.ReSize(scrollFrame)
         AW.RePoint(scrollFrame)
         content:SetWidth(scrollFrame:GetWidth())
-        
-        AW.ReSize(scrollBar)
-        AW.RePoint(scrollBar)
-        AW.ReBorder(scrollBar)
-        
-        AW.ReSize(scrollThumb)
-        AW.RePoint(scrollThumb)
-        AW.ReBorder(scrollThumb)
-        
-        -- NOTE: children have been AddToPixelUpdater, so there's no need
-        -- for _, c in pairs({content:GetChildren()}) do
-        --     if c.UpdatePixels() then
-        --         c:UpdatePixels()
-        --     end
-        -- end
         
         -- reset scroll
         scrollParent:ResetScroll()
