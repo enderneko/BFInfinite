@@ -13,5 +13,6 @@
     <Script file="Button.lua"/>
     <Script file="EditBox.lua"/>
     <Script file="Slider.lua"/>
+    <Script file="Dropdown.lua"/>
     <Script file="Demo.lua"/>
 </Ui>

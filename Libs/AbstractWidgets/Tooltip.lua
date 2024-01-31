@@ -42,6 +42,8 @@ function AW.ShowTooltips(widget, anchor, x, y, content)
         end
     end
 
+    tooltip:SetFrameStrata("TOOLTIP")
+    tooltip:SetToplevel(true)
     tooltip:Show()
 end
 

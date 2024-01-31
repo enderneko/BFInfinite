@@ -52,12 +52,24 @@ end
 -- size
 ---------------------------------------------------------------------
 function AW.SetWidth(region, width, minPixels)
+    -- clear conflicts
+    region._itemNum = nil
+    region._itemWidth = nil
+    region._itemSpacing = nil
+    region._extraWidth = nil
+    -- add new
     region._width = width
     region._minwidth = minPixels
     region:SetWidth(AW.GetNearestPixelSize(width, region:GetEffectiveScale(), minPixels))
 end
 
 function AW.SetHeight(region, height, minPixels)
+    -- clear conflicts
+    region._itemNum = nil
+    region._itemHeight = nil
+    region._itemSpacing = nil
+    region._extraHeight = nil
+    -- add new
     region._height = height
     region._minheight = minPixels
     region:SetHeight(AW.GetNearestPixelSize(height, region:GetEffectiveScale(), minPixels))
@@ -81,7 +93,7 @@ end
 
 -- NOTE: DO NOT USE WITH SetListWidth
 function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
-    -- clear old
+    -- clear conflicts
     region._height = nil
     region._minheight = nil
     -- add new

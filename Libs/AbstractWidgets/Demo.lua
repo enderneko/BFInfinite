@@ -7,7 +7,7 @@ function AW.ShowDemo()
         return
     end
 
-    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 400, 500)
+    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 710, 420)
     AW.SetPoint(demo, "BOTTOMLEFT", 270, 270)
     demo:Show()
 
@@ -68,8 +68,7 @@ function AW.ShowDemo()
 
     -- bordered frame -------------------------------------------------------- --
     local bf1 = AW.CreateBorderedFrame(demo, nil, 150, 150, nil, "accent")
-    AW.SetPoint(bf1, "RIGHT", -10, 0)
-    AW.SetPoint(bf1, "TOP", cb1)
+    AW.SetPoint(bf1, "TOPLEFT", b3, "BOTTOMLEFT", 0, -10)
 
     -- font string ----------------------------------------------------------- --
     local fs1 = AW.CreateFontString(bf1, "Bordered Frame", "gray")
@@ -190,4 +189,44 @@ function AW.ShowDemo()
     sl3:SetAfterValueChanged(function(value)
         print("VERTICAL_AfterSliderValueChanged:", value / 100) -- for percentage, get value / 100
     end)
+
+    -- scroll list ----------------------------------------------------------- --
+    local slist1 = AW.CreateScrollList(demo, 150, 5, 5, 7, 20, 5)
+    AW.SetPoint(slist1, "TOPLEFT", bf1, "TOPRIGHT", 10, 0)
+    local widgets = {}
+    for i = 1, 20 do
+        tinsert(widgets, AW.CreateButton(slist1.slotFrame, "Item "..i, "accent-hover", 20, 20))
+    end
+    slist1:SetWidgets(widgets)
+
+    -- dropdown -------------------------------------------------------------- --
+    local dd1 = AW.CreateDropdown(demo, 150)
+    AW.SetPoint(dd1, "TOPLEFT", slist1, "TOPRIGHT", 10, 0)
+    AW.SetTooltips(dd1, "TOPLEFT", 0, 2, "Normal Dropdown 1")
+    dd1:SetLabel("Normal Dropdown 1")
+    dd1:SetOnClick(function(value)
+        print("NormalDropdown1 Selected:", value)
+    end)
+    local items = {}
+    for i = 1, 7 do
+        tinsert(items, {["text"] = "Item "..i})
+    end
+    dd1:SetItems(items)
+
+    local dd2 = AW.CreateDropdown(demo, 150)
+    AW.SetPoint(dd2, "TOPLEFT", dd1, "BOTTOMLEFT", 0, -30)
+    AW.SetTooltips(dd2, "TOPLEFT", 0, 2, "Normal Dropdown 2")
+    dd2:SetLabel("Normal Dropdown 2")
+    dd2:SetOnClick(function(value)
+        print("NormalDropdown2 Selected:", value)
+    end)
+    local items = {}
+    for i = 1, 20 do
+        tinsert(items, {["text"] = "Item "..i})
+    end
+    dd2:SetItems(items)
+
+    local dd3 = AW.CreateDropdown(demo, 150)
+    AW.SetPoint(dd3, "TOPLEFT", dd2, "BOTTOMLEFT", 0, -30)
+    dd3:SetLabel("Empty Dropdown")
 end

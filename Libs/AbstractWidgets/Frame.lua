@@ -340,8 +340,8 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
         scrollFrame:SetScript("OnVerticalScroll", nil) -- disable OnVerticalScroll
 
         local offsetY = select(5, scrollThumb:GetPoint(1))
-        local mouseY = select(2, GetCursorPosition())
-        local scale = scrollThumb:GetEffectiveScale() -- https://warcraft.wiki.gg/wiki/API_GetCursorPosition
+        local mouseY = select(2, GetCursorPosition()) -- https://warcraft.wiki.gg/wiki/API_GetCursorPosition
+        local scale = scrollThumb:GetEffectiveScale()
         local currentScroll = scrollFrame:GetVerticalScroll()
         self:SetScript("OnUpdate", function(self)
             local newMouseY = select(2, GetCursorPosition())
@@ -391,6 +391,7 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
         AW.ReBorder(scrollParent)
 
         AW.RePoint(scrollFrame)
+        AW.ReSize(content) -- SetListHeight
         content:SetWidth(scrollFrame:GetWidth())
         
         -- reset scroll
@@ -400,4 +401,246 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     AW.AddToPixelUpdater(scrollParent)
     
     return scrollParent
+end
+
+---------------------------------------------------------------------
+-- scroll list (filled with widgets)
+---------------------------------------------------------------------
+--- @param verticalMargins number top/bottom margin
+--- @param horizontalMargins number left/right margin
+--- @param slotSpacing number spacing between widgets next to each other
+function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, slotNum, slotHeight, slotSpacing, color, borderColor)
+    local scrollList = AW.CreateBorderedFrame(parent, nil, width, nil, color, borderColor)
+    AW.SetListHeight(scrollList, slotNum, slotHeight, slotSpacing, verticalMargins*2)
+
+    local slotFrame = CreateFrame("Frame", nil, scrollList)
+    scrollList.slotFrame = slotFrame
+    AW.SetPoint(slotFrame, "TOPLEFT", 0, -verticalMargins)
+    AW.SetPoint(slotFrame, "BOTTOMRIGHT", 0, verticalMargins)
+
+    -- scrollBar
+    local scrollBar = AW.CreateBorderedFrame(scrollList, nil, 5, nil, color, borderColor)
+    scrollList.scrollBar = scrollBar
+    AW.SetPoint(scrollBar, "TOPRIGHT", 0, -verticalMargins)
+    AW.SetPoint(scrollBar, "BOTTOMRIGHT", 0, verticalMargins)
+    scrollBar:Hide()
+    
+    -- scrollBar thumb
+    local scrollThumb = AW.CreateBorderedFrame(scrollBar, nil, 5, nil, AW.GetColorTable("accent", 0.8))
+    scrollList.scrollThumb = scrollThumb
+    AW.SetPoint(scrollThumb, "TOP")
+    scrollThumb:EnableMouse(true)
+    scrollThumb:SetMovable(true)
+    scrollThumb:SetHitRectInsets(-5, -5, 0, 0) -- Frame:SetHitRectInsets(left, right, top, bottom)
+
+    -- slots
+    local slots = {}
+
+    local function UpdateSlots()
+        for i = 1, slotNum do
+            if not slots[i] then
+                slots[i] = AW.CreateFrame(slotFrame)
+                AW.SetHeight(slots[i], slotHeight)
+                AW.SetPoint(slots[i], "RIGHT", -horizontalMargins, 0)
+                if i == 1 then
+                    AW.SetPoint(slots[i], "TOPLEFT", horizontalMargins, 0)
+                else
+                    AW.SetPoint(slots[i], "TOPLEFT", slots[i-1], "BOTTOMLEFT", 0, -slotSpacing)
+                end
+            end
+            slots[i]:Show()
+        end
+        -- hide unused slots
+        for i = slotNum+1, #slots do
+            slots[i]:Hide()
+        end
+    end
+    UpdateSlots()
+    
+    -- NOTE: for dropdowns only
+    function scrollList:SetSlotNum(newSlotNum)
+        slotNum = newSlotNum
+        if slotNum == 0 then
+            AW.SetHeight(scrollList, 5)
+        else
+            AW.SetListHeight(scrollList, slotNum, slotHeight, slotSpacing, verticalMargins*2)
+        end
+        UpdateSlots()
+    end
+
+    -- items
+    scrollList.widgets = {}
+    scrollList.widgetNum = 0
+    function scrollList:SetWidgets(widgets)
+        scrollList.widgets = widgets
+        scrollList.widgetNum = #widgets
+        scrollList:SetScroll(1)
+
+        if scrollList.widgetNum > slotNum then -- can scroll
+            local p = slotNum / scrollList.widgetNum
+            scrollThumb:SetHeight(scrollBar:GetHeight()*p)
+            AW.SetPoint(slotFrame, "BOTTOMRIGHT", -7, verticalMargins)
+            scrollBar:Show()
+        else
+            AW.SetPoint(slotFrame, "BOTTOMRIGHT", 0, verticalMargins)
+            scrollBar:Hide()
+        end
+    end
+
+    -- reset
+    function scrollList:Reset()
+        scrollList.widgets = {}
+        scrollList.widgetNum = 0
+        -- hide slot widgets
+        for _, s in ipairs(slots) do
+            if s.widget then
+                s.widget:Hide()
+            end
+            s.widget = nil
+            s.widgetIndex = nil
+        end
+        -- resize / repoint
+        AW.SetPoint(slotFrame, "BOTTOMRIGHT", 0, verticalMargins)
+        scrollBar:Hide()
+    end
+
+    -- scroll: set start index of widgets
+    function scrollList:SetScroll(startIndex)
+        assert(startIndex, "startIndex can not be nil!")
+
+        if startIndex <= 0 then startIndex = 1 end
+        local total = scrollList.widgetNum
+        local from, to = startIndex, startIndex + slotNum - 1
+        
+        -- not enough widgets (fill from the first)
+        if total <= slotNum then
+            from = 1
+            to = total
+
+        -- have enough widgets, but result in empty slots, fix it
+        elseif total - startIndex + 1 < slotNum then
+            from = total - slotNum + 1 -- total > slotNum
+            to = total
+        end
+
+        -- fill
+        local slotIndex = 1
+        for i, w in ipairs(scrollList.widgets) do
+            w:ClearAllPoints()
+            if i < from or i > to then
+                w:Hide()
+            else
+                w:Show()
+                w:SetAllPoints(slots[slotIndex])
+                slots[slotIndex].widget = w
+                slots[slotIndex].widgetIndex = i
+                slotIndex = slotIndex + 1
+            end
+        end
+
+        -- reset empty slots
+        for i = slotIndex, slotNum do
+            slots[i].widget = nil
+            slots[slotIndex].widgetIndex = nil
+        end
+
+        -- update scorll thumb
+        if scrollList:CanScroll() then
+            local offset = (from - 1) * ((scrollBar:GetHeight() - scrollThumb:GetHeight()) / scrollList:GetScrollRange()) -- n * perHeight
+            scrollThumb:SetPoint("TOP", 0, -offset)
+        end
+    end
+
+    -- get widget index on top (the first shown)
+    function scrollList:GetScroll()
+        return slots[1].widgetIndex, slots[1].widget
+    end
+
+    function scrollList:GetScrollRange()
+        local range = scrollList.widgetNum - slotNum
+        return range <= 0 and 0 or range
+    end
+
+    function scrollList:CanScroll()
+        return scrollList.widgetNum > slotNum
+    end
+
+    -- for mouse wheel ----------------------------------------------
+    local step = 1
+    function scrollList:SetScrollStep(s)
+        step = s
+    end
+
+    -- enable mouse wheel scroll
+    scrollList:EnableMouseWheel(true)
+    scrollList:SetScript("OnMouseWheel", function(self, delta)
+        if delta == 1 then -- scroll up
+            scrollList:SetScroll(scrollList:GetScroll() - step)
+        elseif delta == -1 then -- scroll down
+            scrollList:SetScroll(scrollList:GetScroll() + step)
+        end
+    end)
+    -----------------------------------------------------------------
+    
+    -- dragging and scrolling ---------------------------------------
+    scrollThumb:SetScript("OnMouseDown", function(self, button)
+        if button ~= "LeftButton" then return end
+
+        local scale = scrollThumb:GetEffectiveScale()
+        local offsetY = select(5, scrollThumb:GetPoint(1))
+        local mouseY = select(2, GetCursorPosition()) / scale -- https://warcraft.wiki.gg/wiki/API_GetCursorPosition
+        
+        self:SetScript("OnUpdate", function(self)
+            local newMouseY = select(2, GetCursorPosition()) / scale
+            local mouseOffset = newMouseY - mouseY
+            local newOffsetY = offsetY + mouseOffset
+
+            -- top ------------------------------
+            if newOffsetY >= 0 then
+                if scrollList:GetScroll() ~= 1 then
+                    scrollList:SetScroll(1)
+                end
+
+            -- bottom ---------------------------
+            elseif (-newOffsetY) + scrollThumb:GetHeight() >= scrollBar:GetHeight() then
+                if scrollList:GetScroll() ~= scrollList:GetScrollRange() + 1 then
+                    scrollList:SetScroll(scrollList:GetScrollRange() + 1)
+                end
+            
+            -- scroll ---------------------------
+            else
+                local threshold = (scrollBar:GetHeight() - scrollThumb:GetHeight()) / scrollList:GetScrollRange()
+                local targetIndex = Round(abs(newOffsetY) / threshold)
+                targetIndex = max(targetIndex, 1)
+                if targetIndex ~= scrollList:GetScroll() then
+                    scrollList:SetScroll(targetIndex)
+                end
+            end
+        end)
+    end)
+
+    scrollThumb:SetScript("OnMouseUp", function(self)
+        self:SetScript("OnUpdate", nil)
+    end)
+    -----------------------------------------------------------------
+
+    function scrollList:UpdatePixels()
+        AW.ReSize(scrollList)
+        AW.RePoint(scrollList)
+        AW.ReBorder(scrollList)
+        AW.RePoint(slotFrame)
+        -- do it again, even if already invoked by AW.UpdatePixels
+        AW.RePoint(scrollBar)
+        for _, s in ipairs(slots) do
+            s:UpdatePixels()
+            if s.widget and s.widget.UpdatePixels then
+                s.widget:UpdatePixels()
+            end
+        end
+        scrollList:SetScroll(1)
+    end
+
+    AW.AddToPixelUpdater(scrollList)
+    
+    return scrollList
 end

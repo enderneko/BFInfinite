@@ -1,6 +1,8 @@
 local addonName, ns = ...
 ns.AW = {}
 
+assert(ns.prefix, "a \"prefix\" is required in your addon namespace.")
+
 local AW = ns.AW
 
 AW.isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
