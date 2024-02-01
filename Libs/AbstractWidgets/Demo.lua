@@ -239,11 +239,25 @@ function AW.ShowDemo()
     AW.SetPoint(dd3, "TOPLEFT", dd2, "BOTTOMLEFT", 0, -30)
     dd3:SetLabel("Empty Dropdown")
 
-    -- font dropdown
-    local dd4 = AW.CreateDropdown(demo, 150, "font")
+    -- disabled dropdown
+    local dd4 = AW.CreateDropdown(demo, 150)
     AW.SetPoint(dd4, "TOPLEFT", dd3, "BOTTOMLEFT", 0, -30)
-    dd4:SetLabel("Font Dropdown")
-    AW.SetTooltips(dd4, "TOPLEFT", 0, 2, "Font Dropdown", "LibSharedMedia is required")
+    dd4:SetLabel("Disabled Dropdown")
+    dd4:SetEnabled(false)
+    dd4:SetItems({
+        {
+            ["text"] = "Item 0",
+            -- ["value"] = "item0" -- if value not set, value = text
+        }
+    })
+    dd4:SetSelectedValue("Item 0")
+    -- dd4:SetSelectedValue("item0")
+
+    -- font dropdown
+    local dd5 = AW.CreateDropdown(demo, 150, "font")
+    AW.SetPoint(dd5, "TOPLEFT", dd4, "BOTTOMLEFT", 0, -30)
+    dd5:SetLabel("Font Dropdown")
+    AW.SetTooltips(dd5, "TOPLEFT", 0, 2, "Font Dropdown", "LibSharedMedia is required")
 
     local LSM = LibStub("LibSharedMedia-3.0", true)
     if LSM then
@@ -255,6 +269,24 @@ function AW.ShowDemo()
                 ["font"] = fonts[name],
             })
         end
-        dd4:SetItems(items)
+        dd5:SetItems(items)
+    end
+
+    -- texture dropdown
+    local dd6 = AW.CreateDropdown(demo, 150, "texture")
+    AW.SetPoint(dd6, "TOPLEFT", dd5, "BOTTOMLEFT", 0, -30)
+    dd6:SetLabel("Texture Dropdown")
+    AW.SetTooltips(dd6, "TOPLEFT", 0, 2, "Texture Dropdown", "LibSharedMedia is required")
+
+    if LSM then
+        local items = {}
+        local textures, textureNames = LSM:HashTable("statusbar"), LSM:List("statusbar")
+        for _, name in ipairs(textureNames) do
+            tinsert(items, {
+                ["text"] = name,
+                ["texture"] = textures[name],
+            })
+        end
+        dd6:SetItems(items)
     end
 end

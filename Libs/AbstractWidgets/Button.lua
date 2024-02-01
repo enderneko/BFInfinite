@@ -187,39 +187,39 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
 
     -- texture ----------------------------------
     function b:SetTexture(tex, size, point, isAtlas, noPushDownEffect)
-        b.tex = b:CreateTexture(nil, "ARTWORK")
+        b.texture = b:CreateTexture(nil, "ARTWORK")
         assert(#point==3, "point format error! should be something like {\"CENTER\", 0, 0}")
-        AW.SetPoint(b.tex, unpack(point))
-        AW.SetSize(b.tex, unpack(size))
+        AW.SetPoint(b.texture, unpack(point))
+        AW.SetSize(b.texture, unpack(size))
         if isAtlas then
-            b.tex:SetAtlas(tex)
+            b.texture:SetAtlas(tex)
         else
-            b.tex:SetTexture(tex)
+            b.texture:SetTexture(tex)
         end
         -- update fontstring point
         AW.ClearPoints(b.text)
-        AW.SetPoint(b.text, "LEFT", b.tex, "RIGHT", 2, 0)
+        AW.SetPoint(b.text, "LEFT", b.texture, "RIGHT", 2, 0)
         AW.SetPoint(b.text, "RIGHT", -2, 0)
         -- push effect
         b._disableTextPushEffect = true
         if not noPushDownEffect then
             b.onMouseDownTexture = function()
-                b.tex:ClearAllPoints()
-                b.tex:SetPoint(point[1], point[2], point[3]-AW.GetOnePixelForRegion(b))
+                b.texture:ClearAllPoints()
+                b.texture:SetPoint(point[1], point[2], point[3]-AW.GetOnePixelForRegion(b))
             end
             b.onMouseUpTexture = function()
-                b.tex:ClearAllPoints()
-                b.tex:SetPoint(unpack(point))
+                b.texture:ClearAllPoints()
+                b.texture:SetPoint(unpack(point))
             end
         end
         -- enable / disable
         b:HookScript("OnEnable", function()
-            b.tex:SetDesaturated(false)
-            b.tex:SetVertexColor(AW.GetColorRGB("white"))
+            b.texture:SetDesaturated(false)
+            b.texture:SetVertexColor(AW.GetColorRGB("white"))
         end)
         b:HookScript("OnDisable", function()
-            b.tex:SetDesaturated(true)
-            b.tex:SetVertexColor(AW.GetColorRGB("disabled"))
+            b.texture:SetDesaturated(true)
+            b.texture:SetVertexColor(AW.GetColorRGB("disabled"))
         end)
     end
 
@@ -232,9 +232,9 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
             AW.ReBorder(b)
         end
 
-        if b.tex then
-            AW.ReSize(b.tex)
-            AW.RePoint(b.tex)
+        if b.texture then
+            AW.ReSize(b.texture)
+            AW.RePoint(b.texture)
         end
     end
     

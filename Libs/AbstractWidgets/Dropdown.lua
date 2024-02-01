@@ -40,7 +40,8 @@ local function CreateListFrame()
 
     list:SetScript("OnHide", function() list:Hide() end)
 
-    list:SetScript("OnShow", function()
+    -- do not use OnShow, since it only triggers when hide -> show
+    hooksecurefunc(list, "Show", function()
         list:UpdatePixels()
         if list.menu.selected then
             list:SetScroll(list.menu.selected)
@@ -130,6 +131,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             AW.SetPoint(menu.texture, "BOTTOMRIGHT", menu.button, "BOTTOMLEFT", -1, 1)
         end
         menu.texture:SetVertexColor(AW.GetColorRGB("white", 0.7))
+        menu.texture:Hide()
     end
     
     -- keep all menu item definitions
@@ -157,6 +159,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                 menu.text:SetText(item.text)
                 if dropdownType == "texture" then
                     menu.texture:SetTexture(item.texture)
+                    menu.texture:Show()
                 elseif dropdownType == "font" then
                     menu.text:SetFont(item.font, 13+AW.fontSizeOffset, "")
                 end
@@ -166,6 +169,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
         if not valid then
             menu.selected = nil
             menu.text:SetText()
+            menu.texture:Hide()
             list:SetHighlightItem()
         end
     end
@@ -196,11 +200,17 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
     
     -- update items -------------------------------------------------
     function menu:SetItems(items)
+        -- validate item.value
+        for _, item in ipairs(items) do
+            if not item.value then item.value = item.text end
+        end
         menu.items = items
         menu.reloadRequired = true
     end
     
     function menu:AddItem(item)
+        -- validate item.value
+        if not item.value then item.value = item.text end
         tinsert(menu.items, item)
         menu.reloadRequired = true
     end
@@ -249,14 +259,11 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                 b = AW.CreateButton(list.slotFrame, item.text, "accent-transparent", 18 ,18, nil, true) --! width is not important
                 table.insert(list.buttons, b)
 
-                -- pre-create for texture type
-                if dropdownType == "texture" then
-                    b.texture = AW.CreateTexture(b)
-                    AW.SetPoint(b.texture, "TOPLEFT", 1, -1)
-                    AW.SetPoint(b.texture, "BOTTOMRIGHT", -1, 1)
-                    b.texture:SetVertexColor(AW.GetColorRGB("white", 0.7))
-                    b.texture:Hide()
-                end
+                b.bgTexture = AW.CreateTexture(b)
+                AW.SetPoint(b.bgTexture, "TOPLEFT", 1, -1)
+                AW.SetPoint(b.bgTexture, "BOTTOMRIGHT", -1, 1)
+                b.bgTexture:SetVertexColor(AW.GetColorRGB("white", 0.7))
+                b.bgTexture:Hide()
             else
                 -- re-use button
                 b = list.buttons[i]
@@ -281,13 +288,11 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             end
 
             -- texture
-            if dropdownType == "texture" then
-                if item.texture then
-                    b.texture:SetTexture(item.texture)
-                    b.texture:Show()
-                else
-                    b.texture:Hide()
-                end
+            if dropdownType == "texture" and item.texture then
+                b.bgTexture:SetTexture(item.texture)
+                b.bgTexture:Show()
+            else
+                b.bgTexture:Hide()
             end
 
             -- font
@@ -310,9 +315,6 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             if menu.selected == i then
                 list:SetHighlightItem(i)
             end
-
-            -- check item.value
-            if not item.value then item.value = item.text end
 
             b:SetScript("OnClick", function()
                 menu:SetSelectedValue(item.value)
