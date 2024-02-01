@@ -1,11 +1,11 @@
 local addonName, ns = ...
 local AW = ns.AW
 
----------------------------------------------------------------------
--- dropdown menu
----------------------------------------------------------------------
-local list
+local list, horizontalList
 
+---------------------------------------------------------------------
+-- list
+---------------------------------------------------------------------
 local function CreateListFrame()
     list = AW.CreateScrollList(UIParent, 10, 1, 1, 10, 18, 0, "widget")
     list:SetClampedToScreen(true)
@@ -42,6 +42,7 @@ local function CreateListFrame()
 
     -- do not use OnShow, since it only triggers when hide -> show
     hooksecurefunc(list, "Show", function()
+        horizontalList:Hide()
         list:UpdatePixels()
         if list.menu.selected then
             list:SetScroll(list.menu.selected)
@@ -49,16 +50,74 @@ local function CreateListFrame()
     end)
 end
 
+---------------------------------------------------------------------
+-- horizontalList
+---------------------------------------------------------------------
+local function CreateHorizontalList()
+    horizontalList = AW.CreateBorderedFrame(UIParent, nil, 10, 20, "widget")
+    horizontalList:SetClampedToScreen(true)
+    horizontalList:Hide()
+
+    -- make list closable by pressing ESC
+    _G[ns.prefix.."MiniDropdownList"] = horizontalList
+    tinsert(UISpecialFrames, ns.prefix.."MiniDropdownList")
+
+    -- store created buttons
+    horizontalList.buttons = {}
+
+    function horizontalList:Reset()
+        for _, b in pairs(horizontalList.buttons) do
+            b:Hide()
+        end
+    end
+    
+    -- highlight
+    local highlight = AW.CreateBorderedFrame(horizontalList, nil, 100, 100, "none", "accent")
+    highlight:Hide()
+
+    function horizontalList:SetHighlightItem(i)
+        if not i then
+            highlight:ClearAllPoints()
+            highlight:Hide()
+        else
+            highlight:SetParent(horizontalList.buttons[i]) -- NOTE: buttons show/hide automatically when scroll
+            highlight:ClearAllPoints()
+            highlight:SetAllPoints(horizontalList.buttons[i])
+            highlight:Show()
+        end
+    end
+
+    horizontalList:SetScript("OnHide", function() horizontalList:Hide() end)
+
+    -- do not use OnShow, since it only triggers when hide -> show
+    hooksecurefunc(horizontalList, "Show", function()
+        list:Hide()
+        horizontalList:UpdatePixels()
+        for _, b in pairs(horizontalList.buttons) do
+            b:UpdatePixels()
+        end
+    end)
+end
+
+---------------------------------------------------------------------
 -- close dropdown
+---------------------------------------------------------------------
 function AW.RegisterForCloseDropdown(f)
     assert(f.OnMouseDown, "no OnMouseDown for this region!")
     f:HookScript("OnMouseDown", function()
         list:Hide()
+        horizontalList:Hide()
     end)
 end
 
+---------------------------------------------------------------------
+-- dropdown menu
+---------------------------------------------------------------------
 function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
     if not list then CreateListFrame() end
+    if not horizontalList then CreateHorizontalList() end
+
+    local currentList = (isMini and isHorizontal) and horizontalList or list
     
     local menu = AW.CreateBorderedFrame(parent, nil, width, 20, "widget")
     menu:EnableMouse(true)
@@ -141,7 +200,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
         --     ["value"] = (obj),
         --     ["texture"] = (string),
         --     ["font"] = (string),
-            -- ["disabled"] = (boolean),
+        --     ["disabled"] = (boolean),
         --     ["onClick"] = (function)
         -- },
     }
@@ -170,7 +229,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             menu.selected = nil
             menu.text:SetText()
             menu.texture:Hide()
-            list:SetHighlightItem()
+            currentList:SetHighlightItem()
         end
     end
 
@@ -186,7 +245,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
     function menu:ClearSelected()
         menu.selected = nil
         menu.text:SetText()
-        list:SetHighlightItem()
+        currentList:SetHighlightItem()
     end
 
     -- return value first, then text
@@ -224,7 +283,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
         wipe(menu.items)
         menu.selected = nil
         menu.text:SetText("")
-        list:SetHighlightItem()
+        currentList:SetHighlightItem()
     end
     
     function menu:SetCurrentItem(item)
@@ -247,17 +306,17 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
         wipe(buttons)
         menu.reloadRequired = nil
         -- hide highlight
-        list:SetHighlightItem()
+        currentList:SetHighlightItem()
         -- hide all buttons
-        list:Reset()
+        currentList:Reset()
 
         -- load current dropdown
         for i, item in pairs(menu.items) do
             local b
-            if not list.buttons[i] then
+            if not currentList.buttons[i] then
                 -- create new button
-                b = AW.CreateButton(list.slotFrame, item.text, "accent-transparent", 18 ,18, nil, true) --! width is not important
-                table.insert(list.buttons, b)
+                b = AW.CreateButton(isHorizontal and currentList or currentList.slotFrame, item.text, "accent-transparent", 18 ,18, nil, true) --! width is not important
+                table.insert(currentList.buttons, b)
 
                 b.bgTexture = AW.CreateTexture(b)
                 AW.SetPoint(b.bgTexture, "TOPLEFT", 1, -1)
@@ -266,7 +325,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                 b.bgTexture:Hide()
             else
                 -- re-use button
-                b = list.buttons[i]
+                b = currentList.buttons[i]
                 b:SetText(item.text)
             end
 
@@ -313,12 +372,12 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
 
             -- highlight
             if menu.selected == i then
-                list:SetHighlightItem(i)
+                currentList:SetHighlightItem(i)
             end
 
             b:SetScript("OnClick", function()
                 menu:SetSelectedValue(item.value)
-                list:Hide()
+                currentList:Hide()
                 if item.onClick then
                     -- NOTE: item.onClick has higher priority
                     item.onClick(item.value, menu)
@@ -333,45 +392,33 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                 if i == 1 then
                     AW.SetPoint(b, "TOPLEFT", 1, -1)
                 else
-                    AW.SetPoint(b, "TOPLEFT", list.buttons[i-1], "TOPRIGHT")
+                    AW.SetPoint(b, "TOPLEFT", currentList.buttons[i-1], "TOPRIGHT")
                 end
             end
         end
 
         -- update list size / point
-        list.menu = menu -- check for menu's OnHide -> list:Hide
-        list:SetParent(menu)
-        list:SetFrameLevel(menu:GetFrameLevel()+10)
-        AW.ClearPoints(list)
+        currentList.menu = menu -- check for menu's OnHide -> list:Hide
+        currentList:SetParent(menu)
+        currentList:SetFrameLevel(menu:GetFrameLevel()+10)
+        AW.ClearPoints(currentList)
         
         if isMini and isHorizontal then
-            AW.SetPoint(list, "TOPLEFT", menu, "TOPRIGHT", 2, 0)
+            AW.SetPoint(currentList, "TOPLEFT", menu, "TOPRIGHT", 2, 0)
+            AW.SetHeight(currentList, 20)
+
             if #menu.items == 0 then
-                AW.SetSize(list, 5, 20)
+                AW.SetWidth(currentList, 5)
             else
-                AW.SetListWidth(list, #menu.items, width, 0, 2)
-                AW.SetHeight(list, 20)
+                AW.SetListWidth(currentList, #menu.items, width, 0, 2)
             end
-            list:SetContentHeight(20)
 
         else -- using scroll list
-            AW.SetPoint(list, "TOPLEFT", menu, "BOTTOMLEFT", 0, -2)
-            AW.SetWidth(list, width)
+            AW.SetPoint(currentList, "TOPLEFT", menu, "BOTTOMLEFT", 0, -2)
+            AW.SetWidth(currentList, width)
             
-            list:SetSlotNum(min(#buttons, 10))
-            list:SetWidgets(buttons)
-
-            -- if #menu.items == 0 then
-            --     AW.SetSize(list, width, 5)
-            -- elseif #menu.items <= 10 then
-            --     AW.SetWidth(list, width)
-            --     AW.SetListHeight(list, #menu.items, 18, 0, 2)
-            --     list:SetContentHeight(18, #menu.items, 0, 2)
-            -- else -- > 10
-            --     AW.SetWidth(list, width)
-            --     AW.SetListHeight(list, 18, 10, 0, 2)
-            --     list:SetContentHeight(18, #menu.items, 0, 2)
-            -- end
+            currentList:SetSlotNum(min(#buttons, 10))
+            currentList:SetWidgets(buttons)
         end
     end
 
@@ -381,26 +428,26 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             menu.text:SetColor("white")
         else
             menu.text:SetColor("disabled")
-            if list.menu == menu then
-                list:Hide()
+            if currentList.menu == menu then
+                currentList:Hide()
             end
         end
     end
 
     menu:SetScript("OnHide", function()
-        if list.menu == menu then
-            list:Hide()
+        if currentList.menu == menu then
+            currentList:Hide()
         end
     end)
     
     -- scripts
     menu.button:HookScript("OnClick", function()
-        if list.menu ~= menu then -- list shown by other dropdown
+        if currentList.menu ~= menu then -- list shown by other dropdown
             LoadItems()
-            list:Show()
+            currentList:Show()
 
-        elseif list:IsShown() then -- list showing by this, hide it
-            list:Hide()
+        elseif currentList:IsShown() then -- list showing by this, hide it
+            currentList:Hide()
 
         else
             if menu.reloadRequired then
@@ -408,10 +455,10 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             else
                 -- update highlight
                 if menu.selected then
-                    list:SetHighlightItem(menu.selected)
+                    currentList:SetHighlightItem(menu.selected)
                 end
             end
-            list:Show()
+            currentList:Show()
         end
     end)
     

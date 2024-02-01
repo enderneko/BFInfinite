@@ -9,6 +9,7 @@ function AW.ShowDemo()
 
     local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 710, 420)
     AW.SetPoint(demo, "BOTTOMLEFT", 270, 270)
+    demo:SetFrameLevel(100)
     demo:Show()
 
     -- button ---------------------------------------------------------------- --
@@ -289,4 +290,28 @@ function AW.ShowDemo()
         end
         dd6:SetItems(items)
     end
+
+    -- vertical mini dropdown
+    local dd7 = AW.CreateDropdown(demo, 100, nil, true)
+    AW.SetPoint(dd7, "TOPLEFT", dd6, "BOTTOMLEFT", 0, -30)
+    dd7:SetLabel("Mini Dropdown (V)")
+    local items = {}
+    for i = 1, 5 do
+        tinsert(items, {
+            ["text"] = "VMini "..i
+        })
+    end
+    dd7:SetItems(items)
+
+    -- horizontal mini dropdown
+    local dd8 = AW.CreateDropdown(demo, 100, nil, true, true)
+    AW.SetPoint(dd8, "TOPLEFT", dd7, "BOTTOMLEFT", 0, -30)
+    dd8:SetLabel("Mini Dropdown (H)")
+    local items = {}
+    for i = 1, 3 do
+        tinsert(items, {
+            ["text"] = "HMini "..i
+        })
+    end
+    dd8:SetItems(items)
 end
