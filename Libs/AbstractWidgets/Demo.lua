@@ -14,15 +14,17 @@ function AW.ShowDemo()
     -- button ---------------------------------------------------------------- --
     local b1 = AW.CreateButton(demo, "Button A", "accent", 100, 20)
     AW.SetPoint(b1, "TOPLEFT", 10, -10)
-    AW.SetTooltips(b1, "ANCHOR_TOPLEFT", 0, 1, "Tooltip Title", "This is a tooltip")
+    AW.SetTooltips(b1, "ANCHOR_TOPLEFT", 0, 2, "Tooltip Title", "This is a tooltip")
 
     local b2 = AW.CreateButton(demo, "Button B", "green", 100, 20)
     AW.SetPoint(b2, "TOPLEFT", b1, "TOPRIGHT", 10, 0)
     b2:SetEnabled(false)
-    
+
     local b3 = AW.CreateButton(demo, "Button C", "border-only", 100, 20)
     AW.SetPoint(b3, "TOPLEFT", b2, "TOPRIGHT", 10, 0)
+    AW.SetTooltips(b3, "ANCHOR_TOPLEFT", 0, 2, "Another Style", "SetTextHighlightColor", "SetBorderHighlightColor")
     b3:SetTextHighlightColor("accent")
+    b3:SetBorderHighlightColor("accent")
 
     local b4 = AW.CreateButton(demo, "Button D", "red", 100, 20)
     b4:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"LEFT", 2, 0}, true)

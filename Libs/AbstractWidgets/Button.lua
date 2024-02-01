@@ -111,6 +111,21 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         local n = AW.GetOnePixelForRegion(b)
         b:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=n, insets={left=n, right=n, top=n, bottom=n}})
     end
+
+    --- @param color string|nil
+    function b:SetBorderHighlightColor(color)
+        if color then
+            b.highlightBorder = function()
+                b:SetBackdropBorderColor(AW.GetColorRGB(color))
+            end
+            b.unhighlightBorder = function()
+                b:SetBackdropBorderColor(AW.GetColorRGB("black"))
+            end
+        else
+            b.highlightBorder = nil
+            b.unhighlightBorder = nil
+        end
+    end
     
     -- color ------------------------------------
     if color and string.find(color, "transparent") then -- drop down item
@@ -137,13 +152,16 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
 
     b:SetBackdropColor(unpack(b._color)) 
     
+    -- OnEnter / OnLeave ------------------------
     b:SetScript("OnEnter", function()
         if color ~= "none" then b:SetBackdropColor(unpack(b._hoverColor)) end
         if b.highlightText then b.highlightText() end
+        if b.highlightBorder then b.highlightBorder() end
     end)
     b:SetScript("OnLeave", function()
         if color ~= "none" then b:SetBackdropColor(unpack(b._color)) end
         if b.unhighlightText then b.unhighlightText() end
+        if b.unhighlightBorder then b.unhighlightBorder() end
     end)
     
     -- click sound ------------------------------
