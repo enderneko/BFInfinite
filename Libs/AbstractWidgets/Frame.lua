@@ -532,6 +532,10 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
             else
                 w:Show()
                 w:SetAllPoints(slots[slotIndex])
+                if w.Update then
+                    -- NOTE: fix some widget issues, define them manually
+                    w:Update()
+                end
                 slots[slotIndex].widget = w
                 slots[slotIndex].widgetIndex = i
                 slotIndex = slotIndex + 1

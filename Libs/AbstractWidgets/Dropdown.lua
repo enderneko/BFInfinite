@@ -263,6 +263,10 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                 b:SetText(item.text)
             end
 
+            tinsert(buttons, b)
+            b:SetEnabled(not item.disabled)
+            -- b:Show() NOTE: show/hide is done in SetScroll
+
             local fs = b.text
             if isMini then
                 fs:SetJustifyH("CENTER")
@@ -287,12 +291,19 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             end
 
             -- font
-            local f, s = AW.GetFont("normal", false, true):GetFont()
-            s = Round(s)
             if item.font then
-                b.text:SetFont(item.font, s, "")
+                -- set
+                b:SetFont(item.font)
+                function b:Update()
+                    --! invoked in SetScroll, or text may not "visible"
+                    b.text:Hide()
+                    b.text:Show()
+                end
             else
-                b.text:SetFont(f, s, "")
+                -- restore
+                local f = AW.GetFont("normal", false, true):GetFont()
+                b:SetFont(f)
+                b.Update = nil
             end
 
             -- highlight
@@ -323,10 +334,6 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                     AW.SetPoint(b, "TOPLEFT", list.buttons[i-1], "TOPRIGHT")
                 end
             end
-
-            tinsert(buttons, b)
-            b:SetEnabled(not item.disabled)
-            b:Show()
         end
 
         -- update list size / point
