@@ -4,32 +4,102 @@ local AW = ns.AW
 ---------------------------------------------------------------------
 -- button
 ---------------------------------------------------------------------
+local function RegisterMouseDownUp(b)
+    b:SetScript("OnMouseDown", function()
+        if b.onMouseDownText then b.onMouseDownText() end
+        if b.onMouseDownTexture then b.onMouseDownTexture() end
+    end)
+    b:SetScript("OnMouseUp", function()
+        if b.onMouseUpText then b.onMouseUpText() end
+        if b.onMouseUpTexture then b.onMouseUpTexture() end
+    end)
+end
+
+local function UnregisterMouseDownUp(b)
+    b:SetScript("OnMouseDown", nil)
+    b:SetScript("OnMouseUp", nil)
+end
+
 --- @param color string if strfind(color, "transparent"), border is transparent, but still exists
 --- @param noBorder boolean no edgeFile for backdrop
 --- @param noBackground boolean remove background texture, not background color
-function AW.CreateButton(parent, text, color, width, height, template, noBorder, noBackground, fontNormal, fontDisable)
+function AW.CreateButton(parent, text, color, width, height, template, noBorder, noBackground, font)
     local b = CreateFrame("Button", nil, parent, template and template..",BackdropTemplate" or "BackdropTemplate")
     if parent then b:SetFrameLevel(parent:GetFrameLevel()+1) end
-    b:SetText(text)
     AW.SetSize(b, width, height)
+    
+    RegisterMouseDownUp(b)
 
-    -- keep color & hoverColor
+    -- keep color & hoverColor ------------------
     b._color = AW.GetButtonNormalColor(color)
     b._hoverColor = AW.GetButtonHoverColor(color)
+    
+    -- text -------------------------------------
+    b.text = AW.CreateFontString(b, text, nil, font)
+    b.text:SetWordWrap(false)
+    AW.ClearPoints(b.text)
+    AW.SetPoint(b.text, "LEFT", 2, 0)
+    AW.SetPoint(b.text, "RIGHT", -2, 0)
+    b.text:SetText(text)
 
-    local fs = b:GetFontString()
-    b.text = fs
-    if fs then
-        fs:SetWordWrap(false)
-        AW.ClearPoints(fs)
-        AW.SetPoint(fs, "LEFT", 1, 0)
-        AW.SetPoint(fs, "RIGHT", -1, 0)
+    b.onMouseDownText = function()
+        if b._disableTextPushEffect then return end
+        b.text:AdjustPointsOffset(0, -AW.GetOnePixelForRegion(b))
+    end
 
-        function b:SetTextColor(r, g, b, a)
-            fs:SetTextColor(r, g, b, a)
-        end
+    b.onMouseUpText = function()
+        if b._disableTextPushEffect then return end
+        AW.RePoint(b.text)
+    end
+
+    b:SetScript("OnEnable", function()
+        b.text:SetColor("white")
+        RegisterMouseDownUp(b)
+    end)
+
+    b:SetScript("OnDisable", function()
+        b.text:SetColor("disabled")
+        UnregisterMouseDownUp(b)
+    end)
+
+    --- @param color string
+    function b:SetTextHighlightColor(color)
+        b:SetScript("OnEnter", function()
+            b.text:SetColor(color)
+        end)
+        b:SetScript("OnLeave", function()
+            b.text:SetColor("white")
+        end)
+    end
+
+    function b:SetText(s)
+        b.text:SetText(s)
+    end
+
+    function b:GetText()
+        b.text:GetText()
     end
     
+    function b:GetFontString()
+        return b.text
+    end
+
+    function b:SetTextColor(r, g, b, a)
+        b.text:SetTextColor(r, g, b, a)
+    end
+
+    --- @param f string fontName or fontPath
+    function b:SetFont(f)
+        assert(type(f) == "string", "a font name or path is required")
+        local _, s, o = b.text:GetFont()
+        b.text:SetFont(f, Round(s), o)
+    end
+
+    function b:GetFont()
+        return b.text:GetFont()
+    end
+
+    -- border -----------------------------------
     if noBorder then
         b:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8"})
     else
@@ -37,19 +107,17 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         b:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=n, insets={left=n, right=n, top=n, bottom=n}})
     end
     
+    -- color ------------------------------------
     if color and string.find(color, "transparent") then -- drop down item
         b._isTransparent = true
-        if fs then
-            fs:SetJustifyH("LEFT")
-            AW.ClearPoints(fs)
-            AW.SetPoint(fs, "LEFT", 5, 0)
-            AW.SetPoint(fs, "RIGHT", -5, 0)
-        end
+        b._disableTextPushEffect = true
         b:SetBackdropBorderColor(0, 0, 0, 0) -- make border transparent, but still exists
-        b:SetPushedTextOffset(0, 0)
+        b.text:SetJustifyH("LEFT")
+        AW.ClearPoints(b.text)
+        AW.SetPoint(b.text, "LEFT", 5, 0)
+        AW.SetPoint(b.text, "RIGHT", -5, 0)
     elseif color == "none" then -- transparent color, border, background
         b:SetBackdropBorderColor(0, 0, 0, 0)
-        b:SetPushedTextOffset(0, -AW.GetOnePixelForRegion(b))
     else
         if not noBackground then
             local bg = b:CreateTexture()
@@ -60,20 +128,19 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         end
 
         b:SetBackdropBorderColor(0, 0, 0, 1)
-        b:SetPushedTextOffset(0, -AW.GetOnePixelForRegion(b))
     end
 
     b:SetBackdropColor(unpack(b._color)) 
-    b:SetDisabledFontObject(fontDisable or AW.GetFont("normal", true))
-    b:SetNormalFontObject(fontNormal or AW.GetFont("normal"))
-    b:SetHighlightFontObject(fontNormal or AW.GetFont("normal"))
+    -- b:SetDisabledFontObject(fontDisable or AW.GetFont("normal", true))
+    -- b:SetNormalFontObject(fontNormal or AW.GetFont("normal"))
+    -- b:SetHighlightFontObject(fontNormal or AW.GetFont("normal"))
     
     if color ~= "none" then
-        b:SetScript("OnEnter", function(self) self:SetBackdropColor(unpack(self._hoverColor)) end)
-        b:SetScript("OnLeave", function(self) self:SetBackdropColor(unpack(self._color)) end)
+        b:HookScript("OnEnter", function(self) self:SetBackdropColor(unpack(self._hoverColor)) end)
+        b:HookScript("OnLeave", function(self) self:SetBackdropColor(unpack(self._color)) end)
     end
     
-    -- click sound
+    -- click sound ------------------------------
     if not AW.isVanilla then
         if template and strfind(template, "SecureActionButtonTemplate") then
             b._isSecure = true
@@ -94,7 +161,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         b:SetScript("PostClick", function() PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON) end)
     end
 
-    -- texture
+    -- texture ----------------------------------
     function b:SetTexture(tex, size, point, isAtlas, noPushDownEffect)
         b.tex = b:CreateTexture(nil, "ARTWORK")
         assert(#point==3, "point format error! should be something like {\"CENTER\", 0, 0}")
@@ -106,58 +173,44 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
             b.tex:SetTexture(tex)
         end
         -- update fontstring point
-        if fs then
-            AW.ClearPoints(fs)
-            AW.SetPoint(fs, "LEFT", b.tex, "RIGHT", 2, 0)
-            AW.SetPoint(fs, "RIGHT", -2, 0)
-        end
+        AW.ClearPoints(b.text)
+        AW.SetPoint(b.text, "LEFT", b.tex, "RIGHT", 2, 0)
+        AW.SetPoint(b.text, "RIGHT", -2, 0)
         -- push effect
+        b._disableTextPushEffect = true
         if not noPushDownEffect then
-            b.onMouseDown = function()
+            b.onMouseDownTexture = function()
                 b.tex:ClearAllPoints()
                 b.tex:SetPoint(point[1], point[2], point[3]-AW.GetOnePixelForRegion(b))
             end
-            b.onMouseUp = function()
+            b.onMouseUpTexture = function()
                 b.tex:ClearAllPoints()
                 b.tex:SetPoint(unpack(point))
             end
-            b:SetScript("OnMouseDown", b.onMouseDown)
-            b:SetScript("OnMouseUp", b.onMouseUp)
         end
         -- enable / disable
         b:HookScript("OnEnable", function()
             b.tex:SetDesaturated(false)
             b.tex:SetVertexColor(AW.GetColorRGB("white"))
-            b:SetScript("OnMouseDown", b.onMouseDown)
-            b:SetScript("OnMouseUp", b.onMouseUp)
         end)
         b:HookScript("OnDisable", function()
             b.tex:SetDesaturated(true)
             b.tex:SetVertexColor(AW.GetColorRGB("disabled"))
-            b:SetScript("OnMouseDown", nil)
-            b:SetScript("OnMouseUp", nil)
         end)
     end
 
     function b:UpdatePixels()
         AW.ReSize(b)
         AW.RePoint(b)
-        
+        AW.RePoint(b.text)
+
         if not noBorder then
             AW.ReBorder(b)
-        end
-
-        if b.text then
-            AW.RePoint(b.text)
         end
 
         if b.tex then
             AW.ReSize(b.tex)
             AW.RePoint(b.tex)
-        end
-
-        if not b._isTransparent then
-            b:SetPushedTextOffset(0, -AW.GetOnePixelForRegion(b))
         end
     end
     
