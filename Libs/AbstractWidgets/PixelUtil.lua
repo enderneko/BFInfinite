@@ -182,11 +182,13 @@ function AW.RePoint(region)
 end
 
 function AW.ReBorder(region)
+    local backdropInfo = region:GetBackdrop()
+    if not backdropInfo then return end
+
     local r, g, b, a = region:GetBackdropColor()
     local br, bg, bb, ba = region:GetBackdropBorderColor()
 
     local n = AW.GetOnePixelForRegion(region)
-    local backdropInfo = region:GetBackdrop()
     if backdropInfo.edgeSize then
         backdropInfo.edgeSize = n
     end

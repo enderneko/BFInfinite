@@ -73,6 +73,16 @@ function AW.ShowDemo()
     eb3:SetText("Disabled Edit Box")
     eb3:SetEnabled(false)
 
+    local eb4 = AW.CreateScrollEditBox(demo, "Scroll Edit Box", 100, 110)
+    AW.SetPoint(eb4, "TOPLEFT", eb3, "BOTTOMLEFT", 0, -10)
+    eb4:SetText("1 First\n2 Second\n3 Third\n4 Fourth\n5 Fifth\n6 Sixth\n7 Seventh\n8 Eighth\n9 Ninth\n10 Tenth")
+
+    local cb4 = AW.CreateCheckButton(demo, nil, function(checked, self)
+        eb4:SetEnabled(checked)
+    end)
+    AW.SetPoint(cb4, "BOTTOMLEFT", eb4, "BOTTOMRIGHT", 2, 0)
+    cb4:SetChecked(true)
+
     -- bordered frame -------------------------------------------------------- --
     local bf1 = AW.CreateBorderedFrame(demo, nil, 150, 150, nil, "accent")
     AW.SetPoint(bf1, "TOPLEFT", b3, "BOTTOMLEFT", 0, -10)
@@ -87,13 +97,14 @@ function AW.ShowDemo()
 
     -- button group ---------------------------------------------------------- --
     local bf2 = AW.CreateBorderedFrame(demo, "Button Group", 100, 60)
-    AW.SetPoint(bf2, "TOPLEFT", eb3, "BOTTOMLEFT", 0, -27)
+    AW.SetPoint(bf2, "TOPLEFT", eb4, "BOTTOMLEFT", 0, -27)
     AW.SetListHeight(bf2, 3, 20, -1)
 
     local b6 = AW.CreateButton(bf2, "Item A", "accent-transparent", 100, 20)
     b6.id = "b6"
     AW.SetPoint(b6, "TOPLEFT")
     AW.SetPoint(b6, "RIGHT")
+    AW.SetTooltips(b6, "LEFT", -2, 0, "Item A")
     
     local b7 = AW.CreateButton(bf2, "Item B", "accent-transparent", 100, 20)
     b7.id = "b7"
@@ -105,6 +116,7 @@ function AW.ShowDemo()
     b8.id = "b8"
     AW.SetPoint(b8, "TOPLEFT", b7, "BOTTOMLEFT", 0, 1)
     AW.SetPoint(b8, "RIGHT")
+    AW.SetTooltips(b8, "LEFT", -2, 0, "Item C")
 
     AW.CreateButtonGroup({b6, b7, b8}, function(id)
         print("selected", id)
@@ -169,7 +181,7 @@ function AW.ShowDemo()
     end)
 
     local sl2 = AW.CreateSlider(demo, "Enabled", 100, 50, 500, 10, true, true)
-    AW.SetPoint(sl2, "TOPLEFT", bf2, "TOPRIGHT", 10, -25)
+    AW.SetPoint(sl2, "TOPLEFT", eb4, "TOPRIGHT", 10, -25)
     sl2:SetValue(1 * 100) -- for percentage, set value * 100
     sl2:SetOnValueChanged(function(value)
         print("OnSliderValueChanged:", value / 100) -- for percentage, get value / 100
@@ -178,16 +190,16 @@ function AW.ShowDemo()
         print("AfterSliderValueChanged:", value / 100) -- for percentage, get value / 100
     end)
 
-    local cb4 = AW.CreateCheckButton(demo, nil, function(checked, self)
+    local cb5 = AW.CreateCheckButton(demo, nil, function(checked, self)
         sl2:SetEnabled(checked)
         sl2:SetLabel(checked and "Enabled" or "Disabled")
         AW.ShowNotificationText(checked and "Enabled" or "Disabled", "red", nil, nil, "BOTTOMLEFT", self, "TOPLEFT", 0, 3)
     end)
-    AW.SetPoint(cb4, "BOTTOMLEFT", sl2, "TOPLEFT", 0, 1)
-    cb4:SetChecked(true)
+    AW.SetPoint(cb5, "BOTTOMLEFT", sl2, "TOPLEFT", 0, 1)
+    cb5:SetChecked(true)
 
     local sl3 = AW.CreateVerticalSlider(demo, "Vertical Slider", 100, 0, 100, 1, true)
-    AW.SetPoint(sl3, "TOPLEFT", bf2, "BOTTOMLEFT", 30, -10)
+    AW.SetPoint(sl3, "TOPLEFT", sl2, "BOTTOMLEFT", 45, -30)
     sl3:UpdateWordWrap()
     sl3:SetValue(0 * 100) -- for percentage, set value * 100
     sl3:SetOnValueChanged(function(value)

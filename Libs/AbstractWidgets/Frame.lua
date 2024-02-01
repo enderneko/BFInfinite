@@ -215,7 +215,7 @@ end
 function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     local scrollParent = AW.CreateBorderedFrame(parent, nil, width, height, color, borderColor)
 
-    local scrollFrame = CreateFrame("ScrollFrame", nil, scrollParent)
+    local scrollFrame = CreateFrame("ScrollFrame", nil, scrollParent, "BackdropTemplate")
     scrollParent.scrollFrame = scrollFrame
     AW.SetPoint(scrollFrame, "TOPLEFT")
     AW.SetPoint(scrollFrame, "BOTTOMRIGHT")
@@ -391,6 +391,8 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
         AW.ReBorder(scrollParent)
 
         AW.RePoint(scrollFrame)
+        AW.ReBorder(scrollFrame)
+
         AW.ReSize(content) -- SetListHeight
         content:SetWidth(scrollFrame:GetWidth())
         

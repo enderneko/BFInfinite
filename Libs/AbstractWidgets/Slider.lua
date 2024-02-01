@@ -254,6 +254,7 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
     end
 
     function slider:UpdateWordWrap(startAt)
+        label._wordWrapStartAt = startAt
         label:SetWordWrap(true)
         local current = startAt or 50
         slider:SetScript("OnUpdate", function()
@@ -446,6 +447,7 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
         AW.ReSize(slider)
         AW.RePoint(slider)
         AW.ReBorder(slider)
+        slider:UpdateWordWrap(label._wordWrapStartAt)
     end
 
     AW.AddToPixelUpdater(slider)
