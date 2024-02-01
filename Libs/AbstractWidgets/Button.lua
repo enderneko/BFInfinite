@@ -62,14 +62,19 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         UnregisterMouseDownUp(b)
     end)
 
-    --- @param color string
+    --- @param color string|nil
     function b:SetTextHighlightColor(color)
-        b:SetScript("OnEnter", function()
-            b.text:SetColor(color)
-        end)
-        b:SetScript("OnLeave", function()
-            b.text:SetColor("white")
-        end)
+        if color then
+            b.highlightText = function()
+                b.text:SetColor(color)
+            end
+            b.unhighlightText = function()
+                b.text:SetColor("white")
+            end
+        else
+            b.highlightText = nil
+            b.unhighlightText = nil
+        end
     end
 
     function b:SetText(s)
@@ -131,14 +136,15 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
     end
 
     b:SetBackdropColor(unpack(b._color)) 
-    -- b:SetDisabledFontObject(fontDisable or AW.GetFont("normal", true))
-    -- b:SetNormalFontObject(fontNormal or AW.GetFont("normal"))
-    -- b:SetHighlightFontObject(fontNormal or AW.GetFont("normal"))
     
-    if color ~= "none" then
-        b:HookScript("OnEnter", function(self) self:SetBackdropColor(unpack(self._hoverColor)) end)
-        b:HookScript("OnLeave", function(self) self:SetBackdropColor(unpack(self._color)) end)
-    end
+    b:SetScript("OnEnter", function()
+        if color ~= "none" then b:SetBackdropColor(unpack(b._hoverColor)) end
+        if b.highlightText then b.highlightText() end
+    end)
+    b:SetScript("OnLeave", function()
+        if color ~= "none" then b:SetBackdropColor(unpack(b._color)) end
+        if b.unhighlightText then b.unhighlightText() end
+    end)
     
     -- click sound ------------------------------
     if not AW.isVanilla then

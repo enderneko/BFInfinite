@@ -20,18 +20,22 @@ function AW.ShowDemo()
     AW.SetPoint(b2, "TOPLEFT", b1, "TOPRIGHT", 10, 0)
     b2:SetEnabled(false)
     
-    local b3 = AW.CreateButton(demo, "Button C", "red", 100, 20)
-    b3:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"LEFT", 2, 0}, true)
+    local b3 = AW.CreateButton(demo, "Button C", "border-only", 100, 20)
     AW.SetPoint(b3, "TOPLEFT", b2, "TOPRIGHT", 10, 0)
-    
-    local b4 = AW.CreateButton(demo, nil, "accent", 20, 20)
-    b4:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"CENTER", 0, 0}, true, true)
-    AW.SetPoint(b4, "TOPLEFT", b3, "TOPRIGHT", 10, 0)
+    b3:SetTextHighlightColor("accent")
 
+    local b4 = AW.CreateButton(demo, "Button D", "red", 100, 20)
+    b4:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"LEFT", 2, 0}, true)
+    AW.SetPoint(b4, "TOPLEFT", b3, "TOPRIGHT", 10, 0)
+    
     local b5 = AW.CreateButton(demo, nil, "accent", 20, 20)
     b5:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"CENTER", 0, 0}, true, true)
     AW.SetPoint(b5, "TOPLEFT", b4, "TOPRIGHT", 10, 0)
-    b5:SetEnabled(false)
+
+    local b6 = AW.CreateButton(demo, nil, "accent", 20, 20)
+    b6:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"CENTER", 0, 0}, true, true)
+    AW.SetPoint(b6, "TOPLEFT", b5, "TOPRIGHT", 10, 0)
+    b6:SetEnabled(false)
 
     -- check button ---------------------------------------------------------- --
     local cb1 = AW.CreateCheckButton(demo, "Check boxes")
@@ -200,6 +204,7 @@ function AW.ShowDemo()
     slist1:SetWidgets(widgets)
 
     -- dropdown -------------------------------------------------------------- --
+    -- normal dropdown (items <= 10)
     local dd1 = AW.CreateDropdown(demo, 150)
     AW.SetPoint(dd1, "TOPLEFT", slist1, "TOPRIGHT", 10, 0)
     AW.SetTooltips(dd1, "TOPLEFT", 0, 2, "Normal Dropdown 1")
@@ -213,6 +218,7 @@ function AW.ShowDemo()
     end
     dd1:SetItems(items)
 
+    -- normal dropdown (items > 10)
     local dd2 = AW.CreateDropdown(demo, 150)
     AW.SetPoint(dd2, "TOPLEFT", dd1, "BOTTOMLEFT", 0, -30)
     AW.SetTooltips(dd2, "TOPLEFT", 0, 2, "Normal Dropdown 2")
@@ -226,7 +232,27 @@ function AW.ShowDemo()
     end
     dd2:SetItems(items)
 
+    -- empty dropdown
     local dd3 = AW.CreateDropdown(demo, 150)
     AW.SetPoint(dd3, "TOPLEFT", dd2, "BOTTOMLEFT", 0, -30)
     dd3:SetLabel("Empty Dropdown")
+
+    -- font dropdown
+    local dd4 = AW.CreateDropdown(demo, 150, "font")
+    AW.SetPoint(dd4, "TOPLEFT", dd3, "BOTTOMLEFT", 0, -30)
+    dd4:SetLabel("Font Dropdown")
+    AW.SetTooltips(dd4, "TOPLEFT", 0, 2, "Font Dropdown", "LibSharedMedia is required")
+
+    local LSM = LibStub("LibSharedMedia-3.0", true)
+    if LSM then
+        local items = {}
+        local fonts, fontNames = LSM:HashTable("font"), LSM:List("font")
+        for _, name in ipairs(fontNames) do
+            tinsert(items, {
+                ["text"] = name,
+                ["font"] = fonts[name],
+            })
+        end
+        dd4:SetItems(items)
+    end
 end
