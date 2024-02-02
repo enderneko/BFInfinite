@@ -10,6 +10,15 @@ AW.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 AW.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 
 ---------------------------------------------------------------------
+-- slash command
+---------------------------------------------------------------------
+local name = strupper(ns.prefix).."WIDGETS"
+_G["SLASH_"..name.."1"] = "/"..strlower(ns.prefix).."widgets"
+SlashCmdList[name] = function()
+    AW.ShowDemo()
+end
+
+---------------------------------------------------------------------
 -- enable / disable
 ---------------------------------------------------------------------
 function AW.SetEnabled(isEnabled, ...)
