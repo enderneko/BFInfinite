@@ -36,14 +36,14 @@ end
 ---------------------------------------------------------------------
 --- @param color1 table|string
 --- @param color2 table|string
-function AW.CreateGradientTexture(parent, orientation, color1, color2, texture)
+function AW.CreateGradientTexture(parent, orientation, color1, color2, texture, drawLayer, subLevel)
     texture = texture or "Interface\\Buttons\\WHITE8x8"
     if type(color1) == "string" then color1 = AW.GetColorTable(color1) end
     if type(color2) == "string" then color2 = AW.GetColorTable(color2) end
     color1 = color1 or {0, 0, 0, 0}
     color2 = color2 or {0, 0, 0, 0}
 
-    local tex = parent:CreateTexture(nil, "ARTWORK")
+    local tex = parent:CreateTexture(nil, drawLayer or "ARTWORK", nil, subLevel)
     tex:SetTexture(texture)
     tex:SetGradient(orientation, CreateColor(unpack(color1)), CreateColor(unpack(color2)))
 
