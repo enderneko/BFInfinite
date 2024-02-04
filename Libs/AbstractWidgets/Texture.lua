@@ -58,6 +58,34 @@ function AW.CreateGradientTexture(parent, orientation, color1, color2, texture, 
 end
 
 ---------------------------------------------------------------------
+-- line
+---------------------------------------------------------------------
+function AW.CreateSeparator(parent, width, height, color)
+    if type(color) == "string" then color = AW.GetColorTable(color) end
+    color = color or AW.GetColorTable("accent")
+
+    local line = parent:CreateTexture(nil, "ARTWORK", nil, 0)
+    AW.SetSize(line, width, height)
+    line:SetColorTexture(unpack(color))
+
+    local shadow = parent:CreateTexture(nil, "ARTWORK", nil, -1)
+    AW.SetSize(shadow, width, height)
+    AW.SetPoint(shadow, "TOPLEFT", line, 1, -1)
+    shadow:SetColorTexture(AW.GetColorRGB("black", color[4])) -- use line alpha
+
+    function line:UpdatePixels()
+        AW.ReSize(line)
+        AW.RePoint(line)
+        AW.ReSize(shadow)
+        AW.RePoint(shadow)
+    end
+
+    AW.AddToPixelUpdater(line)
+
+    return line
+end
+
+---------------------------------------------------------------------
 -- get icon
 ---------------------------------------------------------------------
 function AW.GetIcon(icon)
