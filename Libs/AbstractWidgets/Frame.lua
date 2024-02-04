@@ -78,7 +78,7 @@ function AW.CreateHeaderedFrame(parent, name, title, width, height, frameStrata,
     AW.SetHeight(header, 20)
     AW.StylizeFrame(header, "header")
 
-    header.text = header:CreateFontString(nil, "OVERLAY", AW.GetFont("accent_title"))
+    header.text = header:CreateFontString(nil, "OVERLAY", AW.GetFontName("accent_title"))
     header.text:SetText(title)
     header.text:SetPoint("CENTER")
 
@@ -118,6 +118,7 @@ function AW.CreateHeaderedFrame(parent, name, title, width, height, frameStrata,
     function f:UpdatePixels()
         f:SetClampRectInsets(0, 0, AW.ConvertPixelsForRegion(20, f), 0)
         AW.ReSize(f)
+        AW.RePoint(f)
         AW.ReBorder(f)
         AW.ReSize(header)
         AW.RePoint(header)

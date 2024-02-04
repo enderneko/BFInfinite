@@ -8,7 +8,7 @@ local AW = ns.AW
 --- @param font string color name defined in Font.lua
 function AW.CreateFontString(parent, text, color, font, isDisabled)
     font = font or "normal"
-    font = AW.GetFont(font or "normal", isDisabled)
+    font = AW.GetFontName(font or "normal", isDisabled)
 
     local fs = parent:CreateFontString(nil, "OVERLAY", font)
     if color then AW.ColorFontString(fs, color) end
@@ -34,7 +34,7 @@ local pool
 
 local function creationFunc()
     -- NOTE: do not use AW.CreateFontString, since we don't need UpdatePixels() for it
-    local fs = UIParent:CreateFontString(nil, "OVERLAY", AW.GetFont("normal"))
+    local fs = UIParent:CreateFontString(nil, "OVERLAY", AW.GetFontName("normal"))
     fs:Hide()
 
     fs:SetWordWrap(true) -- multiline allowed

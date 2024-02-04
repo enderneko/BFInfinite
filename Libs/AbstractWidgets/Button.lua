@@ -93,11 +93,12 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         b.text:SetTextColor(r, g, b, a)
     end
 
-    --- @param f string fontName or fontPath
-    function b:SetFont(f)
-        assert(type(f) == "string", "a font name or path is required")
-        local _, s, o = b.text:GetFont()
-        b.text:SetFont(f, Round(s), o)
+    function b:SetFontObject(f)
+        b.text:SetFontObject(f)
+    end
+    
+    function b:SetFont(...)
+        b.text:SetFont(...)
     end
 
     function b:GetFont()
@@ -320,7 +321,7 @@ function AW.CreateCheckButton(parent, label, onClick)
         if self.onClick then self.onClick(self:GetChecked() and true or false, self) end
     end)
     
-    cb.label = cb:CreateFontString(nil, "OVERLAY", AW.GetFont("normal"))
+    cb.label = cb:CreateFontString(nil, "OVERLAY", AW.GetFontName("normal"))
     cb.label:SetPoint("LEFT", cb, "RIGHT", 5, 0)
 
     function cb:SetText(text)

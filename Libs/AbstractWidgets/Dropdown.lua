@@ -160,6 +160,8 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
         menu.text:SetJustifyH("LEFT")
     end
 
+    AW.AddToFontSizeUpdater(menu.text)
+
     -- highlight
     -- menu.highlight = AW.CreateTexture(menu, nil, AW.GetColorTable("accent", 0.07))
     -- AW.SetPoint(menu.highlight, "TOPLEFT", 1, -1)
@@ -220,7 +222,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                     menu.texture:SetTexture(item.texture)
                     menu.texture:Show()
                 elseif dropdownType == "font" then
-                    menu.text:SetFont(item.font, 13+AW.fontSizeOffset, "")
+                    menu.text:SetFont(AW.GetFontFile(item.font))
                 end
                 break
             end
@@ -323,6 +325,8 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                 AW.SetPoint(b.bgTexture, "BOTTOMRIGHT", -1, 1)
                 b.bgTexture:SetVertexColor(AW.GetColorRGB("white", 0.7))
                 b.bgTexture:Hide()
+
+                AW.AddToFontSizeUpdater(b.text)
             else
                 -- re-use button
                 b = currentList.buttons[i]
@@ -357,7 +361,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             -- font
             if item.font then
                 -- set
-                b:SetFont(item.font)
+                b:SetFont(AW.GetFontFile(item.font))
                 function b:Update()
                     --! invoked in SetScroll, or text may not "visible"
                     b.text:Hide()
@@ -365,8 +369,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                 end
             else
                 -- restore
-                local f = AW.GetFont("normal", false, true):GetFont()
-                b:SetFont(f)
+                b:SetFont(AW.GetFontFile("normal"))
                 b.Update = nil
             end
 

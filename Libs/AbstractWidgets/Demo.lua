@@ -93,7 +93,7 @@ function AW.ShowDemo()
 
     -- titled pane ----------------------------------------------------------- --
     local tp1 = AW.CreateTitledPane(demo, "Titled Pane", 140, 100)
-    AW.SetPoint(tp1, "BOTTOMLEFT", bf1, 5, 5)
+    AW.SetPoint(tp1, "TOPLEFT", bf1, 5, -30)
 
     -- button group ---------------------------------------------------------- --
     local bf2 = AW.CreateBorderedFrame(demo, "Button Group", 100, 60)
@@ -207,6 +207,13 @@ function AW.ShowDemo()
     end)
     sl3:SetAfterValueChanged(function(value)
         print("VERTICAL_AfterSliderValueChanged:", value / 100) -- for percentage, get value / 100
+    end)
+
+    local sl4 = AW.CreateSlider(tp1, "Font Size", 130, -5, 5, 1)
+    AW.SetPoint(sl4, "TOPLEFT", sl1, 0, -50)
+    sl4:SetValue(0)
+    sl4:SetAfterValueChanged(function(value)
+        AW.UpdateFontSize(value)
     end)
 
     -- scroll list ----------------------------------------------------------- --

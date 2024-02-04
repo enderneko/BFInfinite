@@ -19,7 +19,7 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
     
     eb:SetMultiLine(isMultiLine)
     eb:SetNumeric(isNumeric)
-    eb:SetFontObject(font or AW.GetFont("normal"))
+    eb:SetFontObject(font or AW.GetFontName("normal"))
     eb:SetMaxLetters(0)
     eb:SetJustifyH("LEFT")
     eb:SetJustifyV("MIDDLE")
