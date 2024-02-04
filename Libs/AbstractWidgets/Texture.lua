@@ -58,8 +58,15 @@ function AW.CreateGradientTexture(parent, orientation, color1, color2, texture, 
 end
 
 ---------------------------------------------------------------------
--- get icon texture
+-- get icon
 ---------------------------------------------------------------------
 function AW.GetIcon(icon)
-    return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Icons\\"..icon..".png"
+    return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Icons\\"..icon..".png"
+end
+
+---------------------------------------------------------------------
+-- get texture
+---------------------------------------------------------------------
+function AW.GetTexture(texture)
+    return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Textures\\"..texture..".png"
 end
