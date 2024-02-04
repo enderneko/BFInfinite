@@ -341,9 +341,11 @@ function AW.ShowDemo()
         print("ColorPicker1_OnConfirm:", r, g, b, a)
     end)
     AW.SetPoint(cp1, "TOPLEFT", slist1, "BOTTOMLEFT", 0, -10)
-
+    cp1:SetColor(AW.GetColorRGB("pink", 0.7))
+    
     local cp2 = AW.CreateColorPicker(demo, "CP No Alpha")
     AW.SetPoint(cp2, "TOPLEFT", cp1, "BOTTOMLEFT", 0, -7)
+    cp2:SetColor(AW.GetColorRGB("skyblue"))
 
     local cp3 = AW.CreateColorPicker(demo, "CP Disabled")
     AW.SetPoint(cp3, "TOPLEFT", cp2, "BOTTOMLEFT", 0, -7)
