@@ -14,5 +14,6 @@
     <Script file="EditBox.lua"/>
     <Script file="Slider.lua"/>
     <Script file="Dropdown.lua"/>
+    <Script file="ColorPicker.lua"/>
     <Script file="Demo.lua"/>
 </Ui>

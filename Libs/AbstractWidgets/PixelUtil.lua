@@ -230,6 +230,16 @@ function AW.UpdatePixels()
 end
 
 ---------------------------------------------------------------------
+-- pixel perfect point
+---------------------------------------------------------------------
+function AW.PixelPerfectPoint(region)
+    local left = Round(region:GetLeft())
+    local bottom = Round(region:GetBottom())
+    AW.ClearPoints(region)
+    AW.SetPoint(region, "BOTTOMLEFT", left, bottom)
+end
+
+---------------------------------------------------------------------
 -- statusbar
 ---------------------------------------------------------------------
 function AW.SetStatusBarValue(statusBar, value)

@@ -22,12 +22,14 @@ end
 -- enable / disable
 ---------------------------------------------------------------------
 function AW.SetEnabled(isEnabled, ...)
+    if isEnabled == nil then isEnabled = false end
+
     for _, w in pairs({...}) do
         if w:IsObjectType("FontString") then
             if isEnabled then
-                w:SetTextColor(1, 1, 1, 1)
+                w:SetTextColor(AW.GetColorRGB("white"))
             else
-                w:SetTextColor(0.4, 0.4, 0.4, 1)
+                w:SetTextColor(AW.GetColorRGB("disabled"))
             end   
         elseif w:IsObjectType("Texture") then   
             if isEnabled then

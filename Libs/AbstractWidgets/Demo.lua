@@ -333,4 +333,20 @@ function AW.ShowDemo()
         })
     end
     dd8:SetItems(items)
+
+    -- color picker ---------------------------------------------------------- --
+    local cp1 = AW.CreateColorPicker(demo, "Color Picker", true, function(r, g, b, a)
+        print("ColorPicker1_OnChange:", r, g, b, a)
+    end, function(r, g, b, a)
+        print("ColorPicker1_OnConfirm:", r, g, b, a)
+    end)
+    AW.SetPoint(cp1, "TOPLEFT", slist1, "BOTTOMLEFT", 0, -10)
+
+    local cp2 = AW.CreateColorPicker(demo, "CP No Alpha")
+    AW.SetPoint(cp2, "TOPLEFT", cp1, "BOTTOMLEFT", 0, -7)
+
+    local cp3 = AW.CreateColorPicker(demo, "CP Disabled")
+    AW.SetPoint(cp3, "TOPLEFT", cp2, "BOTTOMLEFT", 0, -7)
+    cp3:SetColor(AW.GetColorTable("purple"))
+    cp3:SetEnabled(false)
 end

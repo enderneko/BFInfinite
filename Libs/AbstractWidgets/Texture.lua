@@ -10,7 +10,7 @@ function AW.CreateTexture(parent, texture, color, drawLayer, subLevel)
 
     function tex:SetColor(c)
         if type(c) == "string" then c = AW.GetColorTable(c) end
-        c = c or {0, 0, 0, 1}
+        c = c or {1, 1, 1, 1}
         if texture then
             tex:SetTexture(texture)
             tex:SetVertexColor(unpack(c))
