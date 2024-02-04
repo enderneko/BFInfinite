@@ -309,8 +309,8 @@ local function UpdateColor_HSBA(h, s, b, a, updateWidgetColor, updatePickerAndSl
     end
 
     if updatePickerAndSlider then
-        picker:SetPoint("CENTER", saturationBrightnessPane, "BOTTOMLEFT", S*saturationBrightnessPane:GetWidth(), B*saturationBrightnessPane:GetHeight())
-        hueSlider:SetValue(H)
+        picker:SetPoint("CENTER", saturationBrightnessPane, "BOTTOMLEFT", s*saturationBrightnessPane:GetWidth(), b*saturationBrightnessPane:GetHeight())
+        hueSlider:SetValue(h)
         alphaSlider:SetValue(1-a)
     end
 end
@@ -335,8 +335,8 @@ end
 -------------------------------------------------
 -- create color pane
 -------------------------------------------------
-local function CreateColorPane(parent)
-    local pane = AW.CreateBorderedFrame(parent, nil, 102, 27)
+local function CreateColorPane()
+    local pane = AW.CreateBorderedFrame(colorPickerFrame, nil, 102, 27)
 
     pane.solid = AW.CreateTexture(pane)
     AW.SetPoint(pane.solid, "TOPLEFT", 1, -1)
@@ -357,8 +357,8 @@ end
 -------------------------------------------------
 -- create color slider
 -------------------------------------------------
-local function CreateColorSliderHolder(parent, onValueChanged)
-    local holder = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+local function CreateColorSliderHolder(onValueChanged)
+    local holder = CreateFrame("Frame", nil, colorPickerFrame, "BackdropTemplate")
     AW.SetSize(holder, 20, 132)
     AW.StylizeFrame(holder)
 
@@ -474,33 +474,82 @@ end
 -------------------------------------------------
 -- color grids
 -------------------------------------------------
-local function CreateColorGrid(parent, color)
+local function CreateColorGrid(color)
+    local grid = AW.CreateButton(colorPickerFrame, nil, "none", 14, 14)
+    
+    if type(color) == "table" then
+        AW.SetTooltips(grid, "ANCHOR_TOPLEFT", 0, 2, "|c"..AW.GetColorHex(color[1])..color[2])
+        color = color[1]
+    end
+    
+    local r, g, b, a = AW.GetColorRGB(color)
+    grid:SetBackdropBorderColor(AW.GetColorRGB("black"))
+    grid:SetBackdropColor(r, g, b, a)
 
+    grid:SetScript("OnClick", function()
+        H, S, B = AW.ConvertRGBToHSB(r, g, b)
+        A = a
+        UpdateAll("rgb", r, g, b, a, true, true)
+    end)
+
+    return grid
 end
+
+local localizedClass = {}
+FillLocalizedClassList(localizedClass)
+
+local preset1 = {
+    {"DEATHKNIGHT", localizedClass["DEATHKNIGHT"]},
+    {"DEMONHUNTER", localizedClass["DEMONHUNTER"]},
+    {"DRUID", localizedClass["DRUID"]},
+    {"EVOKER", localizedClass["EVOKER"]},
+    {"HUNTER", localizedClass["HUNTER"]},
+    {"MAGE", localizedClass["MAGE"]},
+    {"MONK", localizedClass["MONK"]},
+    {"PALADIN", localizedClass["PALADIN"]},
+    {"PRIEST", localizedClass["PRIEST"]},
+    {"ROGUE", localizedClass["ROGUE"]},
+    {"SHAMAN", localizedClass["SHAMAN"]},
+    {"WARLOCK", localizedClass["WARLOCK"]},
+    {"WARRIOR", localizedClass["WARRIOR"]},
+}
+
+local preset2 = {
+    {"Poor", ITEM_QUALITY0_DESC},
+    {"Common", ITEM_QUALITY1_DESC},
+    {"Uncommon", ITEM_QUALITY2_DESC},
+    {"Rare", ITEM_QUALITY3_DESC},
+    {"Epic", ITEM_QUALITY4_DESC},
+    {"Legendary", ITEM_QUALITY5_DESC},
+    {"Artifact", ITEM_QUALITY6_DESC},
+    {"Heirloom", ITEM_QUALITY7_DESC},
+    {"WoWToken", ITEM_QUALITY8_DESC},
+}
+
+local preset3 = {
+    "red", "yellow", "green", "cyan", "blue", "purple",
+    "hotpink", "chartreuse",
+    "accent", "widget"
+}
 
 -------------------------------------------------
 -- CreateColorPickerFrame
 -------------------------------------------------
 local function CreateColorPickerFrame()
-    colorPickerFrame = AW.CreateHeaderedFrame(UIParent, COLOR_PICKER_NAME, _G.COLOR_PICKER, 270, 297, "DIALOG")
+    colorPickerFrame = AW.CreateHeaderedFrame(UIParent, COLOR_PICKER_NAME, _G.COLOR_PICKER, 269, 297, "DIALOG")
     colorPickerFrame.header.closeBtn:Hide()
-    colorPickerFrame:SetToplevel(true)
     -- AW.StylizeFrame(colorPickerFrame, nil, "accent")
     -- AW.StylizeFrame(colorPickerFrame.header, "header", "accent")
     AW.SetPoint(colorPickerFrame, "CENTER")
     AW.PixelPerfectPoint(colorPickerFrame)
 
-    colorPickerFrame:SetScript("OnHide", function()
-        Callback = nil
-    end)
-
     ---------------------------------------------
     -- color pane
     ---------------------------------------------
-    currentPane = CreateColorPane(colorPickerFrame)
+    currentPane = CreateColorPane()
     AW.SetPoint(currentPane, "TOPLEFT", 7, -7)
     
-    originalPane = CreateColorPane(colorPickerFrame)
+    originalPane = CreateColorPane()
     AW.SetPoint(originalPane, "TOPLEFT", currentPane, "TOPRIGHT", 7, 0)
 
     ---------------------------------------------
@@ -522,7 +571,7 @@ local function CreateColorPickerFrame()
     ---------------------------------------------
     -- hue slider
     ---------------------------------------------
-    local hueSliderHolder = CreateColorSliderHolder(colorPickerFrame, function(self, value, userChanged)
+    local hueSliderHolder = CreateColorSliderHolder(function(self, value, userChanged)
         if not userChanged then return end
         H = value
 
@@ -560,7 +609,7 @@ local function CreateColorPickerFrame()
     ---------------------------------------------
     -- alpha slider
     ---------------------------------------------
-    local alphaSliderHolder = CreateColorSliderHolder(colorPickerFrame, function(self, value, userChanged)
+    local alphaSliderHolder = CreateColorSliderHolder(function(self, value, userChanged)
         if not userChanged then return end
         A = tonumber(format("%.3f", 1 - value))
         
@@ -737,6 +786,53 @@ local function CreateColorPickerFrame()
     AW.SetPoint(cancelBtn, "TOPLEFT", confirmBtn, "TOPRIGHT", 7, 0)
 
     ---------------------------------------------
+    -- color grids
+    ---------------------------------------------
+    local sep = AW.CreateSeparator(colorPickerFrame, 1, 269, AW.GetColorTable("disabled", 0.25))
+    AW.SetPoint(sep, "TOPLEFT", originalPane, "TOPRIGHT", 7, -7)
+    
+    local grids = {}
+
+    for i = 1, #preset1 do
+        grids[i] = CreateColorGrid(preset1[i])
+        if i == 1 then
+            AW.SetPoint(grids[i], "TOPLEFT", originalPane, "TOPRIGHT", 14, -1)
+        elseif (i-1) % 2 == 0 then
+            AW.SetPoint(grids[i], "TOPLEFT", grids[i-2], "BOTTOMLEFT", 0, -2)
+        else
+            AW.SetPoint(grids[i], "TOPLEFT", grids[i-1], "TOPRIGHT", 2, 0)
+        end
+    end
+
+    local offset = #preset1
+    for i = 1, #preset2 do
+        local index = i+offset
+        grids[index] = CreateColorGrid(preset2[i])
+        
+        if i == 1 then
+            AW.SetPoint(grids[index], "TOPLEFT", grids[offset], "BOTTOMLEFT", 0, -7)
+        elseif (i-1) % 2 == 0 then
+            AW.SetPoint(grids[index], "TOPLEFT", grids[index-2], "BOTTOMLEFT", 0, -2)
+        else
+            AW.SetPoint(grids[index], "TOPLEFT", grids[index-1], "TOPRIGHT", 2, 0)
+        end
+    end
+   
+    offset = #preset1 + #preset2
+    for i = 1, #preset3 do
+        local index = i+offset
+        grids[index] = CreateColorGrid(preset3[i])
+        
+        if i == 1 then
+            AW.SetPoint(grids[index], "TOPLEFT", grids[offset], "BOTTOMLEFT", 0, -7)
+        elseif (i-1) % 2 == 0 then
+            AW.SetPoint(grids[index], "TOPLEFT", grids[index-2], "BOTTOMLEFT", 0, -2)
+        else
+            AW.SetPoint(grids[index], "TOPLEFT", grids[index-1], "TOPRIGHT", 2, 0)
+        end
+    end
+
+    ---------------------------------------------
     -- update pixels
     ---------------------------------------------
     colorPickerFrame._UpdatePixels = colorPickerFrame.UpdatePixels
@@ -773,6 +869,8 @@ function AW.ShowColorPicker(owner, callback, onConfirm, hasAlpha, r, g, b, a)
     end
 
     colorPickerFrame:SetParent(owner)
+    colorPickerFrame:SetFrameStrata("DIALOG")
+    colorPickerFrame:SetToplevel(true)
 
     -- clear previous
     hueSlider.prev = nil
@@ -794,12 +892,14 @@ function AW.ShowColorPicker(owner, callback, onConfirm, hasAlpha, r, g, b, a)
     Callback = callback
 
     confirmBtn:SetScript("OnClick", function()
+        Callback = nil
         colorPickerFrame:Hide()
         local r, g, b = AW.ConvertHSBToRGB(H, S, B)
         onConfirm(r, g, b, A)
     end)
-
+    
     cancelBtn:SetScript("OnClick", function()
+        Callback = nil
         colorPickerFrame:Hide()
         callback(oR, oG, oB, oA)
     end)
