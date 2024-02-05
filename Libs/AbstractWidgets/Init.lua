@@ -1,10 +1,30 @@
 local addonName, ns = ...
 ns.AW = {}
 
-assert(ns.prefix, "a \"prefix\" is required in your addon namespace.")
-
 local AW = ns.AW
 
+---------------------------------------------------------------------
+-- generate prefix
+---------------------------------------------------------------------
+if not ns.prefix or strtrim(ns.prefix) == "" then
+    local it = string.gmatch(addonName, "%u") -- capital letters
+
+    ns.prefix = ""
+
+    while true do
+        local s = it()
+        if not s then break end
+        ns.prefix = ns.prefix..s
+    end
+
+    if ns.prefix == "" then
+        ns.prefix = strupper(addonName)
+    end
+end
+
+---------------------------------------------------------------------
+-- vars
+---------------------------------------------------------------------
 AW.isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 AW.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 AW.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
