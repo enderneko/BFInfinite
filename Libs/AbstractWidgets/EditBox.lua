@@ -120,6 +120,10 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
     end
     -----------------------------------------------------------------
 
+    function eb:Clear()
+        eb:SetText("")
+    end
+
     function eb:UpdatePixels()
         AW.ReSize(eb)
         AW.RePoint(eb)
@@ -241,6 +245,10 @@ function AW.CreateScrollEditBox(parent, label, width, height, scrollStep)
         else
             frame.scrollThumb:SetBackdropColor(AW.GetColorRGB("disabled"))
         end
+    end
+
+    function eb:Clear()
+        eb:SetText("")
     end
 
     return frame
