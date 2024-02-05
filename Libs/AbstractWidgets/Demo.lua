@@ -351,4 +351,63 @@ function AW.ShowDemo()
     AW.SetPoint(cp3, "TOPLEFT", cp2, "BOTTOMLEFT", 0, -7)
     cp3:SetColor(AW.GetColorTable("purple"))
     cp3:SetEnabled(false)
+
+    -- dialog1 --------------------------------------------------------------- --
+    local b7 = AW.CreateButton(demo, "ShowDialog1", "accent-hover", 150, 20)
+    AW.SetPoint(b7, "TOPLEFT", cp3, "BOTTOMLEFT", 0, -10)
+    b7:SetScript("OnClick", function()
+        local text = AW.WrapTextInColor("Test Message", "firebrick").."\nReload UI now?\n"..AW.WrapTextInColor("The quick brown fox jumps over the lazy dog", "gray")
+        AW.ShowDialog(demo, text, 200, nil, nil, true)
+        AW.SetDialogPoint("TOPLEFT", 255, -170)
+        AW.SetDialogOnConfirm(function()
+            C_UI.Reload()
+        end)
+    end)
+
+    -- dialog2 --------------------------------------------------------------- --
+    local b8 = AW.CreateButton(demo, "ShowDialog2", "accent-hover", 150, 20)
+    AW.SetPoint(b8, "TOPLEFT", b7, "BOTTOMLEFT", 0, -7)
+    
+    -- content
+    local form = AW.CreateDialogContent()
+    AW.SetHeight(form, 50) -- hight is required
+
+    -- NOTE: use WIDTH for pixel perfect
+
+    local eb5 = AW.CreateEditBox(form, "type somthing", 172, 20)
+    AW.SetPoint(eb5, "TOPLEFT")
+    -- AW.SetPoint(eb5, "TOPRIGHT")
+
+    local dd9 = AW.CreateDropdown(form, 172)
+    AW.SetPoint(dd9, "TOPLEFT", eb5, "BOTTOMLEFT", 0, -7)
+    -- AW.SetPoint(dd9, "TOPRIGHT", eb5, "BOTTOMRIGHT", 0, -7)
+    local items = {}
+    for i = 1, 7 do
+        tinsert(items, {["text"] = "Item "..i})
+    end
+    dd9:SetItems(items)
+    
+    eb5:SetOnTextChanged(function(text)
+        form.dialog.yes:SetEnabled(text ~= "" and dd9:GetSelected())
+        form.value1 = text
+    end)
+
+    dd9:SetOnClick(function(value)
+        form.dialog.yes:SetEnabled(strtrim(eb5:GetText()) ~= "" and dd9:GetSelected())
+        form.value2 = value
+    end)
+
+    form:SetScript("OnShow", function()
+        eb5:Clear()
+        dd9:ClearSelected()
+    end)
+
+    b8:SetScript("OnClick", function()
+        AW.ShowDialog(demo, AW.WrapTextInColor("Test Form", "yellow"), 200, _G.OKAY, _G.CANCEL, true, form, true)
+        AW.SetDialogPoint("TOPLEFT", 255, -170)
+        AW.ResizeDialogButtonToFitText(70)
+        AW.SetDialogOnConfirm(function()
+            print("Dialog Confirmed:", form.value1, form.value2)
+        end)
+    end)
 end

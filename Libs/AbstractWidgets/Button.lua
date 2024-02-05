@@ -37,7 +37,6 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
     -- text -------------------------------------
     b.text = AW.CreateFontString(b, text, nil, font)
     b.text:SetWordWrap(false)
-    AW.ClearPoints(b.text)
     AW.SetPoint(b.text, "LEFT", 2, 0)
     AW.SetPoint(b.text, "RIGHT", -2, 0)
     b.text:SetText(text)

@@ -1,5 +1,5 @@
 # AbstractWidgets
 
-- You must set a "prefix" in your addon namespace table (e.g. ns.prefix="MY_ADDON").
-- Do not forget to rename fonts in TooltipTemplate.xml
+- A ".prefix" in your addon namespace table will be generated unless you've set it manually
+- Do not forget to rename fonts in TooltipTemplate.xml (using capital prefix)
 - Edit accent color in Color.lua
