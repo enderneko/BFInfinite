@@ -28,9 +28,7 @@ end
 ---------------------------------------------------------------------
 function AW.CreateFrame(parent, width, height)
     local f = CreateFrame("Frame", nil, parent)
-
-    if width then AW.SetWidth(f, width) end
-    if height then AW.SetWidth(f, height) end
+    AW.SetSize(f, width, height)
 
     function f:UpdatePixels()
         AW.ReSize(f)
@@ -650,4 +648,42 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
     AW.AddToPixelUpdater(scrollList)
     
     return scrollList
+end
+
+---------------------------------------------------------------------
+-- mask (+30 frame level)
+---------------------------------------------------------------------
+--- @param tlX number topleft x
+--- @param tlY number topleft y
+--- @param brX number bottomright x
+--- @param brY number bottomright y
+function AW.ShowMask(parent, text, tlX, tlY, brX, brY)
+    if not parent.mask then
+        parent.mask = AW.CreateBorderedFrame(parent, nil, nil, nil, AW.GetColorTable("widget", 0.7), "none")
+        parent.mask:SetFrameLevel(parent:GetFrameLevel()+30)
+        parent.mask:EnableMouse(true)
+        -- parent.mask:EnableMouseWheel(true) -- not enough
+        parent.mask:SetScript("OnMouseWheel", function(self, delta)
+            -- setting the OnMouseWheel script automatically implies EnableMouseWheel(true)
+            -- print("OnMouseWheel", delta)
+        end)
+
+        parent.mask.text = AW.CreateFontString(parent.mask, "", "firebrick")
+        AW.SetPoint(parent.mask.text, "LEFT", 5, 0)
+        AW.SetPoint(parent.mask.text, "RIGHT", -5, 0)
+    end
+
+    parent.mask.text:SetText(text)
+
+    AW.ClearPoints(parent.mask)
+    if tlX then
+        AW.SetPoint(parent.mask, "TOPLEFT", tlX, tlY)
+        AW.SetPoint(parent.mask, "BOTTOMRIGHT", brX, brY)
+    else
+        AW.SetPointOnePixelInner(parent.mask, parent)
+    end    
+    parent.mask:Show()
+
+    return parent.mask
+end
 end
