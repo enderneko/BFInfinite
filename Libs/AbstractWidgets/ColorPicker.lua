@@ -649,30 +649,18 @@ local function CreateColorPickerFrame()
     -- picker
     ---------------------------------------------
     picker = CreateFrame("Frame", nil, saturationBrightnessPane)
-    AW.SetSize(picker, 10, 10)
+    AW.SetSize(picker, 16, 16)
     picker:SetPoint("CENTER", saturationBrightnessPane, "BOTTOMLEFT")
     
-    picker.tex1 = picker:CreateTexture(nil, "ARTWORK")
-    picker.tex1:SetPoint("CENTER")
-    AW.SetSize(picker.tex1, 10, 10)
-    picker.tex1:SetTexture(AW.GetIcon("Circle"))
+    picker.tex = picker:CreateTexture(nil, "ARTWORK")
+    picker.tex:SetAllPoints()
+    picker.tex:SetTexture(AW.GetIcon("ColorPickerRing"))
+    -- AW.SetSize(picker.tex1, 10, 10)
     -- picker.tex1:SetTexture("Interface\\Buttons\\UI-ColorPicker-Buttons")
     -- picker.tex1:SetTexCoord(0, 0.15625, 0, 0.625)
 
-    picker.tex2 = picker:CreateTexture(nil, "ARTWORK")
-    picker.tex2:SetPoint("CENTER")
-    AW.SetSize(picker.tex2, 12, 12)
-    picker.tex2:SetTexture(AW.GetIcon("Circle"))
-    picker.tex2:SetVertexColor(0, 0, 0, 1)
-
     picker:EnableMouse(true)
     picker:SetMovable(true)
-
-    function picker:UpdatePixels()
-        AW.ReSize(picker)
-        AW.ReSize(picker.tex1)
-        AW.ReSize(picker.tex2)
-    end
 
     function picker:StartMoving(x, y, mouseX, mouseY)
         local scale = picker:GetEffectiveScale()
@@ -854,7 +842,7 @@ local function CreateColorPickerFrame()
         end
 
         -- picker
-        picker:UpdatePixels()
+        AW.ReSize(picker)
     end
     
     AW.AddToPixelUpdater(colorPickerFrame)
