@@ -109,7 +109,6 @@ local function CreateDialog()
 
     -- update pixels
     function dialog:UpdatePixels()
-        print("dialog:UpdatePixels")
         AW.ReSize(dialog)
         AW.RePoint(dialog)
         AW.ReBorder(dialog)
@@ -192,4 +191,126 @@ end
 -- onCancel
 function AW.SetDialogOnCancel(fn)
     dialog.onCancel = fn
+end
+
+---------------------------------------------------------------------
+-- notification dialog
+---------------------------------------------------------------------
+local notificationDialog
+
+local function CreateNotificationDialog()
+    notificationDialog = AW.CreateBorderedFrame(UIParent, nil, 200, 100, nil, "accent")
+    notificationDialog:Hide() -- for first OnShow
+
+    notificationDialog:EnableMouse(true)
+    notificationDialog:SetClampedToScreen(true)
+
+    -- text holder
+    local textHolder = AW.CreateFrame(notificationDialog)
+    notificationDialog.textHolder = textHolder
+    AW.SetPoint(textHolder, "TOPLEFT", 7, -7)
+    AW.SetPoint(textHolder, "TOPRIGHT", -7, -7)
+
+    local text = AW.CreateFontString(textHolder)
+    notificationDialog.text = text
+    AW.SetPoint(text, "TOPLEFT")
+    AW.SetPoint(text, "TOPRIGHT")
+    text:SetWordWrap(true)
+    text:SetSpacing(3)
+
+    -- close
+    local close = AW.CreateButton(notificationDialog, _G.HELP_TIP_BUTTON_GOT_IT, "accent", 17, 17)
+    notificationDialog.close = close
+    AW.SetPoint(close, "BOTTOMLEFT", 5, 5)
+    AW.SetPoint(close, "BOTTOMRIGHT", -5, 5)
+    close:SetScript("OnClick", function()
+        notificationDialog:Hide()
+    end)
+
+    -- OnHide
+    notificationDialog:SetScript("OnHide", function()
+        notificationDialog:Hide()
+        
+        -- reset text
+        text:SetText()
+        textHolder:SetHeight(0)
+
+        -- reset timer
+        if notificationDialog.timer then
+            notificationDialog.timer:Cancel()
+            notificationDialog.timer = nil
+        end
+        
+        -- hide mask
+        if notificationDialog.shownMask then
+            notificationDialog.shownMask:Hide()
+            notificationDialog.shownMask = nil
+        end
+    end)
+
+    -- OnShow
+    notificationDialog:SetScript("OnShow", function()
+        notificationDialog:SetScript("OnUpdate", function()
+            if text:GetText() then
+                --! NOTE: text width must be set, and its x/y offset should be 0 (not sure), or WEIRD ISSUES would a appear.
+                text:SetWidth(Round(notificationDialog:GetWidth()-14))
+                textHolder:SetHeight(Round(text:GetHeight()))
+            end
+            notificationDialog:SetHeight(Round(textHolder:GetHeight())+40)
+            notificationDialog:SetScript("OnUpdate", nil)
+        end)
+    end)
+
+    -- update pixels
+    function notificationDialog:UpdatePixels()
+        AW.ReSize(notificationDialog)
+        AW.RePoint(notificationDialog)
+        AW.ReBorder(notificationDialog)
+
+        if notificationDialog:IsShown() then
+            notificationDialog:GetScript("OnShow")()
+        end
+    end
+end
+
+-- show
+function AW.ShowNotificationDialog(parent, text, width, showMask, countdown)
+    if not notificationDialog then CreateNotificationDialog() end
+
+    notificationDialog:SetParent(parent)
+    notificationDialog:SetFrameLevel(parent:GetFrameLevel()+50) -- mask:30 < level < combatMask:100
+    AW.SetWidth(notificationDialog, width)
+
+    notificationDialog.text:SetText(text)
+
+    if showMask then
+        notificationDialog.shownMask = AW.ShowMask(parent)
+    end
+
+    if countdown then
+        notificationDialog.close:SetEnabled(false)
+        notificationDialog.close:SetText(_G.HELP_TIP_BUTTON_GOT_IT.." ("..countdown..")")
+        notificationDialog.timer = C_Timer.NewTicker(1, function()
+            notificationDialog.timer = nil
+            countdown = countdown - 1
+            if countdown == 0 then
+                notificationDialog.close:SetText(_G.HELP_TIP_BUTTON_GOT_IT)
+                notificationDialog.close:SetEnabled(true)
+            else
+                notificationDialog.close:SetText(_G.HELP_TIP_BUTTON_GOT_IT.." ("..countdown..")")
+            end
+        end, countdown)
+    else
+        notificationDialog.close:SetEnabled(true)
+    end
+
+    notificationDialog:Show()
+
+    return notificationDialog
+end
+
+-- point
+function AW.SetNotificationDialogPoint(...)
+    AW.ClearPoints(notificationDialog)
+    AW.SetPoint(notificationDialog, ...)
 end

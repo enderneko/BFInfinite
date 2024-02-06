@@ -353,7 +353,7 @@ function AW.ShowDemo()
     cp3:SetEnabled(false)
 
     -- dialog1 --------------------------------------------------------------- --
-    local b7 = AW.CreateButton(demo, "ShowDialog1", "accent-hover", 150, 20)
+    local b7 = AW.CreateButton(demo, "Dialog1", "accent-hover", 150, 20)
     AW.SetPoint(b7, "TOPLEFT", cp3, "BOTTOMLEFT", 0, -10)
     b7:SetScript("OnClick", function()
         local text = AW.WrapTextInColor("Test Message", "firebrick").."\nReload UI now?\n"..AW.WrapTextInColor("The quick brown fox jumps over the lazy dog", "gray")
@@ -365,7 +365,7 @@ function AW.ShowDemo()
     end)
 
     -- dialog2 --------------------------------------------------------------- --
-    local b8 = AW.CreateButton(demo, "ShowDialog2", "accent-hover", 150, 20)
+    local b8 = AW.CreateButton(demo, "Dialog2", "accent-hover", 150, 20)
     AW.SetPoint(b8, "TOPLEFT", b7, "BOTTOMLEFT", 0, -7)
     
     -- content
@@ -409,5 +409,14 @@ function AW.ShowDemo()
         AW.SetDialogOnConfirm(function()
             print("Dialog Confirmed:", form.value1, form.value2)
         end)
+    end)
+
+    -- notificator dialog ----------------------------------------------------- --
+    local b9 = AW.CreateButton(demo, "NotificationDialog", "accent-hover", 150, 20)
+    AW.SetPoint(b9, "TOPLEFT", b8, "BOTTOMLEFT", 0, -7)
+    b9:SetScript("OnClick", function()
+        local text = AW.WrapTextInColor("NOTICE", "orange").."\n".."One day, when what has happened behind the scene could be told, developers and gamers will have a whole new level understanding of how much damage a jerk can make."
+        AW.ShowNotificationDialog(demo, text, 200, true, 3)
+        AW.SetNotificationDialogPoint("TOPLEFT", 255, -120)
     end)
 end
