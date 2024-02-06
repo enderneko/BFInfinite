@@ -681,9 +681,89 @@ function AW.ShowMask(parent, text, tlX, tlY, brX, brY)
         AW.SetPoint(parent.mask, "BOTTOMRIGHT", brX, brY)
     else
         AW.SetPointOnePixelInner(parent.mask, parent)
-    end    
+    end
     parent.mask:Show()
 
     return parent.mask
 end
+
+---------------------------------------------------------------------
+-- combat mask (+100 frame level)
+---------------------------------------------------------------------
+local function CreateCombatMask(parent, tlX, tlY, brX, brY)
+    parent.combatMask = AW.CreateBorderedFrame(parent, nil, nil, nil, AW.GetColorTable("darkred", 0.8), "none")
+    
+    parent.combatMask:SetFrameLevel(parent:GetFrameLevel()+100)
+    parent.combatMask:EnableMouse(true)
+    parent.combatMask:SetScript("OnMouseWheel", function() end)
+    
+    parent.combatMask.text = AW.CreateFontString(parent.combatMask, "", "firebrick")
+    AW.SetPoint(parent.combatMask.text, "LEFT", 5, 0)
+    AW.SetPoint(parent.combatMask.text, "RIGHT", -5, 0)
+    
+    -- HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT
+    -- ERR_AFFECTING_COMBAT
+    -- ERR_NOT_IN_COMBAT
+    parent.combatMask.text:SetText(_G.ERR_AFFECTING_COMBAT)
+
+    AW.ClearPoints(parent.combatMask)
+    if tlX then
+        AW.SetPoint(parent.combatMask, "TOPLEFT", tlX, tlY)
+        AW.SetPoint(parent.combatMask, "BOTTOMRIGHT", brX, brY)
+    else
+        AW.SetPointOnePixelInner(parent.combatMask, parent)
+    end
+
+    parent.combatMask:Hide()
 end
+
+-- show mask
+local protectedFrames = {}
+function AW.ApplyCombatProtectionToFrame(f, tlX, tlY, brX, brY)
+    tinsert(protectedFrames, f)
+    
+    if not f.combatMask then
+        CreateCombatMask(f, tlX, tlY, brX, brY)
+    end
+    
+    if InCombatLockdown() then
+        f.combatMask:Show()
+    end
+
+    f:HookScript("OnShow", function()
+        if InCombatLockdown() then
+            f.combatMask:Show()
+        end
+    end)
+end
+
+-- disable widget
+local protectedWidgets = {}
+function AW.ApplyCombatProtectionToWidget(widget)
+    tinsert(protectedWidgets, widget)
+
+    if InCombatLockdown() then
+        widget:SetEnabled(false)
+    end
+end
+
+local combatProtection = CreateFrame("Frame")
+combatProtection:RegisterEvent("PLAYER_REGEN_DISABLED")
+combatProtection:RegisterEvent("PLAYER_REGEN_ENABLED")
+combatProtection:SetScript("OnEvent", function(self, event)
+    if event == "PLAYER_REGEN_DISABLED" then
+        for _, f in pairs(protectedFrames) do
+            f.combatMask:Show()
+        end
+        for _, w in pairs(protectedWidgets) do
+            w:SetEnabled(false)
+        end
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        for _, f in pairs(protectedFrames) do
+            f.combatMask:Hide()
+        end
+        for _, w in pairs(protectedWidgets) do
+            w:SetEnabled(true)
+        end
+    end
+end)

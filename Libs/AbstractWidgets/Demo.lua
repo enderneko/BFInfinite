@@ -12,6 +12,9 @@ function AW.ShowDemo()
     demo:SetFrameLevel(100)
     demo:Show()
 
+    -- apply combat protection ----------------------------------------------- --
+    AW.ApplyCombatProtectionToFrame(demo)
+
     -- button ---------------------------------------------------------------- --
     local b1 = AW.CreateButton(demo, "Button A", "accent", 100, 20)
     AW.SetPoint(b1, "TOPLEFT", 10, -10)
