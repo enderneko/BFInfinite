@@ -135,12 +135,12 @@ end
 ---------------------------------------------------------------------
 --- @param color string|table color name / table
 --- @param borderColor string|table color name / table
-function AW.CreateBorderedFrame(parent, title, width, height, color, borderColor, fontColor, font)
+function AW.CreateBorderedFrame(parent, width, height, color, borderColor, fontColor, font)
     local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     AW.StylizeFrame(f, color, borderColor)
     AW.SetSize(f, width, height)
 
-    if title then
+    function f:SetTitle(title)
         f.title = AW.CreateFontString(f, title, fontColor or "accent", font or "accent_title")
         AW.SetPoint(f.title, "BOTTOMLEFT", f, "TOPLEFT", 2, 2)
     end
@@ -212,7 +212,7 @@ end
 -- scroll frame
 ---------------------------------------------------------------------
 function AW.CreateScrollFrame(parent, width, height, color, borderColor)
-    local scrollParent = AW.CreateBorderedFrame(parent, nil, width, height, color, borderColor)
+    local scrollParent = AW.CreateBorderedFrame(parent, width, height, color, borderColor)
 
     local scrollFrame = CreateFrame("ScrollFrame", nil, scrollParent, "BackdropTemplate")
     scrollParent.scrollFrame = scrollFrame
@@ -227,14 +227,14 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     -- AW.SetPoint(content, "RIGHT") -- update width with scrollFrame
     
     -- scrollBar
-    local scrollBar = AW.CreateBorderedFrame(scrollParent, nil, 5, nil, color, borderColor)
+    local scrollBar = AW.CreateBorderedFrame(scrollParent, 5, nil, color, borderColor)
     scrollParent.scrollBar = scrollBar
     AW.SetPoint(scrollBar, "TOPRIGHT")
     AW.SetPoint(scrollBar, "BOTTOMRIGHT")
     scrollBar:Hide()
     
     -- scrollBar thumb
-    local scrollThumb = AW.CreateBorderedFrame(scrollBar, nil, 5, nil, AW.GetColorTable("accent", 0.8))
+    local scrollThumb = AW.CreateBorderedFrame(scrollBar, 5, nil, AW.GetColorTable("accent", 0.8))
     scrollParent.scrollThumb = scrollThumb
     AW.SetPoint(scrollThumb, "TOP")
     scrollThumb:EnableMouse(true)
@@ -411,7 +411,7 @@ end
 --- @param horizontalMargins number left/right margin
 --- @param slotSpacing number spacing between widgets next to each other
 function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, slotNum, slotHeight, slotSpacing, color, borderColor)
-    local scrollList = AW.CreateBorderedFrame(parent, nil, width, nil, color, borderColor)
+    local scrollList = AW.CreateBorderedFrame(parent, width, nil, color, borderColor)
     AW.SetListHeight(scrollList, slotNum, slotHeight, slotSpacing, verticalMargins*2)
 
     local slotFrame = CreateFrame("Frame", nil, scrollList)
@@ -420,14 +420,14 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
     AW.SetPoint(slotFrame, "BOTTOMRIGHT", 0, verticalMargins)
 
     -- scrollBar
-    local scrollBar = AW.CreateBorderedFrame(scrollList, nil, 5, nil, color, borderColor)
+    local scrollBar = AW.CreateBorderedFrame(scrollList, 5, nil, color, borderColor)
     scrollList.scrollBar = scrollBar
     AW.SetPoint(scrollBar, "TOPRIGHT", 0, -verticalMargins)
     AW.SetPoint(scrollBar, "BOTTOMRIGHT", 0, verticalMargins)
     scrollBar:Hide()
     
     -- scrollBar thumb
-    local scrollThumb = AW.CreateBorderedFrame(scrollBar, nil, 5, nil, AW.GetColorTable("accent", 0.8))
+    local scrollThumb = AW.CreateBorderedFrame(scrollBar, 5, nil, AW.GetColorTable("accent", 0.8))
     scrollList.scrollThumb = scrollThumb
     AW.SetPoint(scrollThumb, "TOP")
     scrollThumb:EnableMouse(true)
@@ -659,7 +659,7 @@ end
 --- @param brY number bottomright y
 function AW.ShowMask(parent, text, tlX, tlY, brX, brY)
     if not parent.mask then
-        parent.mask = AW.CreateBorderedFrame(parent, nil, nil, nil, AW.GetColorTable("widget", 0.7), "none")
+        parent.mask = AW.CreateBorderedFrame(parent, nil, nil, AW.GetColorTable("widget", 0.7), "none")
         parent.mask:SetFrameLevel(parent:GetFrameLevel()+30)
         parent.mask:EnableMouse(true)
         -- parent.mask:EnableMouseWheel(true) -- not enough
@@ -691,7 +691,7 @@ end
 -- combat mask (+100 frame level)
 ---------------------------------------------------------------------
 local function CreateCombatMask(parent, tlX, tlY, brX, brY)
-    parent.combatMask = AW.CreateBorderedFrame(parent, nil, nil, nil, AW.GetColorTable("darkred", 0.8), "none")
+    parent.combatMask = AW.CreateBorderedFrame(parent, nil, nil, AW.GetColorTable("darkred", 0.8), "none")
     
     parent.combatMask:SetFrameLevel(parent:GetFrameLevel()+100)
     parent.combatMask:EnableMouse(true)

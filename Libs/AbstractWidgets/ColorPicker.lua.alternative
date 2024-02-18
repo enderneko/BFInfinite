@@ -322,7 +322,7 @@ end
 -- create color pane
 -------------------------------------------------
 local function CreateColorPane(parent)
-    local pane = AW.CreateBorderedFrame(parent, nil, 98, 27)
+    local pane = AW.CreateBorderedFrame(parent, 98, 27)
 
     pane.solid = AW.CreateTexture(pane)
     AW.SetPoint(pane.solid, "TOPLEFT", 1, -1)
@@ -487,7 +487,7 @@ local function CreateColorPickerFrame()
     ---------------------------------------------
     -- hue, saturation
     ---------------------------------------------
-    hueSaturationPaneBG = AW.CreateBorderedFrame(colorPickerFrame, nil, 130, 130)
+    hueSaturationPaneBG = AW.CreateBorderedFrame(colorPickerFrame, 130, 130)
     AW.SetPoint(hueSaturationPaneBG, "TOPLEFT", currentPane, "BOTTOMLEFT", 0, -7)
     
     hueSaturationPane = CreateFrame("Frame", nil, hueSaturationPaneBG)

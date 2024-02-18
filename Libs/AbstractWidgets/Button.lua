@@ -382,7 +382,7 @@ end
 ---------------------------------------------------------------------
 --- @param labels table {{["text"]=(string), ["value"]=(boolean/string/number), ["onClick"]=(function)}, ...}
 function AW.CreateSwitch(parent, width, height, labels)
-    local switch = AW.CreateBorderedFrame(parent, nil, width, height, "widget")
+    local switch = AW.CreateBorderedFrame(parent, width, height, "widget")
 
     switch.highlight = AW.CreateTexture(switch, nil, AW.GetColorTable("accent", 0.07))
     AW.SetPoint(switch.highlight, "TOPLEFT", 1, -1)

@@ -23,7 +23,7 @@ local function CreateListFrame()
     list.buttons = {}
     
     -- highlight
-    local highlight = AW.CreateBorderedFrame(list, nil, 100, 100, "none", "accent")
+    local highlight = AW.CreateBorderedFrame(list, 100, 100, "none", "accent")
     highlight:Hide()
 
     function list:SetHighlightItem(i)
@@ -54,7 +54,7 @@ end
 -- horizontalList
 ---------------------------------------------------------------------
 local function CreateHorizontalList()
-    horizontalList = AW.CreateBorderedFrame(UIParent, nil, 10, 20, "widget")
+    horizontalList = AW.CreateBorderedFrame(UIParent, 10, 20, "widget")
     horizontalList:SetClampedToScreen(true)
     horizontalList:Hide()
 
@@ -72,7 +72,7 @@ local function CreateHorizontalList()
     end
     
     -- highlight
-    local highlight = AW.CreateBorderedFrame(horizontalList, nil, 100, 100, "none", "accent")
+    local highlight = AW.CreateBorderedFrame(horizontalList, 100, 100, "none", "accent")
     highlight:Hide()
 
     function horizontalList:SetHighlightItem(i)
@@ -119,7 +119,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
 
     local currentList = (isMini and isHorizontal) and horizontalList or list
     
-    local menu = AW.CreateBorderedFrame(parent, nil, width, 20, "widget")
+    local menu = AW.CreateBorderedFrame(parent, width, 20, "widget")
     menu:EnableMouse(true)
 
     -- label

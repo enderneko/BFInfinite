@@ -7,8 +7,8 @@ function AW.ShowDemo()
         return
     end
 
-    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 710, 420)
-    AW.SetPoint(demo, "BOTTOMLEFT", 270, 270)
+    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 710, 500)
+    AW.SetPoint(demo, "BOTTOMLEFT", 500, 270)
     demo:SetFrameLevel(100)
     demo:Show()
 
@@ -87,7 +87,7 @@ function AW.ShowDemo()
     cb4:SetChecked(true)
 
     -- bordered frame -------------------------------------------------------- --
-    local bf1 = AW.CreateBorderedFrame(demo, nil, 150, 150, nil, "accent")
+    local bf1 = AW.CreateBorderedFrame(demo, 150, 150, nil, "accent")
     AW.SetPoint(bf1, "TOPLEFT", b3, "BOTTOMLEFT", 0, -10)
 
     -- font string ----------------------------------------------------------- --
@@ -99,7 +99,8 @@ function AW.ShowDemo()
     AW.SetPoint(tp1, "TOPLEFT", bf1, 5, -30)
 
     -- button group ---------------------------------------------------------- --
-    local bf2 = AW.CreateBorderedFrame(demo, "Button Group", 100, 60)
+    local bf2 = AW.CreateBorderedFrame(demo, 100, 60)
+    bf2:SetTitle("Button Group")
     AW.SetPoint(bf2, "TOPLEFT", eb4, "BOTTOMLEFT", 0, -27)
     AW.SetListHeight(bf2, 3, 20, -1)
 
