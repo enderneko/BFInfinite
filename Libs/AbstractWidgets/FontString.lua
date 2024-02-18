@@ -40,14 +40,14 @@ local function creationFunc()
 
     local ag = fs:CreateAnimationGroup()
 
-    -- in -------------------------------------------------------------------- --
+    -- in ---------------------------------------
     local in_a = ag:CreateAnimation("Alpha")
     in_a:SetOrder(1)
     in_a:SetFromAlpha(0)
     in_a:SetToAlpha(1)
     in_a:SetDuration(0.25)
     
-    -- out ------------------------------------------------------------------- --
+    -- out -------------------------------------
     local out_a = ag:CreateAnimation("Alpha")
     out_a:SetOrder(2)
     out_a:SetFromAlpha(1)
@@ -104,4 +104,121 @@ function AW.ShowNotificationText(text, color, width, hideDelay, point, relativeT
 
     fs:SetPoint(point, relativeTo, relativePoint, offsetX, offsetY)
     fs:ShowUp(relativeTo, hideDelay)
+end
+
+---------------------------------------------------------------------
+-- scroll text
+---------------------------------------------------------------------
+function AW.CreateScrollText(parent, frequency, step, startDelay, endDelay)
+    -- vars -------------------------------------
+    frequency = frequency or 0.02
+    step = step or 1
+    startDelay = startDelay or 2
+    endDelay = endDelay or 2
+    local scroll, scrollRange = 0, 0
+    local sTime, eTime, elapsedTime = 0, 0, 0
+    ---------------------------------------------
+
+    local holder = CreateFrame("ScrollFrame", nil, parent)
+    AW.SetHeight(holder, 20)
+
+    local content = CreateFrame("Frame", nil, holder)
+    content:SetSize(20, 20)
+    holder:SetScrollChild(content)
+
+    local text = AW.CreateFontString(content)
+    text:SetWordWrap(false)
+    text:SetPoint("LEFT")
+
+    -- fade in ----------------------------------
+    local fadeIn = text:CreateAnimationGroup()
+    fadeIn._in = fadeIn:CreateAnimation("Alpha")
+    fadeIn._in:SetFromAlpha(0)
+    fadeIn._in:SetToAlpha(1)
+    fadeIn._in:SetDuration(0.5)
+    ---------------------------------------------
+    
+    -- fade out then in -------------------------
+    local fadeOutIn = text:CreateAnimationGroup()
+    
+    fadeOutIn._out = fadeOutIn:CreateAnimation("Alpha")
+    fadeOutIn._out:SetFromAlpha(1)
+    fadeOutIn._out:SetToAlpha(0)
+    fadeOutIn._out:SetDuration(0.5)
+    fadeOutIn._out:SetOrder(1)
+    
+    fadeOutIn._in = fadeOutIn:CreateAnimation("Alpha")
+    fadeOutIn._in:SetStartDelay(0.1) -- time for SetHorizontalScroll(0)
+    fadeOutIn._in:SetFromAlpha(0)
+    fadeOutIn._in:SetToAlpha(1)
+    fadeOutIn._in:SetDuration(0.5)
+    fadeOutIn._in:SetOrder(2)
+
+    fadeOutIn._out:SetScript("OnFinished", function()
+        holder:SetHorizontalScroll(0)
+        scroll = 0
+    end)
+
+    fadeOutIn:SetScript("OnFinished", function()
+        sTime, eTime, elapsedTime = 0, 0, 0
+    end)
+    ---------------------------------------------
+
+    -- init holder
+    holder:SetScript("OnShow", function()
+        fadeIn:Play()
+        holder:SetHorizontalScroll(0)
+        scroll = 0
+        sTime, eTime, elapsedTime = 0, 0, 0
+
+        holder:SetScript("OnUpdate", function()
+            -- NOTE: holder:GetWidth() is valid on next OnUpdate
+            if holder:GetWidth() ~= 0 then
+                holder:SetScript("OnUpdate", nil)
+
+                if text:GetStringWidth() <= holder:GetWidth() then
+                    holder:SetScript("OnUpdate", nil)
+                else
+                    scrollRange = text:GetStringWidth() - holder:GetWidth()
+                    -- NOTE: FPS significantly affects OnUpdate frequency
+                    holder:SetScript("OnUpdate", function(self, elapsed)
+                        sTime = sTime + elapsed
+                        if eTime >= endDelay then
+                            fadeOutIn:Play()
+                        elseif sTime >= startDelay then
+                            if scroll >= scrollRange then -- scroll at max
+                                eTime = eTime + elapsed
+                            else
+                                elapsedTime = elapsedTime + elapsed
+                                if elapsedTime >= frequency then -- scroll
+                                    elapsedTime = 0
+                                    scroll = scroll + step
+                                    holder:SetHorizontalScroll(scroll)
+                                end
+                            end
+                        end
+                    end)
+                end
+            end
+        end)
+    end)
+
+    function holder:SetText(str, color)
+        text:SetText(color and AW.WrapTextInColor(str, color) or str)
+        if holder:IsVisible() then
+            holder:GetScript("OnShow")()
+        end
+    end
+
+    function holder:UpdatePixels()
+        AW.ReSize(holder)
+        AW.RePoint(holder)
+        if holder:IsVisible() then
+            holder:GetScript("OnShow")()
+        end
+    end
+
+    AW.AddToPixelUpdater(holder)
+
+    return holder
 end

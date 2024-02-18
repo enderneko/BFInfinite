@@ -423,4 +423,13 @@ function AW.ShowDemo()
         AW.ShowNotificationDialog(demo, text, 200, true, 3)
         AW.SetNotificationDialogPoint("TOPLEFT", 255, -120)
     end)
+
+    -- scroll text ----------------------------------------------------------- --
+    local bf3 = AW.CreateBorderedFrame(demo, 500, 20)
+    AW.SetPoint(bf3, "TOPLEFT", bf2, "BOTTOMLEFT", 0, -10)
+
+    local st = AW.CreateScrollText(bf3, 0.01)
+    AW.SetPoint(st, "TOPLEFT", 4, 0)
+    AW.SetPoint(st, "TOPRIGHT", -4, 0)
+    st:SetText("World of Warcraft, often abbreviated as WoW, is a massively multiplayer online roleplaying game (MMORPG) developed by Blizzard Entertainment and released on November 23, 2004, on the 10th anniversary of the Warcraft franchise, three years after its announcement on September 2, 2001. It is the fourth released game set in the Warcraft universe, and takes place four years after the events of Warcraft III: The Frozen Throne.", "gold")
 end
