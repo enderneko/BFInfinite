@@ -687,6 +687,12 @@ function AW.ShowMask(parent, text, tlX, tlY, brX, brY)
     return parent.mask
 end
 
+function AW.HideMask(parent)
+    if parent.mask then
+        parent.mask:Hide()
+    end
+end
+
 ---------------------------------------------------------------------
 -- combat mask (+100 frame level)
 ---------------------------------------------------------------------

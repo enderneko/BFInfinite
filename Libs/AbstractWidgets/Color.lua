@@ -294,6 +294,7 @@ local buttonColors = {
     ["blue-hover"] = {["normal"]=button_color_normal, ["hover"]={0, 0.5, 0.8, 1}},
     ["yellow"] = {["normal"]={0.7, 0.7, 0, 0.6}, ["hover"]={0.7, 0.7, 0, 1}},
     ["yellow-hover"] = {["normal"]=button_color_normal, ["hover"]={0.7, 0.7, 0, 1}},
+    ["hotpink"] = {["normal"]={1, 0.27, 0.4, 0.6}, ["hover"]={1, 0.27, 0.4, 1}},
 }
 
 function AW.GetButtonNormalColor(name)

@@ -7,15 +7,24 @@ function AW.ShowDemo()
         return
     end
 
+    -- ----------------------------------------------------------------------- --
+    --                              headered frame                             --
+    -- ----------------------------------------------------------------------- --
     local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 710, 500)
     AW.SetPoint(demo, "BOTTOMLEFT", 500, 270)
     demo:SetFrameLevel(100)
     demo:Show()
 
-    -- apply combat protection ----------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                         apply combat protection                         --
+    -- ----------------------------------------------------------------------- --
     AW.ApplyCombatProtectionToFrame(demo)
 
-    -- button ---------------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                                  button                                 --
+    -- ----------------------------------------------------------------------- --
     local b1 = AW.CreateButton(demo, "Button A", "accent", 100, 20)
     AW.SetPoint(b1, "TOPLEFT", 10, -10)
     AW.SetTooltips(b1, "ANCHOR_TOPLEFT", 0, 2, "Tooltip Title", "This is a tooltip")
@@ -43,7 +52,10 @@ function AW.ShowDemo()
     AW.SetPoint(b6, "TOPLEFT", b5, "TOPRIGHT", 10, 0)
     b6:SetEnabled(false)
 
-    -- check button ---------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                               check button                              --
+    -- ----------------------------------------------------------------------- --
     local cb1 = AW.CreateCheckButton(demo, "Check boxes")
     AW.SetPoint(cb1, "TOPLEFT", b1, "BOTTOMLEFT", 0, -10)
     AW.SetTooltips(cb1, "ANCHOR_TOPLEFT", 0, 3, "Check Button", "The hit rectangle of these check buttons are different")
@@ -57,7 +69,10 @@ function AW.ShowDemo()
     end)
     AW.SetPoint(cb3, "TOPLEFT", cb2, "BOTTOMLEFT", 0, -7)
 
-    -- edit box -------------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                                 edit box                                --
+    -- ----------------------------------------------------------------------- --
     local eb1 = AW.CreateEditBox(demo, "Edit Box", 200, 20)
     AW.SetPoint(eb1, "TOPLEFT", cb3, "BOTTOMLEFT", 0, -10)
     eb1:SetOnTextChanged(function(text)
@@ -86,19 +101,31 @@ function AW.ShowDemo()
     AW.SetPoint(cb4, "BOTTOMLEFT", eb4, "BOTTOMRIGHT", 2, 0)
     cb4:SetChecked(true)
 
-    -- bordered frame -------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                              bordered frame                             --
+    -- ----------------------------------------------------------------------- --
     local bf1 = AW.CreateBorderedFrame(demo, 150, 150, nil, "accent")
     AW.SetPoint(bf1, "TOPLEFT", b3, "BOTTOMLEFT", 0, -10)
 
-    -- font string ----------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                               font string                               --
+    -- ----------------------------------------------------------------------- --
     local fs1 = AW.CreateFontString(bf1, "Bordered Frame", "gray")
     AW.SetPoint(fs1, "TOPLEFT", 5, -5)
 
-    -- titled pane ----------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                               titled pane                               --
+    -- ----------------------------------------------------------------------- --
     local tp1 = AW.CreateTitledPane(demo, "Titled Pane", 140, 100)
     AW.SetPoint(tp1, "TOPLEFT", bf1, 5, -30)
 
-    -- button group ---------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                               button group                              --
+    -- ----------------------------------------------------------------------- --
     local bf2 = AW.CreateBorderedFrame(demo, 100, 60)
     bf2:SetTitle("Button Group")
     AW.SetPoint(bf2, "TOPLEFT", eb4, "BOTTOMLEFT", 0, -27)
@@ -126,7 +153,10 @@ function AW.ShowDemo()
         print("selected", id)
     end)
 
-    -- scroll frame ---------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                               scroll frame                              --
+    -- ----------------------------------------------------------------------- --
     local sf1 = AW.CreateScrollFrame(demo, 150, 150)
     AW.SetPoint(sf1, "TOPLEFT", bf1, "BOTTOMLEFT", 0, -10)
     -- AW.SetPoint(sf1, "TOPRIGHT", bf1, "BOTTOMRIGHT", 0, -10)
@@ -141,7 +171,10 @@ function AW.ShowDemo()
 
     sf1:SetContentHeight(20)
 
-    -- switch ---------------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                                  switch                                 --
+    -- ----------------------------------------------------------------------- --
     local sw1 = AW.CreateSwitch(demo, 150, 20, {
         {
             ["text"] = "20",
@@ -175,7 +208,10 @@ function AW.ShowDemo()
     AW.SetPoint(sw1, "TOPLEFT", sf1, "BOTTOMLEFT", 0, -10)
     sw1:SetSelectedValue(20)
 
-    -- slider ---------------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                                  slider                                 --
+    -- ----------------------------------------------------------------------- --
     local sl1 = AW.CreateSlider(tp1, "Scale", 130, 0.5, 2, 0.1)
     AW.SetPoint(sl1, "TOPLEFT", 5, -40)
     sl1:SetValue(1)
@@ -220,7 +256,10 @@ function AW.ShowDemo()
         AW.UpdateFontSize(value)
     end)
 
-    -- scroll list ----------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                               scroll list                               --
+    -- ----------------------------------------------------------------------- --
     local slist1 = AW.CreateScrollList(demo, 150, 5, 5, 7, 20, 5)
     AW.SetPoint(slist1, "TOPLEFT", bf1, "TOPRIGHT", 10, 0)
     local widgets = {}
@@ -229,7 +268,10 @@ function AW.ShowDemo()
     end
     slist1:SetWidgets(widgets)
 
-    -- dropdown -------------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                                 dropdown                                --
+    -- ----------------------------------------------------------------------- --
     -- normal dropdown (items <= 10)
     local dd1 = AW.CreateDropdown(demo, 150)
     AW.SetPoint(dd1, "TOPLEFT", slist1, "TOPRIGHT", 10, 0)
@@ -338,7 +380,10 @@ function AW.ShowDemo()
     end
     dd8:SetItems(items)
 
-    -- color picker ---------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                               color picker                              --
+    -- ----------------------------------------------------------------------- --
     local cp1 = AW.CreateColorPicker(demo, "Color Picker", true, function(r, g, b, a)
         print("ColorPicker1_OnChange:", r, g, b, a)
     end, function(r, g, b, a)
@@ -356,7 +401,10 @@ function AW.ShowDemo()
     cp3:SetColor(AW.GetColorTable("purple"))
     cp3:SetEnabled(false)
 
-    -- dialog1 --------------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                                 dialog1                                 --
+    -- ----------------------------------------------------------------------- --
     local b7 = AW.CreateButton(demo, "Dialog1", "accent-hover", 150, 20)
     AW.SetPoint(b7, "TOPLEFT", cp3, "BOTTOMLEFT", 0, -10)
     b7:SetScript("OnClick", function()
@@ -368,7 +416,10 @@ function AW.ShowDemo()
         end)
     end)
 
-    -- dialog2 --------------------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                                 dialog2                                 --
+    -- ----------------------------------------------------------------------- --
     local b8 = AW.CreateButton(demo, "Dialog2", "accent-hover", 150, 20)
     AW.SetPoint(b8, "TOPLEFT", b7, "BOTTOMLEFT", 0, -7)
     
@@ -415,7 +466,10 @@ function AW.ShowDemo()
         end)
     end)
 
-    -- notificator dialog ----------------------------------------------------- --
+
+    -- ----------------------------------------------------------------------- --
+    --                            notificator dialog                           --
+    -- ----------------------------------------------------------------------- --
     local b9 = AW.CreateButton(demo, "NotificationDialog", "accent-hover", 150, 20)
     AW.SetPoint(b9, "TOPLEFT", b8, "BOTTOMLEFT", 0, -7)
     b9:SetScript("OnClick", function()
@@ -424,12 +478,132 @@ function AW.ShowDemo()
         AW.SetNotificationDialogPoint("TOPLEFT", 255, -120)
     end)
 
-    -- scroll text ----------------------------------------------------------- --
-    local bf3 = AW.CreateBorderedFrame(demo, 500, 20)
+
+    -- ----------------------------------------------------------------------- --
+    --                               scroll text                               --
+    -- ----------------------------------------------------------------------- --
+    local bf3 = AW.CreateBorderedFrame(demo, 530, 20)
     AW.SetPoint(bf3, "TOPLEFT", bf2, "BOTTOMLEFT", 0, -10)
 
     local st = AW.CreateScrollText(bf3, 0.01)
     AW.SetPoint(st, "TOPLEFT", 4, 0)
     AW.SetPoint(st, "TOPRIGHT", -4, 0)
     st:SetText("World of Warcraft, often abbreviated as WoW, is a massively multiplayer online roleplaying game (MMORPG) developed by Blizzard Entertainment and released on November 23, 2004, on the 10th anniversary of the Warcraft franchise, three years after its announcement on September 2, 2001. It is the fourth released game set in the Warcraft universe, and takes place four years after the events of Warcraft III: The Frozen Throne.", "gold")
+
+
+    -- ----------------------------------------------------------------------- --
+    --                             animated resize                             --
+    -- ----------------------------------------------------------------------- --
+    local b10 = AW.CreateButton(demo, "Animated Resize", "accent-hover", 150, 20)
+    AW.SetPoint(b10, "TOPLEFT", bf3, "BOTTOMLEFT", 0, -10)
+
+    local bf4 = AW.CreateBorderedFrame(demo, 120, 78, nil, "hotpink")
+    bf4:SetFrameLevel(demo:GetFrameLevel()+50)
+    bf4:Hide()
+    AW.SetPoint(bf4, "BOTTOMLEFT", b10, "TOPLEFT", 0, 10)
+
+    bf4.widthText = AW.CreateFontString(bf4, "120", "hotpink")
+    AW.SetPoint(bf4.widthText, "BOTTOMLEFT", bf4, "TOPLEFT", 0, 2)
+    
+    bf4.heightText = AW.CreateFontString(bf4, "78", "hotpink")
+    AW.SetPoint(bf4.heightText, "BOTTOMLEFT", bf4, "BOTTOMRIGHT", 2, 0)
+
+    local function UpdateSizeText(width, height)
+        bf4.widthText:SetText(Round(width))
+        bf4.heightText:SetText(Round(height))
+    end
+
+    b10:SetScript("OnClick", function()
+        if bf4:IsShown() then
+            AW.HideMask(demo)
+            b10:SetFrameLevel(demo:GetFrameLevel()+1)
+            bf4:Hide()
+        else
+            AW.ShowMask(demo)
+            b10:SetFrameLevel(demo:GetFrameLevel()+50)
+            bf4:Show()
+        end
+    end)
+
+    -- both
+    local b11 = AW.CreateButton(bf4, "Both+", "hotpink", 100, 20)
+    AW.SetPoint(b11, "BOTTOMLEFT", 10, 10)
+    
+    -- height
+    local b12 = AW.CreateButton(bf4, "Height+", "hotpink", 100, 20)
+    AW.SetPoint(b12, "BOTTOMLEFT", b11, "TOPLEFT", 0, -1)
+
+    -- width
+    local b13 = AW.CreateButton(bf4, "Width+", "hotpink", 100, 20)
+    AW.SetPoint(b13, "BOTTOMLEFT", b12, "TOPLEFT", 0, -1)
+
+    local maxWidth, maxHeight
+    
+    b11:SetScript("OnClick", function()
+        if not maxWidth or not maxHeight then
+            AW.AnimatedResize(bf4, 300, 200, nil, nil, function()
+                AW.Disable(b11, b12, b13)
+            end, function()
+                maxWidth, maxHeight = true, true
+                AW.Enable(b11, b12, b13)
+                b11:SetText("Both-")
+                b12:SetText("Height-")
+                b13:SetText("Width-")
+            end, UpdateSizeText)
+        else
+            AW.AnimatedResize(bf4, 120, 78, nil, nil, function()
+                AW.Disable(b11, b12, b13)
+            end, function()
+                maxWidth, maxHeight = false, false
+                AW.Enable(b11, b12, b13)
+                b11:SetText("Both+")
+                b12:SetText("Height+")
+                b13:SetText("Width+")
+            end, UpdateSizeText)
+        end
+    end)
+    
+    b12:SetScript("OnClick", function()
+        if not maxHeight then
+            AW.AnimatedResize(bf4, nil, 200, nil, nil, function()
+                AW.Disable(b11, b12, b13)
+            end, function()
+                maxHeight = true
+                AW.Enable(b11, b12, b13)
+                b12:SetText("Height-")
+                if maxWidth then b11:SetText("Both-") end
+            end, UpdateSizeText)
+        else
+            AW.AnimatedResize(bf4, nil, 78, nil, nil, function()
+                AW.Disable(b11, b12, b13)
+            end, function()
+                maxHeight = false
+                AW.Enable(b11, b12, b13)
+                b12:SetText("Height+")
+                b11:SetText("Both+")
+            end, UpdateSizeText)
+        end
+    end)
+
+    b13:SetScript("OnClick", function()
+        if not maxWidth then
+            AW.AnimatedResize(bf4, 300, nil, nil, nil, function()
+                AW.Disable(b11, b12, b13)
+            end, function()
+                maxWidth = true
+                AW.Enable(b11, b12, b13)
+                b13:SetText("Width-")
+                if maxHeight then b11:SetText("Both-") end
+            end, UpdateSizeText)
+        else
+            AW.AnimatedResize(bf4, 120, nil, nil, nil, function()
+                AW.Disable(b11, b12, b13)
+            end, function()
+                maxWidth = false
+                AW.Enable(b11, b12, b13)
+                b13:SetText("Width+")
+                b11:SetText("Both+")
+            end, UpdateSizeText)
+        end
+    end)
 end

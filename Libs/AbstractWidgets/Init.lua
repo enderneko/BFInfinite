@@ -67,4 +67,12 @@ function AW.SetEnabled(isEnabled, ...)
     end
 end
 
+function AW.Enable(...)
+    AW.SetEnabled(true, ...)
+end
+
+function AW.Disable(...)
+    AW.SetEnabled(false, ...)
+end
+
 -- TODO: disable all children
