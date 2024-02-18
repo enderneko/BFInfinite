@@ -424,8 +424,7 @@ function AW.ShowDemo()
     AW.SetPoint(b8, "TOPLEFT", b7, "BOTTOMLEFT", 0, -7)
     
     -- content
-    local form = AW.CreateDialogContent()
-    AW.SetHeight(form, 50) -- hight is required
+    local form = AW.CreateDialogContent(50)
 
     -- NOTE: use WIDTH for pixel perfect
 

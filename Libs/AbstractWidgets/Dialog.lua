@@ -176,9 +176,11 @@ function AW.ResizeDialogButtonToFitText(minWidth)
 end
 
 -- content in contentHolder
-function AW.CreateDialogContent()
+function AW.CreateDialogContent(height)
+    assert(height, "height is required")
     if not dialog then CreateDialog() end
     local f = AW.CreateFrame(dialog.contentHolder)
+    AW.SetHeight(f, height)
     f.dialog = dialog
     return f
 end
