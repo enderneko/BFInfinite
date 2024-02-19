@@ -187,40 +187,45 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
 
     -- texture ----------------------------------
     function b:SetTexture(tex, size, point, isAtlas, noPushDownEffect)
-        b.texture = b:CreateTexture(nil, "ARTWORK")
-        assert(#point==3, "point format error! should be something like {\"CENTER\", 0, 0}")
-        AW.SetPoint(b.texture, unpack(point))
-        AW.SetSize(b.texture, unpack(size))
+        if not b.texture then
+            b.texture = b:CreateTexture(nil, "ARTWORK")
+            -- enable / disable
+            b:HookScript("OnEnable", function()
+                b.texture:SetDesaturated(false)
+                b.texture:SetVertexColor(AW.GetColorRGB("white"))
+            end)
+            b:HookScript("OnDisable", function()
+                b.texture:SetDesaturated(true)
+                b.texture:SetVertexColor(AW.GetColorRGB("disabled"))
+            end)
+            
+            assert(#point==3, "point format error! should be something like {\"CENTER\", 0, 0}")
+            AW.SetPoint(b.texture, unpack(point))
+            AW.SetSize(b.texture, unpack(size))
+            
+            -- update fontstring point
+            AW.ClearPoints(b.text)
+            AW.SetPoint(b.text, "LEFT", b.texture, "RIGHT", 2, 0)
+            AW.SetPoint(b.text, "RIGHT", -2, 0)
+            -- push effect
+            b._disableTextPushEffect = true
+            if not noPushDownEffect then
+                b.onMouseDownTexture = function()
+                    b.texture:ClearAllPoints()
+                    b.texture:SetPoint(point[1], point[2], point[3]-AW.GetOnePixelForRegion(b))
+                end
+                b.onMouseUpTexture = function()
+                    b.texture:ClearAllPoints()
+                    b.texture:SetPoint(unpack(point))
+                end
+            end
+        end
+        
         if isAtlas then
             b.texture:SetAtlas(tex)
         else
             b.texture:SetTexture(tex)
         end
-        -- update fontstring point
-        AW.ClearPoints(b.text)
-        AW.SetPoint(b.text, "LEFT", b.texture, "RIGHT", 2, 0)
-        AW.SetPoint(b.text, "RIGHT", -2, 0)
-        -- push effect
-        b._disableTextPushEffect = true
-        if not noPushDownEffect then
-            b.onMouseDownTexture = function()
-                b.texture:ClearAllPoints()
-                b.texture:SetPoint(point[1], point[2], point[3]-AW.GetOnePixelForRegion(b))
-            end
-            b.onMouseUpTexture = function()
-                b.texture:ClearAllPoints()
-                b.texture:SetPoint(unpack(point))
-            end
-        end
-        -- enable / disable
-        b:HookScript("OnEnable", function()
-            b.texture:SetDesaturated(false)
-            b.texture:SetVertexColor(AW.GetColorRGB("white"))
-        end)
-        b:HookScript("OnDisable", function()
-            b.texture:SetDesaturated(true)
-            b.texture:SetVertexColor(AW.GetColorRGB("disabled"))
-        end)
     end
 
     function b:UpdatePixels()

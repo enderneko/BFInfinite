@@ -117,10 +117,11 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
     if not list then CreateListFrame() end
     if not horizontalList then CreateHorizontalList() end
 
-    local currentList = (isMini and isHorizontal) and horizontalList or list
-    
     local menu = AW.CreateBorderedFrame(parent, width, 20, "widget")
     menu:EnableMouse(true)
+    
+    local currentList = (isMini and isHorizontal) and horizontalList or list
+    menu.isMini = isMini
 
     -- label
     function menu:SetLabel(label, color, font)
@@ -150,7 +151,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
         menu.button = AW.CreateButton(menu, nil, "accent-hover", 18, 20)
         menu.button:SetPoint("TOPRIGHT")
         menu.button:SetPoint("BOTTOMRIGHT")
-        menu.button:SetTexture(AW.GetIcon("Dropdown"), {16, 16}, {"CENTER", 0, 0})
+        menu.button:SetTexture(AW.GetIcon("ArrowDown"), {16, 16}, {"CENTER", 0, 0})
         -- menu.button:SetBackdropColor(AW.GetColorRGB("none"))
         -- menu.button._color = AW.GetColorTable("none")
         -- selected item
@@ -387,6 +388,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                 elseif menu.onClick then
                     menu.onClick(item.value)
                 end
+                if not isMini then menu.button:SetTexture(AW.GetIcon("ArrowDown")) end
             end)
 
             -- update point
@@ -440,17 +442,24 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
     menu:SetScript("OnHide", function()
         if currentList.menu == menu then
             currentList:Hide()
+            if not isMini then menu.button:SetTexture(AW.GetIcon("ArrowDown")) end
         end
     end)
     
     -- scripts
     menu.button:HookScript("OnClick", function()
         if currentList.menu ~= menu then -- list shown by other dropdown
+            if currentList.menu and not currentList.menu.isMini then
+                -- restore previous menu's button texture
+                currentList.menu.button:SetTexture(AW.GetIcon("ArrowDown"))
+            end
             LoadItems()
             currentList:Show()
+            if not isMini then menu.button:SetTexture(AW.GetIcon("ArrowUp")) end
 
         elseif currentList:IsShown() then -- list showing by this, hide it
             currentList:Hide()
+            if not isMini then menu.button:SetTexture(AW.GetIcon("ArrowDown")) end
 
         else
             if menu.reloadRequired then
@@ -462,6 +471,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
                 end
             end
             currentList:Show()
+            if not isMini then menu.button:SetTexture(AW.GetIcon("ArrowUp")) end
         end
     end)
     

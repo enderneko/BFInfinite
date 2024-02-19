@@ -135,12 +135,12 @@ end
 ---------------------------------------------------------------------
 --- @param color string|table color name / table
 --- @param borderColor string|table color name / table
-function AW.CreateBorderedFrame(parent, width, height, color, borderColor, fontColor, font)
+function AW.CreateBorderedFrame(parent, width, height, color, borderColor)
     local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     AW.StylizeFrame(f, color, borderColor)
     AW.SetSize(f, width, height)
 
-    function f:SetTitle(title)
+    function f:SetTitle(title, fontColor, font)
         f.title = AW.CreateFontString(f, title, fontColor or "accent", font or "accent_title")
         AW.SetPoint(f.title, "BOTTOMLEFT", f, "TOPLEFT", 2, 2)
     end
