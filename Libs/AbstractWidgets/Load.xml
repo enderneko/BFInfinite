@@ -13,6 +13,7 @@
     <Script file="Button.lua"/>
     <Script file="EditBox.lua"/>
     <Script file="Slider.lua"/>
+    <Script file="StatusBar.lua"/>
     <Script file="Dropdown.lua"/>
     <Script file="ColorPicker.lua"/>
     <Script file="Dialog.lua"/>

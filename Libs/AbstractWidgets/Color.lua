@@ -4,11 +4,11 @@ local AW = ns.AW
 ---------------------------------------------------------------------
 -- color utils
 ---------------------------------------------------------------------
-function AW.ConvertRGB(r, g, b, desaturation)
-    if not desaturation then desaturation = 1 end
-    r = r / 255 * desaturation
-    g = g / 255 * desaturation
-    b = b / 255 * desaturation
+function AW.ConvertRGB(r, g, b, saturation)
+    if not saturation then saturation = 1 end
+    r = r / 255 * saturation
+    g = g / 255 * saturation
+    b = b / 255 * saturation
     return r, g, b
 end
 
@@ -244,19 +244,21 @@ local colors = {
     ["WoWToken"] = {["hex"]="ff00ccff", ["t"]={0, 0.8, 1, 1}}, -- ITEM_QUALITY8_DESC
 }
 
-function AW.GetColorRGB(name, alpha)
+function AW.GetColorRGB(name, alpha, saturation)
     assert(colors[name], "no such color!")
+    saturation = saturation or 1
     if alpha then
-        return colors[name]["t"][1], colors[name]["t"][2], colors[name]["t"][3], alpha
+        return colors[name]["t"][1]*saturation, colors[name]["t"][2]*saturation, colors[name]["t"][3]*saturation, alpha
     else
         return unpack(colors[name]["t"])
     end
 end
 
-function AW.GetColorTable(name, alpha)
+function AW.GetColorTable(name, alpha, saturation)
     assert(colors[name], "no such color!")
+    saturation = saturation or 1
     if alpha then
-        return {colors[name]["t"][1], colors[name]["t"][2], colors[name]["t"][3], alpha}
+        return {colors[name]["t"][1]*saturation, colors[name]["t"][2]*saturation, colors[name]["t"][3]*saturation, alpha}
     else
         return colors[name]["t"] -- use default alpha 1
     end

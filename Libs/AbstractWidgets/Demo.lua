@@ -605,4 +605,53 @@ function AW.ShowDemo()
             end, UpdateSizeText)
         end
     end)
+
+
+    -- ----------------------------------------------------------------------- --
+    --                                status bar                               --
+    -- ----------------------------------------------------------------------- --
+    local function OnUpdate(self, elapsed)
+        self.elapsed = (self.elapsed or 0) + elapsed
+        if self.elapsed >= 0.02 then
+            self.elapsed = 0
+            if self.isReverse then
+                self.value = (self.value or 0) - 1
+            else
+                self.value = (self.value or 0) + 1
+            end
+            if self.value == 100 then
+                self.isReverse = true
+                self.elapsed = -1
+            elseif self.value == 0 then
+                self.isReverse = false
+                self.elapsed = -1
+            end
+            self:SetBarValue(self.value)
+        end
+    end
+   
+    local bar1 = AW.CreateStatusBar(demo, 0, 100, 100, 20, "skyblue", nil, "percentage")
+    AW.SetPoint(bar1, "TOPLEFT", b10, "BOTTOMLEFT", 0, -10)
+
+    local bar2 = AW.CreateStatusBar(demo, 0, 100, 100, 20, "hotpink", nil, "value")
+    AW.SetPoint(bar2, "TOPLEFT", bar1, "TOPRIGHT", 10, 0)
+    bar2:SetScript("OnUpdate", OnUpdate)
+
+    local bar3 = AW.CreateStatusBar(demo, 0, 100, 100, 20, "lime", nil, "value-max")
+    AW.SetPoint(bar3, "TOPLEFT", bar2, "TOPRIGHT", 10, 0)
+    bar3:SetScript("OnUpdate", OnUpdate)
+
+    local bar4 = AW.CreateStatusBar(demo, 0, 100, 320, 7, "accent")
+    AW.SetPoint(bar4, "TOPLEFT", bar1, "BOTTOMLEFT", 0, -5)
+    
+    bar1:SetScript("OnUpdate", function(self, elapsed)
+        OnUpdate(self, elapsed)
+        if self.value == 100 then
+            bar4:SetSmoothedValue(100)
+        elseif self.value == 50 then
+            bar4:SetSmoothedValue(50)
+        elseif self.value == 0 then
+            bar4:SetSmoothedValue(0)
+        end
+    end)
 end

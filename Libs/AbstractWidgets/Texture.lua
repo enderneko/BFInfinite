@@ -37,7 +37,7 @@ end
 --- @param color1 table|string
 --- @param color2 table|string
 function AW.CreateGradientTexture(parent, orientation, color1, color2, texture, drawLayer, subLevel)
-    texture = texture or "Interface\\Buttons\\WHITE8x8"
+    texture = texture or AW.GetPlainTexture()
     if type(color1) == "string" then color1 = AW.GetColorTable(color1) end
     if type(color2) == "string" then color2 = AW.GetColorTable(color2) end
     color1 = color1 or {0, 0, 0, 0}
@@ -97,4 +97,11 @@ end
 ---------------------------------------------------------------------
 function AW.GetTexture(texture)
     return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Textures\\"..texture..".png"
+end
+
+---------------------------------------------------------------------
+-- get plain texture
+---------------------------------------------------------------------
+function AW.GetPlainTexture()
+    return "Interface\\Buttons\\WHITE8x8"
 end

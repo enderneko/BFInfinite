@@ -181,6 +181,9 @@ function AW.CreateScrollText(parent, frequency, step, startDelay, endDelay)
                 else
                     scrollRange = text:GetStringWidth() - holder:GetWidth()
                     -- NOTE: FPS significantly affects OnUpdate frequency
+                    -- 60FPS  -> 0.0166667 (1/60)
+                    -- 90FPS  -> 0.0111111 (1/90)
+                    -- 120FPS -> 0.0083333 (1/120)
                     holder:SetScript("OnUpdate", function(self, elapsed)
                         sTime = sTime + elapsed
                         if eTime >= endDelay then
