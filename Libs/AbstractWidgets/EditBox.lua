@@ -242,8 +242,14 @@ function AW.CreateScrollEditBox(parent, label, width, height, scrollStep)
         frame.scrollThumb:EnableMouse(enabled)
         if enabled then
             frame.scrollThumb:SetBackdropColor(AW.GetColorRGB("accent"))
+            frame.scrollThumb:SetBackdropBorderColor(AW.GetColorRGB("black"))
+            frame.scrollBar:SetBackdropBorderColor(AW.GetColorRGB("black"))
+            frame.scrollFrame:SetBackdropBorderColor(AW.GetColorRGB("black"))
         else
-            frame.scrollThumb:SetBackdropColor(AW.GetColorRGB("disabled"))
+            frame.scrollThumb:SetBackdropColor(AW.GetColorRGB("disabled", 0.7))
+            frame.scrollThumb:SetBackdropBorderColor(AW.GetColorRGB("black", 0.7))
+            frame.scrollBar:SetBackdropBorderColor(AW.GetColorRGB("black", 0.7))
+            frame.scrollFrame:SetBackdropBorderColor(AW.GetColorRGB("black", 0.7))
         end
     end
 
