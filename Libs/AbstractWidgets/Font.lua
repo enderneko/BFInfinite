@@ -10,6 +10,8 @@ local FONT_TITLE_NAME = prefix.."_FONT_TITLE"
 local FONT_TITLE_DISABLE_NAME = prefix.."_FONT_TITLE_DISABLE"
 local FONT_NORMAL_NAME = prefix.."_FONT_NORMAL"
 local FONT_NORMAL_DISABLE_NAME = prefix.."_FONT_NORMAL_DISABLE"
+local FONT_SMALL_NAME = prefix.."_FONT_SMALL"
+local FONT_SMALL_DISABLE_NAME = prefix.."_FONT_SMALL_DISABLE"
 local FONT_CHINESE_NAME = prefix.."_FONT_CHINESE"
 local FONT_SPECIAL_NAME = prefix.."_FONT_SPECIAL"
 local FONT_ACCENT_TITLE_NAME = prefix.."_FONT_ACCENT_TITLE"
@@ -17,6 +19,7 @@ local FONT_ACCENT_NAME = prefix.."_FONT_ACCENT"
 
 local FONT_TITLE_SIZE = 14
 local FONT_NORMAL_SIZE = 13
+local FONT_SMALL_SIZE = 11
 local FONT_CHINESE_SIZE = 14
 local FONT_SPECIAL_SIZE = 12
 local FONT_ACCENT_TITLE_SIZE = 14
@@ -51,6 +54,20 @@ font_normal_disable:SetTextColor(AW.GetColorRGB("disabled"))
 font_normal_disable:SetShadowColor(0, 0, 0)
 font_normal_disable:SetShadowOffset(1, -1)
 font_normal_disable:SetJustifyH("CENTER")
+
+local font_small = CreateFont(FONT_SMALL_NAME)
+font_small:SetFont(BASE_FONT, FONT_SMALL_SIZE, "")
+font_small:SetTextColor(1, 1, 1, 1)
+font_small:SetShadowColor(0, 0, 0)
+font_small:SetShadowOffset(1, -1)
+font_small:SetJustifyH("CENTER")
+
+local font_small_disable = CreateFont(FONT_SMALL_DISABLE_NAME)
+font_small_disable:SetFont(BASE_FONT, FONT_SMALL_SIZE, "")
+font_small_disable:SetTextColor(AW.GetColorRGB("disabled"))
+font_small_disable:SetShadowColor(0, 0, 0)
+font_small_disable:SetShadowOffset(1, -1)
+font_small_disable:SetJustifyH("CENTER")
 
 local font_chinese = CreateFont(FONT_CHINESE_NAME)
 font_chinese:SetFont(UNIT_NAME_FONT_CHINESE, FONT_CHINESE_SIZE, "")
@@ -96,6 +113,8 @@ function AW.UpdateFontSize(offset)
     font_title_disable:SetFont(BASE_FONT, FONT_TITLE_SIZE+offset, "")
     font_normal:SetFont(BASE_FONT, FONT_NORMAL_SIZE+offset, "")
     font_normal_disable:SetFont(BASE_FONT, FONT_NORMAL_SIZE+offset, "")
+    font_small:SetFont(BASE_FONT, FONT_SMALL_SIZE+offset, "")
+    font_small_disable:SetFont(BASE_FONT, FONT_SMALL_SIZE+offset, "")
     font_chinese:SetFont(UNIT_NAME_FONT_CHINESE, FONT_CHINESE_SIZE+offset, "")
     font_accent_title:SetFont(BASE_FONT, FONT_ACCENT_TITLE_SIZE+offset, "")
     font_accent:SetFont(BASE_FONT, FONT_ACCENT_SIZE+offset, "")
@@ -114,6 +133,8 @@ function AW.GetFontName(font, isDisabled)
         return isDisabled and FONT_TITLE_DISABLE_NAME or FONT_TITLE_NAME
     elseif font == "normal" then
         return isDisabled and FONT_NORMAL_DISABLE_NAME or FONT_NORMAL_NAME
+    elseif font == "small" then
+        return isDisabled and FONT_SMALL_DISABLE_NAME or FONT_SMALL_NAME
     elseif font == "accent_title" then
         return FONT_ACCENT_TITLE_NAME
     elseif font == "accent" then
@@ -126,6 +147,8 @@ function AW.GetFontObject(font, isDisabled)
         return isDisabled and font_title_disable or font_title
     elseif font == "normal" then
         return isDisabled and font_normal_disable or font_normal
+    elseif font == "small" then
+        return isDisabled and font_small_disable or font_small
     elseif font == "accent_title" then
         return font_accent_title
     elseif font == "accent" then
@@ -138,6 +161,8 @@ function AW.GetFontFile(font)
             return BASE_FONT, FONT_TITLE_SIZE+AW.fontSizeOffset, ""
     elseif font == "normal" then
             return BASE_FONT, FONT_NORMAL_SIZE+AW.fontSizeOffset, ""
+    elseif font == "small" then
+            return BASE_FONT, FONT_SMALL_SIZE+AW.fontSizeOffset, ""
     elseif font == "accent_title" then
         return BASE_FONT, FONT_ACCENT_TITLE_SIZE+AW.fontSizeOffset, ""
     elseif font == "accent" then
