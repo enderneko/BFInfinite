@@ -76,9 +76,19 @@ function AW.CreateHeaderedFrame(parent, name, title, width, height, frameStrata,
     AW.SetHeight(header, 20)
     AW.StylizeFrame(header, "header")
 
-    header.text = header:CreateFontString(nil, "OVERLAY", AW.GetFontName("accent_title"))
-    header.text:SetText(title)
+    header.text = AW.CreateFontString(header, title, nil, "accent_title")
     header.text:SetPoint("CENTER")
+
+    function f:SetTitleJustify(justify)
+        AW.ClearPoints(header.text)
+        if justify == "LEFT" then
+            AW.SetPoint(header.text, "LEFT", 7, 0)
+        elseif justify == "RIGHT" then
+            AW.SetPoint(header.text, "RIGHT", header.closeBtn, "LEFT", -7, 0)
+        else
+            AW.SetPoint(header.text, "CENTER")
+        end
+    end
 
     header.closeBtn = AW.CreateCloseButton(header, f, 20, 20)
     header.closeBtn:SetPoint("TOPRIGHT")
@@ -122,6 +132,7 @@ function AW.CreateHeaderedFrame(parent, name, title, width, height, frameStrata,
         AW.RePoint(header)
         AW.ReBorder(header)
         AW.RePoint(header.tex)
+        AW.RePoint(header.text)
         header.closeBtn:UpdatePixels()
     end
 
