@@ -92,6 +92,10 @@ function AW.GetIcon(icon)
     return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Icons\\"..icon..".png"
 end
 
+function AW.GetIconString(icon)
+    return "|T"..AW.GetIcon(icon)..":0|t"
+end
+
 ---------------------------------------------------------------------
 -- get texture
 ---------------------------------------------------------------------
