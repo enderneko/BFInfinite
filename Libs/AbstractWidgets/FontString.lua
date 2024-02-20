@@ -6,10 +6,10 @@ local AW = ns.AW
 ---------------------------------------------------------------------
 --- @param color string color name defined in Color.lua
 --- @param font string color name defined in Font.lua
-function AW.CreateFontString(parent, text, color, font, isDisabled)
+function AW.CreateFontString(parent, text, color, font, isDisabled, layer)
     font = AW.GetFontName(font or "normal", isDisabled)
 
-    local fs = parent:CreateFontString(nil, "OVERLAY", font)
+    local fs = parent:CreateFontString(nil, layer or "OVERLAY", font)
     if color then AW.ColorFontString(fs, color) end
     fs:SetText(text)
 
