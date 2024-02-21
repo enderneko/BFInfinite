@@ -704,6 +704,14 @@ function AW.ShowDemo()
     
     local b15 = AW.CreateButton(bf5, "PPopup+", "accent", 75, 20)
     AW.SetPoint(b15, "BOTTOMRIGHT", b14, "BOTTOMLEFT", 1, 0)
+    b15:SetScript("OnClick", function()
+        local callback = AW.ShowProgressPopup("In Progress...", 100, true)
+        local v = 0
+        C_Timer.NewTicker(2, function()
+            v = v + 25
+            callback(v)
+        end, 4)
+    end)
 
     local b16 = AW.CreateButton(bf5, "CPopup+", "accent", 75, 20)
     AW.SetPoint(b16, "BOTTOMRIGHT", b15, "BOTTOMLEFT", 1, 0)

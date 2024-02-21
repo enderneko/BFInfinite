@@ -7,8 +7,18 @@ function AW.CreateStatusBar(parent, minValue, maxValue, width, height, color, bo
     local bar = CreateFrame("StatusBar", nil, parent, "BackdropTemplate")
     AW.StylizeFrame(bar, AW.GetColorTable(color, 0.9, 0.1), borderColor)
     AW.SetSize(bar, width, height)
+
+    minValue = minValue or 1
+    maxValue = maxValue or 1
     
+    bar._SetMinMaxValues = bar.SetMinMaxValues
+    function bar:SetMinMaxValues(l, h)
+        bar:_SetMinMaxValues(l, h)
+        bar.minValue = l
+        bar.maxValue = h
+    end
     bar:SetMinMaxValues(minValue, maxValue)
+
     bar:SetStatusBarTexture(AW.GetPlainTexture())
     bar:SetStatusBarColor(AW.GetColorRGB(color, 0.7))
     bar:GetStatusBarTexture():SetDrawLayer("BORDER", -7)
@@ -23,7 +33,7 @@ function AW.CreateStatusBar(parent, minValue, maxValue, width, height, color, bo
         AW.SetPoint(bar.progressText, "CENTER")
         if progressTextType == "percentage" then
             bar:SetScript("OnValueChanged", function()
-                bar.progressText:SetFormattedText("%d%%", (bar:GetValue()-minValue)/maxValue*100)
+                bar.progressText:SetFormattedText("%d%%", (bar:GetValue()-bar.minValue)/bar.maxValue*100)
             end)
         elseif progressTextType == "value" then
             bar:SetScript("OnValueChanged", function()
@@ -31,7 +41,7 @@ function AW.CreateStatusBar(parent, minValue, maxValue, width, height, color, bo
             end)
         elseif progressTextType == "value-max" then
             bar:SetScript("OnValueChanged", function()
-                bar.progressText:SetFormattedText("%d/%d", bar:GetValue(), maxValue)
+                bar.progressText:SetFormattedText("%d/%d", bar:GetValue(), bar.maxValue)
             end)
         end
     end

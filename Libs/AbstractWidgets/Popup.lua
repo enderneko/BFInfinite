@@ -7,7 +7,8 @@ local popups = {}
 local MAX_POPUPS = 5
 local DEFAULT_WIDTH = 220
 local DEFAULT_OFFSET = 10
-local DEFAULT_TIMEOUT = 10
+local DEFAULT_NOTIFICATION_TIMEOUT = 10
+local DEFAULT_PROGRESS_TIMEOUT = 5
 
 local settings = {
     ["point"] = "BOTTOMLEFT",
@@ -445,13 +446,83 @@ end
 confirmPool = CreateObjectPool(cpCreationFn)
 
 ---------------------------------------------------------------------
+-- progressPool
+---------------------------------------------------------------------
+local ppCreationFn = function()
+    local p = AW.CreateBorderedFrame(parent)
+    p:Hide()
+
+    CreateAnimation(p)
+    p:EnableMouse(true)
+
+    -- text ------------------------------------------------------------------ --
+    local text = AW.CreateFontString(p)
+    p.text = text
+    AW.SetPoint(p.text, "LEFT", 7, 0)
+    AW.SetPoint(p.text, "RIGHT", -7, 0)
+
+    -- progressBar ----------------------------------------------------------- --
+    local bar = AW.CreateStatusBar(p, nil, nil, 5, 5, "accent", nil, "percentage")
+    p.bar = bar
+    AW.SetPoint(bar, "BOTTOMLEFT")
+    AW.SetPoint(bar, "BOTTOMRIGHT")
+
+    AW.ClearPoints(bar.progressText)
+    AW.SetPoint(bar.progressText, "BOTTOMRIGHT", -1, 1)
+    bar.progressText:SetFontObject(AW.GetFontName("small"))
+
+    p.callback = function(value)
+        if p.isSmoothedBar then
+            p.bar:SetSmoothedValue(value)
+        else
+            p.bar:SetBarValue(value)
+        end
+        if value >= bar.maxValue then
+            if p:IsShown() then
+                C_Timer.After(DEFAULT_PROGRESS_TIMEOUT, function()
+                    AddToHidingQueue(p)
+                end)
+            end
+        end
+    end
+
+    -- OnShow ---------------------------------------------------------------- --
+    p:SetScript("OnShow", function()
+        -- update height
+        p:SetScript("OnUpdate", function()
+            p.text:SetWidth(Round(p:GetWidth()-14))
+            p:SetHeight(Round(p.text:GetHeight())+40)
+            p:SetScript("OnUpdate", nil)
+        end)
+        -- play sound
+        PlaySoundFile(AW.GetSound("pop"))
+        -- check if is done
+        if bar:GetValue() >= bar.maxValue then
+            C_Timer.After(DEFAULT_PROGRESS_TIMEOUT, function()
+                AddToHidingQueue(p)
+            end)
+        end
+    end)
+
+    -- OnHide --------------------------------------------------------------- --
+    p:SetScript("OnHide", function()
+        OnPopupHide(p)
+        -- release
+        progressPool:Release(p)
+    end)
+
+    return p
+end
+progressPool = CreateObjectPool(ppCreationFn)
+
+---------------------------------------------------------------------
 -- notification popup
 ---------------------------------------------------------------------
 function AW.ShowNotificationPopup(text, timeout, width, justify)
     local p = notificationPool:Acquire()
     p.text:SetText(text)
     AW.SetWidth(p, width or DEFAULT_WIDTH)
-    p:SetTimeout(timeout or DEFAULT_TIMEOUT)
+    p:SetTimeout(timeout or DEFAULT_NOTIFICATION_TIMEOUT)
     p.text:SetJustifyH("CENTER" or justify)
     -- AW.StylizeFrame(p, color, borderColor)
 
@@ -479,6 +550,18 @@ end
 ---------------------------------------------------------------------
 -- progress popup
 ---------------------------------------------------------------------
-function AW.ShowProgressPopup()
+function AW.ShowProgressPopup(text, maxValue, isSmoothedBar, width, justify)
+    local p = progressPool:Acquire()
+    AW.SetWidth(p, width or DEFAULT_WIDTH)
+    p.text:SetText(text)
+    p.text:SetJustifyH("CENTER" or justify)
+    p.bar:SetMinMaxValues(0, maxValue)
+    p.bar:SetBarValue(0)
+    p.isSmoothedBar = isSmoothedBar
+    
+    tinsert(popups, p)
+    p.index = #popups
+    ShowPopups(true)
 
+    return p.callback
 end
