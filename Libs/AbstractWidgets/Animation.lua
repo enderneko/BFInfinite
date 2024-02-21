@@ -9,9 +9,17 @@ function AW.CreateFadeInOutAnimationGroup(region, duration)
 
     local in_ag = region:CreateAnimationGroup()
     region.fadeIn = in_ag
-    
+
     local out_ag = region:CreateAnimationGroup()
     region.fadeOut = out_ag
+    
+    function region:FadeIn()
+        region.fadeIn:Play()
+    end
+    
+    function region:FadeOut()
+        region.fadeOut:Play()
+    end
 
     -- in -----------------------------------------------------------
     local in_a = in_ag:CreateAnimation("Alpha")
