@@ -6,6 +6,7 @@
     <Script file="Texture.lua"/>
     <Script file="Font.lua"/>
     <Script file="Animation.lua"/>
+    <Script file="Media.lua"/>
     <Include file="TooltipTemplate.xml"/>
     <Script file="Tooltip.lua"/>
     <Script file="Frame.lua"/>
