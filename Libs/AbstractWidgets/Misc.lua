@@ -1,9 +1,12 @@
 local addonName, ns = ...
 local AW = ns.AW
 
+--TODO: adjust text colors
+
 ---------------------------------------------------------------------
 -- net stats
 ---------------------------------------------------------------------
+--- @param layout string "horizontal|vertical"
 function AW.CreateNetStatsPane(parent, anchorPoint, showBandwidth, showLatency, layout)
     anchorPoint = anchorPoint or "LEFT"
     anchorPoint = strupper(anchorPoint)
@@ -59,6 +62,47 @@ function AW.CreateNetStatsPane(parent, anchorPoint, showBandwidth, showLatency, 
 
     f:SetScript("OnShow", function()
         f.timer = C_Timer.NewTicker(2, Update)
+    end)
+
+    f:SetScript("OnHide", function()
+        if f.timer then
+            f.timer:Cancel()
+            f.timer = nil
+        end
+    end)
+
+    Update()
+    f:Hide()
+    f:Show()
+
+    return f
+end
+
+---------------------------------------------------------------------
+-- fps
+---------------------------------------------------------------------
+function AW.CreateFPSPane(parent, anchorPoint)
+    anchorPoint = anchorPoint or "LEFT"
+    anchorPoint = strupper(anchorPoint)
+
+    local f = AW.CreateFrame(parent, 20, 20)
+    
+    f.text = AW.CreateFontString(f, nil, "sand", "small")
+    AW.SetPoint(f.text, anchorPoint)
+    if strfind(anchorPoint, "LEFT$") then
+        f.text:SetJustifyH("LEFT")
+    elseif strfind(anchorPoint, "RIGHT$") then
+        f.text:SetJustifyH("RIGHT")
+    else
+        f.text:SetJustifyH("CENTER")
+    end
+
+    local function Update()
+        f.text:SetFormattedText("%.1ffps", GetFramerate())
+    end
+
+    f:SetScript("OnShow", function()
+        f.timer = C_Timer.NewTicker(0.2, Update)
     end)
 
     f:SetScript("OnHide", function()
