@@ -18,6 +18,7 @@
     <Script file="Dropdown.lua"/>
     <Script file="ColorPicker.lua"/>
     <Script file="Dialog.lua"/>
+    <Script file="Popup.lua"/>
     <Script file="Misc.lua"/>
     <Script file="Demo.lua"/>
 </Ui>

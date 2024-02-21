@@ -13,7 +13,35 @@ function AW.ShowDemo()
     local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 710, 500)
     AW.SetPoint(demo, "BOTTOMLEFT", 500, 270)
     demo:SetFrameLevel(100)
+    demo:SetTitleJustify("LEFT")
+    
+    -- background
+    demo:SetScript("OnShow", function()
+        if not THE_BACKGROUND then
+            THE_BACKGROUND = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+            THE_BACKGROUND:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
+            THE_BACKGROUND:SetBackdropColor(0.3, 0.3, 0.3, 1)
+            THE_BACKGROUND:SetAllPoints(UIParent)
+            THE_BACKGROUND:SetFrameStrata("BACKGROUND")
+            THE_BACKGROUND:SetFrameLevel(0)
+            THE_BACKGROUND:Hide()
+        end
+        THE_BACKGROUND:Show()
+    end)
+    
+    demo:SetScript("OnHide", function()
+        THE_BACKGROUND:Hide()
+    end)
+    
     demo:Show()
+    
+    -- netstats
+    local ns = AW.CreateNetStatsPane(demo.header, "RIGHT", true, true)
+    AW.SetPoint(ns, "RIGHT", demo.header.closeBtn, "LEFT", -5, 0)
+
+    -- fps
+    local fps = AW.CreateFPSPane(demo.header, "RIGHT")
+    AW.SetPoint(fps, "RIGHT", ns, "LEFT", -210, 0)
 
 
     -- ----------------------------------------------------------------------- --
@@ -217,6 +245,7 @@ function AW.ShowDemo()
     sl1:SetValue(1)
     sl1:SetAfterValueChanged(function(value)
         demo:SetScale(value)
+        AW.SetPopupScale(value)
         AW.UpdatePixels()
     end)
 
@@ -652,6 +681,36 @@ function AW.ShowDemo()
             bar4:SetSmoothedValue(50)
         elseif self.value == 0 then
             bar4:SetSmoothedValue(0)
+        end
+    end)
+
+
+    -- ----------------------------------------------------------------------- --
+    --                                  popups                                 --
+    -- ----------------------------------------------------------------------- --
+    AW.SetPopupMoverText("Mover")
+
+    local bf5 = AW.CreateBorderedFrame(demo, 300, 20)
+    AW.SetPoint(bf5, "BOTTOMLEFT", b10, "BOTTOMRIGHT", 10, 0)
+    
+    local fs2 = AW.CreateFontString(bf5, "Popups", "accent")
+    AW.SetPoint(fs2, "LEFT", bf5, 5, 0)
+
+    local b14 = AW.CreateButton(bf5, "Mover", "accent", 75, 20)
+    AW.SetPoint(b14, "BOTTOMRIGHT")
+    b14:SetScript("OnClick", function()
+        AW.TogglePopupMover()
+    end)
+    
+    local b15 = AW.CreateButton(bf5, "CPopup+", "accent", 75, 20)
+    AW.SetPoint(b15, "BOTTOMRIGHT", b14, "BOTTOMLEFT", 1, 0)
+
+    local b16 = AW.CreateButton(bf5, "NPopup+", "accent", 75, 20)
+    AW.SetPoint(b16, "BOTTOMRIGHT", b15, "BOTTOMLEFT", 1, 0)
+    b16:SetScript("OnClick", function()
+        for i = 1, 7 do
+            local timeout = random(2, 7)
+            AW.ShowNotificationPopup("TEST "..AW.WrapTextInColor(timeout.."sec", "gray"), timeout)
         end
     end)
 end
