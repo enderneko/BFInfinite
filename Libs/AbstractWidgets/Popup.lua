@@ -5,7 +5,7 @@ local parent, mover
 local popups = {}
 
 local MAX_POPUPS = 5
-local DEFAULT_WIDTH = 200
+local DEFAULT_WIDTH = 220
 local DEFAULT_OFFSET = 10
 local DEFAULT_TIMEOUT = 10
 
@@ -26,7 +26,7 @@ local function CreateParent()
     parent = CreateFrame("Frame", strupper(ns.prefix).."PopupParent", UIParent)
     -- parent:SetBackdrop({edgeFile=AW.GetPlainTexture(), edgeSize=AW.GetOnePixelForRegion(parent)})
     -- parent:SetBackdropBorderColor(AW.GetColorRGB("black"))
-    AW.SetSize(parent, 200, 60)
+    AW.SetSize(parent, DEFAULT_WIDTH, 60)
     AW.SetPoint(parent, "BOTTOMLEFT", 0, 420)
     parent:SetFrameStrata("DIALOG")
     parent:SetFrameLevel(777)
@@ -223,32 +223,68 @@ local function HandleNext()
     hidingHandler.isProcessing = nil
 end
 
-local function AddToHidingQueue(f)
-    if f.isInQueue then return end --! prevent Click and Timeout at the same time
-    f.isInQueue = true
-    tinsert(hidingQueue, f)
+local function AddToHidingQueue(p)
+    if p.isInQueue then return end --! prevent Click and Timeout at the same time
+    p.isInQueue = true
+    tinsert(hidingQueue, p)
     hidingHandler:Show()
 end
 
 local function WipeHidingQueue()
-    for _, f in ipairs(hidingQueue) do
-        f.isInQueue = nil
+    for _, p in ipairs(hidingQueue) do
+        p.isInQueue = nil
     end
     wipe(hidingQueue)
+end
+
+local function OnPopupHide(p)
+    -- update index
+    for i = p.index+1, #popups do
+        popups[i].index = popups[i].index - 1
+    end
+    tremove(popups, p.index)
+
+    if #popups == 0 then
+        --! all popups hide
+        -- the last popup won't move
+        WipeHidingQueue()
+    else
+        -- play move animation
+        local hooked
+        for i = p.index, MAX_POPUPS do
+            if not popups[i] then break end
+
+            -- only hook ONE popup
+            if not hooked then
+                -- refresh
+                hooked = true
+                popups[i]:SetOnMoveFinished(HandleNext)
+            else
+                popups[i]:SetOnMoveFinished()
+            end
+            popups[i]:Move(Round(p:GetHeight())+DEFAULT_OFFSET)
+        end
+
+        if not hooked then
+            HandleNext()
+        end
+    end
+
+    p.index = nil
 end
 
 ---------------------------------------------------------------------
 -- animation
 ---------------------------------------------------------------------
-local function CreateAnimation(f)
-    AW.CreateFadeInOutAnimationGroup(f)
+local function CreateAnimation(p)
+    AW.CreateFadeInOutAnimationGroup(p)
 
-    local move_ag = f:CreateAnimationGroup()
+    local move_ag = p:CreateAnimationGroup()
     local move_a = move_ag:CreateAnimation("Translation")
     move_a:SetDuration(0.25)
 
-    function f:Move(offset)
-        if not f:IsShown() then f:FadeIn() end
+    function p:Move(offset)
+        if not p:IsShown() then p:FadeIn() end
         if not move_ag:IsPlaying() then
             if settings["orientation"] == "bottom-to-top" then
                 move_a:SetOffset(0, -offset)
@@ -259,11 +295,11 @@ local function CreateAnimation(f)
         end
     end
     
-    function f:SetOnMoveFinished(script)
+    function p:SetOnMoveFinished(script)
         move_ag:SetScript("OnFinished", script)
     end
 
-    function f:StopMoving()
+    function p:StopMoving()
         if move_ag:IsPlaying() then
             move_ag:Finish()
         end
@@ -274,21 +310,21 @@ end
 -- notificationPool
 ---------------------------------------------------------------------
 local npCreationFn = function()
-    local f = AW.CreateBorderedFrame(parent)
-    f:Hide()
+    local p = AW.CreateBorderedFrame(parent)
+    p:Hide()
 
-    CreateAnimation(f)
-    f:EnableMouse(true)
+    CreateAnimation(p)
+    p:EnableMouse(true)
 
     -- text ------------------------------------------------------------------ --
-    local text = AW.CreateFontString(f)
-    f.text = text
-    AW.SetPoint(f.text, "LEFT", 7, 0)
-    AW.SetPoint(f.text, "RIGHT", -7, 0)
+    local text = AW.CreateFontString(p)
+    p.text = text
+    AW.SetPoint(p.text, "LEFT", 7, 0)
+    AW.SetPoint(p.text, "RIGHT", -7, 0)
 
     -- timerBar -------------------------------------------------------------- --
-    local timerBar = CreateFrame("StatusBar", nil, f)
-    f.timerBar = timerBar
+    local timerBar = CreateFrame("StatusBar", nil, p)
+    p.timerBar = timerBar
     timerBar:SetStatusBarTexture(AW.GetPlainTexture())
     timerBar:SetStatusBarColor(AW.GetColorRGB("accent"))
     AW.SetPoint(timerBar, "BOTTOMLEFT", 1, 1)
@@ -296,68 +332,36 @@ local npCreationFn = function()
     AW.SetHeight(timerBar, 1)
 
     -- OnMouseUp ------------------------------------------------------------- --
-    f:SetScript("OnMouseUp", function()
-        if f.timer then
-            f.timer:Cancel()
-            f.timer = nil
+    p:SetScript("OnMouseUp", function()
+        if p.timer then
+            p.timer:Cancel()
+            p.timer = nil
         end
-        AddToHidingQueue(f)
+        AddToHidingQueue(p)
     end)
 
     -- OnHide --------------------------------------------------------------- --
-    f:SetScript("OnHide", function()
-        -- update index
-        for i = f.index+1, #popups do
-            popups[i].index = popups[i].index - 1
-        end
-        tremove(popups, f.index)
-        
-        if #popups == 0 then
-            --! all popups hide
-            -- the last popup won't move
-            WipeHidingQueue()
-        else
-            -- play move animation
-            local hooked
-            for i = f.index, MAX_POPUPS do
-                if not popups[i] then break end
-    
-                -- only hook ONE popup
-                if not hooked then
-                    -- refresh
-                    hooked = true
-                    popups[i]:SetOnMoveFinished(HandleNext)
-                else
-                    popups[i]:SetOnMoveFinished()
-                end
-                popups[i]:Move(Round(f:GetHeight())+DEFAULT_OFFSET)
-            end
-
-            if not hooked then
-                HandleNext()
-            end
-        end
-        
+    p:SetScript("OnHide", function()
+        OnPopupHide(p)
         -- release
-        f.index = nil
-        notificationPool:Release(f)
+        notificationPool:Release(p)
     end)
 
     -- SetTimeout ------------------------------------------------------------ --
-    function f:SetTimeout(timeout)
-        f:SetScript("OnShow", function()
+    function p:SetTimeout(timeout)
+        p:SetScript("OnShow", function()
             -- update height
-            f:SetScript("OnUpdate", function()
-                f.text:SetWidth(Round(f:GetWidth()-14))
-                f:SetHeight(Round(f.text:GetHeight())+40)
-                f:SetScript("OnUpdate", nil)
+            p:SetScript("OnUpdate", function()
+                p.text:SetWidth(Round(p:GetWidth()-14))
+                p:SetHeight(Round(p.text:GetHeight())+40)
+                p:SetScript("OnUpdate", nil)
             end)
             -- play sound
             PlaySoundFile(AW.GetSound("pop"))
             -- timer bar
-            f.timer = C_Timer.NewTimer(timeout, function()
-                f.timer = nil
-                AddToHidingQueue(f)
+            p.timer = C_Timer.NewTimer(timeout, function()
+                p.timer = nil
+                AddToHidingQueue(p)
             end)
             timerBar:SetReverseFill(settings["alignment"]=="RIGHT")
             timerBar:SetMinMaxValues(0, timeout)
@@ -369,39 +373,107 @@ local npCreationFn = function()
         end)
     end
 
-    function f:UpdatePixels()
-        AW.ReSize(f)
-        AW.RePoint(f)
-        AW.ReBorder(f)
+    function p:UpdatePixels()
+        AW.ReSize(p)
+        AW.RePoint(p)
+        AW.ReBorder(p)
         AW.ReSize(timerBar)
         AW.RePoint(timerBar)
     end
 
-    return f
+    return p
 end
 notificationPool = CreateObjectPool(npCreationFn)
+
+---------------------------------------------------------------------
+-- confirmPool
+---------------------------------------------------------------------
+local cpCreationFn = function()
+    local p = AW.CreateBorderedFrame(parent)
+    p:Hide()
+
+    CreateAnimation(p)
+    p:EnableMouse(true)
+
+    -- text ------------------------------------------------------------------ --
+    local text = AW.CreateFontString(p)
+    p.text = text
+    AW.SetPoint(p.text, "LEFT", 7, 5)
+    AW.SetPoint(p.text, "RIGHT", -7, 5)
+
+    -- button ---------------------------------------------------------------- --
+    local no = AW.CreateButton(p, _G.NO, "red", 40, 15, nil, nil, nil, "small")
+    p.no = no
+    AW.SetPoint(no, "BOTTOMRIGHT")
+    no:SetScript("OnClick", function()
+        if p.onCancel then p.onCancel() end
+        AW.Disable(p.yes, p.no)
+        AddToHidingQueue(p)
+    end)
+    
+    local yes = AW.CreateButton(p, _G.YES, "green", 40, 15, nil, nil, nil, "small")
+    p.yes = yes
+    AW.SetPoint(yes, "BOTTOMRIGHT", no, "BOTTOMLEFT", 1, 0)
+    yes:SetScript("OnClick", function()
+        if p.onConfirm then p.onConfirm() end
+        AW.Disable(p.yes, p.no)
+        AddToHidingQueue(p)
+    end)
+
+    -- OnShow ---------------------------------------------------------------- --
+    p:SetScript("OnShow", function()
+        AW.Enable(yes, no)
+        -- update height
+        p:SetScript("OnUpdate", function()
+            p.text:SetWidth(Round(p:GetWidth()-14))
+            p:SetHeight(Round(p.text:GetHeight())+50)
+            p:SetScript("OnUpdate", nil)
+        end)
+        -- play sound
+        PlaySoundFile(AW.GetSound("pop"))
+    end)
+
+    -- OnHide --------------------------------------------------------------- --
+    p:SetScript("OnHide", function()
+        OnPopupHide(p)
+        -- release
+        confirmPool:Release(p)
+    end)
+
+    return p
+end
+confirmPool = CreateObjectPool(cpCreationFn)
 
 ---------------------------------------------------------------------
 -- notification popup
 ---------------------------------------------------------------------
 function AW.ShowNotificationPopup(text, timeout, width, justify)
-    local f = notificationPool:Acquire()
-    f.text:SetText(text)
-    AW.SetWidth(f, width or DEFAULT_WIDTH)
-    f:SetTimeout(timeout or DEFAULT_TIMEOUT)
-    f.text:SetJustifyH("CENTER" or justify)
-    -- AW.StylizeFrame(f, color, borderColor)
+    local p = notificationPool:Acquire()
+    p.text:SetText(text)
+    AW.SetWidth(p, width or DEFAULT_WIDTH)
+    p:SetTimeout(timeout or DEFAULT_TIMEOUT)
+    p.text:SetJustifyH("CENTER" or justify)
+    -- AW.StylizeFrame(p, color, borderColor)
 
-    tinsert(popups, f)
-    f.index = #popups
+    tinsert(popups, p)
+    p.index = #popups
     ShowPopups(true)
 end
 
 ---------------------------------------------------------------------
 -- confirm popup
 ---------------------------------------------------------------------
-function AW.ShowConfirmPopup()
-
+function AW.ShowConfirmPopup(text, onConfirm, onCancel, width, justify)
+    local p = confirmPool:Acquire()
+    p.text:SetText(text)
+    p.onConfirm = onConfirm
+    p.onCancel = onCancel
+    AW.SetWidth(p, width or DEFAULT_WIDTH)
+    p.text:SetJustifyH("CENTER" or justify)
+    
+    tinsert(popups, p)
+    p.index = #popups
+    ShowPopups(true)
 end
 
 ---------------------------------------------------------------------

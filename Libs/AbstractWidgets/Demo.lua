@@ -690,7 +690,7 @@ function AW.ShowDemo()
     -- ----------------------------------------------------------------------- --
     AW.SetPopupMoverText("Mover")
 
-    local bf5 = AW.CreateBorderedFrame(demo, 300, 20)
+    local bf5 = AW.CreateBorderedFrame(demo, 370, 20)
     AW.SetPoint(bf5, "BOTTOMLEFT", b10, "BOTTOMRIGHT", 10, 0)
     
     local fs2 = AW.CreateFontString(bf5, "Popups", "accent")
@@ -702,15 +702,27 @@ function AW.ShowDemo()
         AW.TogglePopupMover()
     end)
     
-    local b15 = AW.CreateButton(bf5, "CPopup+", "accent", 75, 20)
+    local b15 = AW.CreateButton(bf5, "PPopup+", "accent", 75, 20)
     AW.SetPoint(b15, "BOTTOMRIGHT", b14, "BOTTOMLEFT", 1, 0)
 
-    local b16 = AW.CreateButton(bf5, "NPopup+", "accent", 75, 20)
+    local b16 = AW.CreateButton(bf5, "CPopup+", "accent", 75, 20)
     AW.SetPoint(b16, "BOTTOMRIGHT", b15, "BOTTOMLEFT", 1, 0)
     b16:SetScript("OnClick", function()
-        for i = 1, 7 do
+        for i = 1, 3 do
+            AW.ShowConfirmPopup("Confirm "..i, function()
+                print("Confirm "..i, "yes")
+            end, function()
+                print("Confirm "..i, "no")
+            end)
+        end
+    end)
+
+    local b17 = AW.CreateButton(bf5, "NPopup+", "accent", 75, 20)
+    AW.SetPoint(b17, "BOTTOMRIGHT", b16, "BOTTOMLEFT", 1, 0)
+    b17:SetScript("OnClick", function()
+        for i = 1, 3 do
             local timeout = random(2, 7)
-            AW.ShowNotificationPopup("TEST "..AW.WrapTextInColor(timeout.."sec", "gray"), timeout)
+            AW.ShowNotificationPopup("Notification "..AW.WrapTextInColor(timeout.."sec", "gray"), timeout)
         end
     end)
 end
