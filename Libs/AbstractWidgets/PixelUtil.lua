@@ -223,6 +223,15 @@ function AW.AddToPixelUpdater(r)
     tinsert(regions, r)
 end
 
+function AW.RemoveFromPixelUpdater(r)
+    for i, _r in ipairs(r) do
+        if r == _r then
+            tremove(regions, i)
+            break    
+        end
+    end
+end
+
 function AW.UpdatePixels()
     for _, r in ipairs(regions) do
         r:UpdatePixels() 

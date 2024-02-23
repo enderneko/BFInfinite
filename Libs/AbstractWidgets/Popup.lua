@@ -333,7 +333,8 @@ local npCreationFn = function()
     AW.SetHeight(timerBar, 1)
 
     -- OnMouseUp ------------------------------------------------------------- --
-    p:SetScript("OnMouseUp", function()
+    p:SetScript("OnMouseUp", function(self, button)
+        if button ~= "RightButton" then return end
         if p.timer then
             p.timer:Cancel()
             p.timer = nil

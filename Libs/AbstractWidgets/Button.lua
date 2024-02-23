@@ -104,6 +104,10 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         return b.text:GetFont()
     end
 
+    function b:SetJustifyH(justify)
+        b.text:SetJustifyH(justify)
+    end
+
     -- border -----------------------------------
     if noBorder then
         b:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8"})

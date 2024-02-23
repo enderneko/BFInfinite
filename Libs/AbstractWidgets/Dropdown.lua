@@ -7,7 +7,7 @@ local list, horizontalList
 -- list
 ---------------------------------------------------------------------
 local function CreateListFrame()
-    list = AW.CreateScrollList(UIParent, 10, 1, 1, 10, 18, 0, "widget")
+    list = AW.CreateScrollList(UIParent, 10, 1, 1, 9, 18, 0, "widget")
     list:SetClampedToScreen(true)
     list:Hide()
 
@@ -103,17 +103,20 @@ end
 -- close dropdown
 ---------------------------------------------------------------------
 function AW.RegisterForCloseDropdown(f)
-    assert(f.OnMouseDown, "no OnMouseDown for this region!")
+    assert(f and f.HasScript and f:HasScript("OnMouseDown"), "no OnMouseDown for this region!")
     f:HookScript("OnMouseDown", function()
         list:Hide()
         horizontalList:Hide()
+        if list.menu and not list.menu.isMini then
+            list.menu.button:SetTexture(AW.GetIcon("ArrowDown"))
+        end
     end)
 end
 
 ---------------------------------------------------------------------
 -- dropdown menu
 ---------------------------------------------------------------------
-function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
+function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal, justify)
     if not list then CreateListFrame() end
     if not horizontalList then CreateHorizontalList() end
 
@@ -340,12 +343,12 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
 
             local fs = b.text
             if isMini then
-                fs:SetJustifyH("CENTER")
+                fs:SetJustifyH(justify or "CENTER")
                 AW.ClearPoints(fs)
                 AW.SetPoint(fs, "LEFT", 1, 0)
                 AW.SetPoint(fs, "RIGHT", -1, 0)
             else
-                fs:SetJustifyH("LEFT")
+                fs:SetJustifyH(justify or "LEFT")
                 AW.ClearPoints(fs)
                 AW.SetPoint(fs, "LEFT", 5, 0)
                 AW.SetPoint(fs, "RIGHT", -5, 0)
@@ -363,15 +366,16 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             if item.font then
                 -- set
                 b:SetFont(AW.GetFontFile(item.font))
-                function b:Update()
-                    --! invoked in SetScroll, or text may not "visible"
-                    b.text:Hide()
-                    b.text:Show()
-                end
             else
                 -- restore
                 b:SetFont(AW.GetFontFile("normal"))
                 b.Update = nil
+            end
+
+            function b:Update()
+                --! invoked in SetScroll, or text may not "visible"
+                b.text:Hide()
+                b.text:Show()
             end
 
             -- highlight
@@ -422,7 +426,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
             AW.SetPoint(currentList, "TOPLEFT", menu, "BOTTOMLEFT", 0, -2)
             AW.SetWidth(currentList, width)
             
-            currentList:SetSlotNum(min(#buttons, 10))
+            currentList:SetSlotNum(min(#buttons, 9))
             currentList:SetWidgets(buttons)
         end
     end
