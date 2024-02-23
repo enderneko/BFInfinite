@@ -704,6 +704,7 @@ function AW.ShowDemo()
     
     local b15 = AW.CreateButton(bf5, "PPopup+", "accent", 75, 20)
     AW.SetPoint(b15, "BOTTOMRIGHT", b14, "BOTTOMLEFT", 1, 0)
+    AW.SetTooltips(b15, "ANCHOR_TOPLEFT", 0, 2, "Progress Popup", "With progress bar", "Hide in 5 sec after completion")
     b15:SetScript("OnClick", function()
         local callback = AW.ShowProgressPopup("In Progress...", 100, true)
         local v = 0
@@ -715,6 +716,7 @@ function AW.ShowDemo()
 
     local b16 = AW.CreateButton(bf5, "CPopup+", "accent", 75, 20)
     AW.SetPoint(b16, "BOTTOMRIGHT", b15, "BOTTOMLEFT", 1, 0)
+    AW.SetTooltips(b16, "ANCHOR_TOPLEFT", 0, 2, "Confirm Popup", "With \"Yes\" & \"No\" buttons", "Won't hide automatically")
     b16:SetScript("OnClick", function()
         for i = 1, 3 do
             AW.ShowConfirmPopup("Confirm "..i, function()
@@ -727,10 +729,20 @@ function AW.ShowDemo()
 
     local b17 = AW.CreateButton(bf5, "NPopup+", "accent", 75, 20)
     AW.SetPoint(b17, "BOTTOMRIGHT", b16, "BOTTOMLEFT", 1, 0)
+    AW.SetTooltips(b17, "ANCHOR_TOPLEFT", 0, 2, "Notification Popup", "With timeout", "Right-Click to hide")
     b17:SetScript("OnClick", function()
         for i = 1, 3 do
             local timeout = random(2, 7)
             AW.ShowNotificationPopup("Notification "..AW.WrapTextInColor(timeout.."sec", "gray"), timeout)
         end
+    end)
+
+    -- ----------------------------------------------------------------------- --
+    --                                 calendar                                --
+    -- ----------------------------------------------------------------------- --
+    local dw = AW.CreateDateWidget(demo, time())
+    AW.SetPoint(dw, "BOTTOMRIGHT", -10, 10)
+    dw:SetOnDateChanged(function(dt)
+        print(dt.year, dt.month, dt.day, dt.timestamp)
     end)
 end

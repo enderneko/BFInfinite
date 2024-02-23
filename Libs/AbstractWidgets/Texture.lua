@@ -5,14 +5,14 @@ local AW = ns.AW
 -- texture
 ---------------------------------------------------------------------
 --- @param color table|string
-function AW.CreateTexture(parent, texture, color, drawLayer, subLevel)
+function AW.CreateTexture(parent, texture, color, drawLayer, subLevel, wrapModeHorizontal, wrapModeVertical, filterMode)
     local tex = parent:CreateTexture(nil, drawLayer or "ARTWORK", nil, subLevel)
 
     function tex:SetColor(c)
         if type(c) == "string" then c = AW.GetColorTable(c) end
         c = c or {1, 1, 1, 1}
         if texture then
-            tex:SetTexture(texture)
+            tex:SetTexture(texture, wrapModeHorizontal, wrapModeVertical, filterMode)
             tex:SetVertexColor(unpack(c))
         else
             tex:SetColorTexture(unpack(c))
