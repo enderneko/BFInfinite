@@ -7,7 +7,7 @@ local list, horizontalList
 -- list
 ---------------------------------------------------------------------
 local function CreateListFrame()
-    list = AW.CreateScrollList(UIParent, 10, 1, 1, 9, 18, 0, "widget")
+    list = AW.CreateScrollList(UIParent, 10, 1, 1, 10, 18, 0, "widget")
     list:SetClampedToScreen(true)
     list:Hide()
 
@@ -116,9 +116,12 @@ end
 ---------------------------------------------------------------------
 -- dropdown menu
 ---------------------------------------------------------------------
-function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal, justify)
+--- @param maxSlots number max items per "page"
+function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHorizontal, justify)
     if not list then CreateListFrame() end
     if not horizontalList then CreateHorizontalList() end
+
+    maxSlots = maxSlots or 10
 
     local menu = AW.CreateBorderedFrame(parent, width, 20, "widget")
     menu:EnableMouse(true)
@@ -426,7 +429,7 @@ function AW.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal, ju
             AW.SetPoint(currentList, "TOPLEFT", menu, "BOTTOMLEFT", 0, -2)
             AW.SetWidth(currentList, width)
             
-            currentList:SetSlotNum(min(#buttons, 9))
+            currentList:SetSlotNum(min(#buttons, maxSlots))
             currentList:SetWidgets(buttons)
         end
     end

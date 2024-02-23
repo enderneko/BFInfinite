@@ -92,7 +92,7 @@ function AW.ShowDemo()
     AW.SetPoint(cb2, "TOPLEFT", cb1, "BOTTOMLEFT", 0, -7)
     cb2:SetEnabled(false)
     
-    local cb3 = AW.CreateCheckButton(demo, "Different label length", function(checked)
+    local cb3 = AW.CreateCheckButton(demo, "Different label lengths", function(checked)
         cb2:SetChecked(checked)
     end)
     AW.SetPoint(cb3, "TOPLEFT", cb2, "BOTTOMLEFT", 0, -7)
@@ -349,7 +349,7 @@ function AW.ShowDemo()
     -- dd4:SetSelectedValue("item0")
 
     -- font dropdown
-    local dd5 = AW.CreateDropdown(demo, 150, "font")
+    local dd5 = AW.CreateDropdown(demo, 150, 10, "font")
     AW.SetPoint(dd5, "TOPLEFT", dd4, "BOTTOMLEFT", 0, -30)
     dd5:SetLabel("Font Dropdown")
     AW.SetTooltips(dd5, "TOPLEFT", 0, 2, "Font Dropdown", "LibSharedMedia is required")
@@ -368,7 +368,7 @@ function AW.ShowDemo()
     end
 
     -- texture dropdown
-    local dd6 = AW.CreateDropdown(demo, 150, "texture")
+    local dd6 = AW.CreateDropdown(demo, 150, 10, "texture")
     AW.SetPoint(dd6, "TOPLEFT", dd5, "BOTTOMLEFT", 0, -30)
     dd6:SetLabel("Texture Dropdown")
     AW.SetTooltips(dd6, "TOPLEFT", 0, 2, "Texture Dropdown", "LibSharedMedia is required")
@@ -386,7 +386,7 @@ function AW.ShowDemo()
     end
 
     -- vertical mini dropdown
-    local dd7 = AW.CreateDropdown(demo, 100, nil, true)
+    local dd7 = AW.CreateDropdown(demo, 100, 10, nil, true)
     AW.SetPoint(dd7, "TOPLEFT", dd6, "BOTTOMLEFT", 0, -30)
     dd7:SetLabel("Mini Dropdown (V)")
     local items = {}
@@ -398,7 +398,7 @@ function AW.ShowDemo()
     dd7:SetItems(items)
 
     -- horizontal mini dropdown
-    local dd8 = AW.CreateDropdown(demo, 100, nil, true, true)
+    local dd8 = AW.CreateDropdown(demo, 100, 10, nil, true, true)
     AW.SetPoint(dd8, "TOPLEFT", dd7, "BOTTOMLEFT", 0, -30)
     dd8:SetLabel("Mini Dropdown (H)")
     local items = {}
