@@ -742,6 +742,16 @@ function AW.ShowDemo()
     -- ----------------------------------------------------------------------- --
     local dw = AW.CreateDateWidget(demo, time())
     AW.SetPoint(dw, "BOTTOMRIGHT", -10, 10)
+    local niceDays = {}
+    local colors = {"firebrick", "hotpink", "chartreuse", "vividblue"}
+    local today = date("*t")
+    for i = 1, 7 do
+        local str = string.format("%04d%02d%02d", today.year, today.month, random(1, 27))
+        if not niceDays[str] then
+            niceDays[str] = {color=colors[random(1,4)], tooltips={"Nice Day", str}}
+        end
+    end
+    dw:SetMarksForDays(niceDays)
     dw:SetOnDateChanged(function(dt)
         print(dt.year, dt.month, dt.day, dt.timestamp)
     end)

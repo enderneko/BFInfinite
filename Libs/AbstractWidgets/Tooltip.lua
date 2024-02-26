@@ -48,7 +48,11 @@ function AW.ShowTooltips(widget, anchor, x, y, content)
 end
 
 function AW.SetTooltips(widget, anchor, x, y, ...)
-    widget._tooltips = {...}
+    if type(select(1, ...)) == "table" then
+        widget._tooltips = ...
+    else
+        widget._tooltips = {...}
+    end
     widget._tooltipsAnchor = anchor
     widget._tooltipsX = x
     widget._tooltipsY = y

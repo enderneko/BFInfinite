@@ -2,7 +2,7 @@ local addonName, ns = ...
 local AW = ns.AW
 
 -- NOTE: override these before create calendar
-AW.FIRST_WEEKDAY = 7
+AW.FIRST_WEEKDAY = 1
 AW.WEEKDAY_NAMES = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"}
 if GetCVar("portal") == "US" then
     AW.RAID_LOCKOUT_RESET_DAY = 2
@@ -28,7 +28,7 @@ local function GetMonthInfo(year, month)
     else
         numDays = days_in_month[month]
     end
-    firstWeekday = date("%w", time({["day"]=1, ["month"]=month, ["year"]=year})) + 1
+    firstWeekday = tonumber(date("%u", time{["day"]=1, ["month"]=month, ["year"]=year}))
     return numDays, firstWeekday
 end
 
@@ -40,8 +40,7 @@ local calendar
 
 local function FillDays(year, month)
     local numDays, firstWeekday = GetMonthInfo(year, month)
-    local start = (firstWeekday >= AW.FIRST_WEEKDAY) and firstWeekday or (7 - AW.FIRST_WEEKDAY + firstWeekday)
-
+    local start = (firstWeekday >= AW.FIRST_WEEKDAY) and (firstWeekday - AW.FIRST_WEEKDAY + 1) or (7 - AW.FIRST_WEEKDAY + 1 + firstWeekday)
     
     local day = 1
     for i, b in ipairs(calendar.days) do
@@ -49,9 +48,22 @@ local function FillDays(year, month)
             b.id = day --! for button group
             b:SetEnabled(true)
             b:SetText(day)
+
+            -- date highlights
+            local str = string.format("%04d%02d%02d", calendar.date.year, calendar.date.month, day)
+            if calendar.info[str] then
+                b.tooltips = calendar.info[str].tooltips
+                b.mark:SetColor(calendar.info[str].color)
+                b.mark:Show()
+            else
+                b.mark:Hide()
+            end
+
             day = day + 1
         else
             b.id = -1 --! for button group
+            b.tooltips = nil
+            b.mark:Hide()
             b:SetEnabled(false)
             b:SetText("")
         end
@@ -67,7 +79,7 @@ local function FillDays(year, month)
     else
         calendar.todayMark:Hide()
     end
-    
+
     -- highlight selected day
     local selected = date("*t", calendar.date.timestamp)
     if year == selected.year and month == selected.month then
@@ -191,6 +203,12 @@ local function CreateCalendar()
     for i = 1, 42 do
         days[i] = AW.CreateButton(calendar, "", "accent-hover", 27, 20)
 
+        -- mark
+        days[i].mark = AW.CreateTexture(days[i], AW.GetIcon("Mark"))
+        AW.SetSize(days[i].mark, 8, 8)
+        AW.SetPoint(days[i].mark, "TOPRIGHT", -1, -1)
+        days[i].mark:Hide()
+
         if i == 1 then
             AW.SetPoint(days[i], "TOPLEFT", 1, -51)
         elseif i % 7 == 1 then
@@ -208,7 +226,9 @@ local function CreateCalendar()
             calendar.onDateChanged(calendar.date)
         end
         calendar:Hide()
-    end)
+    end, nil, nil, function(self)
+        AW.ShowTooltips(self, "TOPLEFT", 0, 2, self.tooltips)
+    end, AW.HideTooltips)
 
     -- "today" mark
     local todayMark = AW.CreateTexture(calendar, nil, "gray")
@@ -253,15 +273,16 @@ local function CreateCalendar()
     end
 end
 
-local function ShowCalendar(parent, date, highlights, position, onDateChanged)
+local function ShowCalendar(parent, date, info, position, onDateChanged)
     if not calendar then CreateCalendar() end
     if calendar:IsShown() and calendar:GetParent() == parent then
         calendar:Hide()
         return
     end
 
-    calendar.onDateChanged = onDateChanged
     calendar.parent = parent
+    calendar.onDateChanged = onDateChanged
+    calendar.info = info
 
     calendar:SetDate(date)
     calendar:SetParent(parent)
@@ -308,9 +329,9 @@ function AW.CreateDateWidget(parent, date, width, calendarPosition)
     w:SetTexture(AW.GetIcon("Calendar"), {16, 16},  {"LEFT", 2, 0})
 
     w.date = {} -- save show date info
-    w.highlights = { -- store dates with extra info
+    w.info = { -- store dates with extra info
         -- ["20240214"] = {
-        --     ["desc"] = (string),
+        --     ["tooltips"] = {strings},
         --     ["color"] = (string), -- in Color.lua
         -- },
     }
@@ -339,8 +360,8 @@ function AW.CreateDateWidget(parent, date, width, calendarPosition)
     end
     w:SetDate(date or time())
 
-    function w:SetHighlights(highlights)
-        w.highlights = highlights
+    function w:SetMarksForDays(info)
+        w.info = info
     end
 
     function w:SetOnDateChanged(onDateChanged)
@@ -348,7 +369,7 @@ function AW.CreateDateWidget(parent, date, width, calendarPosition)
     end
 
     w:SetScript("OnClick", function()
-        ShowCalendar(w, w.date, w.highlights, calendarPosition, w.onDateChanged)
+        ShowCalendar(w, w.date, w.info, calendarPosition, w.onDateChanged)
     end)
 
     AW.RegisterForCloseDropdown(w)
