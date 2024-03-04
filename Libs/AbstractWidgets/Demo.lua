@@ -502,7 +502,8 @@ function AW.ShowDemo()
     AW.SetPoint(b9, "TOPLEFT", b8, "BOTTOMLEFT", 0, -7)
     b9:SetScript("OnClick", function()
         local text = AW.WrapTextInColor("NOTICE", "orange").."\n".."One day, when what has happened behind the scene could be told, developers and gamers will have a whole new level understanding of how much damage a jerk can make."
-        AW.ShowNotificationDialog(demo, text, 200, true, 3)
+        local dialog = AW.ShowNotificationDialog(demo, text, 200, true, 3)
+        AW.SetFrameStaticGlow(dialog)
         AW.SetNotificationDialogPoint("TOPLEFT", 255, -120)
     end)
 

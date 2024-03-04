@@ -171,6 +171,27 @@ function AW.CreateBorderedFrame(parent, width, height, color, borderColor)
 end
 
 ---------------------------------------------------------------------
+-- frame static glow
+---------------------------------------------------------------------
+--- @param color string
+function AW.SetFrameStaticGlow(parent, size, color, alpha)
+    if not parent.staticGlow then
+        parent.staticGlow = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+        -- parent.staticGlow:SetAllPoints()
+        parent.staticGlow:SetScript("OnHide", function() parent.staticGlow:Hide() end)
+    end
+    
+    size = size or 5
+    color = color or "accent"
+    
+    parent.staticGlow:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow"), edgeSize=AW.ConvertPixelsForRegion(size, parent)})
+    AW.SetOutside(parent.staticGlow, parent, size, size)
+    parent.staticGlow:SetBackdropBorderColor(AW.GetColorRGB(color, alpha))
+
+    parent.staticGlow:Show()
+end
+
+---------------------------------------------------------------------
 -- titled pane
 ---------------------------------------------------------------------
 --- @param color string color name defined in Color.lua
