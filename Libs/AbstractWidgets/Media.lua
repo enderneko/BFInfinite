@@ -5,7 +5,7 @@ local AW = ns.AW
 -- get icon
 ---------------------------------------------------------------------
 function AW.GetIcon(icon)
-    return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Icons\\"..icon..".png"
+    return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Icons\\"..icon
 end
 
 function AW.GetIconString(icon)
@@ -16,7 +16,7 @@ end
 -- get texture
 ---------------------------------------------------------------------
 function AW.GetTexture(texture)
-    return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Textures\\"..texture..".png"
+    return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Textures\\"..texture
 end
 
 ---------------------------------------------------------------------
