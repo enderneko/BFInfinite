@@ -285,20 +285,20 @@ local function UpdateColor_RGBA(r, g, b, a)
     -- update currentPane & originalPane
     currentPane:SetColor(r, g, b, a)
     
-    r, g, b = math.floor(r * 255), math.floor(g * 255), math.floor(b * 255)
+    r, g, b = Round(r * 255), Round(g * 255), Round(b * 255)
 
     -- update editboxes
     rEB:SetText(r)
     gEB:SetText(g)
     bEB:SetText(b)
-    aEB:SetText(math.floor(a * 100))
+    aEB:SetText(Round(a * 100))
     hexEB:SetText(AW.ConvertRGBToHEX(r, g, b))
 end
 
 local function UpdateColor_HSBA(h, s, b, a, updateWidgetColor, updatePickerAndSlider)
-    h_EB:SetText(math.floor(h))
-    s_EB:SetText(math.floor(s * 100))
-    b_EB:SetText(math.floor(b * 100))
+    h_EB:SetText(Round(h))
+    s_EB:SetText(Round(s * 100))
+    b_EB:SetText(Round(b * 100))
 
     if updateWidgetColor then
         local _r, _g, _b = AW.ConvertHSBToRGB(h, 1, 1)
@@ -309,7 +309,7 @@ local function UpdateColor_HSBA(h, s, b, a, updateWidgetColor, updatePickerAndSl
     end
 
     if updatePickerAndSlider then
-        picker:SetPoint("CENTER", saturationBrightnessPane, "BOTTOMLEFT", s*saturationBrightnessPane:GetWidth(), b*saturationBrightnessPane:GetHeight())
+        picker:SetPoint("CENTER", saturationBrightnessPane, "BOTTOMLEFT", Round(s*saturationBrightnessPane:GetWidth()), Round(b*saturationBrightnessPane:GetHeight()))
         hueSlider:SetValue(h)
         alphaSlider:SetValue(1-a)
     end
