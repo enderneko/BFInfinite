@@ -691,7 +691,7 @@ function AW.ShowMask(parent, text, tlX, tlY, brX, brY)
         AW.SetPoint(parent.mask, "TOPLEFT", tlX, tlY)
         AW.SetPoint(parent.mask, "BOTTOMRIGHT", brX, brY)
     else
-        AW.SetPointOnePixelInner(parent.mask, parent)
+        AW.SetOnePixelInside(parent.mask, parent)
     end
     parent.mask:Show()
 
@@ -728,7 +728,7 @@ local function CreateCombatMask(parent, tlX, tlY, brX, brY)
         AW.SetPoint(parent.combatMask, "TOPLEFT", tlX, tlY)
         AW.SetPoint(parent.combatMask, "BOTTOMRIGHT", brX, brY)
     else
-        AW.SetPointOnePixelInner(parent.combatMask, parent)
+        AW.SetOnePixelInside(parent.combatMask, parent)
     end
 
     parent.combatMask:Hide()

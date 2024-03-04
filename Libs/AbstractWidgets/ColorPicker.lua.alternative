@@ -356,7 +356,7 @@ local function CreateColorSlider(parent, onValueChanged)
 
     slider.tex = slider:CreateTexture(nil, "ARTWORK")
     slider.tex:SetTexture("Interface\\Buttons\\WHITE8x8")
-    AW.SetPointOnePixelInner(slider.tex, slider)
+    AW.SetOnePixelInside(slider.tex, slider)
 
     slider.thumb1 = slider:CreateTexture(nil, "ARTWORK")
     AW.SetSize(slider.thumb1, 17, 1)
@@ -491,7 +491,7 @@ local function CreateColorPickerFrame()
     AW.SetPoint(hueSaturationPaneBG, "TOPLEFT", currentPane, "BOTTOMLEFT", 0, -7)
     
     hueSaturationPane = CreateFrame("Frame", nil, hueSaturationPaneBG)
-    AW.SetPointOnePixelInner(hueSaturationPane, hueSaturationPaneBG)
+    AW.SetOnePixelInside(hueSaturationPane, hueSaturationPaneBG)
 
     -- fill color
     local colors = {"red", "yellow", "green", "cyan", "blue", "purple", "red"}

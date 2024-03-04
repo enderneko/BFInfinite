@@ -364,7 +364,7 @@ local function CreateColorSliderHolder(onValueChanged)
 
     local slider = CreateFrame("Slider", nil, holder)
     holder.slider = slider
-    AW.SetPointOnePixelInner(slider, holder)
+    AW.SetOnePixelInside(slider, holder)
     slider:SetObeyStepOnDrag(true)
     slider:SetOrientation("VERTICAL")
 
@@ -559,7 +559,7 @@ local function CreateColorPickerFrame()
     AW.SetPoint(saturationBrightnessPaneBG, "TOPLEFT", currentPane, "BOTTOMLEFT", 0, -7)
 
     saturationBrightnessPane = CreateFrame("Frame", nil, saturationBrightnessPaneBG)
-    AW.SetPointOnePixelInner(saturationBrightnessPane, saturationBrightnessPaneBG)
+    AW.SetOnePixelInside(saturationBrightnessPane, saturationBrightnessPaneBG)
     saturationBrightnessPane.tex = saturationBrightnessPane:CreateTexture(nil, "ARTWORK", nil, 0)
     saturationBrightnessPane.tex:SetAllPoints(saturationBrightnessPane)
     saturationBrightnessPane.tex:SetTexture("Interface\\Buttons\\WHITE8x8")

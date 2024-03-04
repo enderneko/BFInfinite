@@ -142,14 +142,24 @@ function AW.SetPoint(region, ...)
     region:SetPoint(points[1], points[2], points[3], AW.GetNearestPixelSize(points[4], region:GetEffectiveScale()), AW.GetNearestPixelSize(points[5], region:GetEffectiveScale()))
 end
 
-function AW.SetPointOnePixelInner(region, relativeTo)
+function AW.SetOnePixelInside(region, relativeTo)
     AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", 1, -1)
     AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", -1, 1)
 end
 
-function AW.SetPointOnePixelOuter(region, relativeTo)
+function AW.SetOnePixelOutside(region, relativeTo)
     AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", -1, 1)
     AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", 1, -1)
+end
+
+function AW.SetInside(region, relativeTo, x, y)
+    AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", x, -y)
+    AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", -x, y)
+end
+
+function AW.SetOutside(region, relativeTo, x, y)
+    AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", -x, y)
+    AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", x, -y)
 end
 
 function AW.ClearPoints(region)
