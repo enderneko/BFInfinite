@@ -8,6 +8,8 @@ local prefix = strupper(ns.prefix or addonName)
 
 local FONT_TITLE_NAME = prefix.."_FONT_TITLE"
 local FONT_TITLE_DISABLE_NAME = prefix.."_FONT_TITLE_DISABLE"
+local FONT_ACCENT_OUTLINE_NAME = prefix.."_FONT_OUTLINE"
+local FONT_OUTLINE_DISABLE_NAME = prefix.."_FONT_OUTLINE_DISABLE"
 local FONT_NORMAL_NAME = prefix.."_FONT_NORMAL"
 local FONT_NORMAL_DISABLE_NAME = prefix.."_FONT_NORMAL_DISABLE"
 local FONT_SMALL_NAME = prefix.."_FONT_SMALL"
@@ -19,6 +21,7 @@ local FONT_ACCENT_NAME = prefix.."_FONT_ACCENT"
 
 local FONT_TITLE_SIZE = 14
 local FONT_NORMAL_SIZE = 13
+local FONT_ACCENT_OUTLINE_SIZE = 13
 local FONT_SMALL_SIZE = 11
 local FONT_CHINESE_SIZE = 14
 local FONT_SPECIAL_SIZE = 12
@@ -91,6 +94,13 @@ font_accent_title:SetShadowColor(0, 0, 0)
 font_accent_title:SetShadowOffset(1, -1)
 font_accent_title:SetJustifyH("CENTER")
 
+local font_accent_outline = CreateFont(FONT_ACCENT_OUTLINE_NAME)
+font_accent_outline:SetFont(BASE_FONT, FONT_ACCENT_OUTLINE_SIZE, "OUTLINE")
+font_accent_outline:SetTextColor(AW.GetColorRGB("accent"))
+font_accent_outline:SetShadowColor(0, 0, 0)
+font_accent_outline:SetShadowOffset(0, 0)
+font_accent_outline:SetJustifyH("CENTER")
+
 local font_accent = CreateFont(FONT_ACCENT_NAME)
 font_accent:SetFont(BASE_FONT, FONT_ACCENT_SIZE, "")
 font_accent:SetTextColor(AW.GetColorRGB("accent"))
@@ -102,7 +112,8 @@ font_accent:SetJustifyH("CENTER")
 -- update size for all used fonts
 ---------------------------------------------------------------------
 local fontStrings = {}
-function AW.AddToFontSizeUpdater(fs)
+function AW.AddToFontSizeUpdater(fs, originalSize)
+    fs.originalSize = originalSize
     tinsert(fontStrings, fs)
 end
 
@@ -117,11 +128,12 @@ function AW.UpdateFontSize(offset)
     font_small_disable:SetFont(BASE_FONT, FONT_SMALL_SIZE+offset, "")
     font_chinese:SetFont(UNIT_NAME_FONT_CHINESE, FONT_CHINESE_SIZE+offset, "")
     font_accent_title:SetFont(BASE_FONT, FONT_ACCENT_TITLE_SIZE+offset, "")
+    font_accent_outline:SetFont(BASE_FONT, FONT_ACCENT_OUTLINE_SIZE+offset, "")
     font_accent:SetFont(BASE_FONT, FONT_ACCENT_SIZE+offset, "")
     
     for _, fs in ipairs(fontStrings) do
         local f, _, o = fs:GetFont()
-        fs:SetFont(f, FONT_NORMAL_SIZE+offset, o)
+        fs:SetFont(f, (fs.originalSize or FONT_NORMAL_SIZE)+offset, o)
     end
 end
 
@@ -137,6 +149,8 @@ function AW.GetFontName(font, isDisabled)
         return isDisabled and FONT_SMALL_DISABLE_NAME or FONT_SMALL_NAME
     elseif font == "accent_title" then
         return FONT_ACCENT_TITLE_NAME
+    elseif font == "accent_outline" then
+        return FONT_ACCENT_OUTLINE_NAME
     elseif font == "accent" then
         return FONT_ACCENT_NAME
     end
@@ -151,6 +165,8 @@ function AW.GetFontObject(font, isDisabled)
         return isDisabled and font_small_disable or font_small
     elseif font == "accent_title" then
         return font_accent_title
+    elseif font == "accent_outline" then
+        return font_accent_outline
     elseif font == "accent" then
         return font_accent
     end
@@ -165,6 +181,8 @@ function AW.GetFontFile(font)
             return BASE_FONT, FONT_SMALL_SIZE+AW.fontSizeOffset, ""
     elseif font == "accent_title" then
         return BASE_FONT, FONT_ACCENT_TITLE_SIZE+AW.fontSizeOffset, ""
+    elseif font == "accent_outline" then
+        return BASE_FONT, FONT_ACCENT_OUTLINE_SIZE+AW.fontSizeOffset, "OUTLINE"
     elseif font == "accent" then
         return BASE_FONT, FONT_ACCENT_SIZE+AW.fontSizeOffset, ""
     else

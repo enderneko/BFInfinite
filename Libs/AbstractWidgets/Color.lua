@@ -302,11 +302,11 @@ local buttonColors = {
 }
 
 function AW.GetButtonNormalColor(name)
-    assert(buttonColors[name], "no such color!")
+    assert(buttonColors[name], "no such button color!")
     return buttonColors[name]["normal"]
 end
 
 function AW.GetButtonHoverColor(name)
-    assert(buttonColors[name], "no such color!")
+    assert(buttonColors[name], "no such button color!")
     return buttonColors[name]["hover"]
 end
