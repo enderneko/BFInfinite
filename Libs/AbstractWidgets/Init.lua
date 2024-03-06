@@ -30,6 +30,47 @@ AW.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 AW.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 
 ---------------------------------------------------------------------
+-- UIParent
+---------------------------------------------------------------------
+AW.UIParent = CreateFrame("Frame", strupper(ns.prefix).."Parent", UIParent)
+AW.UIParent:SetAllPoints(UIParent)
+AW.UIParent:SetPoint("BOTTOM")
+AW.UIParent:SetFrameLevel(0)
+
+local function UpdatePixels()
+    if InCombatLockdown() then
+        AW.UIParent:RegisterEvent("PLAYER_REGEN_ENABLED")
+        return
+    end
+    AW.UIParent:UnregisterEvent("PLAYER_REGEN_ENABLED")
+    AW.UpdatePixels()
+end
+
+-- hooksecurefunc(UIParent, "SetScale", UpdatePixels)
+AW.UIParent:RegisterEvent("DISPLAY_SIZE_CHANGED")
+AW.UIParent:RegisterEvent("UI_SCALE_CHANGED")
+AW.UIParent:SetScript("OnEvent", UpdatePixels)
+
+function AW.SetIgnoreParentScale(ignore)
+    AW.UIParent:SetIgnoreParentScale(ignore)
+end
+
+--! scale CANNOT be TOO SMALL
+--! or it will lead to abnormal display of borders
+--! since AW has changed SetSnapToPixelGrid / SetTexelSnappingBias
+function AW.SetScale(scale)
+    AW.UIParent:SetScale(scale)
+    UpdatePixels()
+end
+
+function AW.SetUIParentScale(scale)
+    UIParent:SetScale(scale)
+    if not AW.UIParent:IsIgnoringParentScale() then
+        UpdatePixels()
+    end
+end
+
+---------------------------------------------------------------------
 -- slash command
 ---------------------------------------------------------------------
 local name = strupper(ns.prefix).."WIDGETS"

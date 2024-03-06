@@ -157,7 +157,7 @@ function AW.AnimatedResize(frame, targetWidth, targetHeight, frequency, steps, o
 
     if anchorPoint then
         -- anchorPoint is only for those frames of which the direct parent is UIParent
-        assert(frame:GetParent() == UIParent)
+        assert(frame:GetParent() == AW.UIParent)
         local left = Round(frame:GetLeft())
         local right = Round(frame:GetRight())
         local top = Round(frame:GetTop())
@@ -165,13 +165,13 @@ function AW.AnimatedResize(frame, targetWidth, targetHeight, frequency, steps, o
         
         AW.ClearPoints(frame)
         if anchorPoint == "TOPLEFT" then
-            frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
+            frame:SetPoint("TOPLEFT", AW.UIParent, "BOTTOMLEFT", left, top)
         elseif anchorPoint == "TOPRIGHT" then
-            frame:SetPoint("TOPRIGHT", UIParent, "BOTTOMLEFT", right, top)
+            frame:SetPoint("TOPRIGHT", AW.UIParent, "BOTTOMLEFT", right, top)
         elseif anchorPoint == "BOTTOMLEFT" then
-            frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", left, bottom)
+            frame:SetPoint("BOTTOMLEFT", AW.UIParent, "BOTTOMLEFT", left, bottom)
         elseif anchorPoint == "BOTTOMRIGHT" then
-            frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMLEFT", right, bottom)
+            frame:SetPoint("BOTTOMRIGHT", AW.UIParent, "BOTTOMLEFT", right, bottom)
         end
     end
 

@@ -10,7 +10,7 @@ function AW.ShowDemo()
     -- ----------------------------------------------------------------------- --
     --                              headered frame                             --
     -- ----------------------------------------------------------------------- --
-    local demo = AW.CreateHeaderedFrame(UIParent, "AW_DEMO", "Abstract Widgets Demo", 710, 500)
+    local demo = AW.CreateHeaderedFrame(AW.UIParent, "AW_DEMO", "Abstract Widgets Demo", 710, 500)
     AW.SetPoint(demo, "BOTTOMLEFT", 500, 270)
     demo:SetFrameLevel(100)
     demo:SetTitleJustify("LEFT")
@@ -18,7 +18,7 @@ function AW.ShowDemo()
     -- background
     demo:SetScript("OnShow", function()
         if not THE_BACKGROUND then
-            THE_BACKGROUND = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+            THE_BACKGROUND = CreateFrame("Frame", "THE_BACKGROUND", nil, "BackdropTemplate")
             THE_BACKGROUND:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
             THE_BACKGROUND:SetBackdropColor(0.3, 0.3, 0.3, 1)
             THE_BACKGROUND:SetAllPoints(UIParent)
@@ -244,9 +244,7 @@ function AW.ShowDemo()
     AW.SetPoint(sl1, "TOPLEFT", 5, -40)
     sl1:SetValue(1)
     sl1:SetAfterValueChanged(function(value)
-        demo:SetScale(value)
-        AW.SetPopupScale(value)
-        AW.UpdatePixels()
+        AW.SetScale(value)
     end)
 
     local sl2 = AW.CreateSlider(demo, "Enabled", 100, 50, 500, 10, true, true)
@@ -689,24 +687,18 @@ function AW.ShowDemo()
     -- ----------------------------------------------------------------------- --
     --                                  popups                                 --
     -- ----------------------------------------------------------------------- --
-    AW.SetPopupMoverText("Mover")
+    AW.CreatePopupMover("general", "Popups")
 
     local bf5 = AW.CreateBorderedFrame(demo, 370, 20)
     AW.SetPoint(bf5, "BOTTOMLEFT", b10, "BOTTOMRIGHT", 10, 0)
     
     local fs2 = AW.CreateFontString(bf5, "Popups", "accent")
-    AW.SetPoint(fs2, "LEFT", bf5, 5, 0)
+    AW.SetPoint(fs2, "LEFT", bf5, 10, 0)
 
-    local b14 = AW.CreateButton(bf5, "Mover", "accent", 75, 20)
+    local b14 = AW.CreateButton(bf5, "PPopup+", "accent", 95, 20)
     AW.SetPoint(b14, "BOTTOMRIGHT")
+    AW.SetTooltips(b14, "ANCHOR_TOPLEFT", 0, 2, "Progress Popup", "With progress bar", "Hide in 5 sec after completion")
     b14:SetScript("OnClick", function()
-        AW.TogglePopupMover()
-    end)
-    
-    local b15 = AW.CreateButton(bf5, "PPopup+", "accent", 75, 20)
-    AW.SetPoint(b15, "BOTTOMRIGHT", b14, "BOTTOMLEFT", 1, 0)
-    AW.SetTooltips(b15, "ANCHOR_TOPLEFT", 0, 2, "Progress Popup", "With progress bar", "Hide in 5 sec after completion")
-    b15:SetScript("OnClick", function()
         local callback = AW.ShowProgressPopup("In Progress...", 100, true)
         local v = 0
         C_Timer.NewTicker(2, function()
@@ -715,10 +707,10 @@ function AW.ShowDemo()
         end, 4)
     end)
 
-    local b16 = AW.CreateButton(bf5, "CPopup+", "accent", 75, 20)
-    AW.SetPoint(b16, "BOTTOMRIGHT", b15, "BOTTOMLEFT", 1, 0)
-    AW.SetTooltips(b16, "ANCHOR_TOPLEFT", 0, 2, "Confirm Popup", "With \"Yes\" & \"No\" buttons", "Won't hide automatically")
-    b16:SetScript("OnClick", function()
+    local b15 = AW.CreateButton(bf5, "CPopup+", "accent", 95, 20)
+    AW.SetPoint(b15, "BOTTOMRIGHT", b14, "BOTTOMLEFT", 1, 0)
+    AW.SetTooltips(b15, "ANCHOR_TOPLEFT", 0, 2, "Confirm Popup", "With \"Yes\" & \"No\" buttons", "Won't hide automatically")
+    b15:SetScript("OnClick", function()
         for i = 1, 3 do
             AW.ShowConfirmPopup("Confirm "..i, function()
                 print("Confirm "..i, "yes")
@@ -728,10 +720,10 @@ function AW.ShowDemo()
         end
     end)
 
-    local b17 = AW.CreateButton(bf5, "NPopup+", "accent", 75, 20)
-    AW.SetPoint(b17, "BOTTOMRIGHT", b16, "BOTTOMLEFT", 1, 0)
-    AW.SetTooltips(b17, "ANCHOR_TOPLEFT", 0, 2, "Notification Popup", "With timeout", "Right-Click to hide")
-    b17:SetScript("OnClick", function()
+    local b16 = AW.CreateButton(bf5, "NPopup+", "accent", 95, 20)
+    AW.SetPoint(b16, "BOTTOMRIGHT", b15, "BOTTOMLEFT", 1, 0)
+    AW.SetTooltips(b16, "ANCHOR_TOPLEFT", 0, 2, "Notification Popup", "With timeout", "Right-Click to hide")
+    b16:SetScript("OnClick", function()
         for i = 1, 3 do
             local timeout = random(2, 7)
             AW.ShowNotificationPopup("Notification "..AW.WrapTextInColor(timeout.."sec", "gray"), timeout)
@@ -742,7 +734,7 @@ function AW.ShowDemo()
     --                                 calendar                                --
     -- ----------------------------------------------------------------------- --
     local dw = AW.CreateDateWidget(demo, time())
-    AW.SetPoint(dw, "BOTTOMRIGHT", -10, 10)
+    AW.SetPoint(dw, "TOPLEFT", bf5, "TOPRIGHT", 10, 0)
     local niceDays = {}
     local colors = {"firebrick", "hotpink", "chartreuse", "vividblue"}
     local today = date("*t")

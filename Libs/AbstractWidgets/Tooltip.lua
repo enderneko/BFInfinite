@@ -81,12 +81,12 @@ end
 -- create
 ---------------------------------------------------------------------
 local function CreateTooltip(name, hasIcon)
-    local tooltip = CreateFrame("GameTooltip", name, UIParent, ns.prefix.."TooltipTemplate,BackdropTemplate")
-    -- local tooltip = CreateFrame("GameTooltip", name, UIParent, "SharedTooltipTemplate,BackdropTemplate")
+    local tooltip = CreateFrame("GameTooltip", name, AW.UIParent, ns.prefix.."TooltipTemplate,BackdropTemplate")
+    -- local tooltip = CreateFrame("GameTooltip", name, AW.UIParent, "SharedTooltipTemplate,BackdropTemplate")
     tooltip:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1})
     tooltip:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
     tooltip:SetBackdropBorderColor(AW.GetColorRGB("accent"))
-    tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+    tooltip:SetOwner(AW.UIParent, "ANCHOR_NONE")
 
     if hasIcon then
         local iconBG = tooltip:CreateTexture(nil, "BACKGROUND")
