@@ -235,10 +235,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
             end
         end
         if not valid then
-            menu.selected = nil
-            menu.text:SetText()
-            menu.texture:Hide()
-            currentList:SetHighlightItem()
+            menu:ClearSelected()
         end
     end
 
@@ -254,6 +251,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
     function menu:ClearSelected()
         menu.selected = nil
         menu.text:SetText()
+        if dropdownType == "texture" then menu.texture:Hide() end
         currentList:SetHighlightItem()
     end
 
