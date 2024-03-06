@@ -1,7 +1,6 @@
 local addonName, ns = ...
 local AW = ns.AW
 
-
 -- Interface\SharedXML\PixelUtil.lua
 ---------------------------------------------------------------------
 -- pixel perfect
@@ -125,7 +124,7 @@ function AW.SetPoint(region, ...)
     elseif n == 3 then
         if type(select(2, ...)) == "number" then -- "TOPLEFT", 0, 0
             point, offsetX, offsetY = ...
-        else -- "TOPLEFT", UIParent, "TOPRIGHT"
+        else -- "TOPLEFT", AW.UIParent, "TOPRIGHT"
             point, relativeTo, relativePoint = ...
         end
     elseif n == 4 then
@@ -197,7 +196,15 @@ function AW.RePoint(region)
     if IsEmpty(region._points) then return end
     region:ClearAllPoints()
     for _, t in pairs(region._points) do
-        region:SetPoint(t[1], t[2], t[3], AW.GetNearestPixelSize(t[4], region:GetEffectiveScale()), AW.GetNearestPixelSize(t[5], region:GetEffectiveScale()))
+        local x, y
+        if region._useOriginalPoints then
+            x = t[4]
+            y = t[5]
+        else
+            x = AW.ConvertPixelsForRegion(t[4], region)
+            y = AW.ConvertPixelsForRegion(t[5], region)
+        end
+        region:SetPoint(t[1], t[2], t[3], x, y)
     end
 end
 
@@ -277,3 +284,74 @@ function AW.SetStatusBarValue(statusBar, value)
         statusBar:SetValue(value)
     end
 end
+
+---------------------------------------------------------------------
+-- load position
+---------------------------------------------------------------------
+--- @param pos table|string
+function AW.LoadPosition(region, pos)
+    AW.ClearPoints(region)
+    if type(pos) == "string" then
+        pos = string.gsub(pos, " ", "")
+        region:SetPoint(strsplit(",", pos))
+    elseif type(pos) == "table" then
+        region:SetPoint(unpack(pos))
+    end
+end
+
+---------------------------------------------------------------------
+-- save position
+---------------------------------------------------------------------
+function AW.SavePositionAsTable(region, t)
+    wipe(t)
+    t[1], t[2], t[3], t[4], t[5] = region:GetPoint()
+end
+
+function AW.SavePositionAsString(region, t, i)
+    t[i] = table.concat({region:GetPoint()}, ",")
+end
+
+---------------------------------------------------------------------
+-- pixel perfect border (ElvUI)
+---------------------------------------------------------------------
+local function CheckPixelSnap(frame, snap)
+    if (frame and not frame:IsForbidden()) and frame.PixelSnapDisabled and snap then
+        frame.PixelSnapDisabled = nil
+    end
+end
+
+local function DisablePixelSnap(frame)
+    if (frame and not frame:IsForbidden()) and not frame.PixelSnapDisabled then
+        if frame.SetSnapToPixelGrid then
+            frame:SetSnapToPixelGrid(false)
+            frame:SetTexelSnappingBias(0)
+        -- elseif frame.GetStatusBarTexture then
+        --     local texture = frame:GetStatusBarTexture()
+        --     if type(texture) == "table" and texture.SetSnapToPixelGrid then
+        --         texture:SetSnapToPixelGrid(false)
+        --         texture:SetTexelSnappingBias(0)
+        --     end
+        end
+        frame.PixelSnapDisabled = true
+    end
+end
+
+local function UpdateMetatable(object)
+    local t = getmetatable(object).__index
+
+    if not object.DisabledPixelSnap then
+        if t.SetSnapToPixelGrid then hooksecurefunc(t, "SetSnapToPixelGrid", CheckPixelSnap) end
+        -- if t.SetStatusBarTexture then hooksecurefunc(t, "SetStatusBarTexture", DisablePixelSnap) end
+        if t.SetColorTexture then hooksecurefunc(t, "SetColorTexture", DisablePixelSnap) end
+        if t.SetVertexColor then hooksecurefunc(t, "SetVertexColor", DisablePixelSnap) end
+        if t.CreateTexture then hooksecurefunc(t, "CreateTexture", DisablePixelSnap) end
+        if t.SetTexCoord then hooksecurefunc(t, "SetTexCoord", DisablePixelSnap) end
+        if t.SetTexture then hooksecurefunc(t, "SetTexture", DisablePixelSnap) end
+
+        t.DisabledPixelSnap = true
+    end
+end
+
+local obj = CreateFrame("Frame")
+UpdateMetatable(obj:CreateTexture())
+UpdateMetatable(obj:CreateMaskTexture())
