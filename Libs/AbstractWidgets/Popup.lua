@@ -11,9 +11,7 @@ local DEFAULT_NOTIFICATION_TIMEOUT = 10
 local DEFAULT_PROGRESS_TIMEOUT = 5
 
 local settings = {
-    ["point"] = "BOTTOMLEFT",
-    ["offset"] = 420,
-    ["alignment"] = "LEFT",
+    ["position"] = "BOTTOMLEFT,0,420",
     ["orientation"] = "bottom-to-top"
 }
 
@@ -24,13 +22,13 @@ local notificationPool, confirmPool, progressPool
 ---------------------------------------------------------------------
 local function CreateParent()
     -- parent
-    parent = CreateFrame("Frame", strupper(ns.prefix).."PopupParent", UIParent)
+    parent = CreateFrame("Frame", strupper(ns.prefix).."PopupParent", AW.UIParent)
     -- parent:SetBackdrop({edgeFile=AW.GetPlainTexture(), edgeSize=AW.GetOnePixelForRegion(parent)})
     -- parent:SetBackdropBorderColor(AW.GetColorRGB("black"))
     AW.SetSize(parent, DEFAULT_WIDTH, 60)
     AW.SetPoint(parent, "BOTTOMLEFT", 0, 420)
     parent:SetFrameStrata("DIALOG")
-    parent:SetFrameLevel(777)
+    parent:SetFrameLevel(666)
     parent:SetClampedToScreen(true)
 
     function parent:UpdatePixels()
@@ -40,95 +38,14 @@ local function CreateParent()
     AW.AddToPixelUpdater(parent)
 end
 
-local function CreateMover()
-    -- mover
-    mover = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-    mover:SetBackdrop({bgFile=AW.GetPlainTexture()})
-    mover:SetBackdropColor(AW.GetColorRGB("green", 0.2))
-    mover:SetAllPoints(parent)
-    mover:SetFrameLevel(888)
-    mover:EnableMouse(true)
-    mover:SetClampedToScreen(true)
-    mover:Hide()
-    -- mover:RegisterForDrag("LeftButton") --! will cause OnMouseUp untriggerable
-
-    mover:SetScript("OnMouseDown", function(self, button)
-        if button ~= "LeftButton" then return end
-
-        local scale = parent:GetEffectiveScale()
-        local bottom = Round(parent:GetBottom())
-        local _, mouseY = GetCursorPosition()
-        local maxY = Round(UIParent:GetHeight())-Round(parent:GetHeight())
-
-        local lastY
-        parent:SetScript("OnUpdate", function()
-            local _, newMouseY = GetCursorPosition()
-            if newMouseY == lastY then return end
-            lastY = newMouseY
-
-            local newY = bottom + (newMouseY - mouseY) / scale
-            
-            newY = max(newY, 0)
-            newY = min(newY, maxY)
-
-            parent:SetPoint(settings["point"], 0, newY)
-        end)
-    end)
-
-    mover:SetScript("OnMouseUp", function()
-        parent:SetScript("OnUpdate", nil)
-        -- save position
-        settings["offset"]= Round(parent:GetBottom())
-    end)
-
-    -- left & right
-    local left = AW.CreateButton(mover, nil, "green", 30, 60)
-    mover.left = left
-    left:SetPoint("TOPLEFT")
-    left:SetTexture(AW.GetIcon("ArrowLeft"), {16, 16}, {"CENTER", 0, 0})
-    left:SetScript("OnClick", function()
-        settings["point"] = "BOTTOMLEFT"
-        settings["alignment"] = "LEFT"
-        parent:ClearAllPoints()
-        parent:SetPoint(settings["point"], 0, settings["offset"])
-    end)
-    
-    local right = AW.CreateButton(mover, nil, "green", 30, 60)
-    mover.right = right
-    right:SetPoint("TOPRIGHT")
-    right:SetTexture(AW.GetIcon("ArrowRight"), {16, 16}, {"CENTER", 0, 0})
-    right:SetScript("OnClick", function()
-        settings["point"] = "BOTTOMRIGHT"
-        settings["alignment"] = "RIGHT"
-        parent:ClearAllPoints()
-        parent:SetPoint(settings["point"], 0, settings["offset"])
-    end)
-end
-
 ---------------------------------------------------------------------
 -- mover
 ---------------------------------------------------------------------
-function AW.TogglePopupMover()
+function AW.CreatePopupMover(group, text)
     if not parent then CreateParent() end
-    if not mover then CreateMover() end
-
-    if mover:IsShown() then
-        mover:Hide()
-    else
-        mover:Show()
-    end
-end
-
-function AW.SetPopupMoverText(text)
-    if not parent then CreateParent() end
-    if not mover then CreateMover() end
-
-    if not mover.text then
-        mover.text = AW.CreateFontString(mover)
-        mover.text:SetPoint("LEFT", mover.left, "RIGHT")
-        mover.text:SetPoint("RIGHT", mover.right, "LEFT")
-    end
-    mover.text:SetText(text)
+    AW.CreateMover(parent, group, text, function(p, x, y)
+        settings["position"] = p..","..x..","..y
+    end)
 end
 
 ---------------------------------------------------------------------
@@ -148,10 +65,10 @@ local function ShowPopups(stopMoving)
         -- set point
         local point, relativePoint, offset
         if settings["orientation"] == "bottom-to-top" then
-            point, relativePoint = "BOTTOM"..settings["alignment"], "TOP"..settings["alignment"]
+            point, relativePoint = "BOTTOMLEFT", "TOPLEFT"
             offset = DEFAULT_OFFSET
         else
-            point, relativePoint = "TOP"..settings["alignment"], "BOTTOM"..settings["alignment"]
+            point, relativePoint = "TOPLEFT", "BOTTOMLEFT"
             offset = -DEFAULT_OFFSET
         end
 
@@ -162,13 +79,6 @@ local function ShowPopups(stopMoving)
             AW.SetPoint(popups[i], point, popups[i-1], relativePoint, 0, offset)
         end
     end
-end
-
----------------------------------------------------------------------
--- scale
----------------------------------------------------------------------
-function AW.SetPopupScale(scale)
-    parent:SetScale(scale)
 end
 
 ---------------------------------------------------------------------
@@ -186,16 +96,13 @@ function AW.SetPopupSettingsTable(t)
     assert(type(t)=="table")
 
     -- validate
-    if not t["point"] then t["point"] = settings["point"] end
-    if not t["offset"] then t["offset"] = settings["offset"] end
-    if not t["alignment"] then t["alignment"] = settings["alignment"] end
+    if not t["position"] then t["position"] = settings["position"] end
     if not t["orientation"] then t["orientation"] = settings["orientation"] end
 
     settings = t -- save reference
 
     -- load position
-    parent:ClearAllPoints()
-    parent:SetPoint(t["point"], 0, t["offset"])
+    AW.LoadPosition(parent, t["position"])
 end
 
 ---------------------------------------------------------------------
@@ -365,7 +272,7 @@ local npCreationFn = function()
                 p.timer = nil
                 AddToHidingQueue(p)
             end)
-            timerBar:SetReverseFill(settings["alignment"]=="RIGHT")
+            -- timerBar:SetReverseFill(settings["alignment"]=="RIGHT")
             timerBar:SetMinMaxValues(0, timeout)
             timerBar:SetValue(timeout)
             timerBar:SetScript("OnUpdate", function(self, elapsed)

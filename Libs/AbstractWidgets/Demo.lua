@@ -242,6 +242,7 @@ function AW.ShowDemo()
     -- ----------------------------------------------------------------------- --
     local sl1 = AW.CreateSlider(tp1, "Scale", 130, 0.5, 2, 0.1)
     AW.SetPoint(sl1, "TOPLEFT", 5, -40)
+    AW.SetTooltips(sl1, "TOPLEFT", 0, 20, "Set scale of AW.UIParent", "If AW.UIParent:GetEffectiveScale() < 0.43, there can be errors")
     sl1:SetValue(1)
     sl1:SetAfterValueChanged(function(value)
         AW.SetScale(value)
@@ -748,4 +749,72 @@ function AW.ShowDemo()
     dw:SetOnDateChanged(function(dt)
         print(dt.year, dt.month, dt.day, dt.timestamp)
     end)
+
+    -- ----------------------------------------------------------------------- --
+    --                                  mover                                  --
+    -- ----------------------------------------------------------------------- --
+    local mbf = AW.CreateBorderedFrame(demo, 290, 20)
+    AW.SetPoint(mbf, "TOPLEFT", bar3, "TOPRIGHT", 10, 0)
+
+    local fs3 = AW.CreateFontString(mbf, "Movers", "accent")
+    AW.SetPoint(fs3, "LEFT", mbf, 10, 0)
+
+    local mDropdown
+
+    local hmBtn = AW.CreateButton(mbf, "Hide Movers", "accent", 110, 20)
+    AW.SetPoint(hmBtn, "TOPRIGHT")
+    hmBtn:SetScript("OnClick", function()
+        AW.HideMovers()
+        mDropdown:ClearSelected()
+    end)
+
+    mDropdown = AW.CreateDropdown(mbf, 90, 10, nil, true)
+    AW.SetPoint(mDropdown, "TOPRIGHT", hmBtn, "TOPLEFT", 1, 0)
+    AW.SetTooltips(mDropdown, "TOPLEFT", 0, 2, "Mover Tips", "• Drag to move", "• Use (shift) mouse wheel to move frame by 1 pixel")
+    mDropdown:SetItems({
+        {
+            ["text"] = "All",
+            ["onClick"] = function()
+                AW.ShowMovers()
+            end,
+        },
+        {
+            ["text"] = "General",
+            ["onClick"] = function()
+                AW.ShowMovers("general")
+            end,
+        },
+        {
+            ["text"] = "Group 1",
+            ["onClick"] = function()
+                AW.ShowMovers("group1")
+            end,
+        },
+        {
+            ["text"] = "Group 2",
+            ["onClick"] = function()
+                AW.ShowMovers("group2")
+            end,
+        },
+    })
+
+    local function CreateMoverTestFrame(id, group, point)
+        local mtf = AW.CreateBorderedFrame(AW.UIParent, 170, 170)
+        AW.SetPoint(mtf, point)
+        mtf:SetTitle("Mover Test Frame "..id.."\n"..point, "hotpink", nil, true)
+        AW.CreateMover(mtf, group, "Test Mover "..id, function(p,x,y) print("MTF"..id..":", p, x, y) end)
+    end
+
+    -- group1
+    CreateMoverTestFrame(1, "group1", "TOPLEFT")
+    CreateMoverTestFrame(2, "group1", "LEFT")
+    CreateMoverTestFrame(3, "group1", "BOTTOMLEFT")
+    CreateMoverTestFrame(4, "group1", "TOP")
+    CreateMoverTestFrame(5, "group1", "CENTER")
+
+    -- group2
+    CreateMoverTestFrame(6, "group2", "TOPRIGHT")
+    CreateMoverTestFrame(7, "group2", "RIGHT")
+    CreateMoverTestFrame(8, "group2", "BOTTOM")
+    CreateMoverTestFrame(9, "group2", "BOTTOMRIGHT")
 end

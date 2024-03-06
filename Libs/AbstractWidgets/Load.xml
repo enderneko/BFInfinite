@@ -10,6 +10,7 @@
     <Include file="TooltipTemplate.xml"/>
     <Script file="Tooltip.lua"/>
     <Script file="Frame.lua"/>
+    <Script file="Mover.lua"/>
     <Script file="FontString.lua"/>
     <Script file="Button.lua"/>
     <Script file="EditBox.lua"/>

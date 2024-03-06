@@ -55,7 +55,7 @@ function AW.SetIgnoreParentScale(ignore)
     AW.UIParent:SetIgnoreParentScale(ignore)
 end
 
---! scale CANNOT be TOO SMALL
+--! scale CANNOT be TOO SMALL (effectiveScale should >= 0.43)
 --! or it will lead to abnormal display of borders
 --! since AW has changed SetSnapToPixelGrid / SetTexelSnappingBias
 function AW.SetScale(scale)
