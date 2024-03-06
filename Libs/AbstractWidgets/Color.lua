@@ -245,7 +245,7 @@ local colors = {
 }
 
 function AW.GetColorRGB(name, alpha, saturation)
-    assert(colors[name], "no such color!")
+    assert(colors[name], "no such color:", name)
     saturation = saturation or 1
     if alpha then
         return colors[name]["t"][1]*saturation, colors[name]["t"][2]*saturation, colors[name]["t"][3]*saturation, alpha
@@ -255,7 +255,7 @@ function AW.GetColorRGB(name, alpha, saturation)
 end
 
 function AW.GetColorTable(name, alpha, saturation)
-    assert(colors[name], "no such color!")
+    assert(colors[name], "no such color:", name)
     saturation = saturation or 1
     if alpha then
         return {colors[name]["t"][1]*saturation, colors[name]["t"][2]*saturation, colors[name]["t"][3]*saturation, alpha}
@@ -265,17 +265,17 @@ function AW.GetColorTable(name, alpha, saturation)
 end
 
 function AW.GetColorHex(name)
-    assert(colors[name], "no such color!")
+    assert(colors[name], "no such color:", name)
     return colors[name]["hex"]
 end
 
 function AW.ColorFontString(fs, name)
-    assert(colors[name], "no such color!")
+    assert(colors[name], "no such color:", name)
     fs:SetTextColor(colors[name]["t"][1], colors[name]["t"][2], colors[name]["t"][3])
 end
 
 function AW.WrapTextInColor(text, name)
-    assert(colors[name], "no such color!")
+    assert(colors[name], "no such color:", name)
     return WrapTextInColorCode(text, colors[name]["hex"])
 end
 
@@ -302,11 +302,11 @@ local buttonColors = {
 }
 
 function AW.GetButtonNormalColor(name)
-    assert(buttonColors[name], "no such button color!")
+    assert(buttonColors[name], "no such button color:", name)
     return buttonColors[name]["normal"]
 end
 
 function AW.GetButtonHoverColor(name)
-    assert(buttonColors[name], "no such button color!")
+    assert(buttonColors[name], "no such button color:", name)
     return buttonColors[name]["hover"]
 end
