@@ -152,8 +152,14 @@ function AW.CreateBorderedFrame(parent, width, height, color, borderColor)
     AW.SetSize(f, width, height)
 
     function f:SetTitle(title, fontColor, font, isInside)
-        f.title = AW.CreateFontString(f, title, fontColor or "accent", font or "accent_title")
-        f.title:SetJustifyH("LEFT")
+        if not f.title then
+            f.title = AW.CreateFontString(f, title, fontColor or "accent", font or "accent_title")
+            f.title:SetJustifyH("LEFT")
+        else
+            f.title:SetText(title)
+        end
+
+        AW.ClearPoints(f.title)
         if isInside then
             AW.SetPoint(f.title, "TOPLEFT", 2, -2)
         else

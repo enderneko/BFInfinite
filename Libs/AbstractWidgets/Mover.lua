@@ -1,8 +1,10 @@
 local addonName, ns = ...
+local L = ns.L
 local AW = ns.AW
 
 local MOVER_PARENT_FRAME_LEVEL = 700
 local MOVER_ON_TOP_FRAME_LEVEL = 777
+local FINE_TUNING_FRAME_LEVEL = 800
 local movers = {}
 
 ---------------------------------------------------------------------
@@ -93,10 +95,6 @@ local function CreateMoverParent()
     moverParent:SetAllPoints(AW.UIParent)
     moverParent:Hide()
 
-    moverParent.textOverlay = CreateFrame("Frame", nil, moverParent)
-    moverParent.textOverlay:SetAllPoints()
-    moverParent.textOverlay:SetFrameLevel(150)
-
     -- hide in combat
     moverParent:RegisterEvent("PLAYER_REGEN_DISABLED")
     moverParent:SetScript("OnEvent", function()
@@ -142,28 +140,224 @@ local function CalcPoint(mover)
 end
 
 ---------------------------------------------------------------------
+-- fine-tuning frame
+---------------------------------------------------------------------
+local fineTuningFrame
+local AnchorFineTuningFrame, UpdateAndSave, UpdateFineTuningFrame
+
+local function CreateFineTuningFrame()
+    fineTuningFrame = AW.CreateBorderedFrame(moverParent, nil, nil, nil, "accent")
+    fineTuningFrame:SetFrameLevel(FINE_TUNING_FRAME_LEVEL)
+    fineTuningFrame:EnableMouse(true)
+    fineTuningFrame:SetClampedToScreen(true)
+    AW.SetSize(fineTuningFrame, 200, 91)
+    fineTuningFrame:Hide()
+
+    -- title
+    fineTuningFrame.tp = AW.CreateTitledPane(fineTuningFrame, "")
+    AW.SetPoint(fineTuningFrame.tp, "TOPLEFT", 7, -7)
+    AW.SetPoint(fineTuningFrame.tp, "BOTTOMRIGHT", -7, 7)
+
+    -- anchor
+    fineTuningFrame.anchor = AW.CreateTexture(fineTuningFrame.tp, AW.GetIcon("Anchor_BOTTOMLEFT"))
+    AW.SetSize(fineTuningFrame.anchor, 18, 18)
+    AW.SetPoint(fineTuningFrame.anchor, "TOPLEFT", 0, -30)
+    
+    -- x
+    fineTuningFrame.x = AW.CreateEditBox(fineTuningFrame.tp, "", 60, 20)
+    AW.SetPoint(fineTuningFrame.x, "LEFT", fineTuningFrame.anchor, "RIGHT", 20, 0)
+    
+    local x = AW.CreateFontString(fineTuningFrame.tp, "X", "accent")
+    AW.SetPoint(x, "RIGHT", fineTuningFrame.x, "LEFT", -2, 0)
+    
+    -- y
+    fineTuningFrame.y = AW.CreateEditBox(fineTuningFrame.tp, "", 60, 20)
+    AW.SetPoint(fineTuningFrame.y, "BOTTOM", fineTuningFrame.x)
+    AW.SetPoint(fineTuningFrame.y, "RIGHT")
+    
+    local y = AW.CreateFontString(fineTuningFrame.tp, "Y", "accent")
+    AW.SetPoint(y, "RIGHT", fineTuningFrame.y, "LEFT", -2, 0)
+    
+    -- edit x
+    fineTuningFrame.x:SetOnEditFocusGained(function()
+        fineTuningFrame._x = fineTuningFrame.x:GetNumber()
+    end)
+    fineTuningFrame.x:SetOnEditFocusLost(function()
+        fineTuningFrame.x:SetText(fineTuningFrame._x)
+    end)
+    fineTuningFrame.x:SetOnEnterPressed(function(text)
+        local v = tonumber(text)
+        if v then
+            fineTuningFrame._x = v
+
+            local owner = fineTuningFrame.owner
+            local _p, _, _, _x, _y = owner:GetPoint()
+            
+            -- validate
+            local mv = AW.UIParent:GetRight() - owner:GetWidth()
+            if strfind(_p, "LEFT$") then
+                v = max(v, 0)
+                v = min(v, mv)
+            elseif strfind(_p, "RIGHT$") then
+                v = max(-mv, v)
+                v = min(v, 0)
+            else
+                v = max(v, -mv/2)
+                v = min(v, mv/2)
+            end
+
+            owner:ClearAllPoints()
+            owner:SetPoint(_p, v, _y)
+
+            UpdateAndSave(owner, CalcPoint(owner.mover))
+            AnchorFineTuningFrame(owner)
+        end
+    end)
+    
+    -- edit y
+    fineTuningFrame.y:SetOnEditFocusGained(function()
+        fineTuningFrame._y = fineTuningFrame.y:GetNumber()
+    end)
+    fineTuningFrame.y:SetOnEditFocusLost(function()
+        fineTuningFrame.y:SetText(fineTuningFrame._y)
+    end)
+    fineTuningFrame.y:SetOnEnterPressed(function(text)
+        local v = tonumber(text)
+        if v then
+            fineTuningFrame._y = v
+
+            local owner = fineTuningFrame.owner
+            local _p, _, _, _x, _y = owner:GetPoint()
+
+            -- validate
+            local mv = AW.UIParent:GetTop() - owner:GetHeight()
+            if strfind(_p, "^BOTTOM") then
+                v = max(v, 0)
+                v = min(v, mv)
+            elseif strfind(_p, "^TOP") then
+                v = max(-mv, v)
+                v = min(v, 0)
+            else
+                v = max(v, -mv/2)
+                v = min(v, mv/2)
+            end
+            
+            owner:ClearAllPoints()
+            owner:SetPoint(_p, _x, v)
+
+            UpdateAndSave(owner, CalcPoint(owner.mover))
+            AnchorFineTuningFrame(owner)
+        end
+    end)
+
+    -- restore previous
+    fineTuningFrame.restore = AW.CreateButton(fineTuningFrame.tp, L and L["Restore"] or "Restore", "accent", 17, 17)
+    fineTuningFrame.restore:SetEnabled(false)
+    AW.SetPoint(fineTuningFrame.restore, "BOTTOMLEFT")
+    AW.SetPoint(fineTuningFrame.restore, "BOTTOMRIGHT")
+    fineTuningFrame.restore:SetScript("OnClick", function()
+        fineTuningFrame.restore:SetEnabled(false)
+        local owner = fineTuningFrame.owner
+        UpdateAndSave(owner, unpack(owner.mover._original))
+        AnchorFineTuningFrame(owner)
+    end)
+end
+
+UpdateFineTuningFrame = function(owner)
+    if not (fineTuningFrame and fineTuningFrame:IsShown()) then return end
+    
+    fineTuningFrame.tp:SetTitle(owner.mover.text:GetText())
+
+    local p, _, _, x, y = owner:GetPoint()
+    x = Round(x)
+    y = Round(y)
+
+    fineTuningFrame.x:ClearFocus()
+    fineTuningFrame.y:ClearFocus()
+
+    fineTuningFrame.anchor:SetTexture(AW.GetIcon("Anchor_"..p))
+    fineTuningFrame.x:SetText(x)
+    fineTuningFrame.y:SetText(y)
+
+    if owner.mover._original and (owner.mover._original[1] ~= p or owner.mover._original[2] ~= x or owner.mover._original[3] ~= y) then
+        fineTuningFrame.restore:SetEnabled(true)
+    else
+        fineTuningFrame.restore:SetEnabled(false)
+    end
+end
+
+AnchorFineTuningFrame = function(owner)
+    if not (fineTuningFrame and fineTuningFrame:IsShown()) then return end
+
+    fineTuningFrame.owner = owner
+
+    local centerX, centerY = AW.UIParent:GetCenter()
+    local width = AW.UIParent:GetRight()
+    local x, y = owner.mover:GetCenter()
+    
+    local point, relativePoint
+
+    if x >= (width * 2 / 3) then 
+        point, relativePoint = "RIGHT", "LEFT"
+        x, y = -1, 0
+    elseif x <= (width / 3) then
+        point, relativePoint = "LEFT", "RIGHT"
+        x, y = 1, 0
+    else
+        if y >= centerY then
+            point, relativePoint = "TOP", "BOTTOM"
+            x, y = 0, -1
+        else
+            point, relativePoint = "BOTTOM", "TOP"
+            x, y = 0, 1
+        end
+    end
+
+    AW.ClearPoints(fineTuningFrame)
+    AW.SetPoint(fineTuningFrame, point, owner.mover, relativePoint, x, y)
+
+    UpdateFineTuningFrame(owner)
+end
+
+local function ToggleFineTuningFrame(owner)
+    if not fineTuningFrame then CreateFineTuningFrame() end
+
+    if fineTuningFrame:IsShown() then
+        fineTuningFrame:Hide()
+        fineTuningFrame.owner = nil
+    else
+        fineTuningFrame:Show()
+        AnchorFineTuningFrame(owner)
+    end
+end
+
+---------------------------------------------------------------------
+-- restore
+---------------------------------------------------------------------
+UpdateAndSave = function(owner, p, x, y)
+    -- update ._points
+    owner._useOriginalPoints = true
+    owner._points = {}
+    owner._points[p] = {p, AW.UIParent, p, x, y}
+    AW.RePoint(owner)
+
+    -- save position
+    if owner.mover.save then
+        owner.mover.save(p, x, y)
+    end
+end
+
+---------------------------------------------------------------------
 -- stop moving
 ---------------------------------------------------------------------
---- @param save function
-local function StopMoving(region, save)
-    region:SetScript("OnUpdate", nil)
-    if region.mover.moved then
-        region.mover.moved = nil
+local function StopMoving(owner)
+    owner:SetScript("OnUpdate", nil)
+    if owner.mover.moved then
+        owner.mover.moved = nil
 
         -- calc new point
-        local p, x, y = CalcPoint(region.mover)
-        region:ClearAllPoints()
-        region:SetPoint(p, x, y)
-
-        -- update ._points
-        region._useOriginalPoints = true
-        region._points = {}
-        region._points[p] = {p, AW.UIParent, p, x, y}
-        
-        -- save position
-        if save then
-            save(p, x, y)
-        end
+        local p, x, y = CalcPoint(owner.mover)
+        UpdateAndSave(owner, p, x, y)
     end
 end
 
@@ -178,8 +372,11 @@ function AW.CreateMover(owner, group, text, save)
     if not moverParent then CreateMoverParent() end
 
     local mover = AW.CreateBorderedFrame(moverParent, nil, nil, nil, "accent")
-    owner.mover = mover
     mover:SetBackdropColor(AW.GetColorRGB("background", 0.75))
+
+    owner.mover = mover
+    mover.owner = owner
+    mover.save = save
 
     if not movers[group] then movers[group] = {} end
     tinsert(movers[group], mover)
@@ -187,7 +384,6 @@ function AW.CreateMover(owner, group, text, save)
     mover:SetAllPoints(owner)
     mover:SetFrameLevel(MOVER_ON_TOP_FRAME_LEVEL)
     mover:EnableMouse(true)
-    mover:SetClampedToScreen(true)
     mover:Hide()
 
     mover.text = AW.CreateFontString(mover, text,  nil, "accent_outline", nil, "OVERLAY")
@@ -246,16 +442,26 @@ function AW.CreateMover(owner, group, text, save)
             newY = min(newY, maxY)
 
             -- print(newX, newY)
-
+            owner:ClearAllPoints()
             owner:SetPoint(point, newX, newY)
             mover.moved = true
+
+            AnchorFineTuningFrame(owner)
         end)
     end)
 
-    mover:SetScript("OnMouseUp", function()
+    mover:SetScript("OnMouseUp", function(self, button)
+        if button == "RightButton" then
+            ToggleFineTuningFrame(owner)
+        end
+
+        if button ~= "LeftButton" then return end
         mover.isDragging = nil
         owner:SetScript("OnUpdate", nil)
-        StopMoving(owner, save)
+        StopMoving(owner)
+
+        -- update fine tuning
+        UpdateFineTuningFrame(owner)
     end)
 
     mover:SetScript("OnMouseWheel", function(self, delta)
@@ -285,7 +491,10 @@ function AW.CreateMover(owner, group, text, save)
             end
         end
 
-        StopMoving(owner, save)
+        StopMoving(owner)
+
+        -- update fine tuning
+        UpdateFineTuningFrame(owner)
     end)
     
     mover:SetScript("OnEnter", function()
@@ -293,23 +502,34 @@ function AW.CreateMover(owner, group, text, save)
             for _, m in pairs(g) do
                 if m == mover then
                     m.text:SetColor("white")
-                    m:SetFrameLevel(888)
+                    m:SetFrameLevel(MOVER_ON_TOP_FRAME_LEVEL)
                     AW.FrameFadeIn(m, 0.25)
-                else
+                elseif m:IsShown() then
                     m.text:SetColor("accent")
                     AW.FrameFadeOut(m, 0.25, nil, 0.5)
                 end
             end
         end
+        
+        AnchorFineTuningFrame(owner)
     end)
     
     mover:SetScript("onLeave", function()
         for _, g in pairs(movers) do
             for _, m in pairs(g) do
-                m.text:SetColor("accent")
-                m:SetFrameLevel(MOVER_ON_TOP_FRAME_LEVEL)
-                AW.FrameFadeIn(m, 0.25)
+                if m:IsShown() then
+                    m.text:SetColor("accent")
+                    m:SetFrameLevel(MOVER_ON_TOP_FRAME_LEVEL)
+                    AW.FrameFadeIn(m, 0.25)
+                end
             end
+        end
+    end)
+
+    mover:SetScript("OnShow", function()
+        if not mover._original then
+            local p, _, _, x, y = owner:GetPoint()
+            mover._original = {p, Round(x), Round(y)}
         end
     end)
 end
@@ -332,15 +552,31 @@ function AW.ShowMovers(group)
         end
     end
     moverParent:Show()
+    if fineTuningFrame then fineTuningFrame:Hide() end
 end
 
 function AW.HideMovers()
     if not moverParent then return end
-
+    
     for _, g in pairs(movers) do
         for _, m in pairs(g) do
             m:Hide()
+            m._original = nil
         end
     end
     moverParent:Hide()
+    if fineTuningFrame then fineTuningFrame:Hide() end
+end
+
+function AW.UndoMovers()
+    if not moverParent:IsShown() then return end
+
+    for _, g in pairs(movers) do
+        for _, m in pairs(g) do
+            if m._original then
+                UpdateAndSave(m.owner, m._original[1], m._original[2], m._original[3])
+            end
+        end
+    end
+    if fineTuningFrame then fineTuningFrame:Hide() end
 end

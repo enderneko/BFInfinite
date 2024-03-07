@@ -26,10 +26,25 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
     eb:SetTextInsets(4, 4, 0, 0)
     eb:SetAutoFocus(false)
 
-    eb:SetScript("OnEscapePressed", function() eb:ClearFocus() end)
-    eb:SetScript("OnEnterPressed", function() eb:ClearFocus() end)
-    eb:SetScript("OnEditFocusGained", function() eb:HighlightText() end)
-    eb:SetScript("OnEditFocusLost", function() eb:HighlightText(0, 0) end)
+    eb:SetScript("OnEditFocusGained", function()
+        if eb.onEditFocusGained then eb.onEditFocusGained() end
+        eb:HighlightText()
+    end)
+    
+    eb:SetScript("OnEditFocusLost", function()
+        if eb.onEditFocusLost then eb.onEditFocusLost() end
+        eb:HighlightText(0, 0)
+    end)
+    
+    eb:SetScript("OnEscapePressed", function()
+        if eb.onEscapePressed then eb.onEscapePressed() end
+        eb:ClearFocus()
+    end)
+    
+    eb:SetScript("OnEnterPressed", function()
+        if eb.onEnterPressed then eb.onEnterPressed(eb:GetText()) end
+        eb:ClearFocus()
+    end)
     
     eb:SetScript("OnDisable", function()
         eb:SetTextColor(AW.GetColorRGB("disabled"))
@@ -55,10 +70,6 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
         if not eb:IsEnabled() then return end
         eb.highlight:Hide()
     end)
-
-    function eb:SetOnTextChanged(func)
-        eb.onTextChanged = func
-    end
 
     eb.value = "" -- init value
 
@@ -119,6 +130,26 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
         end)
     end
     -----------------------------------------------------------------
+
+    function eb:SetOnEditFocusGained(func)
+        eb.onEditFocusGained = func
+    end
+    
+    function eb:SetOnEditFocusLost(func)
+        eb.onEditFocusLost = func
+    end
+
+    function eb:SetOnEnterPressed(func)
+        eb.onEnterPressed = func
+    end
+
+    function eb:SetOnEscapePressed(func)
+        eb.onEscapePressed = func
+    end
+
+    function eb:SetOnTextChanged(func)
+        eb.onTextChanged = func
+    end
 
     function eb:Clear()
         eb:SetText("")

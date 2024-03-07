@@ -761,14 +761,20 @@ function AW.ShowDemo()
 
     local mDropdown
 
-    local hmBtn = AW.CreateButton(mbf, "Hide Movers", "accent", 110, 20)
-    AW.SetPoint(hmBtn, "TOPRIGHT")
+    local undoBtn = AW.CreateButton(mbf, "Undo", "accent", 60, 20)
+    AW.SetPoint(undoBtn, "TOPRIGHT")
+    undoBtn:SetScript("OnClick", function()
+        AW.UndoMovers()
+    end)
+
+    local hmBtn = AW.CreateButton(mbf, "Hide", "accent", 60, 20)
+    AW.SetPoint(hmBtn, "TOPRIGHT", undoBtn, "TOPLEFT", 1, 0)
     hmBtn:SetScript("OnClick", function()
         AW.HideMovers()
         mDropdown:ClearSelected()
     end)
 
-    mDropdown = AW.CreateDropdown(mbf, 90, 10, nil, true)
+    mDropdown = AW.CreateDropdown(mbf, 85, 10, nil, true)
     AW.SetPoint(mDropdown, "TOPRIGHT", hmBtn, "TOPLEFT", 1, 0)
     AW.SetTooltips(mDropdown, "TOPLEFT", 0, 2, "Mover Tips", "• Drag to move", "• Use (shift) mouse wheel to move frame by 1 pixel")
     mDropdown:SetItems({
@@ -799,7 +805,7 @@ function AW.ShowDemo()
     })
 
     local function CreateMoverTestFrame(id, group, point)
-        local mtf = AW.CreateBorderedFrame(AW.UIParent, 170, 170)
+        local mtf = AW.CreateBorderedFrame(AW.UIParent, 170, 120)
         AW.SetPoint(mtf, point)
         mtf:SetTitle("Mover Test Frame "..id.."\n"..point, "hotpink", nil, true)
         AW.CreateMover(mtf, group, "Test Mover "..id, function(p,x,y) print("MTF"..id..":", p, x, y) end)
