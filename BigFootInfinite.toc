@@ -6,6 +6,8 @@
 # AddonCompartmentFunc: BigFootInfinite_OnAddonCompartmentClick
 # IconTexture: Interface\icon.tga
 
+Locales\LoadLocales.xml
+
 Init.lua
 Libs\LoadLibs.xml
 Core.lua
