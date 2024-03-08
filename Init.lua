@@ -1,4 +1,32 @@
-local addonName, BigFootInfinite = ...
-_G.BigFootInfinite = BigFootInfinite
+local _, BFI = ...
+_G.BigFootInfinite = BFI
 
-BigFootInfinite.prefix = "BFI"
+---------------------------------------------------------------------
+-- prefix
+---------------------------------------------------------------------
+BFI.prefix = "BFI"
+
+---------------------------------------------------------------------
+-- tables
+---------------------------------------------------------------------
+BFI.W = {} -- widgets (regions/frames)
+BFI.V = {} -- vars
+BFI.F = {} -- functions
+BFI.U = {} -- utils
+BFI.Libs = {}
+
+---------------------------------------------------------------------
+-- module tables
+---------------------------------------------------------------------
+BFI.M_AB = {
+    ["bars"] = {},
+}
+
+---------------------------------------------------------------------
+-- libs
+---------------------------------------------------------------------
+local function AddLib(name, major, silent)
+    BFI.Libs[name] = _G.LibStub(major, silent)
+end
+
+AddLib("LAB", "LibActionButton-1.0")

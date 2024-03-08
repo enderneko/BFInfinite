@@ -8,6 +8,8 @@
 
 Locales\LoadLocales.xml
 
-Init.lua
 Libs\LoadLibs.xml
+Init.lua
+
 Core.lua
+Modules\LoadModules.xml
