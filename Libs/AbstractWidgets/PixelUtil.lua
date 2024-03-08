@@ -138,7 +138,12 @@ function AW.SetPoint(region, ...)
 
     local points = {point, relativeTo or region:GetParent(), relativePoint or point, offsetX, offsetY}
     region._points[point] = points
-    region:SetPoint(points[1], points[2], points[3], AW.GetNearestPixelSize(points[4], region:GetEffectiveScale()), AW.GetNearestPixelSize(points[5], region:GetEffectiveScale()))
+
+    if region._useOriginalPoints then
+        region:SetPoint(points[1], points[2], points[3], points[4], points[5])
+    else
+        region:SetPoint(points[1], points[2], points[3], AW.GetNearestPixelSize(points[4], region:GetEffectiveScale()), AW.GetNearestPixelSize(points[5], region:GetEffectiveScale()))
+    end
 end
 
 function AW.SetOnePixelInside(region, relativeTo)
@@ -290,12 +295,16 @@ end
 ---------------------------------------------------------------------
 --- @param pos table|string
 function AW.LoadPosition(region, pos)
+    region._useOriginalPoints = true
     AW.ClearPoints(region)
     if type(pos) == "string" then
         pos = string.gsub(pos, " ", "")
-        region:SetPoint(strsplit(",", pos))
+        local p, x, y = strsplit(",", pos)
+        x = tonumber(x)
+        y = tonumber(y)
+        AW.SetPoint(region, p, x, y)
     elseif type(pos) == "table" then
-        region:SetPoint(unpack(pos))
+        AW.SetPoint(region, unpack(pos))
     end
 end
 
