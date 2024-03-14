@@ -159,7 +159,7 @@ local function CreateFineTuningFrame()
     AW.SetPoint(fineTuningFrame.tp, "BOTTOMRIGHT", -7, 7)
 
     -- anchor
-    fineTuningFrame.anchor = AW.CreateTexture(fineTuningFrame.tp, AW.GetIcon("Anchor_BOTTOMLEFT"))
+    fineTuningFrame.anchor = AW.CreateTexture(fineTuningFrame.tp, AW.GetIcon("Anchor_BOTTOMLEFT", true))
     AW.SetSize(fineTuningFrame.anchor, 18, 18)
     AW.SetPoint(fineTuningFrame.anchor, "TOPLEFT", 0, -30)
     
@@ -275,7 +275,7 @@ UpdateFineTuningFrame = function(owner)
     fineTuningFrame.x:ClearFocus()
     fineTuningFrame.y:ClearFocus()
 
-    fineTuningFrame.anchor:SetTexture(AW.GetIcon("Anchor_"..p))
+    fineTuningFrame.anchor:SetTexture(AW.GetIcon("Anchor_"..p, true))
     fineTuningFrame.x:SetText(x)
     fineTuningFrame.y:SetText(y)
 

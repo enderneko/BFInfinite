@@ -108,7 +108,7 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
         eb.confirmBtn:Hide()
 
         if not text then
-            eb.confirmBtn:SetTexture(AW.GetIcon("Tick"), {16, 16}, {"CENTER", 0, 0})
+            eb.confirmBtn:SetTexture(AW.GetIcon("Tick", true), {16, 16}, {"CENTER", 0, 0})
         end
 
         if isOutside then

@@ -266,7 +266,7 @@ local npCreationFn = function()
                 p:SetScript("OnUpdate", nil)
             end)
             -- play sound
-            PlaySoundFile(AW.GetSound("pop"))
+            PlaySoundFile(AW.GetSound("pop", true))
             -- timer bar
             p.timer = C_Timer.NewTimer(timeout, function()
                 p.timer = nil
@@ -339,7 +339,7 @@ local cpCreationFn = function()
             p:SetScript("OnUpdate", nil)
         end)
         -- play sound
-        PlaySoundFile(AW.GetSound("pop"))
+        PlaySoundFile(AW.GetSound("pop", true))
     end)
 
     -- OnHide --------------------------------------------------------------- --
@@ -403,7 +403,7 @@ local ppCreationFn = function()
             p:SetScript("OnUpdate", nil)
         end)
         -- play sound
-        PlaySoundFile(AW.GetSound("pop"))
+        PlaySoundFile(AW.GetSound("pop", true))
         -- check if is done
         if bar:GetValue() >= bar.maxValue then
             C_Timer.After(DEFAULT_PROGRESS_TIMEOUT, function()

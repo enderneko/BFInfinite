@@ -132,7 +132,7 @@ local function CreateCalendar()
     -- previous month
     local previous = AW.CreateButton(calendar, nil, "accent-hover", 35, 20)
     calendar.previous = previous
-    previous:SetTexture(AW.GetIcon("ArrowLeft"), {16, 16}, {"CENTER", 0, 0})
+    previous:SetTexture(AW.GetIcon("ArrowLeft", true), {16, 16}, {"CENTER", 0, 0})
     previous:SetScript("OnClick", function()
         calendar.date.month = calendar.date.month - 1
         if calendar.date.month == 0 then
@@ -148,7 +148,7 @@ local function CreateCalendar()
     -- next month
     local next = AW.CreateButton(calendar, nil, "accent-hover", 35, 20)
     calendar.next = next
-    next:SetTexture(AW.GetIcon("ArrowRight"), {16, 16}, {"CENTER", 0, 0})
+    next:SetTexture(AW.GetIcon("ArrowRight", true), {16, 16}, {"CENTER", 0, 0})
     next:SetScript("OnClick", function()
         calendar.date.month = calendar.date.month + 1
         if calendar.date.month == 13 then
@@ -204,7 +204,7 @@ local function CreateCalendar()
         days[i] = AW.CreateButton(calendar, "", "accent-hover", 27, 20)
 
         -- mark
-        days[i].mark = AW.CreateTexture(days[i], AW.GetIcon("Mark"))
+        days[i].mark = AW.CreateTexture(days[i], AW.GetIcon("Mark", true))
         AW.SetSize(days[i].mark, 8, 8)
         AW.SetPoint(days[i].mark, "TOPRIGHT", -1, -1)
         days[i].mark:Hide()
@@ -326,7 +326,7 @@ end
 --- @param date string|number|table "YYYYMMDD", a epoch unix timestamp in seconds, or a "*t" table
 function AW.CreateDateWidget(parent, date, width, calendarPosition)
     local w = AW.CreateButton(parent, "", "accent", width or 110, 20)
-    w:SetTexture(AW.GetIcon("Calendar"), {16, 16},  {"LEFT", 2, 0})
+    w:SetTexture(AW.GetIcon("Calendar", true), {16, 16},  {"LEFT", 2, 0})
 
     w.date = {} -- save show date info
     w.info = { -- store dates with extra info

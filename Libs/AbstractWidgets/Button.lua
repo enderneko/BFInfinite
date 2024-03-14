@@ -302,7 +302,7 @@ end
 function AW.CreateCloseButton(parent, frameToHide, width, height, offset)
     local b = AW.CreateButton(parent, nil, "red", width, height)
     offset = offset or 6
-    b:SetTexture(AW.GetIcon("Close"), {width-offset, height-offset}, {"CENTER", 0, 0})
+    b:SetTexture(AW.GetIcon("Close", true), {width-offset, height-offset}, {"CENTER", 0, 0})
     b:SetScript("OnClick", function()
         if frameToHide then
             frameToHide:Hide()

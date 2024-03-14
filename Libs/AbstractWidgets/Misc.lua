@@ -28,13 +28,13 @@ function AW.CreateNetStatsPane(parent, anchorPoint, showBandwidth, showLatency, 
     local str = ""
 
     if showBandwidth then
-        str = str .. AW.GetIconString("Upload") .. "%sKB/s_"
-        str = str .. AW.GetIconString("Download") .. "%sKB/s_"
+        str = str .. AW.GetIconString("Upload", true) .. "%sKB/s_"
+        str = str .. AW.GetIconString("Download", true) .. "%sKB/s_"
     end
     
     if showLatency then
-        str = str .. AW.GetIconString("Home") .. "%sms_"
-        str = str .. AW.GetIconString("World") .. "%sms_"
+        str = str .. AW.GetIconString("Home", true) .. "%sms_"
+        str = str .. AW.GetIconString("World", true) .. "%sms_"
     end
     
     if layout == "horizontal" then

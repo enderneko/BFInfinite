@@ -147,21 +147,25 @@ function AW.SetPoint(region, ...)
 end
 
 function AW.SetOnePixelInside(region, relativeTo)
+    AW.ClearPoints(region)
     AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", 1, -1)
     AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", -1, 1)
 end
 
 function AW.SetOnePixelOutside(region, relativeTo)
+    AW.ClearPoints(region)
     AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", -1, 1)
     AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", 1, -1)
 end
 
 function AW.SetInside(region, relativeTo, x, y)
+    AW.ClearPoints(region)
     AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", x, -y)
     AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", -x, y)
 end
 
 function AW.SetOutside(region, relativeTo, x, y)
+    AW.ClearPoints(region)
     AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", -x, y)
     AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", x, -y)
 end
