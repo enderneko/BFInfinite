@@ -2,7 +2,7 @@
 ## Title: BigFootInfinite
 ## Version: r1
 ## X-Flavor: Mainline
-# SavedVariables: 
+## SavedVariables: BFIConfig
 # AddonCompartmentFunc: BigFootInfinite_OnAddonCompartmentClick
 # IconTexture: Interface\icon.tga
 
@@ -10,6 +10,7 @@ Locales\LoadLocales.xml
 
 Libs\LoadLibs.xml
 Init.lua
+Utils\LoadUtils.xml
 
 Core.lua
 Modules\LoadModules.xml
