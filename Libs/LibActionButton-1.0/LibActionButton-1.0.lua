@@ -825,7 +825,7 @@ if UseCustomFlyout then
 				slotButton:SetAttribute("labaction-0", slotInfo.spellID)
 
 				-- run LAB updates
-				slotButton:CallMethod("SetStateFromHandlerInsecure", 0, "spell", slotInfo.spellID)
+				slotButton:CallMethod("SetStateFromHandlerInsecure", 0, "spell", slotInfo.overrideSpellID or slotInfo.spellID)
 				slotButton:CallMethod("UpdateAction")
 
 				slotButton:ClearAllPoints()
@@ -917,65 +917,65 @@ if UseCustomFlyout then
 
 	local SPELLFLYOUT_INITIAL_SPACING = 7
 	local function ShowFlyoutInsecure(self, direction)
-		self.Background.End:ClearAllPoints()
-		self.Background.Start:ClearAllPoints()
-		if direction == "UP" then
-			self.Background.End:SetPoint("TOP", 0, SPELLFLYOUT_INITIAL_SPACING)
-			SetClampedTextureRotation(self.Background.End, 0)
-			SetClampedTextureRotation(self.Background.VerticalMiddle, 0)
-			self.Background.Start:SetPoint("TOP", self.Background.VerticalMiddle, "BOTTOM")
-			SetClampedTextureRotation(self.Background.Start, 0)
-			self.Background.HorizontalMiddle:Hide()
-			self.Background.VerticalMiddle:Show()
-			self.Background.VerticalMiddle:ClearAllPoints()
-			self.Background.VerticalMiddle:SetPoint("TOP", self.Background.End, "BOTTOM")
-			self.Background.VerticalMiddle:SetPoint("BOTTOM", 0, 0)
-		elseif direction == "DOWN" then
-			self.Background.End:SetPoint("BOTTOM", 0, -SPELLFLYOUT_INITIAL_SPACING)
-			SetClampedTextureRotation(self.Background.End, 180)
-			SetClampedTextureRotation(self.Background.VerticalMiddle, 180)
-			self.Background.Start:SetPoint("BOTTOM", self.Background.VerticalMiddle, "TOP")
-			SetClampedTextureRotation(self.Background.Start, 180)
-			self.Background.HorizontalMiddle:Hide()
-			self.Background.VerticalMiddle:Show()
-			self.Background.VerticalMiddle:ClearAllPoints()
-			self.Background.VerticalMiddle:SetPoint("BOTTOM", self.Background.End, "TOP")
-			self.Background.VerticalMiddle:SetPoint("TOP", 0, -0)
-		elseif direction == "LEFT" then
-			self.Background.End:SetPoint("LEFT", -SPELLFLYOUT_INITIAL_SPACING, 0)
-			SetClampedTextureRotation(self.Background.End, 270)
-			SetClampedTextureRotation(self.Background.HorizontalMiddle, 180)
-			self.Background.Start:SetPoint("LEFT", self.Background.HorizontalMiddle, "RIGHT")
-			SetClampedTextureRotation(self.Background.Start, 270)
-			self.Background.VerticalMiddle:Hide()
-			self.Background.HorizontalMiddle:Show()
-			self.Background.HorizontalMiddle:ClearAllPoints()
-			self.Background.HorizontalMiddle:SetPoint("LEFT", self.Background.End, "RIGHT")
-			self.Background.HorizontalMiddle:SetPoint("RIGHT", -0, 0)
-		elseif direction == "RIGHT" then
-			self.Background.End:SetPoint("RIGHT", SPELLFLYOUT_INITIAL_SPACING, 0)
-			SetClampedTextureRotation(self.Background.End, 90)
-			SetClampedTextureRotation(self.Background.HorizontalMiddle, 0)
-			self.Background.Start:SetPoint("RIGHT", self.Background.HorizontalMiddle, "LEFT")
-			SetClampedTextureRotation(self.Background.Start, 90)
-			self.Background.VerticalMiddle:Hide()
-			self.Background.HorizontalMiddle:Show()
-			self.Background.HorizontalMiddle:ClearAllPoints()
-			self.Background.HorizontalMiddle:SetPoint("RIGHT", self.Background.End, "LEFT")
-			self.Background.HorizontalMiddle:SetPoint("LEFT", 0, 0)
-		end
+		-- self.Background.End:ClearAllPoints()
+		-- self.Background.Start:ClearAllPoints()
+		-- if direction == "UP" then
+		-- 	self.Background.End:SetPoint("TOP", 0, SPELLFLYOUT_INITIAL_SPACING)
+		-- 	SetClampedTextureRotation(self.Background.End, 0)
+		-- 	SetClampedTextureRotation(self.Background.VerticalMiddle, 0)
+		-- 	self.Background.Start:SetPoint("TOP", self.Background.VerticalMiddle, "BOTTOM")
+		-- 	SetClampedTextureRotation(self.Background.Start, 0)
+		-- 	self.Background.HorizontalMiddle:Hide()
+		-- 	self.Background.VerticalMiddle:Show()
+		-- 	self.Background.VerticalMiddle:ClearAllPoints()
+		-- 	self.Background.VerticalMiddle:SetPoint("TOP", self.Background.End, "BOTTOM")
+		-- 	self.Background.VerticalMiddle:SetPoint("BOTTOM", 0, 0)
+		-- elseif direction == "DOWN" then
+		-- 	self.Background.End:SetPoint("BOTTOM", 0, -SPELLFLYOUT_INITIAL_SPACING)
+		-- 	SetClampedTextureRotation(self.Background.End, 180)
+		-- 	SetClampedTextureRotation(self.Background.VerticalMiddle, 180)
+		-- 	self.Background.Start:SetPoint("BOTTOM", self.Background.VerticalMiddle, "TOP")
+		-- 	SetClampedTextureRotation(self.Background.Start, 180)
+		-- 	self.Background.HorizontalMiddle:Hide()
+		-- 	self.Background.VerticalMiddle:Show()
+		-- 	self.Background.VerticalMiddle:ClearAllPoints()
+		-- 	self.Background.VerticalMiddle:SetPoint("BOTTOM", self.Background.End, "TOP")
+		-- 	self.Background.VerticalMiddle:SetPoint("TOP", 0, -0)
+		-- elseif direction == "LEFT" then
+		-- 	self.Background.End:SetPoint("LEFT", -SPELLFLYOUT_INITIAL_SPACING, 0)
+		-- 	SetClampedTextureRotation(self.Background.End, 270)
+		-- 	SetClampedTextureRotation(self.Background.HorizontalMiddle, 180)
+		-- 	self.Background.Start:SetPoint("LEFT", self.Background.HorizontalMiddle, "RIGHT")
+		-- 	SetClampedTextureRotation(self.Background.Start, 270)
+		-- 	self.Background.VerticalMiddle:Hide()
+		-- 	self.Background.HorizontalMiddle:Show()
+		-- 	self.Background.HorizontalMiddle:ClearAllPoints()
+		-- 	self.Background.HorizontalMiddle:SetPoint("LEFT", self.Background.End, "RIGHT")
+		-- 	self.Background.HorizontalMiddle:SetPoint("RIGHT", -0, 0)
+		-- elseif direction == "RIGHT" then
+		-- 	self.Background.End:SetPoint("RIGHT", SPELLFLYOUT_INITIAL_SPACING, 0)
+		-- 	SetClampedTextureRotation(self.Background.End, 90)
+		-- 	SetClampedTextureRotation(self.Background.HorizontalMiddle, 0)
+		-- 	self.Background.Start:SetPoint("RIGHT", self.Background.HorizontalMiddle, "LEFT")
+		-- 	SetClampedTextureRotation(self.Background.Start, 90)
+		-- 	self.Background.VerticalMiddle:Hide()
+		-- 	self.Background.HorizontalMiddle:Show()
+		-- 	self.Background.HorizontalMiddle:ClearAllPoints()
+		-- 	self.Background.HorizontalMiddle:SetPoint("RIGHT", self.Background.End, "LEFT")
+		-- 	self.Background.HorizontalMiddle:SetPoint("LEFT", 0, 0)
+		-- end
 
-		if direction == "UP" or direction == "DOWN" then
-			self.Background.Start:SetWidth(47)
-			self.Background.HorizontalMiddle:SetWidth(47)
-			self.Background.VerticalMiddle:SetWidth(47)
-			self.Background.End:SetWidth(47)
-		else
-			self.Background.Start:SetHeight(47)
-			self.Background.HorizontalMiddle:SetHeight(47)
-			self.Background.VerticalMiddle:SetHeight(47)
-			self.Background.End:SetHeight(47)
-		end
+		-- if direction == "UP" or direction == "DOWN" then
+		-- 	self.Background.Start:SetWidth(47)
+		-- 	self.Background.HorizontalMiddle:SetWidth(47)
+		-- 	self.Background.VerticalMiddle:SetWidth(47)
+		-- 	self.Background.End:SetWidth(47)
+		-- else
+		-- 	self.Background.Start:SetHeight(47)
+		-- 	self.Background.HorizontalMiddle:SetHeight(47)
+		-- 	self.Background.VerticalMiddle:SetHeight(47)
+		-- 	self.Background.End:SetHeight(47)
+		-- end
 	end
 
 	function UpdateFlyoutHandlerScripts()
@@ -991,24 +991,24 @@ if UseCustomFlyout then
 
 	function GetFlyoutHandler()
 		if not lib.flyoutHandler then
-			lib.flyoutHandler = CreateFrame("Frame", "LABFlyoutHandlerFrame", UIParent, "SecureHandlerBaseTemplate")
-			lib.flyoutHandler.Background = CreateFrame("Frame", nil, lib.flyoutHandler)
-			lib.flyoutHandler.Background:SetAllPoints()
-			lib.flyoutHandler.Background.End = lib.flyoutHandler.Background:CreateTexture(nil, "BACKGROUND")
-			lib.flyoutHandler.Background.End:SetAtlas("UI-HUD-ActionBar-IconFrame-FlyoutButton", true)
-			lib.flyoutHandler.Background.HorizontalMiddle = lib.flyoutHandler.Background:CreateTexture(nil, "BACKGROUND")
-			lib.flyoutHandler.Background.HorizontalMiddle:SetAtlas("_UI-HUD-ActionBar-IconFrame-FlyoutMidLeft", true)
-			lib.flyoutHandler.Background.HorizontalMiddle:SetHorizTile(true)
-			lib.flyoutHandler.Background.VerticalMiddle = lib.flyoutHandler.Background:CreateTexture(nil, "BACKGROUND")
-			lib.flyoutHandler.Background.VerticalMiddle:SetAtlas("!UI-HUD-ActionBar-IconFrame-FlyoutMid", true)
-			lib.flyoutHandler.Background.VerticalMiddle:SetVertTile(true)
-			lib.flyoutHandler.Background.Start = lib.flyoutHandler.Background:CreateTexture(nil, "BACKGROUND")
-			lib.flyoutHandler.Background.Start:SetAtlas("UI-HUD-ActionBar-IconFrame-FlyoutBottom", true)
+			lib.flyoutHandler = CreateFrame("Frame", "BFIFlyoutHandlerFrame", UIParent, "SecureHandlerBaseTemplate")
+			-- lib.flyoutHandler.Background = CreateFrame("Frame", nil, lib.flyoutHandler)
+			-- lib.flyoutHandler.Background:SetAllPoints()
+			-- lib.flyoutHandler.Background.End = lib.flyoutHandler.Background:CreateTexture(nil, "BACKGROUND")
+			-- lib.flyoutHandler.Background.End:SetAtlas("UI-HUD-ActionBar-IconFrame-FlyoutButton", true)
+			-- lib.flyoutHandler.Background.HorizontalMiddle = lib.flyoutHandler.Background:CreateTexture(nil, "BACKGROUND")
+			-- lib.flyoutHandler.Background.HorizontalMiddle:SetAtlas("_UI-HUD-ActionBar-IconFrame-FlyoutMidLeft", true)
+			-- lib.flyoutHandler.Background.HorizontalMiddle:SetHorizTile(true)
+			-- lib.flyoutHandler.Background.VerticalMiddle = lib.flyoutHandler.Background:CreateTexture(nil, "BACKGROUND")
+			-- lib.flyoutHandler.Background.VerticalMiddle:SetAtlas("!UI-HUD-ActionBar-IconFrame-FlyoutMid", true)
+			-- lib.flyoutHandler.Background.VerticalMiddle:SetVertTile(true)
+			-- lib.flyoutHandler.Background.Start = lib.flyoutHandler.Background:CreateTexture(nil, "BACKGROUND")
+			-- lib.flyoutHandler.Background.Start:SetAtlas("UI-HUD-ActionBar-IconFrame-FlyoutBottom", true)
 
-			lib.flyoutHandler.Background.Start:SetVertexColor(0.7, 0.7, 0.7)
-			lib.flyoutHandler.Background.HorizontalMiddle:SetVertexColor(0.7, 0.7, 0.7)
-			lib.flyoutHandler.Background.VerticalMiddle:SetVertexColor(0.7, 0.7, 0.7)
-			lib.flyoutHandler.Background.End:SetVertexColor(0.7, 0.7, 0.7)
+			-- lib.flyoutHandler.Background.Start:SetVertexColor(0.7, 0.7, 0.7)
+			-- lib.flyoutHandler.Background.HorizontalMiddle:SetVertexColor(0.7, 0.7, 0.7)
+			-- lib.flyoutHandler.Background.VerticalMiddle:SetVertexColor(0.7, 0.7, 0.7)
+			-- lib.flyoutHandler.Background.End:SetVertexColor(0.7, 0.7, 0.7)
 
 			lib.flyoutHandler:Hide()
 
@@ -1030,13 +1030,13 @@ if UseCustomFlyout then
 
 		local maxNumSlots = 0
 
-		local data = "LAB_FlyoutInfo = newtable()\n"
+		local data = "LAB_FlyoutInfo=newtable();\n"
 		for flyoutID, info in pairs(lib.FlyoutInfo) do
 			if info.isKnown then
 				local numSlots = 0
-				data = data .. ("LAB_FlyoutInfo[%d] = newtable()LAB_FlyoutInfo[%d].slots = newtable()\n"):format(flyoutID, flyoutID)
+				data = data .. ("LAB_FlyoutInfo[%d]=newtable();LAB_FlyoutInfo[%d].slots=newtable();\n"):format(flyoutID, flyoutID)
 				for slotID, slotInfo in ipairs(info.slots) do
-					data = data .. ("LAB_FlyoutInfo[%d].slots[%d] = newtable()LAB_FlyoutInfo[%d].slots[%d].spellID = %dLAB_FlyoutInfo[%d].slots[%d].isKnown = %s\n"):format(flyoutID, slotID, flyoutID, slotID, slotInfo.spellID, flyoutID, slotID, slotInfo.isKnown and "true" or "nil")
+					data = data .. ("local info=newtable();LAB_FlyoutInfo[%d].slots[%d]=info;info.spellID=%d;info.overrideSpellID=%d;info.isKnown=%s;info.spellName=\"%s\";\n"):format(flyoutID, slotID, slotInfo.spellID, slotInfo.overrideSpellID, slotInfo.isKnown and "true" or "nil", slotInfo.spellName and slotInfo.spellName or "nil")
 					numSlots = numSlots + 1
 				end
 
@@ -1052,7 +1052,7 @@ if UseCustomFlyout then
 		if maxNumSlots > #lib.FlyoutButtons then
 			for i = #lib.FlyoutButtons + 1, maxNumSlots do
 				local button = lib:CreateButton(i, "LABFlyoutButton" .. i, lib.flyoutHandler, nil)
-				button:SetScale(0.8)
+				button:SetScale(1)
 				button:Hide()
 
 				-- disable drag and drop
@@ -1087,7 +1087,7 @@ if UseCustomFlyout then
 			if success then
 				lib.FlyoutInfo[flyoutID] = { numSlots = numSlots, isKnown = isKnown, slots = {} }
 				for slotID = 1, numSlots do
-					local spellID, overrideSpellID, isKnownSlot = GetFlyoutSlotInfo(flyoutID, slotID)
+					local spellID, overrideSpellID, isKnownSlot, spellName = GetFlyoutSlotInfo(flyoutID, slotID)
 
 					-- hide empty pet slots from the flyout
 					local petIndex, petName = GetCallPetSpellInfo(spellID)
@@ -1095,7 +1095,7 @@ if UseCustomFlyout then
 						isKnownSlot = false
 					end
 
-					lib.FlyoutInfo[flyoutID].slots[slotID] = { spellID = spellID, overrideSpellID = overrideSpellID, isKnown = isKnownSlot }
+					lib.FlyoutInfo[flyoutID].slots[slotID] = { spellID = spellID, overrideSpellID = overrideSpellID, isKnown = isKnownSlot, spellName = spellName }
 				end
 			end
 		end
@@ -1129,6 +1129,8 @@ if UseCustomFlyout then
 				end
 			end
 		end
+
+		lib.callbacks:Fire("OnFlyoutSpells")
 
 		SyncFlyoutInfoToHandler()
 	end
@@ -2042,7 +2044,14 @@ end
 
 local function OnCooldownDone(self)
 	self:SetScript("OnCooldownDone", nil)
-	UpdateCooldown(self:GetParent())
+	lib.callbacks:Fire("OnCooldownDone", self:GetParent())
+end
+
+local function OnLoCCooldownDone(self)
+	self:SetScript("OnCooldownDone", nil)
+	local button = self:GetParent()
+	UpdateCooldown(button)
+	lib.callbacks:Fire("OnCooldownDone", button)
 end
 
 function UpdateCooldown(self)
@@ -2087,10 +2096,14 @@ function UpdateCooldown(self)
 			self.cooldown:SetHideCountdownNumbers(true)
 			self.cooldown.currentCooldownType = COOLDOWN_TYPE_LOSS_OF_CONTROL
 		end
-		CooldownFrame_Set(self.cooldown, locStart, locDuration, true, true, modRate)
+
 		if self.chargeCooldown then
 			EndChargeCooldown(self.chargeCooldown)
 		end
+
+		-- CooldownFrame_Set(self.cooldown, locStart, locDuration, true, true, modRate)
+		self.cooldown:SetScript("OnCooldownDone", OnLoCCooldownDone)
+		self.cooldown:SetCooldown(locStart, locDuration, modRate)
 	else
 		if self.cooldown.currentCooldownType ~= COOLDOWN_TYPE_NORMAL then
 			self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
@@ -2098,16 +2111,16 @@ function UpdateCooldown(self)
 			self.cooldown:SetHideCountdownNumbers(false)
 			self.cooldown.currentCooldownType = COOLDOWN_TYPE_NORMAL
 		end
-		if locStart > 0 then
-			self.cooldown:SetScript("OnCooldownDone", OnCooldownDone)
-		end
 
 		if charges and maxCharges and maxCharges > 1 and charges < maxCharges then
 			StartChargeCooldown(self, chargeStart, chargeDuration, chargeModRate)
 		elseif self.chargeCooldown then
 			EndChargeCooldown(self.chargeCooldown)
 		end
-		CooldownFrame_Set(self.cooldown, start, duration, enable, false, modRate)
+
+		-- CooldownFrame_Set(self.cooldown, start, duration, enable, false, modRate)
+		self.cooldown:SetScript("OnCooldownDone", OnCooldownDone)
+		self.cooldown:SetCooldown(start, duration, modRate)
 	end
 end
 
@@ -2368,6 +2381,8 @@ else
 					flyoutArrowTexture:SetPoint("TOP", self, "TOP", 0, arrowDistance)
 				end
 
+				lib.callbacks:Fire("OnFlyoutUpdate", self, flyoutArrowTexture)
+				
 				-- return here, otherwise flyout is hidden
 				return
 			end

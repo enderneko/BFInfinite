@@ -5,9 +5,7 @@ local U = BFI.utils
 
 local LAB = BFI.libs.LAB
 
-function AB.CreateButton(parent, id, name)
-    local b = LAB:CreateButton(id, name, parent)
-
+function AB.StylizeButton(b)
     b.MasqueSkinned = true
 
     -- hide and remove ------------------------------------------------------- --
@@ -20,8 +18,6 @@ function AB.CreateButton(parent, id, name)
     U.Hide(b.SlotBackground)
     U.Hide(b.HighlightTexture)
     
-    -- local flash = b.Flash
-   
     b.HotKey:SetDrawLayer("OVERLAY")
 
     -- icon ------------------------------------------------------------------ --
@@ -31,6 +27,7 @@ function AB.CreateButton(parent, id, name)
 
     -- cooldown -------------------------------------------------------------- --
     AW.SetOnePixelInside(b.cooldown, b)
+    b.cooldown:SetDrawEdge(false)
 
     -- checked texture ------------------------------------------------------- --
     b.checkedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.2))
@@ -60,6 +57,16 @@ function AB.CreateButton(parent, id, name)
     b.Flash:SetColorTexture(AW.GetColorRGB("red", 0.2))
     AW.SetOnePixelInside(b.Flash, b)
     b.Flash:SetDrawLayer("ARTWORK", 1)
+    
+    -- backdrop -------------------------------------------------------------- --
+    Mixin(b, BackdropTemplateMixin)
+    AW.StylizeFrame(b)
+end
+
+function AB.CreateButton(parent, id, name)
+    local b = LAB:CreateButton(id, name, parent)
+
+    AB.StylizeButton(b)
 
     -- TargetReticleAnimFrame ------------------------------------------------ --
     if b.TargetReticleAnimFrame then
@@ -105,10 +112,6 @@ function AB.CreateButton(parent, id, name)
             b:UpdateCooldown()
         end)
     end
-
-    -- backdrop -------------------------------------------------------------- --
-    Mixin(b, BackdropTemplateMixin)
-    AW.StylizeFrame(b)
 
     return b
 end

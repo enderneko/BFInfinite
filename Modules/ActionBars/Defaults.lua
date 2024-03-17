@@ -1,10 +1,13 @@
 local _, BFI = ...
+local AW = BFI.AW
 local U = BFI.utils
+local AB = BFI.M_AB
 
 local defaults = {
     general = {
         frameLevel = 1,
         frameStrata = "LOW",
+        flyoutSize = 32,
     },
     barConfig = {
         bar1 = {enabled = true, position = "BOTTOM,0,50"},
@@ -16,10 +19,10 @@ local defaults = {
         bar7 = {enabled = false, position = "BOTTOM,0,290"},
         bar8 = {enabled = false, position = "BOTTOM,0,330"},
         bar9 = {enabled = false, position = "BOTTOM,0,370"},
-        bar10 = {enabled = false, position = "BOTTOM,0,410"},
-        bar13 = {enabled = false, position = "BOTTOM,0,450"},
-        bar14 = {enabled = false, position = "BOTTOM,0,450"},
-        bar15 = {enabled = false, position = "BOTTOM,0,450"},
+        classbar1 = {enabled = false, position = "BOTTOM,0,410"},
+        classbar2 = {enabled = false, position = "BOTTOM,0,450"},
+        classbar3 = {enabled = false, position = "BOTTOM,0,450"},
+        classbar4 = {enabled = false, position = "BOTTOM,0,450"},
     },
     sharedButtonConfig = {
         lock = true,
@@ -55,14 +58,15 @@ local defaults = {
 do
     -- fill bar options
     local barDefaults = {
+        alpha = 1,
         orientation = "horizontal",
         size = 32,
         spacing = 2,
         num = 12,
         buttonsPerLine = 12,
-        flyoutDirection = "auto",
         buttonConfig = {
             showGrid = true,
+            flyoutDirection = "UP",
             hideElements = {
                 macro = false,
                 hotkey = false,
@@ -70,17 +74,17 @@ do
             },
             text = {
                 hotkey = {
-                    font = {font = "visitor", size = 10, flags = "OUTLINE,MONOCHROME"},
+                    font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
                     color = {1, 1, 1},
                     position = {anchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
                 },
                 count = {
-                    font = {font = "visitor", size = 10, flags = "OUTLINE,MONOCHROME"},
+                    font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
                     color = {1, 1, 1},
                     position = {anchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 0}
                 },
                 macro = {
-                    font = {font = "visitor", size = 10, flags = "OUTLINE,MONOCHROME"},
+                    font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
                     color = {1, 1, 1},
                     position = {anchor = "BOTTOMLEFT", offsetX = 0, offsetY = 0}
                 },
@@ -88,7 +92,12 @@ do
         },
     }
 
-    for _, t in pairs(defaults.barConfig) do
+    for i, t in pairs(defaults.barConfig) do
+        if i == 1 then
+            barDefaults.visibility = "[petbattle] hide; show"
+        else
+            barDefaults.visibility = "[vehicleui][petbattle][overridebar] hide; show"
+        end
         U.Merge(t, barDefaults)
     end
 end
@@ -98,3 +107,7 @@ BFI.RegisterCallback("InitConfigs", "ActionBars", function(t)
         t["actionBars"] = U.Copy(defaults)
     end
 end)
+
+function AB.GetDefaults()
+    return U.Copy(defaults)
+end

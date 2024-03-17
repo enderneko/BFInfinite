@@ -1,4 +1,5 @@
-local _, BFI = ...
+local addonName, BFI = ...
+local L = BFI.L
 local AW = BFI.AW
 local W = BFI.widgets
 local U = BFI.utils
@@ -10,6 +11,83 @@ local RegisterStateDriver = RegisterStateDriver
 local UnregisterStateDriver = UnregisterStateDriver
 local SetModifiedClick = SetModifiedClick
 
+local ACTION_BAR_LIST = {
+    [1] = "bar1",
+    [2] = "bar2",
+    [3] = "bar3",
+    [4] = "bar4",
+    [5] = "bar5",
+    [6] = "bar6",
+    [7] = "classbar1",
+    [8] = "classbar2",
+    [9] = "classbar3",
+    [10] = "classbar4",
+    [13] = "bar7",
+    [14] = "bar8",
+    [15] = "bar9",
+}
+
+local BINDING_MAPPINGS = {
+    bar1 = "ACTIONBUTTON%d",
+    bar2 = "BFIACTIONBAR2BUTTON%d",
+    bar3 = "MULTIACTIONBAR3BUTTON%d",
+    bar4 = "MULTIACTIONBAR4BUTTON%d",
+    bar5 = "MULTIACTIONBAR2BUTTON%d",
+    bar6 = "MULTIACTIONBAR1BUTTON%d",
+    bar7 = "MULTIACTIONBAR5BUTTON%d",
+    bar8 = "MULTIACTIONBAR6BUTTON%d",
+    bar9 = "MULTIACTIONBAR7BUTTON%d",
+    classbar1 = "BFIACTIONBAR7BUTTON%d",
+    classbar2 = "BFIACTIONBAR8BUTTON%d",
+    classbar3 = "BFIACTIONBAR9BUTTON%d",
+    classbar4 = "BFIACTIONBAR10BUTTON%d",
+}
+
+---------------------------------------------------------------------
+-- bar functions
+---------------------------------------------------------------------
+local function ActionBar_OnEnter(bar)
+    bar = bar.header and bar.header or bar
+    AW.FrameFadeIn(bar, 0.25)
+end
+
+local function ActionBar_OnLeave(bar)
+    bar = bar.header and bar.header or bar
+    AW.FrameFadeOut(bar, 0.25, nil, bar.alpha)
+end
+
+local handledFlyouts = {}
+
+local function HandleFlyoutButton(b)
+    if not handledFlyouts[b] then
+        handledFlyouts[b] = true
+        AB.StylizeButton(b)
+    end
+    
+    if not InCombatLockdown() then
+        AW.SetSize(b, AB.config.general.flyoutSize)
+    end
+
+    b.MasqueSkinned = true -- skip LAB styling
+end
+
+
+local function ActionBar_FlyoutSpells()
+    if LAB.FlyoutButtons then
+        for _, b in pairs(LAB.FlyoutButtons) do
+            HandleFlyoutButton(b)
+        end
+    end
+end
+
+-- local function ActionBar_FlyoutCreated(b)
+--     print(b)
+-- end
+
+-- local function ActionBar_FlyoutUpdate(...)
+--     print(...)
+-- end
+
 ---------------------------------------------------------------------
 -- create bar
 ---------------------------------------------------------------------
@@ -18,19 +96,34 @@ function AB.CreateBar(id)
     local bar = CreateFrame("Frame", name, AW.UIParent, "SecureHandlerStateTemplate")
     
     bar.id = id
-    bar.name = "bar"..id
+    bar.name = ACTION_BAR_LIST[id]
     bar.buttons = {}
     
     AB.bars[bar.name] = bar
 
     -- RegisterStateDriver(bar, "page", "[mod:alt]2;1")
-    -- bar:SetAttribute("_onstate-page", [[
-    --     self:SetAttribute("state", newstate)
-    --     control:ChildUpdate("state", newstate)
-    -- ]])
 
-    -- bar:SetAttribute("actionpage", id)
+    -- page ------------------------------------------------------------------ --
+    bar:SetAttribute("_onstate-page", [[
+        if newstate == "possess" or newstate == "11" then
+            if HasVehicleActionBar() then
+                newstate = GetVehicleBarIndex()
+            elseif HasOverrideActionBar() then
+                newstate = GetOverrideBarIndex()
+            elseif HasTempShapeshiftActionBar() then
+                newstate = GetTempShapeshiftBarIndex()
+            elseif HasBonusActionBar() then
+                newstate = GetBonusBarIndex()
+            else
+                newstate = 12
+            end
+        end
 
+        self:SetAttribute("state", newstate)
+        control:ChildUpdate("state", newstate)
+    ]])
+
+    -- create buttons -------------------------------------------------------- --
     for i = 1, NUM_ACTIONBAR_BUTTONS do
         local b = AB.CreateButton(bar, i, name.."Button"..i)
         -- tinsert(bar.buttons, b)
@@ -41,8 +134,16 @@ function AB.CreateBar(id)
 
         -- b:SetState(1, "action", i)
         -- b:SetState(2, "action", 2)
-    end
 
+        b:HookScript("OnEnter", ActionBar_OnEnter)
+        b:HookScript("OnLeave", ActionBar_OnLeave)
+    end
+    
+    -- events ---------------------------------------------------------------- --
+    bar:SetScript("OnEnter", ActionBar_OnEnter)
+    bar:SetScript("OnLeave", ActionBar_OnLeave)
+    
+    -- update pixels --------------------------------------------------------- --
     function bar:UpdatePixels()
         AW.ReSize(bar)
         AW.RePoint(bar)
@@ -62,39 +163,21 @@ end
 ---------------------------------------------------------------------
 -- onenter, onleave
 ---------------------------------------------------------------------
--- function AB.Bar_OnEnter(bar)
---     print("Bar_OnEnter", bar)
+-- function AB.ActionBar_OnEnter(bar)
+--     print("ActionBar_OnEnter", bar)
 -- end
 
--- function AB.Bar_OnLeave(bar)
---     print("Bar_OnLeave", bar)
+-- function AB.ActionBar_OnLeave(bar)
+--     print("ActionBar_OnLeave", bar)
 -- end
 
 ---------------------------------------------------------------------
 -- assign bindings
 ---------------------------------------------------------------------
-local BINDING_MAPPINGS = {
-    bar1 = "ACTIONBUTTON%d",
-    bar2 = "MULTIACTIONBAR1BUTTON%d",
-    bar3 = "MULTIACTIONBAR3BUTTON%d",
-    bar4 = "MULTIACTIONBAR4BUTTON%d",
-    bar5 = "MULTIACTIONBAR2BUTTON%d",
-    bar6 = "MULTIACTIONBAR1BUTTON%d",
-    bar7 = "BFIACTIONBAR7BUTTON%d",
-    bar8 = "BFIACTIONBAR8BUTTON%d",
-    bar9 = "BFIACTIONBAR9BUTTON%d",
-    bar10 = "BFIACTIONBAR10BUTTON%d",
-    -- [11] = "MULTIACTIONBAR5BUTTON%d",
-    -- [12] = "MULTIACTIONBAR5BUTTON%d",
-    bar13 = "MULTIACTIONBAR5BUTTON%d",
-    bar14 = "MULTIACTIONBAR6BUTTON%d",
-    bar15 = "MULTIACTIONBAR7BUTTON%d",
-}
-
 local function AssignBindings()
     if InCombatLockdown() then return end
 
-    for barName, mapping in pairs(BINDING_MAPPINGS) do
+    for barName in pairs(BINDING_MAPPINGS) do
         local bar = AB.bars[barName]
         ClearOverrideBindings(bar)
 
@@ -205,6 +288,7 @@ local function UpdateButton(bar, shared, specific)
     
     -- specific bar
     bar.buttonConfig.showGrid = specific.showGrid
+    bar.buttonConfig.flyoutDirection = specific.flyoutDirection
     bar.buttonConfig.hideElements.count = specific.hideElements.count
     bar.buttonConfig.hideElements.macro = specific.hideElements.macro
     bar.buttonConfig.hideElements.hotkey = specific.hideElements.hotkey
@@ -241,20 +325,31 @@ local function UpdateBar(bar, general, shared, specific)
     -- bar
     ReArrange(bar, specific.size, specific.spacing, specific.buttonsPerLine, specific.num, specific.orientation)
     AW.LoadPosition(bar, specific.position)
+    
     bar:SetFrameStrata(general.frameStrata)
     bar:SetFrameLevel(general.frameLevel)
+
+    bar.alpha = specific.alpha
+    bar:SetAlpha(specific.alpha)
 
     bar.enabled = specific.enabled
     if specific.enabled then
         bar:Show()
+        RegisterStateDriver(bar, "visibility", specific.visibility)
     else
         bar:Hide()
         UnregisterStateDriver(bar, "visibility")
     end
-    
+
     -- page
-    RegisterStateDriver(bar, "page", bar.id)
-    bar:SetAttribute("page", bar.id)
+    local page
+    if bar.id == 1 then
+        page = "[bonusbar:1] 7; 1"
+    else
+        page = bar.id
+    end
+    RegisterStateDriver(bar, "page", page)
+    bar:SetAttribute("page", page)
 
     -- button
     UpdateButton(bar, shared, specific.buttonConfig)
@@ -263,13 +358,13 @@ end
 local function UpdateMainBars(module, barName)
     if module and module ~= "ActionBar" then return end
 
-    local config = BFI.vars.currentConfigTable.actionBars
+    AB.config = BFI.vars.currentConfigTable.actionBars
 
     if barName then
-        UpdateBar(AB.bars[barName], config.general, config.sharedButtonConfig, config.barConfig[barName])
+        UpdateBar(AB.bars[barName], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[barName])
     else
         for name, bar in pairs(AB.bars) do
-            UpdateBar(bar, config.general, config.sharedButtonConfig, config.barConfig[name])
+            UpdateBar(bar, AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[name])
         end
     end
 end
@@ -279,13 +374,30 @@ BFI.RegisterCallback("UpdateModules", "MainBars", UpdateMainBars)
 -- init
 ---------------------------------------------------------------------
 local function InitMainBars()
-    for i = 1, 10 do
-        AB.CreateBar(i)
-    end
-    for i = 13, 15 do
+    _G.BINDING_HEADER_BFI = AW.WrapTextInColor(addonName, "accent")
+
+    local bars = {
+        [2] = L["Action Bar"].." 2 "..L["Button"].." %d",
+        [7] = L["Class Bar"].." 1 "..L["Button"].." %d",
+        [8] = L["Class Bar"].." 2 "..L["Button"].." %d",
+        [9] = L["Class Bar"].." 3 "..L["Button"].." %d",
+        [10] = L["Class Bar"].." 4 "..L["Button"].." %d",
+    }
+
+    for bar, text in pairs(bars) do
+		for slot = 1, 12 do
+			_G[format("BINDING_NAME_BFIACTIONBAR%dBUTTON%d", bar, slot)] = format(text, slot)
+		end
+	end
+
+    for i in pairs(ACTION_BAR_LIST) do
         AB.CreateBar(i)
     end
     UpdateMainBars()
+
+    LAB.RegisterCallback(AB, "OnFlyoutSpells", ActionBar_FlyoutSpells)
+    -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
+    -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
 
     AB.RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 

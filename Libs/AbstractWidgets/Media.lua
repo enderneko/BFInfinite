@@ -44,3 +44,14 @@ function AW.GetSound(sound, inAW)
         return "Interface\\AddOns\\"..addonName.."\\Media\\Sounds\\"..sound..".ogg"
     end
 end
+
+---------------------------------------------------------------------
+-- get font
+---------------------------------------------------------------------
+function AW.GetFont(font, inAW)
+    if inAW then
+        return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Fonts\\"..font..".ttf"
+    else
+        return "Interface\\AddOns\\"..addonName.."\\Media\\Fonts\\"..font..".ttf"
+    end
+end

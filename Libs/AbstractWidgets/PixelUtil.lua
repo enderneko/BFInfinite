@@ -106,9 +106,10 @@ function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
         + AW.GetNearestPixelSize(extraHeight, region:GetEffectiveScale()))
 end
 
-function AW.SetSize(region, width, height, minWidthPixels, minHeightPixels)
-    if width then AW.SetWidth(region, width, minWidthPixels) end
-    if height then AW.SetHeight(region, height, minHeightPixels) end
+function AW.SetSize(region, width, height)
+    height = height or width
+    if width then AW.SetWidth(region, width) end
+    if height then AW.SetHeight(region, height) end
 end
 
 ---------------------------------------------------------------------
