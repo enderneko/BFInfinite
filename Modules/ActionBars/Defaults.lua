@@ -92,8 +92,8 @@ do
         },
     }
 
-    for i, t in pairs(defaults.barConfig) do
-        if i == 1 then
+    for bar, t in pairs(defaults.barConfig) do
+        if bar == "bar1" then
             barDefaults.visibility = "[petbattle] hide; show"
         else
             barDefaults.visibility = "[vehicleui][petbattle][overridebar] hide; show"

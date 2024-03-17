@@ -590,7 +590,9 @@ function Generic:OnButtonEvent(event, ...)
 	if event == "UNIT_SPELLCAST_RETICLE_TARGET" then
 		self:PlayTargettingReticleAnim(select(3, ...))
 	elseif event == "UNIT_SPELLCAST_RETICLE_CLEAR" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_FAILED" then
-		self:ClearReticle()
+		if self.abilityID == select(3, ...) then
+			self:ClearReticle()
+		end
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
 		self:PlaySpellInterruptedAnim(select(3, ...))
 	elseif event == "UNIT_SPELLCAST_EMPOWER_STOP" then

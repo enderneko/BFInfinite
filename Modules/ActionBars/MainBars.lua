@@ -1,7 +1,6 @@
 local addonName, BFI = ...
 local L = BFI.L
 local AW = BFI.AW
-local W = BFI.widgets
 local U = BFI.utils
 local AB = BFI.M_AB
 
@@ -91,7 +90,7 @@ end
 ---------------------------------------------------------------------
 -- create bar
 ---------------------------------------------------------------------
-function AB.CreateBar(id)
+local function CreateBar(id)
     local name = "BFI_ActionBar"..id
     local bar = CreateFrame("Frame", name, AW.UIParent, "SecureHandlerStateTemplate")
     
@@ -159,17 +158,6 @@ function AB.CreateBar(id)
 
     return bar
 end
-
----------------------------------------------------------------------
--- onenter, onleave
----------------------------------------------------------------------
--- function AB.ActionBar_OnEnter(bar)
---     print("ActionBar_OnEnter", bar)
--- end
-
--- function AB.ActionBar_OnLeave(bar)
---     print("ActionBar_OnLeave", bar)
--- end
 
 ---------------------------------------------------------------------
 -- assign bindings
@@ -304,6 +292,17 @@ local function UpdateButton(bar, shared, specific)
         end
         b:SetState(0, "action", (bar.id - 1) * 12 + i)
 
+        if i == 12 then
+            if BFI.vars.isRetail then
+                b:SetState(16, "custom", customExitButton)
+                b:SetState(17, "custom", customExitButton)
+                b:SetState(18, "custom", customExitButton)
+            else
+                b:SetState(11, "custom", customExitButton)
+                b:SetState(12, "custom", customExitButton)
+            end
+        end
+
         -- bind
         bar.buttonConfig.keyBoundTarget = format(BINDING_MAPPINGS[bar.name], i)
         b.keyBoundTarget = bar.buttonConfig.keyBoundTarget
@@ -344,7 +343,8 @@ local function UpdateBar(bar, general, shared, specific)
     -- page
     local page
     if bar.id == 1 then
-        page = "[bonusbar:1] 7; 1"
+        page = "[overridebar] 18; [vehicleui][possessbar] 16; [shapeshift] 17; [bonusbar:5] 11; 1"
+        -- page = "[bonusbar:1] 7; 1"
     else
         page = bar.id
     end
@@ -374,6 +374,8 @@ BFI.RegisterCallback("UpdateModules", "MainBars", UpdateMainBars)
 -- init
 ---------------------------------------------------------------------
 local function InitMainBars()
+    AB.DisableBlizzard()
+
     _G.BINDING_HEADER_BFI = AW.WrapTextInColor(addonName, "accent")
 
     local bars = {
@@ -385,13 +387,13 @@ local function InitMainBars()
     }
 
     for bar, text in pairs(bars) do
-		for slot = 1, 12 do
-			_G[format("BINDING_NAME_BFIACTIONBAR%dBUTTON%d", bar, slot)] = format(text, slot)
-		end
-	end
+        for slot = 1, 12 do
+            _G[format("BINDING_NAME_BFIACTIONBAR%dBUTTON%d", bar, slot)] = format(text, slot)
+        end
+    end
 
     for i in pairs(ACTION_BAR_LIST) do
-        AB.CreateBar(i)
+        CreateBar(i)
     end
     UpdateMainBars()
 

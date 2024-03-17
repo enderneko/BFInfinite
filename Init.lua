@@ -9,7 +9,7 @@ BFI.prefix = "BFI"
 ---------------------------------------------------------------------
 -- tables
 ---------------------------------------------------------------------
-BFI.widgets = {} -- widgets (regions/frames)
+-- BFI.widgets = {} -- widgets (regions/frames)
 BFI.vars = {} -- vars
 BFI.funcs = {} -- functions
 BFI.utils = {} -- utils
@@ -22,6 +22,8 @@ BFI.vars.isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 BFI.vars.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 BFI.vars.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 
+BFI.vars.playerClass = UnitClassBase("player")
+
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
@@ -33,10 +35,15 @@ BFI.AddEventHandler(BFI.M_AB)
 ---------------------------------------------------------------------
 -- hidden parent
 ---------------------------------------------------------------------
-BFI.widgets.hiddenParent = CreateFrame("Frame")
-BFI.widgets.hiddenParent:SetPoint("BOTTOMLEFT")
-BFI.widgets.hiddenParent:SetSize(1, 1)
-BFI.widgets.hiddenParent:Hide()
+BFI.hiddenParent = CreateFrame("Frame")
+BFI.hiddenParent:SetPoint("BOTTOMLEFT")
+BFI.hiddenParent:SetSize(1, 1)
+BFI.hiddenParent:Hide()
+
+---------------------------------------------------------------------
+-- dummy
+---------------------------------------------------------------------
+BFI.dummy = function() end
 
 ---------------------------------------------------------------------
 -- libs

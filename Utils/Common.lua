@@ -1,11 +1,10 @@
 local _, BFI = ...
-local W = BFI.widgets
 local U = BFI.utils
 
 function U.Hide(region)
     if not region then return end
     
-    region:SetParent(W.hiddenParent)
+    region:SetParent(BFI.hiddenParent)
 
     region.Show = region.Hide
 
@@ -22,4 +21,9 @@ function U.Hide(region)
     end
 
     region:Hide()
+end
+
+function U.DisableEditMode(region)
+    region.HighlightSystem = BFI.dummy
+    region.ClearHighlight = BFI.dummy
 end
