@@ -45,12 +45,12 @@ local BINDING_MAPPINGS = {
 ---------------------------------------------------------------------
 -- bar functions
 ---------------------------------------------------------------------
-local function ActionBar_OnEnter(bar)
+function AB.ActionBar_OnEnter(bar)
     bar = bar.header and bar.header or bar
     AW.FrameFadeIn(bar, 0.25)
 end
 
-local function ActionBar_OnLeave(bar)
+function AB.ActionBar_OnLeave(bar)
     bar = bar.header and bar.header or bar
     AW.FrameFadeOut(bar, 0.25, nil, bar.alpha)
 end
@@ -134,13 +134,13 @@ local function CreateBar(id)
         -- b:SetState(1, "action", i)
         -- b:SetState(2, "action", 2)
 
-        b:HookScript("OnEnter", ActionBar_OnEnter)
-        b:HookScript("OnLeave", ActionBar_OnLeave)
+        b:HookScript("OnEnter", AB.ActionBar_OnEnter)
+        b:HookScript("OnLeave", AB.ActionBar_OnLeave)
     end
     
     -- events ---------------------------------------------------------------- --
-    bar:SetScript("OnEnter", ActionBar_OnEnter)
-    bar:SetScript("OnLeave", ActionBar_OnLeave)
+    bar:SetScript("OnEnter", AB.ActionBar_OnEnter)
+    bar:SetScript("OnLeave", AB.ActionBar_OnLeave)
     
     -- update pixels --------------------------------------------------------- --
     function bar:UpdatePixels()
@@ -192,19 +192,59 @@ end
 ---------------------------------------------------------------------
 -- arrangement
 ---------------------------------------------------------------------
-local function ReArrange(bar, size, spacing, buttonsPerLine, num, orientation)
+function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientation)
     -- update buttons -------------------------------------------------------- --
     local p, rp, rp_new_line
     local x, y, x_new_line, y_new_line
     
+    p = anchor
+
     if orientation == "horizontal" then
-        p, rp, rp_new_line = "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT"
-        x, y = spacing, 0
-        x_new_line, y_new_line = 0, -spacing
+        if strfind(anchor, "^TOP") then
+            rp = "TOP"
+            rp_new_line = "BOTTOM"
+            y_new_line = -spacing
+        elseif strfind(anchor, "^BOTTOM") then
+            rp = "BOTTOM"
+            rp_new_line = "TOP"
+            y_new_line = spacing
+        end
+
+        if strfind(anchor, "LEFT$") then
+            rp = rp.."RIGHT"
+            rp_new_line = rp_new_line.."LEFT"
+            x = spacing
+        elseif strfind(anchor, "RIGHT$") then
+            rp = rp.."LEFT"
+            rp_new_line = rp_new_line.."RIGHT"
+            x = -spacing
+        end
+
+        y = 0
+        x_new_line = 0
     else
-        p, rp, rp_new_line = "TOPLEFT", "BOTTOMLEFT", "TOPRIGHT"
-        x, y = 0, -spacing
-        x_new_line, y_new_line = spacing, 0
+        if strfind(anchor, "^TOP") then
+            rp = "BOTTOM"
+            rp_new_line = "TOP"
+            y = -spacing
+        elseif strfind(anchor, "^BOTTOM") then
+            rp = "TOP"
+            rp_new_line = "BOTTOM"
+            y = spacing
+        end
+
+        if strfind(anchor, "LEFT$") then
+            rp = rp.."LEFT"
+            rp_new_line = rp_new_line.."RIGHT"
+            x_new_line = spacing
+        elseif strfind(anchor, "RIGHT$") then
+            rp = rp.."RIGHT"
+            rp_new_line = rp_new_line.."LEFT"
+            x_new_line = -spacing
+        end
+
+        x = 0
+        y_new_line = 0
     end
 
     -- shown
@@ -322,7 +362,7 @@ end
 ---------------------------------------------------------------------
 local function UpdateBar(bar, general, shared, specific)
     -- bar
-    ReArrange(bar, specific.size, specific.spacing, specific.buttonsPerLine, specific.num, specific.orientation)
+    AB.ReArrange(bar, specific.size, specific.spacing, specific.buttonsPerLine, specific.num, specific.anchor, specific.orientation)
     AW.LoadPosition(bar, specific.position)
     
     bar:SetFrameStrata(general.frameStrata)
@@ -363,12 +403,19 @@ local function UpdateMainBars(module, barName)
     if barName then
         UpdateBar(AB.bars[barName], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[barName])
     else
-        for name, bar in pairs(AB.bars) do
-            UpdateBar(bar, AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[name])
+        for _, name in pairs(ACTION_BAR_LIST) do
+            UpdateBar(AB.bars[name], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[name])
         end
     end
 end
 BFI.RegisterCallback("UpdateModules", "MainBars", UpdateMainBars)
+
+---------------------------------------------------------------------
+-- PLAYER_REGEN_ENABLED
+---------------------------------------------------------------------
+local function PLAYER_REGEN_ENABLED()
+
+end
 
 ---------------------------------------------------------------------
 -- init
@@ -401,6 +448,7 @@ local function InitMainBars()
     -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
     -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
 
+    AB.RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
     AB.RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 
     if BFI.vars.isRetail then

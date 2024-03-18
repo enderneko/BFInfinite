@@ -1321,6 +1321,11 @@ function Generic:UpdateConfig(config)
 			self:UnregisterEvent("UNIT_SPELLCAST_FAILED")
 			self:UnregisterEvent("UNIT_SPELLCAST_RETICLE_TARGET")
 			self:UnregisterEvent("UNIT_SPELLCAST_RETICLE_CLEAR")
+			self.TargetReticleAnimFrame:Hide()
+		end
+
+		if not self.config.interruptDisplay then
+			self.InterruptDisplay:Hide()
 		end
 		
 		if self.config.interruptDisplay or self.config.spellCastAnim then
@@ -1336,6 +1341,7 @@ function Generic:UpdateConfig(config)
 			self:UnregisterEvent("UNIT_SPELLCAST_START")
 			self:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_START")
 			self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+			self.SpellCastAnimFrame:Hide()
 		end
 
 		if not (self.config.interruptDisplay or self.config.spellCastAnim) then

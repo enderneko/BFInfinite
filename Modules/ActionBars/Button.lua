@@ -8,22 +8,31 @@ local LAB = BFI.libs.LAB
 function AB.StylizeButton(b)
     b.MasqueSkinned = true
 
+    local name = b:GetName()
+    local icon = b.icon or _G[name.."Icon"]
+    local hotkey = b.HotKey or _G[name.."HotKey"]
+    local shine = b.AutoCastShine or _G[name.."Shine"]
+    local flash = b.Flash or _G[name.."Flash"]
+    local border = b.Border or _G[name.."Border"]
+    local normal = b.NormalTexture or _G[name.."NormalTexture"]
+    local normal2 = b:GetNormalTexture()
+
     -- hide and remove ------------------------------------------------------- --
-    U.Hide(b.NormalTexture)
-    U.Hide(b:GetNormalTexture())
-    U.Hide(b.border)
+    U.Hide(normal)
+    U.Hide(normal2)
+    U.Hide(border)
     U.Hide(b.IconMask)
     U.Hide(b.NewActionTexture)
     U.Hide(b.SlotBackground)
-    U.Hide(b.SlotBackground)
     U.Hide(b.HighlightTexture)
     
-    b.HotKey:SetDrawLayer("OVERLAY")
+    -- hotkey ---------------------------------------------------------------- --
+    hotkey:SetDrawLayer("OVERLAY")
 
     -- icon ------------------------------------------------------------------ --
-    b.icon:SetDrawLayer("ARTWORK", -1)
-    b.icon:SetTexCoord(0.12, 0.88, 0.12, 0.88)
-    AW.SetOnePixelInside(b.icon, b)
+    icon:SetDrawLayer("ARTWORK", -1)
+    icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+    AW.SetOnePixelInside(icon, b)
 
     -- cooldown -------------------------------------------------------------- --
     AW.SetOnePixelInside(b.cooldown, b)
@@ -47,17 +56,23 @@ function AB.StylizeButton(b)
     b.mouseOverHighlight:SetBlendMode("ADD")
 
     -- SpellHighlightTexture ------------------------------------------------- --
-    b.SpellHighlightTexture:SetColorTexture(AW.GetColorRGB("yellow", 0.4))
-    AW.SetOnePixelInside(b.SpellHighlightTexture, b)
+    if b.SpellHighlightTexture then
+        b.SpellHighlightTexture:SetColorTexture(AW.GetColorRGB("yellow", 0.4))
+        AW.SetOnePixelInside(b.SpellHighlightTexture, b)
+    end
 
     -- AutoCastShine --------------------------------------------------------- --
-    AW.SetOnePixelInside(b.AutoCastShine, b)
+    if shine then
+        AW.SetOnePixelInside(shine, b)
+    end
     
     -- Flash ----------------------------------------------------------------- --
-    b.Flash:SetColorTexture(AW.GetColorRGB("red", 0.2))
-    AW.SetOnePixelInside(b.Flash, b)
-    b.Flash:SetDrawLayer("ARTWORK", 1)
-    
+    if flash then
+        flash:SetColorTexture(AW.GetColorRGB("red", 0.2))
+        AW.SetOnePixelInside(flash, b)
+        flash:SetDrawLayer("ARTWORK", 1)
+    end
+        
     -- backdrop -------------------------------------------------------------- --
     Mixin(b, BackdropTemplateMixin)
     AW.StylizeFrame(b)

@@ -4,4 +4,5 @@
     <Script file="Defaults.lua"/>
     <Script file="Button.lua"/>
     <Script file="MainBars.lua"/>
+    <Script file="StanceBar.lua"/>
 </Ui>

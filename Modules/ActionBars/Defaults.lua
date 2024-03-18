@@ -23,6 +23,7 @@ local defaults = {
         classbar2 = {enabled = false, position = "BOTTOM,0,450"},
         classbar3 = {enabled = false, position = "BOTTOM,0,450"},
         classbar4 = {enabled = false, position = "BOTTOM,0,450"},
+        stancebar = {enabled = true, position = "BOTTOM,0,170"}
     },
     sharedButtonConfig = {
         lock = true,
@@ -32,7 +33,7 @@ local defaults = {
         autoAddNewSpells = true, -- TODO:
         pickUpKey = "SHIFT",
         outOfRangeColoring = "button",
-        desaturate = true,
+        desaturate = true,-- TODO:
         colors = {
             range = {0.8, 0.1, 0.1},
             mana = {0.5, 0.5, 1.0},
@@ -59,6 +60,7 @@ do
     -- fill bar options
     local barDefaults = {
         alpha = 1,
+        anchor = "TOPLEFT",
         orientation = "horizontal",
         size = 32,
         spacing = 2,
@@ -93,12 +95,31 @@ do
     }
 
     for bar, t in pairs(defaults.barConfig) do
-        if bar == "bar1" then
-            barDefaults.visibility = "[petbattle] hide; show"
-        else
-            barDefaults.visibility = "[vehicleui][petbattle][overridebar] hide; show"
-        end
         U.Merge(t, barDefaults)
+
+        -- visibility
+        if bar == "bar1" then
+            t.visibility = "[petbattle] hide; show"
+        else
+            t.visibility = "[vehicleui][petbattle][overridebar] hide; show"
+        end
+        -- num
+        if bar == "stancebar" then
+            t.num = 10
+            t.buttonsPerLine = 10
+            t.buttonConfig = {
+                hideElements = {
+                    hotkey = false,
+                },
+                text = {
+                    hotkey = {
+                        font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
+                        color = {1, 1, 1},
+                        position = {anchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
+                    },
+                },
+            }
+        end
     end
 end
 
