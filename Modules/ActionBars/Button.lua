@@ -5,6 +5,9 @@ local U = BFI.utils
 
 local LAB = BFI.libs.LAB
 
+---------------------------------------------------------------------
+-- stylize button
+---------------------------------------------------------------------
 function AB.StylizeButton(b)
     b.MasqueSkinned = true
 
@@ -78,6 +81,22 @@ function AB.StylizeButton(b)
     AW.StylizeFrame(b)
 end
 
+---------------------------------------------------------------------
+-- OnEnter/Leave
+---------------------------------------------------------------------
+function AB.ActionBar_OnEnter(bar)
+    bar = bar.header and bar.header or bar
+    AW.FrameFadeIn(bar, 0.25)
+end
+
+function AB.ActionBar_OnLeave(bar)
+    bar = bar.header and bar.header or bar
+    AW.FrameFadeOut(bar, 0.25, nil, bar.alpha)
+end
+
+---------------------------------------------------------------------
+-- main button
+---------------------------------------------------------------------
 function AB.CreateButton(parent, id, name)
     local b = LAB:CreateButton(id, name, parent)
 
@@ -131,54 +150,44 @@ function AB.CreateButton(parent, id, name)
     return b
 end
 
---[=[
--- local wrapFrame = CreateFrame("Frame", nil, nil, "SecureHandlerBaseTemplate")
-
--- local Button = CreateFrame("CheckButton")
--- local Button_MT = {__index = Button}
-
-function AB.CreateButton(parent, id, name)
-    local b = setmetatable(CreateFrame("CheckButton", name, parent, "BackdropTemplate,SecureActionButtonTemplate"), Button_MT)
-    AW.StylizeFrame(b)
-
-    -- icon ------------------------------------------------------------------ --
-    b.icon = AW.CreateTexture(b)
-    b.icon:SetAllPoints()
-    b.icon:Hide()
-
-    -- mouseover highlight --------------------------------------------------- --
-    b.mouseOverHighlight = AW.CreateTexture(b, nil, AW.GetColorTable("accent", 0.2), "HIGHLIGHT")
-    b.mouseOverHighlight:SetAllPoints()
-
-    b:SetAttribute("type", "action")
-    b:SetAttribute("typerelease", "actionrelease")
-    b:SetAttribute("checkselfcast", true)
-    b:SetAttribute("checkfocuscast", true)
-    b:SetAttribute("checkmouseovercast", true)
-    b:SetAttribute("useparent-unit", true)
-    b:SetAttribute("useparent-actionpage", true)
-    b:RegisterForDrag("LeftButton", "RightButton")
-    b:RegisterForClicks("AnyUp", "LeftButtonDown", "RightButtonDown")
-
-    -- OnClick --------------------------------------------------------------- --
-    wrapFrame:WrapScript(b, "OnClick", [[
-        -- print("onclick", IsPressHoldReleaseSpell)
-    ]])
-
-    -- wrapFrame:WrapScript(b, "OnReceiveDrag", [[
-    --     print(kind, value, ...)
-
-    --     if kind == "spell" then
-    --         local spellId = select(2, ...)
+---------------------------------------------------------------------
+-- stance button
+---------------------------------------------------------------------
+function AB.CreateStanceButton(parent, id)
+    local b = CreateFrame("CheckButton", "BFI_StanceBarButton"..id, parent, "StanceButtonTemplate")
             
-    --     elseif kind == "item" and value then
+    b:SetID(id)
+    AB.StylizeButton(b)
 
-    --     end
+    b.header = parent
+    b:HookScript("OnEnter", AB.ActionBar_OnEnter)
+    b:HookScript("OnLeave", AB.ActionBar_OnLeave)
 
-    --     -- local type, value, subType, extra = ...
-    --     -- print(type, value, subType, extra)
-    -- ]])
+    b.checkedTexture:SetBlendMode("BLEND")
+
+    b.hotkey = AW.CreateFontString(b)
+    b.hotkey:SetShadowColor(0, 0, 0, 0)
+    b.hotkey:SetShadowOffset(0, 0)
 
     return b
 end
-]=]
+
+---------------------------------------------------------------------
+-- pet button
+---------------------------------------------------------------------
+function AB.CreatePetButton(parent, id)
+    local b = CreateFrame("CheckButton", "BFI_PetBarButton"..id, parent, "PetActionButtonTemplate")
+            
+    b:SetID(id)
+    AB.StylizeButton(b)
+
+    b.header = parent
+    b:HookScript("OnEnter", AB.ActionBar_OnEnter)
+    b:HookScript("OnLeave", AB.ActionBar_OnLeave)
+
+    b.hotkey = AW.CreateFontString(b)
+    b.hotkey:SetShadowColor(0, 0, 0, 0)
+    b.hotkey:SetShadowOffset(0, 0)
+
+    return b
+end

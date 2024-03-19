@@ -17,8 +17,8 @@ local blizzard = {
     "OverrideActionBar",
     "MainMenuBar",
     BFI.vars.isRetail and "StanceBar" or "StanceBarFrame",
-    BFI.vars.Retail and "PetActionBar" or "PetActionBarFrame",
-    BFI.vars.Retail and "PossessActionBar" or "PossessBarFrame",
+    BFI.vars.isRetail and "PetActionBar" or "PetActionBarFrame",
+    BFI.vars.isRetail and "PossessActionBar" or "PossessBarFrame",
 }
 
 if BFI.vars.isWrath then -- Wrath TotemBar needs to be handled by us

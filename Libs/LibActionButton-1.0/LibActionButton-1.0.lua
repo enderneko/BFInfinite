@@ -128,6 +128,7 @@ local DefaultConfig = {
 	targetReticle = true,
 	interruptDisplay = true,
 	spellCastAnim = true,
+	desaturate = true,
 	colors = {
 		range = { 0.8, 0.1, 0.1 },
 		mana = { 0.5, 0.5, 1.0 }
@@ -1974,7 +1975,7 @@ function UpdateUsable(self)
 		end
 	end
 
-	if not WoWClassic and not WoWBCC and not WoWWrath and self._state_type == "action" then
+	if WoWRetail and self._state_type == "action" then
 		local isLevelLinkLocked = C_LevelLink.IsActionLocked(self._state_action)
 		if not self.icon:IsDesaturated() then
 			self.icon:SetDesaturated(isLevelLinkLocked)

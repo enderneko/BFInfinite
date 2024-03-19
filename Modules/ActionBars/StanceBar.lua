@@ -16,8 +16,8 @@ local function CreateStanceBar()
 
     AB.bars[stanceBar.name] = stanceBar
 
-    stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
-    stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
+    -- stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
+    -- stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 end
 
 ---------------------------------------------------------------------
@@ -80,12 +80,12 @@ local function UpdateStanceButtons()
 
             if active then
                 if num == 1 then
-                    b.checkedTexture:SetColorTexture(1, 1, 1, 0.3)
+                    b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.2))
                 else
-                    b.checkedTexture:SetColorTexture(0, 0, 0, 0)
+                    b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0))
                 end
             else
-                b.checkedTexture:SetColorTexture(0, 0, 0, 0.6)
+                b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0.6))
             end
         end
     end
@@ -109,21 +109,8 @@ local function UpdateStanceBar(module)
     for i = 1, 10 do
         local b
         if not stanceBar.buttons[i] then
-            b = CreateFrame("CheckButton", "BFI_StanceBarButton"..i, stanceBar, "StanceButtonTemplate")
+            b = AB.CreateStanceButton(stanceBar, i)
             stanceBar.buttons[i] = b
-            
-            b:SetID(i)
-            AB.StylizeButton(b)
-
-            b.header = stanceBar
-            b:SetScript("OnEnter", AB.ActionBar_OnEnter)
-            b:SetScript("OnLeave", AB.ActionBar_OnLeave)
-
-            b.checkedTexture:SetBlendMode("BLEND")
-
-            b.hotkey = AW.CreateFontString(b)
-            b.hotkey:SetShadowColor(0, 0, 0, 0)
-            b.hotkey:SetShadowOffset(0, 0)
         else
             b = stanceBar.buttons[i]
         end
@@ -149,11 +136,16 @@ local function UpdateStanceBar(module)
     AB.ReArrange(stanceBar, config.size, config.spacing, config.buttonsPerLine, config.num, config.anchor, config.orientation)
     AW.LoadPosition(stanceBar, config.position)
 
+    stanceBar:SetFrameStrata(BFI.vars.currentConfigTable.actionBars.general.frameStrata)
+    stanceBar:SetFrameLevel(BFI.vars.currentConfigTable.actionBars.general.frameLevel)
+    
     stanceBar.alpha = config.alpha
     stanceBar:SetAlpha(config.alpha)
+    
+    local num = GetNumShapeshiftForms()
 
     stanceBar.enabled = config.enabled
-    if config.enabled then
+    if num ~= 0 and config.enabled then
         stanceBar:Show()
         RegisterStateDriver(stanceBar, "visibility", config.visibility)
     else
@@ -165,7 +157,7 @@ local function UpdateStanceBar(module)
     UpdateStanceButtons()
 
     for i = 1, 10 do
-        if i <= GetNumShapeshiftForms() then
+        if i <= num then
             stanceBar.buttons[i]:Show()
         else
             stanceBar.buttons[i]:Hide()

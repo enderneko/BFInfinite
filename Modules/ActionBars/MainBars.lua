@@ -45,16 +45,6 @@ local BINDING_MAPPINGS = {
 ---------------------------------------------------------------------
 -- bar functions
 ---------------------------------------------------------------------
-function AB.ActionBar_OnEnter(bar)
-    bar = bar.header and bar.header or bar
-    AW.FrameFadeIn(bar, 0.25)
-end
-
-function AB.ActionBar_OnLeave(bar)
-    bar = bar.header and bar.header or bar
-    AW.FrameFadeOut(bar, 0.25, nil, bar.alpha)
-end
-
 local handledFlyouts = {}
 
 local function HandleFlyoutButton(b)

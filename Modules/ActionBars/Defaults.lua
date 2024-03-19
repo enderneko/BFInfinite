@@ -23,7 +23,8 @@ local defaults = {
         classbar2 = {enabled = false, position = "BOTTOM,0,450"},
         classbar3 = {enabled = false, position = "BOTTOM,0,450"},
         classbar4 = {enabled = false, position = "BOTTOM,0,450"},
-        stancebar = {enabled = true, position = "BOTTOM,0,170"}
+        stancebar = {enabled = true, position = "BOTTOM,0,170"},
+        petbar = {enabled = true, position = "BOTTOM,0,210"},
     },
     sharedButtonConfig = {
         lock = true,
@@ -33,7 +34,6 @@ local defaults = {
         autoAddNewSpells = true, -- TODO:
         pickUpKey = "SHIFT",
         outOfRangeColoring = "button",
-        desaturate = true,-- TODO:
         colors = {
             range = {0.8, 0.1, 0.1},
             mana = {0.5, 0.5, 1.0},
@@ -100,10 +100,13 @@ do
         -- visibility
         if bar == "bar1" then
             t.visibility = "[petbattle] hide; show"
+        elseif bar == "petbar" then
+            t.visibility = "[petbattle] hide; [novehicleui,pet,nooverridebar,nopossessbar] show; hide"
         else
             t.visibility = "[vehicleui][petbattle][overridebar] hide; show"
         end
-        -- num
+
+        -- others
         if bar == "stancebar" then
             t.num = 10
             t.buttonsPerLine = 10
@@ -119,6 +122,9 @@ do
                     },
                 },
             }
+        elseif bar == "petbar" then
+            t.num = 10
+            t.buttonsPerLine = 10
         end
     end
 end
