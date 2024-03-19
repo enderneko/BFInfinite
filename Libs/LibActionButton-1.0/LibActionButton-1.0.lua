@@ -133,6 +133,7 @@ local DefaultConfig = {
 		range = { 0.8, 0.1, 0.1 },
 		mana = { 0.5, 0.5, 1.0 },
 		equipped = {0.4, 1, 0.4},
+		notUsable = {0.4, 0.4, 0.4},
 	},
 	hideElements = {
 		macro = false,
@@ -1974,7 +1975,7 @@ function UpdateUsable(self)
 			self.icon:SetVertexColor(unpack(self.config.colors.mana))
 			--self.NormalTexture:SetVertexColor(0.5, 0.5, 1.0)
 		else
-			self.icon:SetVertexColor(0.4, 0.4, 0.4)
+			self.icon:SetVertexColor(unpack(self.config.colors.notUsable))
 			--self.NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
 		end
 	end

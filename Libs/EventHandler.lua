@@ -42,10 +42,10 @@ function addon.AddEventHandler(module)
 
     module.eventFrame:SetScript("OnEvent", function(self, event, ...)
         if type(self.events[event]) == "function" then
-            self.events[event](...)
+            self.events[event](event, ...)
         elseif type(self.events[event]) == "table" then
             for f in pairs(self.events[event]) do
-                f(...)
+                f(event, ...)
             end
         end
     end)

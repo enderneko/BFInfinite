@@ -374,7 +374,6 @@ local function UpdateBar(bar, general, shared, specific)
     local page
     if bar.id == 1 then
         page = "[overridebar] 18; [vehicleui][possessbar] 16; [shapeshift] 17; [bonusbar:5] 11; 1"
-        -- page = "[bonusbar:1] 7; 1"
     else
         page = bar.id
     end

@@ -38,6 +38,7 @@ local defaults = {
             range = {0.8, 0.1, 0.1},
             mana = {0.5, 0.5, 1.0},
             equipped = {0.4, 1, 0.4},
+            notUsable = {0.4, 0.4, 0.4},
         },
         hideElements = {
             equipped = false,
@@ -83,7 +84,7 @@ do
                 count = {
                     font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
                     color = {1, 1, 1},
-                    position = {anchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 0}
+                    position = {anchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 1}
                 },
                 macro = {
                     font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
