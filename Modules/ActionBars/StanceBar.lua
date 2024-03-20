@@ -16,6 +16,8 @@ local function CreateStanceBar()
 
     AB.bars[stanceBar.name] = stanceBar
 
+    AW.CreateMover(stanceBar, "ActionBars", L["Stance Bar"], function(p,x,y) print("StanceBar:", p, x, y) end)
+
     -- stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     -- stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 end
@@ -80,7 +82,7 @@ local function UpdateStanceButtons()
 
             if active then
                 if num == 1 then
-                    b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.2))
+                    b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.25))
                 else
                     b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0))
                 end

@@ -42,19 +42,19 @@ function AB.StylizeButton(b)
     b.cooldown:SetDrawEdge(false)
 
     -- checked texture ------------------------------------------------------- --
-    b.checkedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.2))
+    b.checkedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.25))
     AW.SetOnePixelInside(b.checkedTexture, b)
     b.checkedTexture:SetBlendMode("ADD")
     b:SetCheckedTexture(b.checkedTexture)
     
     -- pushed texture -------------------------------------------------------- --
-    b.pushedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("yellow", 0.2))
+    b.pushedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("yellow", 0.25))
     AW.SetOnePixelInside(b.pushedTexture, b)
     b.pushedTexture:SetBlendMode("ADD")
     b:SetPushedTexture(b.pushedTexture)
     
     -- mouseover highlight --------------------------------------------------- --
-    b.mouseOverHighlight = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.2), "HIGHLIGHT")
+    b.mouseOverHighlight = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.25), "HIGHLIGHT")
     AW.SetOnePixelInside(b.mouseOverHighlight, b)
     b.mouseOverHighlight:SetBlendMode("ADD")
 
@@ -71,7 +71,7 @@ function AB.StylizeButton(b)
     
     -- Flash ----------------------------------------------------------------- --
     if flash then
-        flash:SetColorTexture(AW.GetColorRGB("red", 0.2))
+        flash:SetColorTexture(AW.GetColorRGB("red", 0.25))
         AW.SetOnePixelInside(flash, b)
         flash:SetDrawLayer("ARTWORK", 1)
     end

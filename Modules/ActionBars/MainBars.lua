@@ -90,7 +90,14 @@ local function CreateBar(id)
     
     AB.bars[bar.name] = bar
 
-    -- RegisterStateDriver(bar, "page", "[mod:alt]2;1")
+    -- mover ----------------------------------------------------------------- --
+    local moverName
+    if strfind(bar.name, "^bar") then
+        moverName = L["Action Bar"].." "..bar.name:match("%d")
+    else
+        moverName = L["Class Bar"].." "..bar.name:match("%d")
+    end
+    AW.CreateMover(bar, "ActionBars", moverName, function(p,x,y) print(moverName..":", p, x, y) end)
 
     -- page ------------------------------------------------------------------ --
     bar:SetAttribute("_onstate-page", [[
@@ -324,10 +331,11 @@ local function UpdateButton(bar, shared, specific)
 
         if i == 12 then
             if BFI.vars.isRetail then
-                b:SetState(16, "custom", customExitButton)
-                b:SetState(17, "custom", customExitButton)
-                b:SetState(18, "custom", customExitButton)
+                b:SetState(GetVehicleBarIndex(), "custom", customExitButton) -- 16
+                b:SetState(GetTempShapeshiftBarIndex(), "custom", customExitButton) -- 17
+                b:SetState(GetOverrideBarIndex(), "custom", customExitButton) -- 18
             else
+                -- FIXME:
                 b:SetState(11, "custom", customExitButton)
                 b:SetState(12, "custom", customExitButton)
             end
@@ -350,6 +358,10 @@ end
 ---------------------------------------------------------------------
 -- update bar
 ---------------------------------------------------------------------
+-- NOTE: no support for default page "[bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;"
+-- TODO: no GetOverrideBarIndex and GetVehicleBarIndex on Vanilla
+local BAR1_PAGING_DEFAULT = format("[overridebar] %d; [vehicleui][possessbar] %d; [shapeshift] %d; [bonusbar:5] 11;", GetOverrideBarIndex(), GetVehicleBarIndex(), GetTempShapeshiftBarIndex())
+
 local function UpdateBar(bar, general, shared, specific)
     -- bar
     AB.ReArrange(bar, specific.size, specific.spacing, specific.buttonsPerLine, specific.num, specific.anchor, specific.orientation)
@@ -370,12 +382,12 @@ local function UpdateBar(bar, general, shared, specific)
         UnregisterStateDriver(bar, "visibility")
     end
 
-    -- page
+    -- paging
     local page
     if bar.id == 1 then
-        page = "[overridebar] 18; [vehicleui][possessbar] 16; [shapeshift] 17; [bonusbar:5] 11; 1"
+        page = BAR1_PAGING_DEFAULT.." "..(specific.paging[BFI.vars.playerClass] or "1")
     else
-        page = bar.id
+        page = specific.paging[BFI.vars.playerClass] or bar.id
     end
     RegisterStateDriver(bar, "page", page)
     bar:SetAttribute("page", page)

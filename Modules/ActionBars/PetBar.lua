@@ -16,6 +16,8 @@ local function CreatePetBar()
 
     AB.bars[petBar.name] = petBar
 
+    AW.CreateMover(petBar, "ActionBars", L["Pet Bar"], function(p,x,y) print("PetBar:", p, x, y) end)
+
     petBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     petBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 end
@@ -110,7 +112,7 @@ local function UpdatePetButtons(event, unit)
             end
         else
             b.checkedTexture:SetBlendMode("ADD")
-            b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.2))
+            b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.25))
             
             if isActive then
                 b:SetChecked(true)

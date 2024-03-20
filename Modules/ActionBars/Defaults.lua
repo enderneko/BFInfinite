@@ -107,6 +107,20 @@ do
             t.visibility = "[vehicleui][petbattle][overridebar] hide; show"
         end
 
+        -- paging (class-specific)
+        if bar == "bar1" then
+            t.paging = {
+                DRUID = "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 10; [bonusbar:3] 9; [bonusbar:4] 10; 1",
+                EVOKER = "[bonusbar:1] 7; 1",
+                PRIEST = "[bonusbar:1] 7;"..(BFI.vars.isVanilla and " [possessbar] 16;" or "").." 1",
+                ROGUE = "[bonusbar:1] 7;"..(BFI.vars.isWrath and " [bonusbar:2] 8;" or "").." 1",
+                WARLOCK = BFI.vars.isWrath and "[form:1] 7; 1" or "1",
+                WARRIOR = "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9; 1",
+            }
+        else
+            t.paging = {}
+        end
+
         -- others
         if bar == "stancebar" then
             t.num = 10
