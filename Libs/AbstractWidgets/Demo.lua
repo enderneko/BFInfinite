@@ -776,7 +776,7 @@ function AW.ShowDemo()
 
     mDropdown = AW.CreateDropdown(mbf, 85, 10, nil, true)
     AW.SetPoint(mDropdown, "TOPRIGHT", hmBtn, "TOPLEFT", 1, 0)
-    AW.SetTooltips(mDropdown, "TOPLEFT", 0, 2, "Mover Tips", "• Drag to move", "• Use (shift) mouse wheel to move frame by 1 pixel")
+    AW.SetTooltips(mDropdown, "TOPLEFT", 0, 2, "Mover Tips", "• Drag to move", "• Use (shift) mouse wheel to move frame by 1 pixel", "• Right-Click to open fine-tuning frame", "• Shift+Right-Click to hide a mover")
     mDropdown:SetItems({
         {
             ["text"] = "All",

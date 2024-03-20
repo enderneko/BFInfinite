@@ -63,28 +63,28 @@ local function CreateAlignmentGrid()
     local offset = centerX
     repeat
         offset = offset - 25
-        CreateLine("black", 0.35, offset, 0, 1, height)
+        CreateLine("gray", 0.35, offset, 0, 1, height)
     until offset < 0
     
     -- vright
     offset = centerX
     repeat
         offset = offset + 25
-        CreateLine("black", 0.35, offset, 0, 1, height)
+        CreateLine("gray", 0.35, offset, 0, 1, height)
     until offset > width
 
     -- hbottom
     local offset = centerY
     repeat
         offset = offset - 25
-        CreateLine("black", 0.35, 0, offset, width, 1)
+        CreateLine("gray", 0.35, 0, offset, width, 1)
     until offset < 0
     
     -- htop
     offset = centerY
     repeat
         offset = offset + 25
-        CreateLine("black", 0.35, 0, offset, width, 1)
+        CreateLine("gray", 0.35, 0, offset, width, 1)
     until offset > height
 end
 
@@ -351,7 +351,7 @@ end
 -- stop moving
 ---------------------------------------------------------------------
 local function StopMoving(owner)
-    owner:SetScript("OnUpdate", nil)
+    owner.mover:SetScript("OnUpdate", nil)
     if owner.mover.moved then
         owner.mover.moved = nil
 
@@ -366,7 +366,7 @@ end
 ---------------------------------------------------------------------
 --- @param save function
 function AW.CreateMover(owner, group, text, save)
-    assert(owner:GetNumPoints() == 1, "mover owner must have 1 anchor point")
+    -- assert(owner:GetNumPoints() == 1, "mover owner must have 1 anchor point")
     assert(owner:GetParent() == AW.UIParent, "owner must be the direct child of AW.UIParent")
 
     if not moverParent then CreateMoverParent() end
@@ -382,7 +382,7 @@ function AW.CreateMover(owner, group, text, save)
     tinsert(movers[group], mover)
     
     mover:SetAllPoints(owner)
-    mover:SetFrameLevel(MOVER_ON_TOP_FRAME_LEVEL)
+    mover:SetFrameLevel(MOVER_PARENT_FRAME_LEVEL)
     mover:EnableMouse(true)
     mover:Hide()
 
@@ -397,7 +397,7 @@ function AW.CreateMover(owner, group, text, save)
         local scale = owner:GetEffectiveScale()
         local mouseX, mouseY = GetCursorPosition()
         
-        local start, minX, maxX, minY, maxY
+        local minX, maxX, minY, maxY
         
         local point, _, _, startX, startY = owner:GetPoint()
 
@@ -426,7 +426,7 @@ function AW.CreateMover(owner, group, text, save)
         local lastX = mouseX
         local lastY = mouseY
 
-        owner:SetScript("OnUpdate", function()
+        mover:SetScript("OnUpdate", function()
             local newMouseX, newMouseY = GetCursorPosition()
             if newMouseX == lastX and newMouseY == lastY then return end
             
@@ -452,12 +452,20 @@ function AW.CreateMover(owner, group, text, save)
 
     mover:SetScript("OnMouseUp", function(self, button)
         if button == "RightButton" then
-            ToggleFineTuningFrame(owner)
+            if IsShiftKeyDown() then -- hide mover
+                if fineTuningFrame and fineTuningFrame.owner == owner and fineTuningFrame:IsShown() then
+                    fineTuningFrame.owner = nil
+                    fineTuningFrame:Hide()
+                end
+                mover:Hide()
+                mover.text:SetColor("accent")
+            else
+                ToggleFineTuningFrame(owner)
+            end
         end
 
         if button ~= "LeftButton" then return end
         mover.isDragging = nil
-        owner:SetScript("OnUpdate", nil)
         StopMoving(owner)
 
         -- update fine tuning
@@ -506,6 +514,7 @@ function AW.CreateMover(owner, group, text, save)
                     AW.FrameFadeIn(m, 0.25)
                 elseif m:IsShown() then
                     m.text:SetColor("accent")
+                    m:SetFrameLevel(MOVER_PARENT_FRAME_LEVEL)
                     AW.FrameFadeOut(m, 0.25, nil, 0.5)
                 end
             end
@@ -519,7 +528,7 @@ function AW.CreateMover(owner, group, text, save)
             for _, m in pairs(g) do
                 if m:IsShown() then
                     m.text:SetColor("accent")
-                    m:SetFrameLevel(MOVER_ON_TOP_FRAME_LEVEL)
+                    m:SetFrameLevel(MOVER_PARENT_FRAME_LEVEL)
                     AW.FrameFadeIn(m, 0.25)
                 end
             end
@@ -548,7 +557,11 @@ function AW.ShowMovers(group)
             show = group == g
         end
         for _, m in pairs(gt) do
-            if show then m:Show() else m:Hide() end
+            if show and (type(m.owner.enabled) ~= "boolean" or m.owner.enabled) then
+                m:Show()
+            else 
+                m:Hide()
+            end
         end
     end
     moverParent:Show()
