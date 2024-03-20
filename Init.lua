@@ -27,9 +27,7 @@ BFI.vars.playerClass = UnitClassBase("player")
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
-BFI.M_AB = {
-    ["bars"] = {},
-}
+BFI.M_AB = {["bars"] = {}}
 BFI.AddEventHandler(BFI.M_AB)
 
 ---------------------------------------------------------------------
@@ -54,16 +52,3 @@ end
 
 AddLib("LAB", "LibActionButton-1.0-BFI")
 AddLib("LCG", "LibCustomGlow-1.0")
-
-do
-    -- expand LCG
-    local LCG, buttons, proc = BFI.libs.LCG, {}, {xOffset = 3, yOffset = 3}
-
-    function LCG.ShowOverlayGlow(button)
-        
-    end
-    
-    function LCG.HideOverlayGlow(button)
-        
-    end
-end

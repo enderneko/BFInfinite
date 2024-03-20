@@ -6,6 +6,48 @@ local U = BFI.utils
 local LAB = BFI.libs.LAB
 
 ---------------------------------------------------------------------
+-- glow
+---------------------------------------------------------------------
+local LCG = BFI.libs.LCG
+local hiders = {}
+local proc = {xOffset = 3, yOffset = 3}
+
+function LCG.ShowButtonGlow(b)
+    local config = AB.config and AB.config.sharedButtonConfig.glow
+    if not config then return end
+
+    if config.style == "Proc" then -- this uses an options table
+        proc.color = config.color
+        proc.duration = config.duration
+        proc.startAnim = config.startAnim
+        LCG.ProcGlow_Start(b, proc)
+        hiders[b] = LCG.ProcGlow_Stop
+    elseif config.style == "Normal" then
+        LCG.ButtonGlow_Start(b, config.color)
+        hiders[b] = LCG.ButtonGlow_Stop
+    elseif config.style == "Pixel" then
+        LCG.PixelGlow_Start(b, config.color, config.num, config.speed, config.length, config.thickness)
+        hiders[b] = LCG.PixelGlow_Stop
+    elseif config.style == "Shine" then
+        LCG.AutoCastGlow_Start(b, config.color, config.num, config.speed, config.scale)
+        hiders[b] = LCG.AutoCastGlow_Stop
+    end
+end
+
+function LCG.HideButtonGlow(b)
+    if hiders[b] then
+        hiders[b](b)
+        hiders[b] = nil
+    end
+end
+
+function AB.HideAllGlows()
+    for b in next, hiders do
+        LCG.HideButtonGlow(b)
+    end
+end
+
+---------------------------------------------------------------------
 -- stylize button
 ---------------------------------------------------------------------
 function AB.StylizeButton(b)

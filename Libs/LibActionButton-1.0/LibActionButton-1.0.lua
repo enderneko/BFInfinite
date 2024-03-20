@@ -107,7 +107,7 @@ local ButtonRegistry, ActiveButtons, ActionButtons, NonActionButtons = lib.butto
 local Update, UpdateButtonState, UpdateUsable, UpdateCount, UpdateCooldown, UpdateTooltip, UpdateNewAction, UpdateSpellHighlight, ClearNewActionHighlight
 local StartFlash, StopFlash, UpdateFlash, UpdateHotkeys, UpdateRangeTimer, UpdateOverlayGlow
 local UpdateFlyout, ShowGrid, HideGrid, UpdateGrid, SetupSecureSnippets, WrapOnClick
-local ShowOverlayGlow, HideOverlayGlow
+local ShowButtonGlow, HideButtonGlow
 local EndChargeCooldown
 
 local GetFlyoutHandler
@@ -1564,12 +1564,12 @@ function OnEvent(frame, event, arg1, ...)
 		for button in next, ActiveButtons do
 			local spellId = button:GetSpellId()
 			if spellId and spellId == arg1 then
-				ShowOverlayGlow(button)
+				ShowButtonGlow(button)
 			else
 				if button._state_type == "action" then
 					local actionType, id = GetActionInfo(button._state_action)
 					if actionType == "flyout" and FlyoutHasSpell(id, arg1) then
-						ShowOverlayGlow(button)
+						ShowButtonGlow(button)
 					end
 				end
 			end
@@ -1578,12 +1578,12 @@ function OnEvent(frame, event, arg1, ...)
 		for button in next, ActiveButtons do
 			local spellId = button:GetSpellId()
 			if spellId and spellId == arg1 then
-				HideOverlayGlow(button)
+				HideButtonGlow(button)
 			else
 				if button._state_type == "action" then
 					local actionType, id = GetActionInfo(button._state_action)
 					if actionType == "flyout" and FlyoutHasSpell(id, arg1) then
-						HideOverlayGlow(button)
+						HideButtonGlow(button)
 					end
 				end
 			end
@@ -2183,20 +2183,20 @@ function UpdateHotkeys(self)
 	end
 end
 
-function ShowOverlayGlow(self)
-	LCG.ShowOverlayGlow(self)
+function ShowButtonGlow(self)
+	LCG.ShowButtonGlow(self)
 end
 
-function HideOverlayGlow(self)
-	LCG.HideOverlayGlow(self)
+function HideButtonGlow(self)
+	LCG.HideButtonGlow(self)
 end
 
 function UpdateOverlayGlow(self)
 	local spellId = self:GetSpellId()
 	if spellId and IsSpellOverlayed(spellId) then
-		ShowOverlayGlow(self)
+		ShowButtonGlow(self)
 	else
-		HideOverlayGlow(self)
+		HideButtonGlow(self)
 	end
 end
 

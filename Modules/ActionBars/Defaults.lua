@@ -44,9 +44,9 @@ local defaults = {
             equipped = false,
         },
         glow = {
-            style = "Proc Glow",
+            style = "Proc",
             color = nil,
-            frameLevel = 7,
+            duration = 1,
             startAnim = true,
         },
         casting = {
