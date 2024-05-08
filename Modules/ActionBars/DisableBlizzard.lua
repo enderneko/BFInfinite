@@ -21,7 +21,7 @@ local blizzard = {
     BFI.vars.isRetail and "PossessActionBar" or "PossessBarFrame",
 }
 
-if BFI.vars.isWrath then -- Wrath TotemBar needs to be handled by us
+if BFI.vars.isCata then -- Wrath TotemBar needs to be handled by us
     _G.UIPARENT_MANAGED_FRAME_POSITIONS.MultiCastActionBarFrame = nil
 end
 
@@ -177,7 +177,7 @@ function AB.DisableBlizzard()
         end
     end
 
-    if BFI.vars.isWrath and BFI.vars.playerClass ~= "SHAMAN" then
+    if BFI.vars.isCata and BFI.vars.playerClass ~= "SHAMAN" then
         for i = 1, 12 do
             local button = _G["MultiCastActionButton"..i]
             button:Hide()
@@ -186,7 +186,7 @@ function AB.DisableBlizzard()
         end
     end
 
-    if BFI.vars.isRetail or BFI.vars.isWrath then
+    if BFI.vars.isRetail or BFI.vars.isCata then
         if _G.PlayerTalentFrame then
             _G.PlayerTalentFrame:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
         else

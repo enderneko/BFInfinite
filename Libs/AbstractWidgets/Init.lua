@@ -27,7 +27,7 @@ end
 ---------------------------------------------------------------------
 AW.isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 AW.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-AW.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
+AW.isCata = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 
 ---------------------------------------------------------------------
 -- UIParent
