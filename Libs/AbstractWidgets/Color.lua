@@ -175,7 +175,7 @@ local button_color_normal = {0.127, 0.127, 0.127, 1}
 
 local colors = {
     -- accent
-    ["accent"] = {["hex"]="FFFF5F00", ["t"]={1, 0.37, 0, 1}, ["normal"]={1, 0.37, 0, 0.3}, ["hover"]={1, 0.37, 0, 0.6}}, -- orangered
+    ["accent"] = {["hex"]="FFFF6600", ["t"]={1, 0.4, 0, 1}, ["normal"]={1, 0.4, 0, 0.3}, ["hover"]={1, 0.4, 0, 0.6}}, -- orangered
 
     -- for regions
     ["background"] = {["hex"]="E61A1A1A", ["t"]={0.1, 0.1, 0.1, 0.9}},
