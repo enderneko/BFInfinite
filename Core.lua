@@ -1,5 +1,4 @@
 local addonName, BFI = ...
-
 local AW = BFI.AW
 
 local eventFrame = CreateFrame("Frame")
@@ -18,9 +17,10 @@ function eventFrame:ADDON_LOADED(arg)
 
         if type(BFIConfig["default"]) ~= "table" then
             BFIConfig["default"] = {}
-            -- init "default"
-            BFI.Fire("InitConfigs", BFIConfig["default"])
         end
+        
+        -- init configs
+        BFI.Fire("InitConfigs", BFIConfig["default"], "default")
 
         -- TODO:
         BFI.vars.currentConfig = "default"

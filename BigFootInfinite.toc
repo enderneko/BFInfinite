@@ -10,6 +10,8 @@ Locales\LoadLocales.xml
 
 Libs\LoadLibs.xml
 Init.lua
+Debug.lua
+
 Utils\LoadUtils.xml
 
 Core.lua
