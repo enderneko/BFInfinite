@@ -24,11 +24,16 @@ BFI.vars.isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 
 BFI.vars.playerClass = UnitClassBase("player")
 
+BFI_DEFAULT = "BFI ".._G.DEFAULT
+
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
 BFI.M_AB = {["bars"] = {}}
 BFI.AddEventHandler(BFI.M_AB)
+
+BFI.M_UF = {}
+BFI.AddEventHandler(BFI.M_UF)
 
 ---------------------------------------------------------------------
 -- hidden parent

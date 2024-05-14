@@ -76,3 +76,25 @@ function U.Merge(t1, t2)
     end
     return t1
 end
+
+function U.RemoveElementsExceptKeys(tbl, ...)
+    local keys = {}
+
+    for i = 1, select("#", ...) do
+        local k = select(i, ...)
+        keys[k] = true
+    end
+
+    for k in pairs(tbl) do
+        if not keys[k] then
+            tbl[k] = nil
+        end
+    end
+end
+
+function U.RemoveElementsByKeys(tbl, ...)
+    for i = 1, select("#", ...) do
+        local k = select(i, ...)
+        tbl[k] = nil
+    end
+end
