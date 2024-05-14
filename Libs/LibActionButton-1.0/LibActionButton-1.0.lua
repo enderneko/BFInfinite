@@ -186,8 +186,8 @@ local DefaultConfig = {
 			},
 			color = { 1, 1, 1 },
 			position = {
-				anchor = "BOTTOM",
-				relAnchor = "BOTTOM",
+				anchor = "BOTTOMLEFT",
+				relAnchor = "BOTTOMLEFT",
 				offsetX = 0,
 				offsetY = 2,
 			},

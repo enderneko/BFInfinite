@@ -11,4 +11,5 @@
     <Include file="LibKeyBound-1.0\lib.xml"/>
     <Include file="oUF\oUF.xml"/>
     <Include file="TaintLess\TaintLess.xml"/>
+    <Include file="LibSharedMedia-3.0\lib.xml"/>
 </Ui>
