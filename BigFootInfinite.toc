@@ -1,4 +1,4 @@
-## Interface: 100205
+## Interface: 100207
 ## Title: |cFFFF5F00BigFootInfinite|r
 ## Version: r1
 ## X-Flavor: Mainline

@@ -6,71 +6,71 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 -- status bar
 ---------------------------------------------------------------------
-local function Bar_SetBarColor(bar, color)
-    bar:SetStatusBarColor(color[1], color[2], color[3], color[4])
+local function Bar_SetBarColor(self, color)
+    self:SetStatusBarColor(color[1], color[2], color[3], color[4])
 end
 
-local function Bar_SetLossColor(bar, color)
-    bar.loss:SetVertexColor(color[1], color[2], color[3], color[4])
+local function Bar_SetLossColor(self, color)
+    self.loss:SetVertexColor(color[1], color[2], color[3], color[4])
 end
 
-local function Bar_SetBackgroudColor(bar, color)
-    bar:SetBackdropColor(color[1], color[2], color[3], color[4])
+local function Bar_SetBackgroudColor(self, color)
+    self:SetBackdropColor(color[1], color[2], color[3], color[4])
 end
 
-local function Bar_SetBorderColor(bar, color)
-    bar:SetBackdropBorderColor(color[1], color[2], color[3], color[4])
+local function Bar_SetBorderColor(self, color)
+    self:SetBackdropBorderColor(color[1], color[2], color[3], color[4])
 end
 
-local function Bar_SetOrientation(bar, orientation)
-    bar:SetOrientation(orientation)
-    bar.loss:ClearAllPoints()
+local function Bar_SetOrientation(self, orientation)
+    self:SetOrientation(orientation)
+    self.loss:ClearAllPoints()
     if orientation == "HORIZONTAL" then
-        bar.loss:SetPoint("TOPLEFT", bar:GetStatusBarTexture(), "TOPRIGHT")
-        bar.loss:SetPoint("BOTTOMRIGHT")
+        self.loss:SetPoint("TOPLEFT", self:GetStatusBarTexture(), "TOPRIGHT")
+        self.loss:SetPoint("BOTTOMRIGHT")
     else
-        bar.loss:SetPoint("TOPLEFT")
-        bar.loss:SetPoint("BOTTOMRIGHT", bar:GetStatusBarTexture(), "TOPRIGHT")
+        self.loss:SetPoint("TOPLEFT")
+        self.loss:SetPoint("BOTTOMRIGHT", self:GetStatusBarTexture(), "TOPRIGHT")
     end
 end
 
-local function Bar_SetTexture(bar, texture)
+local function Bar_SetTexture(self, texture)
     texture = U.GetBarTexture(texture)
-    bar:SetStatusBarTexture(texture)
-    bar.loss:SetTexture(texture)
+    self:SetStatusBarTexture(texture)
+    self.loss:SetTexture(texture)
 end
 
-local function Bar_SetSmoothing(bar, smoothing)
+local function Bar_SetSmoothing(self, smoothing)
     if smoothing then
-        bar.SetBarValue = bar.SetSmoothedValue
-        bar.SetBarMinMaxValues = bar.SetMinMaxSmoothedValue
+        self.SetBarValue = self.SetSmoothedValue
+        self.SetBarMinMaxValues = self.SetMinMaxSmoothedValue
     else
-        bar:ResetSmoothedValue()
-        bar.SetBarValue = bar.SetValue
-        bar.SetBarMinMaxValues = bar.SetMinMaxValues
+        self:ResetSmoothedValue()
+        self.SetBarValue = self.SetValue
+        self.SetBarMinMaxValues = self.SetMinMaxValues
     end
 end
 
-local function Bar_LoadConfig(bar, config, skipColorUpdate)
-    AW.LoadWidgetPosition(bar, config.position)
-    AW.SetSize(bar, config.width, config.height)
-    bar:SetBackgroundColor(config.bgColor)
-    bar:SetBorderColor(config.borderColor)
-    bar:SetSmoothing(config.smoothing)
+local function Bar_LoadConfig(self, config, skipColorUpdate)
+    AW.LoadWidgetPosition(self, config.position)
+    AW.SetSize(self, config.width, config.height)
+    self:SetBackgroundColor(config.bgColor)
+    self:SetBorderColor(config.borderColor)
+    self:SetSmoothing(config.smoothing)
 
     if skipColorUpdate then
-        bar.color = config.color
-        bar.lossColor = config.lossColor
+        self.color = config.color
+        self.lossColor = config.lossColor
     else
-        bar:SetBarColor(config.color)
-        bar:SetLossColor(config.lossColor)
+        self:SetBarColor(config.rgb)
+        self:SetLossColor(config.lossColor)
     end
 end
 
-local function Bar_UpdatePixels(bar)
-    AW.ReSize(bar)
-    AW.RePoint(bar)
-    AW.ReBorder(bar)
+local function Bar_UpdatePixels(self)
+    AW.ReSize(self)
+    AW.RePoint(self)
+    AW.ReBorder(self)
 end
 
 -- TODO: make bar clickable
@@ -189,14 +189,14 @@ function UF.GetHealthColor(button, unit)
         else
             -- bar
             if bar.color.type == "custom_color" then
-                r, g, b = unpack(bar.color.color)
+                r, g, b = unpack(bar.color.rgb)
             else
                 r, g, b = GetClassColor(bar.color.type, button.states.class, button.states.inVehicle)
             end
             
             -- loss
             if bar.lossColor.type == "custom_color" then
-                lossR, lossG, lossB = unpack(bar.color.color)
+                lossR, lossG, lossB = unpack(bar.color.rgb)
             else
                 lossR, lossG, lossB = GetClassColor(bar.lossColor.type, button.states.class, button.states.inVehicle)
             end
@@ -204,14 +204,14 @@ function UF.GetHealthColor(button, unit)
     else
         -- bar
         if bar.color.type == "custom_color" then
-            r, g, b = unpack(bar.color.color)
+            r, g, b = unpack(bar.color.rgb)
         else
             r, g, b = GetReactionColor(bar.color.type, unit)
         end
         
         -- loss
         if bar.lossColor.type == "custom_color" then
-            lossR, lossG, lossB = unpack(bar.lossColor.color)
+            lossR, lossG, lossB = unpack(bar.lossColor.rgb)
         else
             lossR, lossG, lossB = GetReactionColor(bar.lossColor.type, unit)
         end
@@ -245,7 +245,7 @@ function UF.GetPowerColor(button, unit)
             elseif strfind(bar.color.type, "^class") then
                 r, g, b = GetClassColor(bar.color.type, button.states.class, button.states.inVehicle)
             else
-                r, g, b = unpack(bar.color.color)
+                r, g, b = unpack(bar.color.rgb)
             end
 
             -- loss
@@ -254,7 +254,7 @@ function UF.GetPowerColor(button, unit)
             elseif strfind(bar.lossColor.type, "^class") then
                 lossR, lossG, lossB = GetClassColor(bar.lossColor.type, button.states.class, button.states.inVehicle)
             else
-                lossR, lossG, lossB = unpack(bar.lossColor.color)
+                lossR, lossG, lossB = unpack(bar.lossColor.rgb)
             end
         end
     else
@@ -264,7 +264,7 @@ function UF.GetPowerColor(button, unit)
         elseif strfind(bar.color.type, "^class") then
             r, g, b = GetReactionColor(bar.color.type, unit)
         else
-            r, g, b = unpack(bar.color.color)
+            r, g, b = unpack(bar.color.rgb)
         end
 
         -- loss
@@ -273,7 +273,7 @@ function UF.GetPowerColor(button, unit)
         elseif strfind(bar.lossColor.type, "^class") then
             lossR, lossG, lossB = GetReactionColor(bar.lossColor.type, unit)
         else
-            lossR, lossG, lossB = unpack(bar.lossColor.color)
+            lossR, lossG, lossB = unpack(bar.lossColor.rgb)
         end
     end
 

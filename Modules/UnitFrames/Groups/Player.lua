@@ -18,6 +18,7 @@ local function CreatePlayer()
     -- indicators
     player.indicators.healthBar = UF.CreateStatusBar(player)
     player.indicators.powerBar = UF.CreateStatusBar(player)
+    player.indicators.nameText = UF.CreateNameText(player)
 end
 
 ---------------------------------------------------------------------

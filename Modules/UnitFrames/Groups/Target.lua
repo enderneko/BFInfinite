@@ -19,6 +19,7 @@ local function CreateTarget()
     -- indicators
     target.indicators.healthBar = UF.CreateStatusBar(target)
     target.indicators.powerBar = UF.CreateStatusBar(target)
+    target.indicators.nameText = UF.CreateNameText(target)
 end
 
 ---------------------------------------------------------------------

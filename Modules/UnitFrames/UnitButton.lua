@@ -50,13 +50,19 @@ local UnitClassBase = function(unit)
 end
 
 ---------------------------------------------------------------------
--- base
+-- name
 ---------------------------------------------------------------------
-local function UnitButton_UpdateBase(self)
+local function UnitButton_UpdateName(self)
     local unit = self.states.unit
     if not unit then return end
 
+    self.states.name = UnitName(unit)
+    self.states.fullName = U.UnitFullName(unit)
     self.states.class = UnitClassBase(unit)
+    self.states.guid = UnitGUID(unit)
+    self.states.isPlayer = UnitIsPlayer(unit)
+
+    self.indicators.nameText:SetName(unit, self.states.name, self.states.class)
 end
 
 ---------------------------------------------------------------------
@@ -150,15 +156,13 @@ local function UnitButton_UpdatePower(self)
     self.indicators.powerBar:SetBarValue(self.states.power)
 end
 
-
 ---------------------------------------------------------------------
 -- update all
 ---------------------------------------------------------------------
 local function UnitButton_UpdateAll(self)
     if not self:IsVisible() then return end
 
-    --! Update Base Info
-    UnitButton_UpdateBase(self)
+    UnitButton_UpdateName(self)
 
     -- color
     UnitButton_UpdateHealthColor(self)
@@ -513,6 +517,11 @@ function BFIUnitButton_OnLoad(button)
     button:RegisterForClicks("AnyDown")
     button:SetAttribute("type1", "target")
     button:SetAttribute("type2", "togglemenu")
+
+    -- overlay
+    button.overlay = CreateFrame("Frame", button:GetName(), button)
+    button.overlay:SetFrameLevel(button:GetFrameLevel() + 60)
+    button:SetAllPoints()
 
     -- events
     button:SetScript("OnAttributeChanged", UnitButton_OnAttributeChanged) -- init

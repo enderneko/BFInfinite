@@ -298,9 +298,9 @@ end
 ---------------------------------------------------------------------
 -- load widget position
 ---------------------------------------------------------------------
-function AW.LoadWidgetPosition(region, pos)
+function AW.LoadWidgetPosition(region, pos, relativeTo)
     AW.ClearPoints(region)
-    AW.SetPoint(region, pos[1], region:GetParent(), pos[2], pos[3], pos[4])
+    AW.SetPoint(region, pos[1], relativeTo or region:GetParent(), pos[2], pos[3], pos[4])
 end
 
 ---------------------------------------------------------------------
