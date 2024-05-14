@@ -35,7 +35,7 @@ local defaults = {
         pickUpKey = "SHIFT",
         outOfRangeColoring = "button",
         colors = {
-            range = {0.8, 0.1, 0.1},
+            range = {0.8, 0.3, 0.3},
             mana = {0.5, 0.5, 1.0},
             equipped = {0.4, 1, 0.4},
             notUsable = {0.4, 0.4, 0.4},
@@ -79,17 +79,17 @@ do
                 hotkey = {
                     font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
                     color = {1, 1, 1},
-                    position = {anchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
+                    position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
                 },
                 count = {
                     font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
                     color = {1, 1, 1},
-                    position = {anchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 1}
+                    position = {anchor = "BOTTOMRIGHT", relAnchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 1}
                 },
                 macro = {
                     font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
                     color = {1, 1, 1},
-                    position = {anchor = "BOTTOMLEFT", offsetX = 0, offsetY = 0}
+                    position = {anchor = "BOTTOMLEFT", relAnchor = "BOTTOMLEFT", offsetX = 0, offsetY = 0}
                 },
             },
         },
@@ -133,7 +133,7 @@ do
                     hotkey = {
                         font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
                         color = {1, 1, 1},
-                        position = {anchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
+                        position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
                     },
                 },
             }
@@ -148,6 +148,7 @@ BFI.RegisterCallback("InitConfigs", "ActionBars", function(t)
     if not t["actionBars"] then
         t["actionBars"] = U.Copy(defaults)
     end
+    AB.config = t["actionBars"]
 end)
 
 function AB.GetDefaults()

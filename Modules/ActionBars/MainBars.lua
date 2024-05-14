@@ -399,8 +399,6 @@ end
 local function UpdateMainBars(module, barName)
     if module and module ~= "ActionBar" then return end
 
-    AB.config = BFI.vars.currentConfigTable.actionBars
-
     if barName then
         UpdateBar(AB.bars[barName], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[barName])
     else
@@ -409,7 +407,7 @@ local function UpdateMainBars(module, barName)
         end
     end
 end
-BFI.RegisterCallback("UpdateModules", "MainBars", UpdateMainBars)
+BFI.RegisterCallback("UpdateModules", "AB_MainBars", UpdateMainBars)
 
 ---------------------------------------------------------------------
 -- PLAYER_REGEN_ENABLED
@@ -463,4 +461,4 @@ local function InitMainBars()
         AssignBindings()
     end
 end
-BFI.RegisterCallback("InitModules", "MainBars", InitMainBars)
+BFI.RegisterCallback("InitModules", "AB_MainBars", InitMainBars)

@@ -195,7 +195,7 @@ local function UpdatePetBar(module)
     -- update buttons
     UpdatePetButtons()
 end
-BFI.RegisterCallback("UpdateModules", "PetBar", UpdatePetBar)
+BFI.RegisterCallback("UpdateModules", "AB_PetBar", UpdatePetBar)
 
 ---------------------------------------------------------------------
 -- init
@@ -217,4 +217,4 @@ local function InitPetBar()
     AB.RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
     AB.RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 end
-BFI.RegisterCallback("InitModules", "PetBar", InitPetBar)
+BFI.RegisterCallback("InitModules", "AB_PetBar", InitPetBar)

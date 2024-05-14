@@ -166,7 +166,7 @@ local function UpdateStanceBar(module)
         end
     end
 end
-BFI.RegisterCallback("UpdateModules", "StanceBar", UpdateStanceBar)
+BFI.RegisterCallback("UpdateModules", "AB_StanceBar", UpdateStanceBar)
 
 ---------------------------------------------------------------------
 -- init
@@ -183,4 +183,4 @@ local function InitStanceBar()
     AB.RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
     AB.RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 end
-BFI.RegisterCallback("InitModules", "StanceBar", InitStanceBar)
+BFI.RegisterCallback("InitModules", "AB_StanceBar", InitStanceBar)
