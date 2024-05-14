@@ -14,6 +14,8 @@ function AW.ShowDemo()
     AW.SetPoint(demo, "BOTTOMLEFT", 500, 270)
     demo:SetFrameLevel(100)
     demo:SetTitleJustify("LEFT")
+
+    local moverTestFrames = {}
     
     -- background
     demo:SetScript("OnShow", function()
@@ -27,10 +29,17 @@ function AW.ShowDemo()
             THE_BACKGROUND:Hide()
         end
         THE_BACKGROUND:Show()
+
+        for _, f in pairs(moverTestFrames) do
+            f:Show()
+        end
     end)
     
     demo:SetScript("OnHide", function()
         THE_BACKGROUND:Hide()
+        for _, f in pairs(moverTestFrames) do
+            f:Hide()
+        end
     end)
     
     demo:Show()
@@ -41,7 +50,7 @@ function AW.ShowDemo()
 
     -- fps
     local fps = AW.CreateFPSPane(demo.header, "RIGHT")
-    AW.SetPoint(fps, "RIGHT", ns, "LEFT", -210, 0)
+    AW.SetPoint(fps, "RIGHT", ns, "LEFT", -230, 0)
 
 
     -- ----------------------------------------------------------------------- --
@@ -805,10 +814,11 @@ function AW.ShowDemo()
     })
 
     local function CreateMoverTestFrame(id, group, point)
-        local mtf = AW.CreateBorderedFrame(AW.UIParent, 170, 120)
-        AW.SetPoint(mtf, point)
-        mtf:SetTitle("Mover Test Frame "..id.."\n"..point, "hotpink", nil, true)
-        AW.CreateMover(mtf, group, "Test Mover "..id, function(p,x,y) print("MTF"..id..":", p, x, y) end)
+        local f = AW.CreateBorderedFrame(AW.UIParent, 170, 120)
+        tinsert(moverTestFrames, f)
+        AW.SetPoint(f, point)
+        f:SetTitle("Mover Test Frame "..id.."\n"..point, "hotpink", nil, true)
+        AW.CreateMover(f, group, "Test Mover "..id, function(p,x,y) print("MTF"..id..":", p, x, y) end)
     end
 
     -- group1

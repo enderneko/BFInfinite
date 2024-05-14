@@ -25,7 +25,7 @@ function AW.ConvertRGBToHEX(r, g, b)
         while(value > 0)do
             local index = math.fmod(value, 16) + 1
             value = math.floor(value / 16)
-            hex = string.sub("0123456789ABCDEF", index, index) .. hex			
+            hex = string.sub("0123456789ABCDEF", index, index) .. hex
         end
 
         if(string.len(hex) == 0)then
@@ -62,7 +62,7 @@ function AW.ColorGradient(perc, r1,g1,b1, r2,g2,b2, r3,g3,b3)
 end
 
 -- From ColorPickerAdvanced by Feyawen-Llane
---[[ Convert RGB to HSV	---------------------------------------------------
+--[[ Convert RGB to HSV ---------------------------------------------------
     Inputs:
         r = Red [0, 1]
         g = Green [0, 1]
@@ -114,7 +114,7 @@ function AW.ConvertRGBToHSB(r, g, b)
     return H, S, B
 end
 
---[[ Convert HSB to RGB	---------------------------------------------------
+--[[ Convert HSB to RGB ---------------------------------------------------
     Inputs:
         h = Hue [0, 360]
         s = Saturation [0, 1]
@@ -171,7 +171,9 @@ end
 ---------------------------------------------------------------------
 -- colors
 ---------------------------------------------------------------------
-local button_color_normal = {0.127, 0.127, 0.127, 1}
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local UnitPowerType = UnitPowerType
+local UnitReaction = UnitReaction
 
 local colors = {
     -- accent
@@ -183,6 +185,9 @@ local colors = {
     ["header"] = {["hex"]="FF202020", ["t"]={0.127, 0.127, 0.127, 1}}, -- header background
     ["widget"] = {["hex"]="FF262626", ["t"]={0.15, 0.15, 0.15, 1}}, -- widget background
     ["disabled"] = {["hex"]="FF666666", ["t"]={0.4, 0.4, 0.4, 1}},
+    ["uf"] = {["t"]={0.125, 0.125, 0.125}}, -- unitframe foreground
+    ["uf_loss"] = {["t"]={0.667, 0, 0}}, -- unitframe background
+    ["uf_power"] = {["t"]={0.7, 0.7, 0.7}}, -- unitframe background
     ["none"] = {["hex"]="00000000", ["t"]={0, 0, 0, 0}},
     
     -- common
@@ -218,19 +223,50 @@ local colors = {
     ["brightblue"] = {["hex"]="FF3742FA", ["t"]={0.22, 0.26, 0.98, 1}},
     
     -- class (data from RAID_CLASS_COLORS)
-    ["DEATHKNIGHT"] = {["hex"]="ffc41e3a", ["t"]={0.7686275243759155, 0.1176470667123795, 0.2274509966373444, 1}},
-    ["DEMONHUNTER"] = {["hex"]="ffa330c9", ["t"]={0.6392157077789307, 0.1882353127002716, 0.7882353663444519, 1}},
-    ["DRUID"] = {["hex"]="ffff7c0a", ["t"]={1, 0.4862745404243469, 0.03921568766236305, 1}},
-    ["EVOKER"] = {["hex"]="ff33937f", ["t"]={0.2000000178813934, 0.5764706134796143, 0.4980392456054688, 1}},
-    ["HUNTER"] = {["hex"]="ffaad372", ["t"]={0.6666666865348816, 0.8274510502815247, 0.4470588564872742, 1}},
-    ["MAGE"] = {["hex"]="ff3fc7eb", ["t"]={0.2470588386058807, 0.7803922295570374, 0.9215686917304993, 1}},
-    ["MONK"] = {["hex"]="ff00ff98", ["t"]={0, 1, 0.5960784554481506, 1}},
-    ["PALADIN"] = {["hex"]="fff48cba", ["t"]={0.9568628072738647, 0.5490196347236633, 0.729411780834198, 1}},
-    ["PRIEST"] = {["hex"]="ffffffff", ["t"]={1, 1, 1, 1}},
-    ["ROGUE"] = {["hex"]="fffff468", ["t"]={1, 0.9568628072738647, 0.4078431725502014, 1}},
-    ["SHAMAN"] = {["hex"]="ff0070dd", ["t"]={0, 0.4392157196998596, 0.8666667342185974, 1}},
-    ["WARLOCK"] = {["hex"]="ff8788ee", ["t"]={0.529411792755127, 0.5333333611488342, 0.9333333969116211, 1}},
-    ["WARRIOR"] = {["hex"]="ffc69b6d", ["t"]={0.7764706611633301, 0.6078431606292725, 0.4274510145187378, 1}},
+    ["DEATHKNIGHT"] = {["hex"]="ffc41e3a", ["t"]={0.7686275243759155, 0.1176470667123795, 0.2274509966373444}},
+    ["DEMONHUNTER"] = {["hex"]="ffa330c9", ["t"]={0.6392157077789307, 0.1882353127002716, 0.7882353663444519}},
+    ["DRUID"] = {["hex"]="ffff7c0a", ["t"]={1, 0.4862745404243469, 0.03921568766236305}},
+    ["EVOKER"] = {["hex"]="ff33937f", ["t"]={0.2000000178813934, 0.5764706134796143, 0.4980392456054688}},
+    ["HUNTER"] = {["hex"]="ffaad372", ["t"]={0.6666666865348816, 0.8274510502815247, 0.4470588564872742}},
+    ["MAGE"] = {["hex"]="ff3fc7eb", ["t"]={0.2470588386058807, 0.7803922295570374, 0.9215686917304993}},
+    ["MONK"] = {["hex"]="ff00ff98", ["t"]={0, 1, 0.5960784554481506}},
+    ["PALADIN"] = {["hex"]="fff48cba", ["t"]={0.9568628072738647, 0.5490196347236633, 0.729411780834198}},
+    ["PRIEST"] = {["hex"]="ffffffff", ["t"]={1, 1, 1}},
+    ["ROGUE"] = {["hex"]="fffff468", ["t"]={1, 0.9568628072738647, 0.4078431725502014}},
+    ["SHAMAN"] = {["hex"]="ff0070dd", ["t"]={0, 0.4392157196998596, 0.8666667342185974}},
+    ["WARLOCK"] = {["hex"]="ff8788ee", ["t"]={0.529411792755127, 0.5333333611488342, 0.9333333969116211}},
+    ["WARRIOR"] = {["hex"]="ffc69b6d", ["t"]={0.7764706611633301, 0.6078431606292725, 0.4274510145187378}},
+    
+    -- reaction
+    ["FRIENDLY"] = {["hex"]="ff4ab04d", ["t"]={0.29, 0.69, 0.3}},
+    ["NEUTRAL"] = {["hex"]="ffd9c45c", ["t"]={0.85, 0.77, 0.36}},
+    ["HOSTILE"] = {["hex"]="ffc74040", ["t"]={0.78, 0.25, 0.25}},
+
+    -- power color (data from PowerBarColor)
+    ["MANA"] = {["hex"]="ff007fff", ["t"]={0, 0.5, 1}}, -- 0, 0, 1
+    ["RAGE"] = {["hex"]="ffff0000", ["t"]={1, 0, 0}},
+    ["FOCUS"] = {["hex"]="ffff7f3f", ["t"]={1, 0.50, 0.25}},
+    ["ENERGY"] = {["hex"]="ffffff00", ["t"]={1, 1, 0}},
+    ["COMBO_POINTS"] = {["hex"]="fffff468", ["t"]={1, 0.96, 0.41}},
+    ["RUNES"] = {["hex"]="ff7f7f7f", ["t"]={0.50, 0.50, 0.50}},
+    ["RUNIC_POWER"] = {["hex"]="ff00d1ff", ["t"]={0, 0.82, 1}},
+    ["SOUL_SHARDS"] = {["hex"]="ff7f518c", ["t"]={0.50, 0.32, 0.55}},
+    ["LUNAR_POWER"] = {["hex"]="ff4c84e5", ["t"]={0.30, 0.52, 0.90}},
+    ["HOLY_POWER"] = {["hex"]="fff2e599", ["t"]={0.95, 0.90, 0.60}},
+    ["MAELSTROM"] = {["hex"]="ff007fff", ["t"]={0, 0.5, 1}},
+    ["INSANITY"] = {["hex"]="ff9933ff", ["t"]={0.6, 0.2, 1}}, -- 0.40, 0, 0.80
+    ["CHI"] = {["hex"]="ffb5ffea", ["t"]={0.71, 1, 0.92}},
+    ["ARCANE_CHARGES"] = {["hex"]="ff1919f9", ["t"]={0.10, 0.10, 0.98}},
+    ["FURY"] = {["hex"]="ffc842fc", ["t"]={0.788, 0.259, 0.992}},
+    ["PAIN"] = {["hex"]="ffff9c00", ["t"]={1, 0.612, 0}},
+    -- vehicle colors
+    ["AMMOSLOT"] = {["hex"]="ffcc9900", ["t"]={0.80, 0.60, 0}},
+    ["FUEL"] = {["hex"]="ff008c7f", ["t"]={0.0, 0.55, 0.5}},
+    -- alternate power bar colors
+    ["EBON_MIGHT"] = {["hex"]="ffe58c4c", ["t"]={0.9, 0.55, 0.3}},
+    ["STAGGER_GREEN"] = {["hex"]="ff84ff84", ["t"]={0.52, 1, 0.52,}},
+    ["STAGGER_YELLOW"] = {["hex"]="fffff9b7", ["t"]={1, 0.98, 0.72}},
+    ["STAGGER_RED"] = {["hex"]="ffff6b6b", ["t"]={1, 0.42, 0.42}},
 
     -- quality https://warcraft.wiki.gg/wiki/Quality
     ["Poor"] = {["hex"]="ff9d9d9d", ["t"]={0.62, 0.62, 0.62, 1}}, -- ITEM_QUALITY0_DESC
@@ -247,21 +283,59 @@ local colors = {
 function AW.GetColorRGB(name, alpha, saturation)
     assert(colors[name], "no such color:", name)
     saturation = saturation or 1
-    if alpha then
-        return colors[name]["t"][1]*saturation, colors[name]["t"][2]*saturation, colors[name]["t"][3]*saturation, alpha
-    else
-        return unpack(colors[name]["t"])
+    alpha = alpha or colors[name]["t"][4]
+    return colors[name]["t"][1]*saturation, colors[name]["t"][2]*saturation, colors[name]["t"][3]*saturation, alpha
+end
+
+function AW.GetClassColor(class, alpha, saturation)
+    saturation = saturation or 1
+
+    if colors[class] then
+        return AW.GetColorRGB(class, alpha, saturation)
     end
+
+    if RAID_CLASS_COLORS[class] then
+        local r, g, b = RAID_CLASS_COLORS[class]:GetRGB()
+        return r*saturation, g*saturation, b*saturation, alpha
+    end
+    
+    return AW.GetColorRGB("uf_fg")
+end
+
+function AW.GetReactionColor(unit, alpha, saturation)
+    local reaction = UnitReaction(unit, "player") or 0
+    if reaction <= 2 then
+        return AW.GetColorRGB("HOSTILE", alpha, saturation)
+    elseif reaction <= 4 then
+        return AW.GetColorRGB("NEUTRAL", alpha, saturation)
+    else
+        return AW.GetColorRGB("FRIENDLY", alpha, saturation)
+    end
+end
+
+function AW.GetPowerColor(power, unit, alpha, saturation)
+    saturation = saturation or 1
+
+    if colors[power] then
+        return AW.GetColorRGB(power, alpha, saturation)
+    end
+
+    if unit then
+        local r, g, b = select(3, UnitPowerType(unit))
+        if r then
+            return r, g, b            
+        end
+    end
+
+    return AW.GetColorRGB("MANA", alpha, saturation)
 end
 
 function AW.GetColorTable(name, alpha, saturation)
     assert(colors[name], "no such color:", name)
     saturation = saturation or 1
-    if alpha then
-        return {colors[name]["t"][1]*saturation, colors[name]["t"][2]*saturation, colors[name]["t"][3]*saturation, alpha}
-    else
-        return colors[name]["t"] -- use default alpha 1
-    end
+    alpha = alpha or colors[name]["t"][4]
+
+    return {colors[name]["t"][1]*saturation, colors[name]["t"][2]*saturation, colors[name]["t"][3]*saturation, alpha}
 end
 
 function AW.GetColorHex(name)
@@ -282,6 +356,7 @@ end
 ---------------------------------------------------------------------
 -- button colors
 ---------------------------------------------------------------------
+local button_color_normal = {0.127, 0.127, 0.127, 1}
 local buttonColors = {
     ["accent"] = {["normal"]=colors["accent"]["normal"], ["hover"]=colors["accent"]["hover"]},
     ["accent-hover"] = {["normal"]=button_color_normal, ["hover"]=colors["accent"]["hover"]},

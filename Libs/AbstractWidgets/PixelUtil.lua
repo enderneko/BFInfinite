@@ -296,6 +296,14 @@ function AW.SetStatusBarValue(statusBar, value)
 end
 
 ---------------------------------------------------------------------
+-- load widget position
+---------------------------------------------------------------------
+function AW.LoadWidgetPosition(region, pos)
+    AW.ClearPoints(region)
+    AW.SetPoint(region, pos[1], region:GetParent(), pos[2], pos[3], pos[4])
+end
+
+---------------------------------------------------------------------
 -- load position
 ---------------------------------------------------------------------
 --- @param pos table|string
