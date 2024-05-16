@@ -72,9 +72,13 @@ local function UnitButton_UpdateHealthColor(self)
     local unit = self.states.unit
     if not unit then return end
 
+    -- healthBar
     local r, g, b, a, lossR, lossG, lossB, lossA = UF.GetHealthColor(self, unit)
     self.indicators.healthBar:SetStatusBarColor(r, g, b, a)
     self.indicators.healthBar.loss:SetVertexColor(lossR, lossG, lossB, lossA)
+
+    -- healthText
+    self.indicators.healthText:SetColor(unit, self.states.class)
 end
 
 local function UnitButton_UpdatePowerColor(self)
@@ -132,6 +136,7 @@ local function UnitButton_UpdateHealth(self)
     UpdateUnitHealthState(self)
 
     self.indicators.healthBar:SetBarValue(self.states.health)
+    self.indicators.healthText:SetHealth(self.states.health, self.states.healthMax, self.states.totalAbsorbs)
 end
 
 ---------------------------------------------------------------------
@@ -154,6 +159,47 @@ local function UnitButton_UpdatePower(self)
     self.states.power = UnitPower(unit)
 
     self.indicators.powerBar:SetBarValue(self.states.power)
+end
+
+---------------------------------------------------------------------
+-- shield absorb
+---------------------------------------------------------------------
+local function UnitButton_UpdateShieldAbsorbs(self)
+    local unit = self.states.displayedUnit
+    if not unit then return end
+    
+    UpdateUnitHealthState(self)
+
+    -- health text
+    self.indicators.healthText:SetHealth(self.states.health, self.states.healthMax, self.states.totalAbsorbs)
+
+--     if self.states.totalAbsorbs > 0 then
+--         local shieldPercent = self.states.totalAbsorbs / self.states.healthMax
+
+--         if enabledIndicators["shieldBar"] then
+--             if indicatorBooleans["shieldBar"] then
+--                 -- onlyShowOvershields
+--                 local overshieldPercent = (self.states.totalAbsorbs + self.states.health - self.states.healthMax) / self.states.healthMax
+--                 if overshieldPercent > 0 then
+--                     self.indicators.shieldBar:Show()
+--                     self.indicators.shieldBar:SetValue(overshieldPercent)
+--                 else
+--                     self.indicators.shieldBar:Hide()
+--                 end
+--             else
+--                 self.indicators.shieldBar:Show()
+--                 self.indicators.shieldBar:SetValue(shieldPercent)
+--             end
+--         else
+--             self.indicators.shieldBar:Hide()
+--         end
+        
+--         self.widgets.shieldBar:SetValue(shieldPercent)
+--     else
+--         self.indicators.shieldBar:Hide()
+--         self.widgets.shieldBar:Hide()
+--         self.widgets.overShieldGlow:Hide()
+--     end
 end
 
 ---------------------------------------------------------------------
@@ -190,8 +236,8 @@ local function UnitButton_RegisterEvents(self)
     
     -- self:RegisterEvent("UNIT_AURA")
     
+    self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
     -- self:RegisterEvent("UNIT_HEAL_PREDICTION")
-    -- self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
     -- self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
     
     -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE")
@@ -248,13 +294,13 @@ local function UnitButton_OnEvent(self, event, unit, arg)
             UnitButton_UpdateHealthMax(self)
             UnitButton_UpdateHealth(self)
             -- UnitButton_UpdateHealPrediction(self)
-            -- UnitButton_UpdateShieldAbsorbs(self)
+            UnitButton_UpdateShieldAbsorbs(self)
             -- UnitButton_UpdateHealAbsorbs(self)
   
         elseif event == "UNIT_HEALTH" then
             UnitButton_UpdateHealth(self)
             -- UnitButton_UpdateHealPrediction(self)
-            -- UnitButton_UpdateShieldAbsorbs(self)
+            UnitButton_UpdateShieldAbsorbs(self)
             -- UnitButton_UpdateHealAbsorbs(self)
             -- UnitButton_UpdateStatusText(self)
 
@@ -529,7 +575,7 @@ function BFIUnitButton_OnLoad(button)
     button:HookScript("OnHide", UnitButton_OnHide) -- use _onhide for click-castings
     -- button:HookScript("OnEnter", UnitButton_OnEnter) -- SecureHandlerEnterLeaveTemplate
     -- button:HookScript("OnLeave", UnitButton_OnLeave) -- SecureHandlerEnterLeaveTemplate
-    button:SetScript("OnUpdate", UnitButton_OnUpdate)
+    -- button:SetScript("OnUpdate", UnitButton_OnUpdate)
     button:SetScript("OnEvent", UnitButton_OnEvent)
 
     -- pixel perfect

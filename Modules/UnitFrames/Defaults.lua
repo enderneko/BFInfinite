@@ -3,86 +3,69 @@ local AW = BFI.AW
 local U = BFI.utils
 local UF = BFI.M_UF
 
+local default_player_target_indicators = {
+    healthBar = {
+        position = {"TOPLEFT", "TOPLEFT", 0, 0},
+        width = 225,
+        height = 31,
+        color = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf")},
+        lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
+        bgColor = AW.GetColorTable("background"),
+        borderColor = AW.GetColorTable("border"),
+        texture = BFI_DEFAULT,
+        smoothing = false,
+    },
+    powerBar = {
+        position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
+        width = 225,
+        height = 17,
+        color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
+        lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+        bgColor = AW.GetColorTable("background"),
+        borderColor = AW.GetColorTable("border"),
+        texture = BFI_DEFAULT,
+        smoothing = false,
+    },
+    nameText = {
+        position = {"TOPLEFT", "TOPLEFT", 2, -2},
+        length = 0.5,
+        anchorTo = "healthBar",
+        font = {BFI_DEFAULT, 12, "shadow"},
+        color = {type="class_color", rgb=AW.GetColorTable("white")},
+    },
+    healthText = {
+        position = {"TOPRIGHT", "TOPRIGHT", -2, -2},
+        anchorTo = "healthBar",
+        font = {BFI_DEFAULT, 12, "shadow"},
+        color = {type="custom_color", rgb=AW.GetColorTable("white")},
+        format = {
+            numeric = "current_absorbs_short",
+            percent = "current_absorbs_sum_decimal",
+            delimiter = " | ",
+        },
+    },
+}
+
 local defaults = {
     player = {
         general = {
             bgColor = AW.GetColorTable("background"),
             borderColor = AW.GetColorTable("border"),
-            position = {"LEFT", 300, 0},
-            width = 200,
-            height = 70,
+            position = {"BOTTOMLEFT", 300, 300},
+            width = 225,
+            height = 49,
         },
-        indicators = {
-            healthBar = {
-                position = {"TOPLEFT", "TOPLEFT", 0, 0},
-                width = 200,
-                height = 30,
-                color = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf")},
-                lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
-                texture = BFI_DEFAULT,
-                smoothing = false,
-            },
-            powerBar = {
-                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
-                width = 200,
-                height = 20,
-                color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
-                lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
-                texture = BFI_DEFAULT,
-                smoothing = false,
-            },
-            nameText = {
-                position = {"LEFT", "LEFT", 5, 0},
-                length = 0.75,
-                anchorTo = "healthBar",
-                font = {BFI_DEFAULT, 12, "shadow"},
-                color = {type="class_color", rgb=AW.GetColorTable("white")},
-            },
-        },
+        indicators = default_player_target_indicators,
     },
     target = {
         general = {
             bgColor = AW.GetColorTable("background"),
             borderColor = AW.GetColorTable("border"),
-            position = {"LEFT", 550, 0},
-            width = 200,
-            height = 70,
+            position = {"BOTTOMLEFT", 550, 300},
+            width = 225,
+            height = 49,
         },
-        indicators = {
-            healthBar = {
-                position = {"TOPLEFT", "TOPLEFT", 0, 0},
-                width = 200,
-                height = 30,
-                color = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf")},
-                lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
-                texture = BFI_DEFAULT,
-                smoothing = false,
-            },
-            powerBar = {
-                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
-                width = 200,
-                height = 20,
-                color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
-                lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
-                texture = BFI_DEFAULT,
-                smoothing = false,
-            },
-            nameText = {
-                position = {"LEFT", "LEFT", 5, 0},
-                length = 0.75,
-                anchorTo = "healthBar",
-                font = {BFI_DEFAULT, 12, "shadow"},
-                color = {type="class_color", rgb=AW.GetColorTable("white")},
-            },
-        },
+        indicators = default_player_target_indicators,
     }
 }
 

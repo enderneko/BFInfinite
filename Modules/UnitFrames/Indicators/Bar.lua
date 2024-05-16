@@ -49,6 +49,7 @@ local function Bar_SetSmoothing(self, smoothing)
         self.SetBarValue = self.SetValue
         self.SetBarMinMaxValues = self.SetMinMaxValues
     end
+    self:SetBarValue(0)
 end
 
 local function Bar_LoadConfig(self, config, skipColorUpdate)
@@ -72,8 +73,6 @@ local function Bar_UpdatePixels(self)
     AW.RePoint(self)
     AW.ReBorder(self)
 end
-
--- TODO: make bar clickable
 
 function UF.CreateStatusBar(parent)
     local bar = CreateFrame("StatusBar", nil, parent, "BackdropTemplate")

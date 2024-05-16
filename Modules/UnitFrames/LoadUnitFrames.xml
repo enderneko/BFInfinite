@@ -6,6 +6,7 @@
     <!-- indicators -->
     <Script file="Indicators\Bar.lua"/>
     <Script file="Indicators\NameText.lua"/>
+    <Script file="Indicators\HealthText.lua"/>
     <!-- groups -->
     <Script file="Groups\Player.lua"/>
     <Script file="Groups\Target.lua"/>
