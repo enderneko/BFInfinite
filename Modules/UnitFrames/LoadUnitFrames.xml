@@ -4,7 +4,7 @@
     <Script file="UnitButton.lua"/>
     <Include file="UnitButton.xml"/>
     <!-- indicators -->
-    <Script file="Indicators\Bar.lua"/>
+    <Script file="Indicators\StatusBar.lua"/>
     <Script file="Indicators\NameText.lua"/>
     <Script file="Indicators\HealthText.lua"/>
     <Script file="Indicators\Portrait.lua"/>

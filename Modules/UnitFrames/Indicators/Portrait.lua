@@ -4,7 +4,7 @@ local AW = BFI.AW
 local UF = BFI.M_UF
 
 ---------------------------------------------------------------------
--- model
+-- the portrait frame
 ---------------------------------------------------------------------
 local UnitIsConnected = UnitIsConnected
 local UnitIsVisible = UnitIsVisible

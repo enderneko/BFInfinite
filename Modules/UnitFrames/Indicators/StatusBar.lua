@@ -6,23 +6,23 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 -- status bar
 ---------------------------------------------------------------------
-local function Bar_SetColor(self, color)
+local function StatusBar_SetColor(self, color)
     self:SetStatusBarColor(color[1], color[2], color[3], color[4])
 end
 
-local function Bar_SetLossColor(self, color)
+local function StatusBar_SetLossColor(self, color)
     self.loss:SetVertexColor(color[1], color[2], color[3], color[4])
 end
 
-local function Bar_SetBackgroudColor(self, color)
+local function StatusBar_SetBackgroudColor(self, color)
     self:SetBackdropColor(color[1], color[2], color[3], color[4])
 end
 
-local function Bar_SetBorderColor(self, color)
+local function StatusBar_SetBorderColor(self, color)
     self:SetBackdropBorderColor(color[1], color[2], color[3], color[4])
 end
 
-local function Bar_SetOrientation(self, orientation)
+local function StatusBar_SetOrientation(self, orientation)
     self:SetOrientation(orientation)
     self.loss:ClearAllPoints()
     if orientation == "HORIZONTAL" then
@@ -34,13 +34,13 @@ local function Bar_SetOrientation(self, orientation)
     end
 end
 
-local function Bar_SetTexture(self, texture)
+local function StatusBar_SetTexture(self, texture)
     texture = U.GetBarTexture(texture)
     self:SetStatusBarTexture(texture)
     self.loss:SetTexture(texture)
 end
 
-local function Bar_SetSmoothing(self, smoothing)
+local function StatusBar_SetSmoothing(self, smoothing)
     if smoothing then
         self.SetBarValue = self.SetSmoothedValue
         self.SetBarMinMaxValues = self.SetMinMaxSmoothedValue
@@ -51,7 +51,7 @@ local function Bar_SetSmoothing(self, smoothing)
     end
 end
 
-local function Bar_LoadConfig(self, config, skipColorUpdate)
+local function StatusBar_LoadConfig(self, config, skipColorUpdate)
     self:SetFrameLevel(self.root:GetFrameLevel() + config.frameLevel)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
@@ -84,21 +84,21 @@ function UF.CreateStatusBar(parent)
     -- loss texture
     bar.loss = bar:CreateTexture(nil, "BORDER", nil, -7)
     bar.loss:SetTexture(AW.GetTexture("StatusBar"))
-    Bar_SetOrientation(bar, "HORIZONTAL")
+    StatusBar_SetOrientation(bar, "HORIZONTAL")
     
     -- color preset
     bar:SetBackdropBorderColor(AW.GetColorRGB("border"))
     bar:SetBackdropColor(AW.GetColorRGB("background"))
 
     -- functions
-    bar.SetColor = Bar_SetColor
-    bar.SetTexture = Bar_SetTexture
-    bar.SetLossColor = Bar_SetLossColor
-    bar.SetBorderColor = Bar_SetBorderColor
-    bar.SetBackgroundColor = Bar_SetBackgroudColor
-    bar.SetBarOrientation = Bar_SetOrientation
-    bar.SetSmoothing = Bar_SetSmoothing
-    bar.LoadConfig = Bar_LoadConfig
+    bar.SetColor = StatusBar_SetColor
+    bar.SetTexture = StatusBar_SetTexture
+    bar.SetLossColor = StatusBar_SetLossColor
+    bar.SetBorderColor = StatusBar_SetBorderColor
+    bar.SetBackgroundColor = StatusBar_SetBackgroudColor
+    bar.SetBarOrientation = StatusBar_SetOrientation
+    bar.SetSmoothing = StatusBar_SetSmoothing
+    bar.LoadConfig = StatusBar_LoadConfig
 
     -- pixel perfect
     AW.AddToPixelUpdater(bar)
