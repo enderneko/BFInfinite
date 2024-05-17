@@ -342,7 +342,7 @@ function AW.SavePositionAsString(region, t, i)
 end
 
 ---------------------------------------------------------------------
--- pixel perfect border (ElvUI)
+-- pixel perfect (ElvUI)
 ---------------------------------------------------------------------
 local function CheckPixelSnap(frame, snap)
     if (frame and not frame:IsForbidden()) and frame.PixelSnapDisabled and snap then
@@ -355,23 +355,24 @@ local function DisablePixelSnap(frame)
         if frame.SetSnapToPixelGrid then
             frame:SetSnapToPixelGrid(false)
             frame:SetTexelSnappingBias(0)
-        -- elseif frame.GetStatusBarTexture then
-        --     local texture = frame:GetStatusBarTexture()
-        --     if type(texture) == "table" and texture.SetSnapToPixelGrid then
-        --         texture:SetSnapToPixelGrid(false)
-        --         texture:SetTexelSnappingBias(0)
-        --     end
+            frame.PixelSnapDisabled = true
+        elseif frame.GetStatusBarTexture then
+            local texture = frame:GetStatusBarTexture()
+            if type(texture) == "table" and texture.SetSnapToPixelGrid then
+                texture:SetSnapToPixelGrid(false)
+                texture:SetTexelSnappingBias(0)
+                frame.PixelSnapDisabled = true
+            end
         end
-        frame.PixelSnapDisabled = true
     end
 end
 
-local function UpdateMetatable(object)
-    local t = getmetatable(object).__index
+local function UpdateMetatable(obj)
+    local t = getmetatable(obj).__index
 
-    if not object.DisabledPixelSnap then
+    if not obj.DisabledPixelSnap and (t.SetSnapToPixelGrid or t.SetStatusBarTexture or t.SetColorTexture or t.SetVertexColor or t.CreateTexture or t.SetTexCoord or t.SetTexture) then
         if t.SetSnapToPixelGrid then hooksecurefunc(t, "SetSnapToPixelGrid", CheckPixelSnap) end
-        -- if t.SetStatusBarTexture then hooksecurefunc(t, "SetStatusBarTexture", DisablePixelSnap) end
+        if t.SetStatusBarTexture then hooksecurefunc(t, "SetStatusBarTexture", DisablePixelSnap) end
         if t.SetColorTexture then hooksecurefunc(t, "SetColorTexture", DisablePixelSnap) end
         if t.SetVertexColor then hooksecurefunc(t, "SetVertexColor", DisablePixelSnap) end
         if t.CreateTexture then hooksecurefunc(t, "CreateTexture", DisablePixelSnap) end
@@ -383,5 +384,17 @@ local function UpdateMetatable(object)
 end
 
 local obj = CreateFrame("Frame")
+UpdateMetatable(CreateFrame("StatusBar"))
 UpdateMetatable(obj:CreateTexture())
 UpdateMetatable(obj:CreateMaskTexture())
+
+local handled = {Frame = true}
+obj = EnumerateFrames()
+while obj do
+    local objType = obj:GetObjectType()
+    if not obj:IsForbidden() and not handled[objType] then
+        UpdateMetatable(obj)
+        handled[objType] = true
+    end
+    obj = EnumerateFrames(obj)
+end
