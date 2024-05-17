@@ -3,10 +3,13 @@ local AW = BFI.AW
 local U = BFI.utils
 local UF = BFI.M_UF
 
+-- TODO: presets
+
 local default_player_target_indicators = {
     healthBar = {
         enabled = true,
         position = {"TOPLEFT", "TOPLEFT", 0, 0},
+        frameLevel = 1,
         orientation = "HORIZONTAL",
         width = 225,
         height = 30,
@@ -16,11 +19,11 @@ local default_player_target_indicators = {
         borderColor = AW.GetColorTable("border"),
         texture = BFI_DEFAULT,
         smoothing = false,
-        frameLevel = 1,
     },
     powerBar = {
         enabled = true,
         position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
+        frameLevel = 1,
         orientation = "HORIZONTAL",
         width = 225,
         height = 17,
@@ -30,7 +33,6 @@ local default_player_target_indicators = {
         borderColor = AW.GetColorTable("border"),
         texture = BFI_DEFAULT,
         smoothing = false,
-        frameLevel = 1,
     },
     nameText = {
         enabled = true,
@@ -56,15 +58,16 @@ local default_player_target_indicators = {
         enabled = true,
         type = "3d", -- 3d, 2d, class_icon
         position = {"CENTER", "CENTER", 0, -5},
+        frameLevel = 5,
         anchorTo = "button",
         width = 197,
         height = 20,
         bgColor = AW.GetColorTable("background", 1),
         borderColor = AW.GetColorTable("border"),
         model = {
-            xOffset = 0,
-            yOffset = 0,
-            rotation = 0,
+            xOffset = 0, -- [-100, 100]
+            yOffset = 0, -- [-100, 100]
+            rotation = 0, -- [0, 360]
             camDistanceScale = 1.5,
         },
         frameLevel = 5,

@@ -21,7 +21,7 @@ local function CreateTarget()
     target._updateOnPlayerTargetChanged = true
 
     -- mover
-    AW.CreateMover(target, "UnitFrames", name, function(p,x,y) print(name..":", p, x, y) end)
+    AW.CreateMover(target, "UnitFrames", name)
 
     -- pixel perfect
     AW.AddToPixelUpdater(target)
@@ -37,6 +37,9 @@ local function UpdateTarget(module)
     if module and module ~= "UnitFrame" then return end
 
     local config = UF.config.target
+
+    -- mover
+    AW.UpdateMoverSave(target, config.general.position)
 
     -- size & point
     AW.SetSize(target, config.general.width, config.general.height)

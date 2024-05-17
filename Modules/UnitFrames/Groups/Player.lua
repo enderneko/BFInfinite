@@ -9,6 +9,7 @@ local indicators = {
     nameText = false,
     healthText = false,
     portrait = false,
+    castBar = true,
 }
 
 ---------------------------------------------------------------------
@@ -20,7 +21,7 @@ local function CreatePlayer()
     player:SetAttribute("unit", "player")
 
     -- mover
-    AW.CreateMover(player, "UnitFrames", name, function(p,x,y) print(name..":", p, x, y) end)
+    AW.CreateMover(player, "UnitFrames", name)
 
     -- pixel perfect
     AW.AddToPixelUpdater(player)
@@ -36,6 +37,9 @@ local function UpdatePlayer(module)
     if module and module ~= "UnitFrame" then return end
 
     local config = UF.config.player
+
+    -- mover
+    AW.UpdateMoverSave(player, config.general.position)
 
     -- size & point
     AW.SetSize(player, config.general.width, config.general.height)
