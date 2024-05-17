@@ -19,6 +19,20 @@ end
 
 function UF.LoadConfigForIndicators(button, indicators, config)
     for name, skip in pairs(indicators) do
-        button.indicators[name]:LoadConfig(config.indicators[name], skip)
+        local indicator = button.indicators[name]
+        indicator:LoadConfig(config.indicators[name], skip)
+        if config.indicators[name].enabled then
+            if indicator.Enable then
+                indicator:Enable()
+            else
+                indicator:Show()
+            end
+        else
+            if indicator.Disable then
+                indicator:Disable()
+            else
+                indicator:Hide()
+            end
+        end
     end
 end

@@ -15,6 +15,8 @@ local function NameText_SetName(self, unit, name, class)
                 break
             end
         end
+    else
+        self:SetText(string.utf8sub(name, 1, self.length))
     end
 
     -- color

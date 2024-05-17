@@ -5,6 +5,7 @@ local UF = BFI.M_UF
 
 local default_player_target_indicators = {
     healthBar = {
+        enabled = true,
         position = {"TOPLEFT", "TOPLEFT", 0, 0},
         orientation = "HORIZONTAL",
         width = 225,
@@ -18,6 +19,7 @@ local default_player_target_indicators = {
         frameLevel = 1,
     },
     powerBar = {
+        enabled = true,
         position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
         orientation = "HORIZONTAL",
         width = 225,
@@ -31,6 +33,7 @@ local default_player_target_indicators = {
         frameLevel = 1,
     },
     nameText = {
+        enabled = true,
         position = {"TOPLEFT", "TOPLEFT", 3, -3},
         length = 0.5,
         anchorTo = "healthBar",
@@ -38,6 +41,7 @@ local default_player_target_indicators = {
         color = {type="class_color", rgb=AW.GetColorTable("white")},
     },
     healthText = {
+        enabled = true,
         position = {"TOPRIGHT", "TOPRIGHT", -3, -3},
         anchorTo = "healthBar",
         font = {BFI_DEFAULT, 12, "shadow"},
@@ -49,18 +53,19 @@ local default_player_target_indicators = {
         },
     },
     portrait = {
+        enabled = true,
         type = "3d", -- 3d, 2d, class_icon
         position = {"CENTER", "CENTER", 0, -5},
         anchorTo = "button",
         width = 197,
         height = 20,
-        color = AW.GetColorTable("background", 1),
+        bgColor = AW.GetColorTable("background", 1),
         borderColor = AW.GetColorTable("border"),
         model = {
             xOffset = 0,
             yOffset = 0,
             rotation = 0,
-            camDistanceScale = 1.7,
+            camDistanceScale = 1.5,
         },
         frameLevel = 5,
     },

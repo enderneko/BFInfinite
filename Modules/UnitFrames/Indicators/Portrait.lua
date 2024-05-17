@@ -68,7 +68,7 @@ local function Portrait_LoadConfig(self, config)
         self:SetFrameLevel(0) -- bottom layer
     end
 
-    self:SetBackdropColor(unpack(config.color))
+    self:SetBackdropColor(unpack(config.bgColor))
     self:SetBackdropBorderColor(unpack(config.borderColor))
 
     if config.type == "3d" then

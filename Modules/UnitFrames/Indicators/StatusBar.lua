@@ -41,11 +41,11 @@ local function StatusBar_SetTexture(self, texture)
 end
 
 local function StatusBar_SetSmoothing(self, smoothing)
+    self:ResetSmoothedValue()
     if smoothing then
         self.SetBarValue = self.SetSmoothedValue
         self.SetBarMinMaxValues = self.SetMinMaxSmoothedValue
     else
-        self:ResetSmoothedValue()
         self.SetBarValue = self.SetValue
         self.SetBarMinMaxValues = self.SetMinMaxValues
     end
@@ -76,6 +76,10 @@ function UF.CreateStatusBar(parent)
 
     Mixin(bar, SmoothStatusBarMixin) -- SetSmoothedValue
     AW.SetDefaultBackdrop(bar)
+
+    bar:SetScript("OnHide", function()
+        bar:ResetSmoothedValue()
+    end)
 
     -- bar texture
     bar:SetStatusBarTexture(AW.GetTexture("StatusBar"))
