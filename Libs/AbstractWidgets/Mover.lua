@@ -342,8 +342,12 @@ UpdateAndSave = function(owner, p, x, y)
     AW.RePoint(owner)
 
     -- save position
-    if owner.mover.save then
+    if type(owner.mover.save) == "function" then
         owner.mover.save(p, x, y)
+    elseif type(owner.mover.save) == "table" then
+        owner.mover.save[1] = p
+        owner.mover.save[2] = x
+        owner.mover.save[3] = y
     end
 end
 
@@ -541,6 +545,12 @@ function AW.CreateMover(owner, group, text, save)
             mover._original = {p, Round(x), Round(y)}
         end
     end)
+end
+
+--- @param save function
+function AW.UpdateMoverSave(owner, save)
+    assert(owner.mover, string.format("no mover for %s", owner:GetName() or "owner"))
+    owner.mover.save = save
 end
 
 ---------------------------------------------------------------------
