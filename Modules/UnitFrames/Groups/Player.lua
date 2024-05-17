@@ -3,6 +3,13 @@ local AW = BFI.AW
 local UF = BFI.M_UF
 
 local player
+local indicators = {
+    healthBar = true,
+    powerBar = true,
+    nameText = false,
+    healthText = false,
+    portrait = false,
+}
 
 ---------------------------------------------------------------------
 -- create
@@ -15,11 +22,11 @@ local function CreatePlayer()
     -- mover
     AW.CreateMover(player, "UnitFrames", name, function(p,x,y) print(name..":", p, x, y) end)
 
+    -- pixel perfect
+    AW.AddToPixelUpdater(player)
+
     -- indicators
-    player.indicators.healthBar = UF.CreateStatusBar(player)
-    player.indicators.powerBar = UF.CreateStatusBar(player)
-    player.indicators.nameText = UF.CreateNameText(player)
-    player.indicators.healthText = UF.CreateHealthText(player)
+    UF.CreateIndicators(player, indicators)
 end
 
 ---------------------------------------------------------------------
@@ -34,15 +41,11 @@ local function UpdatePlayer(module)
     AW.SetSize(player, config.general.width, config.general.height)
     AW.LoadPosition(player, config.general.position)
     
-    -- texture
-
     -- color
     AW.StylizeFrame(player, config.general.bgColor, config.general.borderColor)
     
     -- indicators
-    for n, i in pairs(player.indicators) do
-        i:LoadConfig(config.indicators[n], true)
-    end
+    UF.LoadConfigForIndicators(player, indicators, config)
     
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(player, "state-visibility", "[petbattle] hide; show")

@@ -3,6 +3,13 @@ local AW = BFI.AW
 local UF = BFI.M_UF
 
 local target
+local indicators = {
+    healthBar = true,
+    powerBar = true,
+    nameText = false,
+    healthText = false,
+    portrait = false,
+}
 
 ---------------------------------------------------------------------
 -- create
@@ -16,11 +23,11 @@ local function CreateTarget()
     -- mover
     AW.CreateMover(target, "UnitFrames", name, function(p,x,y) print(name..":", p, x, y) end)
 
+    -- pixel perfect
+    AW.AddToPixelUpdater(target)
+
     -- indicators
-    target.indicators.healthBar = UF.CreateStatusBar(target)
-    target.indicators.powerBar = UF.CreateStatusBar(target)
-    target.indicators.nameText = UF.CreateNameText(target)
-    target.indicators.healthText = UF.CreateHealthText(target)
+    UF.CreateIndicators(target, indicators)
 end
 
 ---------------------------------------------------------------------
@@ -41,9 +48,7 @@ local function UpdateTarget(module)
     AW.StylizeFrame(target, config.general.bgColor, config.general.borderColor)
     
     -- indicators
-    for n, i in pairs(target.indicators) do
-        i:LoadConfig(config.indicators[n], true)
-    end
+    UF.LoadConfigForIndicators(target, indicators, config)
     
     RegisterUnitWatch(target)
 end

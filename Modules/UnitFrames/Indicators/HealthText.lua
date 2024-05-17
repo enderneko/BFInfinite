@@ -151,20 +151,13 @@ local function HealthText_LoadConfig(self, config)
     self:SetHealthFont(unpack(config.font))
     self:SetFormat(config.format)
 
-    local button = self:GetParent():GetParent()
     if config.anchorTo == "button" then
-        AW.LoadWidgetPosition(self, config.position)
-        self.relativeTo = button
+        self:SetParent(self.root)
     else
-        if config.anchorTo == "healthBar" then
-            AW.LoadWidgetPosition(self, config.position, button.indicators.healthBar)
-            self.relativeTo = button.indicators.healthBar
-        elseif config.anchorTo == "powerBar" then
-            AW.LoadWidgetPosition(self, config.position, button.indicators.powerBar)
-            self.relativeTo = button.indicators.powerBar
-        end
+        self:SetParent(self.root.indicators[config.anchorTo])
     end
-
+    AW.LoadWidgetPosition(self, config.position)
+    
     self.color = config.color
 end
 
@@ -172,7 +165,8 @@ end
 -- create
 ---------------------------------------------------------------------
 function UF.CreateHealthText(parent)
-    local text = parent.overlay:CreateFontString(nil, "OVERLAY", AW.GetFontName("normal"))
+    local text = parent:CreateFontString(nil, "OVERLAY", AW.GetFontName("normal"))
+    text.root = parent
 
     text.SetHealth = HealthText_SetHealth
     text.SetColor = HealthText_SetColor

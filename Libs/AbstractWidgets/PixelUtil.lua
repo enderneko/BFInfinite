@@ -244,9 +244,17 @@ end
 ---------------------------------------------------------------------
 -- pixel updater
 ---------------------------------------------------------------------
+local function DefaultUpdatePixels(self)
+    AW.ReSize(self)
+    AW.RePoint(self)
+    AW.ReBorder(self)
+end
+
 local regions = {}
 function AW.AddToPixelUpdater(r)
-    assert(r.UpdatePixels, "no UpdatePixels() for this region")
+    if not r.UpdatePixels then
+        r.UpdatePixels = DefaultUpdatePixels
+    end
     tinsert(regions, r)
 end
 

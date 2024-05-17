@@ -203,6 +203,16 @@ local function UnitButton_UpdateShieldAbsorbs(self)
 end
 
 ---------------------------------------------------------------------
+-- portrait
+---------------------------------------------------------------------
+local function UnitButton_UpdatePortrait(self)
+    local unit = self.states.displayedUnit
+    if not unit then return end
+
+    self.indicators.portrait:Update(unit)
+end
+
+---------------------------------------------------------------------
 -- update all
 ---------------------------------------------------------------------
 local function UnitButton_UpdateAll(self)
@@ -219,6 +229,8 @@ local function UnitButton_UpdateAll(self)
     -- power
     UnitButton_UpdatePowerMax(self)
     UnitButton_UpdatePower(self)
+    -- portrait
+    UnitButton_UpdatePortrait(self)
 end
 
 ---------------------------------------------------------------------
@@ -267,7 +279,8 @@ local function UnitButton_RegisterEvents(self)
     -- self:RegisterEvent("READY_CHECK_FINISHED")
     -- self:RegisterEvent("READY_CHECK_CONFIRM")
     
-    -- self:RegisterEvent("UNIT_PORTRAIT_UPDATE") -- pet summoned far away
+    self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
+    self:RegisterEvent("UNIT_MODEL_CHANGED")
     
     local success, result = pcall(UnitButton_UpdateAll, self)
     if not success then
@@ -283,7 +296,7 @@ local function UnitButton_OnEvent(self, event, unit, arg)
     if unit and (self.states.displayedUnit == unit or self.states.unit == unit) then
         if  event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "UNIT_CONNECTION" then
             self._updateRequired = 1
-            self._powerBarUpdateRequired = 1
+            -- self._powerBarUpdateRequired = 1
 
         elseif event == "UNIT_NAME_UPDATE" then
             -- UnitButton_UpdateName(self)
@@ -354,14 +367,18 @@ local function UnitButton_OnEvent(self, event, unit, arg)
         elseif event == "UNIT_PORTRAIT_UPDATE" then -- pet summoned far away
             if self.states.healthMax == 0 then
                 self._updateRequired = 1
-                self._powerBarUpdateRequired = 1
+                -- self._powerBarUpdateRequired = 1
+            else
+                UnitButton_UpdatePortrait(self)
             end
+        elseif event == "UNIT_MODEL_CHANGED" then
+            UnitButton_UpdatePortrait(self)
         end
 
     else
         if event == "GROUP_ROSTER_UPDATE" then
             self._updateRequired = 1
-            self._powerBarUpdateRequired = 1
+            -- self._powerBarUpdateRequired = 1
 
         elseif event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED" then
             UnitButton_UpdateLeader(self, event)

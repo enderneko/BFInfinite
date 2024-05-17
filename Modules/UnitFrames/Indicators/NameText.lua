@@ -8,7 +8,7 @@ local function NameText_SetName(self, unit, name, class)
 
     -- length
     if self.length <= 1 then
-        local width = self.relativeTo:GetWidth() - 2
+        local width = self:GetParent():GetWidth() - 2
         for i = string.utf8len(name), 0, -1 do
             self:SetText(string.utf8sub(name, 1, i))
             if self:GetWidth() / width <= self.length then
@@ -63,26 +63,20 @@ end
 local function NameText_LoadConfig(self, config)
     self:SetNameFont(unpack(config.font))
 
-    local button = self:GetParent():GetParent()
     if config.anchorTo == "button" then
-        AW.LoadWidgetPosition(self, config.position)
-        self.relativeTo = button
+        self:SetParent(self.root)
     else
-        if config.anchorTo == "healthBar" then
-            AW.LoadWidgetPosition(self, config.position, button.indicators.healthBar)
-            self.relativeTo = button.indicators.healthBar
-        elseif config.anchorTo == "powerBar" then
-            AW.LoadWidgetPosition(self, config.position, button.indicators.powerBar)
-            self.relativeTo = button.indicators.powerBar
-        end
+        self:SetParent(self.root.indicators[config.anchorTo])
     end
+    AW.LoadWidgetPosition(self, config.position)
 
     self.length = config.length
     self.color = config.color
 end
 
 function UF.CreateNameText(parent)
-    local text = parent.overlay:CreateFontString(nil, "OVERLAY")
+    local text = parent:CreateFontString(nil, "OVERLAY")
+    text.root = parent
 
     text.SetName = NameText_SetName
     text.SetNameFont = NameText_SetFont

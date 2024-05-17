@@ -6,7 +6,7 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 -- status bar
 ---------------------------------------------------------------------
-local function Bar_SetBarColor(self, color)
+local function Bar_SetColor(self, color)
     self:SetStatusBarColor(color[1], color[2], color[3], color[4])
 end
 
@@ -49,12 +49,14 @@ local function Bar_SetSmoothing(self, smoothing)
         self.SetBarValue = self.SetValue
         self.SetBarMinMaxValues = self.SetMinMaxValues
     end
-    self:SetBarValue(0)
 end
 
 local function Bar_LoadConfig(self, config, skipColorUpdate)
+    self:SetFrameLevel(self.root:GetFrameLevel() + config.frameLevel)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
+
+    self:SetBarOrientation(config.orientation)
     self:SetBackgroundColor(config.bgColor)
     self:SetBorderColor(config.borderColor)
     self:SetSmoothing(config.smoothing)
@@ -63,21 +65,17 @@ local function Bar_LoadConfig(self, config, skipColorUpdate)
         self.color = config.color
         self.lossColor = config.lossColor
     else
-        self:SetBarColor(config.rgb)
+        self:SetColor(config.color)
         self:SetLossColor(config.lossColor)
     end
 end
 
-local function Bar_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
-    AW.ReBorder(self)
-end
-
 function UF.CreateStatusBar(parent)
     local bar = CreateFrame("StatusBar", nil, parent, "BackdropTemplate")
+    bar.root = parent
+
     Mixin(bar, SmoothStatusBarMixin) -- SetSmoothedValue
-    bar:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(bar)})
+    AW.SetDefaultBackdrop(bar)
 
     -- bar texture
     bar:SetStatusBarTexture(AW.GetTexture("StatusBar"))
@@ -93,17 +91,16 @@ function UF.CreateStatusBar(parent)
     bar:SetBackdropColor(AW.GetColorRGB("background"))
 
     -- functions
-    bar.SetBarColor = Bar_SetBarColor
-    bar.SetBarTexture = Bar_SetTexture
+    bar.SetColor = Bar_SetColor
+    bar.SetTexture = Bar_SetTexture
     bar.SetLossColor = Bar_SetLossColor
     bar.SetBorderColor = Bar_SetBorderColor
     bar.SetBackgroundColor = Bar_SetBackgroudColor
     bar.SetBarOrientation = Bar_SetOrientation
     bar.SetSmoothing = Bar_SetSmoothing
     bar.LoadConfig = Bar_LoadConfig
-    
+
     -- pixel perfect
-    bar.UpdatePixels = Bar_UpdatePixels
     AW.AddToPixelUpdater(bar)
 
     return bar
@@ -195,7 +192,7 @@ function UF.GetHealthColor(button, unit)
             
             -- loss
             if bar.lossColor.type == "custom_color" then
-                lossR, lossG, lossB = unpack(bar.color.rgb)
+                lossR, lossG, lossB = unpack(bar.lossColor.rgb)
             else
                 lossR, lossG, lossB = GetClassColor(bar.lossColor.type, button.states.class, button.states.inVehicle)
             end

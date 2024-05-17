@@ -24,6 +24,13 @@ function AW.StylizeFrame(frame, color, borderColor)
 end
 
 ---------------------------------------------------------------------
+-- backdrop
+---------------------------------------------------------------------
+function AW.SetDefaultBackdrop(frame)
+    frame:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(frame)})
+end
+
+---------------------------------------------------------------------
 -- normal frame
 ---------------------------------------------------------------------
 function AW.CreateFrame(parent, width, height)
