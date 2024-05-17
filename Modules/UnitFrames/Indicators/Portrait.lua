@@ -18,10 +18,9 @@ local function Portrait_Update_3D(self, unit)
     if UnitIsConnected(unit) and UnitIsVisible(unit) then
         model:SetCamDistanceScale(config.camDistanceScale)
         model:SetPortraitZoom(1)
-        model:SetPosition(0, config.xOffset, config.yOffset)
-        if model:GetFacing() ~= (config.rotation * mult) then
-            model:SetFacing(config.rotation * mult)
-        end
+        model:SetPosition(0, 0, 0)
+        model:SetViewTranslation(config.xOffset, config.yOffset)
+        model:SetRotation(config.rotation * mult)
         model:ClearModel()
         model:SetUnit(unit)
     else
@@ -107,7 +106,13 @@ function UF.CreatePortrait(parent)
 
     -- 3d
     portrait.model = CreateFrame("PlayerModel", nil, portrait)
-    AW.SetOnePixelInside(portrait.model, portrait)
+    
+    -- NOTE: LIKE A SHIT!
+    portrait.model:SetPoint("TOPLEFT", 1, -0.5)
+    portrait.model:SetPoint("BOTTOMRIGHT", -1.5, 2)
+    -- AW.SetOnePixelInside(portrait.model, portrait)
+    -- AW.SetPoint(portrait.model, "TOPLEFT", portrait, 1, -1)
+    -- AW.SetPoint(portrait.model, "BOTTOMRIGHT", portrait, -1, 2)
     
     -- 2d
     portrait.texture = portrait:CreateTexture(nil, "ARTWORK")
