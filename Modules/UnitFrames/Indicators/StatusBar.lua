@@ -37,7 +37,9 @@ end
 local function StatusBar_SetTexture(self, texture)
     texture = U.GetBarTexture(texture)
     self:SetStatusBarTexture(texture)
+    self:GetStatusBarTexture():SetDrawLayer("BORDER", -7)
     self.loss:SetTexture(texture)
+    self.loss:SetDrawLayer("BORDER", -7)
 end
 
 local function StatusBar_SetSmoothing(self, smoothing)
@@ -56,6 +58,7 @@ local function StatusBar_LoadConfig(self, config, skipColorUpdate)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
 
+    self:SetTexture(config.texture)
     self:SetBarOrientation(config.orientation)
     self:SetBackgroundColor(config.bgColor)
     self:SetBorderColor(config.borderColor)
