@@ -274,7 +274,7 @@ local function HealthBar_Update(self)
 end
 
 ---------------------------------------------------------------------
--- basic
+-- base
 ---------------------------------------------------------------------
 local function HealthBar_SetColor(self, color)
     self:SetStatusBarColor(color[1], color[2], color[3], color[4])

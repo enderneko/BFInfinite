@@ -59,14 +59,15 @@ local default_player_target_indicators = {
     },
     healthText = {
         enabled = true,
-        position = {"TOPRIGHT", "TOPRIGHT", -3, -3},
+        position = {"TOPRIGHT", "TOPRIGHT", -3, -2},
         anchorTo = "healthBar",
-        font = {BFI_DEFAULT, 12, "shadow"},
+        font = {BFI_DEFAULT, 12, "none", true},
         color = {type="custom_color", rgb=AW.GetColorTable("white")},
         format = {
             numeric = "current_absorbs_short",
             percent = "current_absorbs_sum_decimal",
             delimiter = " | ",
+            noPercentSign = false,
         },
     },
     portrait = {
@@ -85,7 +86,7 @@ local default_player_target_indicators = {
             rotation = 0, -- [0, 360]
             camDistanceScale = 1.5,
         },
-        frameLevel = 5,
+    },
     },
 }
 
@@ -96,7 +97,7 @@ local defaults = {
             borderColor = AW.GetColorTable("none"),
             position = {"BOTTOMLEFT", 300, 300},
             width = 225,
-            height = 49,
+            height = 48,
         },
         indicators = default_player_target_indicators,
     },
@@ -106,7 +107,7 @@ local defaults = {
             borderColor = AW.GetColorTable("none"),
             position = {"BOTTOMLEFT", 550, 300},
             width = 225,
-            height = 49,
+            height = 48,
         },
         indicators = default_player_target_indicators,
     }

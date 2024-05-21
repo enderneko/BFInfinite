@@ -81,7 +81,7 @@ local function Portrait_Update(self)
 end
 
 ---------------------------------------------------------------------
--- basic
+-- base
 ---------------------------------------------------------------------
 local function Portrait_LoadConfig(self, config)
     AW.SetSize(self, config.width, config.height)
