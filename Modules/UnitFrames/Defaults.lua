@@ -10,7 +10,7 @@ local default_player_target_indicators = {
         enabled = true,
         position = {"TOPLEFT", "TOPLEFT", 0, 0},
         frameLevel = 1,
-        orientation = "HORIZONTAL",
+        -- orientation = "HORIZONTAL",
         width = 225,
         height = 30,
         color = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf")},
@@ -19,6 +19,20 @@ local default_player_target_indicators = {
         borderColor = AW.GetColorTable("border"),
         texture = BFI_DEFAULT,
         smoothing = false,
+        healPrediction = {enabled=true, useCustomColor=true, color=AW.GetColorTable("heal_prediction")},
+        shield = {
+            enabled = true,
+            -- texture = AW.GetTexture("Shield"), -- no customization now
+            color = AW.GetColorTable("shield", 0.4),
+            reverseFill = true,
+        },
+        overshieldGlow = {enabled=true, color=AW.GetColorTable("shield")},
+        healAbsorb = {
+            enabled = true,
+            -- texture = AW.GetTexture("Shield"), -- no customization now
+            color = AW.GetColorTable("absorb"),
+        },
+        overabsorbGlow = {enabled=true, color=AW.GetColorTable("absorb")},
     },
     powerBar = {
         enabled = true,

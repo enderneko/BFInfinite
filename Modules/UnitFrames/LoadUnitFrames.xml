@@ -4,11 +4,13 @@
     <Script file="UnitButton.lua"/>
     <Include file="UnitButton.xml"/>
     <!-- indicators -->
-    <Script file="Indicators\StatusBar.lua"/>
+    <Script file="Indicators\HealthBar.lua"/>
+    <Script file="Indicators\PowerBar.lua"/>
+    <Script file="Indicators\CastBar.lua"/>
     <Script file="Indicators\NameText.lua"/>
     <Script file="Indicators\HealthText.lua"/>
     <Script file="Indicators\Portrait.lua"/>
-    <Script file="Indicators\Indicators.lua"/>
+    <Script file="Indicators\Common.lua"/>
     <!-- groups -->
     <Script file="Groups\Player.lua"/>
     <Script file="Groups\Target.lua"/>

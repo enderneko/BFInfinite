@@ -16,7 +16,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreatePlayer()
-    local name = "BFI_UnitFrame_Player"
+    local name = "BFIUF_Player"
     player = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
     player:SetAttribute("unit", "player")
 
@@ -33,8 +33,9 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdatePlayer(module)
+local function UpdatePlayer(module, which)
     if module and module ~= "UnitFrame" then return end
+    if which and which ~= "player" then return end
 
     local config = UF.config.player
 

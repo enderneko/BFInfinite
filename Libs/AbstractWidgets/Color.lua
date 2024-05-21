@@ -54,10 +54,10 @@ function AW.ColorGradient(perc, r1,g1,b1, r2,g2,b2, r3,g3,b3)
     elseif perc <= 0 then
         return r1, g1, b1
     end
- 
+
     local segment, relperc = math.modf(perc * 2)
     local rr1, rg1, rb1, rr2, rg2, rb2 = select((segment * 3) + 1, r1,g1,b1, r2,g2,b2, r3,g3,b3)
- 
+
     return rr1 + (rr2 - rr1) * relperc, rg1 + (rg2 - rg1) * relperc, rb1 + (rb2 - rb1) * relperc
 end
 
@@ -77,14 +77,14 @@ function AW.ConvertRGBToHSB(r, g, b)
     local colorMin = min(min(r, g), b)
     local delta = colorMax - colorMin
     local H, S, B
-    
+
     -- WoW's LUA doesn't handle floating point numbers very well (Somehow 1.000000 != 1.000000   WTF?)
     -- So we do this weird conversion of, Number to String back to Number, to make the IF..THEN work correctly!
     colorMax = tonumber(format("%f", colorMax))
     r = tonumber(format("%f", r))
     g = tonumber(format("%f", g))
     b = tonumber(format("%f", b))
-    
+
     if (delta > 0) then
         if (colorMax == r) then
             H = 60 * (((g - b) / delta) % 6)
@@ -93,24 +93,24 @@ function AW.ConvertRGBToHSB(r, g, b)
         elseif (colorMax == b) then
             H = 60 * (((r - g) / delta) + 4)
         end
-        
+
         if (colorMax > 0) then
             S = delta / colorMax
         else
             S = 0
         end
-        
+
         B = colorMax
     else
         H = 0
         S = 0
         B = colorMax
     end
-    
+
     if (H < 0) then
         H = H + 360
     end
-    
+
     return H, S, B
 end
 
@@ -160,11 +160,11 @@ function AW.ConvertHSBToRGB(h, s, b)
         G = 0
         B = 0
     end
-    
+
     R = R + M
     G = G + M
     B =  B + M
-    
+
     return R, G, B
 end
 
@@ -185,11 +185,8 @@ local colors = {
     ["header"] = {["hex"]="FF202020", ["t"]={0.127, 0.127, 0.127, 1}}, -- header background
     ["widget"] = {["hex"]="FF262626", ["t"]={0.15, 0.15, 0.15, 1}}, -- widget background
     ["disabled"] = {["hex"]="FF666666", ["t"]={0.4, 0.4, 0.4, 1}},
-    ["uf"] = {["t"]={0.125, 0.125, 0.125}}, -- unitframe foreground
-    ["uf_loss"] = {["t"]={0.667, 0, 0}}, -- unitframe background
-    ["uf_power"] = {["t"]={0.7, 0.7, 0.7}}, -- unitframe background
     ["none"] = {["hex"]="00000000", ["t"]={0, 0, 0, 0}},
-    
+
     -- common
     ["red"] = {["hex"]="FFFF0000", ["t"]={1, 0, 0, 1}},
     ["yellow"] = {["hex"]="FFFFFF00", ["t"]={1, 1, 0, 1}},
@@ -199,7 +196,7 @@ local colors = {
     ["purple"] = {["hex"]="FFFF00FF", ["t"]={1, 0, 1, 1}},
     ["white"] = {["hex"]="FFFFFFFF", ["t"]={1, 1, 1, 1}},
     ["black"] = {["hex"]="FF000000", ["t"]={0, 0, 0, 1}},
-    
+
     -- others
     ["gray"] = {["hex"]="FFB2B2B2", ["t"]={0.7, 0.7, 0.7, 1}},
     ["sand"] = {["hex"]="FFECCC68", ["t"]={0.93, 0.8, 0.41, 1}},
@@ -221,7 +218,7 @@ local colors = {
     ["vividblue"] = {["hex"]="FF1E90FF", ["t"]={0.12, 0.56, 1, 1}},
     ["softblue"] = {["hex"]="FF5352ED", ["t"]={0.33, 0.32, 0.93, 1}},
     ["brightblue"] = {["hex"]="FF3742FA", ["t"]={0.22, 0.26, 0.98, 1}},
-    
+
     -- class (data from RAID_CLASS_COLORS)
     ["DEATHKNIGHT"] = {["hex"]="ffc41e3a", ["t"]={0.7686275243759155, 0.1176470667123795, 0.2274509966373444}},
     ["DEMONHUNTER"] = {["hex"]="ffa330c9", ["t"]={0.6392157077789307, 0.1882353127002716, 0.7882353663444519}},
@@ -236,7 +233,7 @@ local colors = {
     ["SHAMAN"] = {["hex"]="ff0070dd", ["t"]={0, 0.4392157196998596, 0.8666667342185974}},
     ["WARLOCK"] = {["hex"]="ff8788ee", ["t"]={0.529411792755127, 0.5333333611488342, 0.9333333969116211}},
     ["WARRIOR"] = {["hex"]="ffc69b6d", ["t"]={0.7764706611633301, 0.6078431606292725, 0.4274510145187378}},
-    
+
     -- reaction
     ["FRIENDLY"] = {["hex"]="ff4ab04d", ["t"]={0.29, 0.69, 0.3}},
     ["NEUTRAL"] = {["hex"]="ffd9c45c", ["t"]={0.85, 0.77, 0.36}},
@@ -298,7 +295,7 @@ function AW.GetClassColor(class, alpha, saturation)
         local r, g, b = RAID_CLASS_COLORS[class]:GetRGB()
         return r*saturation, g*saturation, b*saturation, alpha
     end
-    
+
     return AW.GetColorRGB("uf_fg")
 end
 
@@ -323,7 +320,7 @@ function AW.GetPowerColor(power, unit, alpha, saturation)
     if unit then
         local r, g, b = select(3, UnitPowerType(unit))
         if r then
-            return r, g, b            
+            return r, g, b
         end
     end
 
@@ -351,6 +348,12 @@ end
 function AW.WrapTextInColor(text, name)
     assert(colors[name], "no such color:", name)
     return WrapTextInColorCode(text, colors[name]["hex"])
+end
+
+function AW.AddColors(t)
+    for k, v in pairs(t) do
+        colors[k] = v
+    end
 end
 
 ---------------------------------------------------------------------

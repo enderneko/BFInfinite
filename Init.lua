@@ -63,3 +63,23 @@ end
 
 AddLib("LAB", "LibActionButton-1.0-BFI")
 AddLib("LCG", "LibCustomGlow-1.0")
+
+---------------------------------------------------------------------
+-- colors
+---------------------------------------------------------------------
+local AW = BFI.AW
+
+local colors = {
+    -- BFI
+    ["uf"] = {["t"]={0.125, 0.125, 0.125}}, -- unitframe foreground
+    ["uf_loss"] = {["t"]={0.667, 0, 0}}, -- unitframe background
+    ["uf_power"] = {["t"]={0.7, 0.7, 0.7}}, -- unitframe background
+    ["cast_normal"] = {["t"]={0.4, 0.4, 0.4, 1}},
+    ["cast_failed"] = {["t"]={0.4, 0.4, 0.4, 1}},
+    ["cast_succeeded"] = {["t"]={0.4, 0.4, 0.4, 1}},
+    ["shield"] = {["t"]={1, 1, 1, 1}},
+    ["absorb"] = {["t"]={1, 0.1, 0.1, 1}},
+    ["heal_prediction"] = {["t"]={1, 1, 1, 0.4}},
+}
+
+AW.AddColors(colors)

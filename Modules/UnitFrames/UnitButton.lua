@@ -43,6 +43,7 @@ local UnitPhaseReason = UnitPhaseReason
 local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
 local IsInRaid = IsInRaid
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
+local strfind = string.find
 
 --! for AI followers, UnitClassBase is buggy
 local UnitClassBase = function(unit)
@@ -53,7 +54,7 @@ end
 -- name
 ---------------------------------------------------------------------
 local function UnitButton_UpdateName(self)
-    local unit = self.states.unit
+    local unit = self.unit
     if not unit then return end
 
     self.states.name = UnitName(unit)
@@ -66,35 +67,11 @@ local function UnitButton_UpdateName(self)
 end
 
 ---------------------------------------------------------------------
--- color
+-- health states
 ---------------------------------------------------------------------
-local function UnitButton_UpdateHealthColor(self)
-    local unit = self.states.unit
+local function UnitButton_UpdateHealthStates(self)
+    local unit = self.displayedUnit
     if not unit then return end
-
-    -- healthBar
-    local r, g, b, a, lossR, lossG, lossB, lossA = UF.GetHealthColor(self, unit)
-    self.indicators.healthBar:SetStatusBarColor(r, g, b, a)
-    self.indicators.healthBar.loss:SetVertexColor(lossR, lossG, lossB, lossA)
-
-    -- healthText
-    self.indicators.healthText:SetColor(unit, self.states.class)
-end
-
-local function UnitButton_UpdatePowerColor(self)
-    local unit = self.states.displayedUnit
-    if not unit then return end
-
-    local r, g, b, a, lossR, lossG, lossB, lossA = UF.GetPowerColor(self, unit)
-    self.indicators.powerBar:SetStatusBarColor(r, g, b, a)
-    self.indicators.powerBar.loss:SetVertexColor(lossR, lossG, lossB, lossA)
-end
-
----------------------------------------------------------------------
--- health
----------------------------------------------------------------------
-local function UpdateUnitHealthState(self)
-    local unit = self.states.displayedUnit
 
     local health = UnitHealth(unit)
     local healthMax = UnitHealthMax(unit)
@@ -116,100 +93,43 @@ local function UpdateUnitHealthState(self)
     self.states.isDeadOrGhost = UnitIsDeadOrGhost(unit)
     
     if self.states.wasDead ~= self.states.isDead or self.states.wasDeadOrGhost ~= self.states.isDeadOrGhost then
-        -- UnitButton_UpdateHealthColor(self)
     end
 end
 
-local function UnitButton_UpdateHealthMax(self)
-    local unit = self.states.displayedUnit
-    if not unit then return end
-
-    UpdateUnitHealthState(self)
-
-    self.indicators.healthBar:SetBarMinMaxValues(0, self.states.healthMax)
-end
-
-local function UnitButton_UpdateHealth(self)
-    local unit = self.states.displayedUnit
-    if not unit then return end
-
-    UpdateUnitHealthState(self)
-
-    self.indicators.healthBar:SetBarValue(self.states.health)
-    self.indicators.healthText:SetHealth(self.states.health, self.states.healthMax, self.states.totalAbsorbs)
-end
-
 ---------------------------------------------------------------------
--- power
+-- power states
 ---------------------------------------------------------------------
-local function UnitButton_UpdatePowerMax(self)
-    local unit = self.states.displayedUnit
-    if not unit then return end
-
-    self.states.powerMax = UnitPowerMax(unit)
-    if self.states.powerMax < 0 then self.states.powerMax = 1 end
-    
-    self.indicators.powerBar:SetBarMinMaxValues(0, self.states.powerMax)
-end
-
-local function UnitButton_UpdatePower(self)
-    local unit = self.states.displayedUnit
+local function UnitButton_UpdatePowerStates(self)
+    local unit = self.displayedUnit
     if not unit then return end
 
     self.states.power = UnitPower(unit)
-
-    self.indicators.powerBar:SetBarValue(self.states.power)
+    self.states.powerMax = UnitPowerMax(unit)
+    self.states.powerType, self.states.powerTypeToken = UnitPowerType(unit)
 end
 
 ---------------------------------------------------------------------
--- shield absorb
+-- cast
 ---------------------------------------------------------------------
-local function UnitButton_UpdateShieldAbsorbs(self)
-    local unit = self.states.displayedUnit
+local function UnitButton_UpdateCast(self, event)
+    if not self.indicators.castBar then return end
+
+    local unit = self.displayedUnit
     if not unit then return end
-    
-    UpdateUnitHealthState(self)
 
-    -- health text
-    self.indicators.healthText:SetHealth(self.states.health, self.states.healthMax, self.states.totalAbsorbs)
-
---     if self.states.totalAbsorbs > 0 then
---         local shieldPercent = self.states.totalAbsorbs / self.states.healthMax
-
---         if enabledIndicators["shieldBar"] then
---             if indicatorBooleans["shieldBar"] then
---                 -- onlyShowOvershields
---                 local overshieldPercent = (self.states.totalAbsorbs + self.states.health - self.states.healthMax) / self.states.healthMax
---                 if overshieldPercent > 0 then
---                     self.indicators.shieldBar:Show()
---                     self.indicators.shieldBar:SetValue(overshieldPercent)
---                 else
---                     self.indicators.shieldBar:Hide()
---                 end
---             else
---                 self.indicators.shieldBar:Show()
---                 self.indicators.shieldBar:SetValue(shieldPercent)
---             end
---         else
---             self.indicators.shieldBar:Hide()
---         end
-        
---         self.widgets.shieldBar:SetValue(shieldPercent)
---     else
---         self.indicators.shieldBar:Hide()
---         self.widgets.shieldBar:Hide()
---         self.widgets.overShieldGlow:Hide()
---     end
+    self.indicators.castBar:Update(unit, event)
 end
 
 ---------------------------------------------------------------------
 -- portrait
 ---------------------------------------------------------------------
 local function UnitButton_UpdatePortrait(self)
-    local unit = self.states.displayedUnit
+    if not self.indicators.portrait then return end
+
+    local unit = self.displayedUnit
     if not unit then return end
 
-    self.indicators.portrait:Update(unit)
+    self.indicators.portrait:UpdatePortrait(unit)
 end
 
 ---------------------------------------------------------------------
@@ -218,37 +138,41 @@ end
 local function UnitButton_UpdateAll(self)
     if not self:IsVisible() then return end
 
+    -- update all indicators
+    UF.UpdateIndicators(self)
+
+    -- states
+    UnitButton_UpdateHealthStates(self)
+    UnitButton_UpdatePowerStates(self)
+
+    -- TODO: REMOVE
     UnitButton_UpdateName(self)
 
-    -- color
-    UnitButton_UpdateHealthColor(self)
-    UnitButton_UpdatePowerColor(self)
-    -- health
-    UnitButton_UpdateHealthMax(self)
-    UnitButton_UpdateHealth(self)
-    -- power
-    UnitButton_UpdatePowerMax(self)
-    UnitButton_UpdatePower(self)
     -- portrait
     UnitButton_UpdatePortrait(self)
+    -- cast
+    UnitButton_UpdateCast(self)
 end
 
 ---------------------------------------------------------------------
 -- events
 ---------------------------------------------------------------------
+-- TODO: REFACTOR
 local function UnitButton_RegisterEvents(self)
     -- self:RegisterEvent("GROUP_ROSTER_UPDATE")
     
+    -- health states
     self:RegisterEvent("UNIT_HEALTH")
     self:RegisterEvent("UNIT_MAXHEALTH")
+    self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
     
-    self:RegisterEvent("UNIT_POWER_FREQUENT")
+    -- powers states
+    self:RegisterEvent("UNIT_POWER_UPDATE")
     self:RegisterEvent("UNIT_MAXPOWER")
     self:RegisterEvent("UNIT_DISPLAYPOWER")
     
     -- self:RegisterEvent("UNIT_AURA")
     
-    self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
     -- self:RegisterEvent("UNIT_HEAL_PREDICTION")
     -- self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
     
@@ -263,7 +187,7 @@ local function UnitButton_RegisterEvents(self)
     
     -- self:RegisterEvent("UNIT_CONNECTION") -- offline
     -- self:RegisterEvent("PLAYER_FLAGS_CHANGED") -- afk
-    self:RegisterEvent("UNIT_NAME_UPDATE") -- unknown target
+    -- self:RegisterEvent("UNIT_NAME_UPDATE") -- unknown target
     -- self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
     -- -- self:RegisterEvent("PARTY_LEADER_CHANGED") -- GROUP_ROSTER_UPDATE
@@ -281,7 +205,7 @@ local function UnitButton_RegisterEvents(self)
     
     self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
     self:RegisterEvent("UNIT_MODEL_CHANGED")
-    
+
     local success, result = pcall(UnitButton_UpdateAll, self)
     if not success then
         BFI.Debug("|cffabababUpdateAll FAILED|r", self:GetName(), result)
@@ -293,57 +217,36 @@ local function UnitButton_UnregisterEvents(self)
 end
 
 local function UnitButton_OnEvent(self, event, unit, arg)
-    if unit and (self.states.displayedUnit == unit or self.states.unit == unit) then
+    if unit and (self.displayedUnit == unit or self.unit == unit) then
         if  event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "UNIT_CONNECTION" then
             self._updateRequired = 1
             -- self._powerBarUpdateRequired = 1
-
-        elseif event == "UNIT_NAME_UPDATE" then
-            -- UnitButton_UpdateName(self)
-            -- UnitButton_UpdateNameColor(self)
-            UnitButton_UpdateHealthColor(self)
-
-        elseif event == "UNIT_MAXHEALTH" then
-            UnitButton_UpdateHealthMax(self)
-            UnitButton_UpdateHealth(self)
-            -- UnitButton_UpdateHealPrediction(self)
-            UnitButton_UpdateShieldAbsorbs(self)
-            -- UnitButton_UpdateHealAbsorbs(self)
-  
-        elseif event == "UNIT_HEALTH" then
-            UnitButton_UpdateHealth(self)
-            -- UnitButton_UpdateHealPrediction(self)
-            UnitButton_UpdateShieldAbsorbs(self)
-            -- UnitButton_UpdateHealAbsorbs(self)
-            -- UnitButton_UpdateStatusText(self)
-
-        elseif event == "UNIT_HEAL_PREDICTION" then
-            UnitButton_UpdateHealPrediction(self)
-
-        elseif event == "UNIT_ABSORB_AMOUNT_CHANGED" then
-            UnitButton_UpdateShieldAbsorbs(self)
-
-        elseif event == "UNIT_HEAL_ABSORB_AMOUNT_CHANGED" then
-            UnitButton_UpdateHealAbsorbs(self)
-
-        elseif event == "UNIT_MAXPOWER" then
-            UnitButton_UpdatePowerMax(self)
-            UnitButton_UpdatePower(self)
-
-        elseif event == "UNIT_POWER_FREQUENT" then
-            UnitButton_UpdatePower(self)
-
-        elseif event == "UNIT_DISPLAYPOWER" then
-            UnitButton_UpdatePowerMax(self)
-            UnitButton_UpdatePower(self)
-            UnitButton_UpdatePowerColor(self)
-
+            
         elseif event == "UNIT_AURA" then
             UnitButton_UpdateAuras(self, arg)
+            
+        elseif event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" or event == "UNIT_ABSORB_AMOUNT_CHANGED" then
+            UnitButton_UpdateHealthStates(self)
+            
+        elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER" or event == "UNIT_DISPLAYPOWER" then
+            UnitButton_UpdatePowerStates(self)
+            
+        elseif event == "UNIT_HEAL_PREDICTION" then
+            UnitButton_UpdateHealPrediction(self)
+            
+        elseif event == "UNIT_HEAL_ABSORB_AMOUNT_CHANGED" then
+            UnitButton_UpdateHealAbsorbs(self)
+            
+        elseif event == "UNIT_MAXHEALTH" then
+            UnitButton_UpdateHealthStates(self)
+            -- UnitButton_UpdateHealPrediction(self)
+            -- UnitButton_UpdateHealAbsorbs(self)
 
         -- elseif event == "UNIT_IN_RANGE_UPDATE" then
         --     UnitButton_UpdateInRange(self, arg)
 
+        elseif event == "UNIT_NAME_UPDATE" then
+            
         elseif event == "UNIT_TARGET" then
             UnitButton_UpdateTargetRaidIcon(self)
 
@@ -353,7 +256,6 @@ local function UnitButton_OnEvent(self, event, unit, arg)
 
         elseif event == "UNIT_FACTION" then -- mind control
             UnitButton_UpdateNameColor(self)
-            UnitButton_UpdateHealthColor(self) 
 
         elseif event == "UNIT_THREAT_SITUATION_UPDATE" then
             UnitButton_UpdateThreat(self)
@@ -384,7 +286,7 @@ local function UnitButton_OnEvent(self, event, unit, arg)
             UnitButton_UpdateLeader(self, event)
 
         elseif event == "PLAYER_TARGET_CHANGED" then
-            if self._updateOnPlayerTargetChanged and UnitExists(self.states.unit) then
+            if self._updateOnPlayerTargetChanged and UnitExists(self.unit) then
                 UnitButton_UpdateAll(self)
             end
             -- UnitButton_UpdateTarget(self)
@@ -427,8 +329,8 @@ local function UnitButton_OnTick(self)
     if self.__tickCount >= 2 then -- every 0.5 second
         self.__tickCount = 0
         
-        if self.states.unit and self.states.displayedUnit then
-            local displayedGuid = UnitGUID(self.states.displayedUnit)
+        if self.unit and self.displayedUnit then
+            local displayedGuid = UnitGUID(self.displayedUnit)
             if displayedGuid ~= self.__displayedGuid then
                 -- NOTE: displayed unit entity changed
                 U.RemoveElementsExceptKeys(self.states, "unit", "displayedUnit")
@@ -436,19 +338,19 @@ local function UnitButton_OnTick(self)
                 self._updateRequired = 1
             end
 
-            local guid = UnitGUID(self.states.unit)
+            local guid = UnitGUID(self.unit)
             if guid and guid ~= self.__unitGuid then
                 -- NOTE: unit entity changed
                 self.__unitGuid = guid
-                BFI.vars.guids[guid] = self.states.unit
+                BFI.vars.guids[guid] = self.unit
 
                 -- NOTE: only save players' names
-                if UnitIsPlayer(self.states.unit) then
+                if UnitIsPlayer(self.unit) then
                     -- update Cell.vars.names
-                    local name = GetUnitName(self.states.unit, true)
+                    local name = GetUnitName(self.unit, true)
                     if (name and self.__nameRetries and self.__nameRetries >= 4) or (name and name ~= UNKNOWN and name ~= UNKNOWNOBJECT) then
                         self.__unitName = name
-                        BFI.vars.names[name] = self.states.unit
+                        BFI.vars.names[name] = self.unit
                         self.__nameRetries = nil
                     else
                         -- NOTE: update on next tick
@@ -512,7 +414,7 @@ end
 ---------------------------------------------------------------------
 local function UnitButton_OnAttributeChanged(self, name, value)
     if name == "unit" then
-        if not value or value ~= self.states.unit then
+        if not value or value ~= self.unit then
             -- NOTE: when unitId for this button changes
             if self.__unitGuid then -- self.__unitGuid is deleted when hide
                 BFI.vars.guids[self.__unitGuid] = nil
@@ -526,13 +428,13 @@ local function UnitButton_OnAttributeChanged(self, name, value)
         end
 
         -- private auras
-        -- if self.states.unit ~= value then
+        -- if self.unit ~= value then
         --     self.indicators.privateAuras:UpdatePrivateAuraAnchor(value)
         -- end
 
         if type(value) == "string" then
-            self.states.unit = value
-            self.states.displayedUnit = value
+            self.unit = value
+            self.displayedUnit = value
 
             -- for omnicd
             -- if string.match(value, "raid%d") then

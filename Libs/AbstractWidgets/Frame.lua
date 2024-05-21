@@ -30,6 +30,14 @@ function AW.SetDefaultBackdrop(frame)
     frame:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(frame)})
 end
 
+function AW.SetDefaultBackdrop_NoBackground(frame)
+    frame:SetBackdrop({edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(frame)})
+end
+
+function AW.SetDefaultBackdrop_NoBorder(frame)
+    frame:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8"})
+end
+
 ---------------------------------------------------------------------
 -- normal frame
 ---------------------------------------------------------------------
@@ -65,7 +73,7 @@ function AW.CreateHeaderedFrame(parent, name, title, width, height, frameStrata,
     AW.SetSize(f, width, height)
     f:SetPoint("CENTER")
     AW.StylizeFrame(f)
-    
+
     -- header
     local header = CreateFrame("Frame", nil, f, "BackdropTemplate")
     f.header = header
@@ -129,7 +137,7 @@ function AW.CreateHeaderedFrame(parent, name, title, width, height, frameStrata,
     -- header.tex = AW.CreateGradientTexture(header, "VERTICAL", {r, g, b, 0.1})
     -- AW.SetPoint(header.tex, "TOPLEFT", 1, -1)
     -- AW.SetPoint(header.tex, "BOTTOMRIGHT", -1, 1)
-    
+
     function f:UpdatePixels()
         f:SetClampRectInsets(0, 0, AW.ConvertPixelsForRegion(20, f), 0)
         AW.ReSize(f)
@@ -198,10 +206,10 @@ function AW.SetFrameStaticGlow(parent, size, color, alpha)
         -- parent.staticGlow:SetAllPoints()
         parent.staticGlow:SetScript("OnHide", function() parent.staticGlow:Hide() end)
     end
-    
+
     size = size or 5
     color = color or "accent"
-    
+
     parent.staticGlow:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow", true), edgeSize=AW.ConvertPixelsForRegion(size, parent)})
     AW.SetOutside(parent.staticGlow, parent, size, size)
     parent.staticGlow:SetBackdropBorderColor(AW.GetColorRGB(color, alpha))
@@ -226,7 +234,7 @@ function AW.CreateTitledPane(parent, title, width, height, color)
     AW.SetHeight(line, 1)
     AW.SetPoint(line, "TOPLEFT", pane, 0, -17)
     AW.SetPoint(line, "TOPRIGHT", pane, 0, -17)
-    
+
     local shadow = pane:CreateTexture()
     AW.SetHeight(shadow, 1)
     shadow:SetColorTexture(0, 0, 0, 1)
@@ -275,14 +283,14 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     AW.SetSize(content, width, 5)
     scrollFrame:SetScrollChild(content)
     -- AW.SetPoint(content, "RIGHT") -- update width with scrollFrame
-    
+
     -- scrollBar
     local scrollBar = AW.CreateBorderedFrame(scrollParent, 5, nil, color, borderColor)
     scrollParent.scrollBar = scrollBar
     AW.SetPoint(scrollBar, "TOPRIGHT")
     AW.SetPoint(scrollBar, "BOTTOMRIGHT")
     scrollBar:Hide()
-    
+
     -- scrollBar thumb
     local scrollThumb = AW.CreateBorderedFrame(scrollBar, 5, nil, AW.GetColorTable("accent", 0.8))
     scrollParent.scrollThumb = scrollThumb
@@ -290,17 +298,17 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     scrollThumb:EnableMouse(true)
     scrollThumb:SetMovable(true)
     scrollThumb:SetHitRectInsets(-5, -5, 0, 0) -- Frame:SetHitRectInsets(left, right, top, bottom)
-    
+
     -- reset content height (reset scroll range)
     function scrollParent:ResetHeight()
         AW.SetHeight(content, 5)
     end
-    
+
     -- reset scroll to top
     function scrollParent:ResetScroll()
         scrollFrame:SetVerticalScroll(0)
     end
-    
+
     -- scrollFrame:GetVerticalScrollRange may return 0
     function scrollFrame:GetVerticalScrollRange()
         local range = content:GetHeight() - scrollFrame:GetHeight()
@@ -347,7 +355,7 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
         scrollParent:ResetScroll()
         scrollParent:ClearContent()
     end
-    
+
     -- on width changed (scrollBar show/hide)
     scrollFrame:SetScript("OnSizeChanged", function()
         -- update content width
@@ -421,7 +429,7 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
     function scrollParent:SetScrollStep(s)
         step = s
     end
-    
+
     -- enable mouse wheel scroll
     scrollParent:EnableMouseWheel(true)
     scrollParent:SetScript("OnMouseWheel", function(self, delta)
@@ -444,13 +452,13 @@ function AW.CreateScrollFrame(parent, width, height, color, borderColor)
 
         AW.ReSize(content) -- SetListHeight
         content:SetWidth(scrollFrame:GetWidth())
-        
+
         -- reset scroll
         scrollParent:ResetScroll()
     end
 
     AW.AddToPixelUpdater(scrollParent)
-    
+
     return scrollParent
 end
 
@@ -475,7 +483,7 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
     AW.SetPoint(scrollBar, "TOPRIGHT", 0, -verticalMargins)
     AW.SetPoint(scrollBar, "BOTTOMRIGHT", 0, verticalMargins)
     scrollBar:Hide()
-    
+
     -- scrollBar thumb
     local scrollThumb = AW.CreateBorderedFrame(scrollBar, 5, nil, AW.GetColorTable("accent", 0.8))
     scrollList.scrollThumb = scrollThumb
@@ -507,7 +515,7 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
         end
     end
     UpdateSlots()
-    
+
     -- NOTE: for dropdowns only
     function scrollList:SetSlotNum(newSlotNum)
         slotNum = newSlotNum
@@ -562,7 +570,7 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
         if startIndex <= 0 then startIndex = 1 end
         local total = scrollList.widgetNum
         local from, to = startIndex, startIndex + slotNum - 1
-        
+
         -- not enough widgets (fill from the first)
         if total <= slotNum then
             from = 1
@@ -636,7 +644,7 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
         end
     end)
     -----------------------------------------------------------------
-    
+
     -- dragging and scrolling ---------------------------------------
     scrollThumb:SetScript("OnMouseDown", function(self, button)
         if button ~= "LeftButton" then return end
@@ -644,7 +652,7 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
         local scale = scrollThumb:GetEffectiveScale()
         local offsetY = select(5, scrollThumb:GetPoint(1))
         local mouseY = select(2, GetCursorPosition()) / scale -- https://warcraft.wiki.gg/wiki/API_GetCursorPosition
-        
+
         self:SetScript("OnUpdate", function(self)
             local newMouseY = select(2, GetCursorPosition()) / scale
             local mouseOffset = newMouseY - mouseY
@@ -661,7 +669,7 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
                 if scrollList:GetScroll() ~= scrollList:GetScrollRange() + 1 then
                     scrollList:SetScroll(scrollList:GetScrollRange() + 1)
                 end
-            
+
             -- scroll ---------------------------
             else
                 local threshold = (scrollBar:GetHeight() - scrollThumb:GetHeight()) / scrollList:GetScrollRange()
@@ -696,7 +704,7 @@ function AW.CreateScrollList(parent, width, verticalMargins, horizontalMargins, 
     end
 
     AW.AddToPixelUpdater(scrollList)
-    
+
     return scrollList
 end
 
@@ -748,15 +756,15 @@ end
 ---------------------------------------------------------------------
 local function CreateCombatMask(parent, tlX, tlY, brX, brY)
     parent.combatMask = AW.CreateBorderedFrame(parent, nil, nil, AW.GetColorTable("darkred", 0.8), "none")
-    
+
     parent.combatMask:SetFrameLevel(parent:GetFrameLevel()+100)
     parent.combatMask:EnableMouse(true)
     parent.combatMask:SetScript("OnMouseWheel", function() end)
-    
+
     parent.combatMask.text = AW.CreateFontString(parent.combatMask, "", "firebrick")
     AW.SetPoint(parent.combatMask.text, "LEFT", 5, 0)
     AW.SetPoint(parent.combatMask.text, "RIGHT", -5, 0)
-    
+
     -- HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT
     -- ERR_AFFECTING_COMBAT
     -- ERR_NOT_IN_COMBAT
@@ -777,11 +785,11 @@ end
 local protectedFrames = {}
 function AW.ApplyCombatProtectionToFrame(f, tlX, tlY, brX, brY)
     tinsert(protectedFrames, f)
-    
+
     if not f.combatMask then
         CreateCombatMask(f, tlX, tlY, brX, brY)
     end
-    
+
     if InCombatLockdown() then
         f.combatMask:Show()
     end

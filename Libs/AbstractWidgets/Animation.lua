@@ -110,11 +110,27 @@ function AW.CreateFadeInOutAnimationGroup(region, duration)
     region.fadeOut = out_ag
     
     function region:FadeIn()
-        region.fadeIn:Play()
+        if not in_ag:IsPlaying() then
+            in_ag:Play()
+        end
     end
-    
+
     function region:FadeOut()
-        region.fadeOut:Play()
+        if not out_ag:IsPlaying() then
+            out_ag:Play()
+        end
+    end
+
+    function region:ShowNow()
+        in_ag:Stop()
+        out_ag:Stop()
+        region:Show()
+    end
+
+    function region:HideNow()
+        in_ag:Stop()
+        out_ag:Stop()
+        region:Hide()
     end
 
     -- in -----------------------------------------------------------

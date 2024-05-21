@@ -118,7 +118,7 @@ end
 function AW.SetPoint(region, ...)
     if not region._points then region._points = {} end
     local point, relativeTo, relativePoint, offsetX, offsetY
-    
+
     local n = select("#", ...)
     if n == 1 then
         point = ...
@@ -251,7 +251,9 @@ local function DefaultUpdatePixels(self)
 end
 
 local regions = {}
-function AW.AddToPixelUpdater(r)
+--- @param fn function
+function AW.AddToPixelUpdater(r, fn)
+    r.UpdatePixels = fn
     if not r.UpdatePixels then
         r.UpdatePixels = DefaultUpdatePixels
     end
@@ -262,14 +264,14 @@ function AW.RemoveFromPixelUpdater(r)
     for i, _r in ipairs(r) do
         if r == _r then
             tremove(regions, i)
-            break    
+            break
         end
     end
 end
 
 function AW.UpdatePixels()
     for _, r in ipairs(regions) do
-        r:UpdatePixels() 
+        r:UpdatePixels()
     end
 end
 
