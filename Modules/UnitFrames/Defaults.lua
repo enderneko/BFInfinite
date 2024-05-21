@@ -38,7 +38,7 @@ local default_player_target_indicators = {
         enabled = true,
         position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
         frameLevel = 1,
-        orientation = "HORIZONTAL",
+        -- orientation = "HORIZONTAL",
         width = 225,
         height = 17,
         color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
@@ -47,6 +47,7 @@ local default_player_target_indicators = {
         borderColor = AW.GetColorTable("border"),
         texture = BFI_DEFAULT,
         smoothing = false,
+        frequent = true,
     },
     nameText = {
         enabled = true,
