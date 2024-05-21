@@ -51,9 +51,9 @@ local UnitClassBase = function(unit)
 end
 
 ---------------------------------------------------------------------
--- name
+-- states
 ---------------------------------------------------------------------
-local function UnitButton_UpdateName(self)
+local function UnitButton_UpdateStates(self)
     local unit = self.unit
     if not unit then return end
 
@@ -62,8 +62,7 @@ local function UnitButton_UpdateName(self)
     self.states.class = UnitClassBase(unit)
     self.states.guid = UnitGUID(unit)
     self.states.isPlayer = UnitIsPlayer(unit)
-
-    self.indicators.nameText:SetName(unit, self.states.name, self.states.class)
+    self.states.inVehicle = UnitHasVehicleUI(unit)
 end
 
 ---------------------------------------------------------------------
@@ -130,13 +129,11 @@ local function UnitButton_UpdateAll(self)
     UF.UpdateIndicators(self)
 
     -- states
+    UnitButton_UpdateStates(self)
     UnitButton_UpdateHealthStates(self)
     UnitButton_UpdatePowerStates(self)
 
     -- TODO: REMOVE
-    UnitButton_UpdateName(self)
-
-    -- cast
     UnitButton_UpdateCast(self)
 end
 
@@ -230,8 +227,6 @@ local function UnitButton_OnEvent(self, event, unit, arg)
 
         -- elseif event == "UNIT_IN_RANGE_UPDATE" then
         --     UnitButton_UpdateInRange(self, arg)
-
-        elseif event == "UNIT_NAME_UPDATE" then
 
         elseif event == "UNIT_TARGET" then
             UnitButton_UpdateTargetRaidIcon(self)

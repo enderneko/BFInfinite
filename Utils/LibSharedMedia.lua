@@ -22,3 +22,26 @@ function U.GetFont(name)
     end
     return DEFAULT_FONT
 end
+
+function U.SetFont(fs, font, size, outline, shadow)
+    font = U.GetFont(font)
+
+    local flags
+    if outline == "none" then
+        flags = ""
+    elseif outline == "outline" then
+        flags = "OUTLINE"
+    else
+        flags = "OUTLINE,MONOCHROME"
+    end
+
+    fs:SetFont(font, size, flags)
+
+    if shadow then
+        fs:SetShadowOffset(1, -1)
+        fs:SetShadowColor(0, 0, 0, 1)
+    else
+        fs:SetShadowOffset(0, 0)
+        fs:SetShadowColor(0, 0, 0, 0)
+    end
+end

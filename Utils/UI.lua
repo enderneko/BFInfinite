@@ -3,7 +3,7 @@ local U = BFI.utils
 
 function U.Hide(region)
     if not region then return end
-    
+
     region:SetParent(BFI.hiddenParent)
 
     region.Show = region.Hide

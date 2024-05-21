@@ -51,10 +51,10 @@ local default_player_target_indicators = {
     },
     nameText = {
         enabled = true,
-        position = {"TOPLEFT", "TOPLEFT", 3, -3},
+        position = {"TOPLEFT", "TOPLEFT", 3, -2},
         length = 0.5,
         anchorTo = "healthBar",
-        font = {BFI_DEFAULT, 12, "shadow"},
+        font = {BFI_DEFAULT, 12, "none", true},
         color = {type="class_color", rgb=AW.GetColorTable("white")},
     },
     healthText = {

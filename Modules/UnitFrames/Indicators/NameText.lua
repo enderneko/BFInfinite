@@ -3,8 +3,26 @@ local U = BFI.utils
 local AW = BFI.AW
 local UF = BFI.M_UF
 
-local function NameText_SetName(self, unit, name, class)
-    if not name then return end
+---------------------------------------------------------------------
+-- local functions
+---------------------------------------------------------------------
+local UnitName = UnitName
+local UnitIsConnected = UnitIsConnected
+
+--! for AI followers, UnitClassBase is buggy
+local UnitClassBase = function(unit)
+    return select(2, UnitClass(unit))
+end
+
+---------------------------------------------------------------------
+-- name
+---------------------------------------------------------------------
+local function UpdateName(self)
+    local unit = self.root.displayedUnit
+    if not unit then return end
+
+    local name = UnitName(unit)
+    local class = UnitClassBase(unit)
 
     -- length
     if self.length <= 1 then
@@ -41,27 +59,25 @@ local function NameText_SetName(self, unit, name, class)
     self:SetTextColor(r, g, b)
 end
 
-local function NameText_SetFont(self, font, size, flags)
-    font = U.GetFont(font)
-
-    if flags == "shadow" then
-        self:SetFont(font, size, "")
-        self:SetShadowOffset(1, -1)
-        self:SetShadowColor(0, 0, 0, 1)
-    else
-        if flags == "none" then
-            flags = ""
-        elseif flags == "outline" then
-            flags = "OUTLINE"
-        else
-            flags = "OUTLINE,MONOCHROME"
-        end
-        self:SetFont(font, size, flags)
-        self:SetShadowOffset(0, 0)
-        self:SetShadowColor(0, 0, 0, 0)
-    end
+---------------------------------------------------------------------
+-- update
+---------------------------------------------------------------------
+local function NameText_Update(self)
+    UpdateName(self)
 end
 
+---------------------------------------------------------------------
+-- enable
+---------------------------------------------------------------------
+local function NameText_Enable(self)
+    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateName)
+
+    if self:IsVisible() then self:Update() end
+end
+
+---------------------------------------------------------------------
+-- load
+---------------------------------------------------------------------
 local function NameText_LoadConfig(self, config)
     self:SetNameFont(unpack(config.font))
 
@@ -76,12 +92,17 @@ local function NameText_LoadConfig(self, config)
     self.color = config.color
 end
 
-function UF.CreateNameText(parent)
-    local text = parent:CreateFontString(nil, "OVERLAY")
+function UF.CreateNameText(parent, name)
+    local text = parent:CreateFontString(name, "OVERLAY")
     text.root = parent
 
-    text.SetName = NameText_SetName
-    text.SetNameFont = NameText_SetFont
+    -- events
+    BFI.SetEventHandler(text)
+
+    -- functions
+    text.Enable = NameText_Enable
+    text.Update = NameText_Update
+    text.SetNameFont = U.SetFont
     text.LoadConfig = NameText_LoadConfig
 
     return text
