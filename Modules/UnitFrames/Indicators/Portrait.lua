@@ -14,7 +14,7 @@ local mult = math.pi / 180
 local function Portrait_Update_3D(self, unit)
     local model = self.model
     local config = self.modelConfig
-    
+
     if UnitIsConnected(unit) and UnitIsVisible(unit) then
         model:SetCamDistanceScale(config.camDistanceScale)
         model:SetPortraitZoom(1)
@@ -50,12 +50,42 @@ local function Portrait_Update_ClassIcon(self, unit)
     end
 end
 
+local function UpdatePortrait(self)
+    local unit = self.root.displayedUnit
+    if not unit then return end
+
+    if self.type == "3d" then
+        Portrait_Update_3D(self, unit)
+    elseif config.type == "2d" then
+        Portrait_Update_2D(self, unit)
+    else
+        Portrait_Update_ClassIcon(self, unit)
+    end
+end
+
 ---------------------------------------------------------------------
--- others
+-- enable
+---------------------------------------------------------------------
+local function Portrait_Enable(self)
+    self:RegisterEvent("UNIT_PORTRAIT_UPDATE", UpdatePortrait)
+    self:RegisterEvent("UNIT_MODEL_CHANGED", UpdatePortrait)
+
+    if self:IsVisible() then self:Update() end
+end
+
+---------------------------------------------------------------------
+-- update
+---------------------------------------------------------------------
+local function Portrait_Update(self)
+    UpdatePortrait(self)
+end
+
+---------------------------------------------------------------------
+-- basic
 ---------------------------------------------------------------------
 local function Portrait_LoadConfig(self, config)
     AW.SetSize(self, config.width, config.height)
-    
+
     -- if config.anchorTo == "button" then
         self:SetParent(self.root)
         AW.LoadWidgetPosition(self, config.position)
@@ -80,20 +110,15 @@ local function Portrait_LoadConfig(self, config)
         self.modelConfig = nil
     end
 
-    if config.type == "3d" then
-        self.Update = Portrait_Update_3D
-    elseif config.type == "2d" then
-        self.Update = Portrait_Update_2D
-    else
-        self.Update = Portrait_Update_ClassIcon
-    end
+    self.type = config.type
 end
 
 local function Portrait_UpdatePixels(self)
     AW.ReSize(self)
     AW.RePoint(self)
     AW.ReBorder(self)
-    AW.RePoint(self.model)    
+    AW.RePoint(self.model)
+    AW.RePoint(self.texture)
 end
 
 ---------------------------------------------------------------------
@@ -104,26 +129,30 @@ function UF.CreatePortrait(parent)
     portrait.root = parent
     AW.SetDefaultBackdrop(portrait)
 
+    -- events
+    BFI.SetEventHandler(portrait)
+
     -- 3d
     portrait.model = CreateFrame("PlayerModel", nil, portrait)
-    
+
     -- NOTE: LIKE A SHIT!
     portrait.model:SetPoint("TOPLEFT", 1, -0.5)
     portrait.model:SetPoint("BOTTOMRIGHT", -1.5, 2)
     -- AW.SetOnePixelInside(portrait.model, portrait)
     -- AW.SetPoint(portrait.model, "TOPLEFT", portrait, 1, -1)
     -- AW.SetPoint(portrait.model, "BOTTOMRIGHT", portrait, -1, 2)
-    
+
     -- 2d
     portrait.texture = portrait:CreateTexture(nil, "ARTWORK")
     AW.SetOnePixelInside(portrait.texture, portrait)
 
     -- functions
+    portrait.Enable = Portrait_Enable
+    portrait.Update = Portrait_Update
     portrait.LoadConfig = Portrait_LoadConfig
 
     -- pixel perfect
-    portrait.UpdatePixels = Portrait_UpdatePixels
-    AW.AddToPixelUpdater(portrait)
+    AW.AddToPixelUpdater(portrait, Portrait_UpdatePixels)
 
     return portrait
 end

@@ -88,10 +88,10 @@ local function UnitButton_UpdateHealthStates(self)
 
     self.states.wasDead = self.states.isDead
     self.states.isDead = health == 0
-    
+
     self.states.wasDeadOrGhost = self.states.isDeadOrGhost
     self.states.isDeadOrGhost = UnitIsDeadOrGhost(unit)
-    
+
     if self.states.wasDead ~= self.states.isDead or self.states.wasDeadOrGhost ~= self.states.isDeadOrGhost then
     end
 end
@@ -121,18 +121,6 @@ local function UnitButton_UpdateCast(self, event)
 end
 
 ---------------------------------------------------------------------
--- portrait
----------------------------------------------------------------------
-local function UnitButton_UpdatePortrait(self)
-    if not self.indicators.portrait then return end
-
-    local unit = self.displayedUnit
-    if not unit then return end
-
-    self.indicators.portrait:UpdatePortrait(unit)
-end
-
----------------------------------------------------------------------
 -- update all
 ---------------------------------------------------------------------
 local function UnitButton_UpdateAll(self)
@@ -148,8 +136,6 @@ local function UnitButton_UpdateAll(self)
     -- TODO: REMOVE
     UnitButton_UpdateName(self)
 
-    -- portrait
-    UnitButton_UpdatePortrait(self)
     -- cast
     UnitButton_UpdateCast(self)
 end
@@ -160,31 +146,31 @@ end
 -- TODO: REFACTOR
 local function UnitButton_RegisterEvents(self)
     -- self:RegisterEvent("GROUP_ROSTER_UPDATE")
-    
+
     -- health states
     self:RegisterEvent("UNIT_HEALTH")
     self:RegisterEvent("UNIT_MAXHEALTH")
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
-    
+
     -- powers states
     self:RegisterEvent("UNIT_POWER_UPDATE")
     self:RegisterEvent("UNIT_MAXPOWER")
     self:RegisterEvent("UNIT_DISPLAYPOWER")
-    
+
     -- self:RegisterEvent("UNIT_AURA")
-    
+
     -- self:RegisterEvent("UNIT_HEAL_PREDICTION")
     -- self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
-    
+
     -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE")
     -- self:RegisterEvent("UNIT_THREAT_LIST_UPDATE")
     -- self:RegisterEvent("UNIT_ENTERED_VEHICLE")
     -- self:RegisterEvent("UNIT_EXITED_VEHICLE")
-    
+
     -- self:RegisterEvent("INCOMING_SUMMON_CHANGED")
     -- self:RegisterEvent("UNIT_FLAGS") -- afk
     -- self:RegisterEvent("UNIT_FACTION") -- mind control
-    
+
     -- self:RegisterEvent("UNIT_CONNECTION") -- offline
     -- self:RegisterEvent("PLAYER_FLAGS_CHANGED") -- afk
     -- self:RegisterEvent("UNIT_NAME_UPDATE") -- unknown target
@@ -198,13 +184,13 @@ local function UnitButton_RegisterEvents(self)
     self:RegisterEvent("PLAYER_TARGET_CHANGED")
 
     -- self:RegisterEvent("RAID_TARGET_UPDATE")
-    
+
     -- self:RegisterEvent("READY_CHECK")
     -- self:RegisterEvent("READY_CHECK_FINISHED")
     -- self:RegisterEvent("READY_CHECK_CONFIRM")
-    
-    self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
-    self:RegisterEvent("UNIT_MODEL_CHANGED")
+
+    -- self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
+    -- self:RegisterEvent("UNIT_MODEL_CHANGED")
 
     local success, result = pcall(UnitButton_UpdateAll, self)
     if not success then
@@ -221,22 +207,22 @@ local function UnitButton_OnEvent(self, event, unit, arg)
         if  event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "UNIT_CONNECTION" then
             self._updateRequired = 1
             -- self._powerBarUpdateRequired = 1
-            
+
         elseif event == "UNIT_AURA" then
             UnitButton_UpdateAuras(self, arg)
-            
+
         elseif event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" or event == "UNIT_ABSORB_AMOUNT_CHANGED" then
             UnitButton_UpdateHealthStates(self)
-            
+
         elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER" or event == "UNIT_DISPLAYPOWER" then
             UnitButton_UpdatePowerStates(self)
-            
+
         elseif event == "UNIT_HEAL_PREDICTION" then
             UnitButton_UpdateHealPrediction(self)
-            
+
         elseif event == "UNIT_HEAL_ABSORB_AMOUNT_CHANGED" then
             UnitButton_UpdateHealAbsorbs(self)
-            
+
         elseif event == "UNIT_MAXHEALTH" then
             UnitButton_UpdateHealthStates(self)
             -- UnitButton_UpdateHealPrediction(self)
@@ -246,7 +232,7 @@ local function UnitButton_OnEvent(self, event, unit, arg)
         --     UnitButton_UpdateInRange(self, arg)
 
         elseif event == "UNIT_NAME_UPDATE" then
-            
+
         elseif event == "UNIT_TARGET" then
             UnitButton_UpdateTargetRaidIcon(self)
 
@@ -266,15 +252,6 @@ local function UnitButton_OnEvent(self, event, unit, arg)
         elseif event == "READY_CHECK_CONFIRM" then
             UnitButton_UpdateReadyCheck(self)
 
-        elseif event == "UNIT_PORTRAIT_UPDATE" then -- pet summoned far away
-            if self.states.healthMax == 0 then
-                self._updateRequired = 1
-                -- self._powerBarUpdateRequired = 1
-            else
-                UnitButton_UpdatePortrait(self)
-            end
-        elseif event == "UNIT_MODEL_CHANGED" then
-            UnitButton_UpdatePortrait(self)
         end
 
     else
@@ -328,7 +305,7 @@ local function UnitButton_OnTick(self)
     self.__tickCount = (self.__tickCount or 0) + 1
     if self.__tickCount >= 2 then -- every 0.5 second
         self.__tickCount = 0
-        
+
         if self.unit and self.displayedUnit then
             local displayedGuid = UnitGUID(self.displayedUnit)
             if displayedGuid ~= self.__displayedGuid then
@@ -355,7 +332,7 @@ local function UnitButton_OnTick(self)
                     else
                         -- NOTE: update on next tick
                         self.__nameRetries = (self.__nameRetries or 0) + 1
-                        self.__unitGuid = nil 
+                        self.__unitGuid = nil
                     end
                 end
             end
@@ -363,7 +340,7 @@ local function UnitButton_OnTick(self)
     end
 
     -- UnitButton_UpdateInRange(self)
-    
+
     if self._updateRequired and self._indicatorsReady then
         self._updateRequired = nil
         UnitButton_UpdateAll(self)
@@ -461,7 +438,7 @@ end
 local function UnitButton_SetupPing(button)
     Mixin(button, PingableType_UnitFrameMixin)
     button:SetAttribute("ping-receiver", true)
-    
+
     function button:GetTargetPingGUID()
         return button.__unitGuid
     end
