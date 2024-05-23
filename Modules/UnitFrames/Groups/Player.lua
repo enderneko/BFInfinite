@@ -4,12 +4,13 @@ local UF = BFI.M_UF
 
 local player
 local indicators = {
-    healthBar = true,
-    powerBar = true,
-    nameText = false,
-    healthText = false,
-    portrait = false,
-    castBar = true,
+    "healthBar",
+    "powerBar",
+    "nameText",
+    "healthText",
+    "powerText",
+    "portrait",
+    "castBar",
 }
 
 ---------------------------------------------------------------------
@@ -45,13 +46,13 @@ local function UpdatePlayer(module, which)
     -- size & point
     AW.SetSize(player, config.general.width, config.general.height)
     AW.LoadPosition(player, config.general.position)
-    
+
     -- color
     AW.StylizeFrame(player, config.general.bgColor, config.general.borderColor)
-    
+
     -- indicators
     UF.LoadConfigForIndicators(player, indicators, config)
-    
+
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(player, "state-visibility", "[petbattle] hide; show")
 end

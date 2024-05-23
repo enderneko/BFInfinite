@@ -17,11 +17,13 @@ end
 ---------------------------------------------------------------------
 -- name
 ---------------------------------------------------------------------
-local function UpdateName(self)
+local function UpdateName(self, event, unitId)
     local unit = self.root.displayedUnit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     local name = UnitName(unit)
+    if not name then return end
+
     local class = UnitClassBase(unit)
 
     -- length
@@ -71,7 +73,9 @@ end
 ---------------------------------------------------------------------
 local function NameText_Enable(self)
     self:RegisterEvent("UNIT_NAME_UPDATE", UpdateName)
+    self:RegisterEvent("UNIT_FACTION", UpdateName)
 
+    self:Show()
     if self:IsVisible() then self:Update() end
 end
 

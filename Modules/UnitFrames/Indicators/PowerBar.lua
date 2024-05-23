@@ -124,29 +124,29 @@ end
 ---------------------------------------------------------------------
 -- color
 ---------------------------------------------------------------------
-local function UpdatePowerColor(self)
+local function UpdatePowerColor(self, event, unitId)
     local unit = self.root.displayedUnit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     local r, g, b, a, lossR, lossG, lossB, lossA = GetPowerColor(self, unit)
-    self:SetStatusBarColor(r, g, b, a)
-    self.loss:SetVertexColor(lossR, lossG, lossB, lossA)
+    self:SetColor(r, g, b, a)
+    self:SetLossColor(lossR, lossG, lossB, lossA)
 end
 
 ---------------------------------------------------------------------
 -- value
 ---------------------------------------------------------------------
-local function UpdatePowerMax(self)
+local function UpdatePowerMax(self, event, unitId)
     local unit = self.root.displayedUnit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     self.powerMax = UnitPowerMax(unit)
     self:SetBarMinMaxValues(0, self.powerMax)
 end
 
-local function UpdatePower(self)
+local function UpdatePower(self, event, unitId)
     local unit = self.root.displayedUnit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     self.power = UnitPower(unit)
     self:SetBarValue(self.power)
@@ -166,6 +166,7 @@ local function PowerBar_Enable(self)
     self:RegisterEvent("UNIT_MAXPOWER", UpdatePowerMax)
     self:RegisterEvent("UNIT_DISPLAYPOWER", UpdatePowerColor)
 
+    self:Show()
     if self:IsVisible() then self:Update() end
 end
 
@@ -179,73 +180,16 @@ local function PowerBar_Update(self)
 end
 
 ---------------------------------------------------------------------
--- base
----------------------------------------------------------------------
-local function PowerBar_SetColor(self, color)
-    self:SetStatusBarColor(color[1], color[2], color[3], color[4])
-end
-
-local function PowerBar_SetLossColor(self, color)
-    self.loss:SetVertexColor(color[1], color[2], color[3], color[4])
-end
-
-local function PowerBar_SetBackgroudColor(self, color)
-    self.container:SetBackdropColor(unpack(color))
-end
-
-local function PowerBar_SetBorderColor(self, color)
-    self.container:SetBackdropBorderColor(unpack(color))
-end
-
--- local function PowerBar_SetOrientation(self, orientation)
---     self:SetOrientation(orientation)
---     self.loss:ClearAllPoints()
---     if orientation == "HORIZONTAL" then
---         self.loss:SetPoint("TOPLEFT", self:GetStatusBarTexture(), "TOPRIGHT")
---         self.loss:SetPoint("BOTTOMRIGHT")
---     else
---         self.loss:SetPoint("TOPLEFT")
---         self.loss:SetPoint("BOTTOMRIGHT", self:GetStatusBarTexture(), "TOPRIGHT")
---     end
--- end
-
-local function PowerBar_SetTexture(self, texture)
-    texture = U.GetBarTexture(texture)
-    self:SetStatusBarTexture(texture)
-    self:GetStatusBarTexture():SetDrawLayer("OVERLAY", 0)
-    self.loss:SetTexture(texture)
-    self.loss:SetDrawLayer("OVERLAY", 0)
-end
-
-local function PowerBar_SetSmoothing(self, smoothing)
-    self:ResetSmoothedValue()
-    if smoothing then
-        self.SetBarValue = self.SetSmoothedValue
-        self.SetBarMinMaxValues = self.SetMinMaxSmoothedValue
-    else
-        self.SetBarValue = self.SetValue
-        self.SetBarMinMaxValues = self.SetMinMaxValues
-    end
-end
-
-local function PowerBar_UpdatePixels(self)
-    AW.RePoint(self)
-    AW.ReSize(self.container)
-    AW.RePoint(self.container)
-    AW.ReBorder(self.container)
-end
-
----------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
-local function PowerBar_LoadConfig(self, config, skipColorUpdate)
-    self.container:SetFrameLevel(self.root:GetFrameLevel() + config.frameLevel)
-    AW.LoadWidgetPosition(self.container, config.position)
-    AW.SetSize(self.container, config.width, config.height)
+local function PowerBar_LoadConfig(self, config)
+    self:SetFrameLevel(self.root:GetFrameLevel() + config.frameLevel)
+    AW.LoadWidgetPosition(self, config.position)
+    AW.SetSize(self, config.width, config.height)
 
     self:SetTexture(config.texture)
-    self:SetBackgroundColor(config.bgColor)
-    self:SetBorderColor(config.borderColor)
+    self:SetBackgroundColor(unpack(config.bgColor))
+    self:SetBorderColor(unpack(config.borderColor))
     self:SetSmoothing(config.smoothing)
 
     self.color = config.color
@@ -257,41 +201,20 @@ end
 -- create
 ---------------------------------------------------------------------
 function UF.CreatePowerBar(parent, name)
-    -- container
-    local container = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-    AW.SetDefaultBackdrop(container)
-
     -- bar
-    local bar = CreateFrame("StatusBar", name, container)
-    AW.SetOnePixelInside(bar, container)
-
+    local bar = UF.CreateBar(parent, name)
     bar.root = parent
-    bar.container = container
-
-    Mixin(bar, SmoothStatusBarMixin) -- SetSmoothedValue
-    bar:SetScript("OnHide", function()
-        bar:ResetSmoothedValue()
-    end)
 
     -- events
     BFI.SetEventHandler(bar)
 
-    -- loss texture
-    bar.loss = bar:CreateTexture(nil, "OVERLAY", nil, 0)
-
     -- functions
     bar.Update = PowerBar_Update
     bar.Enable = PowerBar_Enable
-    bar.SetColor = PowerBar_SetColor
-    bar.SetTexture = PowerBar_SetTexture
-    bar.SetLossColor = PowerBar_SetLossColor
-    bar.SetBorderColor = PowerBar_SetBorderColor
-    bar.SetBackgroundColor = PowerBar_SetBackgroudColor
-    bar.SetSmoothing = PowerBar_SetSmoothing
     bar.LoadConfig = PowerBar_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(bar, PowerBar_UpdatePixels)
+    AW.AddToPixelUpdater(bar)
 
     return bar
 end

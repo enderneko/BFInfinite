@@ -51,21 +51,35 @@ local default_player_target_indicators = {
     },
     nameText = {
         enabled = true,
-        position = {"TOPLEFT", "TOPLEFT", 3, -2},
+        position = {"TOPLEFT", "TOPLEFT", 3, -3},
         length = 0.5,
         anchorTo = "healthBar",
         font = {BFI_DEFAULT, 12, "none", true},
-        color = {type="class_color", rgb=AW.GetColorTable("white")},
+        color = {type="class_color", rgb=AW.GetColorTable("white")}, -- class/custom
     },
     healthText = {
         enabled = true,
-        position = {"TOPRIGHT", "TOPRIGHT", -3, -2},
+        position = {"TOPRIGHT", "TOPRIGHT", -3, -3},
         anchorTo = "healthBar",
         font = {BFI_DEFAULT, 12, "none", true},
-        color = {type="custom_color", rgb=AW.GetColorTable("white")},
+        color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
         format = {
             numeric = "current_absorbs_short",
             percent = "current_absorbs_sum_decimal",
+            delimiter = " | ",
+            noPercentSign = false,
+        },
+    },
+    powerText = {
+        enabled = true,
+        position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
+        anchorTo = "powerBar",
+        font = {"BFI 1", 9, "monochrome", false},
+        color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/power/custom
+        frequent = true,
+        format = {
+            numeric = "current",
+            percent = "none",
             delimiter = " | ",
             noPercentSign = false,
         },
@@ -97,7 +111,7 @@ local defaults = {
             borderColor = AW.GetColorTable("none"),
             position = {"BOTTOMLEFT", 300, 300},
             width = 225,
-            height = 48,
+            height = 49,
         },
         indicators = default_player_target_indicators,
     },
@@ -107,7 +121,8 @@ local defaults = {
             borderColor = AW.GetColorTable("none"),
             position = {"BOTTOMLEFT", 550, 300},
             width = 225,
-            height = 48,
+            height = 49,
+            oorAlpha = 1,
         },
         indicators = default_player_target_indicators,
     }

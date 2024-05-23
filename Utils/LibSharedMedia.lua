@@ -2,12 +2,16 @@ local _, BFI = ...
 local U = BFI.utils
 local AW = BFI.AW
 
-local DEFAULT_BAR_TEXTURE = AW.GetTexture("StatusBar")
-local DEFAULT_FONT = AW.GetFont("Noto_AP_SC")
-
 local LSM = LibStub("LibSharedMedia-3.0", true)
+
+-- texture
+local DEFAULT_BAR_TEXTURE = AW.GetTexture("StatusBar")
 LSM:Register("statusbar", BFI_DEFAULT, DEFAULT_BAR_TEXTURE)
-LSM:Register("font", BFI_DEFAULT, DEFAULT_FONT)
+
+-- font
+local DEFAULT_FONT = AW.GetFont("Noto_AP_SC")
+LSM:Register("font", BFI_DEFAULT, DEFAULT_FONT, 255)
+LSM:Register("font", "BFI 1", AW.GetFont("visitor"), 255)
 
 function U.GetBarTexture(name)
     if LSM:IsValid("statusbar", name) then
@@ -23,6 +27,7 @@ function U.GetFont(name)
     return DEFAULT_FONT
 end
 
+--- @param fs FontString
 function U.SetFont(fs, font, size, outline, shadow)
     font = U.GetFont(font)
 

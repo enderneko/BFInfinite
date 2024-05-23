@@ -8,21 +8,22 @@ local builders = {
     powerBar = UF.CreatePowerBar,
     nameText = UF.CreateNameText,
     healthText = UF.CreateHealthText,
+    powerText = UF.CreatePowerText,
     portrait = UF.CreatePortrait,
     castBar = UF.CreateCastBar,
 }
 
 function UF.CreateIndicators(button, indicators)
-    for name in pairs(indicators) do
+    for _, name in pairs(indicators) do
         button.indicators[name] = builders[name](button, button:GetName().."_"..U.UpperFirst(name))
     end
 end
 
 function UF.LoadConfigForIndicators(button, indicators, config)
     -- TODO: whether "skip" is needed
-    for name, skip in pairs(indicators) do
+    for _, name in pairs(indicators) do
         local indicator = button.indicators[name]
-        indicator:LoadConfig(config.indicators[name], skip)
+        indicator:LoadConfig(config.indicators[name])
         if config.indicators[name].enabled then
             indicator:Enable()
             indicator.enabled = true
@@ -30,7 +31,12 @@ function UF.LoadConfigForIndicators(button, indicators, config)
             if indicator.Disable then
                 indicator:Disable()
             else
-                UF.DisableIndicator(indicator)
+                indicator:UnregisterAllEvents()
+                if indicator.container then
+                    indicator.container:Hide()
+                else
+                    indicator:Hide()
+                end
             end
             indicator.enabled = false
         end
@@ -45,7 +51,18 @@ function UF.UpdateIndicators(button)
     end
 end
 
-function UF.DisableIndicator(self)
-    self:UnregisterAllEvents()
-    self:Hide()
+function UF.OnButtonShow(button)
+    for _, indicator in pairs(button.indicators) do
+        if indicator.enabled then
+            indicator:Enable()
+        end
+    end
+end
+
+function UF.OnButtonHide(button)
+    for _, indicator in pairs(button.indicators) do
+        if indicator.enabled then
+            indicator:UnregisterAllEvents()
+        end
+    end
 end

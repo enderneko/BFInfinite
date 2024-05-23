@@ -4,11 +4,12 @@ local UF = BFI.M_UF
 
 local target
 local indicators = {
-    healthBar = true,
-    powerBar = true,
-    nameText = false,
-    healthText = false,
-    portrait = false,
+    "healthBar",
+    "powerBar",
+    "nameText",
+    "healthText",
+    "powerText",
+    "portrait",
 }
 
 ---------------------------------------------------------------------
@@ -45,15 +46,16 @@ local function UpdateTarget(module, which)
     -- size & point
     AW.SetSize(target, config.general.width, config.general.height)
     AW.LoadPosition(target, config.general.position)
-    
-    -- texture
+
+    -- out of range alpha
+    target.oorAlpha = config.general.oorAlpha
 
     -- color
     AW.StylizeFrame(target, config.general.bgColor, config.general.borderColor)
-    
+
     -- indicators
     UF.LoadConfigForIndicators(target, indicators, config)
-    
+
     RegisterUnitWatch(target)
 end
 BFI.RegisterCallback("UpdateModules", "UF_Target", UpdateTarget)

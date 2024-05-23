@@ -9,48 +9,35 @@ local UF = BFI.M_UF
 local find = string.find
 local gsub = string.gsub
 local format = string.format
-local UnitHealth = UnitHealth
-local UnitHealthMax = UnitHealthMax
-local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
-local UnitIsCharmed = UnitIsCharmed
-local UnitIsConnected = UnitIsConnected
-
---! for AI followers, UnitClassBase is buggy
-local UnitClassBase = function(unit)
-    return select(2, UnitClass(unit))
-end
+local UnitPower = UnitPower
+local UnitPowerMax = UnitPowerMax
 
 ---------------------------------------------------------------------
 -- value
 ---------------------------------------------------------------------
-local function UpdateHealth(self, event, unitId)
+local function UpdatePower(self, event, unitId)
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
 
-    self.health = UnitHealth(unit)
-    self.healthMax = UnitHealthMax(unit)
-    self.totalAbsorbs = UnitGetTotalAbsorbs(unit)
+    self.power = UnitPower(unit)
+    self.powerMax = UnitPowerMax(unit)
 
-    if self.healthMax == 0 then
-        self.healthMax = 1
+    if self.powerMax == 0 then
+        self.powerMax = 1
     end
 
     self:SetFormattedText("%s%s%s",
-        self.GetNumeric(self.health, self.totalAbsorbs),
+        self.GetNumeric(self.power),
         self.delimiter,
-        self.GetPercent(self.health, self.healthMax, self.totalAbsorbs))
+        self.GetPercent(self.power, self.powerMax))
 end
 
 ---------------------------------------------------------------------
 -- color
 ---------------------------------------------------------------------
 local function UpdateColor(self, event, unitId)
-    if not self.color then return end
-
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
-
-    local class = UnitClassBase(unit)
 
     -- color
     local r, g, b
@@ -60,12 +47,10 @@ local function UpdateColor(self, event, unitId)
         else
             r, g, b = AW.GetReactionColor(unit)
         end
-    else -- custom_color
+    else
         if U.UnitIsPlayer(unit) then
             if not UnitIsConnected(unit) then
                 r, g, b = AW.GetClassColor(class)
-            elseif UnitIsCharmed(unit) then
-                r, g, b = 0.5, 0, 1
             else
                 r, g, b = unpack(self.color.rgb)
             end
@@ -79,12 +64,16 @@ end
 ---------------------------------------------------------------------
 -- enable
 ---------------------------------------------------------------------
-local function HealthText_Enable(self)
-    self:RegisterEvent("UNIT_HEALTH", UpdateHealth)
-    self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealth)
-    self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateHealth)
-    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateColor)
-    self:RegisterEvent("UNIT_FACTION", UpdateColor)
+local function PowerText_Enable(self)
+    if self.frequent then
+        self:RegisterEvent("UNIT_POWER_FREQUENT", UpdatePower)
+        self:UnregisterEvent("UNIT_POWER_UPDATE")
+    else
+        self:RegisterEvent("UNIT_POWER_UPDATE", UpdatePower)
+        self:UnregisterEvent("UNIT_POWER_FREQUENT")
+    end
+    self:RegisterEvent("UNIT_MAXPOWER", UpdatePower)
+    self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateColor)
 
     self:Show()
     if self:IsVisible() then self:Update() end
@@ -93,8 +82,9 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function HealthText_Update(self)
-    UpdateHealth(self)
+local function PowerText_Update(self)
+    UpdatePower(self)
+    UpdateColor(self)
 end
 
 ---------------------------------------------------------------------
@@ -105,36 +95,12 @@ local numeric = {
         return ""
     end,
 
-    current = function(current, absorbs)
+    current = function(current)
         return current
     end,
 
-    current_short = function(current, absorbs)
+    current_short = function(current)
         return U.FormatNumber(current)
-    end,
-
-    current_absorbs = function(current, absorbs)
-        if absorbs == 0 then
-            return current
-        else
-            return format("%s+%s", current, absorbs)
-        end
-    end,
-
-    current_absorbs_sum = function(current, absorbs)
-        return current + absorbs
-    end,
-
-    current_absorbs_short = function(current, absorbs)
-        if absorbs == 0 then
-            return U.FormatNumber(current)
-        else
-            return format("%s+%s", U.FormatNumber(current), U.FormatNumber(absorbs))
-        end
-    end,
-
-    current_absorbs_short_sum = function(current, absorbs)
-        return U.FormatNumber(current + absorbs)
     end,
 }
 
@@ -146,36 +112,12 @@ local percent = {
         return ""
     end,
 
-    current = function(current, max, absorbs)
+    current = function(current, max)
         return format("%d%%", current/max*100)
     end,
 
-    current_decimal = function(current, max, absorbs)
+    current_decimal = function(current, max)
         return format("%.1f%%", current/max*100):gsub("%.0%%$", "%%")
-    end,
-
-    current_absorbs = function(current, max, absorbs)
-        if absorbs == 0 then
-            return format("%d%%", current/max*100)
-        else
-            return format("%d%%+%d%%", current/max*100, absorbs/max*100)
-        end
-    end,
-
-    current_absorbs_decimal = function(current, max, absorbs)
-        if absorbs == 0 then
-            return format("%.1f%%", current/max*100):gsub("%.0%%$", "%%")
-        else
-            return format("%.1f%%+%.1f%%", current/max*100, absorbs/max*100):gsub("%.0%%", "%%")
-        end
-    end,
-
-    current_absorbs_sum = function(current, max, absorbs)
-        return format("%d%%", (current+absorbs)/max*100)
-    end,
-
-    current_absorbs_sum_decimal = function(current, max, absorbs)
-        return format("%.1f%%", (current+absorbs)/max*100):gsub("%.0%%$", "%%")
     end,
 }
 
@@ -187,43 +129,19 @@ local percent_np = {
         return ""
     end,
 
-    current = function(current, max, absorbs)
+    current = function(current, max)
         return format("%d", current/max*100)
     end,
 
-    current_decimal = function(current, max, absorbs)
+    current_decimal = function(current, max)
         return format("%.1f", current/max*100):gsub("%.0$", "")
-    end,
-
-    current_absorbs = function(current, max, absorbs)
-        if absorbs == 0 then
-            return format("%d", current/max*100)
-        else
-            return format("%d+%d", current/max*100, absorbs/max*100)
-        end
-    end,
-
-    current_absorbs_decimal = function(current, max, absorbs)
-        if absorbs == 0 then
-            return format("%.1f", current/max*100):gsub("%.0$", "")
-        else
-            return format("%.1f+%.1f", current/max*100, absorbs/max*100):gsub("%.0", "")
-        end
-    end,
-
-    current_absorbs_sum = function(current, max, absorbs)
-        return format("%d", (current+absorbs)/max*100)
-    end,
-
-    current_absorbs_sum_decimal = function(current, max, absorbs)
-        return format("%.1f", (current+absorbs)/max*100):gsub("%.0$", "")
     end,
 }
 
 ---------------------------------------------------------------------
 -- format
 ---------------------------------------------------------------------
-local function HealthText_SetFormat(self, format)
+local function PowerText_SetFormat(self, format)
     self.GetNumeric = numeric[format.numeric]
     if format.noPercentSign then
         self.GetPercent = percent_np[format.percent]
@@ -241,14 +159,14 @@ end
 ---------------------------------------------------------------------
 -- base
 ---------------------------------------------------------------------
-local function HealthText_SetColor(self, color)
+local function PowerText_SetColor(self, color)
     self:SetTextColor(unpack(color))
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
-local function HealthText_LoadConfig(self, config)
+local function PowerText_LoadConfig(self, config)
     self:SetHealthFont(unpack(config.font))
     self:SetFormat(config.format)
 
@@ -265,7 +183,7 @@ end
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
-function UF.CreateHealthText(parent, name)
+function UF.CreatePowerText(parent, name)
     local text = parent:CreateFontString(name, "OVERLAY", AW.GetFontName("normal"))
     text.root = parent
 
@@ -273,12 +191,12 @@ function UF.CreateHealthText(parent, name)
     BFI.SetEventHandler(text)
 
     -- functions
-    text.Enable = HealthText_Enable
-    text.Update = HealthText_Update
-    text.SetColor = HealthText_SetColor
-    text.SetFormat = HealthText_SetFormat
+    text.Enable = PowerText_Enable
+    text.Update = PowerText_Update
+    text.SetColor = PowerText_SetColor
+    text.SetFormat = PowerText_SetFormat
     text.SetHealthFont = U.SetFont
-    text.LoadConfig = HealthText_LoadConfig
+    text.LoadConfig = PowerText_LoadConfig
 
     return text
 end

@@ -30,7 +30,6 @@ local function UpdateHealthStates(self)
     self.shields = UnitGetTotalAbsorbs(unit)
 
     if self.healthMax == 0 then
-        self.healthMax = 1
         self.healthPercent = 0
         self.shieldPercent = 0
     else
@@ -39,17 +38,17 @@ local function UpdateHealthStates(self)
     end
 end
 
-local function UpdateHealthMax(self)
+local function UpdateHealthMax(self, event, unitId)
     local unit = self.root.displayedUnit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     UpdateHealthStates(self)
     self:SetBarMinMaxValues(0, self.healthMax)
 end
 
-local function UpdateHealth(self)
+local function UpdateHealth(self, event, unitId)
     local unit = self.root.displayedUnit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     UpdateHealthStates(self)
     self:SetBarValue(self.health)
@@ -58,9 +57,9 @@ end
 ---------------------------------------------------------------------
 -- shield
 ---------------------------------------------------------------------
-local function UpdateShield(self)
+local function UpdateShield(self, event, unitId)
     local unit = self.root.displayedUnit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     -- overshieldGlow
     if not self.shieldEnabled or not self.overshieldGlowEnabled then
@@ -207,14 +206,14 @@ local function GetHealthColor(self, unit)
     return r, g, b, a, lossR, lossG, lossB, lossA
 end
 
-local function UpdateHealthColor(self)
+local function UpdateHealthColor(self, event, unitId)
     local unit = self.root.unit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     -- healthBar
     local r, g, b, a, lossR, lossG, lossB, lossA = GetHealthColor(self, unit)
-    self:SetStatusBarColor(r, g, b, a)
-    self.loss:SetVertexColor(lossR, lossG, lossB, lossA)
+    self:SetColor(r, g, b, a)
+    self:SetLossColor(lossR, lossG, lossB, lossA)
 
     -- healPrediction
     if not self.healPredictionUseCustomColor then
@@ -225,9 +224,9 @@ end
 ---------------------------------------------------------------------
 -- heal prediction
 ---------------------------------------------------------------------
-local function UpdateHealPrediction(self)
+local function UpdateHealPrediction(self, event, unitId)
     local unit = self.root.displayedUnit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     if not self.healPredictionEnabled then
         self.healPrediction:Hide()
@@ -256,9 +255,11 @@ local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield, UpdateHealPrediction)
     self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield, UpdateHealPrediction)
     self:RegisterEvent("UNIT_NAME_UPDATE", UpdateHealthColor)
+    self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
     self:RegisterEvent("UNIT_HEAL_PREDICTION", UpdateHealPrediction)
 
+    self:Show()
     if self:IsVisible() then self:Update() end
 end
 
@@ -276,22 +277,6 @@ end
 ---------------------------------------------------------------------
 -- base
 ---------------------------------------------------------------------
-local function HealthBar_SetColor(self, color)
-    self:SetStatusBarColor(color[1], color[2], color[3], color[4])
-end
-
-local function HealthBar_SetLossColor(self, color)
-    self.loss:SetVertexColor(color[1], color[2], color[3], color[4])
-end
-
-local function HealthBar_SetBackgroudColor(self, color)
-    self.container:SetBackdropColor(unpack(color))
-end
-
-local function HealthBar_SetBorderColor(self, color)
-    self.container:SetBackdropBorderColor(unpack(color))
-end
-
 local function ShieldBar_SetColor(self, color)
     self.shield:SetVertexColor(unpack(color))
 end
@@ -305,60 +290,36 @@ local function HealPrediction_SetColor(self, color)
     self.healPrediction:SetVertexColor(unpack(color))
 end
 
--- local function HealthBar_SetOrientation(self, orientation)
---     self:SetOrientation(orientation)
---     self.loss:ClearAllPoints()
---     if orientation == "HORIZONTAL" then
---         self.loss:SetPoint("TOPLEFT", self:GetStatusBarTexture(), "TOPRIGHT")
---         self.loss:SetPoint("BOTTOMRIGHT")
---     else
---         self.loss:SetPoint("TOPLEFT")
---         self.loss:SetPoint("BOTTOMRIGHT", self:GetStatusBarTexture(), "TOPRIGHT")
---     end
--- end
-
 local function HealthBar_SetTexture(self, texture)
     texture = U.GetBarTexture(texture)
-    self:SetStatusBarTexture(texture)
-    self:GetStatusBarTexture():SetDrawLayer("OVERLAY", 0)
+    self.fg:SetTexture(texture)
     self.loss:SetTexture(texture)
-    self.loss:SetDrawLayer("OVERLAY", 0)
     self.healPrediction:SetTexture(texture)
-    self.healPrediction:SetDrawLayer("OVERLAY", 1)
-end
-
-local function HealthBar_SetSmoothing(self, smoothing)
-    self:ResetSmoothedValue()
-    if smoothing then
-        self.SetBarValue = self.SetSmoothedValue
-        self.SetBarMinMaxValues = self.SetMinMaxSmoothedValue
-    else
-        self.SetBarValue = self.SetValue
-        self.SetBarMinMaxValues = self.SetMinMaxValues
-    end
 end
 
 local function HealthBar_UpdatePixels(self)
+    AW.ReSize(self)
     AW.RePoint(self)
+    AW.ReBorder(self)
+    AW.ReSize(self.fg)
+    AW.RePoint(self.fg)
+    AW.RePoint(self.loss)
     AW.ReSize(self.overshieldGlow)
     AW.ReSize(self.overshieldGlowR)
     AW.RePoint(self.overshieldGlowR)
-    AW.ReSize(self.container)
-    AW.RePoint(self.container)
-    AW.ReBorder(self.container)
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
 local function HealthBar_LoadConfig(self, config)
-    self.container:SetFrameLevel(self.root:GetFrameLevel() + config.frameLevel)
-    AW.LoadWidgetPosition(self.container, config.position)
-    AW.SetSize(self.container, config.width, config.height)
+    self:SetFrameLevel(self.root:GetFrameLevel() + config.frameLevel)
+    AW.LoadWidgetPosition(self, config.position)
+    AW.SetSize(self, config.width, config.height)
 
     self:SetTexture(config.texture)
-    self:SetBackgroundColor(config.bgColor)
-    self:SetBorderColor(config.borderColor)
+    self:SetBackgroundColor(unpack(config.bgColor))
+    self:SetBorderColor(unpack(config.borderColor))
     self:SetSmoothing(config.smoothing)
 
     self:SetShieldColor(config.shield.color)
@@ -381,46 +342,25 @@ end
 -- create
 ---------------------------------------------------------------------
 function UF.CreateHealthBar(parent, name)
-    -- container
-    local container = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-    AW.SetDefaultBackdrop(container)
-
     -- bar
-    local bar = CreateFrame("StatusBar", name, container)
-    AW.SetOnePixelInside(bar, container)
-
-    bar:SetStatusBarTexture(AW.GetTexture("StatusBar")) -- or GetStatusBarTexture() will be nil
-    bar.texture = bar:GetStatusBarTexture()
-
+    local bar = UF.CreateBar(parent, name)
     bar.root = parent
-    bar.container = container
-
-    Mixin(bar, SmoothStatusBarMixin)
-    bar:SetScript("OnHide", function()
-        bar:ResetSmoothedValue()
-    end)
 
     -- events
     BFI.SetEventHandler(bar)
 
-    -- loss texture
-    local loss = bar:CreateTexture(name.."Loss", "OVERLAY", nil, 0)
-    bar.loss = loss
-    loss:SetPoint("TOPLEFT", bar.texture, "TOPRIGHT")
-    loss:SetPoint("BOTTOMRIGHT")
-
     -- shield
-    local shield = bar:CreateTexture(name.."Shield", "OVERLAY", nil, 2)
+    local shield = bar:CreateTexture(name.."Shield", "ARTWORK", nil, 2)
     bar.shield = shield
     shield:Hide()
-    shield:SetPoint("TOPLEFT", bar.texture, "TOPRIGHT")
-    shield:SetPoint("BOTTOMLEFT", bar.texture, "BOTTOMRIGHT")
+    shield:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
+    shield:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
     shield:SetTexture(AW.GetTexture("Shield"), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
 
     -- overshield
-    local overshieldGlow = bar:CreateTexture(name.."OvershieldGlow", "OVERLAY", nil, 3)
+    local overshieldGlow = bar:CreateTexture(name.."OvershieldGlow", "ARTWORK", nil, 3)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
     overshieldGlow:SetTexture(AW.GetTexture("Overshield"))
@@ -429,7 +369,7 @@ function UF.CreateHealthBar(parent, name)
     AW.SetWidth(overshieldGlow, 4)
 
     -- overshieldR
-    local overshieldGlowR = bar:CreateTexture(name.."OvershieldGlowR", "OVERLAY", nil, 3)
+    local overshieldGlowR = bar:CreateTexture(name.."OvershieldGlowR", "ARTWORK", nil, 3)
     bar.overshieldGlowR = overshieldGlowR
     overshieldGlowR:Hide()
     overshieldGlowR:SetTexture(AW.GetTexture("Overshield2"))
@@ -438,24 +378,19 @@ function UF.CreateHealthBar(parent, name)
     AW.SetWidth(overshieldGlowR, 8)
 
     -- healPrediction
-    local healPrediction = bar:CreateTexture(name.."HealPrediction", "OVERLAY", nil, 1)
+    local healPrediction = bar:CreateTexture(name.."HealPrediction", "ARTWORK", nil, 1)
     bar.healPrediction = healPrediction
     healPrediction:Hide()
-    healPrediction:SetPoint("TOPLEFT", bar.texture, "TOPRIGHT")
-    healPrediction:SetPoint("BOTTOMLEFT", bar.texture, "BOTTOMRIGHT")
+    healPrediction:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
+    healPrediction:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
 
     -- functions
     bar.Update = HealthBar_Update
     bar.Enable = HealthBar_Enable
-    bar.SetColor = HealthBar_SetColor
     bar.SetTexture = HealthBar_SetTexture
-    bar.SetLossColor = HealthBar_SetLossColor
-    bar.SetBorderColor = HealthBar_SetBorderColor
-    bar.SetBackgroundColor = HealthBar_SetBackgroudColor
     bar.SetShieldColor = ShieldBar_SetColor
     bar.SetOvershieldGlowColor = OvershieldGlow_SetColor
     bar.SetHealPredictionColor = HealPrediction_SetColor
-    bar.SetSmoothing = HealthBar_SetSmoothing
     bar.LoadConfig = HealthBar_LoadConfig
 
     -- pixel perfect

@@ -50,9 +50,9 @@ local function Portrait_Update_ClassIcon(self, unit)
     end
 end
 
-local function UpdatePortrait(self)
+local function UpdatePortrait(self, event, unitId)
     local unit = self.root.displayedUnit
-    if not unit then return end
+    if unitId and unit ~= unitId then return end
 
     if self.type == "3d" then
         Portrait_Update_3D(self, unit)
@@ -70,6 +70,7 @@ local function Portrait_Enable(self)
     self:RegisterEvent("UNIT_PORTRAIT_UPDATE", UpdatePortrait)
     self:RegisterEvent("UNIT_MODEL_CHANGED", UpdatePortrait)
 
+    self:Show()
     if self:IsVisible() then self:Update() end
 end
 
