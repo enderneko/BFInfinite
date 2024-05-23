@@ -120,21 +120,43 @@ local function UnitButton_UpdateCast(self, event)
 end
 
 ---------------------------------------------------------------------
+-- range
+---------------------------------------------------------------------
+local function UnitButton_UpdateInRange(self, ir)
+    local unit = self.displayedUnit
+    if not unit then return end
+
+    local inRange = U.IsInRange(unit)
+
+    self.states.inRange = inRange
+    if self.states.inRange ~= self.states.wasInRange then
+        if inRange then
+            AW.FrameFadeIn(self, 0.25, self:GetAlpha(), 1)
+        else
+            AW.FrameFadeOut(self, 0.25, self:GetAlpha(), self.oorAlpha or 1)
+        end
+    end
+    self.states.wasInRange = inRange
+end
+
+---------------------------------------------------------------------
 -- update all
 ---------------------------------------------------------------------
-local function UnitButton_UpdateAll(self)
+local function UnitButton_UpdateAll(self, skipUpdateIndicators)
     if not self:IsVisible() then return end
 
-    -- update all indicators
-    UF.UpdateIndicators(self)
+    if not skipUpdateIndicators then
+        -- update all indicators
+        UF.UpdateIndicators(self)
+    end
 
     -- states
     UnitButton_UpdateStates(self)
     UnitButton_UpdateHealthStates(self)
     UnitButton_UpdatePowerStates(self)
 
-    -- TODO: REMOVE
-    UnitButton_UpdateCast(self)
+    -- range
+    UnitButton_UpdateInRange(self)
 end
 
 ---------------------------------------------------------------------
@@ -188,11 +210,6 @@ local function UnitButton_RegisterEvents(self)
 
     -- self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
     -- self:RegisterEvent("UNIT_MODEL_CHANGED")
-
-    local success, result = pcall(UnitButton_UpdateAll, self)
-    if not success then
-        BFI.Debug("|cffabababUpdateAll FAILED|r", self:GetName(), result)
-    end
 end
 
 local function UnitButton_UnregisterEvents(self)
@@ -202,7 +219,7 @@ end
 local function UnitButton_OnEvent(self, event, unit, arg)
     if unit and (self.displayedUnit == unit or self.unit == unit) then
         if  event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "UNIT_CONNECTION" then
-            self._updateRequired = 1
+            self._updateRequired = true
             -- self._powerBarUpdateRequired = 1
 
         elseif event == "UNIT_AURA" then
@@ -225,18 +242,12 @@ local function UnitButton_OnEvent(self, event, unit, arg)
             -- UnitButton_UpdateHealPrediction(self)
             -- UnitButton_UpdateHealAbsorbs(self)
 
-        -- elseif event == "UNIT_IN_RANGE_UPDATE" then
-        --     UnitButton_UpdateInRange(self, arg)
-
         elseif event == "UNIT_TARGET" then
             UnitButton_UpdateTargetRaidIcon(self)
 
         elseif event == "PLAYER_FLAGS_CHANGED" or event == "UNIT_FLAGS" or event == "INCOMING_SUMMON_CHANGED" then
             -- if CELL_SUMMON_ICONS_ENABLED then UnitButton_UpdateStatusIcon(self) end
             UnitButton_UpdateStatusText(self)
-
-        elseif event == "UNIT_FACTION" then -- mind control
-            UnitButton_UpdateNameColor(self)
 
         elseif event == "UNIT_THREAT_SITUATION_UPDATE" then
             UnitButton_UpdateThreat(self)
@@ -251,7 +262,7 @@ local function UnitButton_OnEvent(self, event, unit, arg)
 
     else
         if event == "GROUP_ROSTER_UPDATE" then
-            self._updateRequired = 1
+            self._updateRequired = true
             -- self._powerBarUpdateRequired = 1
 
         elseif event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED" then
@@ -279,7 +290,7 @@ local function UnitButton_OnEvent(self, event, unit, arg)
 
         elseif event == "ZONE_CHANGED_NEW_AREA" then
             -- BFI.Debug("|cffbbbbbb=== ZONE_CHANGED_NEW_AREA ===")
-            -- self._updateRequired = 1
+            -- self._updateRequired = true
             UnitButton_UpdateStatusText(self)
 
         -- elseif event == "VOICE_CHAT_CHANNEL_ACTIVATED" or event == "VOICE_CHAT_CHANNEL_DEACTIVATED" then
@@ -305,9 +316,9 @@ local function UnitButton_OnTick(self)
             local displayedGuid = UnitGUID(self.displayedUnit)
             if displayedGuid ~= self.__displayedGuid then
                 -- NOTE: displayed unit entity changed
-                U.RemoveElementsExceptKeys(self.states, "unit", "displayedUnit")
                 self.__displayedGuid = displayedGuid
-                self._updateRequired = 1
+                -- self._updateRequired = true
+                wipe(self.states)
             end
 
             local guid = UnitGUID(self.unit)
@@ -334,9 +345,9 @@ local function UnitButton_OnTick(self)
         end
     end
 
-    -- UnitButton_UpdateInRange(self)
+    UnitButton_UpdateInRange(self)
 
-    if self._updateRequired and self._indicatorsReady then
+    if self._updateRequired then
         self._updateRequired = nil
         UnitButton_UpdateAll(self)
     end
@@ -360,14 +371,21 @@ end
 ---------------------------------------------------------------------
 local function UnitButton_OnShow(self)
     -- print(GetTime(), "OnShow", self:GetName())
-    -- self._updateRequired = nil -- prevent UnitButton_UpdateAll twice. when convert party <-> raid, GROUP_ROSTER_UPDATE fired.
+    self._updateRequired = nil -- prevent UnitButton_UpdateAll twice. when convert party <-> raid, GROUP_ROSTER_UPDATE fired.
     -- self._powerBarUpdateRequired = 1
+
     UnitButton_RegisterEvents(self)
+    local success, result = pcall(UnitButton_UpdateAll, self, true)
+    if not success then
+        BFI.Debug("|cffabababUpdateAll FAILED|r", self:GetName(), result)
+    end
+    UF.OnButtonShow(self)
 end
 
 local function UnitButton_OnHide(self)
     -- print(GetTime(), "OnHide", self:GetName())
     UnitButton_UnregisterEvents(self)
+    UF.OnButtonHide(self)
 
     if self.__unitGuid then
         BFI.vars.guids[self.__unitGuid] = nil
@@ -378,7 +396,7 @@ local function UnitButton_OnHide(self)
         self.__unitName = nil
     end
     self.__displayedGuid = nil
-    U.RemoveElementsExceptKeys(self.states, "unit", "displayedUnit")
+    wipe(self.states)
 end
 
 ---------------------------------------------------------------------
@@ -466,13 +484,10 @@ function BFIUnitButton_OnLoad(button)
     button:HookScript("OnHide", UnitButton_OnHide) -- use _onhide for click-castings
     -- button:HookScript("OnEnter", UnitButton_OnEnter) -- SecureHandlerEnterLeaveTemplate
     -- button:HookScript("OnLeave", UnitButton_OnLeave) -- SecureHandlerEnterLeaveTemplate
-    -- button:SetScript("OnUpdate", UnitButton_OnUpdate)
+    button:SetScript("OnUpdate", UnitButton_OnUpdate)
     button:SetScript("OnEvent", UnitButton_OnEvent)
 
     -- pixel perfect
     button.UpdatePixels = UnitButton_UpdatePixels
     AW.AddToPixelUpdater(button)
-
-    -- TODO:
-    button._indicatorsReady = true
 end
