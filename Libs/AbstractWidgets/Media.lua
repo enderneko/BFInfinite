@@ -31,7 +31,7 @@ end
 -- get plain texture
 ---------------------------------------------------------------------
 function AW.GetPlainTexture()
-    return "Interface\\Buttons\\WHITE8x8"
+    return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Textures\\White"
 end
 
 ---------------------------------------------------------------------

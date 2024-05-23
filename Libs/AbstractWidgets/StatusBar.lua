@@ -10,7 +10,7 @@ function AW.CreateStatusBar(parent, minValue, maxValue, width, height, color, bo
 
     minValue = minValue or 1
     maxValue = maxValue or 1
-    
+
     bar._SetMinMaxValues = bar.SetMinMaxValues
     function bar:SetMinMaxValues(l, h)
         bar:_SetMinMaxValues(l, h)
@@ -53,7 +53,7 @@ function AW.CreateStatusBar(parent, minValue, maxValue, width, height, color, bo
     end
 
     Mixin(bar, SmoothStatusBarMixin) -- SetSmoothedValue
-    
+
     function bar:UpdatePixels()
         AW.ReSize(bar)
         AW.RePoint(bar)
