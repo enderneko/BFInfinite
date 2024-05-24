@@ -9,7 +9,7 @@ local AW = ns.AW
 function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, hideLowHighText)
     local slider = CreateFrame("Slider", nil, parent, "BackdropTemplate")
     AW.StylizeFrame(slider, "widget")
-    
+
     slider:SetValueStep(step or 1)
     slider:SetObeyStepOnDrag(true)
     slider:SetOrientation("HORIZONTAL")
@@ -36,7 +36,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
     local lowText = AW.CreateFontString(slider, nil, "gray")
     AW.SetPoint(lowText, "TOPLEFT", slider, "BOTTOMLEFT", 0, -2)
     -----------------------------------------------------------------
-    
+
     -- high ---------------------------------------------------------
     local highText = AW.CreateFontString(slider, nil, "gray")
     AW.SetPoint(highText, "TOPRIGHT", slider, "BOTTOMRIGHT", 0, -2)
@@ -55,7 +55,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
     AW.SetPoint(thumb, "TOPLEFT", thumbBG, 1, -1)
     AW.SetPoint(thumb, "BOTTOMRIGHT", thumbBG, -1, 1)
     -----------------------------------------------------------------
-    
+
     local oldValue, valueBeforeClick
 
     -- editbox ------------------------------------------------------
@@ -79,7 +79,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
             self:SetText(self.oldValue)
         end
     end)
-    
+
     eb:SetScript("OnShow", function(self)
         if oldValue then self:SetText(oldValue) end
     end)
@@ -97,7 +97,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
             percentSign:Show()
         end
     end
-    
+
     -- highlight ----------------------------------------------------
     local highlight = AW.CreateTexture(slider, nil, AW.GetColorTable("accent", 0.05), "BACKGROUND", 1)
     AW.SetPoint(highlight, "TOPLEFT", 1, -1)
@@ -123,7 +123,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
     end
     slider:SetScript("OnEnter", OnEnter)
     -----------------------------------------------------------------
-    
+
     -- OnLeave ------------------------------------------------------
     local function OnLeave()
         thumb:SetColor(AW.GetColorTable("accent", 0.7))
@@ -131,27 +131,27 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
     end
     slider:SetScript("OnLeave", OnLeave)
     -----------------------------------------------------------------
-    
+
     -- OnValueChanged -----------------------------------------------
     slider:SetScript("OnValueChanged", function(self, value, userChanged)
         if oldValue == value then return end
-        
+
         if math.floor(value) < value then -- decimal
             value = tonumber(string.format("%.2f", value))
         end
         oldValue = value
-        
+
         eb:SetText(value)
         if userChanged and slider.onValueChanged then
             slider.onValueChanged(oldValue)
         end
     end)
     -----------------------------------------------------------------
-    
+
     -- OnMouseUp ----------------------------------------------------
     slider:SetScript("OnMouseUp", function(self, button, isMouseOver)
         if not slider:IsEnabled() then return end
-        
+
         -- oldValue here == newValue, OnMouseUp called after OnValueChanged
         if valueBeforeClick ~= oldValue and slider.afterValueChanged then
             valueBeforeClick = oldValue
@@ -177,7 +177,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
             value = oldValue - step
             value = value < low and low or value
         end
-        
+
         if value ~= oldValue then
             slider:SetValue(value)
             if slider.onValueChanged then slider.onValueChanged(value) end
@@ -185,7 +185,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
         end
     end)
     ]]
-    
+
     slider:SetScript("OnDisable", function()
         label:SetColor("disabled")
         eb:SetEnabled(false)
@@ -199,7 +199,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
         slider:SetScript("OnLeave", nil)
         slider:SetBackdropBorderColor(AW.GetColorRGB("black", 0.7))
     end)
-    
+
     slider:SetScript("OnEnable", function()
         label:SetColor("white")
         eb:SetEnabled(true)
@@ -230,7 +230,7 @@ function AW.CreateSlider(parent, text, width, low, high, step, showPercentSign, 
     end
 
     AW.AddToPixelUpdater(slider)
-    
+
     return slider
 end
 
@@ -240,7 +240,7 @@ end
 function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercentage, showLowHighText)
     local slider = CreateFrame("Slider", nil, parent, "BackdropTemplate")
     AW.StylizeFrame(slider, "widget")
-    
+
     slider:SetValueStep(step or 1)
     slider:SetObeyStepOnDrag(true)
     slider:SetOrientation("VERTICAL")
@@ -281,14 +281,14 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
     local lowText = AW.CreateFontString(slider, nil, "gray")
     AW.SetPoint(lowText, "TOPLEFT", slider, "TOPRIGHT", 2, 0)
     lowText:Hide()
-    AW.CreateFadeInOutAnimationGroup(lowText)
+    AW.CreateFadeInOutAnimation(lowText)
     -----------------------------------------------------------------
-    
+
     -- high ---------------------------------------------------------
     local highText = AW.CreateFontString(slider, nil, "gray")
     AW.SetPoint(highText, "BOTTOMLEFT", slider, "BOTTOMRIGHT", 2, 0)
     highText:Hide()
-    AW.CreateFadeInOutAnimationGroup(highText)
+    AW.CreateFadeInOutAnimation(highText)
     -----------------------------------------------------------------
 
     if showLowHighText then
@@ -312,9 +312,9 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
     local thumbText = AW.CreateFontString(slider, nil, "accent")
     AW.SetPoint(thumbText, "RIGHT", thumbBG, "LEFT", -2, 0)
     thumbText:Hide()
-    AW.CreateFadeInOutAnimationGroup(thumbText)
+    AW.CreateFadeInOutAnimation(thumbText)
     -----------------------------------------------------------------
-    
+
     local oldValue, valueBeforeClick
     local unit = isPercentage and "%" or ""
 
@@ -352,7 +352,7 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
     end
     slider:SetScript("OnEnter", OnEnter)
     -----------------------------------------------------------------
-    
+
     -- OnLeave ------------------------------------------------------
     local function OnLeave()
         thumb:SetColor(AW.GetColorTable("accent", 0.7))
@@ -360,17 +360,17 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
     end
     slider:SetScript("OnLeave", OnLeave)
     -----------------------------------------------------------------
-    
+
     -- OnValueChanged -----------------------------------------------
     slider:SetScript("OnValueChanged", function(self, value, userChanged)
         value = high - value -- NOTE: ORIGINAL: top == 0, NOW: top == max
         if oldValue == value then return end
-        
+
         if math.floor(value) < value then -- decimal
             value = tonumber(string.format("%.2f", value))
         end
         oldValue = value
-        
+
         if userChanged and slider.onValueChanged then
             slider.onValueChanged(oldValue)
         end
@@ -380,11 +380,11 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
         end
     end)
     -----------------------------------------------------------------
-    
+
     -- OnMouseUp ----------------------------------------------------
     slider:SetScript("OnMouseUp", function(self, button, isMouseOver)
         if not slider:IsEnabled() then return end
-        
+
         -- oldValue here == newValue, OnMouseUp called after OnValueChanged
         if valueBeforeClick ~= oldValue and slider.afterValueChanged then
             valueBeforeClick = oldValue
@@ -397,10 +397,10 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
             highText.fadeOut:Play()
         end
     end)
-    
+
     slider:SetScript("OnMouseDown", function(self, button, isMouseOver)
         if not slider:IsEnabled() then return end
-        
+
         thumbText:SetText(slider:GetValue()..unit)
         thumbText.fadeIn:Play()
         if showLowHighText then
@@ -409,7 +409,7 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
         end
     end)
     -----------------------------------------------------------------
-    
+
     slider:SetScript("OnDisable", function()
         label:SetColor("disabled")
         thumb:SetColor(AW.GetColorTable("disabled", 0.7))
@@ -421,7 +421,7 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
         slider:SetScript("OnLeave", nil)
         slider:SetBackdropBorderColor(AW.GetColorRGB("black", 0.7))
     end)
-    
+
     slider:SetScript("OnEnable", function()
         label:SetColor("white")
         thumb:SetColor(AW.GetColorTable("accent", 0.7))
@@ -451,6 +451,6 @@ function AW.CreateVerticalSlider(parent, text, height, low, high, step, isPercen
     end
 
     AW.AddToPixelUpdater(slider)
-    
+
     return slider
 end

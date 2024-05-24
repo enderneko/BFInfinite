@@ -56,12 +56,12 @@ local function ShowPopups(stopMoving)
         if stopMoving then
             p:StopMoving()
         end
-        
+
         -- show
         if i <= MAX_POPUPS and not popups[i]:IsShown() then
             popups[i]:FadeIn()
         end
-        
+
         -- set point
         local point, relativePoint, offset
         if settings["orientation"] == "bottom-to-top" then
@@ -185,7 +185,7 @@ end
 -- animation
 ---------------------------------------------------------------------
 local function CreateAnimation(p)
-    AW.CreateFadeInOutAnimationGroup(p)
+    AW.CreateFadeInOutAnimation(p)
 
     local move_ag = p:CreateAnimationGroup()
     local move_a = move_ag:CreateAnimation("Translation")
@@ -202,7 +202,7 @@ local function CreateAnimation(p)
             move_ag:Play()
         end
     end
-    
+
     function p:SetOnMoveFinished(script)
         move_ag:SetScript("OnFinished", script)
     end
@@ -319,7 +319,7 @@ local cpCreationFn = function()
         AW.Disable(p.yes, p.no)
         AddToHidingQueue(p)
     end)
-    
+
     local yes = AW.CreateButton(p, _G.YES, "green", 40, 15, nil, nil, nil, "small")
     p.yes = yes
     AW.SetPoint(yes, "BOTTOMRIGHT", no, "BOTTOMLEFT", 1, 0)
@@ -449,7 +449,7 @@ function AW.ShowConfirmPopup(text, onConfirm, onCancel, width, justify)
     p.onCancel = onCancel
     AW.SetWidth(p, width or DEFAULT_WIDTH)
     p.text:SetJustifyH("CENTER" or justify)
-    
+
     tinsert(popups, p)
     p.index = #popups
     ShowPopups(true)
@@ -466,7 +466,7 @@ function AW.ShowProgressPopup(text, maxValue, isSmoothedBar, width, justify)
     p.bar:SetMinMaxValues(0, maxValue)
     p.bar:SetBarValue(0)
     p.isSmoothedBar = isSmoothedBar
-    
+
     tinsert(popups, p)
     p.index = #popups
     ShowPopups(true)

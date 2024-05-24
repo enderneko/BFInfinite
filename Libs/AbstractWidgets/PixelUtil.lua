@@ -253,7 +253,7 @@ end
 local regions = {}
 --- @param fn function
 function AW.AddToPixelUpdater(r, fn)
-    r.UpdatePixels = fn
+    r.UpdatePixels = fn or r.UpdatePixels
     if not r.UpdatePixels then
         r.UpdatePixels = DefaultUpdatePixels
     end

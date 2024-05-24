@@ -91,13 +91,13 @@ function AW.SetEnabled(isEnabled, ...)
                 w:SetTextColor(AW.GetColorRGB("white"))
             else
                 w:SetTextColor(AW.GetColorRGB("disabled"))
-            end   
-        elseif w:IsObjectType("Texture") then   
+            end
+        elseif w:IsObjectType("Texture") then
             if isEnabled then
                 w:SetDesaturated(false)
             else
                 w:SetDesaturated(true)
-            end      
+            end
         elseif w.SetEnabled then
             w:SetEnabled(isEnabled)
         elseif isEnabled then

@@ -52,7 +52,7 @@ local function HandleFlyoutButton(b)
         handledFlyouts[b] = true
         AB.StylizeButton(b)
     end
-    
+
     if not InCombatLockdown() then
         AW.SetSize(b, AB.config.general.flyoutSize)
     end
@@ -83,11 +83,11 @@ end
 local function CreateBar(id)
     local name = "BFI_ActionBar"..id
     local bar = CreateFrame("Frame", name, AW.UIParent, "SecureHandlerStateTemplate")
-    
+
     bar.id = id
     bar.name = ACTION_BAR_LIST[id]
     bar.buttons = {}
-    
+
     AB.bars[bar.name] = bar
 
     -- mover ----------------------------------------------------------------- --
@@ -122,9 +122,6 @@ local function CreateBar(id)
     -- create buttons -------------------------------------------------------- --
     for i = 1, NUM_ACTIONBAR_BUTTONS do
         local b = AB.CreateButton(bar, i, name.."Button"..i)
-        -- tinsert(bar.buttons, b)
-        -- b:SetID(i)
-
         -- local b = LAB:CreateButton(i, name.."_Button"..i, bar)
         tinsert(bar.buttons, b)
 
@@ -134,11 +131,11 @@ local function CreateBar(id)
         b:HookScript("OnEnter", AB.ActionBar_OnEnter)
         b:HookScript("OnLeave", AB.ActionBar_OnLeave)
     end
-    
+
     -- events ---------------------------------------------------------------- --
     bar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     bar:SetScript("OnLeave", AB.ActionBar_OnLeave)
-    
+
     -- update pixels --------------------------------------------------------- --
     function bar:UpdatePixels()
         AW.ReSize(bar)
@@ -148,7 +145,7 @@ local function CreateBar(id)
             AW.ReSize(b)
             AW.RePoint(b)
             AW.ReBorder(b)
-        end 
+        end
     end
 
     AW.AddToPixelUpdater(bar)
@@ -193,7 +190,7 @@ function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientati
     -- update buttons -------------------------------------------------------- --
     local p, rp, rp_new_line
     local x, y, x_new_line, y_new_line
-    
+
     p = anchor
 
     if orientation == "horizontal" then
@@ -310,14 +307,14 @@ local function UpdateButton(bar, shared, specific)
     bar.buttonConfig.colors = shared.colors
     bar.buttonConfig.hideElements.equipped = shared.hideElements.equipped
     bar.buttonConfig.glow = shared.glow
-    
+
     -- specific bar
     bar.buttonConfig.showGrid = specific.showGrid
     bar.buttonConfig.flyoutDirection = specific.flyoutDirection
     bar.buttonConfig.hideElements.count = specific.hideElements.count
     bar.buttonConfig.hideElements.macro = specific.hideElements.macro
     bar.buttonConfig.hideElements.hotkey = specific.hideElements.hotkey
-    
+
     -- text
     bar.buttonConfig.text = specific.text
 
@@ -366,7 +363,7 @@ local function UpdateBar(bar, general, shared, specific)
     -- bar
     AB.ReArrange(bar, specific.size, specific.spacing, specific.buttonsPerLine, specific.num, specific.anchor, specific.orientation)
     AW.LoadPosition(bar, specific.position)
-    
+
     bar:SetFrameStrata(general.frameStrata)
     bar:SetFrameLevel(general.frameLevel)
 

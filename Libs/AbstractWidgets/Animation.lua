@@ -100,7 +100,33 @@ end
 ---------------------------------------------------------------------
 -- fade-in/out animation group
 ---------------------------------------------------------------------
-function AW.CreateFadeInOutAnimationGroup(region, duration)
+local fade_in_out = {
+    FadeIn = function(region)
+        if not region.fadeIn:IsPlaying() then
+            region.fadeIn:Play()
+        end
+    end,
+
+    FadeOut = function(region)
+        if not region.fadeOut:IsPlaying() then
+            region.fadeOut:Play()
+        end
+    end,
+
+    ShowNow = function(region)
+        region.fadeIn:Stop()
+        region.fadeOut:Stop()
+        region:Show()
+    end,
+
+    HideNow = function(region)
+        region.fadeIn:Stop()
+        region.fadeOut:Stop()
+        region:Hide()
+    end,
+}
+
+function AW.CreateFadeInOutAnimation(region, duration)
     duration = duration or 0.25
 
     local in_ag = region:CreateAnimationGroup()
@@ -108,33 +134,14 @@ function AW.CreateFadeInOutAnimationGroup(region, duration)
 
     local out_ag = region:CreateAnimationGroup()
     region.fadeOut = out_ag
-    
-    function region:FadeIn()
-        if not in_ag:IsPlaying() then
-            in_ag:Play()
-        end
-    end
 
-    function region:FadeOut()
-        if not out_ag:IsPlaying() then
-            out_ag:Play()
-        end
-    end
-
-    function region:ShowNow()
-        in_ag:Stop()
-        out_ag:Stop()
-        region:Show()
-    end
-
-    function region:HideNow()
-        in_ag:Stop()
-        out_ag:Stop()
-        region:Hide()
+    for k, v in pairs(fade_in_out) do
+        region[k] = v
     end
 
     -- in -----------------------------------------------------------
     local in_a = in_ag:CreateAnimation("Alpha")
+    in_ag.alpha = in_a
     in_a:SetFromAlpha(0)
     in_a:SetToAlpha(1)
     in_a:SetDuration(duration)
@@ -144,9 +151,10 @@ function AW.CreateFadeInOutAnimationGroup(region, duration)
         region:Show()
     end)
     -----------------------------------------------------------------
-    
+
     -- out ----------------------------------------------------------
     local out_a = out_ag:CreateAnimation("Alpha")
+    out_ag.alpha = out_a
     out_a:SetFromAlpha(1)
     out_a:SetToAlpha(0)
     out_a:SetDuration(duration)
@@ -160,6 +168,13 @@ function AW.CreateFadeInOutAnimationGroup(region, duration)
         region:Hide()
     end)
     -----------------------------------------------------------------
+end
+
+function AW.SetFadeInOutAnimationDuration(region, duration)
+    if not (duration and region.fadeIn and region.fadeOut) then return end
+
+    region.fadeIn.alpha:SetDuration(duration)
+    region.fadeOut.alpha:SetDuration(duration)
 end
 
 ---------------------------------------------------------------------
@@ -178,7 +193,7 @@ function AW.AnimatedResize(frame, targetWidth, targetHeight, frequency, steps, o
         local right = Round(frame:GetRight())
         local top = Round(frame:GetTop())
         local bottom = Round(frame:GetBottom())
-        
+
         AW.ClearPoints(frame)
         if anchorPoint == "TOPLEFT" then
             frame:SetPoint("TOPLEFT", AW.UIParent, "BOTTOMLEFT", left, top)
@@ -192,7 +207,7 @@ function AW.AnimatedResize(frame, targetWidth, targetHeight, frequency, steps, o
     end
 
     if onStart then onStart() end
-    
+
     local currentHeight = frame._height or frame:GetHeight()
     local currentWidth = frame._width or frame:GetWidth()
     targetWidth = targetWidth or currentWidth
@@ -200,7 +215,7 @@ function AW.AnimatedResize(frame, targetWidth, targetHeight, frequency, steps, o
 
     local diffW = (targetWidth - currentWidth) / steps
     local diffH = (targetHeight - currentHeight) / steps
-    
+
     local animationTimer
     animationTimer = C_Timer.NewTicker(frequency, function()
         if diffW ~= 0 then

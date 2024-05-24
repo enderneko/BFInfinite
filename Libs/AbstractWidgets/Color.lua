@@ -356,6 +356,10 @@ function AW.AddColors(t)
     end
 end
 
+function AW.UnpackColor(t, alpha)
+    return t[1], t[2], t[3], alpha or t[4]
+end
+
 ---------------------------------------------------------------------
 -- button colors
 ---------------------------------------------------------------------
