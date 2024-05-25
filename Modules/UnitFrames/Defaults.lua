@@ -51,7 +51,7 @@ local default_player_target_indicators = {
     },
     nameText = {
         enabled = true,
-        position = {"TOPLEFT", "TOPLEFT", 3, -3},
+        position = {"TOPLEFT", "TOPLEFT", 3, -4},
         length = 0.5,
         anchorTo = "healthBar",
         font = {BFI_DEFAULT, 12, "none", true},
@@ -59,7 +59,7 @@ local default_player_target_indicators = {
     },
     healthText = {
         enabled = true,
-        position = {"TOPRIGHT", "TOPRIGHT", -3, -3},
+        position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
         anchorTo = "healthBar",
         font = {BFI_DEFAULT, 12, "none", true},
         color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
@@ -101,6 +101,35 @@ local default_player_target_indicators = {
             camDistanceScale = 1.5,
         },
     },
+    castBar = {
+        enabled = true,
+        position = {"CENTER", "CENTER", 0, -5},
+        frameLevel = 10,
+        width = 197,
+        height = 20,
+        bgColor = AW.GetColorTable("background", 0.5),
+        borderColor = AW.GetColorTable("border"),
+        texture = BFI_DEFAULT,
+        fadeDuration = 1,
+        showIcon = true,
+        nameText = {
+            font = {BFI_DEFAULT, 12, "none", true},
+            position = {"LEFT", "LEFT", 25, 0},
+            color = AW.GetColorTable("white"),
+            length = 0.5,
+        },
+        durationText = {
+            font = {BFI_DEFAULT, 12, "none", true},
+            position = {"RIGHT", "RIGHT", -5, 0},
+            format = "%.1f",
+            color = AW.GetColorTable("white"),
+        },
+        colors = {
+            normal = AW.GetColorTable("cast_normal", 0.9),
+            failed = AW.GetColorTable("cast_failed", 0.9),
+            succeeded = AW.GetColorTable("cast_succeeded", 0.9),
+            uninterruptible = AW.GetColorTable("cast_uninterruptible", 0.4),
+        },
     },
 }
 
@@ -125,7 +154,7 @@ local defaults = {
             oorAlpha = 1,
         },
         indicators = default_player_target_indicators,
-    }
+    },
 }
 
 BFI.RegisterCallback("InitConfigs", "UnitFrames", function(t)

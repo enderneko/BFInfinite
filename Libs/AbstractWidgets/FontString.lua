@@ -46,7 +46,7 @@ local function creationFunc()
     in_a:SetFromAlpha(0)
     in_a:SetToAlpha(1)
     in_a:SetDuration(0.25)
-    
+
     -- out -------------------------------------
     local out_a = ag:CreateAnimation("Alpha")
     out_a:SetOrder(2)
@@ -92,7 +92,7 @@ function AW.ShowNotificationText(text, color, width, hideDelay, point, relativeT
     fs:SetText(text)
     AW.ColorFontString(fs, color or "red")
     if width then fs:SetWidth(width) end
-    
+
     -- alignment
     if strfind(point, "LEFT$") then
         fs:SetJustifyH("LEFT")
@@ -137,16 +137,16 @@ function AW.CreateScrollText(parent, frequency, step, startDelay, endDelay)
     fadeIn._in:SetToAlpha(1)
     fadeIn._in:SetDuration(0.5)
     ---------------------------------------------
-    
+
     -- fade out then in -------------------------
     local fadeOutIn = text:CreateAnimationGroup()
-    
+
     fadeOutIn._out = fadeOutIn:CreateAnimation("Alpha")
     fadeOutIn._out:SetFromAlpha(1)
     fadeOutIn._out:SetToAlpha(0)
     fadeOutIn._out:SetDuration(0.5)
     fadeOutIn._out:SetOrder(1)
-    
+
     fadeOutIn._in = fadeOutIn:CreateAnimation("Alpha")
     fadeOutIn._in:SetStartDelay(0.1) -- time for SetHorizontalScroll(0)
     fadeOutIn._in:SetFromAlpha(0)
@@ -224,4 +224,22 @@ function AW.CreateScrollText(parent, frequency, step, startDelay, endDelay)
     AW.AddToPixelUpdater(holder)
 
     return holder
+end
+
+---------------------------------------------------------------------
+-- SetText with length
+---------------------------------------------------------------------
+--- @param fs FontString
+function AW.SetText(fs, text, length)
+    if length <= 1 then
+        local width = fs:GetParent():GetWidth() - 2
+        for i = string.utf8len(text), 0, -1 do
+            fs:SetText(string.utf8sub(text, 1, i))
+            if fs:GetWidth() / width <= length then
+                break
+            end
+        end
+    else
+        fs:SetText(string.utf8sub(text, 1, length))
+    end
 end

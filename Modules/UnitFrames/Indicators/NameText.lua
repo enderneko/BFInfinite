@@ -27,17 +27,7 @@ local function UpdateName(self, event, unitId)
     local class = UnitClassBase(unit)
 
     -- length
-    if self.length <= 1 then
-        local width = self:GetParent():GetWidth() - 2
-        for i = string.utf8len(name), 0, -1 do
-            self:SetText(string.utf8sub(name, 1, i))
-            if self:GetWidth() / width <= self.length then
-                break
-            end
-        end
-    else
-        self:SetText(string.utf8sub(name, 1, self.length))
-    end
+    AW.SetText(self, name, self.length)
 
     -- color
     local r, g, b

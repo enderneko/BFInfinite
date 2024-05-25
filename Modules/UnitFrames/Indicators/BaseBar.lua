@@ -114,5 +114,8 @@ function UF.CreateBar(parent, name)
         bar[k] = v
     end
 
+    -- pixel perfect
+    AW.AddToPixelUpdater(bar)
+
     return bar
 end

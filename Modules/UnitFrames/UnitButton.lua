@@ -53,7 +53,7 @@ end
 ---------------------------------------------------------------------
 -- states
 ---------------------------------------------------------------------
-local function UnitButton_UpdateStates(self)
+local function UnitButton_UpdateBaseStates(self)
     local unit = self.unit
     if not unit then return end
 
@@ -108,15 +108,12 @@ local function UnitButton_UpdatePowerStates(self)
 end
 
 ---------------------------------------------------------------------
--- cast
+-- all states
 ---------------------------------------------------------------------
-local function UnitButton_UpdateCast(self, event)
-    if not self.indicators.castBar then return end
-
-    local unit = self.displayedUnit
-    if not unit then return end
-
-    self.indicators.castBar:Update(unit, event)
+local function UnitButton_UpdateAllStates(self)
+    UnitButton_UpdateBaseStates(self)
+    UnitButton_UpdateHealthStates(self)
+    UnitButton_UpdatePowerStates(self)
 end
 
 ---------------------------------------------------------------------
@@ -151,9 +148,7 @@ local function UnitButton_UpdateAll(self, skipUpdateIndicators)
     end
 
     -- states
-    UnitButton_UpdateStates(self)
-    UnitButton_UpdateHealthStates(self)
-    UnitButton_UpdatePowerStates(self)
+    UnitButton_UpdateAllStates(self)
 
     -- range
     UnitButton_UpdateInRange(self)
@@ -319,6 +314,7 @@ local function UnitButton_OnTick(self)
                 self.__displayedGuid = displayedGuid
                 -- self._updateRequired = true
                 wipe(self.states)
+                UnitButton_UpdateAllStates(self)
             end
 
             local guid = UnitGUID(self.unit)
@@ -375,11 +371,11 @@ local function UnitButton_OnShow(self)
     -- self._powerBarUpdateRequired = 1
 
     UnitButton_RegisterEvents(self)
+    UF.OnButtonShow(self)
     local success, result = pcall(UnitButton_UpdateAll, self, true)
     if not success then
         BFI.Debug("|cffabababUpdateAll FAILED|r", self:GetName(), result)
     end
-    UF.OnButtonShow(self)
 end
 
 local function UnitButton_OnHide(self)

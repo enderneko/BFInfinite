@@ -29,6 +29,10 @@ end
 
 --- @param fs FontString
 function U.SetFont(fs, font, size, outline, shadow)
+    if type(font) == "table" then
+        font, size, outline, shadow = unpack(font)
+    end
+
     font = U.GetFont(font)
 
     local flags

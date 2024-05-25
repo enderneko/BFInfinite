@@ -125,8 +125,8 @@ end
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
-function UF.CreatePortrait(parent)
-    local portrait = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+function UF.CreatePortrait(parent, name)
+    local portrait = CreateFrame("Frame", name, parent, "BackdropTemplate")
     portrait.root = parent
     AW.SetDefaultBackdrop(portrait)
 

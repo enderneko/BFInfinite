@@ -10,6 +10,7 @@ local indicators = {
     "healthText",
     "powerText",
     "portrait",
+    "castBar",
 }
 
 ---------------------------------------------------------------------

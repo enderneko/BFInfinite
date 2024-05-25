@@ -213,8 +213,5 @@ function UF.CreatePowerBar(parent, name)
     bar.Enable = PowerBar_Enable
     bar.LoadConfig = PowerBar_LoadConfig
 
-    -- pixel perfect
-    AW.AddToPixelUpdater(bar)
-
     return bar
 end

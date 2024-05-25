@@ -394,7 +394,7 @@ function UF.CreateHealthBar(parent, name)
     bar.LoadConfig = HealthBar_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(bar, HealthBar_UpdatePixels)
+    bar.UpdatePixels = HealthBar_UpdatePixels
 
     return bar
 end
