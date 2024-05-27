@@ -270,7 +270,7 @@ function UF.CreateHealthText(parent, name)
     text.root = parent
 
     -- events
-    BFI.SetEventHandler(text)
+    BFI.AddEventHandler(text)
 
     -- functions
     text.Enable = HealthText_Enable

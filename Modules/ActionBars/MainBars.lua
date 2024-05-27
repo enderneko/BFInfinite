@@ -444,12 +444,12 @@ local function InitMainBars()
     -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
     -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
 
-    AB.RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
-    AB.RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+    AB:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
+    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 
     if BFI.vars.isRetail then
-        AB.RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
-        AB.RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+        AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
+        AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
     end
 
     if BFI.vars.isRetail and C_PetBattles.IsInBattle() then

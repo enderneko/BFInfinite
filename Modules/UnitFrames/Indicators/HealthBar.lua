@@ -347,7 +347,7 @@ function UF.CreateHealthBar(parent, name)
     bar.root = parent
 
     -- events
-    BFI.SetEventHandler(bar)
+    BFI.AddEventHandler(bar)
 
     -- shield
     local shield = bar:CreateTexture(name.."Shield", "ARTWORK", nil, 2)

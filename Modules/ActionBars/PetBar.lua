@@ -10,7 +10,7 @@ local AB = BFI.M_AB
 local petBar
 local function CreatePetBar()
     petBar = CreateFrame("Frame", "BFI_PetBar", AW.UIParent, "SecureHandlerStateTemplate")
-    
+
     petBar.name = "petbar"
     petBar.buttons = {}
 
@@ -104,7 +104,7 @@ local function UpdatePetButtons(event, unit)
             or name == "PET_MODE_AGGRESSIVE" or name == "PET_MODE_DEFENSIVE" or name == "PET_MODE_PASSIVE" or name == "PET_MODE_ASSIST" then
             b:SetChecked(true)
             b.checkedTexture:SetBlendMode("BLEND")
-            
+
             if isActive then
                 b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0))
             else
@@ -113,16 +113,16 @@ local function UpdatePetButtons(event, unit)
         else
             b.checkedTexture:SetBlendMode("ADD")
             b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.25))
-            
+
             if isActive then
                 b:SetChecked(true)
-    
+
                 if IsPetAttackAction(i) then
                     if b.StartFlash then b:StartFlash() end
                 end
             else
                 b:SetChecked(false)
-    
+
                 if IsPetAttackAction(i) then
                     if b.StopFlash then b:StopFlash() end
                 end
@@ -206,15 +206,15 @@ local function InitPetBar()
     AssignBindings()
 
     -- events
-    AB.RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
-    AB.RegisterEvent("UNIT_PET", UpdatePetButtons)
-    AB.RegisterEvent("UNIT_FLAGS", UpdatePetButtons)
-    AB.RegisterEvent("PLAYER_CONTROL_GAINED", UpdatePetButtons)
-    AB.RegisterEvent("PLAYER_CONTROL_LOST", UpdatePetButtons)
-    AB.RegisterEvent("PLAYER_ENTERING_WORLD", UpdatePetButtons)
-    AB.RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED", UpdatePetButtons)
-    AB.RegisterEvent("SPELLS_CHANGED", UpdatePetButtons)
-    AB.RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
-    AB.RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+    AB:RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
+    AB:RegisterEvent("UNIT_PET", UpdatePetButtons)
+    AB:RegisterEvent("UNIT_FLAGS", UpdatePetButtons)
+    AB:RegisterEvent("PLAYER_CONTROL_GAINED", UpdatePetButtons)
+    AB:RegisterEvent("PLAYER_CONTROL_LOST", UpdatePetButtons)
+    AB:RegisterEvent("PLAYER_ENTERING_WORLD", UpdatePetButtons)
+    AB:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED", UpdatePetButtons)
+    AB:RegisterEvent("SPELLS_CHANGED", UpdatePetButtons)
+    AB:RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
+    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 end
 BFI.RegisterCallback("InitModules", "AB_PetBar", InitPetBar)

@@ -116,10 +116,10 @@ function EM.Initialize()
     hooksecurefunc(_G.GameMenuButtonEditMode, "SetEnabled", EM.SetEnabled)
 
     -- wait for combat leave to do stuff
-    EM.RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED", EM.LAYOUTS_UPDATED)
-    EM.RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", EM.LAYOUTS_UPDATED)
-    EM.RegisterEvent("PLAYER_REGEN_ENABLED", EM.PLAYER_REGEN)
-    EM.RegisterEvent("PLAYER_REGEN_DISABLED", EM.PLAYER_REGEN)
+    EM:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED", EM.LAYOUTS_UPDATED)
+    EM:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", EM.LAYOUTS_UPDATED)
+    EM:RegisterEvent("PLAYER_REGEN_ENABLED", EM.PLAYER_REGEN)
+    EM:RegisterEvent("PLAYER_REGEN_DISABLED", EM.PLAYER_REGEN)
 
     -- account settings will be tainted
     local mixin = _G.EditModeManagerFrame.AccountSettings
@@ -147,4 +147,4 @@ function EM.Initialize()
     end
 end
 
-EM.RegisterEvent("PLAYER_LOGIN", EM.Initialize)
+EM:RegisterEvent("PLAYER_LOGIN", EM.Initialize)

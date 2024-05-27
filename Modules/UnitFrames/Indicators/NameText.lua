@@ -91,7 +91,7 @@ function UF.CreateNameText(parent, name)
     text.root = parent
 
     -- events
-    BFI.SetEventHandler(text)
+    BFI.AddEventHandler(text)
 
     -- functions
     text.Enable = NameText_Enable

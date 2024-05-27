@@ -1,3 +1,10 @@
+---------------------------------------------------------------------
+-- File: CallbackHandler.lua
+-- Author: enderneko (enderneko-dev@outlook.com)
+-- Created : 2024-03-04 17:24 +08:00
+-- Modified: 2024-05-27 12:32 +08:00
+---------------------------------------------------------------------
+
 local _, addon = ...
 
 local callbacks = {}

@@ -1,156 +1,12 @@
+---------------------------------------------------------------------
+-- File: EventHandler.lua
+-- Author: enderneko (enderneko-dev@outlook.com)
+-- Created : 2024-03-14 11:46 +08:00
+-- Modified: 2024-05-27 12:31 +08:00
+---------------------------------------------------------------------
+
 local _, addon = ...
 
----------------------------------------------------------------------
--- add event handler for module (non-Frame)
----------------------------------------------------------------------
-function addon.AddEventHandler(module)
-    module.eventFrame = CreateFrame("Frame")
-    module.eventFrame.events = {}
-
-    function module.RegisterEvent(event, onEventFunc)
-        module.eventFrame:RegisterEvent(event)
-        if type(module.eventFrame.events[event]) == "function" then
-            local old = module.eventFrame.events[event]
-            module.eventFrame.events[event] = {}
-            tinsert(module.eventFrame.events[event], old)
-            tinsert(module.eventFrame.events[event], onEventFunc)
-        elseif type(module.eventFrame.events[event]) == "table" then
-            tinsert(module.eventFrame.events[event], onEventFunc)
-        else
-            module.eventFrame.events[event] = onEventFunc
-        end
-    end
-
-    function module.UnregisterEvent(event, funcToRemove)
-        if funcToRemove then
-            if type(module.eventFrame.events[event]) == "function" then
-                if funcToRemove == module.eventFrame.events[event] then
-                    module.eventFrame.events[event] = nil
-                    module.eventFrame:UnregisterEvent(event)
-                end
-            elseif type(module.eventFrame.events[event]) == "table" then
-                for i, f in pairs(module.eventFrame.events[event]) do
-                    if f == funcToRemove then
-                        tremove(module.eventFrame.events[event], i)
-                        break
-                    end
-                end
-                -- check if isEmpty
-                if #module.eventFrame.events[event] == 0 then
-                    module.eventFrame.events[event] = nil
-                    module.eventFrame:UnregisterEvent(event)
-                end
-            end
-        else
-            module.eventFrame.events[event] = nil
-            module.eventFrame:UnregisterEvent(event)
-        end
-    end
-
-    function module.UnregisterAllEvents(event)
-        module.eventFrame:UnregisterEvent(event)
-        wipe(module.eventFrame.events)
-    end
-
-    module.eventFrame:SetScript("OnEvent", function(self, event, ...)
-        if type(self.events[event]) == "function" then
-            self.events[event](event, ...)
-        elseif type(self.events[event]) == "table" then
-            for _, f in pairs(self.events[event]) do
-                f(event, ...)
-            end
-        end
-    end)
-end
-
----------------------------------------------------------------------
--- add simple event handler for frame
----------------------------------------------------------------------
-function addon.SetSimpleEventHandler(frame)
-    frame:SetScript("OnEvent", function(self, event, ...)
-        if self[event] then
-            self[event](self, ...)
-        end
-    end)
-end
-
----------------------------------------------------------------------
--- add event handler
----------------------------------------------------------------------
-local eventFrame = CreateFrame("Frame", "BFI_EVENT_HANDLER")
-local _RegisterEvent = eventFrame.RegisterEvent
-local _UnregisterEvent = eventFrame.UnregisterEvent
-local _UnregisterAllEvents = eventFrame.UnregisterAllEvents
-
--- for objects with OnEvent handler -------------
-local function RegisterEvent(self, event, ...)
-    if type(self.events[event]) == "function" then
-        local old = self.events[event]
-        self.events[event] = {}
-        tinsert(self.events[event], old)
-        for i = 1, select("#", ...) do
-            local f = select(i, ...)
-            tinsert(self.events[event], f)
-        end
-    elseif type(self.events[event]) == "table" then
-        for i = 1, select("#", ...) do
-            local f = select(i, ...)
-            tinsert(self.events[event], f)
-        end
-    else
-        if select("#", ...) == 1 then
-            self.events[event] = ...        
-        elseif select("#", ...) > 1 then
-            self.events[event] = {}
-            for i = 1, select("#", ...) do
-                local f = select(i, ...)
-                tinsert(self.events[event], f)
-            end
-        end
-    end
-    _RegisterEvent(self, event)
-end
-
-local function UnregisterEvent(self, event, ...)
-    if select("#", ...) ~= 0 then
-        if type(self.events[event]) == "function" then
-            for i = 1, select("#", ...) do
-                local f = select(i, ...)
-                if f == self.events[event] then
-                    self.events[event] = nil
-                    _UnregisterEvent(self, event)
-                    break
-                end
-            end
-        elseif type(self.events[event]) == "table" then
-            for i = 1, select("#", ...) do
-                local _f = select(i, ...)
-                for j, f in pairs(self.events[event]) do
-                    if f == _f then
-                        tremove(self.events[event], j)
-                        break
-                    end
-                end
-            end
-            -- check if isEmpty
-            if #self.events[event] == 0 then
-                self.events[event] = nil
-                _UnregisterEvent(self, event)
-            end
-        end
-    else
-        _UnregisterEvent(self, event)
-        self.events[event] = nil
-    end
-end
-
-local function UnregisterAllEvents(self)
-    _UnregisterAllEvents(self)
-    wipe(self.events)
-end
--------------------------------------------------
-
--- for objects without OnEvent handler ----------
 local function IsEmpty(t)
     for _ in pairs(t) do
         return false
@@ -158,96 +14,204 @@ local function IsEmpty(t)
     return true
 end
 
-eventFrame.events = {}
-eventFrame.RegisterEvent = function(self, event, ...)
-    if not eventFrame.events[event] then
-        eventFrame.events[event] = {}
-    end
+---------------------------------------------------------------------
+-- base
+---------------------------------------------------------------------
+local sharedEventHandler = CreateFrame("Frame", "BFI_EVENT_HANDLER")
+local _RegisterEvent = sharedEventHandler.RegisterEvent
+local _UnregisterEvent = sharedEventHandler.UnregisterEvent
+local _UnregisterAllEvents = sharedEventHandler.UnregisterAllEvents
 
-    if not eventFrame.events[event][self] then
-        eventFrame.events[event][self] = {}
-    end
-
-    local t = eventFrame.events[event][self]
+---------------------------------------------------------------------
+-- self
+---------------------------------------------------------------------
+local function RegisterEvent(self, event, ...)
+    if not self.events[event] then self.events[event] = {} end
 
     for i = 1, select("#", ...) do
-        local f = select(i, ...)
-        tinsert(t, f)
+        local fn = select(i, ...)
+        self.events[event][fn] = true
     end
 
-    _RegisterEvent(eventFrame, event)
+    _RegisterEvent(self, event)
 end
 
-eventFrame.UnregisterEvent = function(self, event, ...)
-    if not eventFrame.events[event] then return end
-    if not eventFrame.events[event][self] then return end
+local function UnregisterEvent(self, event, ...)
+    if not self.events[event] then return end
 
-    local t = eventFrame.events[event][self]
+    if select("#", ...) == 0 then
+        self.events[event] = nil
+        _UnregisterEvent(self, event)
+        return
+    end
 
-    if select("#", ...) ~= 0 then
-        for i = 1, select("#", ...) do
-            local _f = select(i, ...)
-            for j, f in pairs(t) do
-                if f == _f then
-                    tremove(t, j)
-                    break
-                end
-            end
-        end
-        -- check if isEmpty
-        if #t == 0 then
-            eventFrame.events[event][self] = nil
-        end
+    for i = 1, select("#", ...) do
+        local fn = select(i, ...)
+        self.events[event][fn] = nil
+    end
+
+    -- check if isEmpty
+    if IsEmpty(self.events[event]) then
+        self.events[event] = nil
+        _UnregisterEvent(self, event)
+    end
+end
+
+local function UnregisterAllEvents(self)
+    wipe(self.events)
+    _UnregisterAllEvents(self)
+end
+
+---------------------------------------------------------------------
+-- embeded
+---------------------------------------------------------------------
+local function RegisterEvent_Embeded(self, event, ...)
+    if not self.eventHandler.events[event] then self.eventHandler.events[event] = {} end
+
+    for i = 1, select("#", ...) do
+        local fn = select(i, ...)
+        self.eventHandler.events[event][fn] = true
+    end
+
+    _RegisterEvent(self.eventHandler, event)
+end
+
+local function UnregisterEvent_Embeded(self, event, ...)
+    if not self.eventHandler.events[event] then return end
+
+    if select("#", ...) == 0 then
+        self.eventHandler.events[event] = nil
+        _UnregisterEvent(self.eventHandler, event)
+        return
+    end
+
+    for i = 1, select("#", ...) do
+        local fn = select(i, ...)
+        self.eventHandler.events[event][fn] = nil
+    end
+
+    -- check if isEmpty
+    if IsEmpty(self.eventHandler.events[event]) then
+        self.eventHandler.events[event] = nil
+        _UnregisterEvent(self.eventHandler, event)
+    end
+end
+
+local function UnregisterAllEvents_Embeded(self)
+    wipe(self.eventHandler.events)
+    _UnregisterAllEvents(self.eventHandler)
+end
+
+---------------------------------------------------------------------
+-- shared
+---------------------------------------------------------------------
+local function RegisterEvent_Shared(self, event, ...)
+    if not sharedEventHandler.events[event] then sharedEventHandler.events[event] = {} end
+    if not sharedEventHandler.events[event][self] then sharedEventHandler.events[event][self] = {} end
+
+    for i = 1, select("#", ...) do
+        local fn = select(i, ...)
+        sharedEventHandler.events[event][self][fn] = true
+    end
+
+    _RegisterEvent(sharedEventHandler, event)
+end
+
+local function UnregisterEvent_Shared(self, event, ...)
+    if not (sharedEventHandler.events[event] and sharedEventHandler.events[event][self]) then return end
+
+    local t = sharedEventHandler.events[event][self]
+
+    if select("#", ...) == 0 then
+        sharedEventHandler.events[event][self] = nil
     else
-        eventFrame.events[event][self] = nil
+        for i = 1, select("#", ...) do
+            local fn = select(i, ...)
+            sharedEventHandler.events[event][self][fn] = nil
+        end
+
+        -- check if isEmpty
+        if IsEmpty(sharedEventHandler.events[event][self]) then
+            sharedEventHandler.events[event][self] = nil
+        end
     end
 
     -- check if event registered by other objects
-    if IsEmpty(eventFrame.events[event]) then
-        eventFrame.events[event] = nil
-        _UnregisterEvent(eventFrame, event)
+    if IsEmpty(sharedEventHandler.events[event]) then
+        sharedEventHandler.events[event] = nil
+        _UnregisterEvent(sharedEventHandler, event)
     end
 end
 
-eventFrame.UnregisterAllEvents = function(self)
-    for event, et in pairs(eventFrame.events) do
-        et[self] = nil
-
-        if IsEmpty(eventFrame.events[event]) then
-            eventFrame.events[event] = nil
-            _UnregisterEvent(eventFrame, event)
+local function UnregisterAllEvents_Shared(self)
+    for event, et in pairs(sharedEventHandler.events) do
+        if et[self] then
+            et[self] = nil
+            -- check if isEmpty
+            if IsEmpty(sharedEventHandler.events[event]) then
+                sharedEventHandler.events[event] = nil
+                _UnregisterEvent(sharedEventHandler, event)
+            end
         end
     end
 end
 
-eventFrame:SetScript("OnEvent", function(self, event, ...)
+sharedEventHandler.events = {}
+sharedEventHandler:SetScript("OnEvent", function(self, event, ...)
     for obj, funcs in pairs(self.events[event]) do
-        for _, fn in pairs(funcs) do
+        for fn in pairs(funcs) do
             fn(obj, event, ...)
         end
     end
 end)
--------------------------------------------------
 
-function addon.SetEventHandler(obj)
-    if obj:GetObjectType() == "FontString" or obj:GetObjectType() == "Texture" then
-        obj.RegisterEvent = eventFrame.RegisterEvent
-        obj.UnregisterEvent = eventFrame.UnregisterEvent
-        obj.UnregisterAllEvents = eventFrame.UnregisterAllEvents
+---------------------------------------------------------------------
+-- add event handler
+---------------------------------------------------------------------
+function addon.AddEventHandler(obj)
+    if not obj.GetObjectType then
+        -- use embeded
+        obj.RegisterEvent = RegisterEvent_Embeded
+        obj.UnregisterEvent = UnregisterEvent_Embeded
+        obj.UnregisterAllEvents = UnregisterAllEvents_Embeded
+
+        obj.eventHandler = CreateFrame("Frame")
+        obj.eventHandler.events = {}
+
+        obj.eventHandler:SetScript("OnEvent", function(self, event, ...)
+            for fn in pairs(self.events[event]) do
+                fn(event, ...)
+            end
+        end)
+
+    elseif obj:GetObjectType() == "FontString" or obj:GetObjectType() == "Texture" then
+        -- use shared
+        obj.RegisterEvent = RegisterEvent_Shared
+        obj.UnregisterEvent = UnregisterEvent_Shared
+        obj.UnregisterAllEvents = UnregisterAllEvents_Shared
+
     else
+        -- use self
         obj.events = {}
         obj.RegisterEvent = RegisterEvent
         obj.UnregisterEvent = UnregisterEvent
         obj.UnregisterAllEvents = UnregisterAllEvents
-    
+
         obj:SetScript("OnEvent", function(self, event, ...)
-            if type(self.events[event]) == "function" then
-                self.events[event](self, event, ...)
-            elseif type(self.events[event]) == "table" then
-                for _, fn in pairs(self.events[event]) do
-                    fn(self, event, ...)
-                end
+            for fn in pairs(self.events[event]) do
+                fn(self, event, ...)
             end
         end)
     end
+end
+
+---------------------------------------------------------------------
+-- add simple event handler for frame
+---------------------------------------------------------------------
+function addon.AddSimpleEventHandler(frame)
+    frame:SetScript("OnEvent", function(self, event, ...)
+        if self[event] then
+            self[event](self, ...)
+        end
+    end)
 end

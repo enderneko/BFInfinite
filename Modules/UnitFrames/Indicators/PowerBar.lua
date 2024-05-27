@@ -206,7 +206,7 @@ function UF.CreatePowerBar(parent, name)
     bar.root = parent
 
     -- events
-    BFI.SetEventHandler(bar)
+    BFI.AddEventHandler(bar)
 
     -- functions
     bar.Update = PowerBar_Update

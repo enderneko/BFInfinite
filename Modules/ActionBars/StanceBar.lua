@@ -10,7 +10,7 @@ local AB = BFI.M_AB
 local stanceBar
 local function CreateStanceBar()
     stanceBar = CreateFrame("Frame", "BFI_StanceBar", AW.UIParent, "SecureHandlerStateTemplate")
-    
+
     stanceBar.name = "stancebar"
     stanceBar.buttons = {}
 
@@ -100,11 +100,11 @@ local function UpdateStanceBar(module)
     if module and module ~= "StanceBar" then return end
 
     if InCombatLockdown() then
-        AB.RegisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceBar)
+        AB:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceBar)
         return
     end
 
-    AB.UnregisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceBar)
+    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceBar)
 
     local config = BFI.vars.currentConfigTable.actionBars.barConfig.stancebar
 
@@ -140,10 +140,10 @@ local function UpdateStanceBar(module)
 
     stanceBar:SetFrameStrata(BFI.vars.currentConfigTable.actionBars.general.frameStrata)
     stanceBar:SetFrameLevel(BFI.vars.currentConfigTable.actionBars.general.frameLevel)
-    
+
     stanceBar.alpha = config.alpha
     stanceBar:SetAlpha(config.alpha)
-    
+
     local num = GetNumShapeshiftForms()
 
     stanceBar.enabled = config.enabled
@@ -177,10 +177,10 @@ local function InitStanceBar()
     AssignBindings()
 
     -- events
-    AB.RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceBar)
-    AB.RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateStanceButtons)
-	AB.RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtons)
-    AB.RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
-    AB.RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+    AB:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceBar)
+    AB:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateStanceButtons)
+	AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtons)
+    AB:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
+    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 end
 BFI.RegisterCallback("InitModules", "AB_StanceBar", InitStanceBar)

@@ -318,7 +318,7 @@ function UF.CreateCastBar(parent, name)
     frame.root = parent
 
     -- events
-    BFI.SetEventHandler(frame)
+    BFI.AddEventHandler(frame)
 
     -- fade out
     AW.CreateFadeInOutAnimation(frame)

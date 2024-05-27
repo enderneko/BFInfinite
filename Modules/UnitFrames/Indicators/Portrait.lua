@@ -131,7 +131,7 @@ function UF.CreatePortrait(parent, name)
     AW.SetDefaultBackdrop(portrait)
 
     -- events
-    BFI.SetEventHandler(portrait)
+    BFI.AddEventHandler(portrait)
 
     -- 3d
     portrait.model = CreateFrame("PlayerModel", nil, portrait)
