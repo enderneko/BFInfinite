@@ -82,8 +82,8 @@ local function UpdateShield(self, event, unitId)
         self.shield:SetPoint("BOTTOMRIGHT")
     else
         self.shield:ClearAllPoints()
-        self.shield:SetPoint("TOPLEFT", self.texture, "TOPRIGHT")
-        self.shield:SetPoint("BOTTOMLEFT", self.texture, "BOTTOMRIGHT")
+        self.shield:SetPoint("TOPLEFT", self.fg, "TOPRIGHT")
+        self.shield:SetPoint("BOTTOMLEFT", self.fg, "BOTTOMRIGHT")
     end
 
     if self.shields > 0 then
