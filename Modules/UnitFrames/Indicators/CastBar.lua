@@ -380,16 +380,22 @@ local function OnUpdate(self, elapsed)
                 CastStop(self)
                 return
             end
-            -- TODO: self.delay?
-            self.durationText:SetFormattedText(self.durationFormat, (self.duration - self.current) / 1000)
+            if self.showDelay and self.delay ~= 0 then
+                self.durationText:SetFormattedText(self.delayedDurationFormat, "+", self.delay / 1000, (self.duration - self.current) / 1000)
+            else
+                self.durationText:SetFormattedText(self.durationFormat, (self.duration - self.current) / 1000)
+            end
         else
             self.current = self.current - elapsed * 1000
             if self.current <= 0 then
                 CastStop(self)
                 return
             end
-            -- TODO: self.delay?
-            self.durationText:SetFormattedText(self.durationFormat, self.current / 1000)
+            if self.showDelay and self.delay ~= 0 then
+                self.durationText:SetFormattedText(self.delayedDurationFormat, "-", self.delay / 1000, self.current / 1000)
+            else
+                self.durationText:SetFormattedText(self.durationFormat, self.current / 1000)
+            end
         end
 
         self.bar:SetValue(self.current)
@@ -539,6 +545,8 @@ local function CastBar_UpdateDurationText(self, config)
     AW.LoadWidgetPosition(self.durationText, config.position)
     self.durationText:SetTextColor(unpack(config.color))
     self.durationFormat = config.format
+    self.delayedDurationFormat = "|cffff0000%s%.2f|r "..config.format
+    self.showDelay = config.showDelay
 end
 
 local function CastBar_SetIconShown(self, show)
@@ -572,6 +580,9 @@ local function CastBar_UpdateSpark(self, config)
 end
 
 local function CastBar_UpdateTicks(self, config)
+    local class = UnitClassBase(self.root:GetAttribute("unit"))
+    if not classMaxTicks[class] then return end
+
     self.ticksEnabled = config.enabled
     if not config.enabled then
         if self.ticks then
@@ -581,9 +592,6 @@ local function CastBar_UpdateTicks(self, config)
         end
         return
     end
-
-    local class = UnitClassBase(self.root:GetAttribute("unit"))
-    if not classMaxTicks[class] then return end
 
     if not self.ticks then self.ticks = {} end
 

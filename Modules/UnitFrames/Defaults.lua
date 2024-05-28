@@ -123,6 +123,7 @@ local default_player_target_indicators = {
             position = {"RIGHT", "RIGHT", -5, 0},
             format = "%.1f",
             color = AW.GetColorTable("white"),
+            showDelay = false,
         },
         spark = {
             texture = AW.GetPlainTexture(),
