@@ -1,4 +1,5 @@
 local _, BFI = ...
+local L = BFI.L
 local U = BFI.utils
 local AW = BFI.AW
 local UF = BFI.M_UF
@@ -14,6 +15,8 @@ local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitIsCharmed = UnitIsCharmed
 local UnitIsConnected = UnitIsConnected
+local UnitIsGhost = UnitIsGhost
+local UnitIsDead = UnitIsDead
 
 --! for AI followers, UnitClassBase is buggy
 local UnitClassBase = function(unit)
@@ -35,10 +38,16 @@ local function UpdateHealth(self, event, unitId)
         self.healthMax = 1
     end
 
-    self:SetFormattedText("%s%s%s",
-        self.GetNumeric(self.health, self.totalAbsorbs),
-        self.delimiter,
-        self.GetPercent(self.health, self.healthMax, self.totalAbsorbs))
+    if UnitIsGhost(unit) then
+        self:SetText(L["GHOST"])
+    elseif UnitIsDead(unit) then
+        self:SetText(L["DEAD"])
+    else
+        self:SetFormattedText("%s%s%s",
+            self.GetNumeric(self.health, self.totalAbsorbs),
+            self.delimiter,
+            self.GetPercent(self.health, self.healthMax, self.totalAbsorbs))
+    end
 end
 
 ---------------------------------------------------------------------
