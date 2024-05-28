@@ -124,11 +124,17 @@ local default_player_target_indicators = {
             format = "%.1f",
             color = AW.GetColorTable("white"),
         },
+        spark = {
+            texture = AW.GetPlainTexture(),
+            color = AW.GetColorTable("cast_spark"),
+            width = 2,
+            height = 0,
+        },
         colors = {
-            normal = AW.GetColorTable("cast_normal", 0.9),
-            failed = AW.GetColorTable("cast_failed", 0.9),
-            succeeded = AW.GetColorTable("cast_succeeded", 0.9),
-            uninterruptible = AW.GetColorTable("cast_uninterruptible", 0.4),
+            normal = AW.GetColorTable("cast_normal"),
+            failed = AW.GetColorTable("cast_failed"),
+            succeeded = AW.GetColorTable("cast_succeeded"),
+            uninterruptible = AW.GetColorTable("cast_uninterruptible"),
         },
     },
 }
@@ -156,6 +162,19 @@ local defaults = {
         indicators = default_player_target_indicators,
     },
 }
+
+do
+    defaults.player.indicators.castBar.ticks = {
+        enabled = true,
+        color = AW.GetColorTable("cast_tick"),
+        width = 3,
+    }
+
+    defaults.player.indicators.castBar.latency = {
+        enabled = true,
+        color = AW.GetColorTable("cast_latency")
+    }
+end
 
 BFI.RegisterCallback("InitConfigs", "UnitFrames", function(t)
     if not t["unitFrames"] then

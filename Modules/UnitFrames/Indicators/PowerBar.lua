@@ -164,7 +164,7 @@ local function PowerBar_Enable(self)
         self:UnregisterEvent("UNIT_POWER_FREQUENT")
     end
     self:RegisterEvent("UNIT_MAXPOWER", UpdatePowerMax)
-    self:RegisterEvent("UNIT_DISPLAYPOWER", UpdatePowerColor)
+    self:RegisterEvent("UNIT_DISPLAYPOWER", UpdatePowerMax, UpdatePowerColor)
 
     self:Show()
     if self:IsVisible() then self:Update() end

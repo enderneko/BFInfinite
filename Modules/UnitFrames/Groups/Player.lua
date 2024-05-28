@@ -28,6 +28,8 @@ local function CreatePlayer()
     AW.AddToPixelUpdater(player)
 
     -- indicators
+    player.hasCastBarTicks = true
+    player.hasLatency = true
     UF.CreateIndicators(player, indicators)
 end
 

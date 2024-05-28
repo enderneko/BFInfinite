@@ -6,6 +6,162 @@ local UF = BFI.M_UF
 local strfind = string.find
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
+local UnitClassBase = UnitClassBase
+
+---------------------------------------------------------------------
+-- channeled spell ticks
+-- forked from Quartz and Gnosis
+---------------------------------------------------------------------
+local classMaxTicks, channeledSpellTicks
+
+if BFI.vars.isRetail then
+    classMaxTicks = { -- +1
+        ["DRUID"] = 5,
+        ["EVOKER"] = 4,
+        ["MAGE"] = 6,
+        ["MONK"] = 9,
+        ["PRIEST"] = 7,
+        ["WARLOCK"] = 6,
+    }
+
+    channeledSpellTicks = {
+        -- druid
+        [740] = 4, -- 宁静
+        -- evoker
+        [356995] = 3, -- 裂解
+        -- mage
+        [5143] = 5, -- 奥术飞弹
+        [205021] = 5, -- 冰霜射线
+        [314791] = 4, -- 变易幻能
+        -- monk
+        [117952] = 4, -- 碎玉闪电
+        [191837] = 3, -- 精华之泉
+        [115175] = 8, -- 抚慰之雾
+        -- priest
+        [64843] = 4, -- 神圣赞美诗
+        [15407] = 6, -- 精神鞭笞
+        [47540] = 2, -- 苦修（瞬发第一跳，忽略）
+        [205065] = 5, -- 虚空洪流
+        [64901] = 5, -- 希望象征
+        -- warlock
+        [234153] = 5, -- 吸取生命
+        [198590] = 5, -- 吸取灵魂
+        [217979] = 5, -- 生命通道
+    }
+
+elseif BFI.var.isCata then
+    classMaxTicks = { -- +1
+        ["DRUID"] = 11,
+        ["MAGE"] = 9,
+        ["PRIEST"] = 6,
+        ["WARLOCK"] = 16,
+    }
+
+    channeledSpellTicks = {
+        -- druid
+        [740] = 4, -- 宁静
+        [16914] = 10, -- 飓风
+        -- mage
+        [10] = 8, -- 暴风雪
+        [5143] = 3, -- 奥术飞弹
+        -- priest
+        [15407] = 3, -- 精神鞭笞
+        [48045] = 5, -- 精神灼烧
+        [47540] = 2, -- 苦修（瞬发第一跳，忽略）
+        [64843] = 4, -- 神圣赞美诗
+        [64901] = 4, -- 希望圣歌
+        -- warlock
+        [1949] = 15, -- 地狱烈焰
+        [5740] = 4, -- 火焰之雨
+        [689] = 5, -- 吸取生命
+        [1120] = 5, -- 吸取灵魂
+        [755] = 10, -- 生命通道
+    }
+
+else
+    classMaxTicks = {}
+    channeledSpellTicks = {}
+end
+
+do
+    local temp = {}
+    for id, ticks in pairs(channeledSpellTicks) do
+        local name = GetSpellInfo(id)
+        if name then
+            temp[GetSpellInfo(id)] = ticks
+        else
+            BFI.Debug("|cffabababChanneledSpellTicks INVALID|r", id)
+        end
+    end
+    channeledSpellTicks = temp
+end
+
+-- TODO: 苦修
+-- local eventFrame = CreateFrame("Frame")
+-- eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+-- eventFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
+-- eventFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+
+-- local function TalentUpdate()
+--     local activeConfigID = C_ClassTalents.GetActiveConfigID()
+--     if activeConfigID and dispelNodeIDs[Cell.vars.playerSpecID] then
+--         for dispelType, value in pairs(dispelNodeIDs[Cell.vars.playerSpecID]) do
+--             if type(value) == "boolean" then
+--                 dispellable[dispelType] = value
+--             elseif type(value) == "table" then -- more than one trait
+--                 for _, v in pairs(value) do
+--                     local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, v)
+--                     if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
+--                         dispellable[dispelType] = true
+--                         break
+--                     end
+--                 end
+--             else -- number: check node info
+--                 local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, value)
+--                 if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
+--                     dispellable[dispelType] = true
+--                 end
+--             end
+--         end
+--     end
+-- end
+
+-- eventFrame:SetScript("OnEvent", function(self, event)
+--     if event == "PLAYER_ENTERING_WORLD" then
+--         eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+--     end
+--     TalentUpdate()
+-- end)
+
+local function UpdateTicks(self, spell, channelUpdated)
+    if not self.ticksEnabled then return end
+
+    if not (self.castType == "channel" and spell and channeledSpellTicks[spell]) then
+        for _, tick in pairs(self.ticks) do
+            tick:Hide()
+        end
+        return
+    end
+
+    local width = self.bar:GetWidth()
+    local totalTicks = channelUpdated and channeledSpellTicks[spell] + 1 or channeledSpellTicks[spell]
+    local timePerTick = self.duration / totalTicks
+
+    for i = 1, totalTicks do
+        local tick =  self.ticks[i]
+        tick:ClearAllPoints()
+
+        local x = (self.duration - (i - 1) * timePerTick) / self.duration
+        tick:SetPoint("LEFT", self.bar, "RIGHT", -width * x, 0)
+        tick:SetPoint("TOP")
+        tick:SetPoint("BOTTOM")
+        tick:Show()
+    end
+
+    for i = totalTicks + 1, #self.ticks do
+        self.ticks[i]:Hide()
+    end
+end
 
 ---------------------------------------------------------------------
 -- reset
@@ -36,6 +192,77 @@ local function CastInterruptible(self, event, unit)
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))
         self.gap:SetColorTexture(AW.UnpackColor(self.borderColor))
+    end
+end
+
+---------------------------------------------------------------------
+-- latency
+-- forked from oUF
+---------------------------------------------------------------------
+-- NOTE: not ideal
+-- local function UpdateLatency(self)
+--     if not self.latencyEnabled then return end
+
+--     self.latency:ClearAllPoints()
+--     if self.castType == "channel" then
+--         self.latency:SetPoint("TOPLEFT")
+--         self.latency:SetPoint("BOTTOMLEFT")
+--     else
+--         self.latency:SetPoint("TOPRIGHT")
+--         self.latency:SetPoint("BOTTOMRIGHT")
+--     end
+
+--     local ratio = select(4, GetNetStats()) / self.duration
+--     if ratio > 1 then ratio = 1 end
+
+--     self.latency:SetWidth(self.bar:GetWidth() * ratio)
+-- end
+
+---------------------------------------------------------------------
+-- latency
+-- forked from Quartz
+---------------------------------------------------------------------
+local function UpdateLatency(self, event, unit)
+    if not self.latencyEnabled then return end
+    if unit and unit ~= self.root.displayedUnit then return end
+
+    if event == "CURRENT_SPELL_CAST_CHANGED" then
+        self.changeTime = GetTime() * 1000
+
+    elseif event == "UNIT_SPELLCAST_SENT" then
+        self.sendTime = self.changeTime
+        self.changeTime = nil
+
+    -- elseif event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_INTERRUPTED" then
+        -- self.sendTime = nil
+
+    elseif event == "UNIT_SPELLCAST_START" then
+        if not self.sendTime then return end
+
+        self.timeDiff = GetTime() * 1000 - self.sendTime
+        self.timeDiff = self.timeDiff > self.duration and self.duration or self.timeDiff
+
+        local ratio = self.timeDiff / self.duration
+        if ratio > 1 then ratio = 1 end
+        if ratio > 0 then
+            self.latency:ClearAllPoints()
+            if self.castType == "channel" then
+                self.latency:SetPoint("TOPLEFT")
+                self.latency:SetPoint("BOTTOMLEFT")
+                self.latency:SetDrawLayer("ARTWORK", 0)
+            else
+                self.latency:SetPoint("TOPRIGHT")
+                self.latency:SetPoint("BOTTOMRIGHT")
+                self.latency:SetDrawLayer("ARTWORK", -1)
+            end
+            self.latency:SetWidth(self.bar:GetWidth() * ratio)
+            self.latency:Show()
+        else
+            self.latency:Hide()
+        end
+
+        -- print(format("%dms", self.timeDiff))
+        self.sendTime = nil
     end
 end
 
@@ -76,21 +303,61 @@ local function CastStop(self, event, unit, castGUID, castSpellID)
             -- NOTE:
             -- normally, CAST_INTERRUPTED fires before CAST_STOP
             -- but if ESC a spell, CAST_INTERRUPTED fires AFTER CAST_STOP
-            self.resetDelay = 0.2
+            self.resetDelay = 0.25
             ShowOverlay(self)
         end
 
     else
-        Reset(self)
         if self.castType == "channel" then
             self.bar:Hide()
         else
             ShowOverlay(self)
         end
+        Reset(self)
     end
 
     self.durationText:Hide()
     self:FadeOut()
+end
+
+---------------------------------------------------------------------
+-- update
+---------------------------------------------------------------------
+local function CastUpdate(self, event, unitId, castGUID, castSpellID)
+    local unit = self.root.displayedUnit
+    if unitId and unit ~= unitId then return end
+
+    local name, startTime, endTime, _
+    if event == "UNIT_SPELLCAST_DELAYED" then
+        name, _, _, startTime, endTime = UnitCastingInfo(unit)
+    else
+        name, _, _, startTime, endTime = UnitChannelInfo(unit)
+    end
+
+    if not name then return end
+
+    local delay
+    if self.castType == "channel" then
+        delay = self.startTime - startTime
+        self.current = endTime - GetTime() * 1000
+    else
+        delay = startTime - self.startTime
+        self.current = GetTime() * 1000 - startTime
+    end
+
+    if delay < 0 then
+        delay = 0
+    end
+
+    self.duration = endTime - startTime
+    self.startTime = startTime
+    self.delay = self.delay + delay
+
+    self.bar:SetMinMaxValues(0, self.duration)
+    self.bar:SetValue(self.current)
+
+    -- ticks
+    UpdateTicks(self, name, true)
 end
 
 ---------------------------------------------------------------------
@@ -113,6 +380,7 @@ local function OnUpdate(self, elapsed)
                 CastStop(self)
                 return
             end
+            -- TODO: self.delay?
             self.durationText:SetFormattedText(self.durationFormat, (self.duration - self.current) / 1000)
         else
             self.current = self.current - elapsed * 1000
@@ -120,6 +388,7 @@ local function OnUpdate(self, elapsed)
                 CastStop(self)
                 return
             end
+            -- TODO: self.delay?
             self.durationText:SetFormattedText(self.durationFormat, self.current / 1000)
         end
 
@@ -149,9 +418,12 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
         return
     end
 
+    self.delay = 0
     self.resetDelay = nil
     self.castGUID = castGUID or castID
     self.castSpellID = castSpellID or spellID
+    self.startTime = startTime
+    self.endTime = endTime
 
     -- curent progress
     if self.castType == "cast" then
@@ -166,6 +438,12 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     if unit ~= "player" then
         CastInterruptible(self)
     end
+
+    -- ticks
+    UpdateTicks(self, name)
+
+    -- latency
+    UpdateLatency(self, "UNIT_SPELLCAST_START", unitId)
 
     self.status:Hide()
     self.durationText:Show()
@@ -193,6 +471,11 @@ local function CastBar_Enable(self)
     self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", CastStart)
     self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START", CastStart)
 
+    -- update
+    self:RegisterEvent("UNIT_SPELLCAST_DELAYED", CastUpdate)
+    self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", CastUpdate)
+    self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", CastUpdate)
+
     -- stop (succeeded)
     self:RegisterEvent("UNIT_SPELLCAST_STOP", CastStop)
     self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", CastStop)
@@ -204,6 +487,12 @@ local function CastBar_Enable(self)
     -- interruptible
     self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE", CastInterruptible)
     self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", CastInterruptible)
+
+    -- latency
+    if self.latencyEnabled then
+        self:RegisterEvent("CURRENT_SPELL_CAST_CHANGED", UpdateLatency)
+        self:RegisterEvent("UNIT_SPELLCAST_SENT", UpdateLatency)
+    end
 
     -- onupdate
     self:SetScript("OnUpdate", OnUpdate)
@@ -266,14 +555,79 @@ local function CastBar_SetIconShown(self, show)
     end
 end
 
+local function CastBar_UpdateSpark(self, config)
+    self.spark:ClearAllPoints()
+    self.spark:SetPoint("RIGHT", self.bar:GetStatusBarTexture())
+    if config.height == 0 then
+        self.spark:SetPoint("TOP")
+        self.spark:SetPoint("BOTTOM")
+        self.spark:SetPoint("RIGHT", self.bar:GetStatusBarTexture())
+    else
+        self.spark:SetHeight(config.height)
+    end
+
+    AW.SetWidth(self.spark, config.width)
+    self.spark:SetTexture(config.texture)
+    self.spark:SetVertexColor(unpack(config.color))
+end
+
+local function CastBar_UpdateTicks(self, config)
+    self.ticksEnabled = config.enabled
+    if not config.enabled then
+        if self.ticks then
+            for _, tick in pairs(self.ticks) do
+                tick:Hide()
+            end
+        end
+        return
+    end
+
+    local class = UnitClassBase(self.root:GetAttribute("unit"))
+    if not classMaxTicks[class] then return end
+
+    if not self.ticks then self.ticks = {} end
+
+    for i = 1, classMaxTicks[class] do
+        if not self.ticks[i] then
+            self.ticks[i] = self.bar:CreateTexture(nil, "ARTWORK", nil, 1)
+            self.ticks[i]:Hide()
+        end
+
+        AW.SetWidth(self.ticks[i], config.width)
+        self.ticks[i]:SetColorTexture(unpack(config.color))
+    end
+end
+
+local function CastBar_UpdateLatency(self, config)
+    self.latencyEnabled = config.enabled
+    if not config.enabled then
+        if self.latency then
+            self.latency:Hide()
+            return
+        end
+    end
+
+    if not self.latency then
+        self.latency = self.bar:CreateTexture(nil, "ARTWORK", nil, -1)
+    end
+    self.latency:SetColorTexture(unpack(config.color))
+end
+
 local function CastBar_UpdatePixels(self)
     AW.ReSize(self)
     AW.RePoint(self)
     AW.ReBorder(self)
     AW.ReSize(self.gap)
+    AW.ReSize(self.spark)
     AW.RePoint(self.bar)
     AW.RePoint(self.name)
     AW.RePoint(self.status)
+
+    if self.ticks then
+        for _, tick in pairs(self.ticks) do
+            AW.ReSize(tick)
+        end
+    end
 end
 
 ---------------------------------------------------------------------
@@ -297,8 +651,16 @@ local function CastBar_LoadConfig(self, config)
 
     self:UpdateNameText(config.nameText, config.showIcon)
     self:UpdateDurationText(config.durationText)
-
     self:SetIconShown(config.showIcon)
+    self:UpdateSpark(config.spark)
+
+    if self.root.hasCastBarTicks then
+        self:UpdateTicks(config.ticks)
+    end
+
+    if self.root.hasLatency then
+        self:UpdateLatency(config.latency)
+    end
 
     self.failedColor = config.colors.failed
     self.succeededColor = config.colors.succeeded
@@ -352,18 +714,12 @@ function UF.CreateCastBar(parent, name)
     bar:GetStatusBarTexture():SetDrawLayer("ARTWORK", 0)
 
     -- spark
-    local spark = bar:CreateTexture(nil, "ARTWORK", nil, 1)
-    bar.spark = spark
-    spark:SetPoint("RIGHT", bar:GetStatusBarTexture())
-    spark:SetPoint("TOP")
-    spark:SetPoint("BOTTOM")
-    spark:SetTexture(AW.GetPlainTexture())
-    spark:SetVertexColor(0.9, 0.9, 0.9, 0.6)
+    local spark = bar:CreateTexture(nil, "ARTWORK", nil, 2)
+    frame.spark = spark
     spark:SetBlendMode("ADD")
-    AW.SetWidth(spark, 2)
 
     -- uninterruptible texture
-    local uninterruptible = bar:CreateTexture(nil, "ARTWORK", nil, 2)
+    local uninterruptible = bar:CreateTexture(nil, "ARTWORK", nil, 3)
     bar.uninterruptible = uninterruptible
     uninterruptible:SetAllPoints()
     uninterruptible:SetTexture(AW.GetTexture("Uninterruptible1"), "REPEAT", "REPEAT")
@@ -394,6 +750,9 @@ function UF.CreateCastBar(parent, name)
     frame.UpdateNameText = CastBar_UpdateNameText
     frame.UpdateDurationText = CastBar_UpdateDurationText
     frame.SetIconShown = CastBar_SetIconShown
+    frame.UpdateSpark = CastBar_UpdateSpark
+    frame.UpdateTicks = CastBar_UpdateTicks
+    frame.UpdateLatency = CastBar_UpdateLatency
     frame.LoadConfig = CastBar_LoadConfig
 
     -- pixel perfect
