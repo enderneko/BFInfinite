@@ -101,7 +101,8 @@ local function UpdatePetButtons(event, unit)
         end
 
         if name == "PET_ACTION_FOLLOW" or name == "PET_ACTION_WAIT" or name == "PET_ACTION_MOVE_TO"
-            or name == "PET_MODE_AGGRESSIVE" or name == "PET_MODE_DEFENSIVE" or name == "PET_MODE_PASSIVE" or name == "PET_MODE_ASSIST" then
+            or name == "PET_MODE_AGGRESSIVE" or name == "PET_MODE_DEFENSIVE" or name == "PET_MODE_DEFENSIVEASSIST"
+            or name == "PET_MODE_PASSIVE" or name == "PET_MODE_ASSIST" then
             b:SetChecked(true)
             b.checkedTexture:SetBlendMode("BLEND")
 
