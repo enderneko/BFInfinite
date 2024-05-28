@@ -4,14 +4,14 @@ local AW = BFI.AW
 
 local LSM = LibStub("LibSharedMedia-3.0", true)
 
--- texture
+-- statusbar
 local DEFAULT_BAR_TEXTURE = AW.GetTexture("StatusBar")
-LSM:Register("statusbar", BFI_DEFAULT, DEFAULT_BAR_TEXTURE)
+LSM:Register("statusbar", "BFI 1", DEFAULT_BAR_TEXTURE)
 
 -- font
 local DEFAULT_FONT = AW.GetFont("Noto_AP_SC")
-LSM:Register("font", BFI_DEFAULT, DEFAULT_FONT, 255)
-LSM:Register("font", "BFI 1", AW.GetFont("visitor"), 255)
+LSM:Register("font", "BFI 1", DEFAULT_FONT, 255)
+LSM:Register("font", "BFI 2", AW.GetFont("visitor"), 255)
 
 function U.GetBarTexture(name)
     if LSM:IsValid("statusbar", name) then

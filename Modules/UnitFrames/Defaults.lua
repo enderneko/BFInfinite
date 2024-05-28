@@ -17,7 +17,7 @@ local default_player_target_indicators = {
         lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
         bgColor = AW.GetColorTable("background"),
         borderColor = AW.GetColorTable("border"),
-        texture = BFI_DEFAULT,
+        texture = "BFI 1",
         smoothing = false,
         healPrediction = {enabled=true, useCustomColor=true, color=AW.GetColorTable("heal_prediction")},
         shield = {
@@ -45,7 +45,7 @@ local default_player_target_indicators = {
         lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
         bgColor = AW.GetColorTable("background"),
         borderColor = AW.GetColorTable("border"),
-        texture = BFI_DEFAULT,
+        texture = "BFI 1",
         smoothing = false,
         frequent = true,
     },
@@ -54,14 +54,14 @@ local default_player_target_indicators = {
         position = {"TOPLEFT", "TOPLEFT", 3, -4},
         length = 0.5,
         anchorTo = "healthBar",
-        font = {BFI_DEFAULT, 12, "none", true},
+        font = {"BFI 1", 12, "none", true},
         color = {type="class_color", rgb=AW.GetColorTable("white")}, -- class/custom
     },
     healthText = {
         enabled = true,
         position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
         anchorTo = "healthBar",
-        font = {BFI_DEFAULT, 12, "none", true},
+        font = {"BFI 1", 12, "none", true},
         color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
         format = {
             numeric = "current_absorbs_short",
@@ -74,7 +74,7 @@ local default_player_target_indicators = {
         enabled = true,
         position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
         anchorTo = "powerBar",
-        font = {"BFI 1", 9, "monochrome", false},
+        font = {"BFI 2", 9, "monochrome", false},
         color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/power/custom
         frequent = true,
         format = {
@@ -109,17 +109,17 @@ local default_player_target_indicators = {
         height = 20,
         bgColor = AW.GetColorTable("background", 0.5),
         borderColor = AW.GetColorTable("border"),
-        texture = BFI_DEFAULT,
+        texture = "BFI 1",
         fadeDuration = 1,
         showIcon = true,
         nameText = {
-            font = {BFI_DEFAULT, 12, "none", true},
+            font = {"BFI 1", 12, "none", true},
             position = {"LEFT", "LEFT", 25, 0},
             color = AW.GetColorTable("white"),
             length = 0.5,
         },
         durationText = {
-            font = {BFI_DEFAULT, 12, "none", true},
+            font = {"BFI 1", 12, "none", true},
             position = {"RIGHT", "RIGHT", -5, 0},
             format = "%.1f",
             color = AW.GetColorTable("white"),
