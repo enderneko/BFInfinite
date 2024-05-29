@@ -16,7 +16,7 @@ function AW.ShowDemo()
     demo:SetTitleJustify("LEFT")
 
     local moverTestFrames = {}
-    
+
     -- background
     demo:SetScript("OnShow", function()
         if not THE_BACKGROUND then
@@ -34,16 +34,16 @@ function AW.ShowDemo()
             f:Show()
         end
     end)
-    
+
     demo:SetScript("OnHide", function()
         THE_BACKGROUND:Hide()
         for _, f in pairs(moverTestFrames) do
             f:Hide()
         end
     end)
-    
+
     demo:Show()
-    
+
     -- netstats
     local ns = AW.CreateNetStatsPane(demo.header, "RIGHT", true, true)
     AW.SetPoint(ns, "RIGHT", demo.header.closeBtn, "LEFT", -5, 0)
@@ -79,7 +79,7 @@ function AW.ShowDemo()
     local b4 = AW.CreateButton(demo, "Button D", "red", 100, 20)
     b4:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"LEFT", 2, 0}, true)
     AW.SetPoint(b4, "TOPLEFT", b3, "TOPRIGHT", 10, 0)
-    
+
     local b5 = AW.CreateButton(demo, nil, "accent", 20, 20)
     b5:SetTexture("classicon-"..strlower(PlayerUtil.GetClassFile()), {16, 16}, {"CENTER", 0, 0}, true, true)
     AW.SetPoint(b5, "TOPLEFT", b4, "TOPRIGHT", 10, 0)
@@ -96,11 +96,11 @@ function AW.ShowDemo()
     local cb1 = AW.CreateCheckButton(demo, "Check boxes")
     AW.SetPoint(cb1, "TOPLEFT", b1, "BOTTOMLEFT", 0, -10)
     AW.SetTooltips(cb1, "ANCHOR_TOPLEFT", 0, 3, "Check Button", "The hit rectangle of these check buttons are different")
-    
+
     local cb2 = AW.CreateCheckButton(demo, "With")
     AW.SetPoint(cb2, "TOPLEFT", cb1, "BOTTOMLEFT", 0, -7)
     cb2:SetEnabled(false)
-    
+
     local cb3 = AW.CreateCheckButton(demo, "Different label lengths", function(checked)
         cb2:SetChecked(checked)
     end)
@@ -122,7 +122,7 @@ function AW.ShowDemo()
     eb2:SetConfirmButton(function(text)
         print("ConfirmButtonClicked:", text)
     end)
-    
+
     local eb3 = AW.CreateEditBox(demo, "Edit Box", 200, 20)
     AW.SetPoint(eb3, "TOPLEFT", eb2, "BOTTOMLEFT", 0, -10)
     eb3:SetText("Disabled Edit Box")
@@ -173,13 +173,13 @@ function AW.ShowDemo()
     AW.SetPoint(b6, "TOPLEFT")
     AW.SetPoint(b6, "RIGHT")
     AW.SetTooltips(b6, "LEFT", -2, 0, "Item A")
-    
+
     local b7 = AW.CreateButton(bf2, "Item B", "accent-transparent", 100, 20)
     b7.id = "b7"
     AW.SetPoint(b7, "TOPLEFT", b6, "BOTTOMLEFT", 0, 1)
     AW.SetPoint(b7, "RIGHT")
     AW.SetTooltips(b7, "LEFT", -2, 0, "Item B")
-    
+
     local b8 = AW.CreateButton(bf2, "Item C", "accent-transparent", 100, 20)
     b8.id = "b8"
     AW.SetPoint(b8, "TOPLEFT", b7, "BOTTOMLEFT", 0, 1)
@@ -428,7 +428,7 @@ function AW.ShowDemo()
     end)
     AW.SetPoint(cp1, "TOPLEFT", slist1, "BOTTOMLEFT", 0, -10)
     cp1:SetColor(AW.GetColorRGB("pink", 0.7))
-    
+
     local cp2 = AW.CreateColorPicker(demo, "CP No Alpha")
     AW.SetPoint(cp2, "TOPLEFT", cp1, "BOTTOMLEFT", 0, -7)
     cp2:SetColor(AW.GetColorRGB("skyblue"))
@@ -459,7 +459,7 @@ function AW.ShowDemo()
     -- ----------------------------------------------------------------------- --
     local b8 = AW.CreateButton(demo, "Dialog2", "accent-hover", 150, 20)
     AW.SetPoint(b8, "TOPLEFT", b7, "BOTTOMLEFT", 0, -7)
-    
+
     -- content
     local form = AW.CreateDialogContent(50)
 
@@ -477,7 +477,7 @@ function AW.ShowDemo()
         tinsert(items, {["text"] = "Item "..i})
     end
     dd9:SetItems(items)
-    
+
     eb5:SetOnTextChanged(function(text)
         form.dialog.yes:SetEnabled(text ~= "" and dd9:GetSelected())
         form.value1 = text
@@ -541,7 +541,7 @@ function AW.ShowDemo()
 
     bf4.widthText = AW.CreateFontString(bf4, "120", "hotpink")
     AW.SetPoint(bf4.widthText, "BOTTOMLEFT", bf4, "TOPLEFT", 0, 2)
-    
+
     bf4.heightText = AW.CreateFontString(bf4, "78", "hotpink")
     AW.SetPoint(bf4.heightText, "BOTTOMLEFT", bf4, "BOTTOMRIGHT", 2, 0)
 
@@ -565,7 +565,7 @@ function AW.ShowDemo()
     -- both
     local b11 = AW.CreateButton(bf4, "Both+", "hotpink", 100, 20)
     AW.SetPoint(b11, "BOTTOMLEFT", 10, 10)
-    
+
     -- height
     local b12 = AW.CreateButton(bf4, "Height+", "hotpink", 100, 20)
     AW.SetPoint(b12, "BOTTOMLEFT", b11, "TOPLEFT", 0, -1)
@@ -575,7 +575,7 @@ function AW.ShowDemo()
     AW.SetPoint(b13, "BOTTOMLEFT", b12, "TOPLEFT", 0, -1)
 
     local maxWidth, maxHeight
-    
+
     b11:SetScript("OnClick", function()
         if not maxWidth or not maxHeight then
             AW.AnimatedResize(bf4, 300, 200, nil, nil, function()
@@ -599,7 +599,7 @@ function AW.ShowDemo()
             end, UpdateSizeText)
         end
     end)
-    
+
     b12:SetScript("OnClick", function()
         if not maxHeight then
             AW.AnimatedResize(bf4, nil, 200, nil, nil, function()
@@ -667,7 +667,7 @@ function AW.ShowDemo()
             self:SetBarValue(self.value)
         end
     end
-   
+
     local bar1 = AW.CreateStatusBar(demo, 0, 100, 100, 20, "skyblue", nil, "percentage")
     AW.SetPoint(bar1, "TOPLEFT", b10, "BOTTOMLEFT", 0, -10)
 
@@ -681,7 +681,7 @@ function AW.ShowDemo()
 
     local bar4 = AW.CreateStatusBar(demo, 0, 100, 320, 7, "accent")
     AW.SetPoint(bar4, "TOPLEFT", bar1, "BOTTOMLEFT", 0, -5)
-    
+
     bar1:SetScript("OnUpdate", function(self, elapsed)
         OnUpdate(self, elapsed)
         if self.value == 100 then
@@ -701,7 +701,7 @@ function AW.ShowDemo()
 
     local bf5 = AW.CreateBorderedFrame(demo, 370, 20)
     AW.SetPoint(bf5, "BOTTOMLEFT", b10, "BOTTOMRIGHT", 10, 0)
-    
+
     local fs2 = AW.CreateFontString(bf5, "Popups", "accent")
     AW.SetPoint(fs2, "LEFT", bf5, 10, 0)
 

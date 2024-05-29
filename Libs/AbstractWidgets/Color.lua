@@ -12,20 +12,22 @@ function AW.ConvertRGB(r, g, b, saturation)
     return r, g, b
 end
 
-function AW.ConvertRGB_256(r, g, b)
-    return floor(r * 255), floor(g * 255), floor(b * 255)
+function AW.ConvertRGB_256(r, g, b, a)
+    return floor(r * 255), floor(g * 255), floor(b * 255), a and floor(a * 255)
 end
 
-function AW.ConvertRGBToHEX(r, g, b)
+function AW.ConvertRGBToHEX(r, g, b, a)
     local result = ""
 
-    for key, value in pairs({r, g, b}) do
+    local t = a and {a, r, g, b} or {r, g, b}
+
+    for key, value in pairs(t) do
         local hex = ""
 
         while(value > 0)do
             local index = math.fmod(value, 16) + 1
             value = math.floor(value / 16)
-            hex = string.sub("0123456789ABCDEF", index, index) .. hex
+            hex = string.sub("0123456789abcdef", index, index) .. hex
         end
 
         if(string.len(hex) == 0)then
@@ -177,47 +179,47 @@ local UnitReaction = UnitReaction
 
 local colors = {
     -- accent
-    ["accent"] = {["hex"]="FFFF6600", ["t"]={1, 0.4, 0, 1}, ["normal"]={1, 0.4, 0, 0.3}, ["hover"]={1, 0.4, 0, 0.6}}, -- orangered
+    ["accent"] = {["hex"]="ffff6600", ["t"]={1, 0.4, 0, 1}, ["normal"]={1, 0.4, 0, 0.3}, ["hover"]={1, 0.4, 0, 0.6}}, -- orangered
 
     -- for regions
-    ["background"] = {["hex"]="E61A1A1A", ["t"]={0.1, 0.1, 0.1, 0.9}},
-    ["border"] = {["hex"]="FF000000", ["t"]={0, 0, 0, 1}},
-    ["header"] = {["hex"]="FF202020", ["t"]={0.127, 0.127, 0.127, 1}}, -- header background
-    ["widget"] = {["hex"]="FF262626", ["t"]={0.15, 0.15, 0.15, 1}}, -- widget background
-    ["disabled"] = {["hex"]="FF666666", ["t"]={0.4, 0.4, 0.4, 1}},
+    ["background"] = {["hex"]="e61a1a1a", ["t"]={0.1, 0.1, 0.1, 0.9}},
+    ["border"] = {["hex"]="ff000000", ["t"]={0, 0, 0, 1}},
+    ["header"] = {["hex"]="ff202020", ["t"]={0.127, 0.127, 0.127, 1}}, -- header background
+    ["widget"] = {["hex"]="ff262626", ["t"]={0.15, 0.15, 0.15, 1}}, -- widget background
+    ["disabled"] = {["hex"]="ff666666", ["t"]={0.4, 0.4, 0.4, 1}},
     ["none"] = {["hex"]="00000000", ["t"]={0, 0, 0, 0}},
 
     -- common
-    ["red"] = {["hex"]="FFFF0000", ["t"]={1, 0, 0, 1}},
-    ["yellow"] = {["hex"]="FFFFFF00", ["t"]={1, 1, 0, 1}},
-    ["green"] = {["hex"]="FF00FF00", ["t"]={0, 1, 0, 1}},
-    ["cyan"] = {["hex"]="FF00FFFF", ["t"]={0, 1, 1, 1}},
-    ["blue"] = {["hex"]="FF0000FF", ["t"]={0, 0, 1, 1}},
-    ["purple"] = {["hex"]="FFFF00FF", ["t"]={1, 0, 1, 1}},
-    ["white"] = {["hex"]="FFFFFFFF", ["t"]={1, 1, 1, 1}},
-    ["black"] = {["hex"]="FF000000", ["t"]={0, 0, 0, 1}},
+    ["red"] = {["hex"]="ffff0000", ["t"]={1, 0, 0, 1}},
+    ["yellow"] = {["hex"]="ffffff00", ["t"]={1, 1, 0, 1}},
+    ["green"] = {["hex"]="ff00ff00", ["t"]={0, 1, 0, 1}},
+    ["cyan"] = {["hex"]="ff00ffff", ["t"]={0, 1, 1, 1}},
+    ["blue"] = {["hex"]="ff0000ff", ["t"]={0, 0, 1, 1}},
+    ["purple"] = {["hex"]="ffff00ff", ["t"]={1, 0, 1, 1}},
+    ["white"] = {["hex"]="ffffffff", ["t"]={1, 1, 1, 1}},
+    ["black"] = {["hex"]="ff000000", ["t"]={0, 0, 0, 1}},
 
     -- others
-    ["gray"] = {["hex"]="FFB2B2B2", ["t"]={0.7, 0.7, 0.7, 1}},
-    ["sand"] = {["hex"]="FFECCC68", ["t"]={0.93, 0.8, 0.41, 1}},
-    ["gold"] = {["hex"]="FFFFD100", ["t"]={1, 0.82, 0, 1}},
-    ["darkred"] = {["hex"]="FF402020", ["t"]={0.17, 0.13, 0.13, 1}},
-    ["orange"] = {["hex"]="FFFFA502", ["t"]={1, 0.65, 0.01, 1}},
-    ["orangered"] = {["hex"]="FFFF4F00", ["t"]={1, 0.31, 0, 1}},
-    ["firebrick"] = {["hex"]="FFFF3030", ["t"]={1, 0.19, 0.19, 1}},
-    ["coral"] = {["hex"]="FFFF7F50", ["t"]={1, 0.5, 0.31, 1}},
-    ["tomato"] = {["hex"]="FFFF6348", ["t"]={1, 0.39, 0.28, 1}},
-    ["lightred"] = {["hex"]="FFFF4757", ["t"]={1, 0.28, 0.34, 1}},
-    ["classicrose"] = {["hex"]="FFFBCCE7", ["t"]={1, 0.98, 0.8, 0.91}},
-    ["pink"] = {["hex"]="FFFF6B81", ["t"]={1, 0.42, 0.51, 1}},
-    ["hotpink"] = {["hex"]="FFFF4466", ["t"]={1, 0.27, 0.4, 1}},
-    ["lime"] = {["hex"]="FF7BED9F", ["t"]={0.48, 0.93, 0.62, 1}},
-    ["brightgreen"] = {["hex"]="FF2ED573", ["t"]={0.18, 0.84, 0.45, 1}},
-    ["chartreuse"] = {["hex"]="FF80FF00", ["t"]={0.502, 1, 0, 1}},
-    ["skyblue"] = {["hex"]="FF00CCFF", ["t"]={0, 0.8, 1, 1}},
-    ["vividblue"] = {["hex"]="FF1E90FF", ["t"]={0.12, 0.56, 1, 1}},
-    ["softblue"] = {["hex"]="FF5352ED", ["t"]={0.33, 0.32, 0.93, 1}},
-    ["brightblue"] = {["hex"]="FF3742FA", ["t"]={0.22, 0.26, 0.98, 1}},
+    ["gray"] = {["hex"]="ffb2b2b2", ["t"]={0.7, 0.7, 0.7, 1}},
+    ["sand"] = {["hex"]="ffeccc68", ["t"]={0.93, 0.8, 0.41, 1}},
+    ["gold"] = {["hex"]="ffffd100", ["t"]={1, 0.82, 0, 1}},
+    ["darkred"] = {["hex"]="ff402020", ["t"]={0.17, 0.13, 0.13, 1}},
+    ["orange"] = {["hex"]="ffffa502", ["t"]={1, 0.65, 0.01, 1}},
+    ["orangered"] = {["hex"]="ffff4f00", ["t"]={1, 0.31, 0, 1}},
+    ["firebrick"] = {["hex"]="ffff3030", ["t"]={1, 0.19, 0.19, 1}},
+    ["coral"] = {["hex"]="ffff7f50", ["t"]={1, 0.5, 0.31, 1}},
+    ["tomato"] = {["hex"]="ffff6348", ["t"]={1, 0.39, 0.28, 1}},
+    ["lightred"] = {["hex"]="ffff4757", ["t"]={1, 0.28, 0.34, 1}},
+    ["classicrose"] = {["hex"]="fffbcce7", ["t"]={1, 0.98, 0.8, 0.91}},
+    ["pink"] = {["hex"]="ffff6b81", ["t"]={1, 0.42, 0.51, 1}},
+    ["hotpink"] = {["hex"]="ffff4466", ["t"]={1, 0.27, 0.4, 1}},
+    ["lime"] = {["hex"]="ff7bed9f", ["t"]={0.48, 0.93, 0.62, 1}},
+    ["brightgreen"] = {["hex"]="ff2ed573", ["t"]={0.18, 0.84, 0.45, 1}},
+    ["chartreuse"] = {["hex"]="ff80ff00", ["t"]={0.502, 1, 0, 1}},
+    ["skyblue"] = {["hex"]="ff00ccff", ["t"]={0, 0.8, 1, 1}},
+    ["vividblue"] = {["hex"]="ff1e90ff", ["t"]={0.12, 0.56, 1, 1}},
+    ["softblue"] = {["hex"]="ff5352ed", ["t"]={0.33, 0.32, 0.93, 1}},
+    ["brightblue"] = {["hex"]="ff3742fa", ["t"]={0.22, 0.26, 0.98, 1}},
 
     -- class (data from RAID_CLASS_COLORS)
     ["DEATHKNIGHT"] = {["hex"]="ffc41e3a", ["t"]={0.7686275243759155, 0.1176470667123795, 0.2274509966373444}},
@@ -337,6 +339,9 @@ end
 
 function AW.GetColorHex(name)
     assert(colors[name], "no such color:", name)
+    if not colors[name]["hex"] then
+        colors[name]["hex"] = AW.ConvertRGBToHEX(AW.ConvertRGB_256(unpack(colors[name]["t"])))
+    end
     return colors[name]["hex"]
 end
 
@@ -352,7 +357,7 @@ end
 
 function AW.AddColors(t)
     for k, v in pairs(t) do
-        colors[k] = v
+        colors[k] = {["t"]=v}
     end
 end
 

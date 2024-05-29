@@ -80,11 +80,11 @@ end
 function U.Copy(t)
     local newTbl = {}
     for k, v in pairs(t) do
-        if type(v) == "table" then  
+        if type(v) == "table" then
             newTbl[k] = U.Copy(v)
-        else  
-            newTbl[k] = v  
-        end  
+        else
+            newTbl[k] = v
+        end
     end
     return newTbl
 end
@@ -115,17 +115,17 @@ function U.Remove(t, v)
     end
 end
 
-function U.Merge(t1, t2)
-    if type(t1) ~= "table" or type(t2) ~= "table" then return end
-    for k, v in pairs(t2) do
-        if type(v) == "table" then
-            if type(t1[k]) ~= "table" then t1[k] = {} end
-            U.Merge(t1[k], v)
-        else
-            t1[k] = v
+function U.Merge(t, ...)
+    for i = 1, select("#", ...) do
+        local _t = select(i, ...)
+        for k, v in pairs(_t) do
+            if type(v) == "table" then
+                t[k] = U.Copy(v)
+            else
+                t[k] = v
+            end
         end
     end
-    return t1
 end
 
 function U.RemoveElementsExceptKeys(tbl, ...)
