@@ -7,6 +7,8 @@ local strfind = string.find
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 local UnitClassBase = UnitClassBase
+local GetUnitEmpowerHoldAtMaxTime = GetUnitEmpowerHoldAtMaxTime
+local GetUnitEmpowerStageDuration = GetUnitEmpowerStageDuration
 
 ---------------------------------------------------------------------
 -- channeled spell ticks
@@ -172,6 +174,96 @@ local function Reset(self)
     self.castSpellID = nil
     self.notInterruptible = nil
     self.resetDelay = nil
+    self.numStages = nil
+    self.curStage = nil
+    wipe(self.stageBounds)
+end
+
+---------------------------------------------------------------------
+-- empower pips
+---------------------------------------------------------------------
+local PIP_START_ALPHA = 0.3
+local PIP_HIT_ALPHA = 1
+local PIP_FADED_ALPHA = 0.7
+local PIP_FADE_TIME = 0.4
+
+local map = {
+    "empowerstage1",
+    "empowerstage2",
+    "empowerstage3",
+    "empowerstage4",
+}
+
+local function FlashPip(self, stage)
+    -- print("flash", stage)
+    -- print(stage, self.pips[stage]:GetAlpha())
+    self.pips[stage].texture:SetAlpha(PIP_HIT_ALPHA)
+    AW.FrameFadeOut(self.pips[stage].texture, PIP_FADE_TIME, PIP_HIT_ALPHA, PIP_FADED_ALPHA)
+end
+
+local function CreatePip(self, stage)
+    local pip = CreateFrame("Frame", nil, self.bar)
+    pip:SetFrameLevel(self.bar:GetFrameLevel())
+
+    pip.texture = pip:CreateTexture(nil, "ARTWORK", nil, -2)
+    pip.texture:SetAllPoints()
+    pip.texture:SetTexture(self.texture)
+    pip.texture:SetVertexColor(AW.GetColorRGB(map[stage], PIP_START_ALPHA))
+
+    pip.bound = pip:CreateTexture(nil, "ARTWORK", nil, 1)
+    pip.bound:SetColorTexture(AW.GetColorRGB("black"))
+    pip.bound:SetPoint("LEFT", pip)
+    pip.bound:SetPoint("TOP", pip)
+    pip.bound:SetPoint("BOTTOM", pip)
+    AW.SetWidth(pip.bound, 1)
+
+    self.pips[stage] = pip
+
+    return pip
+end
+
+local function ResetPips(self)
+    for _, pip in pairs(self.pips) do
+        --! NOTE: IMPORTANT, or alpha can be weird!
+        pip.texture:SetAlpha(PIP_START_ALPHA)
+        pip:Hide()
+    end
+end
+
+local function UpdateEmpowerPips(self, numStages)
+    if not numStages then return end
+
+    local width = self.bar:GetWidth()
+    local totalDuration = 0
+    self.numStages = numStages
+    self.curStage = 0
+
+    for stage = 1, numStages do
+        local duration = GetUnitEmpowerStageDuration(self.root.displayedUnit, stage - 1)
+        totalDuration = totalDuration + duration
+        self.stageBounds[stage] = totalDuration
+
+        local pip = self.pips[stage] or CreatePip(self, stage)
+        pip:ClearAllPoints()
+        pip:SetPoint("BOTTOM")
+        pip:SetPoint("TOP")
+
+        local offset = totalDuration / self.duration * width
+        pip:SetPoint("LEFT", offset, 0)
+
+        if stage == numStages then
+            pip:SetPoint("RIGHT")
+        else
+            local nextDuration = GetUnitEmpowerStageDuration(self.root.displayedUnit, stage)
+            pip:SetWidth(nextDuration / self.duration * width)
+        end
+
+        pip:Show()
+    end
+
+    for i = numStages + 1, #self.pips do
+        self.pips[i]:Hide()
+    end
 end
 
 ---------------------------------------------------------------------
@@ -237,7 +329,10 @@ local function UpdateLatency(self, event, unit)
         -- self.sendTime = nil
 
     elseif event == "UNIT_SPELLCAST_START" then
-        if not self.sendTime then return end
+        if not self.sendTime then
+            self.latency:Hide()
+            return
+        end
 
         self.timeDiff = GetTime() * 1000 - self.sendTime
         self.timeDiff = self.timeDiff > self.duration and self.duration or self.timeDiff
@@ -290,7 +385,7 @@ local function CastFail(self, event, unit, castGUID, castSpellID)
     self:FadeOut()
 end
 
-local function CastStop(self, event, unit, castGUID, castSpellID)
+local function CastStop(self, event, unit, castGUID, castSpellID, empowerComplete)
     if unit and unit ~= self.root.displayedUnit then return end
 
     if event then
@@ -298,12 +393,17 @@ local function CastStop(self, event, unit, castGUID, castSpellID)
             if self.castSpellID ~= castSpellID then return end
             Reset(self)
             self.bar:Hide()
+        elseif event == "UNIT_SPELLCAST_EMPOWER_STOP" then
+            if self.castSpellID ~= castSpellID then return end
+            Reset(self)
+            ResetPips(self)
+            ShowOverlay(self, not empowerComplete)
         else
             if self.castGUID ~= castGUID or self.castSpellID ~= castSpellID then return end
             -- NOTE:
             -- normally, CAST_INTERRUPTED fires before CAST_STOP
             -- but if ESC a spell, CAST_INTERRUPTED fires AFTER CAST_STOP
-            self.resetDelay = 0.25
+            self.resetDelay = 0.3
             ShowOverlay(self)
         end
 
@@ -335,6 +435,10 @@ local function CastUpdate(self, event, unitId, castGUID, castSpellID)
     end
 
     if not name then return end
+
+    if self.castType == "empower" then
+		endTime = endTime + GetUnitEmpowerHoldAtMaxTime(unit)
+	end
 
     local delay
     if self.castType == "channel" then
@@ -398,6 +502,19 @@ local function OnUpdate(self, elapsed)
             end
         end
 
+        if self.castType == "empower" then
+			for i = self.curStage + 1, self.numStages do
+				if self.stageBounds[i] then
+					if self.current > self.stageBounds[i] then
+						self.curStage = i
+                        FlashPip(self, self.curStage)
+					else
+						break
+					end
+				end
+			end
+		end
+
         self.bar:SetValue(self.current)
     end
 end
@@ -413,6 +530,7 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
         name, text, texture, startTime, endTime, isTradeskill, notInterruptible, spellID, isEmpowered, numEmpowerStages = UnitChannelInfo(unit)
         if numEmpowerStages and numEmpowerStages > 0 then
             self.castType = "empower"
+            endTime = endTime + GetUnitEmpowerHoldAtMaxTime(unit)
         else
             self.castType = "channel"
         end
@@ -432,10 +550,10 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     self.endTime = endTime
 
     -- curent progress
-    if self.castType == "cast" then
-        self.current = GetTime() * 1000 - startTime
-    else
+    if self.castType == "channel" then
         self.current = endTime - GetTime() * 1000
+    else
+        self.current = GetTime() * 1000 - startTime
     end
     self.duration = endTime - startTime
 
@@ -444,6 +562,9 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     if unit ~= "player" then
         CastInterruptible(self)
     end
+
+    -- empower
+    UpdateEmpowerPips(self, numEmpowerStages)
 
     -- ticks
     UpdateTicks(self, name)
@@ -510,6 +631,7 @@ end
 -- disable
 ---------------------------------------------------------------------
 local function CastBar_Disable(self)
+    Reset(self)
     self:UnregisterAllEvents()
     self:SetScript("OnUpdate", nil)
     self:Hide()
@@ -527,10 +649,20 @@ local function CastBar_SetBorderColor(self, color)
     self.gap:SetColorTexture(unpack(color))
 end
 
+local function CastBar_SetPipsColor(self, color)
+    for i, pip in pairs(self.pips) do
+        pip.texture:SetVertexColor(AW.GetColorRGB(map[i], PIP_START_ALPHA))
+    end
+end
+
 local function CastBar_SetTexture(self, texture)
     texture = U.GetBarTexture(texture)
+    self.texture = texture
     self.bar:SetStatusBarTexture(texture)
     self.status:SetTexture(texture)
+    for _, pip in pairs(self.pips) do
+        pip:SetTexture(texture)
+    end
 end
 
 local function CastBar_UpdateNameText(self, config, showIcon)
@@ -628,8 +760,10 @@ local function CastBar_UpdatePixels(self)
     AW.ReSize(self.gap)
     AW.ReSize(self.spark)
     AW.RePoint(self.bar)
-    AW.RePoint(self.name)
     AW.RePoint(self.status)
+    AW.RePoint(self.icon)
+    AW.RePoint(self.nameText)
+    AW.RePoint(self.durationText)
 
     if self.ticks then
         for _, tick in pairs(self.ticks) do
@@ -647,7 +781,6 @@ local function CastBar_LoadConfig(self, config)
     AW.SetWidth(self.icon, config.height)
 
     self:SetFrameLevel(self.root:GetFrameLevel() + config.frameLevel)
-    self.overlay:SetFrameLevel(self:GetFrameLevel() + 1)
 
     self:SetTexture(config.texture)
     self:SetBackgroundColor(config.bgColor)
@@ -720,6 +853,7 @@ function UF.CreateCastBar(parent, name)
     AW.SetOnePixelInside(bar, frame)
     bar:SetStatusBarTexture(AW.GetTexture("StatusBar"))
     bar:GetStatusBarTexture():SetDrawLayer("ARTWORK", 0)
+    bar:SetFrameLevel(frame:GetFrameLevel() + 1)
 
     -- spark
     local spark = bar:CreateTexture(nil, "ARTWORK", nil, 2)
@@ -735,10 +869,15 @@ function UF.CreateCastBar(parent, name)
     uninterruptible:SetVertTile(true)
     uninterruptible:Hide()
 
+    -- empower
+    frame.pips = {}
+    frame.stageBounds = {}
+
     -- overlay
     local overlay = CreateFrame("Frame", nil, frame)
     frame.overlay = overlay
     overlay:SetAllPoints()
+    overlay:SetFrameLevel(frame:GetFrameLevel() + 2)
 
     -- name
     local nameText = overlay:CreateFontString(nil, "OVERLAY", AW.GetFontName("normal"))
@@ -761,6 +900,7 @@ function UF.CreateCastBar(parent, name)
     frame.UpdateSpark = CastBar_UpdateSpark
     frame.UpdateTicks = CastBar_UpdateTicks
     frame.UpdateLatency = CastBar_UpdateLatency
+    frame.SetPipsColor = CastBar_SetPipsColor
     frame.LoadConfig = CastBar_LoadConfig
 
     -- pixel perfect
