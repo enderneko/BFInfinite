@@ -63,14 +63,14 @@ function AB.StylizeButton(b)
     local normal2 = b:GetNormalTexture()
 
     -- hide and remove ------------------------------------------------------- --
-    U.Hide(normal)
-    U.Hide(normal2)
-    U.Hide(border)
-    U.Hide(b.IconMask)
-    U.Hide(b.NewActionTexture)
-    U.Hide(b.SlotBackground)
-    U.Hide(b.HighlightTexture)
-    
+    if normal then normal:SetTexture() normal:Hide() normal:SetAlpha(0) end
+    if normal2 then normal2:SetTexture() normal2:Hide() normal2:SetAlpha(0) end
+    if border then U.Hide(border) end
+    if b.NewActionTexture then b.NewActionTexture:SetAlpha(0) end
+    if b.HighlightTexture then b.HighlightTexture:SetAlpha(0) end
+    if b.SlotBackground then b.SlotBackground:Hide() end
+    if b.IconMask then b.IconMask:Hide() end
+
     -- hotkey ---------------------------------------------------------------- --
     hotkey:SetDrawLayer("OVERLAY")
 
@@ -88,13 +88,13 @@ function AB.StylizeButton(b)
     AW.SetOnePixelInside(b.checkedTexture, b)
     b.checkedTexture:SetBlendMode("ADD")
     b:SetCheckedTexture(b.checkedTexture)
-    
+
     -- pushed texture -------------------------------------------------------- --
     b.pushedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("yellow", 0.25))
     AW.SetOnePixelInside(b.pushedTexture, b)
     b.pushedTexture:SetBlendMode("ADD")
     b:SetPushedTexture(b.pushedTexture)
-    
+
     -- mouseover highlight --------------------------------------------------- --
     b.mouseOverHighlight = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.25), "HIGHLIGHT")
     AW.SetOnePixelInside(b.mouseOverHighlight, b)
@@ -110,14 +110,14 @@ function AB.StylizeButton(b)
     if shine then
         AW.SetOnePixelInside(shine, b)
     end
-    
+
     -- Flash ----------------------------------------------------------------- --
     if flash then
         flash:SetColorTexture(AW.GetColorRGB("red", 0.25))
         AW.SetOnePixelInside(flash, b)
         flash:SetDrawLayer("ARTWORK", 1)
     end
-        
+
     -- backdrop -------------------------------------------------------------- --
     Mixin(b, BackdropTemplateMixin)
     AW.StylizeFrame(b)
@@ -170,7 +170,7 @@ function AB.CreateButton(parent, id, name)
     -- SpellCastAnimFrame ---------------------------------------------------- --
     if b.SpellCastAnimFrame then
         AW.SetOnePixelInside(b.SpellCastAnimFrame, b)
-        
+
         b.SpellCastAnimFrame.Fill:SetAllPoints()
         b.SpellCastAnimFrame.Fill.FillMask:SetAllPoints()
         b.SpellCastAnimFrame.Fill.FillMask:SetTexture(AW.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
@@ -197,7 +197,7 @@ end
 ---------------------------------------------------------------------
 function AB.CreateStanceButton(parent, id)
     local b = CreateFrame("CheckButton", "BFI_StanceBarButton"..id, parent, "StanceButtonTemplate")
-            
+
     b:SetID(id)
     AB.StylizeButton(b)
 
@@ -219,7 +219,7 @@ end
 ---------------------------------------------------------------------
 function AB.CreatePetButton(parent, id)
     local b = CreateFrame("CheckButton", "BFI_PetBarButton"..id, parent, "PetActionButtonTemplate")
-            
+
     b:SetID(id)
     AB.StylizeButton(b)
 
