@@ -2,6 +2,18 @@ local addonName, ns = ...
 local AW = ns.AW
 
 ---------------------------------------------------------------------
+-- function
+---------------------------------------------------------------------
+local f = CreateFrame("Frame")
+AW.FrameSetSize = f.SetSize
+AW.FrameSetHeight = f.SetHeight
+AW.FrameSetWidth = f.SetWidth
+AW.FrameSetPoint = f.SetPoint
+AW.FrameSetFrameLevel = f.SetFrameLevel
+AW.FrameShow = f.Show
+AW.FrameHide = f.Hide
+
+---------------------------------------------------------------------
 -- style
 ---------------------------------------------------------------------
 --- @param color string|table color name defined in Color.lua or color table

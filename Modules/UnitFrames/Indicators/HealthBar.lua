@@ -341,6 +341,7 @@ end
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
+-- TODO: gradient texture & mask
 function UF.CreateHealthBar(parent, name)
     -- bar
     local bar = UF.CreateBar(parent, name)

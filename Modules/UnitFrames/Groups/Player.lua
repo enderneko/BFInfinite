@@ -11,6 +11,8 @@ local indicators = {
     "powerText",
     "portrait",
     "castBar",
+    {"auras", "buffs", "HELPFUL"},
+    {"auras", "debuffs", "HARMFUL"},
 }
 
 ---------------------------------------------------------------------

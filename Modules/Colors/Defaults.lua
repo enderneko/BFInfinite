@@ -7,13 +7,14 @@ local C = BFI.M_C
 -- shared colors
 ---------------------------------------------------------------------
 local defaults = {
-    debuffs = {
+    auras = {
         debuff_curse = {0.6, 0, 1},
         debuff_disease = {0.6, 0.4, 0},
         debuff_magic = {0.2, 0.6, 1},
         debuff_poison = {0, 0.6, 0},
         debuff_bleed = {1, 0.2, 0.6},
         debuff_none = {0.8, 0, 0},
+        aura_self = {0, 0.8, 0}, -- applied by self
     },
 
     empowerStages = {
@@ -45,4 +46,27 @@ function C.ResetDefaults(which)
     end
 
     -- TODO: fire
+end
+
+---------------------------------------------------------------------
+-- GetAuraTypeColor
+---------------------------------------------------------------------
+function C.GetAuraTypeColor(auraType)
+    if auraType == "Curse" then
+        return AW.GetColorRGB("debuff_curse")
+    elseif auraType == "Disease" then
+        return AW.GetColorRGB("debuff_disease")
+    elseif auraType == "Magic" then
+        return AW.GetColorRGB("debuff_magic")
+    elseif auraType == "Poison" then
+        return AW.GetColorRGB("debuff_disease")
+    elseif auraType == "Bleed" then
+        return AW.GetColorRGB("debuff_bleed")
+    elseif auraType == "None" then
+        return AW.GetColorRGB("debuff_none")
+    elseif auraType == "Self" then
+        return AW.GetColorRGB("aura_self")
+    else
+        return AW.GetColorRGB("black")
+    end
 end

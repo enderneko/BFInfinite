@@ -12,7 +12,7 @@ local default_player_target_indicators = {
         frameLevel = 1,
         -- orientation = "HORIZONTAL",
         width = 225,
-        height = 30,
+        height = 31,
         color = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf")},
         lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
         bgColor = AW.GetColorTable("background"),
@@ -138,6 +138,32 @@ local default_player_target_indicators = {
             uninterruptible = AW.GetColorTable("cast_uninterruptible"),
         },
     },
+    buffs = {
+        enabled = true,
+        -- position = {},
+        -- orientation = "",
+        width = 19,
+        height = 19,
+        spacing = 1,
+        numPerLine = 11,
+        numTotal = 22,
+        highlightSelfApplied = true,
+        frameLevel = 1,
+    },
+    debuffs = {
+        enabled = true,
+        -- position = {},
+        -- orientation = "",
+        width = 19,
+        height = 19,
+        spacing = 1,
+        numPerLine = 11,
+        numTotal = 22,
+        frameLevel = 1,
+    },
+    privateAuras = {
+        enabled = true,
+    },
 }
 
 local defaults = {
@@ -149,7 +175,7 @@ local defaults = {
             width = 225,
             height = 49,
         },
-        indicators = default_player_target_indicators,
+        indicators = U.Copy(default_player_target_indicators),
     },
     target = {
         general = {
@@ -160,21 +186,39 @@ local defaults = {
             height = 49,
             oorAlpha = 1,
         },
-        indicators = default_player_target_indicators,
+        indicators = U.Copy(default_player_target_indicators),
     },
 }
 
 do
+    -- cast bar ticks
     defaults.player.indicators.castBar.ticks = {
         enabled = true,
         color = AW.GetColorTable("cast_tick"),
         width = 3,
     }
 
+    -- cast bar latency
     defaults.player.indicators.castBar.latency = {
         enabled = true,
         color = AW.GetColorTable("cast_latency")
     }
+
+    -- buffs position
+    defaults.player.indicators.buffs.position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1}
+    defaults.target.indicators.buffs.position = {"TOPLEFT", "TOPLEFT", 0, -1}
+
+    -- buffs orientation
+    defaults.player.indicators.buffs.orientation = "right_to_left"
+    defaults.target.indicators.buffs.orientation = "left_to_right"
+
+    -- debuffs position
+    defaults.player.indicators.debuffs.position = {"BOTTOMRIGHT", "TOPRIGHT", 0, 1}
+    defaults.target.indicators.debuffs.position = {"BOTTOMLEFT", "TOPLEFT", 0, 1}
+
+    -- debuffs orientation
+    defaults.player.indicators.debuffs.orientation = "right_to_left"
+    defaults.target.indicators.debuffs.orientation = "left_to_right"
 end
 
 BFI.RegisterCallback("InitConfigs", "UnitFrames", function(t)

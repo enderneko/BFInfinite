@@ -50,13 +50,40 @@ end
 ---------------------------------------------------------------------
 -- size
 ---------------------------------------------------------------------
+local function Reset(region)
+    if not region._size_normal then
+        region._size_normal = nil
+        region._width = nil
+        region._minwidth = nil
+        region._height = nil
+        region._minheight = nil
+    end
+
+    if not region._size_list then
+        region._size_list = nil
+        region._itemNum = nil
+        region._extraWidth = nil
+        region._extraHeight = nil
+    end
+
+    if not region._size_grid then
+        region._size_grid = nil
+        region._rows = nil
+        region._columns = nil
+    end
+
+    if not (region._size_list or region._size_grid) then
+        region._itemWidth = nil
+        region._itemHeight = nil
+        region._itemSpacing = nil
+    end
+end
+
 function AW.SetWidth(region, width, minPixels)
     -- clear conflicts
-    region._itemNum = nil
-    region._itemWidth = nil
-    region._itemSpacing = nil
-    region._extraWidth = nil
+    Reset(region)
     -- add new
+    region._size_normal = true
     region._width = width
     region._minwidth = minPixels
     region:SetWidth(AW.GetNearestPixelSize(width, region:GetEffectiveScale(), minPixels))
@@ -64,11 +91,9 @@ end
 
 function AW.SetHeight(region, height, minPixels)
     -- clear conflicts
-    region._itemNum = nil
-    region._itemHeight = nil
-    region._itemSpacing = nil
-    region._extraHeight = nil
+    Reset(region)
     -- add new
+    region._size_normal = true
     region._height = height
     region._minheight = minPixels
     region:SetHeight(AW.GetNearestPixelSize(height, region:GetEffectiveScale(), minPixels))
@@ -77,9 +102,9 @@ end
 -- NOTE: DO NOT USE WITH SetListHeight
 function AW.SetListWidth(region, itemNum, itemWidth, itemSpacing, extraWidth)
     -- clear old
-    region._width = nil
-    region._minwidth = nil
+    Reset(region)
     -- add new
+    region._size_list = true
     region._itemNum = itemNum
     region._itemWidth = itemWidth
     region._itemSpacing = itemSpacing
@@ -93,9 +118,9 @@ end
 -- NOTE: DO NOT USE WITH SetListWidth
 function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
     -- clear conflicts
-    region._height = nil
-    region._minheight = nil
+    Reset(region)
     -- add new
+    region._size_list = true
     region._itemNum = itemNum
     region._itemHeight = itemHeight
     region._itemSpacing = itemSpacing
@@ -104,6 +129,22 @@ function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
     region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*itemNum
         + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1)
         + AW.GetNearestPixelSize(extraHeight, region:GetEffectiveScale()))
+end
+
+function AW.SetGridSize(region, itemWidth, itemHeight, itemSpacing, columns, rows)
+    -- clear conflicts
+    Reset(region)
+    -- add new
+    region._size_grid = true
+    region._itemWidth = itemWidth
+    region._itemHeight = itemHeight
+    region._itemSpacing = itemSpacing
+    region._rows = rows
+    region._columns = columns
+    region:SetWidth(AW.GetNearestPixelSize(itemWidth, region:GetEffectiveScale())*columns
+        + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(columns-1))
+    region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*rows
+        + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(rows-1))
 end
 
 function AW.SetSize(region, width, height)
@@ -180,17 +221,21 @@ end
 -- re-set
 ---------------------------------------------------------------------
 function AW.ReSize(region)
-    if region._width then
-        region:SetWidth(AW.GetNearestPixelSize(region._width, region:GetEffectiveScale(), region._minwidth))
-    end
-    if region._height then
-        region:SetHeight(AW.GetNearestPixelSize(region._height, region:GetEffectiveScale(), region._minheight))
-    end
-    if region._itemWidth then
-        AW.SetListWidth(region, region._itemNum, region._itemWidth, region._itemSpacing, region._extraWidth)
-    end
-    if region._itemHeight then
-        AW.SetListHeight(region, region._itemNum, region._itemHeight, region._itemSpacing, region._extraHeight)
+    if region._size_normal then
+        if region._width then
+            AW.SetWidth(region, region._width, region._minwidth)
+        end
+        if region._height then
+            AW.SetHeight(region, region._height, region._minheight)
+        end
+    elseif region._size_list then
+        if region._itemWidth then
+            AW.SetListWidth(region, region._itemNum, region._itemWidth, region._itemSpacing, region._extraWidth)
+        elseif region._itemHeight then
+            AW.SetListHeight(region, region._itemNum, region._itemHeight, region._itemSpacing, region._extraHeight)
+        end
+    elseif region._size_grid then
+        AW.SetGridSize(region, region._itemWidth, region._itemHeight, region._itemSpacing, region._rows, region._columns)
     end
 end
 

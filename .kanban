@@ -48,6 +48,24 @@
           "labels": [],
           "checkboxes": [],
           "comments": []
+        },
+        {
+          "id": "56b9b274-b360-473d-addd-b6691123758a",
+          "listId": "643431c7-e660-47b1-a44b-4e799b536d19",
+          "title": "HealthBar: gradient color & mask",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "ca270d5f-8a4c-4831-bb0b-ec9adcdc8010",
+          "listId": "643431c7-e660-47b1-a44b-4e799b536d19",
+          "title": "CONFIG/PREVIEW MODE",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
         }
       ]
     },

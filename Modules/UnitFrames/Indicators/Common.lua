@@ -11,17 +11,29 @@ local builders = {
     powerText = UF.CreatePowerText,
     portrait = UF.CreatePortrait,
     castBar = UF.CreateCastBar,
+    auras = UF.CreateAuras,
 }
 
 function UF.CreateIndicators(button, indicators)
-    for _, name in pairs(indicators) do
-        button.indicators[name] = builders[name](button, button:GetName().."_"..U.UpperFirst(name))
+    for _, v in pairs(indicators) do
+        if type(v) == "table" then
+            local builder, name = v[1], v[2]
+            button.indicators[name] = builders[builder](button, button:GetName().."_"..U.UpperFirst(name), select(3, unpack(v)))
+        else -- string:name
+            button.indicators[v] = builders[v](button, button:GetName().."_"..U.UpperFirst(v))
+        end
     end
 end
 
 function UF.LoadConfigForIndicators(button, indicators, config)
-    -- TODO: whether "skip" is needed
-    for _, name in pairs(indicators) do
+    for _, v in pairs(indicators) do
+        local name
+        if type(v) == "table" then
+            name = v[2]
+        else
+            name = v
+        end
+
         local indicator = button.indicators[name]
         indicator:LoadConfig(config.indicators[name])
         if config.indicators[name].enabled then
