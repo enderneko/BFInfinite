@@ -12,7 +12,7 @@ local indicators = {
     "portrait",
     "castBar",
     {"auras", "buffs", "HELPFUL"},
-    {"auras", "debuffs", "HARMFUL"},
+    -- {"auras", "debuffs", "HARMFUL"},
 }
 
 ---------------------------------------------------------------------

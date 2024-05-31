@@ -6,6 +6,8 @@ local UF = BFI.M_UF
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots
 
+local Auras_UpdateSize
+
 -------------------------------------------------
 -- ForEachAura
 -------------------------------------------------
@@ -23,22 +25,38 @@ local function ForEachAuraHelper(indicator, func, continuationToken, ...)
         end
         index = index + 1
     end
-    return continuationToken
+    return continuationToken, n
 end
 
 local function ForEachAura(indicator, func)
-    local continuationToken
+    local continuationToken, num
     repeat
         -- continuationToken is the first return value of UnitAuraSltos
-        continuationToken = ForEachAuraHelper(indicator, func, GetAuraSlots(indicator.root.displayedUnit, indicator.filter, indicator.numSlots, continuationToken))
+        continuationToken, num = ForEachAuraHelper(indicator, func, GetAuraSlots(indicator.root.displayedUnit, indicator.filter, indicator.numSlots, continuationToken))
     until continuationToken == nil
+    return num
 end
 
 ---------------------------------------------------------------------
 -- UNIT_AURA
 ---------------------------------------------------------------------
 local function HandleAura(self, auraInfo, index)
-    print(auraInfo.name, index)
+    local auraInstanceID = auraInfo.auraInstanceID
+    local name = auraInfo.name
+    local icon = auraInfo.icon
+    local count = auraInfo.applications
+    local auraType = auraInfo.dispelName
+    local expirationTime = auraInfo.expirationTime or 0
+    local start = expirationTime - auraInfo.duration
+    local duration = auraInfo.duration
+    local source = auraInfo.sourceUnit
+    local spellId = auraInfo.spellId
+
+    print(index, name, start, duration, auraType, icon, count)
+
+    self.auras[auraInstanceID] = index
+
+    self:SetCooldown(index, source, start, duration, auraType, icon, count)
 end
 
 local function UpdateAuras(self, event, unitId, updateInfo)
@@ -47,17 +65,21 @@ local function UpdateAuras(self, event, unitId, updateInfo)
 
     local isFullUpdate = true
     -- local isFullUpdate = not updateInfo or updateInfo.isFullUpdate
+    local num
 
     if isFullUpdate then
-        ForEachAura(self, HandleAura)
+        wipe(self.auras)
+        num = ForEachAura(self, HandleAura)
     end
+
+    Auras_UpdateSize(self, num)
 end
 
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
 local function Auras_Update(self)
-
+    UpdateAuras(self)
 end
 
 ---------------------------------------------------------------------
@@ -70,6 +92,33 @@ local function Auras_Enable(self)
     if self:IsVisible() then self:Update() end
 end
 
+---------------------------------------------------------------------
+-- disable
+---------------------------------------------------------------------
+local function Auras_Disable(self)
+    self:UnregisterAllEvents()
+    self:Hide()
+    wipe(self.auras)
+end
+
+---------------------------------------------------------------------
+-- SetCooldown
+---------------------------------------------------------------------
+local set_cooldown = {
+    cast_by_me = function(self, index, source, start, duration, auraType, icon, count)
+        if source == "player" or source == "pet" then
+            self.slots[index]:SetCooldown(start, duration, "Self", icon, count)
+        else
+            self.slots[index]:SetCooldown(start, duration, nil, icon, count)
+        end
+    end,
+    debuff_type = function(self, index, source, start, duration, auraType, icon, count)
+        self.slots[index]:SetCooldown(start, duration, auraType or "none", icon, count)
+    end,
+    none = function(self, index, source, start, duration, auraType, icon, count)
+        self.slots[index]:SetCooldown(start, duration, nil, icon, count)
+    end,
+}
 
 ---------------------------------------------------------------------
 -- config
@@ -85,7 +134,7 @@ local function Auras_UpdateFrameSize(self, numAuras)
     end
 end
 
-local function Auras_UpdateSize(self, numAuras)
+Auras_UpdateSize = function(self, numAuras)
     if not (self.width and self.height and self.orientation) then return end
 
     if numAuras then
@@ -93,6 +142,7 @@ local function Auras_UpdateSize(self, numAuras)
             self.slots[i]:Hide()
         end
     else
+        numAuras = 0
         for i = 1, self.numSlots do
             if self.slots[i]:IsShown() then
                 numAuras = i
@@ -100,9 +150,7 @@ local function Auras_UpdateSize(self, numAuras)
         end
     end
 
-    if numAuras and numAuras ~= 0 then
-        Auras_UpdateFrameSize(self, numAuras)
-    end
+    Auras_UpdateFrameSize(self, numAuras)
 end
 
 local function Auras_SetSize(self, width, height)
@@ -227,6 +275,17 @@ local function Auras_SetNumSlots(self, numSlots)
     end
 end
 
+local function Auras_SetupAuras(self, config)
+    for i = 1, self.numSlots do
+        local aura = self.slots[i]
+        aura:SetCooldownStyle(config.cooldownStyle)
+        aura:SetupDurationText(config.durationText)
+        aura:SetupStackText(config.stackText)
+    end
+end
+
+local func
+
 local function Auras_OnHide(self)
     for i = 1, self.numSlots do
         self.slots[i]:Hide()
@@ -235,12 +294,16 @@ end
 
 local function Auras_LoadConfig(self, config)
     texplore(config)
+    AW.SetFrameLevel(self, config.frameLevel, self.root)
     AW.LoadWidgetPosition(self, config.position)
     Auras_SetNumSlots(self, config.numTotal)
     self.spacing = config.spacing
     Auras_SetSize(self, config.width, config.height)
     Auras_SetNumPerLine(self, config.numPerLine)
     Auras_SetOrientation(self, config.orientation)
+    Auras_SetupAuras(self, config)
+
+    self.SetCooldown = set_cooldown[config.borderColor]
 end
 
 local function Auras_UpdatePixels(self)
@@ -255,20 +318,23 @@ end
 -- create
 ---------------------------------------------------------------------
 function UF.CreateAuras(parent, name, filter)
-    local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
-    -- TODO: remove backdrop
-    AW.SetDefaultBackdrop_NoBorder(frame)
-    frame:SetBackdropColor(0, 1, 0, 0.25)
+    local frame = CreateFrame("Frame", name, parent)
 
     frame.root = parent
     frame.filter = filter
+
+    -- events
+    BFI.AddEventHandler(frame)
 
     -- slots
     local slots = {}
     frame.slots = slots
 
-    -- events
-    BFI.AddEventHandler(frame)
+    -- data
+    local auras = {
+        -- [auraInstanceID] = slotIndex,
+    }
+    frame.auras = auras
 
     -- scripts
     frame:SetScript("OnHide", Auras_OnHide)

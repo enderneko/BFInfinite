@@ -142,12 +142,12 @@ local default_player_target_indicators = {
         enabled = true,
         -- position = {},
         -- orientation = "",
+        -- color = "",
         width = 19,
         height = 19,
         spacing = 1,
         numPerLine = 11,
         numTotal = 22,
-        highlightSelfApplied = true,
         frameLevel = 1,
     },
     debuffs = {
@@ -175,7 +175,193 @@ local defaults = {
             width = 225,
             height = 49,
         },
-        indicators = U.Copy(default_player_target_indicators),
+        indicators = {
+            healthBar = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                frameLevel = 1,
+                -- orientation = "HORIZONTAL",
+                width = 225,
+                height = 31,
+                color = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf")},
+                lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
+                bgColor = AW.GetColorTable("background"),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                smoothing = false,
+                healPrediction = {enabled=true, useCustomColor=true, color=AW.GetColorTable("heal_prediction")},
+                shield = {
+                    enabled = true,
+                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    color = AW.GetColorTable("shield", 0.4),
+                    reverseFill = true,
+                },
+                overshieldGlow = {enabled=true, color=AW.GetColorTable("shield")},
+                healAbsorb = {
+                    enabled = true,
+                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    color = AW.GetColorTable("absorb"),
+                },
+                overabsorbGlow = {enabled=true, color=AW.GetColorTable("absorb")},
+            },
+            powerBar = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
+                frameLevel = 1,
+                -- orientation = "HORIZONTAL",
+                width = 225,
+                height = 17,
+                color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
+                lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+                bgColor = AW.GetColorTable("background"),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                smoothing = false,
+                frequent = true,
+            },
+            nameText = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 3, -4},
+                length = 0.5,
+                anchorTo = "healthBar",
+                font = {"BFI 1", 12, "none", true},
+                color = {type="class_color", rgb=AW.GetColorTable("white")}, -- class/custom
+            },
+            healthText = {
+                enabled = true,
+                position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
+                anchorTo = "healthBar",
+                font = {"BFI 1", 12, "none", true},
+                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                format = {
+                    numeric = "current_absorbs_short",
+                    percent = "current_absorbs_sum_decimal",
+                    delimiter = " | ",
+                    noPercentSign = false,
+                },
+            },
+            powerText = {
+                enabled = true,
+                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
+                anchorTo = "powerBar",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/power/custom
+                frequent = true,
+                format = {
+                    numeric = "current",
+                    percent = "none",
+                    delimiter = " | ",
+                    noPercentSign = false,
+                },
+            },
+            portrait = {
+                enabled = true,
+                type = "3d", -- 3d, 2d, class_icon
+                position = {"CENTER", "CENTER", 0, -5},
+                frameLevel = 5,
+                -- anchorTo = "button",
+                width = 197,
+                height = 20,
+                bgColor = AW.GetColorTable("background", 1),
+                borderColor = AW.GetColorTable("border"),
+                model = {
+                    xOffset = 0, -- [-100, 100]
+                    yOffset = 0, -- [-100, 100]
+                    rotation = 0, -- [0, 360]
+                    camDistanceScale = 1.5,
+                },
+            },
+            castBar = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, -5},
+                frameLevel = 10,
+                width = 197,
+                height = 20,
+                bgColor = AW.GetColorTable("background", 0.5),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                fadeDuration = 1,
+                showIcon = true,
+                nameText = {
+                    font = {"BFI 1", 12, "none", true},
+                    position = {"LEFT", "LEFT", 25, 0},
+                    color = AW.GetColorTable("white"),
+                    length = 0.5,
+                },
+                durationText = {
+                    font = {"BFI 1", 12, "none", true},
+                    position = {"RIGHT", "RIGHT", -5, 0},
+                    format = "%.1f",
+                    color = AW.GetColorTable("white"),
+                    showDelay = false,
+                },
+                spark = {
+                    texture = AW.GetPlainTexture(),
+                    color = AW.GetColorTable("cast_spark"),
+                    width = 2,
+                    height = 0,
+                },
+                colors = {
+                    normal = AW.GetColorTable("cast_normal"),
+                    failed = AW.GetColorTable("cast_failed"),
+                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+                },
+                ticks = {
+                    enabled = true,
+                    color = AW.GetColorTable("cast_tick"),
+                    width = 3,
+                },
+                latency = {
+                    enabled = true,
+                    color = AW.GetColorTable("cast_latency")
+                },
+            },
+            buffs = {
+                enabled = true,
+                position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
+                orientation = "right_to_left",
+                borderColor = "none",
+                cooldownStyle = "none",
+                width = 19,
+                height = 19,
+                spacing = 1,
+                numPerLine = 11,
+                numTotal = 22,
+                frameLevel = 1,
+                durationText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 0},
+                    color = {
+                        AW.GetColorTable("white"), -- normal
+                        {0.5, AW.GetColorTable("yellow")}, -- less than 50%
+                        {5, AW.GetColorTable("red")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AW.GetColorTable("white"),
+                },
+            },
+            debuffs = {
+                enabled = true,
+                position = {"BOTTOMRIGHT", "TOPRIGHT", 0, 1},
+                orientation = "right_to_left",
+                color = "debuff_type",
+                width = 19,
+                height = 19,
+                spacing = 1,
+                numPerLine = 11,
+                numTotal = 22,
+                frameLevel = 1,
+            },
+            privateAuras = {
+                enabled = true,
+            },
+        },
     },
     target = {
         general = {
@@ -186,40 +372,169 @@ local defaults = {
             height = 49,
             oorAlpha = 1,
         },
-        indicators = U.Copy(default_player_target_indicators),
+        indicators = {
+            healthBar = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                frameLevel = 1,
+                -- orientation = "HORIZONTAL",
+                width = 225,
+                height = 31,
+                color = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf")},
+                lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
+                bgColor = AW.GetColorTable("background"),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                smoothing = false,
+                healPrediction = {enabled=true, useCustomColor=true, color=AW.GetColorTable("heal_prediction")},
+                shield = {
+                    enabled = true,
+                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    color = AW.GetColorTable("shield", 0.4),
+                    reverseFill = true,
+                },
+                overshieldGlow = {enabled=true, color=AW.GetColorTable("shield")},
+                healAbsorb = {
+                    enabled = true,
+                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    color = AW.GetColorTable("absorb"),
+                },
+                overabsorbGlow = {enabled=true, color=AW.GetColorTable("absorb")},
+            },
+            powerBar = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
+                frameLevel = 1,
+                -- orientation = "HORIZONTAL",
+                width = 225,
+                height = 17,
+                color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
+                lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+                bgColor = AW.GetColorTable("background"),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                smoothing = false,
+                frequent = true,
+            },
+            nameText = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 3, -4},
+                length = 0.5,
+                anchorTo = "healthBar",
+                font = {"BFI 1", 12, "none", true},
+                color = {type="class_color", rgb=AW.GetColorTable("white")}, -- class/custom
+            },
+            healthText = {
+                enabled = true,
+                position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
+                anchorTo = "healthBar",
+                font = {"BFI 1", 12, "none", true},
+                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                format = {
+                    numeric = "current_absorbs_short",
+                    percent = "current_absorbs_sum_decimal",
+                    delimiter = " | ",
+                    noPercentSign = false,
+                },
+            },
+            powerText = {
+                enabled = true,
+                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
+                anchorTo = "powerBar",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/power/custom
+                frequent = true,
+                format = {
+                    numeric = "current",
+                    percent = "none",
+                    delimiter = " | ",
+                    noPercentSign = false,
+                },
+            },
+            portrait = {
+                enabled = true,
+                type = "3d", -- 3d, 2d, class_icon
+                position = {"CENTER", "CENTER", 0, -5},
+                frameLevel = 5,
+                -- anchorTo = "button",
+                width = 197,
+                height = 20,
+                bgColor = AW.GetColorTable("background", 1),
+                borderColor = AW.GetColorTable("border"),
+                model = {
+                    xOffset = 0, -- [-100, 100]
+                    yOffset = 0, -- [-100, 100]
+                    rotation = 0, -- [0, 360]
+                    camDistanceScale = 1.5,
+                },
+            },
+            castBar = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, -5},
+                frameLevel = 10,
+                width = 197,
+                height = 20,
+                bgColor = AW.GetColorTable("background", 0.5),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                fadeDuration = 1,
+                showIcon = true,
+                nameText = {
+                    font = {"BFI 1", 12, "none", true},
+                    position = {"LEFT", "LEFT", 25, 0},
+                    color = AW.GetColorTable("white"),
+                    length = 0.5,
+                },
+                durationText = {
+                    font = {"BFI 1", 12, "none", true},
+                    position = {"RIGHT", "RIGHT", -5, 0},
+                    format = "%.1f",
+                    color = AW.GetColorTable("white"),
+                    showDelay = false,
+                },
+                spark = {
+                    texture = AW.GetPlainTexture(),
+                    color = AW.GetColorTable("cast_spark"),
+                    width = 2,
+                    height = 0,
+                },
+                colors = {
+                    normal = AW.GetColorTable("cast_normal"),
+                    failed = AW.GetColorTable("cast_failed"),
+                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+                },
+            },
+            buffs = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 0, -1},
+                orientation = "left_to_right",
+                color = "cast_by_me",
+                width = 19,
+                height = 19,
+                spacing = 1,
+                numPerLine = 11,
+                numTotal = 22,
+                frameLevel = 1,
+            },
+            debuffs = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "TOPLEFT", 0, 1},
+                orientation = "left_to_right",
+                color = "debuff_type",
+                width = 19,
+                height = 19,
+                spacing = 1,
+                numPerLine = 11,
+                numTotal = 22,
+                frameLevel = 1,
+            },
+            privateAuras = {
+                enabled = true,
+            },
+        },
     },
 }
-
-do
-    -- cast bar ticks
-    defaults.player.indicators.castBar.ticks = {
-        enabled = true,
-        color = AW.GetColorTable("cast_tick"),
-        width = 3,
-    }
-
-    -- cast bar latency
-    defaults.player.indicators.castBar.latency = {
-        enabled = true,
-        color = AW.GetColorTable("cast_latency")
-    }
-
-    -- buffs position
-    defaults.player.indicators.buffs.position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1}
-    defaults.target.indicators.buffs.position = {"TOPLEFT", "TOPLEFT", 0, -1}
-
-    -- buffs orientation
-    defaults.player.indicators.buffs.orientation = "right_to_left"
-    defaults.target.indicators.buffs.orientation = "left_to_right"
-
-    -- debuffs position
-    defaults.player.indicators.debuffs.position = {"BOTTOMRIGHT", "TOPRIGHT", 0, 1}
-    defaults.target.indicators.debuffs.position = {"BOTTOMLEFT", "TOPLEFT", 0, 1}
-
-    -- debuffs orientation
-    defaults.player.indicators.debuffs.orientation = "right_to_left"
-    defaults.target.indicators.debuffs.orientation = "left_to_right"
-end
 
 BFI.RegisterCallback("InitConfigs", "UnitFrames", function(t)
     if not t["unitFrames"] then
