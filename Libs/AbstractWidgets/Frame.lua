@@ -13,6 +13,20 @@ AW.FrameSetFrameLevel = f.SetFrameLevel
 AW.FrameShow = f.Show
 AW.FrameHide = f.Hide
 
+local c = CreateFrame("Cooldown")
+AW.FrameSetCooldown = c.SetCooldown
+
+---------------------------------------------------------------------
+-- frame level relative to parent
+---------------------------------------------------------------------
+function AW.SetFrameLevel(frame, level, relativeTo)
+    if relativeTo then
+        frame:SetFrameLevel(relativeTo:GetFrameLevel() + level)
+    else
+        frame:SetFrameLevel(frame:GetParent():GetFrameLevel() + level)
+    end
+end
+
 ---------------------------------------------------------------------
 -- style
 ---------------------------------------------------------------------
@@ -730,7 +744,7 @@ end
 function AW.ShowMask(parent, text, tlX, tlY, brX, brY)
     if not parent.mask then
         parent.mask = AW.CreateBorderedFrame(parent, nil, nil, AW.GetColorTable("widget", 0.7), "none")
-        parent.mask:SetFrameLevel(parent:GetFrameLevel()+30)
+        AW.SetFrameLevel(parent.mask, 30, parent)
         parent.mask:EnableMouse(true)
         -- parent.mask:EnableMouseWheel(true) -- not enough
         parent.mask:SetScript("OnMouseWheel", function(self, delta)
@@ -769,7 +783,7 @@ end
 local function CreateCombatMask(parent, tlX, tlY, brX, brY)
     parent.combatMask = AW.CreateBorderedFrame(parent, nil, nil, AW.GetColorTable("darkred", 0.8), "none")
 
-    parent.combatMask:SetFrameLevel(parent:GetFrameLevel()+100)
+    AW.SetFrameLevel(parent.combatMask, 100, parent)
     parent.combatMask:EnableMouse(true)
     parent.combatMask:SetScript("OnMouseWheel", function() end)
 

@@ -535,7 +535,7 @@ function AW.ShowDemo()
     AW.SetPoint(b10, "TOPLEFT", bf3, "BOTTOMLEFT", 0, -10)
 
     local bf4 = AW.CreateBorderedFrame(demo, 120, 78, nil, "hotpink")
-    bf4:SetFrameLevel(demo:GetFrameLevel()+50)
+    AW.SetFrameLevel(bf4, 50)
     bf4:Hide()
     AW.SetPoint(bf4, "BOTTOMLEFT", b10, "TOPLEFT", 0, 10)
 
@@ -553,11 +553,11 @@ function AW.ShowDemo()
     b10:SetScript("OnClick", function()
         if bf4:IsShown() then
             AW.HideMask(demo)
-            b10:SetFrameLevel(demo:GetFrameLevel()+1)
+            AW.SetFrameLevel(b10, 1)
             bf4:Hide()
         else
             AW.ShowMask(demo)
-            b10:SetFrameLevel(demo:GetFrameLevel()+50)
+            AW.SetFrameLevel(b10, 50)
             bf4:Show()
         end
     end)

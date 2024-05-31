@@ -59,16 +59,16 @@ local function CreateDialog()
     -- OnHide
     dialog:SetScript("OnHide", function()
         dialog:Hide()
-        
+
         -- reset
         dialog.minButtonWidth = nil
         dialog.onConfirm = nil
         dialog.onCancel = nil
-        
+
         -- reset text
         text:SetText()
         textHolder:SetHeight(0)
-        
+
         -- reset content
         if dialog.content then
             dialog.content:ClearAllPoints()
@@ -76,14 +76,14 @@ local function CreateDialog()
             dialog.content = nil
         end
         contentHolder:SetHeight(0)
-        
+
         -- reset button
         yes:SetEnabled(true)
         yes:SetText(_G.YES)
         AW.SetWidth(yes, 50)
         no:SetText(_G.NO)
         AW.SetWidth(no, 50)
-        
+
         -- hide mask
         if dialog.shownMask then
             dialog.shownMask:Hide()
@@ -116,7 +116,7 @@ local function CreateDialog()
         if dialog:IsShown() then
             dialog:GetScript("OnShow")()
         end
-        
+
         if dialog.minButtonWidth then
             AW.ResizeDialogButtonToFitText(dialog.minButtonWidth)
         end
@@ -128,7 +128,7 @@ function AW.ShowDialog(parent, text, width, yesText, noText, showMask, content, 
     if not dialog then CreateDialog() end
 
     dialog:SetParent(parent)
-    dialog:SetFrameLevel(parent:GetFrameLevel()+50) -- mask:30 < level < combatMask:100
+    AW.SetFrameLevel(dialog, 50, parent)
     AW.SetWidth(dialog, width)
 
     dialog.text:SetText(text)
@@ -232,7 +232,7 @@ local function CreateNotificationDialog()
     -- OnHide
     notificationDialog:SetScript("OnHide", function()
         notificationDialog:Hide()
-        
+
         -- reset text
         text:SetText()
         textHolder:SetHeight(0)
@@ -242,7 +242,7 @@ local function CreateNotificationDialog()
             notificationDialog.timer:Cancel()
             notificationDialog.timer = nil
         end
-        
+
         -- hide mask
         if notificationDialog.shownMask then
             notificationDialog.shownMask:Hide()
@@ -280,7 +280,7 @@ function AW.ShowNotificationDialog(parent, text, width, showMask, countdown)
     if not notificationDialog then CreateNotificationDialog() end
 
     notificationDialog:SetParent(parent)
-    notificationDialog:SetFrameLevel(parent:GetFrameLevel()+50) -- mask:30 < level < combatMask:100
+    AW.SetFrameLevel(notificationDialog, 50, parent)
     AW.SetWidth(notificationDialog, width)
 
     notificationDialog.text:SetText(text)

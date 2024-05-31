@@ -183,7 +183,7 @@ end
 -- load
 ---------------------------------------------------------------------
 local function PowerBar_LoadConfig(self, config)
-    self:SetFrameLevel(self.root:GetFrameLevel() + config.frameLevel)
+    AW.SetFrameLevel(self, config.frameLevel, self.root)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
 

@@ -41,7 +41,7 @@ local calendar
 local function FillDays(year, month)
     local numDays, firstWeekday = GetMonthInfo(year, month)
     local start = (firstWeekday >= AW.FIRST_WEEKDAY) and (firstWeekday - AW.FIRST_WEEKDAY + 1) or (7 - AW.FIRST_WEEKDAY + 1 + firstWeekday)
-    
+
     local day = 1
     for i, b in ipairs(calendar.days) do
         if i >= start and i < start + numDays then
@@ -68,7 +68,7 @@ local function FillDays(year, month)
             b:SetText("")
         end
     end
-    
+
     -- show "today" mark
     local today = date("*t")
     if month == today.month and year == today.year then
@@ -112,7 +112,7 @@ local function CreateCalendar()
         })
     end
     year:SetItems(items)
-    
+
     -- month dropdown
     local month = AW.CreateDropdown(calendar, 51, 7, nil, true)
     calendar.month = month
@@ -128,7 +128,7 @@ local function CreateCalendar()
         })
     end
     month:SetItems(items)
-    
+
     -- previous month
     local previous = AW.CreateButton(calendar, nil, "accent-hover", 35, 20)
     calendar.previous = previous
@@ -144,7 +144,7 @@ local function CreateCalendar()
         month:SetSelectedValue(calendar.date.month)
     end)
     AW.RegisterForCloseDropdown(previous)
-    
+
     -- next month
     local next = AW.CreateButton(calendar, nil, "accent-hover", 35, 20)
     calendar.next = next
@@ -217,7 +217,7 @@ local function CreateCalendar()
             AW.SetPoint(days[i], "TOPLEFT", days[i-1], "TOPRIGHT", -1, 0)
         end
     end
-    
+
     calendar.highlight = AW.CreateButtonGroup(days, function(d)
         calendar.date.day = d
         calendar.parent:SetDate(calendar.date)
@@ -286,7 +286,7 @@ local function ShowCalendar(parent, date, info, position, onDateChanged)
 
     calendar:SetDate(date)
     calendar:SetParent(parent)
-    calendar:SetFrameLevel(parent:GetFrameLevel()+20)
+    AW.SetFrameLevel(calendar, 20)
     calendar:Show()
 
     AW.ClearPoints(calendar)

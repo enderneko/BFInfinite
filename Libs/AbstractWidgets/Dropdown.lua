@@ -21,7 +21,7 @@ local function CreateListFrame()
 
     -- store created buttons
     list.buttons = {}
-    
+
     -- highlight
     local highlight = AW.CreateBorderedFrame(list, 100, 100, "none", "accent")
     highlight:Hide()
@@ -70,7 +70,7 @@ local function CreateHorizontalList()
             b:Hide()
         end
     end
-    
+
     -- highlight
     local highlight = AW.CreateBorderedFrame(horizontalList, 100, 100, "none", "accent")
     highlight:Hide()
@@ -125,7 +125,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
 
     local menu = AW.CreateBorderedFrame(parent, width, 20, "widget")
     menu:EnableMouse(true)
-    
+
     local currentList = (isMini and isHorizontal) and horizontalList or list
     menu.isMini = isMini
 
@@ -186,7 +186,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
             menu:GetScript("OnLeave")()
         end
     end)
-    
+
     -- selected item
     menu.text:SetWordWrap(false)
 
@@ -201,7 +201,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
         menu.texture:SetVertexColor(AW.GetColorRGB("white", 0.7))
         menu.texture:Hide()
     end
-    
+
     -- keep all menu item definitions
     menu.items = {
         -- {
@@ -216,7 +216,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
 
     -- index in items
     -- menu.selected
-    
+
     -- selection ----------------------------------------------------
     local function SetSelected(type, v)
         local valid
@@ -263,7 +263,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
         return nil
     end
     -----------------------------------------------------------------
-    
+
     -- update items -------------------------------------------------
     function menu:SetItems(items)
         -- validate item.value
@@ -273,26 +273,26 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
         menu.items = items
         menu.reloadRequired = true
     end
-    
+
     function menu:AddItem(item)
         -- validate item.value
         if not item.value then item.value = item.text end
         tinsert(menu.items, item)
         menu.reloadRequired = true
     end
-    
+
     function menu:RemoveCurrentItem()
         tremove(menu.items, menu.selected)
         menu.reloadRequired = true
     end
-    
+
     function menu:ClearItems()
         wipe(menu.items)
         menu.selected = nil
         menu.text:SetText("")
         currentList:SetHighlightItem()
     end
-    
+
     function menu:SetCurrentItem(item)
         menu.items[menu.selected] = item
         -- usually, update current item means to change its name (text) and func
@@ -300,13 +300,13 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
         menu.reloadRequired = true
     end
     -----------------------------------------------------------------
-    
+
     -- generic onClick ----------------------------------------------
     function menu:SetOnClick(fn)
         menu.onClick = fn
     end
     -----------------------------------------------------------------
-    
+
     local buttons = {} -- current shown buttons
 
     local function LoadItems()
@@ -410,9 +410,9 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
         -- update list size / point
         currentList.menu = menu -- check for menu's OnHide -> list:Hide
         currentList:SetParent(menu)
-        currentList:SetFrameLevel(menu:GetFrameLevel()+10)
+        AW.SetFrameLevel(currentList, 10, menu)
         AW.ClearPoints(currentList)
-        
+
         if isMini and isHorizontal then
             AW.SetPoint(currentList, "TOPLEFT", menu, "TOPRIGHT", 2, 0)
             AW.SetHeight(currentList, 20)
@@ -426,7 +426,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
         else -- using scroll list
             AW.SetPoint(currentList, "TOPLEFT", menu, "BOTTOMLEFT", 0, -2)
             AW.SetWidth(currentList, width)
-            
+
             currentList:SetSlotNum(min(#buttons, maxSlots))
             currentList:SetWidgets(buttons)
         end
@@ -450,7 +450,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
             if not isMini then menu.button:SetTexture(AW.GetIcon("ArrowDown", true)) end
         end
     end)
-    
+
     -- scripts
     menu.button:HookScript("OnClick", function()
         if currentList.menu ~= menu then -- list shown by other dropdown
@@ -479,6 +479,6 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
             if not isMini then menu.button:SetTexture(AW.GetIcon("ArrowUp", true)) end
         end
     end)
-    
+
     return menu
 end

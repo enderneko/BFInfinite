@@ -203,7 +203,7 @@ end
 
 local function CreatePip(self, stage)
     local pip = CreateFrame("Frame", nil, self.bar)
-    pip:SetFrameLevel(self.bar:GetFrameLevel())
+    AW.SetFrameLevel(pip, 0, self.bar)
 
     pip.texture = pip:CreateTexture(nil, "ARTWORK", nil, -2)
     pip.texture:SetAllPoints()
@@ -778,9 +778,9 @@ end
 local function CastBar_LoadConfig(self, config)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
-    AW.SetWidth(self.icon, config.height)
+    AW.SetWidth(self.icon, config.height-2)
 
-    self:SetFrameLevel(self.root:GetFrameLevel() + config.frameLevel)
+    AW.SetFrameLevel(self, config.frameLevel, self.root)
 
     self:SetTexture(config.texture)
     self:SetBackgroundColor(config.bgColor)
@@ -853,7 +853,7 @@ function UF.CreateCastBar(parent, name)
     AW.SetOnePixelInside(bar, frame)
     bar:SetStatusBarTexture(AW.GetTexture("StatusBar"))
     bar:GetStatusBarTexture():SetDrawLayer("ARTWORK", 0)
-    bar:SetFrameLevel(frame:GetFrameLevel() + 1)
+    AW.SetFrameLevel(bar, 1, frame)
 
     -- spark
     local spark = bar:CreateTexture(nil, "ARTWORK", nil, 2)
@@ -877,7 +877,7 @@ function UF.CreateCastBar(parent, name)
     local overlay = CreateFrame("Frame", nil, frame)
     frame.overlay = overlay
     overlay:SetAllPoints()
-    overlay:SetFrameLevel(frame:GetFrameLevel() + 2)
+    AW.SetFrameLevel(overlay, 2, frame)
 
     -- name
     local nameText = overlay:CreateFontString(nil, "OVERLAY", AW.GetFontName("normal"))

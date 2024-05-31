@@ -25,15 +25,15 @@ end
 --- @param noBackground boolean remove background texture, not background color
 function AW.CreateButton(parent, text, color, width, height, template, noBorder, noBackground, font)
     local b = CreateFrame("Button", nil, parent, template and template..",BackdropTemplate" or "BackdropTemplate")
-    if parent then b:SetFrameLevel(parent:GetFrameLevel()+1) end
+    if parent then AW.SetFrameLevel(b, 1) end
     AW.SetSize(b, width, height)
-    
+
     RegisterMouseDownUp(b)
 
     -- keep color & hoverColor ------------------
     b._color = AW.GetButtonNormalColor(color)
     b._hoverColor = AW.GetButtonHoverColor(color)
-    
+
     -- text -------------------------------------
     b.text = AW.CreateFontString(b, text, nil, font)
     b.text:SetWordWrap(false)
@@ -83,7 +83,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
     function b:GetText()
         b.text:GetText()
     end
-    
+
     function b:GetFontString()
         return b.text
     end
@@ -95,7 +95,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
     function b:SetFontObject(f)
         b.text:SetFontObject(f)
     end
-    
+
     function b:SetFont(...)
         b.text:SetFont(...)
     end
@@ -130,7 +130,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
             b.unhighlightBorder = nil
         end
     end
-    
+
     -- color ------------------------------------
     if color and string.find(color, "transparent") then -- drop down item
         b._isTransparent = true
@@ -154,8 +154,8 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         b:SetBackdropBorderColor(0, 0, 0, 1)
     end
 
-    b:SetBackdropColor(unpack(b._color)) 
-    
+    b:SetBackdropColor(unpack(b._color))
+
     -- OnEnter / OnLeave ------------------------
     b:SetScript("OnEnter", function()
         if color ~= "none" then b:SetBackdropColor(unpack(b._hoverColor)) end
@@ -167,7 +167,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
         if b.unhighlightText then b.unhighlightText() end
         if b.unhighlightBorder then b.unhighlightBorder() end
     end)
-    
+
     -- click sound ------------------------------
     if not AW.isVanilla then
         if template and strfind(template, "SecureActionButtonTemplate") then
@@ -175,7 +175,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
             -- NOTE: ActionButtonUseKeyDown will affect OnClick
             b:RegisterForClicks("LeftButtonUp", "RightButtonUp", "LeftButtonDown", "RightButtonDown")
         end
-        
+
         b:SetScript("PostClick", function(self, button, down)
             if b._isSecure then
                 if down == GetCVarBool("ActionButtonUseKeyDown") then
@@ -202,11 +202,11 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
                 b.texture:SetDesaturated(true)
                 b.texture:SetVertexColor(AW.GetColorRGB("disabled"))
             end)
-            
+
             assert(#point==3, "point format error! should be something like {\"CENTER\", 0, 0}")
             AW.SetPoint(b.texture, unpack(point))
             AW.SetSize(b.texture, unpack(size))
-            
+
             -- update fontstring point
             AW.ClearPoints(b.text)
             AW.SetPoint(b.text, "LEFT", b.texture, "RIGHT", 2, 0)
@@ -224,7 +224,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
                 end
             end
         end
-        
+
         if isAtlas then
             b.texture:SetAtlas(tex)
         else
@@ -246,7 +246,7 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
             AW.RePoint(b.texture)
         end
     end
-    
+
     AW.AddToPixelUpdater(b)
 
     return b
@@ -271,12 +271,12 @@ function AW.CreateButtonGroup(buttons, onClick, selectedFn, unselectedFn, onEnte
                 if selectedFn then selectedFn(b.id, b) end
             else
                 b:SetBackdropColor(unpack(b._color))
-                b:SetScript("OnEnter", function() 
+                b:SetScript("OnEnter", function()
                     if b._tooltips then AW.ShowTooltips(b, b._tooltipsAnchor, b._tooltipsX, b._tooltipsY, b._tooltips) end
                     b:SetBackdropColor(unpack(b._hoverColor))
                     if onEnter then onEnter(b) end
                 end)
-                b:SetScript("OnLeave", function() 
+                b:SetScript("OnLeave", function()
                     AW.HideTooltips()
                     b:SetBackdropColor(unpack(b._color))
                     if onLeave then onLeave(b) end
@@ -319,7 +319,7 @@ end
 function AW.CreateCheckButton(parent, label, onClick)
     -- InterfaceOptionsCheckButtonTemplate --> FrameXML\InterfaceOptionsPanels.xml line 19
     -- OptionsBaseCheckButtonTemplate -->  FrameXML\OptionsPanelTemplates.xml line 10
-    
+
     local cb = CreateFrame("CheckButton", nil, parent, "BackdropTemplate")
     AW.SetSize(cb, 14, 14)
 
@@ -328,7 +328,7 @@ function AW.CreateCheckButton(parent, label, onClick)
         PlaySound(self:GetChecked() and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
         if self.onClick then self.onClick(self:GetChecked() and true or false, self) end
     end)
-    
+
     cb.label = cb:CreateFontString(nil, "OVERLAY", AW.GetFontName("normal"))
     cb.label:SetPoint("LEFT", cb, "RIGHT", 5, 0)
 
@@ -356,7 +356,7 @@ function AW.CreateCheckButton(parent, label, onClick)
     highlightTexture:SetColorTexture(AW.GetColorRGB("accent", 0.1))
     AW.SetPoint(highlightTexture, "TOPLEFT", 1, -1)
     AW.SetPoint(highlightTexture, "BOTTOMRIGHT", -1, 1)
-    
+
     cb:SetCheckedTexture(checkedTexture)
     cb:SetHighlightTexture(highlightTexture, "ADD")
     -- cb:SetDisabledCheckedTexture([[Interface\AddOns\Cell\Media\CheckBox\CheckBox-DisabledChecked-16x16]])
@@ -401,11 +401,11 @@ function AW.CreateSwitch(parent, width, height, labels)
     switch:SetScript("OnEnter", function()
         switch.highlight:Show()
     end)
-    
+
     switch:SetScript("OnLeave", function()
         switch.highlight:Hide()
     end)
-    
+
     local n = #labels
     local buttonWidth = width / n
 
@@ -415,7 +415,7 @@ function AW.CreateSwitch(parent, width, height, labels)
         buttons[i] = AW.CreateButton(switch, labels[i].text, "none", buttonWidth, height)
         buttons[i].value = labels[i].value or labels[i].text
         buttons[i].isSelected = false
-       
+
         buttons[i].highlight = AW.CreateTexture(buttons[i], nil, AW.GetColorTable("accent", 0.8))
         AW.SetPoint(buttons[i].highlight, "BOTTOMLEFT", 1, 1)
         AW.SetPoint(buttons[i].highlight, "BOTTOMRIGHT", -1, 1)
@@ -424,17 +424,17 @@ function AW.CreateSwitch(parent, width, height, labels)
         -- fill animation -------------------------------------------
         local fill = buttons[i].highlight:CreateAnimationGroup()
         buttons[i].fill = fill
-        
+
         fill.t = fill:CreateAnimation("Translation")
         fill.t:SetOffset(0, AW.ConvertPixelsForRegion(height/2-1, buttons[i]))
         fill.t:SetSmoothing("IN")
         fill.t:SetDuration(0.1)
-        
+
         fill.s = fill:CreateAnimation("Scale")
         fill.s:SetScaleTo(1, AW.ConvertPixelsForRegion(height-2, buttons[i]))
         fill.s:SetDuration(0.1)
         fill.s:SetSmoothing("IN")
-        
+
         fill:SetScript("OnPlay", function()
             AW.ClearPoints(buttons[i].highlight)
             AW.SetPoint(buttons[i].highlight, "BOTTOMLEFT", 1, 1)
@@ -449,16 +449,16 @@ function AW.CreateSwitch(parent, width, height, labels)
             AW.SetPoint(buttons[i].highlight, "BOTTOMRIGHT", -1, 1)
         end)
         -------------------------------------------------------------
-        
+
         -- empty animation ------------------------------------------
         local empty = buttons[i].highlight:CreateAnimationGroup()
         buttons[i].empty = empty
-        
+
         empty.t = empty:CreateAnimation("Translation")
         empty.t:SetOffset(0, -AW.ConvertPixelsForRegion(height/2-1, buttons[i]))
         empty.t:SetSmoothing("IN")
         empty.t:SetDuration(0.1)
-        
+
         empty.s = empty:CreateAnimation("Scale")
         empty.s:SetScaleTo(1, 1/AW.ConvertPixelsForRegion(height-2, buttons[i]))
         empty.s:SetDuration(0.1)
@@ -481,7 +481,7 @@ function AW.CreateSwitch(parent, width, height, labels)
             fill:Play()
             self.isSelected = true
             switch.selected = self.value
-            
+
             if labels[i].onClick then
                 labels[i].onClick()
             end

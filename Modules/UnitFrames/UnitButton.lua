@@ -471,7 +471,7 @@ function BFIUnitButton_OnLoad(button)
 
     -- overlay
     button.overlay = CreateFrame("Frame", button:GetName(), button)
-    button.overlay:SetFrameLevel(button:GetFrameLevel() + 60)
+    AW.SetFrameLevel(button.overlay, 60, button)
     button:SetAllPoints()
 
     -- events
