@@ -110,10 +110,11 @@ function AW.CreateButton(parent, text, color, width, height, template, noBorder,
 
     -- border -----------------------------------
     if noBorder then
-        b:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8"})
+        AW.SetDefaultBackdrop_NoBorder(b)
     else
-        local n = AW.GetOnePixelForRegion(b)
-        b:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=n, insets={left=n, right=n, top=n, bottom=n}})
+        AW.SetDefaultBackdrop(b)
+        -- local n = AW.GetOnePixelForRegion(b)
+        -- b:SetBackdrop({bgFile=AW.GetPlainTexture(), edgeFile=AW.GetPlainTexture(), edgeSize=n, insets={left=n, right=n, top=n, bottom=n}})
     end
 
     --- @param color string|nil
@@ -343,7 +344,7 @@ function AW.CreateCheckButton(parent, label, onClick)
 
     cb:SetText(label)
 
-    cb:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(cb)})
+    AW.SetDefaultBackdrop(cb)
     cb:SetBackdropColor(AW.GetColorRGB("widget"))
     cb:SetBackdropBorderColor(0, 0, 0, 1)
 

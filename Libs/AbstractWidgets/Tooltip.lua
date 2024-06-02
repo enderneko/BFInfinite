@@ -83,7 +83,7 @@ end
 local function CreateTooltip(name, hasIcon)
     local tooltip = CreateFrame("GameTooltip", name, AW.UIParent, ns.prefix.."TooltipTemplate,BackdropTemplate")
     -- local tooltip = CreateFrame("GameTooltip", name, AW.UIParent, "SharedTooltipTemplate,BackdropTemplate")
-    tooltip:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1})
+    AW.SetDefaultBackdrop(tooltip)
     tooltip:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
     tooltip:SetBackdropBorderColor(AW.GetColorRGB("accent"))
     tooltip:SetOwner(AW.UIParent, "ANCHOR_NONE")
@@ -95,7 +95,7 @@ local function CreateTooltip(name, hasIcon)
         AW.SetPoint(iconBG, "TOPRIGHT", tooltip, "TOPLEFT", -1, 0)
         iconBG:SetColorTexture(AW.GetColorRGB("accent"))
         iconBG:Hide()
-        
+
         local icon = tooltip:CreateTexture(nil, "ARTWORK")
         tooltip.icon = icon
         AW.SetPoint(icon, "TOPLEFT", iconBG, 1, -1)

@@ -62,12 +62,12 @@ function AW.ConvertRGBToHSB(r, g, b)
     local colorMin = min(r, g, b)
     local delta = colorMax - colorMin
     local H, S, B
-    
+
     colorMax = tonumber(format("%f", colorMax))
     r = tonumber(format("%f", r))
     g = tonumber(format("%f", g))
     b = tonumber(format("%f", b))
-    
+
     if (delta > 0) then
         if (colorMax == r) then
             H = 60 * (((g - b) / delta) % 6)
@@ -76,24 +76,24 @@ function AW.ConvertRGBToHSB(r, g, b)
         elseif (colorMax == b) then
             H = 60 * (((r - g) / delta) + 4)
         end
-        
+
         if (colorMax > 0) then
             S = delta / colorMax
         else
             S = 0
         end
-        
+
         B = colorMax
     else
         H = 0
         S = 0
         B = colorMax
     end
-    
+
     if (H < 0) then
         H = H + 360
     end
-    
+
     return H, S, B
 end
 
@@ -143,11 +143,11 @@ function AW.ConvertHSBToRGB(h, s, b)
         G = 0
         B = 0
     end
-    
+
     R = tonumber(format("%.3f", R + M))
     G = tonumber(format("%.3f", G + M))
     B = tonumber(format("%.3f", B + M))
-    
+
     return R, G, B
 end
 
@@ -157,7 +157,7 @@ end
 function AW.CreateColorPicker(parent, label, hasOpacity, onChange, onConfirm)
     local cp = CreateFrame("Button", nil, parent, "BackdropTemplate")
     AW.SetSize(cp, 14, 14)
-    cp:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(cp)})
+    AW.SetDefaultBackdrop(cp)
     cp:SetBackdropBorderColor(0, 0, 0, 1)
 
     cp.label = AW.CreateFontString(cp, label)
@@ -168,7 +168,7 @@ function AW.CreateColorPicker(parent, label, hasOpacity, onChange, onConfirm)
         cp:SetBackdropBorderColor(AW.GetColorRGB("accent", 0.5))
         cp.label:SetColor("accent")
     end)
-    
+
     cp:SetScript("OnLeave", function()
         cp:SetBackdropBorderColor(AW.GetColorRGB("black"))
         cp.label:SetColor("white")
@@ -178,14 +178,14 @@ function AW.CreateColorPicker(parent, label, hasOpacity, onChange, onConfirm)
     AW.SetPoint(cp.mask, "TOPLEFT", 1, -1)
     AW.SetPoint(cp.mask, "BOTTOMRIGHT", -1, 1)
     cp.mask:Hide()
-    
+
     cp.hasOpacity = hasOpacity
 
     function cp:EnableAlpha(enable)
         AW.HideColorPicker()
         cp.hasOpacity = enable
     end
-    
+
     cp:SetScript("OnClick", function()
         -- reset temp
         cp._r = cp.color[1]
@@ -213,12 +213,12 @@ function AW.CreateColorPicker(parent, label, hasOpacity, onChange, onConfirm)
                 if onConfirm then
                     onConfirm(r, g, b, a)
                 end
-            end 
+            end
         end, cp.hasOpacity, unpack(cp.color))
     end)
 
     cp.color = {1, 1, 1, 1}
-    
+
     function cp:SetColor(arg1, arg2, arg3, arg4)
         if type(arg1) == "table" then
             cp.color[1] = arg1[1]
@@ -271,7 +271,7 @@ local COLOR_PICKER_NAME = strupper(ns.prefix).."ColorPicker"
 local colorPickerFrame
 local currentPane, originalPane, saturationBrightnessPane, hueSlider, alphaSlider, picker
 local rEB, gEB, bEB, aEB, h_EB, s_EB, b_EB, hexEB
-local confirmBtn, cancelBtn 
+local confirmBtn, cancelBtn
 
 local Callback
 
@@ -284,7 +284,7 @@ local H, S, B, A
 local function UpdateColor_RGBA(r, g, b, a)
     -- update currentPane & originalPane
     currentPane:SetColor(r, g, b, a)
-    
+
     r, g, b = Round(r * 255), Round(g * 255), Round(b * 255)
 
     -- update editboxes
@@ -303,7 +303,7 @@ local function UpdateColor_HSBA(h, s, b, a, updateWidgetColor, updatePickerAndSl
     if updateWidgetColor then
         local _r, _g, _b = AW.ConvertHSBToRGB(h, 1, 1)
         saturationBrightnessPane.tex:SetGradient("HORIZONTAL", CreateColor(1, 1, 1, 1), CreateColor(_r, _g, _b, 1))
-        
+
         _r, _g, _b = AW.ConvertHSBToRGB(h, s, b)
         alphaSlider.tex2:SetGradient("VERTICAL", CreateColor(_r, _g, _b, 0), CreateColor(_r, _g, _b, 1))
     end
@@ -345,7 +345,7 @@ local function CreateColorPane()
     pane.alpha = AW.CreateTexture(pane)
     AW.SetPoint(pane.alpha, "TOPLEFT", pane.solid, "TOPRIGHT")
     AW.SetPoint(pane.alpha, "BOTTOMRIGHT", -1, 1)
-    
+
     function pane:SetColor(r, g, b, a)
         pane.solid:SetColorTexture(r, g, b)
         pane.alpha:SetColorTexture(r, g, b, a)
@@ -404,7 +404,7 @@ local function CreateEB(label, width, height, isNumeric, group)
         eb:HighlightText()
         eb.oldText = eb:GetText()
     end)
-    
+
     eb:SetScript("OnEditFocusLost", function()
         eb:HighlightText(0, 0)
         if strtrim(eb:GetText()) == "" then
@@ -452,7 +452,7 @@ local function CreateEB(label, width, height, isNumeric, group)
                 alphaSlider:SetValue(1-A)
                 UpdateAll("hsb", H, S, B, A)
             end
-            
+
         else -- hex
             local text = strtrim(hexEB:GetText())
             -- print(text, hexEB.oldText)
@@ -476,12 +476,12 @@ end
 -------------------------------------------------
 local function CreateColorGrid(color)
     local grid = AW.CreateButton(colorPickerFrame, nil, "none", 14, 14)
-    
+
     if type(color) == "table" then
         AW.SetTooltips(grid, "ANCHOR_TOPLEFT", 0, 2, "|c"..AW.GetColorHex(color[1])..color[2])
         color = color[1]
     end
-    
+
     local r, g, b, a = AW.GetColorRGB(color)
     grid:SetBackdropBorderColor(AW.GetColorRGB("black"))
     grid:SetBackdropColor(r, g, b, a)
@@ -548,7 +548,7 @@ local function CreateColorPickerFrame()
     ---------------------------------------------
     currentPane = CreateColorPane()
     AW.SetPoint(currentPane, "TOPLEFT", 7, -7)
-    
+
     originalPane = CreateColorPane()
     AW.SetPoint(originalPane, "TOPLEFT", currentPane, "TOPRIGHT", 7, 0)
 
@@ -562,7 +562,7 @@ local function CreateColorPickerFrame()
     AW.SetOnePixelInside(saturationBrightnessPane, saturationBrightnessPaneBG)
     saturationBrightnessPane.tex = saturationBrightnessPane:CreateTexture(nil, "ARTWORK", nil, 0)
     saturationBrightnessPane.tex:SetAllPoints(saturationBrightnessPane)
-    saturationBrightnessPane.tex:SetTexture("Interface\\Buttons\\WHITE8x8")
+    saturationBrightnessPane.tex:SetTexture(AW.GetPlainTexture())
 
     -- add brightness
     local brightness = AW.CreateGradientTexture(saturationBrightnessPane, "VERTICAL", AW.GetColorTable("black", 1), AW.GetColorTable("black", 0), nil, nil, 1)
@@ -612,10 +612,10 @@ local function CreateColorPickerFrame()
     local alphaSliderHolder = CreateColorSliderHolder(function(self, value, userChanged)
         if not userChanged then return end
         A = tonumber(format("%.3f", 1 - value))
-        
+
         if self.prev == A then return end
         self.prev = A
-        
+
         -- update
         UpdateAll("hsb", H, S, B, A)
     end)
@@ -633,7 +633,7 @@ local function CreateColorPickerFrame()
     alphaSlider.tex1:SetAllPoints(alphaSlider)
 
     alphaSlider.tex2 = alphaSlider:CreateTexture(nil, "ARTWORK", nil, 1)
-    alphaSlider.tex2:SetTexture("Interface\\Buttons\\WHITE8x8")
+    alphaSlider.tex2:SetTexture(AW.GetPlainTexture())
     alphaSlider.tex2:SetAllPoints(alphaSlider)
 
     alphaSlider:SetScript("OnEnable", function()
@@ -651,7 +651,7 @@ local function CreateColorPickerFrame()
     picker = CreateFrame("Frame", nil, saturationBrightnessPane)
     AW.SetSize(picker, 16, 16)
     picker:SetPoint("CENTER", saturationBrightnessPane, "BOTTOMLEFT")
-    
+
     picker.tex = picker:CreateTexture(nil, "ARTWORK")
     picker.tex:SetAllPoints()
     picker.tex:SetTexture(AW.GetIcon("ColorPickerRing", true))
@@ -673,19 +673,19 @@ local function CreateColorPickerFrame()
 
             local newX = x + (newMouseX - mouseX) / scale
             local newY = y + (newMouseY - mouseY) / scale
-            
+
             if newX < 0 then -- left
                 newX = 0
             elseif newX > saturationBrightnessPane:GetWidth() then -- right
                 newX = saturationBrightnessPane:GetWidth()
             end
-    
+
             if newY < 0 then -- top
                 newY = 0
             elseif newY > saturationBrightnessPane:GetHeight() then
                 newY = saturationBrightnessPane:GetHeight()
             end
-    
+
             picker:SetPoint("CENTER", saturationBrightnessPane, "BOTTOMLEFT", newX, newY)
 
             -- update HSV
@@ -713,13 +713,13 @@ local function CreateColorPickerFrame()
     -- click & drag
     saturationBrightnessPane:SetScript("OnMouseDown", function(self, button)
         if button ~= "LeftButton" then return end
-        
+
         local sbX, sbY = saturationBrightnessPane:GetLeft(), saturationBrightnessPane:GetBottom()
         local mouseX, mouseY = GetCursorPosition()
-        
+
         local scale = picker:GetEffectiveScale()
         mouseX, mouseY = mouseX/scale, mouseY/scale
-        
+
         -- start dragging
         local x, y = select(4, picker:GetPoint(1))
         picker:StartMoving(mouseX/scale-sbX, mouseY/scale-sbY, mouseX, mouseY)
@@ -739,7 +739,7 @@ local function CreateColorPickerFrame()
     -- green
     gEB = CreateEB("G", 40, 20, true, "rgb")
     AW.SetPoint(gEB, "TOPLEFT", rEB, "TOPRIGHT", 7, 0)
-    
+
     -- blue
     bEB = CreateEB("B", 40, 20, true, "rgb")
     AW.SetPoint(bEB, "TOPLEFT", gEB, "TOPRIGHT", 7, 0)
@@ -769,7 +769,7 @@ local function CreateColorPickerFrame()
     ---------------------------------------------
     confirmBtn = AW.CreateButton(colorPickerFrame, _G.OKAY, "green", 102, 20)
     AW.SetPoint(confirmBtn, "TOPLEFT", h_EB, "BOTTOMLEFT", 0, -7)
-    
+
     cancelBtn = AW.CreateButton(colorPickerFrame, _G.CANCEL, "red", 102, 20)
     AW.SetPoint(cancelBtn, "TOPLEFT", confirmBtn, "TOPRIGHT", 7, 0)
 
@@ -778,7 +778,7 @@ local function CreateColorPickerFrame()
     ---------------------------------------------
     local sep = AW.CreateSeparator(colorPickerFrame, 1, 269, AW.GetColorTable("disabled", 0.25))
     AW.SetPoint(sep, "TOPLEFT", originalPane, "TOPRIGHT", 7, -7)
-    
+
     local grids = {}
 
     for i = 1, #preset1 do
@@ -796,7 +796,7 @@ local function CreateColorPickerFrame()
     for i = 1, #preset2 do
         local index = i+offset
         grids[index] = CreateColorGrid(preset2[i])
-        
+
         if i == 1 then
             AW.SetPoint(grids[index], "TOPLEFT", grids[offset], "BOTTOMLEFT", 0, -7)
         elseif (i-1) % 2 == 0 then
@@ -805,12 +805,12 @@ local function CreateColorPickerFrame()
             AW.SetPoint(grids[index], "TOPLEFT", grids[index-1], "TOPRIGHT", 2, 0)
         end
     end
-   
+
     offset = #preset1 + #preset2
     for i = 1, #preset3 do
         local index = i+offset
         grids[index] = CreateColorGrid(preset3[i])
-        
+
         if i == 1 then
             AW.SetPoint(grids[index], "TOPLEFT", grids[offset], "BOTTOMLEFT", 0, -7)
         elseif (i-1) % 2 == 0 then
@@ -826,10 +826,10 @@ local function CreateColorPickerFrame()
     colorPickerFrame._UpdatePixels = colorPickerFrame.UpdatePixels
     function colorPickerFrame:UpdatePixels()
         colorPickerFrame:_UpdatePixels()
-        
+
         -- AW.ReSize(saturationBrightnessPaneBG)
         -- AW.RePoint(saturationBrightnessPaneBG)
-        
+
         AW.RePoint(saturationBrightnessPane)
 
         -- brightness slider
@@ -844,7 +844,7 @@ local function CreateColorPickerFrame()
         -- picker
         AW.ReSize(picker)
     end
-    
+
     AW.AddToPixelUpdater(colorPickerFrame)
 end
 
@@ -885,7 +885,7 @@ function AW.ShowColorPicker(owner, callback, onConfirm, hasAlpha, r, g, b, a)
         local r, g, b = AW.ConvertHSBToRGB(H, S, B)
         onConfirm(r, g, b, A)
     end)
-    
+
     cancelBtn:SetScript("OnClick", function()
         Callback = nil
         colorPickerFrame:Hide()

@@ -21,7 +21,7 @@ function AW.ShowDemo()
     demo:SetScript("OnShow", function()
         if not THE_BACKGROUND then
             THE_BACKGROUND = CreateFrame("Frame", "THE_BACKGROUND", nil, "BackdropTemplate")
-            THE_BACKGROUND:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
+            AW.SetDefaultBackdrop_NoBorder(THE_BACKGROUND)
             THE_BACKGROUND:SetBackdropColor(0.3, 0.3, 0.3, 1)
             THE_BACKGROUND:SetAllPoints(UIParent)
             THE_BACKGROUND:SetFrameStrata("BACKGROUND")

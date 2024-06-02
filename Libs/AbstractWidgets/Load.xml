@@ -8,9 +8,9 @@
     <Script file="Font.lua"/>
     <Script file="Animation.lua"/>
     <Script file="Media.lua"/>
+    <Script file="Frame.lua"/>
     <Include file="TooltipTemplate.xml"/>
     <Script file="Tooltip.lua"/>
-    <Script file="Frame.lua"/>
     <Script file="Mover.lua"/>
     <Script file="FontString.lua"/>
     <Script file="Button.lua"/>

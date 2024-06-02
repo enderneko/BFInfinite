@@ -36,7 +36,7 @@ function AW.StylizeFrame(frame, color, borderColor)
     color = color or "background"
     borderColor = borderColor or "border"
 
-    frame:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(frame)})
+    AW.SetDefaultBackdrop(frame)
     if type(color) == "string" then
         frame:SetBackdropColor(AW.GetColorRGB(color))
     else
@@ -53,15 +53,15 @@ end
 -- backdrop
 ---------------------------------------------------------------------
 function AW.SetDefaultBackdrop(frame)
-    frame:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(frame)})
+    frame:SetBackdrop({bgFile=AW.GetPlainTexture(), edgeFile=AW.GetPlainTexture(), edgeSize=AW.GetOnePixelForRegion(frame)})
 end
 
 function AW.SetDefaultBackdrop_NoBackground(frame)
-    frame:SetBackdrop({edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=AW.GetOnePixelForRegion(frame)})
+    frame:SetBackdrop({edgeFile=AW.GetPlainTexture(), edgeSize=AW.GetOnePixelForRegion(frame)})
 end
 
 function AW.SetDefaultBackdrop_NoBorder(frame)
-    frame:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8"})
+    frame:SetBackdrop({bgFile=AW.GetPlainTexture()})
 end
 
 ---------------------------------------------------------------------
