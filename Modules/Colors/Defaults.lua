@@ -32,7 +32,7 @@ BFI.RegisterCallback("InitConfigs", "Colors", function(t)
     for _, st in pairs(t["colors"]) do
         AW.AddColors(st)
     end
-end)
+end, 1)
 
 function C.ResetDefaults(which)
     if not which then
