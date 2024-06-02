@@ -5,17 +5,89 @@ local C = BFI.M_C
 local UF = BFI.M_UF
 
 ---------------------------------------------------------------------
--- cooldown style
+-- recalc texcoords
 ---------------------------------------------------------------------
--- vertical progress
-local function CreateCooldown_Vertical(self)
-
+local function ReCalcTexCoord(self, width, height)
+    self.icon:SetTexCoord(unpack(AW.CalcTexCoord(width, height, true)))
 end
 
--- clock (w/ or w/o leading edge)
+---------------------------------------------------------------------
+-- cooldown style: vertical progress
+---------------------------------------------------------------------
+local function VerticalCooldown_OnUpdate(self, elapsed)
+    self.elapsed = self.elapsed + elapsed
+    if self.elapsed >= 0.1 then
+        self:SetValue(self:GetValue() + self.elapsed)
+        self.elapsed = 0
+    end
+end
+
+-- for LCG.ButtonGlow_Start
+local function VerticalCooldown_GetCooldownDuration()
+    return 0
+end
+
+local function VerticalCooldown_ShowCooldown(self, start, duration, _, auraType, icon)
+    if auraType then
+        self.spark:SetColorTexture(C.GetAuraTypeColor(auraType))
+    else
+        self.spark:SetColorTexture(0.5, 0.5, 0.5, 1)
+    end
+    self.icon:SetTexture(icon)
+
+    self.elapsed = 0.1 -- update immediately
+    self:SetMinMaxValues(0, duration)
+    self:SetValue(GetTime() - start)
+    self:Show()
+end
+
+local function CreateCooldown_Vertical(self)
+    local cooldown = CreateFrame("StatusBar", nil, self)
+    self.cooldown = cooldown
+    cooldown:Hide()
+
+    cooldown.GetCooldownDuration = VerticalCooldown_GetCooldownDuration
+    cooldown.ShowCooldown = VerticalCooldown_ShowCooldown
+    cooldown:SetScript("OnUpdate", VerticalCooldown_OnUpdate)
+
+    AW.SetPoint(cooldown, "TOPLEFT", self.icon)
+    AW.SetPoint(cooldown, "BOTTOMRIGHT", self.icon, "BOTTOMRIGHT", 0, 1)
+    cooldown:SetOrientation("VERTICAL")
+    cooldown:SetReverseFill(true)
+    cooldown:SetStatusBarTexture(AW.GetPlainTexture())
+
+    local texture = cooldown:GetStatusBarTexture()
+    texture:SetAlpha(0)
+
+    local spark = cooldown:CreateTexture(nil, "BORDER")
+    cooldown.spark = spark
+    AW.SetHeight(spark, 1)
+    spark:SetBlendMode("ADD")
+    spark:SetPoint("TOPLEFT", texture, "BOTTOMLEFT")
+    spark:SetPoint("TOPRIGHT", texture, "BOTTOMRIGHT")
+
+    local mask = cooldown:CreateMaskTexture()
+    mask:SetTexture(AW.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    mask:SetPoint("TOPLEFT")
+    mask:SetPoint("BOTTOMRIGHT", texture)
+
+    local icon = cooldown:CreateTexture(nil, "ARTWORK")
+    cooldown.icon = icon
+    icon:SetTexCoord(0.12, 0.88, 0.12, 0.88)
+    icon:SetDesaturated(true)
+    icon:SetAllPoints(self.icon)
+    icon:SetVertexColor(0.5, 0.5, 0.5, 1)
+    icon:AddMaskTexture(mask)
+    cooldown:SetScript("OnSizeChanged", ReCalcTexCoord)
+end
+
+---------------------------------------------------------------------
+-- cooldown style: clock (w/ or w/o leading edge)
+---------------------------------------------------------------------
 local function CreateCooldown_Clock(self, drawEdge)
     local cooldown = CreateFrame("Cooldown", nil, self, "BFICooldownFrameTemplate")
     self.cooldown = cooldown
+    cooldown:Hide()
 
     cooldown:SetAllPoints(self.icon)
     cooldown:SetReverse(true)
@@ -45,7 +117,7 @@ local function Aura_SetCooldownStyle(self, style)
 
     self.style = style
     if style == "vertical_progress" then
-        CreateCooldown_Clock(self)
+        CreateCooldown_Vertical(self)
     elseif strfind(style, "^clock") then
         CreateCooldown_Clock(self, strfind(style, "edge$") and true or false)
     end
@@ -63,10 +135,10 @@ local function UpdateDuration(self, elapsed)
         if self._remain < 0 then self._remain = 0 end
 
         -- color
-        if self._remain < self.durationColor[3][1] then
-            self.duration:SetTextColor(AW.UnpackColor(self.durationColor[3][2]))
-        elseif self._remain < (self.durationColor[2][1] * self._duration) then
-            self.duration:SetTextColor(AW.UnpackColor(self.durationColor[2][2]))
+        if self.durationColor[3][1] and self._remain < self.durationColor[3][2] then
+            self.duration:SetTextColor(AW.UnpackColor(self.durationColor[3][3]))
+        elseif self.durationColor[2][1] and self._remain < (self.durationColor[2][2] * self._duration) then
+            self.duration:SetTextColor(AW.UnpackColor(self.durationColor[2][3]))
         else
             self.duration:SetTextColor(AW.UnpackColor(self.durationColor[1]))
         end
@@ -82,7 +154,7 @@ local function UpdateDuration(self, elapsed)
     end
 end
 
-local function Aura_SetCooldown(self, start, duration, auraType, icon, count)
+local function Aura_SetCooldown(self, start, duration, count, auraType, icon, desaturated)
     if duration == 0 then
         if self.cooldown then self.cooldown:Hide() end
         self.duration:SetText("")
@@ -94,7 +166,8 @@ local function Aura_SetCooldown(self, start, duration, auraType, icon, count)
         self._elapsed = nil
     else
         if self.cooldown then
-            self.cooldown:ShowCooldown(start, duration)
+            -- NOTE: the "nil" is to make it compatible with Cooldown:SetCooldown(start, duration [, modRate])
+            self.cooldown:ShowCooldown(start, duration, nil, auraType, icon)
             self.duration:SetParent(self.cooldown)
             self.stack:SetParent(self.cooldown)
         else
@@ -110,6 +183,7 @@ local function Aura_SetCooldown(self, start, duration, auraType, icon, count)
     self:SetBackdropBorderColor(C.GetAuraTypeColor(auraType))
     self.stack:SetText((count == 0 or count == 1) and "" or count)
     self.icon:SetTexture(icon)
+    self.icon:SetDesaturated(desaturated)
     self:Show()
 end
 
@@ -135,6 +209,9 @@ local function Aura_UpdatePixels(self)
     AW.RePoint(self)
     AW.ReBorder(self)
     AW.RePoint(self.icon)
+    if self.cooldown then
+        AW.RePoint(self.cooldown)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -146,13 +223,12 @@ function UF.CreateAura(parent)
 
     AW.SetDefaultBackdrop(frame)
 
-    -- TODO: cooldown
-
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
     AW.SetOnePixelInside(icon, frame)
     icon:SetTexCoord(0.12, 0.88, 0.12, 0.88)
+    frame:SetScript("OnSizeChanged", ReCalcTexCoord)
 
     -- stack text
     local stack = frame:CreateFontString(nil, "OVERLAY")

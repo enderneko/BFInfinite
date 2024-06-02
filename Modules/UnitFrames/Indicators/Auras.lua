@@ -5,36 +5,37 @@ local UF = BFI.M_UF
 
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots
+local UnitIsUnit = UnitIsUnit
+local UnitIsOwnerOrControllerOfUnit = UnitIsOwnerOrControllerOfUnit
+
+local function IsAppliedByPlayer(unit)
+    return unit and (UnitIsUnit("player", unit) or UnitIsOwnerOrControllerOfUnit("player", unit))
+end
 
 local Auras_UpdateSize
 
 -------------------------------------------------
 -- ForEachAura
 -------------------------------------------------
-local function ForEachAuraHelper(indicator, func, continuationToken, ...)
-    -- continuationToken is the first return value of UnitAuraSlots()
-    local n = select('#', ...)
-    local index = 1
+local function ForEachAuraHelper(indicator, handler, continuationToken, ...)
+    -- continuationToken is the first return value of GetAuraSlots()
+    local n = select("#", ...)
+    local count1, count2 = 1, 1
     for i = 1, n do
         local slot = select(i, ...)
         local auraInfo = GetAuraDataBySlot(indicator.root.displayedUnit, slot)
-        local done = func(indicator, auraInfo, index)
-        if done then
-            -- if func returns true then no further slots are needed, so don't return continuationToken
-            return nil
+        local ret = handler(indicator, auraInfo, i, count1, count2)
+        if ret then
+            count1 = count1 + 1
+        else
+            count2 = count2 + 1
         end
-        index = index + 1
     end
-    return continuationToken, n
+    return n, count1, count2
 end
 
-local function ForEachAura(indicator, func)
-    local continuationToken, num
-    repeat
-        -- continuationToken is the first return value of UnitAuraSltos
-        continuationToken, num = ForEachAuraHelper(indicator, func, GetAuraSlots(indicator.root.displayedUnit, indicator.filter, indicator.numSlots, continuationToken))
-    until continuationToken == nil
-    return num
+local function ForEachAura(indicator, handler)
+    return ForEachAuraHelper(indicator, handler, GetAuraSlots(indicator.root.displayedUnit, indicator.filter, indicator.numSlots))
 end
 
 ---------------------------------------------------------------------
@@ -52,11 +53,55 @@ local function HandleAura(self, auraInfo, index)
     local source = auraInfo.sourceUnit
     local spellId = auraInfo.spellId
 
-    print(index, name, start, duration, auraType, icon, count)
+    -- print(self:GetName(), index, name, start, duration, count, auraType, icon)
 
     self.auras[auraInstanceID] = index
 
-    self:SetCooldown(index, source, start, duration, auraType, icon, count)
+    self:SetCooldown(index, source, start, duration, count, auraType, icon)
+
+    return true -- TODO: filter, before SetCooldown
+end
+
+local function HandleAura_Mine(self, auraInfo, index, found)
+    local auraInstanceID = auraInfo.auraInstanceID
+    local name = auraInfo.name
+    local icon = auraInfo.icon
+    local count = auraInfo.applications
+    local auraType = auraInfo.dispelName
+    local expirationTime = auraInfo.expirationTime or 0
+    local start = expirationTime - auraInfo.duration
+    local duration = auraInfo.duration
+    local source = auraInfo.sourceUnit
+    local spellId = auraInfo.spellId
+
+    self.auras[auraInstanceID] = self.slots[found]
+
+    if IsAppliedByPlayer(source) then
+        print("MINE", found, name, start, duration, count, auraType, icon)
+        self:SetCooldown(found, source, start, duration, count, auraType, icon)
+        return true
+    end
+end
+
+local function HandleAura_Others(self, auraInfo, index, found)
+    local auraInstanceID = auraInfo.auraInstanceID
+    local name = auraInfo.name
+    local icon = auraInfo.icon
+    local count = auraInfo.applications
+    local auraType = auraInfo.dispelName
+    local expirationTime = auraInfo.expirationTime or 0
+    local start = expirationTime - auraInfo.duration
+    local duration = auraInfo.duration
+    local source = auraInfo.sourceUnit
+    local spellId = auraInfo.spellId
+
+    self.auras[auraInstanceID] = self.slots[found]
+
+    if not IsAppliedByPlayer(source) then
+        print("OTHERS", found, name, start, duration, count, auraType, icon)
+        self:SetCooldown(found, source, start, duration, count, auraType, icon, true)
+        return true
+    end
 end
 
 local function UpdateAuras(self, event, unitId, updateInfo)
@@ -67,9 +112,18 @@ local function UpdateAuras(self, event, unitId, updateInfo)
     -- local isFullUpdate = not updateInfo or updateInfo.isFullUpdate
     local num
 
+    local handler
+    if self.onlyShowMine then
+        handler = HandleAura_Mine
+    elseif self.onlyShowOthers then
+        handler = HandleAura_Others
+    else
+        handler = HandleAura
+    end
+
     if isFullUpdate then
         wipe(self.auras)
-        num = ForEachAura(self, HandleAura)
+        num = ForEachAura(self, handler)
     end
 
     Auras_UpdateSize(self, num)
@@ -105,18 +159,18 @@ end
 -- SetCooldown
 ---------------------------------------------------------------------
 local set_cooldown = {
-    cast_by_me = function(self, index, source, start, duration, auraType, icon, count)
-        if source == "player" or source == "pet" then
-            self.slots[index]:SetCooldown(start, duration, "Self", icon, count)
+    cast_by_me = function(self, index, source, start, duration, count, auraType, icon, desaturated)
+        if IsAppliedByPlayer(source) then
+            self.slots[index]:SetCooldown(start, duration, count, "Self", icon, desaturated)
         else
-            self.slots[index]:SetCooldown(start, duration, nil, icon, count)
+            self.slots[index]:SetCooldown(start, duration, count, nil, icon, desaturated)
         end
     end,
-    debuff_type = function(self, index, source, start, duration, auraType, icon, count)
-        self.slots[index]:SetCooldown(start, duration, auraType or "none", icon, count)
+    debuff_type = function(self, index, source, start, duration, count, auraType, icon, desaturated)
+        self.slots[index]:SetCooldown(start, duration, count, auraType or "None", icon, desaturated)
     end,
-    none = function(self, index, source, start, duration, auraType, icon, count)
-        self.slots[index]:SetCooldown(start, duration, nil, icon, count)
+    none = function(self, index, source, start, duration, count, auraType, icon, desaturated)
+        self.slots[index]:SetCooldown(start, duration, count, nil, icon, desaturated)
     end,
 }
 
@@ -255,17 +309,12 @@ local function Auras_SetNumPerLine(self, numPerLine)
     end
 end
 
-local function Auras_SetFont(self, font)
-
-end
-
 local function Auras_SetNumSlots(self, numSlots)
     self.numSlots = numSlots
 
     for i = 1, numSlots do
         if not self.slots[i] then
             self.slots[i] = UF.CreateAura(self)
-            -- self.slots[i]:SetCooldown(start, duration, nil, 134400, 7)
         end
     end
 
@@ -295,7 +344,11 @@ end
 local function Auras_LoadConfig(self, config)
     texplore(config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    AW.LoadWidgetPosition(self, config.position)
+    if config.anchorTo then
+        AW.LoadWidgetPosition(self, config.position, self.root.indicators[config.anchorTo])
+    else
+        AW.LoadWidgetPosition(self, config.position)
+    end
     Auras_SetNumSlots(self, config.numTotal)
     self.spacing = config.spacing
     Auras_SetSize(self, config.width, config.height)
@@ -321,7 +374,16 @@ function UF.CreateAuras(parent, name, filter)
     local frame = CreateFrame("Frame", name, parent)
 
     frame.root = parent
-    frame.filter = filter
+
+    if strfind(filter, "_OTHERS$") then
+        frame.filter = filter:gsub("_OTHERS$", "")
+        frame.onlyShowOthers = true
+    elseif strfind(filter, "_MINE$") then
+        frame.filter = filter:gsub("_MINE$", "")
+        frame.onlyShowMine = true
+    else
+        frame.filter = filter
+    end
 
     -- events
     BFI.AddEventHandler(frame)

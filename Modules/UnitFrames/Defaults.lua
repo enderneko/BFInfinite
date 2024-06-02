@@ -3,6 +3,11 @@ local AW = BFI.AW
 local U = BFI.utils
 local UF = BFI.M_UF
 
+AW.AddColors({
+    aura_percent = {1, 1, 0},
+    aura_seconds = {1, 0.3, 0.3},
+})
+
 -- TODO: presets
 
 local default_player_target_indicators = {
@@ -335,8 +340,8 @@ local defaults = {
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
-                        {0.5, AW.GetColorTable("yellow")}, -- less than 50%
-                        {5, AW.GetColorTable("red")}, -- less than 5sec
+                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -350,13 +355,30 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMRIGHT", "TOPRIGHT", 0, 1},
                 orientation = "right_to_left",
-                color = "debuff_type",
+                borderColor = "debuff_type",
+                cooldownStyle = "none",
                 width = 19,
                 height = 19,
                 spacing = 1,
                 numPerLine = 11,
                 numTotal = 22,
                 frameLevel = 1,
+                durationText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 0},
+                    color = {
+                        AW.GetColorTable("white"), -- normal
+                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AW.GetColorTable("white"),
+                },
             },
             privateAuras = {
                 enabled = true,
@@ -507,27 +529,92 @@ local defaults = {
             },
             buffs = {
                 enabled = true,
-                position = {"TOPLEFT", "TOPLEFT", 0, -1},
+                position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 orientation = "left_to_right",
-                color = "cast_by_me",
+                borderColor = "cast_by_me",
+                cooldownStyle = "none",
                 width = 19,
                 height = 19,
                 spacing = 1,
                 numPerLine = 11,
                 numTotal = 22,
                 frameLevel = 1,
+                durationText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 0},
+                    color = {
+                        AW.GetColorTable("white"), -- normal
+                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AW.GetColorTable("white"),
+                },
             },
-            debuffs = {
+            debuffs_by_me = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "TOPLEFT", 0, 1},
                 orientation = "left_to_right",
-                color = "debuff_type",
+                borderColor = "debuff_type",
+                cooldownStyle = "none",
+                separateMyDebuffs = true,
                 width = 19,
                 height = 19,
                 spacing = 1,
                 numPerLine = 11,
                 numTotal = 22,
                 frameLevel = 1,
+                durationText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 0},
+                    color = {
+                        AW.GetColorTable("white"), -- normal
+                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AW.GetColorTable("white"),
+                },
+            },
+            debuffs_by_others = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "TOPLEFT", 0, 2},
+                anchorTo = "debuffs_by_me",
+                orientation = "left_to_right",
+                borderColor = "debuff_type",
+                cooldownStyle = "none",
+                width = 17,
+                height = 17,
+                spacing = 1,
+                numPerLine = 11,
+                numTotal = 22,
+                frameLevel = 1,
+                durationText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 0},
+                    color = {
+                        AW.GetColorTable("white"), -- normal
+                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AW.GetColorTable("white"),
+                },
             },
             privateAuras = {
                 enabled = true,
