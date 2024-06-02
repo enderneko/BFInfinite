@@ -317,7 +317,7 @@ local function HealthBar_LoadConfig(self, config)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
 
-    self:SetTexture(config.texture)
+    self:SetTexture(U.GetBarTexture(config.texture))
     self:SetBackgroundColor(unpack(config.bgColor))
     self:SetBorderColor(unpack(config.borderColor))
     self:SetSmoothing(config.smoothing)
@@ -344,7 +344,7 @@ end
 -- TODO: gradient texture & mask
 function UF.CreateHealthBar(parent, name)
     -- bar
-    local bar = UF.CreateBar(parent, name)
+    local bar = AW.CreateSimpleBar(parent, name)
     bar.root = parent
 
     -- events
@@ -395,7 +395,7 @@ function UF.CreateHealthBar(parent, name)
     bar.LoadConfig = HealthBar_LoadConfig
 
     -- pixel perfect
-    bar.UpdatePixels = HealthBar_UpdatePixels
+    AW.AddToPixelUpdater(bar, HealthBar_UpdatePixels)
 
     return bar
 end

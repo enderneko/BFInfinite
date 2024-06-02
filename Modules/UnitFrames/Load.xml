@@ -4,8 +4,6 @@
     <Script file="UnitButton.lua"/>
     <Include file="UnitButton.xml"/>
     <!-- indicators -->
-    <Script file="Indicators\Base\SmoothStatusBarMixin.lua"/>
-    <Script file="Indicators\Base\Bar.lua"/>
     <Include file="Indicators\Base\Cooldown.xml"/>
     <Script file="Indicators\Base\Aura.lua"/>
     <Script file="Indicators\Auras.lua"/>

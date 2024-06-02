@@ -1,5 +1,5 @@
-local _, BFI = ...
-local UF = BFI.M_UF
+local addonName, ns = ...
+local AW = ns.AW
 
 local FrameDeltaLerp = FrameDeltaLerp
 
@@ -30,9 +30,9 @@ end
 
 C_Timer.NewTicker(0, ProcessSmoothStatusBars)
 
-UF.SmoothStatusBarMixin = {}
+AW.SmoothStatusBarMixin = {}
 
-function UF.SmoothStatusBarMixin:ResetSmoothedValue(value) --If nil, tries to set to the last target value
+function AW.SmoothStatusBarMixin:ResetSmoothedValue(value) --If nil, tries to set to the last target value
     local targetValue = g_updatingBars[self]
     if targetValue then
         g_updatingBars[self] = nil
@@ -42,11 +42,11 @@ function UF.SmoothStatusBarMixin:ResetSmoothedValue(value) --If nil, tries to se
     end
 end
 
-function UF.SmoothStatusBarMixin:SetSmoothedValue(value)
+function AW.SmoothStatusBarMixin:SetSmoothedValue(value)
     g_updatingBars[self] = value
 end
 
-function UF.SmoothStatusBarMixin:SetMinMaxSmoothedValue(min, max)
+function AW.SmoothStatusBarMixin:SetMinMaxSmoothedValue(min, max)
     self:SetMinMaxValues(min, max)
 
     local targetValue = g_updatingBars[self]

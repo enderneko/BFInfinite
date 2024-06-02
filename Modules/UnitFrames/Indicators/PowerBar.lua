@@ -187,7 +187,7 @@ local function PowerBar_LoadConfig(self, config)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
 
-    self:SetTexture(config.texture)
+    self:SetTexture(U.GetBarTexture(config.texture))
     self:SetBackgroundColor(unpack(config.bgColor))
     self:SetBorderColor(unpack(config.borderColor))
     self:SetSmoothing(config.smoothing)
@@ -202,7 +202,7 @@ end
 ---------------------------------------------------------------------
 function UF.CreatePowerBar(parent, name)
     -- bar
-    local bar = UF.CreateBar(parent, name)
+    local bar = AW.CreateSimpleBar(parent, name)
     bar.root = parent
 
     -- events
@@ -212,6 +212,9 @@ function UF.CreatePowerBar(parent, name)
     bar.Update = PowerBar_Update
     bar.Enable = PowerBar_Enable
     bar.LoadConfig = PowerBar_LoadConfig
+
+    -- pixel perfect
+    AW.AddToPixelUpdater(bar)
 
     return bar
 end

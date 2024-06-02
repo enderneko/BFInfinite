@@ -264,6 +264,8 @@ function AW.RePoint(region)
 end
 
 function AW.ReBorder(region)
+    if not region.GetBackdrop then return end
+
     local backdropInfo = region:GetBackdrop()
     if not backdropInfo then return end
 
