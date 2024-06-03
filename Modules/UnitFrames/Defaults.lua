@@ -173,6 +173,7 @@ local default_player_target_indicators = {
 
 local defaults = {
     player = {
+        enabled = true,
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
@@ -386,6 +387,7 @@ local defaults = {
         },
     },
     target = {
+        enabled = true,
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),

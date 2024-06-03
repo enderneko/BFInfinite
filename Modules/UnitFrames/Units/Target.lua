@@ -44,6 +44,12 @@ local function UpdateTarget(module, which)
 
     local config = UF.config.target
 
+    if not config.enabled then
+        UF.DisableIndicators(target)
+        UnregisterUnitWatch(target)
+        return
+    end
+
     -- mover
     AW.UpdateMoverSave(target, config.general.position)
 

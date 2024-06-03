@@ -44,13 +44,20 @@ function UF.LoadConfigForIndicators(button, indicators, config)
                 indicator:Disable()
             else
                 indicator:UnregisterAllEvents()
-                if indicator.container then
-                    indicator.container:Hide()
-                else
-                    indicator:Hide()
-                end
+                indicator:Hide()
             end
             indicator.enabled = false
+        end
+    end
+end
+
+function UF.DisableIndicators(button)
+    for _, indicator in pairs(button.indicators) do
+        if indicator.Disable then
+            indicator:Disable()
+        else
+            indicator:UnregisterAllEvents()
+            indicator:Hide()
         end
     end
 end

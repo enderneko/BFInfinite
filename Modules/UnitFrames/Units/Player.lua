@@ -44,6 +44,12 @@ local function UpdatePlayer(module, which)
 
     local config = UF.config.player
 
+    if not config.enabled then
+        UF.DisableIndicators(player)
+        UnregisterAttributeDriver(player, "state-visibility")
+        return
+    end
+
     -- mover
     AW.UpdateMoverSave(player, config.general.position)
 
