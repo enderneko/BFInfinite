@@ -83,6 +83,7 @@ function AW.SetWidth(region, width, minPixels)
     -- clear conflicts
     Reset(region)
     -- add new
+    minPixels = minPixels or 0.001
     region._size_normal = true
     region._width = width
     region._minwidth = minPixels
@@ -93,6 +94,7 @@ function AW.SetHeight(region, height, minPixels)
     -- clear conflicts
     Reset(region)
     -- add new
+    minPixels = minPixels or 0.001
     region._size_normal = true
     region._height = height
     region._minheight = minPixels
@@ -110,9 +112,14 @@ function AW.SetListWidth(region, itemNum, itemWidth, itemSpacing, extraWidth)
     region._itemSpacing = itemSpacing
     extraWidth = extraWidth or 0
     region._extraWidth = extraWidth
-    region:SetWidth(AW.GetNearestPixelSize(itemWidth, region:GetEffectiveScale())*itemNum
-        + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1)
-        + AW.GetNearestPixelSize(extraWidth, region:GetEffectiveScale()))
+
+    if itemNum == 0 then
+        region:SetWidth(0.001)
+    else
+        region:SetWidth(AW.GetNearestPixelSize(itemWidth, region:GetEffectiveScale())*itemNum
+            + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1)
+            + AW.GetNearestPixelSize(extraWidth, region:GetEffectiveScale()))
+    end
 end
 
 -- NOTE: DO NOT USE WITH SetListWidth
@@ -126,9 +133,14 @@ function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
     region._itemSpacing = itemSpacing
     extraHeight = extraHeight or 0
     region._extraHeight = extraHeight
-    region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*itemNum
-        + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1)
-        + AW.GetNearestPixelSize(extraHeight, region:GetEffectiveScale()))
+
+    if itemNum == 0 then
+        region:SetHeight(0.001)
+    else
+        region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*itemNum
+            + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(itemNum-1)
+            + AW.GetNearestPixelSize(extraHeight, region:GetEffectiveScale()))
+    end
 end
 
 function AW.SetGridSize(region, itemWidth, itemHeight, itemSpacing, columns, rows)
@@ -141,10 +153,20 @@ function AW.SetGridSize(region, itemWidth, itemHeight, itemSpacing, columns, row
     region._itemSpacing = itemSpacing
     region._rows = rows
     region._columns = columns
-    region:SetWidth(AW.GetNearestPixelSize(itemWidth, region:GetEffectiveScale())*columns
-        + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(columns-1))
-    region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*rows
-        + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(rows-1))
+
+    if columns == 0 then
+        region:SetWidth(0.001)
+    else
+        region:SetWidth(AW.GetNearestPixelSize(itemWidth, region:GetEffectiveScale())*columns
+            + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(columns-1))
+    end
+
+    if rows == 0 then
+        region:SetHeight(0.001)
+    else
+        region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*rows
+            + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(rows-1))
+    end
 end
 
 function AW.SetSize(region, width, height)
