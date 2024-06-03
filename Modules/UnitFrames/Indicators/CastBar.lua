@@ -12,20 +12,11 @@ local GetUnitEmpowerStageDuration = GetUnitEmpowerStageDuration
 
 ---------------------------------------------------------------------
 -- channeled spell ticks
--- forked from Quartz and Gnosis
+-- forked from Quartz and Gnosis (only static data)
 ---------------------------------------------------------------------
-local classMaxTicks, channeledSpellTicks
+local channeledSpellTicks
 
 if BFI.vars.isRetail then
-    classMaxTicks = { -- +1
-        ["DRUID"] = 5,
-        ["EVOKER"] = 4,
-        ["MAGE"] = 6,
-        ["MONK"] = 9,
-        ["PRIEST"] = 7,
-        ["WARLOCK"] = 6,
-    }
-
     channeledSpellTicks = {
         -- druid
         [740] = 4, -- 宁静
@@ -52,13 +43,6 @@ if BFI.vars.isRetail then
     }
 
 elseif BFI.var.isCata then
-    classMaxTicks = { -- +1
-        ["DRUID"] = 11,
-        ["MAGE"] = 9,
-        ["PRIEST"] = 6,
-        ["WARLOCK"] = 16,
-    }
-
     channeledSpellTicks = {
         -- druid
         [740] = 4, -- 宁静
@@ -81,7 +65,6 @@ elseif BFI.var.isCata then
     }
 
 else
-    classMaxTicks = {}
     channeledSpellTicks = {}
 end
 
@@ -98,42 +81,71 @@ do
     channeledSpellTicks = temp
 end
 
--- TODO: 苦修
--- local eventFrame = CreateFrame("Frame")
--- eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
--- eventFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
--- eventFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+---------------------------------------------------------------------
+-- Penance
+---------------------------------------------------------------------
+if BFI.vars.playerClass == "PRIEST" then
+    local eventFrame = CreateFrame("Frame")
+    eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    eventFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
+    eventFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
--- local function TalentUpdate()
---     local activeConfigID = C_ClassTalents.GetActiveConfigID()
---     if activeConfigID and dispelNodeIDs[Cell.vars.playerSpecID] then
---         for dispelType, value in pairs(dispelNodeIDs[Cell.vars.playerSpecID]) do
---             if type(value) == "boolean" then
---                 dispellable[dispelType] = value
---             elseif type(value) == "table" then -- more than one trait
---                 for _, v in pairs(value) do
---                     local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, v)
---                     if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
---                         dispellable[dispelType] = true
---                         break
---                     end
---                 end
---             else -- number: check node info
---                 local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, value)
---                 if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
---                     dispellable[dispelType] = true
---                 end
---             end
---         end
---     end
--- end
+    local baseTicks = 2
 
--- eventFrame:SetScript("OnEvent", function(self, event)
---     if event == "PLAYER_ENTERING_WORLD" then
---         eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
---     end
---     TalentUpdate()
--- end)
+    local function TalentUpdate()
+        local activeConfigID = C_ClassTalents.GetActiveConfigID()
+        if activeConfigID then
+            -- 82577 惩罚
+            local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, 82577)
+            if nodeInfo then
+                if nodeInfo.ranksPurchased ~= 0 then
+                    baseTicks = 3
+                else
+                    baseTicks = 2
+                end
+            end
+
+            -- 82572 严酷戒律
+            -- nodeInfo = C_Traits.GetNodeInfo(activeConfigID, 82572)
+            -- if nodeInfo then
+            --     mult = nodeInfo.ranksPurchased
+            -- end
+        end
+    end
+
+    eventFrame:SetScript("OnEvent", function(self, event)
+        if event == "PLAYER_ENTERING_WORLD" then
+            eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+        end
+        TalentUpdate()
+    end)
+
+    local GetPlayerAuraBySpellID = C_UnitAuras.GetPlayerAuraBySpellID
+
+    local function GetPenanceTicks()
+        local bonusTicks = 0
+
+        local auraData = GetPlayerAuraBySpellID(373183)
+        if auraData and auraData.points[2] then
+            bonusTicks = auraData.points[2]
+        end
+
+        return baseTicks + bonusTicks
+    end
+
+    channeledSpellTicks[GetSpellInfo(47540)] = GetPenanceTicks
+end
+
+---------------------------------------------------------------------
+-- ticks
+---------------------------------------------------------------------
+local function CreateTick(self, i)
+    local tick = self.bar:CreateTexture(nil, "ARTWORK", nil, 2)
+    self.ticks[i] = tick
+    AW.SetWidth(tick, self.ticksConfig.width)
+    tick:SetColorTexture(AW.UnpackColor(self.ticksConfig.color))
+    return tick
+end
 
 local function UpdateTicks(self, spell, channelUpdated)
     if not self.ticksEnabled then return end
@@ -145,12 +157,19 @@ local function UpdateTicks(self, spell, channelUpdated)
         return
     end
 
-    local width = self.bar:GetWidth()
-    local totalTicks = channelUpdated and channeledSpellTicks[spell] + 1 or channeledSpellTicks[spell]
+    local totalTicks
+    if type(channeledSpellTicks[spell]) == "function" then
+        totalTicks = channeledSpellTicks[spell]()
+    else
+        totalTicks = channeledSpellTicks[spell]
+    end
+    if channelUpdated then totalTicks = totalTicks + 1 end
+
     local timePerTick = self.duration / totalTicks
+    local width = self.bar:GetWidth()
 
     for i = 1, totalTicks do
-        local tick =  self.ticks[i]
+        local tick =  self.ticks[i] or CreateTick(self, i)
         tick:ClearAllPoints()
 
         local x = (self.duration - (i - 1) * timePerTick) / self.duration
@@ -344,7 +363,7 @@ local function UpdateLatency(self, event, unit)
             if self.castType == "channel" then
                 self.latency:SetPoint("TOPLEFT")
                 self.latency:SetPoint("BOTTOMLEFT")
-                self.latency:SetDrawLayer("ARTWORK", 0)
+                self.latency:SetDrawLayer("ARTWORK", 1)
             else
                 self.latency:SetPoint("TOPRIGHT")
                 self.latency:SetPoint("BOTTOMRIGHT")
@@ -712,9 +731,6 @@ local function CastBar_UpdateSpark(self, config)
 end
 
 local function CastBar_UpdateTicks(self, config)
-    local class = UnitClassBase(self.root:GetAttribute("unit"))
-    if not classMaxTicks[class] then return end
-
     self.ticksEnabled = config.enabled
     if not config.enabled then
         if self.ticks then
@@ -727,14 +743,9 @@ local function CastBar_UpdateTicks(self, config)
 
     if not self.ticks then self.ticks = {} end
 
-    for i = 1, classMaxTicks[class] do
-        if not self.ticks[i] then
-            self.ticks[i] = self.bar:CreateTexture(nil, "ARTWORK", nil, 1)
-            self.ticks[i]:Hide()
-        end
-
-        AW.SetWidth(self.ticks[i], config.width)
-        self.ticks[i]:SetColorTexture(unpack(config.color))
+    for _, tick in pairs(self.ticks) do
+        AW.SetWidth(tick, config.width)
+        tick:SetColorTexture(unpack(config.color))
     end
 end
 
@@ -797,6 +808,7 @@ local function CastBar_LoadConfig(self, config)
 
     if self.root.hasCastBarTicks then
         self:UpdateTicks(config.ticks)
+        self.ticksConfig = config.ticks
     end
 
     if self.root.hasLatency then
@@ -812,6 +824,15 @@ end
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
+-- bar layers
+-- pipTexture: -2
+-- latency: -1, 1
+-- bar: 0
+-- pipBound: 1
+-- ticks: 2
+-- spart: 3
+-- uninterruptible: 4
+
 function UF.CreateCastBar(parent, name)
     -- frame
     local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
@@ -856,12 +877,12 @@ function UF.CreateCastBar(parent, name)
     AW.SetFrameLevel(bar, 1, frame)
 
     -- spark
-    local spark = bar:CreateTexture(nil, "ARTWORK", nil, 2)
+    local spark = bar:CreateTexture(nil, "ARTWORK", nil, 3)
     frame.spark = spark
     spark:SetBlendMode("ADD")
 
     -- uninterruptible texture
-    local uninterruptible = bar:CreateTexture(nil, "ARTWORK", nil, 3)
+    local uninterruptible = bar:CreateTexture(nil, "ARTWORK", nil, 4)
     bar.uninterruptible = uninterruptible
     uninterruptible:SetAllPoints()
     uninterruptible:SetTexture(AW.GetTexture("Uninterruptible1"), "REPEAT", "REPEAT")
