@@ -28,6 +28,14 @@ local function SortAuras(a, b)
         return a.canApplyAura
     end
 
+    if a.duration ~= b.duration then
+        if a.duration == 0 and b.duration ~= 0 then
+            return false
+        elseif a.duration ~= 0 and b.duration == 0 then
+            return true
+        end
+    end
+
     return a.auraInstanceID < b.auraInstanceID
 end
 
