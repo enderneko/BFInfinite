@@ -556,7 +556,7 @@ local defaults = {
                     color = AW.GetColorTable("white"),
                 },
             },
-            debuffs_by_me = {
+            debuffsByMe = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "TOPLEFT", 0, 1},
                 orientation = "left_to_right",
@@ -586,10 +586,10 @@ local defaults = {
                     color = AW.GetColorTable("white"),
                 },
             },
-            debuffs_by_others = {
+            debuffsByOthers = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "TOPLEFT", 0, 2},
-                anchorTo = "debuffs_by_me",
+                anchorTo = "debuffsByMe",
                 orientation = "left_to_right",
                 borderColor = "debuff_type",
                 cooldownStyle = "none",

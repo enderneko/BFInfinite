@@ -12,8 +12,8 @@ local indicators = {
     "portrait",
     "castBar",
     {"auras", "buffs", "HELPFUL"},
-    {"auras", "debuffs_by_me", "HARMFUL_MINE"},
-    {"auras", "debuffs_by_others", "HARMFUL_OTHERS"},
+    {"auras", "debuffsByMe", "HARMFUL", "mine"},
+    {"auras", "debuffsByOthers", "HARMFUL", "others", true},
 }
 
 ---------------------------------------------------------------------

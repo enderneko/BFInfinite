@@ -14,119 +14,178 @@ end
 
 local Auras_UpdateSize
 
+---------------------------------------------------------------------
+-- SortAuras
+---------------------------------------------------------------------
+local function SortAuras(a, b)
+    local aFromPlayer = IsAppliedByPlayer(a.sourceUnit)
+    local bFromPlayer = IsAppliedByPlayer(b.sourceUnit)
+    if aFromPlayer ~= bFromPlayer then
+        return aFromPlayer
+    end
+
+    if a.canApplyAura ~= b.canApplyAura then
+        return a.canApplyAura
+    end
+
+    return a.auraInstanceID < b.auraInstanceID
+end
+
+---------------------------------------------------------------------
+-- ShowAura
+---------------------------------------------------------------------
+local function ShowAura(self, auraInfo, index)
+    -- local auraInstanceID = auraInfo.auraInstanceID
+    -- local name = auraInfo.name
+    local icon = auraInfo.icon
+    local count = auraInfo.applications
+    local auraType = auraInfo.dispelName
+    local expirationTime = auraInfo.expirationTime or 0
+    local start = expirationTime - auraInfo.duration
+    local duration = auraInfo.duration
+    local source = auraInfo.sourceUnit
+    -- local spellId = auraInfo.spellId
+
+    -- print(self:GetName(), index, name, start, duration, count, auraType, icon)
+    self:SetCooldown(index, source, start, duration, count, auraType, icon, self.desaturated)
+end
+
+---------------------------------------------------------------------
+-- HandleUpdateInfo
+---------------------------------------------------------------------
+local function MatchFilter(self, isHarmful, isHelpful)
+    if self.filter == "HARMFUL" then
+        return isHarmful
+    elseif self.filter == "HELPFUL" then
+        return isHelpful
+    end
+end
+
+local function HandleUpdateInfo(self, updateInfo)
+    local changed
+
+    if updateInfo.addedAuras then
+        for _, auraInfo in pairs(updateInfo.addedAuras) do
+            if MatchFilter(self, auraInfo.isHarmful, auraInfo.isHelpful) and self.matcher(auraInfo) then
+                self.auras[auraInfo.auraInstanceID] = true
+                changed = true
+            end
+        end
+    end
+
+    if updateInfo.updatedAuraInstanceIDs then
+        for _, auraInstanceID in pairs(updateInfo.updatedAuraInstanceIDs) do
+            if self.auras[auraInstanceID] then
+                changed = true
+                break
+            end
+        end
+    end
+
+    if updateInfo.removedAuraInstanceIDs then
+        for _, auraInstanceID in pairs(updateInfo.removedAuraInstanceIDs) do
+            if self.auras[auraInstanceID] then
+                self.auras[auraInstanceID] = nil
+                changed = true
+            end
+        end
+    end
+
+    if changed then
+        -- reset
+        wipe(self.sortedAuras)
+
+        -- sort
+        for auraInstanceID in pairs(self.auras) do
+            tinsert(self.sortedAuras, C_UnitAuras.GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID))
+        end
+        sort(self.sortedAuras, SortAuras)
+
+        -- show
+        self.numAuras = 0
+        for i, auraInfo in pairs(self.sortedAuras) do
+            if i > self.numSlots then break end
+            self.numAuras = self.numAuras + 1
+            ShowAura(self, auraInfo, i)
+        end
+
+        -- resize
+        Auras_UpdateSize(self, self.numAuras)
+    end
+end
+
 -------------------------------------------------
 -- ForEachAura
 -------------------------------------------------
-local function ForEachAuraHelper(indicator, handler, continuationToken, ...)
+--- @param matcher function
+local function ForEachAura(self, matcher, continuationToken, ...)
     -- continuationToken is the first return value of GetAuraSlots()
     local n = select("#", ...)
-    local count1, count2 = 1, 1
     for i = 1, n do
         local slot = select(i, ...)
-        local auraInfo = GetAuraDataBySlot(indicator.root.displayedUnit, slot)
-        local ret = handler(indicator, auraInfo, i, count1, count2)
-        if ret then
-            count1 = count1 + 1
-        else
-            count2 = count2 + 1
+        local auraInfo = GetAuraDataBySlot(self.root.displayedUnit, slot)
+        local matched = matcher(auraInfo)
+        if matched then
+            self.numAuras = self.numAuras + 1
+            self.auras[auraInfo.auraInstanceID] = true
+            tinsert(self.sortedAuras, auraInfo)
         end
     end
-    return n, count1, count2
 end
 
-local function ForEachAura(indicator, handler)
-    return ForEachAuraHelper(indicator, handler, GetAuraSlots(indicator.root.displayedUnit, indicator.filter, indicator.numSlots))
+local function HandleAllAuras(self)
+    -- reset
+    wipe(self.auras)
+    wipe(self.sortedAuras)
+    self.numAuras = 0
+
+    -- iterate
+    ForEachAura(self, self.matcher, GetAuraSlots(self.root.displayedUnit, self.filter, self.numSlots))
+
+    -- sort
+    sort(self.sortedAuras, SortAuras)
+
+    -- show
+    for i, auraInfo in pairs(self.sortedAuras) do
+        -- if i > self.numSlots then break end --! already limited
+        ShowAura(self, auraInfo, i)
+    end
+
+    -- resize
+    Auras_UpdateSize(self, self.numAuras)
 end
+
+---------------------------------------------------------------------
+-- matchers
+---------------------------------------------------------------------
+local matchers = {
+    all = function()
+        return true
+    end,
+
+    mine = function(auraInfo)
+        return IsAppliedByPlayer(auraInfo.sourceUnit)
+    end,
+
+    others = function(auraInfo)
+        return not IsAppliedByPlayer(auraInfo.sourceUnit)
+    end
+}
 
 ---------------------------------------------------------------------
 -- UNIT_AURA
 ---------------------------------------------------------------------
-local function HandleAura(self, auraInfo, index)
-    local auraInstanceID = auraInfo.auraInstanceID
-    local name = auraInfo.name
-    local icon = auraInfo.icon
-    local count = auraInfo.applications
-    local auraType = auraInfo.dispelName
-    local expirationTime = auraInfo.expirationTime or 0
-    local start = expirationTime - auraInfo.duration
-    local duration = auraInfo.duration
-    local source = auraInfo.sourceUnit
-    local spellId = auraInfo.spellId
-
-    -- print(self:GetName(), index, name, start, duration, count, auraType, icon)
-
-    self.auras[auraInstanceID] = index
-
-    self:SetCooldown(index, source, start, duration, count, auraType, icon)
-
-    return true -- TODO: filter, before SetCooldown
-end
-
-local function HandleAura_Mine(self, auraInfo, index, found)
-    local auraInstanceID = auraInfo.auraInstanceID
-    local name = auraInfo.name
-    local icon = auraInfo.icon
-    local count = auraInfo.applications
-    local auraType = auraInfo.dispelName
-    local expirationTime = auraInfo.expirationTime or 0
-    local start = expirationTime - auraInfo.duration
-    local duration = auraInfo.duration
-    local source = auraInfo.sourceUnit
-    local spellId = auraInfo.spellId
-
-    self.auras[auraInstanceID] = self.slots[found]
-
-    if IsAppliedByPlayer(source) then
-        print("MINE", found, name, start, duration, count, auraType, icon)
-        self:SetCooldown(found, source, start, duration, count, auraType, icon)
-        return true
-    end
-end
-
-local function HandleAura_Others(self, auraInfo, index, found)
-    local auraInstanceID = auraInfo.auraInstanceID
-    local name = auraInfo.name
-    local icon = auraInfo.icon
-    local count = auraInfo.applications
-    local auraType = auraInfo.dispelName
-    local expirationTime = auraInfo.expirationTime or 0
-    local start = expirationTime - auraInfo.duration
-    local duration = auraInfo.duration
-    local source = auraInfo.sourceUnit
-    local spellId = auraInfo.spellId
-
-    self.auras[auraInstanceID] = self.slots[found]
-
-    if not IsAppliedByPlayer(source) then
-        print("OTHERS", found, name, start, duration, count, auraType, icon)
-        self:SetCooldown(found, source, start, duration, count, auraType, icon, true)
-        return true
-    end
-end
-
 local function UpdateAuras(self, event, unitId, updateInfo)
     local unit = self.root.displayedUnit
     if unitId and unitId ~= unit then return end
 
-    local isFullUpdate = true
-    -- local isFullUpdate = not updateInfo or updateInfo.isFullUpdate
-    local num
-
-    local handler
-    if self.onlyShowMine then
-        handler = HandleAura_Mine
-    elseif self.onlyShowOthers then
-        handler = HandleAura_Others
-    else
-        handler = HandleAura
-    end
+    local isFullUpdate = not updateInfo or updateInfo.isFullUpdate
 
     if isFullUpdate then
-        wipe(self.auras)
-        num = ForEachAura(self, handler)
+        HandleAllAuras(self)
+    else
+        HandleUpdateInfo(self, updateInfo)
     end
-
-    Auras_UpdateSize(self, num)
 end
 
 ---------------------------------------------------------------------
@@ -153,6 +212,8 @@ local function Auras_Disable(self)
     self:UnregisterAllEvents()
     self:Hide()
     wipe(self.auras)
+    wipe(self.sortedAuras)
+    self.numAuras = 0
 end
 
 ---------------------------------------------------------------------
@@ -177,20 +238,10 @@ local set_cooldown = {
 ---------------------------------------------------------------------
 -- config
 ---------------------------------------------------------------------
-local function Auras_UpdateFrameSize(self, numAuras)
-    local lines = ceil(numAuras / self.numPerLine)
-    numAuras = min(numAuras, self.numPerLine)
-
-    if self.isHorizontal then
-        AW.SetGridSize(self, self.width, self.height, self.spacing, numAuras, lines)
-    else
-        AW.SetGridSize(self, self.width, self.height, self.spacing, lines, numAuras)
-    end
-end
-
 Auras_UpdateSize = function(self, numAuras)
     if not (self.width and self.height and self.orientation) then return end
 
+    -- check shown slots
     if numAuras then
         for i = numAuras + 1, self.numSlots do
             self.slots[i]:Hide()
@@ -204,7 +255,15 @@ Auras_UpdateSize = function(self, numAuras)
         end
     end
 
-    Auras_UpdateFrameSize(self, numAuras)
+    -- set size
+    local lines = ceil(numAuras / self.numPerLine)
+    numAuras = min(numAuras, self.numPerLine)
+
+    if self.isHorizontal then
+        AW.SetGridSize(self, self.width, self.height, self.spacing, numAuras, lines)
+    else
+        AW.SetGridSize(self, self.width, self.height, self.spacing, lines, numAuras)
+    end
 end
 
 local function Auras_SetSize(self, width, height)
@@ -212,7 +271,6 @@ local function Auras_SetSize(self, width, height)
     self.height = height
 
     for i = 1, self.numSlots do
-        -- TODO: update texcoord
         AW.SetSize(self.slots[i], width, height)
     end
 
@@ -342,7 +400,7 @@ local function Auras_OnHide(self)
 end
 
 local function Auras_LoadConfig(self, config)
-    texplore(config)
+    -- texplore(config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     if config.anchorTo then
         AW.LoadWidgetPosition(self, config.position, self.root.indicators[config.anchorTo])
@@ -370,20 +428,13 @@ end
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
-function UF.CreateAuras(parent, name, filter)
+function UF.CreateAuras(parent, name, auraFilter, sourceFilter, desaturated)
     local frame = CreateFrame("Frame", name, parent)
 
     frame.root = parent
-
-    if strfind(filter, "_OTHERS$") then
-        frame.filter = filter:gsub("_OTHERS$", "")
-        frame.onlyShowOthers = true
-    elseif strfind(filter, "_MINE$") then
-        frame.filter = filter:gsub("_MINE$", "")
-        frame.onlyShowMine = true
-    else
-        frame.filter = filter
-    end
+    frame.filter = auraFilter
+    frame.matcher = matchers[sourceFilter or "all"]
+    frame.desaturated = desaturated
 
     -- events
     BFI.AddEventHandler(frame)
@@ -393,10 +444,9 @@ function UF.CreateAuras(parent, name, filter)
     frame.slots = slots
 
     -- data
-    local auras = {
-        -- [auraInstanceID] = slotIndex,
-    }
-    frame.auras = auras
+    frame.auras = {}
+    frame.sortedAuras = {}
+    frame.numAuras = 0
 
     -- scripts
     frame:SetScript("OnHide", Auras_OnHide)

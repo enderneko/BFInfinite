@@ -128,12 +128,12 @@ end
 ---------------------------------------------------------------------
 local function UpdateDuration(self, elapsed)
     self._elapsed = self._elapsed + elapsed
+
+    self._remain = self._duration - (GetTime() - self._start)
+    if self._remain < 0 then self._remain = 0 end
+
     if self._elapsed >= 0.1 then
         self._elapsed = 0
-
-        self._remain = self._duration - (GetTime() - self._start)
-        if self._remain < 0 then self._remain = 0 end
-
         -- color
         if self.durationColor[3][1] and self._remain < self.durationColor[3][2] then
             self.duration:SetTextColor(AW.UnpackColor(self.durationColor[3][3]))

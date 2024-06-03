@@ -312,9 +312,9 @@ local function UnitButton_OnTick(self)
             if displayedGuid ~= self.__displayedGuid then
                 -- NOTE: displayed unit entity changed
                 self.__displayedGuid = displayedGuid
-                -- self._updateRequired = true
+
                 wipe(self.states)
-                UnitButton_UpdateAllStates(self)
+                UnitButton_UpdateAll(self, self.unit == "target")
             end
 
             local guid = UnitGUID(self.unit)
