@@ -15,20 +15,67 @@ end
 local Auras_UpdateSize
 
 ---------------------------------------------------------------------
--- SortAuras
+-- sort
 ---------------------------------------------------------------------
+-- local comparators = {
+--     boss_aura = function(a, b)
+--         if a.isBossAura ~= b.isBossAura then
+--             return a.isBossAura
+--         end
+--     end,
+
+--     self_applied = function(a, b)
+--         if a.isPlayer ~= b.isPlayer then
+--             return a.isPlayer
+--         end
+--     end,
+
+--     no_duration = function(a, b)
+--         if a.duration ~= b.duration then
+--             -- print(a.name, a.duration, b.name, b.duration)
+--             if a.duration == 0 and b.duration ~= 0 then
+--                 return false
+--             elseif a.duration ~= 0 and b.duration == 0 then
+--                 return true
+--             end
+--         end
+--     end,
+
+--     start = function (a, b)
+--         if a.start ~= b.start then
+--             return a.start > b.start
+--         end
+--     end,
+
+--     expiration = function(a, b)
+--         if a.expirationTime ~= b.expirationTime then
+--             return a.expirationTime < b.expirationTime
+--         end
+--     end,
+-- }
+
 local function SortAuras(a, b)
-    local aFromPlayer = IsAppliedByPlayer(a.sourceUnit)
-    local bFromPlayer = IsAppliedByPlayer(b.sourceUnit)
-    if aFromPlayer ~= bFromPlayer then
-        return aFromPlayer
+    if a.isBossAura ~= b.isBossAura then
+        return a.isBossAura
     end
 
-    if a.canApplyAura ~= b.canApplyAura then
-        return a.canApplyAura
+    if a.isStealable ~= b.isStealable then
+        return a.isStealable
     end
+
+    -- TODO: dispellable
+
+    if a.isPlayer ~= b.isPlayer then
+        return a.isPlayer
+    end
+
+    -- if a.canApplyAura ~= b.canApplyAura then
+    --     print(a.name, a.canApplyAura, b.name, b.canApplyAura)
+    --     return a.canApplyAura
+    -- end
 
     if a.duration ~= b.duration then
+        -- print(a.name, a.duration, b.name, b.duration)
         if a.duration == 0 and b.duration ~= 0 then
             return false
         elseif a.duration ~= 0 and b.duration == 0 then
@@ -36,26 +83,38 @@ local function SortAuras(a, b)
         end
     end
 
+    -- if a.expirationTime ~= b.expirationTime then
+    --     return a.expirationTime < b.expirationTime
+    -- end
+
+    -- if a.start ~= b.start then
+    --     -- print(a.name, b.name, a.start > b.start)
+    --     return a.start > b.start
+    -- end
+
     return a.auraInstanceID < b.auraInstanceID
+end
+
+---------------------------------------------------------------------
+-- AddExtraData
+---------------------------------------------------------------------
+local function UpdateExtraData(auraData)
+    -- local icon = auraData.icon
+    -- local count = auraData.applications
+    -- local auraType = auraData.dispelName
+    -- local duration = auraData.duration
+    -- local source = auraData.sourceUnit
+    auraData.start = auraData.expirationTime - auraData.duration
+    auraData.isPlayer = IsAppliedByPlayer(auraData.sourceUnit)
 end
 
 ---------------------------------------------------------------------
 -- ShowAura
 ---------------------------------------------------------------------
-local function ShowAura(self, auraInfo, index)
-    -- local auraInstanceID = auraInfo.auraInstanceID
-    -- local name = auraInfo.name
-    local icon = auraInfo.icon
-    local count = auraInfo.applications
-    local auraType = auraInfo.dispelName
-    local expirationTime = auraInfo.expirationTime or 0
-    local start = expirationTime - auraInfo.duration
-    local duration = auraInfo.duration
-    local source = auraInfo.sourceUnit
-    -- local spellId = auraInfo.spellId
-
+local function ShowAura(self, auraData, index)
     -- print(self:GetName(), index, name, start, duration, count, auraType, icon)
-    self:SetCooldown(index, source, start, duration, count, auraType, icon, self.desaturated)
+    self:SetCooldown(index, auraData.sourceUnit, auraData.start, auraData.duration,
+        auraData.applications, auraData.dispelName, auraData.icon, self.desaturated)
 end
 
 ---------------------------------------------------------------------
@@ -73,9 +132,9 @@ local function HandleUpdateInfo(self, updateInfo)
     local changed
 
     if updateInfo.addedAuras then
-        for _, auraInfo in pairs(updateInfo.addedAuras) do
-            if MatchFilter(self, auraInfo.isHarmful, auraInfo.isHelpful) and self.matcher(auraInfo) then
-                self.auras[auraInfo.auraInstanceID] = true
+        for _, auraData in pairs(updateInfo.addedAuras) do
+            if MatchFilter(self, auraData.isHarmful, auraData.isHelpful) and self.matcher(auraData) then
+                self.auras[auraData.auraInstanceID] = true
                 changed = true
             end
         end
@@ -105,16 +164,18 @@ local function HandleUpdateInfo(self, updateInfo)
 
         -- sort
         for auraInstanceID in pairs(self.auras) do
-            tinsert(self.sortedAuras, C_UnitAuras.GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID))
+            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID)
+            UpdateExtraData(auraData)
+            tinsert(self.sortedAuras, auraData)
         end
         sort(self.sortedAuras, SortAuras)
 
         -- show
         self.numAuras = 0
-        for i, auraInfo in pairs(self.sortedAuras) do
+        for i, auraData in pairs(self.sortedAuras) do
             if i > self.numSlots then break end
             self.numAuras = self.numAuras + 1
-            ShowAura(self, auraInfo, i)
+            ShowAura(self, auraData, i)
         end
 
         -- resize
@@ -131,12 +192,13 @@ local function ForEachAura(self, matcher, continuationToken, ...)
     local n = select("#", ...)
     for i = 1, n do
         local slot = select(i, ...)
-        local auraInfo = GetAuraDataBySlot(self.root.displayedUnit, slot)
-        local matched = matcher(auraInfo)
+        local auraData = GetAuraDataBySlot(self.root.displayedUnit, slot)
+        local matched = matcher(auraData)
         if matched then
             self.numAuras = self.numAuras + 1
-            self.auras[auraInfo.auraInstanceID] = true
-            tinsert(self.sortedAuras, auraInfo)
+            self.auras[auraData.auraInstanceID] = true
+            UpdateExtraData(auraData)
+            tinsert(self.sortedAuras, auraData)
         end
     end
 end
@@ -154,9 +216,9 @@ local function HandleAllAuras(self)
     sort(self.sortedAuras, SortAuras)
 
     -- show
-    for i, auraInfo in pairs(self.sortedAuras) do
+    for i, auraData in pairs(self.sortedAuras) do
         -- if i > self.numSlots then break end --! already limited
-        ShowAura(self, auraInfo, i)
+        ShowAura(self, auraData, i)
     end
 
     -- resize
@@ -171,12 +233,12 @@ local matchers = {
         return true
     end,
 
-    mine = function(auraInfo)
-        return IsAppliedByPlayer(auraInfo.sourceUnit)
+    mine = function(auraData)
+        return IsAppliedByPlayer(auraData.sourceUnit)
     end,
 
-    others = function(auraInfo)
-        return not IsAppliedByPlayer(auraInfo.sourceUnit)
+    others = function(auraData)
+        return not IsAppliedByPlayer(auraData.sourceUnit)
     end
 }
 
@@ -268,9 +330,9 @@ Auras_UpdateSize = function(self, numAuras)
     numAuras = min(numAuras, self.numPerLine)
 
     if self.isHorizontal then
-        AW.SetGridSize(self, self.width, self.height, self.spacing, numAuras, lines)
+        AW.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, numAuras, lines)
     else
-        AW.SetGridSize(self, self.width, self.height, self.spacing, lines, numAuras)
+        AW.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, lines, numAuras)
     end
 end
 
@@ -288,67 +350,80 @@ end
 local function Auras_SetOrientation(self, orientation)
     self.orientation = orientation
 
-    local anchor = self:GetPoint()
-    assert(anchor, "[indicator] position must be set before SetOrientation")
+    assert(self.anchor, "[indicator] position must be set before SetOrientation")
 
     self.isHorizontal = not strfind(orientation, "top")
 
-    local point1, point2, newLinePoint2, x, y
+    local point1, point2, x, y
+    local newLinePoint2, newLineX, newLineY
+
     if orientation == "left_to_right" then
-        if strfind(anchor, "^BOTTOM") then
+        if strfind(self.anchor, "^BOTTOM") then
             point1 = "BOTTOMLEFT"
             point2 = "BOTTOMRIGHT"
             newLinePoint2 = "TOPLEFT"
-            y = self.spacing
+            y = 0
+            newLineY = self.spacingV
         else
             point1 = "TOPLEFT"
             point2 = "TOPRIGHT"
             newLinePoint2 = "BOTTOMLEFT"
-            y = -self.spacing
+            y = 0
+            newLineY = -self.spacingV
         end
-        x = self.spacing
+        x = self.spacingH
+        newLineX = 0
 
     elseif orientation == "right_to_left" then
-        if strfind(anchor, "^BOTTOM") then
+        if strfind(self.anchor, "^BOTTOM") then
             point1 = "BOTTOMRIGHT"
             point2 = "BOTTOMLEFT"
             newLinePoint2 = "TOPRIGHT"
-            y = self.spacing
+            y = 0
+            newLineY = self.spacingV
         else
             point1 = "TOPRIGHT"
             point2 = "TOPLEFT"
             newLinePoint2 = "BOTTOMRIGHT"
-            y = -self.spacing
+            y = 0
+            newLineY = -self.spacingV
         end
-        x = -self.spacing
+        x = -self.spacingH
+        newLineX = 0
 
     elseif orientation == "top_to_bottom" then
-        if strfind(anchor, "RIGHT$") then
+        if strfind(self.anchor, "RIGHT$") then
             point1 = "TOPRIGHT"
             point2 = "BOTTOMRIGHT"
             newLinePoint2 = "TOPLEFT"
-            x = -self.spacing
+            x = 0
+            newLineX = -self.spacingH
         else
             point1 = "TOPLEFT"
             point2 = "BOTTOMLEFT"
             newLinePoint2 = "TOPRIGHT"
-            x = self.spacing
+            x = 0
+            newLineX = self.spacingH
         end
-        y = -self.spacing
+        y = -self.spacingV
+        newLineY = 0
 
     elseif orientation == "bottom_to_top" then
-        if strfind(anchor, "RIGHT$") then
+        if strfind(self.anchor, "RIGHT$") then
             point1 = "BOTTOMRIGHT"
             point2 = "TOPRIGHT"
             newLinePoint2 = "BOTTOMLEFT"
-            x = -self.spacing
+            x = 0
+            newLineX = -self.spacingH
         else
             point1 = "BOTTOMLEFT"
             point2 = "TOPLEFT"
             newLinePoint2 = "BOTTOMRIGHT"
-            x = self.spacing
+            x = 0
+            newLineX = self.spacingH
         end
-        y = self.spacing
+        y = self.spacingV
+        newLineY = 0
     end
 
     for i = 1, self.numSlots do
@@ -356,9 +431,9 @@ local function Auras_SetOrientation(self, orientation)
         if i == 1 then
             AW.SetPoint(self.slots[i], point1)
         elseif i % self.numPerLine == 1 then
-            AW.SetPoint(self.slots[i], point1, self.slots[i-self.numPerLine], newLinePoint2, 0, y)
+            AW.SetPoint(self.slots[i], point1, self.slots[i-self.numPerLine], newLinePoint2, newLineX, newLineY)
         else
-            AW.SetPoint(self.slots[i], point1, self.slots[i-1], point2, x, 0)
+            AW.SetPoint(self.slots[i], point1, self.slots[i-1], point2, x, y)
         end
     end
 
@@ -415,8 +490,12 @@ local function Auras_LoadConfig(self, config)
     else
         AW.LoadWidgetPosition(self, config.position)
     end
+
+    self.anchor = config.position[1]
+    self.spacingH = config.spacingH
+    self.spacingV = config.spacingV
+
     Auras_SetNumSlots(self, config.numTotal)
-    self.spacing = config.spacing
     Auras_SetSize(self, config.width, config.height)
     Auras_SetNumPerLine(self, config.numPerLine)
     Auras_SetOrientation(self, config.orientation)

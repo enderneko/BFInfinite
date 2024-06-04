@@ -59,23 +59,31 @@ local function Reset(region)
         region._minheight = nil
     end
 
-    if not region._size_list then
-        region._size_list = nil
-        region._itemNum = nil
+    if not region._size_list_h then
+        region._size_list_h = nil
+        region._itemWidth = nil
         region._extraWidth = nil
+    end
+
+    if not region._size_list_v then
+        region._size_list_v = nil
+        region._itemHeight = nil
         region._extraHeight = nil
+    end
+
+    if not (region._size_list_h or region._size_list_v) then
+        region._itemNum = nil
+        region._itemSpacing = nil
     end
 
     if not region._size_grid then
         region._size_grid = nil
         region._rows = nil
         region._columns = nil
-    end
-
-    if not (region._size_list or region._size_grid) then
-        region._itemWidth = nil
-        region._itemHeight = nil
-        region._itemSpacing = nil
+        region._gridWidth = nil
+        region._gridHeight = nil
+        region._gridSpacingV = nil
+        region._gridSpacingH = nil
     end
 end
 
@@ -106,7 +114,7 @@ function AW.SetListWidth(region, itemNum, itemWidth, itemSpacing, extraWidth)
     -- clear old
     Reset(region)
     -- add new
-    region._size_list = true
+    region._size_list_h = true
     region._itemNum = itemNum
     region._itemWidth = itemWidth
     region._itemSpacing = itemSpacing
@@ -127,7 +135,7 @@ function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
     -- clear conflicts
     Reset(region)
     -- add new
-    region._size_list = true
+    region._size_list_v = true
     region._itemNum = itemNum
     region._itemHeight = itemHeight
     region._itemSpacing = itemSpacing
@@ -143,29 +151,30 @@ function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
     end
 end
 
-function AW.SetGridSize(region, itemWidth, itemHeight, itemSpacing, columns, rows)
+function AW.SetGridSize(region, gridWidth, gridHeight, gridSpacingH, gridSpacingV, columns, rows)
     -- clear conflicts
     Reset(region)
     -- add new
     region._size_grid = true
-    region._itemWidth = itemWidth
-    region._itemHeight = itemHeight
-    region._itemSpacing = itemSpacing
+    region._gridWidth = gridWidth
+    region._gridHeight = gridHeight
+    region._gridSpacingH = gridSpacingH
+    region._gridSpacingV = gridSpacingV
     region._rows = rows
     region._columns = columns
 
     if columns == 0 then
         region:SetWidth(0.001)
     else
-        region:SetWidth(AW.GetNearestPixelSize(itemWidth, region:GetEffectiveScale())*columns
-            + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(columns-1))
+        region:SetWidth(AW.GetNearestPixelSize(gridWidth, region:GetEffectiveScale())*columns
+            + AW.GetNearestPixelSize(gridSpacingH, region:GetEffectiveScale())*(columns-1))
     end
 
     if rows == 0 then
         region:SetHeight(0.001)
     else
-        region:SetHeight(AW.GetNearestPixelSize(itemHeight, region:GetEffectiveScale())*rows
-            + AW.GetNearestPixelSize(itemSpacing, region:GetEffectiveScale())*(rows-1))
+        region:SetHeight(AW.GetNearestPixelSize(gridHeight, region:GetEffectiveScale())*rows
+            + AW.GetNearestPixelSize(gridSpacingV, region:GetEffectiveScale())*(rows-1))
     end
 end
 
@@ -250,14 +259,12 @@ function AW.ReSize(region)
         if region._height then
             AW.SetHeight(region, region._height, region._minheight)
         end
-    elseif region._size_list then
-        if region._itemWidth then
-            AW.SetListWidth(region, region._itemNum, region._itemWidth, region._itemSpacing, region._extraWidth)
-        elseif region._itemHeight then
-            AW.SetListHeight(region, region._itemNum, region._itemHeight, region._itemSpacing, region._extraHeight)
-        end
+    elseif region._size_list_h then
+        AW.SetListWidth(region, region._itemNum, region._itemWidth, region._itemSpacing, region._extraWidth)
+    elseif region._size_list_v then
+        AW.SetListHeight(region, region._itemNum, region._itemHeight, region._itemSpacing, region._extraHeight)
     elseif region._size_grid then
-        AW.SetGridSize(region, region._itemWidth, region._itemHeight, region._itemSpacing, region._rows, region._columns)
+        AW.SetGridSize(region, region._gridWidth, region._gridHeight, region._gridSpacingH, region._gridSpacingV, region._columns, region._rows)
     end
 end
 
