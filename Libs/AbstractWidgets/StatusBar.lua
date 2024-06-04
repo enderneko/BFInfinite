@@ -109,6 +109,8 @@ local prototype = {
         AW.ClearPoints(self.fg)
         AW.ClearPoints(self.loss)
         if noGaps then
+            AW.SetPoint(self.bg, "TOPLEFT")
+            AW.SetPoint(self.bg, "BOTTOMRIGHT")
             AW.SetPoint(self.fg, "TOPLEFT")
             AW.SetPoint(self.fg, "BOTTOMLEFT")
             AW.SetPoint(self.loss, "TOPLEFT", self.fg, "TOPRIGHT")
@@ -116,6 +118,8 @@ local prototype = {
             AW.SetPoint(self.loss, "TOPRIGHT")
             AW.SetPoint(self.loss, "BOTTOMRIGHT")
         else
+            AW.SetPoint(self.bg, "TOPLEFT", 1, -1)
+            AW.SetPoint(self.bg, "BOTTOMRIGHT", -1, 1)
             AW.SetPoint(self.fg, "TOPLEFT", 1, -1)
             AW.SetPoint(self.fg, "BOTTOMLEFT", 1, 1)
             AW.SetPoint(self.loss, "TOPLEFT", self.fg, "TOPRIGHT")
@@ -143,6 +147,15 @@ local prototype = {
     end,
     GetValue = function(self)
         return self.value
+    end,
+    GetBarSize = function(self)
+        return self.bg:GetSize()
+    end,
+    GetBarWidth = function(self)
+        return self.bg:GetWidth()
+    end,
+    GetBarHeight = function(self)
+        return self.bg:GetHeight()
     end,
 
     -- set
@@ -203,6 +216,10 @@ function AW.CreateSimpleBar(parent, name, noBackdrop)
     -- loss texture
     local loss = bar:CreateTexture(nil, "BORDER", nil, -1)
     bar.loss = loss
+
+    -- bg texture NOTE: currently only for GetBarSize/Width/Height
+    local bg = bar:CreateTexture(nil, "BORDER", nil, -2)
+    bar.bg = bg
 
     -- setup default texture points
     if not noBackdrop then

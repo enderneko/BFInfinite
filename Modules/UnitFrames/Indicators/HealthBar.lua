@@ -13,6 +13,7 @@ local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitGetIncomingHeals = UnitGetIncomingHeals
+local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
 
 --! for AI followers, UnitClassBase is buggy
 local UnitClassBase = function(unit)
@@ -27,14 +28,12 @@ local function UpdateHealthStates(self)
 
     self.health = UnitHealth(unit)
     self.healthMax = UnitHealthMax(unit)
-    self.shields = UnitGetTotalAbsorbs(unit)
 
     if self.healthMax == 0 then
         self.healthPercent = 0
-        self.shieldPercent = 0
+        self.healthMax = 1
     else
         self.healthPercent = self.health / self.healthMax
-        self.shieldPercent = self.shields / self.healthMax
     end
 end
 
@@ -72,22 +71,25 @@ local function UpdateShield(self, event, unitId)
         return
     end
 
-    UpdateHealthStates(self)
-
-    local overs = self.shieldPercent + self.healthPercent > 1
-
-    if self.shieldReverseFill and overs then -- reverse
-        self.shield:ClearAllPoints()
-        self.shield:SetPoint("TOPRIGHT")
-        self.shield:SetPoint("BOTTOMRIGHT")
-    else
-        self.shield:ClearAllPoints()
-        self.shield:SetPoint("TOPLEFT", self.fg, "TOPRIGHT")
-        self.shield:SetPoint("BOTTOMLEFT", self.fg, "BOTTOMRIGHT")
-    end
+    self.shields = UnitGetTotalAbsorbs(unit)
 
     if self.shields > 0 then
-        local barWidth = self:GetWidth()
+        local barWidth = self:GetBarWidth()
+
+        UpdateHealthStates(self)
+        self.shieldPercent = self.shields / self.healthMax
+
+        local overs = self.shieldPercent + self.healthPercent > 1
+
+        if self.shieldReverseFill and overs then -- reverse
+            self.shield:ClearAllPoints()
+            self.shield:SetPoint("TOPRIGHT", self.fg)
+            self.shield:SetPoint("BOTTOMRIGHT", self.fg)
+        else
+            self.shield:ClearAllPoints()
+            self.shield:SetPoint("TOPLEFT", self.fg, "TOPRIGHT")
+            self.shield:SetPoint("BOTTOMLEFT", self.fg, "BOTTOMRIGHT")
+        end
 
         if overs then -- overshield
             if self.shieldReverseFill then -- reverse
@@ -124,6 +126,46 @@ local function UpdateShield(self, event, unitId)
         self.shield:Hide()
         self.overshieldGlow:Hide()
         self.overshieldGlowR:Hide()
+    end
+end
+
+---------------------------------------------------------------------
+-- healAbsorb
+---------------------------------------------------------------------
+local function UpdateHealAbsorb(self, event, unitId)
+    local unit = self.root.displayedUnit
+    if unitId and unit ~= unitId then return end
+
+    -- overabsorbGlow
+    if not self.healAbsorbEnabled or not self.overabsorbGlowEnabled then
+        self.overabsorbGlow:Hide()
+    end
+
+    if not self.healAbsorbEnabled then
+        self.healAbsorb:Hide()
+        return
+    end
+
+
+    self.healAbsorbs = UnitGetTotalHealAbsorbs(unit)
+
+    if self.healAbsorbs > 0 then
+        local barWidth = self:GetBarWidth()
+
+        UpdateHealthStates(self)
+        self.healAbsorbPercent = self.healAbsorbs / self.healthMax
+
+        local p = min(self.healthPercent, self.healAbsorbPercent)
+
+        self.healAbsorb:SetWidth(p * barWidth)
+        self.healAbsorb:Show()
+
+        if self.overabsorbGlowEnabled and self.healAbsorbPercent > self.healthPercent then
+            self.overabsorbGlow:Show()
+        end
+    else
+        self.healAbsorb:Hide()
+        self.overabsorbGlow:Hide()
     end
 end
 
@@ -241,26 +283,11 @@ local function UpdateHealPrediction(self, event, unitId)
     if lostP ~= 0 and value > 0 then
         local p = value / self.healthMax
         if p > lostP then p = lostP end
-        self.healPrediction:SetWidth(p * self:GetWidth())
+        self.healPrediction:SetWidth(p * self:GetBarWidth())
         self.healPrediction:Show()
     else
         self.healPrediction:Hide()
     end
-end
-
----------------------------------------------------------------------
--- enable
----------------------------------------------------------------------
-local function HealthBar_Enable(self)
-    self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield, UpdateHealPrediction)
-    self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield, UpdateHealPrediction)
-    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateHealthColor)
-    self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
-    self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
-    self:RegisterEvent("UNIT_HEAL_PREDICTION", UpdateHealPrediction)
-
-    self:Show()
-    if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -275,6 +302,37 @@ local function HealthBar_Update(self)
 end
 
 ---------------------------------------------------------------------
+-- enable
+---------------------------------------------------------------------
+local function HealthBar_Enable(self)
+    self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield, UpdateHealPrediction)
+    self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield, UpdateHealPrediction)
+    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateHealthColor)
+    self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
+    self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
+    self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", UpdateHealAbsorb)
+    self:RegisterEvent("UNIT_HEAL_PREDICTION", UpdateHealPrediction)
+
+    self:Show()
+    if self:IsVisible() then self:Update() end
+end
+
+---------------------------------------------------------------------
+-- disable
+---------------------------------------------------------------------
+local function HealthBar_Disable(self)
+    self:UnregisterAllEvents()
+    self:Hide()
+    self.health = nil
+    self.healthMax = nil
+    self.healthPercent = nil
+    self.shields = nil
+    self.shieldPercent = nil
+    self.healAbsorbs = nil
+    self.healAbsorbPercent = nil
+end
+
+---------------------------------------------------------------------
 -- base
 ---------------------------------------------------------------------
 local function ShieldBar_SetColor(self, color)
@@ -284,6 +342,14 @@ end
 local function OvershieldGlow_SetColor(self, color)
     self.overshieldGlow:SetVertexColor(unpack(color))
     self.overshieldGlowR:SetVertexColor(unpack(color))
+end
+
+local function HealAbsorbBar_SetColor(self, color)
+    self.healAbsorb:SetVertexColor(unpack(color))
+end
+
+local function OverabsorbGlow_SetColor(self, color)
+    self.overabsorbGlow:SetVertexColor(unpack(color))
 end
 
 local function HealPrediction_SetColor(self, color)
@@ -317,16 +383,19 @@ local function HealthBar_LoadConfig(self, config)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
 
-    self:SetTexture(U.GetBarTexture(config.texture))
+    HealthBar_SetTexture(self, U.GetBarTexture(config.texture))
     self:SetBackgroundColor(unpack(config.bgColor))
     self:SetBorderColor(unpack(config.borderColor))
     self:SetSmoothing(config.smoothing)
 
-    self:SetShieldColor(config.shield.color)
-    self:SetOvershieldGlowColor(config.overshieldGlow.color)
+    ShieldBar_SetColor(self, config.shield.color)
+    OvershieldGlow_SetColor(self, config.overshieldGlow.color)
+
+    HealAbsorbBar_SetColor(self, config.healAbsorb.color)
+    OverabsorbGlow_SetColor(self, config.overabsorbGlow.color)
 
     if config.healPrediction.useCustomColor then
-        self:SetHealPredictionColor(config.healPrediction.color)
+        HealPrediction_SetColor(self, config.healPrediction.color)
     end
 
     self.color = config.color
@@ -334,6 +403,8 @@ local function HealthBar_LoadConfig(self, config)
     self.shieldReverseFill = config.shield.reverseFill
     self.shieldEnabled = config.shield.enabled
     self.overshieldGlowEnabled = config.overshieldGlow.enabled
+    self.healAbsorbEnabled = config.healAbsorb.enabled
+    self.overabsorbGlowEnabled = config.overabsorbGlow.enabled
     self.healPredictionEnabled = config.healPrediction.enabled
     self.healPredictionUseCustomColor = config.healPrediction.useCustomColor
 end
@@ -350,6 +421,13 @@ function UF.CreateHealthBar(parent, name)
     -- events
     BFI.AddEventHandler(bar)
 
+    -- healPrediction
+    local healPrediction = bar:CreateTexture(name.."HealPrediction", "ARTWORK", nil, 1)
+    bar.healPrediction = healPrediction
+    healPrediction:Hide()
+    healPrediction:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
+    healPrediction:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
+
     -- shield
     local shield = bar:CreateTexture(name.."Shield", "ARTWORK", nil, 2)
     bar.shield = shield
@@ -365,33 +443,42 @@ function UF.CreateHealthBar(parent, name)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
     overshieldGlow:SetTexture(AW.GetTexture("Overshield"))
-    AW.SetPoint(overshieldGlow, "TOPRIGHT")
-    AW.SetPoint(overshieldGlow, "BOTTOMRIGHT")
+    AW.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss)
+    AW.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss)
     AW.SetWidth(overshieldGlow, 4)
 
     -- overshieldR
     local overshieldGlowR = bar:CreateTexture(name.."OvershieldGlowR", "ARTWORK", nil, 3)
     bar.overshieldGlowR = overshieldGlowR
     overshieldGlowR:Hide()
-    overshieldGlowR:SetTexture(AW.GetTexture("Overshield2"))
+    overshieldGlowR:SetTexture(AW.GetTexture("OvershieldR"))
     AW.SetPoint(overshieldGlowR, "TOPLEFT", shield, "TOPLEFT", -4, 0)
     AW.SetPoint(overshieldGlowR, "BOTTOMLEFT", shield, "BOTTOMLEFT", -4, 0)
     AW.SetWidth(overshieldGlowR, 8)
 
-    -- healPrediction
-    local healPrediction = bar:CreateTexture(name.."HealPrediction", "ARTWORK", nil, 1)
-    bar.healPrediction = healPrediction
-    healPrediction:Hide()
-    healPrediction:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
-    healPrediction:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
+    -- healAbsorb
+    local healAbsorb = bar:CreateTexture(name.."HealAbsorb", "ARTWORK", nil, 4)
+    bar.healAbsorb = healAbsorb
+    healAbsorb:Hide()
+    healAbsorb:SetPoint("TOPRIGHT", bar.fg)
+    healAbsorb:SetPoint("BOTTOMRIGHT", bar.fg)
+    healAbsorb:SetTexture(AW.GetTexture("Shield"), "REPEAT", "REPEAT")
+    healAbsorb:SetHorizTile(true)
+    healAbsorb:SetVertTile(true)
+
+    -- overshield
+    local overabsorbGlow = bar:CreateTexture(name.."OverabsorbGlow", "ARTWORK", nil, 5)
+    bar.overabsorbGlow = overabsorbGlow
+    overabsorbGlow:Hide()
+    overabsorbGlow:SetTexture(AW.GetTexture("Overabsorb"))
+    AW.SetPoint(overabsorbGlow, "TOPLEFT", bar.fg)
+    AW.SetPoint(overabsorbGlow, "BOTTOMLEFT", bar.fg)
+    AW.SetWidth(overabsorbGlow, 4)
 
     -- functions
     bar.Update = HealthBar_Update
     bar.Enable = HealthBar_Enable
-    bar.SetTexture = HealthBar_SetTexture
-    bar.SetShieldColor = ShieldBar_SetColor
-    bar.SetOvershieldGlowColor = OvershieldGlow_SetColor
-    bar.SetHealPredictionColor = HealPrediction_SetColor
+    bar.Disable = HealthBar_Disable
     bar.LoadConfig = HealthBar_LoadConfig
 
     -- pixel perfect
