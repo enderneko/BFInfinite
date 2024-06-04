@@ -77,8 +77,11 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function Portrait_Update(self)
-    UpdatePortrait(self)
+local function Portrait_Update(self, force)
+    --! only accept force update
+    if force then
+        UpdatePortrait(self)
+    end
 end
 
 ---------------------------------------------------------------------

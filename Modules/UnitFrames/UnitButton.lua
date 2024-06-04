@@ -139,13 +139,12 @@ end
 ---------------------------------------------------------------------
 -- update all
 ---------------------------------------------------------------------
-local function UnitButton_UpdateAll(self, skipUpdateIndicators)
+--- @param force boolean tell some indicator to perform a force update
+local function UnitButton_UpdateAll(self, force)
     if not self:IsVisible() then return end
 
-    if not skipUpdateIndicators then
-        -- update all indicators
-        UF.UpdateIndicators(self)
-    end
+    -- update indicators
+    UF.UpdateIndicators(self, force)
 
     -- states
     UnitButton_UpdateAllStates(self)
@@ -195,7 +194,9 @@ local function UnitButton_RegisterEvents(self)
     -- self:RegisterEvent("PLAYER_REGEN_ENABLED")
     -- self:RegisterEvent("PLAYER_REGEN_DISABLED")
 
-    self:RegisterEvent("PLAYER_TARGET_CHANGED")
+    if self._updateOnPlayerTargetChanged then
+        self:RegisterEvent("PLAYER_TARGET_CHANGED")
+    end
 
     -- self:RegisterEvent("RAID_TARGET_UPDATE")
 
@@ -264,8 +265,8 @@ local function UnitButton_OnEvent(self, event, unit, arg)
             UnitButton_UpdateLeader(self, event)
 
         elseif event == "PLAYER_TARGET_CHANGED" then
-            if self._updateOnPlayerTargetChanged and UnitExists(self.unit) then
-                UnitButton_UpdateAll(self)
+            if UnitExists(self.unit) then
+                UnitButton_UpdateAll(self, true)
             end
             -- UnitButton_UpdateTarget(self)
             -- UnitButton_UpdateThreatBar(self)
@@ -314,7 +315,7 @@ local function UnitButton_OnTick(self)
                 self.__displayedGuid = displayedGuid
 
                 wipe(self.states)
-                UnitButton_UpdateAll(self, self.unit == "target")
+                UnitButton_UpdateAll(self, not strfind(self.unit, "target$"))
             end
 
             local guid = UnitGUID(self.unit)
@@ -345,11 +346,11 @@ local function UnitButton_OnTick(self)
 
     if self._updateRequired then
         self._updateRequired = nil
-        UnitButton_UpdateAll(self)
+        UnitButton_UpdateAll(self, true)
     end
 
     --! for Xtarget
-    if self:GetAttribute("refreshOnUpdate") then
+    if self._refreshOnUpdate then
         UnitButton_UpdateAll(self)
     end
 end

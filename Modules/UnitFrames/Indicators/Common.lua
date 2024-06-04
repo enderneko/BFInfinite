@@ -19,8 +19,10 @@ function UF.CreateIndicators(button, indicators)
         if type(v) == "table" then
             local builder, name = v[1], v[2]
             button.indicators[name] = builders[builder](button, button:GetName().."_"..U.UpperFirst(name), select(3, unpack(v)))
+            button.indicators[name].indicatorName = name
         else -- string:name
             button.indicators[v] = builders[v](button, button:GetName().."_"..U.UpperFirst(v))
+            button.indicators[v].indicatorName = v
         end
     end
 end
@@ -62,10 +64,10 @@ function UF.DisableIndicators(button)
     end
 end
 
-function UF.UpdateIndicators(button)
+function UF.UpdateIndicators(button, force)
     for _, indicator in pairs(button.indicators) do
         if indicator.enabled then
-            indicator:Update()
+            indicator:Update(force)
         end
     end
 end
