@@ -18,4 +18,5 @@
     <!-- units -->
     <Script file="Units\Player.lua"/>
     <Script file="Units\Target.lua"/>
+    <Script file="Units\TargetTarget.lua"/>
 </Ui>

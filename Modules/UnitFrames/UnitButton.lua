@@ -198,6 +198,10 @@ local function UnitButton_RegisterEvents(self)
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
     end
 
+    if self._updateOnUnitTargetChanged then
+        self:RegisterEvent("UNIT_TARGET")
+    end
+
     -- self:RegisterEvent("RAID_TARGET_UPDATE")
 
     -- self:RegisterEvent("READY_CHECK")
@@ -267,9 +271,20 @@ local function UnitButton_OnEvent(self, event, unit, arg)
         elseif event == "PLAYER_TARGET_CHANGED" then
             if UnitExists(self.unit) then
                 UnitButton_UpdateAll(self, true)
+            else
+                self:Hide()
             end
             -- UnitButton_UpdateTarget(self)
             -- UnitButton_UpdateThreatBar(self)
+
+        elseif event == "UNIT_TARGET" then
+            if self._updateOnUnitTargetChanged == unit and not UnitIsUnit("player", unit) then
+                if UnitExists(self.unit) then
+                    UnitButton_UpdateAll(self, true)
+                else
+                    self:Hide()
+                end
+            end
 
         elseif event == "UNIT_THREAT_LIST_UPDATE" then
             UnitButton_UpdateThreatBar(self)
