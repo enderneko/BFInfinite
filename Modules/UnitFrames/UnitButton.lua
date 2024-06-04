@@ -271,18 +271,18 @@ local function UnitButton_OnEvent(self, event, unit, arg)
         elseif event == "PLAYER_TARGET_CHANGED" then
             if UnitExists(self.unit) then
                 UnitButton_UpdateAll(self, true)
-            else
-                self:Hide()
             end
             -- UnitButton_UpdateTarget(self)
             -- UnitButton_UpdateThreatBar(self)
 
         elseif event == "UNIT_TARGET" then
             if self._updateOnUnitTargetChanged == unit and not UnitIsUnit("player", unit) then
-                if UnitExists(self.unit) then
+                local exists = UnitExists(self.unit)
+                if type(self._refreshOnUpdate) == "boolean" then
+                    self._refreshOnUpdate = exists
+                end
+                if exists then
                     UnitButton_UpdateAll(self, true)
-                else
-                    self:Hide()
                 end
             end
 

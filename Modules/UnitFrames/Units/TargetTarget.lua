@@ -20,7 +20,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreateTargetTarget()
-    local name = "BFIUF_Target"
+    local name = "BFIUF_TargetTarget"
     targettarget = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
     targettarget:SetAttribute("unit", "targettarget")
     targettarget._refreshOnUpdate = true
@@ -76,7 +76,7 @@ local function UpdateTargetTarget(module, which)
 
     RegisterUnitWatch(targettarget)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Target", UpdateTargetTarget)
+BFI.RegisterCallback("UpdateModules", "UF_TargetTarget", UpdateTargetTarget)
 
 ---------------------------------------------------------------------
 -- init
