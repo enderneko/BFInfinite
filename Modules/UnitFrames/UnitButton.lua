@@ -449,6 +449,27 @@ local function UnitButton_OnAttributeChanged(self, name, value)
 end
 
 ---------------------------------------------------------------------
+-- OnEnter/Leave
+---------------------------------------------------------------------
+local function UnitButton_OnEnter(self)
+    if self.tooltipEnabled then
+        if self.tooltipAnchorTo == "self" then
+            GameTooltip:SetOwner(self, "ANCHOR_NONE")
+            GameTooltip:SetPoint(self.tooltipPosition[1], self, self.tooltipPosition[2], self.tooltipPosition[3], self.tooltipPosition[4])
+        else -- default
+            GameTooltip_SetDefaultAnchor(GameTooltip, self)
+        end
+        GameTooltip:SetUnit(self.unit)
+    end
+end
+
+local function UnitButton_OnLeave(self)
+    if self.tooltipEnabled then
+        GameTooltip:Hide()
+    end
+end
+
+---------------------------------------------------------------------
 -- update pixels
 ---------------------------------------------------------------------
 local function UnitButton_UpdatePixels(self)
@@ -472,34 +493,49 @@ end
 ---------------------------------------------------------------------
 -- onload
 ---------------------------------------------------------------------
-function BFIUnitButton_OnLoad(button)
+function BFIUnitButton_OnLoad(self)
     -- tables
-    button.states = {}
-    button.indicators = {}
+    self.states = {}
+    self.indicators = {}
 
     -- ping system
-    UnitButton_SetupPing(button)
+    UnitButton_SetupPing(self)
 
     -- click
-    button:RegisterForClicks("AnyDown")
-    button:SetAttribute("type1", "target")
-    button:SetAttribute("type2", "togglemenu")
+    self:RegisterForClicks("AnyDown")
+    self:SetAttribute("type1", "target")
+    self:SetAttribute("type2", "togglemenu")
 
     -- overlay
-    button.overlay = CreateFrame("Frame", button:GetName(), button)
-    AW.SetFrameLevel(button.overlay, 60, button)
-    button:SetAllPoints()
+    self.overlay = CreateFrame("Frame", self:GetName(), self)
+    AW.SetFrameLevel(self.overlay, 60, self)
+    self:SetAllPoints()
 
     -- events
-    button:SetScript("OnAttributeChanged", UnitButton_OnAttributeChanged) -- init
-    button:HookScript("OnShow", UnitButton_OnShow)
-    button:HookScript("OnHide", UnitButton_OnHide) -- use _onhide for click-castings
-    -- button:HookScript("OnEnter", UnitButton_OnEnter) -- SecureHandlerEnterLeaveTemplate
-    -- button:HookScript("OnLeave", UnitButton_OnLeave) -- SecureHandlerEnterLeaveTemplate
-    button:SetScript("OnUpdate", UnitButton_OnUpdate)
-    button:SetScript("OnEvent", UnitButton_OnEvent)
+    self:SetScript("OnAttributeChanged", UnitButton_OnAttributeChanged) -- init
+    self:HookScript("OnShow", UnitButton_OnShow)
+    self:HookScript("OnHide", UnitButton_OnHide) -- use _onhide for click-castings
+    self:SetScript("OnEnter", UnitButton_OnEnter)
+    self:SetScript("OnLeave", UnitButton_OnLeave)
+    self:SetScript("OnUpdate", UnitButton_OnUpdate)
+    self:SetScript("OnEvent", UnitButton_OnEvent)
 
     -- pixel perfect
-    button.UpdatePixels = UnitButton_UpdatePixels
-    AW.AddToPixelUpdater(button)
+    self.UpdatePixels = UnitButton_UpdatePixels
+    AW.AddToPixelUpdater(self)
+end
+
+---------------------------------------------------------------------
+-- shared functions
+---------------------------------------------------------------------
+function UF.SetupTooltip(self, config)
+    if config.enabled then
+        self.tooltipEnabled = true
+        self.tooltipAnchorTo = config.anchorTo
+        self.tooltipPosition = config.position
+    else
+        self.tooltipEnabled = nil
+        self.tooltipAnchorTo = nil
+        self.tooltipPosition = nil
+    end
 end

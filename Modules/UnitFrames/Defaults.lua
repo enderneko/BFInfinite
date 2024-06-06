@@ -19,6 +19,12 @@ local defaults = {
             position = {"BOTTOMLEFT", 300, 300},
             width = 225,
             height = 49,
+            oorAlpha = nil,
+            tooltip = {
+                enabled = true,
+                anchorTo = "self",
+                position = {"BOTTOM", "TOP", 0, 1},
+            },
         },
         indicators = {
             healthBar = {
@@ -169,11 +175,11 @@ local defaults = {
                 },
                 latency = {
                     enabled = true,
-                    color = AW.GetColorTable("cast_latency")
+                    color = AW.GetColorTable("cast_latency"),
                 },
             },
             buffs = {
-                enabled = true,
+                enabled = false,
                 position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
                 orientation = "right_to_left",
                 cooldownStyle = "none",
@@ -184,6 +190,11 @@ local defaults = {
                 numPerLine = 11,
                 numTotal = 22,
                 frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
                 durationText = {
                     enabled = true,
                     font = {"BFI 1", 10, "outline", false},
@@ -227,6 +238,11 @@ local defaults = {
                 numPerLine = 11,
                 numTotal = 22,
                 frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
                 durationText = {
                     enabled = true,
                     font = {"BFI 1", 10, "outline", false},
@@ -272,6 +288,11 @@ local defaults = {
             width = 225,
             height = 49,
             oorAlpha = 1,
+            tooltip = {
+                enabled = true,
+                anchorTo = "self",
+                position = {"BOTTOM", "TOP", 0, 1},
+            },
         },
         indicators = {
             healthBar = {
@@ -428,6 +449,11 @@ local defaults = {
                 numPerLine = 11,
                 numTotal = 22,
                 frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
                 durationText = {
                     enabled = true,
                     font = {"BFI 1", 10, "outline", false},
@@ -472,6 +498,11 @@ local defaults = {
                 numPerLine = 11,
                 numTotal = 22,
                 frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
                 durationText = {
                     enabled = true,
                     font = {"BFI 1", 10, "outline", false},
@@ -516,6 +547,11 @@ local defaults = {
                 numPerLine = 11,
                 numTotal = 22,
                 frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
                 durationText = {
                     enabled = true,
                     font = {"BFI 1", 10, "outline", false},
@@ -561,6 +597,11 @@ local defaults = {
             width = 97,
             height = 22,
             oorAlpha = 1,
+            tooltip = {
+                enabled = false,
+                anchorTo = "self",
+                position = {"BOTTOM", "TOP", 0, 1},
+            },
         },
         indicators = {
             healthBar = {
@@ -717,6 +758,11 @@ local defaults = {
                 numPerLine = 11,
                 numTotal = 22,
                 frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
                 durationText = {
                     enabled = true,
                     font = {"BFI 1", 10, "outline", false},
@@ -761,6 +807,11 @@ local defaults = {
                 numPerLine = 5,
                 numTotal = 3,
                 frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
                 durationText = {
                     enabled = true,
                     font = {"BFI 1", 10, "outline", false},
@@ -806,6 +857,11 @@ local defaults = {
             width = 200,
             height = 23,
             oorAlpha = 1,
+            tooltip = {
+                enabled = true,
+                anchorTo = "self",
+                position = {"BOTTOM", "TOP", 0, 1},
+            },
         },
         indicators = {
             healthBar = {
@@ -962,6 +1018,11 @@ local defaults = {
                 numPerLine = 5,
                 numTotal = 3,
                 frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
                 durationText = {
                     enabled = true,
                     font = {"BFI 1", 10, "outline", false},
@@ -1006,6 +1067,11 @@ local defaults = {
                 numPerLine = 5,
                 numTotal = 3,
                 frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
                 durationText = {
                     enabled = true,
                     font = {"BFI 1", 10, "outline", false},

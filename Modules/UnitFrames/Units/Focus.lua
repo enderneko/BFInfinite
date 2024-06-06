@@ -51,6 +51,9 @@ local function UpdateFocus(module, which)
     -- mover
     AW.UpdateMoverSave(focus, config.general.position)
 
+    -- tooltip
+    UF.SetupTooltip(focus, config.general.tooltip)
+
     -- size
     AW.SetSize(focus, config.general.width, config.general.height)
 

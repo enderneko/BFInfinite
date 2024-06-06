@@ -53,6 +53,9 @@ local function UpdatePlayer(module, which)
     -- mover
     AW.UpdateMoverSave(player, config.general.position)
 
+    -- tooltip
+    UF.SetupTooltip(player, config.general.tooltip)
+
     -- size & point
     AW.SetSize(player, config.general.width, config.general.height)
     AW.LoadPosition(player, config.general.position)

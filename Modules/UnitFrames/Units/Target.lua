@@ -53,6 +53,9 @@ local function UpdateTarget(module, which)
     -- mover
     AW.UpdateMoverSave(target, config.general.position)
 
+    -- tooltip
+    UF.SetupTooltip(target, config.general.tooltip)
+
     -- size & point
     AW.SetSize(target, config.general.width, config.general.height)
     AW.LoadPosition(target, config.general.position)

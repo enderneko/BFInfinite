@@ -70,7 +70,7 @@ local function UpdateExtraData(self, auraData)
     auraData.start = auraData.expirationTime - auraData.duration
     auraData.castByMe = IsCastByMe(auraData.sourceUnit)
     auraData.castByOthers = auraData.isFromPlayerOrPlayerPet and not auraData.castByMe
-    auraData.castByUnit = auraData.sourceUnit == self.root.unit
+    auraData.castByUnit = UnitIsUnit(auraData.sourceUnit, self.root.unit)
     auraData.castByBoss = auraData.isBossAura
     auraData.castByUnknown = not auraData.sourceUnit
     auraData.debuffType = U.GetDebuffType(auraData)
@@ -121,7 +121,9 @@ end
 -- ShowAura
 ---------------------------------------------------------------------
 local function ShowAura(self, auraData, index)
-    self.slots[index]:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon,
+    local aura = self.slots[index]
+    aura.auraInstanceID = auraData.auraInstanceID -- tooltips
+    aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon,
         GetAuraType(self, auraData))
 end
 
@@ -432,6 +434,8 @@ end
 local function Auras_SetupAuras(self, config)
     for i = 1, self.numSlots do
         local aura = self.slots[i]
+        aura.root = self.root
+        aura:EnableTooltip(config.tooltip, self.auraFilter == "HELPFUL")
         aura:SetDesaturated(config.desaturated)
         aura:SetCooldownStyle(config.cooldownStyle)
         aura:SetupDurationText(config.durationText)

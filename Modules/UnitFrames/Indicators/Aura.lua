@@ -27,7 +27,7 @@ local function VerticalCooldown_GetCooldownDuration()
     return 0
 end
 
-local function VerticalCooldown_ShowCooldown(self, start, duration, _, icon, auraType)
+local function VerticalCooldown_ShowCooldown(self, start, duration, _, icon, auraType )
     if auraType then
         self.spark:SetColorTexture(C.GetAuraTypeColor(auraType))
     else
@@ -187,6 +187,46 @@ local function Aura_SetCooldown(self, start, duration, count, icon, auraType)
 end
 
 ---------------------------------------------------------------------
+-- ShowTooltips
+---------------------------------------------------------------------
+local function Aura_SetTooltipPosition(self)
+    if self.tooltipAnchorTo == "self" then
+        GameTooltip:SetOwner(self, "ANCHOR_NONE")
+        GameTooltip:SetPoint(self.tooltipPosition[1], self, self.tooltipPosition[2], self.tooltipPosition[3], self.tooltipPosition[4])
+    else -- default
+        GameTooltip_SetDefaultAnchor(GameTooltip, self)
+    end
+end
+
+local function Aura_ShowBuffTooltip(self)
+    Aura_SetTooltipPosition(self)
+    GameTooltip:SetUnitBuffByAuraInstanceID(self.root.unit, self.auraInstanceID)
+    end
+
+local function Aura_ShowDebuffTooltip(self)
+    Aura_SetTooltipPosition(self)
+    GameTooltip:SetUnitDebuffByAuraInstanceID(self.root.unit, self.auraInstanceID)
+end
+
+local function Aura_HideTooltips()
+    GameTooltip:Hide()
+end
+
+local function Aura_EnableTooltip(self, config, helpful)
+    if config.enabled then
+        self.tooltipAnchorTo = config.anchorTo
+        self.tooltipPosition = config.position
+        self:SetScript("OnEnter", helpful and Aura_ShowBuffTooltip or Aura_ShowDebuffTooltip)
+        self:SetScript("OnLeave", Aura_HideTooltips)
+    else
+        self.tooltipAnchorTo = nil
+        self.tooltipPosition = nil
+        self:SetScript("OnEnter", nil)
+        self:SetScript("OnLeave", nil)
+    end
+end
+
+---------------------------------------------------------------------
 -- desaturated
 ---------------------------------------------------------------------
 local function Aura_SetDesaturated(self, desaturated)
@@ -250,6 +290,7 @@ function UF.CreateAura(parent)
     frame.SetupStackText = Aura_SetupStackText
     frame.SetupDurationText = Aura_SetupDurationText
     frame.SetDesaturated = Aura_SetDesaturated
+    frame.EnableTooltip = Aura_EnableTooltip
 
     -- pixels
     -- AW.AddToPixelUpdater(frame, Aura_UpdatePixels)
