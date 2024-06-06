@@ -48,31 +48,10 @@ local function UpdateFocus(module, which)
         return
     end
 
-    -- mover
-    AW.UpdateMoverSave(focus, config.general.position)
+    -- setup
+    UF.SetupUnitButton(focus, config, indicators)
 
-    -- tooltip
-    UF.SetupTooltip(focus, config.general.tooltip)
-
-    -- size
-    AW.SetSize(focus, config.general.width, config.general.height)
-
-    -- position
-    if config.general.anchorTo then
-        AW.LoadPosition(focus, config.general.position)
-    else
-        AW.LoadPosition(focus, config.general.position)
-    end
-
-    -- out of range alpha
-    focus.oorAlpha = config.general.oorAlpha
-
-    -- color
-    AW.StylizeFrame(focus, config.general.bgColor, config.general.borderColor)
-
-    -- indicators
-    UF.LoadConfigForIndicators(focus, indicators, config)
-
+    -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(focus)
 end
 BFI.RegisterCallback("UpdateModules", "UF_Focus", UpdateFocus)

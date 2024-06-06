@@ -50,21 +50,8 @@ local function UpdatePlayer(module, which)
         return
     end
 
-    -- mover
-    AW.UpdateMoverSave(player, config.general.position)
-
-    -- tooltip
-    UF.SetupTooltip(player, config.general.tooltip)
-
-    -- size & point
-    AW.SetSize(player, config.general.width, config.general.height)
-    AW.LoadPosition(player, config.general.position)
-
-    -- color
-    AW.StylizeFrame(player, config.general.bgColor, config.general.borderColor)
-
-    -- indicators
-    UF.LoadConfigForIndicators(player, indicators, config)
+    -- setup
+    UF.SetupUnitButton(player, config, indicators)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(player, "state-visibility", "[petbattle] hide; show")

@@ -50,25 +50,10 @@ local function UpdateTarget(module, which)
         return
     end
 
-    -- mover
-    AW.UpdateMoverSave(target, config.general.position)
+    -- setup
+    UF.SetupUnitButton(target, config, indicators)
 
-    -- tooltip
-    UF.SetupTooltip(target, config.general.tooltip)
-
-    -- size & point
-    AW.SetSize(target, config.general.width, config.general.height)
-    AW.LoadPosition(target, config.general.position)
-
-    -- out of range alpha
-    target.oorAlpha = config.general.oorAlpha
-
-    -- color
-    AW.StylizeFrame(target, config.general.bgColor, config.general.borderColor)
-
-    -- indicators
-    UF.LoadConfigForIndicators(target, indicators, config)
-
+    -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(target)
 end
 BFI.RegisterCallback("UpdateModules", "UF_Target", UpdateTarget)

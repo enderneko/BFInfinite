@@ -528,6 +528,31 @@ end
 ---------------------------------------------------------------------
 -- shared functions
 ---------------------------------------------------------------------
+function UF.SetupUnitButton(self, config, indicators)
+    -- mover
+    AW.UpdateMoverSave(self, config.general.position)
+
+    -- strata & level
+    self:SetFrameStrata(config.general.frameStrata)
+    self:SetFrameLevel(config.general.frameLevel)
+
+    -- tooltip
+    UF.SetupTooltip(self, config.general.tooltip)
+
+    -- size & point
+    AW.SetSize(self, config.general.width, config.general.height)
+    AW.LoadPosition(self, config.general.position)
+
+    -- out of range alpha
+    self.oorAlpha = config.general.oorAlpha
+
+    -- color
+    AW.StylizeFrame(self, config.general.bgColor, config.general.borderColor)
+
+    -- indicators
+    UF.LoadConfigForIndicators(self, indicators, config)
+end
+
 function UF.SetupTooltip(self, config)
     if config.enabled then
         self.tooltipEnabled = true
