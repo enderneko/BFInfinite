@@ -205,6 +205,7 @@ function AW.CreateSimpleBar(parent, name, noBackdrop)
 
     -- smooth
     Mixin(bar, AW.SmoothStatusBarMixin)
+    bar:SetSmoothing(false)
 
     -- foreground texture
     local fg = bar:CreateTexture(nil, "BORDER", nil, -1)

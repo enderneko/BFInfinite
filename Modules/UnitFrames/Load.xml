@@ -10,6 +10,7 @@
     <Script file="Indicators\Auras.lua"/>
     <Script file="Indicators\HealthBar.lua"/>
     <Script file="Indicators\PowerBar.lua"/>
+    <Script file="Indicators\ExtraManaBar.lua"/>
     <Script file="Indicators\CastBar.lua"/>
     <Script file="Indicators\NameText.lua"/>
     <Script file="Indicators\HealthText.lua"/>

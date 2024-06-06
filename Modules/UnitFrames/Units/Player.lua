@@ -6,6 +6,7 @@ local player
 local indicators = {
     "healthBar",
     "powerBar",
+    "extraManaBar",
     "nameText",
     "healthText",
     "powerText",

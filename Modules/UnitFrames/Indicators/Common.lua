@@ -6,6 +6,7 @@ local UF = BFI.M_UF
 local builders = {
     healthBar = UF.CreateHealthBar,
     powerBar = UF.CreatePowerBar,
+    extraManaBar = UF.CreateExtraManaBar,
     nameText = UF.CreateNameText,
     healthText = UF.CreateHealthText,
     powerText = UF.CreatePowerText,

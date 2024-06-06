@@ -6,7 +6,6 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 -- local functions
 ---------------------------------------------------------------------
-local strfind = strfind
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
