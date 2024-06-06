@@ -7,80 +7,29 @@ local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots
 local UnitIsUnit = UnitIsUnit
 local UnitIsOwnerOrControllerOfUnit = UnitIsOwnerOrControllerOfUnit
-
-local function IsAppliedByPlayer(unit)
-    return unit and (UnitIsUnit("player", unit) or UnitIsOwnerOrControllerOfUnit("player", unit))
-end
+local UnitIsFriend = UnitIsFriend
+local UnitCanAttack = UnitCanAttack
 
 local Auras_UpdateSize
 
 ---------------------------------------------------------------------
 -- sort
 ---------------------------------------------------------------------
--- local comparators = {
---     boss_aura = function(a, b)
---         if a.isBossAura ~= b.isBossAura then
---             return a.isBossAura
---         end
---     end,
-
---     self_applied = function(a, b)
---         if a.isPlayer ~= b.isPlayer then
---             return a.isPlayer
---         end
---     end,
-
---     no_duration = function(a, b)
---         if a.duration ~= b.duration then
---             -- print(a.name, a.duration, b.name, b.duration)
---             if a.duration == 0 and b.duration ~= 0 then
---                 return false
---             elseif a.duration ~= 0 and b.duration == 0 then
---                 return true
---             end
---         end
---     end,
-
---     start = function (a, b)
---         if a.start ~= b.start then
---             return a.start > b.start
---         end
---     end,
-
---     expiration = function(a, b)
---         if a.expirationTime ~= b.expirationTime then
---             return a.expirationTime < b.expirationTime
---         end
---     end,
--- }
-
 local function SortAuras(a, b)
+    if a.dispellable ~= b.dispellable then
+        return a.dispellable
+    end
+
+    if a.castByMe ~= b.castByMe then
+        return a.castByMe
+    end
+
     if a.isBossAura ~= b.isBossAura then
         return a.isBossAura
     end
 
-    if a.isStealable ~= b.isStealable then
-        return a.isStealable
-    end
-
-    -- TODO: dispellable
-
-    if a.isPlayer ~= b.isPlayer then
-        return a.isPlayer
-    end
-
-    -- if a.canApplyAura ~= b.canApplyAura then
-    --     print(a.name, a.canApplyAura, b.name, b.canApplyAura)
-    --     return a.canApplyAura
-    -- end
-
-    if a.duration ~= b.duration then
-        -- print(a.name, a.duration, b.name, b.duration)
-        if a.duration == 0 and b.duration ~= 0 then
-            return false
-        elseif a.duration ~= 0 and b.duration == 0 then
-            return true
-        end
+    if a.noDuration ~= b.noDuration then
+        return b.noDuration
     end
 
     -- if a.expirationTime ~= b.expirationTime then
@@ -92,48 +41,99 @@ local function SortAuras(a, b)
     --     return a.start > b.start
     -- end
 
-    return a.auraInstanceID < b.auraInstanceID
+    return a.auraInstanceID > b.auraInstanceID
 end
 
 ---------------------------------------------------------------------
--- AddExtraData
+-- UpdateExtraData
 ---------------------------------------------------------------------
-local function UpdateExtraData(auraData)
+local function IsCastByMe(unit)
+    return unit and (UnitIsUnit("player", unit) or UnitIsOwnerOrControllerOfUnit("player", unit))
+end
+
+local function IsDispellable(self, auraData)
+    if auraData.isHelpful then
+        return auraData.isStealable
+    end
+
+    if auraData.isHarmful and UnitIsFriend("player", self.root.unit) and not UnitCanAttack("player", self.root.unit) then
+        return UF.CanDispel(auraData.debuffType)
+    end
+end
+
+local function UpdateExtraData(self, auraData)
     -- local icon = auraData.icon
     -- local count = auraData.applications
     -- local auraType = auraData.dispelName
     -- local duration = auraData.duration
     -- local source = auraData.sourceUnit
     auraData.start = auraData.expirationTime - auraData.duration
-    auraData.isPlayer = IsAppliedByPlayer(auraData.sourceUnit)
+    auraData.castByMe = IsCastByMe(auraData.sourceUnit)
+    auraData.castByOthers = auraData.isFromPlayerOrPlayerPet and not auraData.castByMe
+    auraData.castByUnit = auraData.sourceUnit == self.root.unit
+    auraData.castByBoss = auraData.isBossAura
+    auraData.castByUnknown = not auraData.sourceUnit
+    auraData.debuffType = U.GetDebuffType(auraData)
+    auraData.dispellable = IsDispellable(self, auraData)
+    auraData.noDuration = auraData.duration == 0
+end
+
+---------------------------------------------------------------------
+-- filters
+---------------------------------------------------------------------
+local function CheckAuraFilter(self, auraData)
+    if self.auraFilter == "HARMFUL" then
+        return auraData.isHarmful
+    elseif self.auraFilter == "HELPFUL" then
+        return auraData.isHelpful
+    end
+end
+
+local function CheckFilters(self, auraData)
+    -- blacklist
+    if self.blacklist[auraData.spellId] then return end
+
+    -- filter
+    for f in pairs(self.filters) do
+        if auraData[f] then
+            return true
+        end
+    end
+end
+
+---------------------------------------------------------------------
+-- UpdateAuraType
+---------------------------------------------------------------------
+local auraColorOrder = {"castByMe", "dispellable", "debuffType"}
+local function GetAuraType(self, auraData)
+    for _, type in pairs(self.colorTypes) do
+        if auraData[type] then
+            if type == "debuffType" then
+                return auraData.debuffType
+            else
+                return type
+            end
+        end
+    end
 end
 
 ---------------------------------------------------------------------
 -- ShowAura
 ---------------------------------------------------------------------
 local function ShowAura(self, auraData, index)
-    -- print(self:GetName(), index, name, start, duration, count, auraType, icon)
-    self:SetCooldown(index, auraData.sourceUnit, auraData.start, auraData.duration,
-        auraData.applications, auraData.dispelName, auraData.icon, self.desaturated)
+    self.slots[index]:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon,
+        GetAuraType(self, auraData))
 end
 
 ---------------------------------------------------------------------
 -- HandleUpdateInfo
 ---------------------------------------------------------------------
-local function MatchFilter(self, isHarmful, isHelpful)
-    if self.filter == "HARMFUL" then
-        return isHarmful
-    elseif self.filter == "HELPFUL" then
-        return isHelpful
-    end
-end
-
 local function HandleUpdateInfo(self, updateInfo)
     local changed
 
     if updateInfo.addedAuras then
         for _, auraData in pairs(updateInfo.addedAuras) do
-            if MatchFilter(self, auraData.isHarmful, auraData.isHelpful) and self.matcher(auraData) then
+            if CheckAuraFilter(self, auraData) then
                 self.auras[auraData.auraInstanceID] = true
                 changed = true
             end
@@ -165,17 +165,19 @@ local function HandleUpdateInfo(self, updateInfo)
         -- sort
         for auraInstanceID in pairs(self.auras) do
             local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID)
-            UpdateExtraData(auraData)
-            tinsert(self.sortedAuras, auraData)
+            UpdateExtraData(self, auraData)
+            if CheckFilters(self, auraData) then
+                tinsert(self.sortedAuras, auraData)
+            end
         end
         sort(self.sortedAuras, SortAuras)
 
         -- show
         self.numAuras = 0
         for i, auraData in pairs(self.sortedAuras) do
-            if i > self.numSlots then break end
             self.numAuras = self.numAuras + 1
             ShowAura(self, auraData, i)
+            if self.numAuras == self.numSlots then break end
         end
 
         -- resize
@@ -186,18 +188,15 @@ end
 -------------------------------------------------
 -- ForEachAura
 -------------------------------------------------
---- @param matcher function
-local function ForEachAura(self, matcher, continuationToken, ...)
+local function ForEachAura(self, continuationToken, ...)
     -- continuationToken is the first return value of GetAuraSlots()
     local n = select("#", ...)
     for i = 1, n do
         local slot = select(i, ...)
         local auraData = GetAuraDataBySlot(self.root.displayedUnit, slot)
-        local matched = matcher(auraData)
-        if matched then
-            self.numAuras = self.numAuras + 1
+        UpdateExtraData(self, auraData)
+        if CheckFilters(self, auraData) then
             self.auras[auraData.auraInstanceID] = true
-            UpdateExtraData(auraData)
             tinsert(self.sortedAuras, auraData)
         end
     end
@@ -210,37 +209,21 @@ local function HandleAllAuras(self)
     self.numAuras = 0
 
     -- iterate
-    ForEachAura(self, self.matcher, GetAuraSlots(self.root.displayedUnit, self.filter, self.numSlots))
+    ForEachAura(self, GetAuraSlots(self.root.displayedUnit, self.auraFilter))
 
     -- sort
     sort(self.sortedAuras, SortAuras)
 
     -- show
     for i, auraData in pairs(self.sortedAuras) do
-        -- if i > self.numSlots then break end --! already limited
+        self.numAuras = self.numAuras + 1
         ShowAura(self, auraData, i)
+        if self.numAuras == self.numSlots then break end
     end
 
     -- resize
     Auras_UpdateSize(self, self.numAuras)
 end
-
----------------------------------------------------------------------
--- matchers
----------------------------------------------------------------------
-local matchers = {
-    all = function()
-        return true
-    end,
-
-    mine = function(auraData)
-        return IsAppliedByPlayer(auraData.sourceUnit)
-    end,
-
-    others = function(auraData)
-        return not IsAppliedByPlayer(auraData.sourceUnit)
-    end
-}
 
 ---------------------------------------------------------------------
 -- UNIT_AURA
@@ -285,25 +268,6 @@ local function Auras_Disable(self)
     wipe(self.sortedAuras)
     self.numAuras = 0
 end
-
----------------------------------------------------------------------
--- SetCooldown
----------------------------------------------------------------------
-local set_cooldown = {
-    cast_by_me = function(self, index, source, start, duration, count, auraType, icon, desaturated)
-        if IsAppliedByPlayer(source) then
-            self.slots[index]:SetCooldown(start, duration, count, "Self", icon, desaturated)
-        else
-            self.slots[index]:SetCooldown(start, duration, count, nil, icon, desaturated)
-        end
-    end,
-    debuff_type = function(self, index, source, start, duration, count, auraType, icon, desaturated)
-        self.slots[index]:SetCooldown(start, duration, count, auraType or "None", icon, desaturated)
-    end,
-    none = function(self, index, source, start, duration, count, auraType, icon, desaturated)
-        self.slots[index]:SetCooldown(start, duration, count, nil, icon, desaturated)
-    end,
-}
 
 ---------------------------------------------------------------------
 -- config
@@ -468,13 +432,12 @@ end
 local function Auras_SetupAuras(self, config)
     for i = 1, self.numSlots do
         local aura = self.slots[i]
+        aura:SetDesaturated(config.desaturated)
         aura:SetCooldownStyle(config.cooldownStyle)
         aura:SetupDurationText(config.durationText)
         aura:SetupStackText(config.stackText)
     end
 end
-
-local func
 
 local function Auras_OnHide(self)
     for i = 1, self.numSlots do
@@ -501,7 +464,28 @@ local function Auras_LoadConfig(self, config)
     Auras_SetOrientation(self, config.orientation)
     Auras_SetupAuras(self, config)
 
-    self.SetCooldown = set_cooldown[config.borderColor]
+    -- blacklist
+    self.blacklist = U.ConvertSpellTable(config.blacklist)
+
+    -- filters
+    wipe(self.filters)
+    if self.overallFilter then
+        -- always add overall filter
+        self.filters[self.overallFilter] = true
+    end
+    for f, v in pairs(config.filters) do
+        if v then
+            self.filters[f] = true
+        end
+    end
+
+    -- auraTypeColor
+    wipe(self.colorTypes)
+    for _, type in pairs(auraColorOrder) do
+        if config.auraTypeColor[type] then
+            tinsert(self.colorTypes, type)
+        end
+    end
 end
 
 local function Auras_UpdatePixels(self)
@@ -515,13 +499,12 @@ end
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
-function UF.CreateAuras(parent, name, auraFilter, sourceFilter, desaturated)
+function UF.CreateAuras(parent, name, auraFilter, sourceFilter)
     local frame = CreateFrame("Frame", name, parent)
 
     frame.root = parent
-    frame.filter = auraFilter
-    frame.matcher = matchers[sourceFilter or "all"]
-    frame.desaturated = desaturated
+    frame.auraFilter = auraFilter
+    frame.overallFilter = sourceFilter
 
     -- events
     BFI.AddEventHandler(frame)
@@ -534,6 +517,8 @@ function UF.CreateAuras(parent, name, auraFilter, sourceFilter, desaturated)
     frame.auras = {}
     frame.sortedAuras = {}
     frame.numAuras = 0
+    frame.filters = {}
+    frame.colorTypes = {}
 
     -- scripts
     frame:SetScript("OnHide", Auras_OnHide)

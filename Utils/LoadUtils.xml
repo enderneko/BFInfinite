@@ -4,4 +4,5 @@
     <Script file="Common.lua"/>
     <Script file="Unit.lua"/>
     <Script file="LibSharedMedia.lua"/>
+    <Script file="Bleeds.lua"/>
 </Ui>

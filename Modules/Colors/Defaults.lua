@@ -14,7 +14,8 @@ local defaults = {
         debuff_poison = {0, 0.6, 0},
         debuff_bleed = {1, 0.2, 0.6},
         debuff_none = {0.8, 0, 0},
-        aura_self = {0, 0.8, 0}, -- applied by self
+        aura_castbyme = {0, 0.8, 0},
+        aura_dispellable = {1, 1, 0},
     },
 
     empowerStages = {
@@ -64,8 +65,10 @@ function C.GetAuraTypeColor(auraType)
         return AW.GetColorRGB("debuff_bleed")
     elseif auraType == "None" then
         return AW.GetColorRGB("debuff_none")
-    elseif auraType == "Self" then
-        return AW.GetColorRGB("aura_self")
+    elseif auraType == "castByMe" then
+        return AW.GetColorRGB("aura_castbyme")
+    elseif auraType == "dispellable" then
+        return AW.GetColorRGB("aura_dispellable")
     else
         return AW.GetColorRGB("black")
     end

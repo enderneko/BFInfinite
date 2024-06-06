@@ -149,3 +149,27 @@ function U.RemoveElementsByKeys(tbl, ...)
         tbl[k] = nil
     end
 end
+
+function U.ConvertTable(t, value)
+    local temp = {}
+    for k, v in ipairs(t) do
+        temp[v] = value or k
+    end
+    return temp
+end
+
+local GetSpellInfo = GetSpellInfo
+function U.ConvertSpellTable(t, convertIdToName)
+    if not convertIdToName then
+        return U.ConvertTable(t)
+    end
+
+    local temp = {}
+    for k, v in ipairs(t) do
+        local name = GetSpellInfo(v)
+        if name then
+            temp[name] = k
+        end
+    end
+    return temp
+end

@@ -27,7 +27,7 @@ local function VerticalCooldown_GetCooldownDuration()
     return 0
 end
 
-local function VerticalCooldown_ShowCooldown(self, start, duration, _, auraType, icon)
+local function VerticalCooldown_ShowCooldown(self, start, duration, _, icon, auraType)
     if auraType then
         self.spark:SetColorTexture(C.GetAuraTypeColor(auraType))
     else
@@ -154,7 +154,7 @@ local function UpdateDuration(self, elapsed)
     end
 end
 
-local function Aura_SetCooldown(self, start, duration, count, auraType, icon, desaturated)
+local function Aura_SetCooldown(self, start, duration, count, icon, auraType)
     if duration == 0 then
         if self.cooldown then self.cooldown:Hide() end
         self.duration:SetText("")
@@ -167,7 +167,7 @@ local function Aura_SetCooldown(self, start, duration, count, auraType, icon, de
     else
         if self.cooldown then
             -- NOTE: the "nil" is to make it compatible with Cooldown:SetCooldown(start, duration [, modRate])
-            self.cooldown:ShowCooldown(start, duration, nil, auraType, icon)
+            self.cooldown:ShowCooldown(start, duration, nil, icon, auraType)
             self.duration:SetParent(self.cooldown)
             self.stack:SetParent(self.cooldown)
         else
@@ -183,8 +183,14 @@ local function Aura_SetCooldown(self, start, duration, count, auraType, icon, de
     self:SetBackdropBorderColor(C.GetAuraTypeColor(auraType))
     self.stack:SetText((count == 0 or count == 1) and "" or count)
     self.icon:SetTexture(icon)
-    self.icon:SetDesaturated(desaturated)
     self:Show()
+end
+
+---------------------------------------------------------------------
+-- desaturated
+---------------------------------------------------------------------
+local function Aura_SetDesaturated(self, desaturated)
+    self.icon:SetDesaturated(desaturated)
 end
 
 ---------------------------------------------------------------------
@@ -243,6 +249,7 @@ function UF.CreateAura(parent)
     frame.SetCooldownStyle = Aura_SetCooldownStyle
     frame.SetupStackText = Aura_SetupStackText
     frame.SetupDurationText = Aura_SetupDurationText
+    frame.SetDesaturated = Aura_SetDesaturated
 
     -- pixels
     -- AW.AddToPixelUpdater(frame, Aura_UpdatePixels)
