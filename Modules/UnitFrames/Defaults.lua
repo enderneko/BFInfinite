@@ -208,6 +208,28 @@ local defaults = {
                     color = AW.GetColorTable("cast_latency"),
                 },
             },
+            staggerBar = {
+                enabled = true,
+                position = {"TOP", "BOTTOM", 0, 1},
+                frameLevel = 1,
+                width = 177,
+                height = 5,
+                bgColor = AW.GetColorTable("background"),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                text = {
+                    enabled = false,
+                    font = {"BFI 1", 10, "none", true},
+                    position = {"RIGHT", "RIGHT", -1, 0},
+                    color = AW.GetColorTable("white"),
+                    format = {
+                        numeric = "current",
+                        percent = "none",
+                        delimiter = " | ",
+                        noPercentSign = false,
+                    },
+                },
+            },
             buffs = {
                 enabled = false,
                 position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
