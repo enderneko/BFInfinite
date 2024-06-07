@@ -15,6 +15,27 @@ local UnitPowerType = UnitPowerType
 local UnitHasVehicleUI = UnitHasVehicleUI
 
 ---------------------------------------------------------------------
+-- ShouldShowExtraMana
+---------------------------------------------------------------------
+local should_show_extra_mana = {
+    DRUID = function()
+        return UnitPowerType("player") == Enum.PowerType.Rage or UnitPowerType("player") == Enum.PowerType.LunarPower
+    end,
+    PRIEST = function()
+        return UnitPowerType("player") == Enum.PowerType.Insanity
+    end,
+    SHAMAN = function()
+        return UnitPowerType("player") == Enum.PowerType.Maelstrom
+    end,
+}
+
+function UF.ShouldShowExtraMana()
+    if should_show_extra_mana[class] then
+        return not UnitHasVehicleUI("player") and should_show_extra_mana[class]()
+    end
+end
+
+---------------------------------------------------------------------
 -- GetClassColor
 ---------------------------------------------------------------------
 local function GetClassColor(type)
@@ -104,8 +125,9 @@ end
 local function Check(self, event, unitId)
     if unitId and unitId ~= "player" then return end
 
-    if UnitPowerType("player") == 0 or UnitPowerMax("player", 0) == 0 or UnitHasVehicleUI("player") then
-        -- mana is current or no mana
+    if (self.hideIfHasClassPower and UF.ShouldShowClassPower())
+        or not UF.ShouldShowExtraMana() then
+
         self:Hide()
         self:UnregisterEvent("UNIT_MAXPOWER")
         self:UnregisterEvent("UNIT_POWER_UPDATE")
@@ -137,15 +159,6 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function ExtraManaBar_Enable(self)
-    if self.hideIfHasClassPower and UF.ShouldShowClassPower() then
-        self._disabled = true
-        self:UnregisterAllEvents()
-        self:Hide()
-        return
-    else
-        self._disabled = nil
-    end
-
     self:RegisterEvent("UNIT_DISPLAYPOWER", Check)
     self:RegisterEvent("UNIT_ENTERED_VEHICLE", Check)
     self:RegisterEvent("UNIT_EXITED_VEHICLE", Check)
