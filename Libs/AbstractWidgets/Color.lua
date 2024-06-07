@@ -241,7 +241,7 @@ local colors = {
     ["NEUTRAL"] = {["hex"]="ffd9c45c", ["t"]={0.85, 0.77, 0.36}},
     ["HOSTILE"] = {["hex"]="ffc74040", ["t"]={0.78, 0.25, 0.25}},
 
-    -- power color (data from PowerBarColor)
+    -- power color (color from PowerBarColor & ElvUI)
     ["MANA"] = {["hex"]="ff007fff", ["t"]={0, 0.5, 1}}, -- 0, 0, 1
     ["RAGE"] = {["hex"]="ffff0000", ["t"]={1, 0, 0}},
     ["FOCUS"] = {["hex"]="ffff7f3f", ["t"]={1, 0.50, 0.25}},
@@ -249,13 +249,14 @@ local colors = {
     ["COMBO_POINTS"] = {["hex"]="fffff468", ["t"]={1, 0.96, 0.41}},
     ["RUNES"] = {["hex"]="ff7f7f7f", ["t"]={0.50, 0.50, 0.50}},
     ["RUNIC_POWER"] = {["hex"]="ff00d1ff", ["t"]={0, 0.82, 1}},
-    ["SOUL_SHARDS"] = {["hex"]="ff7f518c", ["t"]={0.50, 0.32, 0.55}},
+    ["SOUL_SHARDS"] = {["hex"]="ff9482c9", ["t"]={0.58, 0.51, 0.79}}, --{["hex"]="ff7f518c", ["t"]={0.50, 0.32, 0.55}}
     ["LUNAR_POWER"] = {["hex"]="ff4c84e5", ["t"]={0.30, 0.52, 0.90}},
-    ["HOLY_POWER"] = {["hex"]="fff2e599", ["t"]={0.95, 0.90, 0.60}},
+    ["HOLY_POWER"] = {["hex"]="fff2e54d", ["t"]={0.95, 0.9, 0.3}}, -- {["hex"]="fff2e599", ["t"]={0.95, 0.90, 0.60}},
     ["MAELSTROM"] = {["hex"]="ff007fff", ["t"]={0, 0.5, 1}},
     ["INSANITY"] = {["hex"]="ff9933ff", ["t"]={0.6, 0.2, 1}}, -- 0.40, 0, 0.80
     ["CHI"] = {["hex"]="ffb5ffea", ["t"]={0.71, 1, 0.92}},
-    ["ARCANE_CHARGES"] = {["hex"]="ff1919f9", ["t"]={0.10, 0.10, 0.98}},
+    ["ESSENCE"] = {["hex"]="FF76DFD1", ["t"]={0.46, 0.87, 0.82}},
+    ["ARCANE_CHARGES"] = {["hex"]="ff009eff", ["t"]={0, 0.62, 1}}, -- {["hex"]="ff1919f9", ["t"]={0.10, 0.10, 0.98}}
     ["FURY"] = {["hex"]="ffc842fc", ["t"]={0.788, 0.259, 0.992}},
     ["PAIN"] = {["hex"]="ffff9c00", ["t"]={1, 0.612, 0}},
     -- vehicle colors

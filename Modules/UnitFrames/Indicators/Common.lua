@@ -7,6 +7,7 @@ local builders = {
     healthBar = UF.CreateHealthBar,
     powerBar = UF.CreatePowerBar,
     extraManaBar = UF.CreateExtraManaBar,
+    classPowerBar = UF.CreateClassPowerBar,
     nameText = UF.CreateNameText,
     healthText = UF.CreateHealthText,
     powerText = UF.CreatePowerText,

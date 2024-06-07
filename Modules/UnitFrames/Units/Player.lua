@@ -7,6 +7,7 @@ local indicators = {
     "healthBar",
     "powerBar",
     "extraManaBar",
+    "classPowerBar",
     "nameText",
     "healthText",
     "powerText",

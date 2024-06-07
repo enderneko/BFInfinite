@@ -73,7 +73,7 @@ local function PowerText_Enable(self)
         self:UnregisterEvent("UNIT_POWER_FREQUENT")
     end
     self:RegisterEvent("UNIT_MAXPOWER", UpdatePower)
-    self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateColor)
+    self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateColor, UpdatePower)
 
     self:Show()
     if self:IsVisible() then self:Update() end

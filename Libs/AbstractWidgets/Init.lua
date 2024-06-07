@@ -117,3 +117,18 @@ function AW.Disable(...)
 end
 
 -- TODO: disable all children
+
+---------------------------------------------------------------------
+-- misc
+---------------------------------------------------------------------
+function AW.Unpack2(t)
+    return t[1], t[2]
+end
+
+function AW.Unpack3(t)
+    return t[1], t[2], t[3]
+end
+
+function AW.Unpack4(t)
+    return t[1], t[2], t[3], t[4]
+end

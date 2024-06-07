@@ -80,6 +80,7 @@ local UnitIsDead = UnitIsDead
 local GetSpellTabInfo = GetSpellTabInfo
 local GetNumSpellTabs = GetNumSpellTabs
 local GetSpellBookItemName = GetSpellBookItemName
+local UnitClassBase = UnitClassBase
 local BOOKTYPE_SPELL = BOOKTYPE_SPELL
 
 local playerClass = UnitClassBase("player")

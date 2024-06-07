@@ -3,6 +3,9 @@ local U = BFI.utils
 local AW = BFI.AW
 local UF = BFI.M_UF
 
+--! NOTE: only available for PLAYER
+local class = BFI.vars.playerClass
+
 ---------------------------------------------------------------------
 -- local functions
 ---------------------------------------------------------------------
@@ -11,15 +14,10 @@ local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
 local UnitHasVehicleUI = UnitHasVehicleUI
 
---! for AI followers, UnitClassBase is buggy
-local UnitClassBase = function(unit)
-    return select(2, UnitClass(unit))
-end
-
 ---------------------------------------------------------------------
 -- GetClassColor
 ---------------------------------------------------------------------
-local function GetClassColor(type, class)
+local function GetClassColor(type)
     if type == "class_color" then
         return AW.GetClassColor(class)
     elseif type == "class_color_dark" then
@@ -41,10 +39,8 @@ end
 ---------------------------------------------------------------------
 -- GetManaColor
 ---------------------------------------------------------------------
-local function GetManaColor(self, unit)
+local function GetManaColor(self)
     if not (self.color and self.lossColor) then return end
-
-    local class = UnitClassBase(unit)
 
     local r, g, b, a, lossR, lossG, lossB, lossA
 
@@ -76,10 +72,9 @@ end
 -- color
 ---------------------------------------------------------------------
 local function UpdateManaColor(self, event, unitId)
-    local unit = self.root.displayedUnit
-    if unitId and unit ~= unitId then return end
+    if unitId and unitId ~= "player" then return end
 
-    local r, g, b, a, lossR, lossG, lossB, lossA = GetManaColor(self, unit)
+    local r, g, b, a, lossR, lossG, lossB, lossA = GetManaColor(self, "player")
     self:SetColor(r, g, b, a)
     self:SetLossColor(lossR, lossG, lossB, lossA)
 end
@@ -88,20 +83,18 @@ end
 -- value
 ---------------------------------------------------------------------
 local function UpdateManaMax(self, event, unitId, powerType)
-    local unit = self.root.displayedUnit
-    if unitId and unit ~= unitId then return end
+    if unitId and unitId ~= "player" then return end
     if powerType and powerType ~= "MANA" then return end
 
-    self.manaMax = UnitPowerMax(unit, 0)
+    self.manaMax = UnitPowerMax("player", 0)
     self:SetBarMinMaxValues(0, self.manaMax)
 end
 
 local function UpdateMana(self, event, unitId, powerType)
-    local unit = self.root.displayedUnit
-    if unitId and unit ~= unitId then return end
+    if unitId and unitId ~= "player" then return end
     if powerType and powerType ~= "MANA" then return end
 
-    self.mana = UnitPower(unit, 0)
+    self.mana = UnitPower("player", 0)
     self:SetBarValue(self.mana)
 end
 
@@ -109,10 +102,9 @@ end
 -- check
 ---------------------------------------------------------------------
 local function Check(self, event, unitId)
-    local unit = self.root.displayedUnit
-    if unitId and unit ~= unitId then return end
+    if unitId and unitId ~= "player" then return end
 
-    if UnitPowerType(unit) == 0 or UnitPowerMax(unit, 0) == 0 or UnitHasVehicleUI(unit) then
+    if UnitPowerType("player") == 0 or UnitPowerMax("player", 0) == 0 or UnitHasVehicleUI("player") then
         -- mana is current or no mana
         self:Hide()
         self:UnregisterEvent("UNIT_MAXPOWER")
@@ -127,9 +119,11 @@ local function Check(self, event, unitId)
     -- register events
     self:RegisterEvent("UNIT_MAXPOWER", UpdateManaMax)
     if self.frequent then
-        self:RegisterEvent("UNIT_POWER_UPDATE", UpdateMana)
-    else
         self:RegisterEvent("UNIT_POWER_FREQUENT", UpdateMana)
+        self:UnregisterEvent("UNIT_POWER_UPDATE")
+    else
+        self:RegisterEvent("UNIT_POWER_UPDATE", UpdateMana)
+        self:UnregisterEvent("UNIT_POWER_FREQUENT")
     end
 
     -- update now
@@ -143,7 +137,7 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function ExtraManaBar_Enable(self)
-    if self.hideIfHasClassPower and U.GetUnitClassPowerType(self.root.unit) then
+    if self.hideIfHasClassPower and UF.ShouldShowClassPower() then
         self._disabled = true
         self:UnregisterAllEvents()
         self:Hide()

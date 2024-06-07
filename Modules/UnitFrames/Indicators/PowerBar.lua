@@ -151,6 +151,12 @@ local function UpdatePower(self, event, unitId)
     self:SetBarValue(self.power)
 end
 
+local function UpdateAll(self, event, unitId)
+    UpdatePowerColor(self, event, unitId)
+    UpdatePowerMax(self, event, unitId)
+    UpdatePower(self, event, unitId)
+end
+
 ---------------------------------------------------------------------
 -- enable
 ---------------------------------------------------------------------
@@ -163,7 +169,7 @@ local function PowerBar_Enable(self)
         self:UnregisterEvent("UNIT_POWER_FREQUENT")
     end
     self:RegisterEvent("UNIT_MAXPOWER", UpdatePowerMax)
-    self:RegisterEvent("UNIT_DISPLAYPOWER", UpdatePowerMax, UpdatePowerColor)
+    self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateAll)
 
     self:Show()
     if self:IsVisible() then self:Update() end

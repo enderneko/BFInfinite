@@ -82,7 +82,7 @@ local function UpdateValue(self)
     else
         self.value = Clamp(self.value, self.min, self.max)
         local p = (self.value - self.min) / (self.max - self.min)
-        AW.SetWidth(self.fg, p * (self._width - (self.noGaps and 0 or 2)))
+        self.fg:SetWidth(p * self:GetBarWidth())
     end
 end
 
@@ -223,9 +223,7 @@ function AW.CreateSimpleBar(parent, name, noBackdrop)
     bar.bg = bg
 
     -- setup default texture points
-    if not noBackdrop then
-        bar:SnapTextureToEdge(false)
-    end
+    bar:SnapTextureToEdge(noBackdrop)
 
     -- pixel perfect
     -- NOTE: UpdatePixels() added in prototype, remember to use it
