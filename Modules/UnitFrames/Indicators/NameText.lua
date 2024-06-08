@@ -66,7 +66,7 @@ local function NameText_Enable(self)
     self:RegisterEvent("UNIT_FACTION", UpdateName)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    -- if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -74,13 +74,7 @@ end
 ---------------------------------------------------------------------
 local function NameText_LoadConfig(self, config)
     U.SetFont(self, unpack(config.font))
-
-    if config.anchorTo == "button" then
-        self:SetParent(self.root)
-    else
-        self:SetParent(self.root.indicators[config.anchorTo])
-    end
-    AW.LoadWidgetPosition(self, config.position)
+    UF.LoadTextPosition(self, config)
 
     self.length = config.length
     self.color = config.color

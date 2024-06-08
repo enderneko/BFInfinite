@@ -71,7 +71,7 @@ local function Portrait_Enable(self)
     self:RegisterEvent("UNIT_MODEL_CHANGED", UpdatePortrait)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    -- if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------

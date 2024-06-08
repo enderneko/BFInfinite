@@ -70,7 +70,7 @@ end
 ---------------------------------------------------------------------
 -- iterate group members
 ---------------------------------------------------------------------
-function U.GroupMembersIterater()
+function U.GroupMembersIterator()
     local groupType = IsInRaid() and "raid" or "party"
     local numGroupMembers = GetNumGroupMembers()
     local i

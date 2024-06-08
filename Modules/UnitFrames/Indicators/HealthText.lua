@@ -1,4 +1,4 @@
-local _, BFI = ...
+local BFI = select(2, ...)
 local L = BFI.L
 local U = BFI.utils
 local AW = BFI.AW
@@ -7,9 +7,6 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 -- local functions
 ---------------------------------------------------------------------
-local find = string.find
-local gsub = string.gsub
-local format = string.format
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
@@ -17,7 +14,7 @@ local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
 
---! for AI followers, UnitClassBase is buggy
+--! for AI followers
 local UnitClassBase = function(unit)
     return select(2, UnitClass(unit))
 end
@@ -53,8 +50,6 @@ end
 -- color
 ---------------------------------------------------------------------
 local function UpdateColor(self, event, unitId)
-    if not self.color then return end
-
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
 
@@ -69,15 +64,7 @@ local function UpdateColor(self, event, unitId)
             r, g, b = AW.GetReactionColor(unit)
         end
     else -- custom_color
-        if U.UnitIsPlayer(unit) then
-            if not UnitIsConnected(unit) then
-                r, g, b = AW.GetClassColor(class)
-            else
-                r, g, b = unpack(self.color.rgb)
-            end
-        else
-            r, g, b = unpack(self.color.rgb)
-        end
+        r, g, b = unpack(self.color.rgb)
     end
     self:SetTextColor(r, g, b)
 end
@@ -93,7 +80,7 @@ local function HealthText_Enable(self)
     self:RegisterEvent("UNIT_FACTION", UpdateColor)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    -- if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -257,13 +244,7 @@ end
 local function HealthText_LoadConfig(self, config)
     self:SetHealthFont(unpack(config.font))
     self:SetFormat(config.format)
-
-    if config.anchorTo == "button" then
-        self:SetParent(self.root)
-    else
-        self:SetParent(self.root.indicators[config.anchorTo])
-    end
-    AW.LoadWidgetPosition(self, config.position)
+    UF.LoadTextPosition(self, config)
 
     self.color = config.color
 end

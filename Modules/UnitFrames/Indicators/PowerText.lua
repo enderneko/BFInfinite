@@ -76,7 +76,7 @@ local function PowerText_Enable(self)
     self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateColor, UpdatePower)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    -- if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -169,13 +169,7 @@ end
 local function PowerText_LoadConfig(self, config)
     self:SetHealthFont(unpack(config.font))
     self:SetFormat(config.format)
-
-    if config.anchorTo == "button" then
-        self:SetParent(self.root)
-    else
-        self:SetParent(self.root.indicators[config.anchorTo])
-    end
-    AW.LoadWidgetPosition(self, config.position)
+    UF.LoadTextPosition(self, config)
 
     self.color = config.color
 end

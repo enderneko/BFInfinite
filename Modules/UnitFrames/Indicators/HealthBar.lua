@@ -314,7 +314,7 @@ local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_HEAL_PREDICTION", UpdateHealPrediction)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    -- if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------

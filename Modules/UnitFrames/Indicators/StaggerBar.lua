@@ -86,7 +86,9 @@ end
 -- update
 ---------------------------------------------------------------------
 local function StaggerBar_Update(self)
-    UpdateStagger(self)
+    if self._enabled then
+        UpdateStagger(self)
+    end
 end
 
 ---------------------------------------------------------------------
