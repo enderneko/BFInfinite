@@ -1,6 +1,14 @@
-local _, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
 _G.BigFootInfinite = BFI
 _G.BFI = BFI
+
+---@class BFI
+---@field AW AbstractWidgets
+---@field utils Utils
+---@field vars table
+---@field libs table
+---@field M_UF UnitFrame
 
 ---------------------------------------------------------------------
 -- global
@@ -16,9 +24,9 @@ BFI.prefix = "BFI"
 ---------------------------------------------------------------------
 -- tables
 ---------------------------------------------------------------------
--- BFI.widgets = {} -- widgets (regions/frames)
 BFI.vars = {} -- vars
-BFI.funcs = {} -- functions
+-- BFI.widgets = {} -- widgets (regions/frames)
+-- BFI.funcs = {} -- functions
 BFI.utils = {} -- utils
 BFI.libs = {}
 

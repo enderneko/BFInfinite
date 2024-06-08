@@ -1,4 +1,6 @@
-local _, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
+---@class Utils
 local U = BFI.utils
 
 ---------------------------------------------------------------------
@@ -62,6 +64,33 @@ function U.UnitInGroup(unit, ignorePets)
         return UnitIsUnit(unit, "player") or UnitInParty(unit) or UnitInRaid(unit) or UnitInPartyIsAI(unit)
     else
         return UnitIsUnit(unit, "player") or UnitIsUnit(unit, "pet") or UnitPlayerOrPetInParty(unit) or UnitPlayerOrPetInRaid(unit) or UnitInPartyIsAI(unit)
+    end
+end
+
+---------------------------------------------------------------------
+-- iterate group members
+---------------------------------------------------------------------
+function U.GroupMembersIterater()
+    local groupType = IsInRaid() and "raid" or "party"
+    local numGroupMembers = GetNumGroupMembers()
+    local i
+
+    if groupType == "party" then
+        i = 0
+        numGroupMembers = numGroupMembers - 1
+    else
+        i = 1
+    end
+
+    return function()
+        local ret
+        if i == 0 then
+            ret = "player"
+        elseif i <= numGroupMembers and i > 0 then
+            ret = groupType .. i
+        end
+        i = i + 1
+        return ret
     end
 end
 

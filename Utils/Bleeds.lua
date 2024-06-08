@@ -1,4 +1,6 @@
-local _, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
+---@class Utils
 local U = BFI.utils
 
 local bleedList
