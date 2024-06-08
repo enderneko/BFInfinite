@@ -19,6 +19,7 @@ local builders = {
     portrait = UF.CreatePortrait,
     castBar = UF.CreateCastBar,
     combatIcon = UF.CreateCombatIcon,
+    leaderIcon = UF.CreateLeaderIcon,
     auras = UF.CreateAuras,
 }
 

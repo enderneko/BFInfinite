@@ -21,6 +21,7 @@
     <Script file="Indicators\Portrait.lua"/>
     <Script file="Indicators\StaggerBar.lua"/>
     <Script file="Indicators\CombatIcon.lua"/>
+    <Script file="Indicators\LeaderIcon.lua"/>
     <Script file="Indicators\Common.lua"/>
     <!-- units -->
     <Script file="Units\Player.lua"/>

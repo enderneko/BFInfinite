@@ -252,6 +252,13 @@ local defaults = {
                 height = 16,
                 texture = "Combat1",
             },
+            leaderIcon = {
+                enabled = false,
+                position = {"CENTER", "LEFT", 1, 0},
+                frameLevel = 10,
+                width = 16,
+                height = 16,
+            },
             buffs = {
                 enabled = false,
                 position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
@@ -534,6 +541,13 @@ local defaults = {
                 width = 16,
                 height = 16,
                 texture = "Combat1",
+            },
+            leaderIcon = {
+                enabled = false,
+                position = {"CENTER", "RIGHT", -1, 0},
+                frameLevel = 10,
+                width = 16,
+                height = 16,
             },
             buffs = {
                 enabled = true,

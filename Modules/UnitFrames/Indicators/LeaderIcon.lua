@@ -7,16 +7,24 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 -- local functions
 ---------------------------------------------------------------------
-local UnitIsUnit = UnitIsUnit
-local UnitAffectingCombat = UnitAffectingCombat
+local IsInRaid = IsInRaid
+local UnitIsGroupLeader = UnitIsGroupLeader
+local UnitIsGroupAssistant = UnitIsGroupAssistant
 
 ---------------------------------------------------------------------
 -- show/hide
 ---------------------------------------------------------------------
-local function UpdateCombatIcon(self)
-    local unit = self.root.displayedUnit
+local function UpdateLeaderIcon(self)
+    local unit = self.root.unit
 
-    if UnitAffectingCombat(unit) then
+    local isLeader = UnitIsGroupLeader(unit)
+    local isAssistant = IsInRaid() and UnitIsGroupAssistant(unit)
+
+    if isLeader then
+        self.texture:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
+        self:Show()
+    elseif isAssistant then
+        self.texture:SetTexture("Interface\\GroupFrame\\UI-Group-AssistantIcon")
         self:Show()
     else
         self:Hide()
@@ -26,49 +34,30 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function CombatIcon_Update(self)
-    UpdateCombatIcon(self)
+local function LeaderIcon_Update(self)
+    UpdateLeaderIcon(self)
 end
 
 ---------------------------------------------------------------------
 -- enable
 ---------------------------------------------------------------------
-local function CombatIcon_Enable(self)
-    if UnitIsUnit(self.root.unit, "player") then
-        self:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateCombatIcon)
-        self:RegisterEvent("PLAYER_REGEN_DISABLED", UpdateCombatIcon)
-    else
-        self.ticker = C_Timer.NewTicker(0.5, function()
-            CombatIcon_Update(self)
-        end)
-    end
-end
-
----------------------------------------------------------------------
--- disable
----------------------------------------------------------------------
-local function CombatIcon_Disable(self)
-    self:Hide()
-    self:UnregisterAllEvents()
-    if self.ticker then
-        self:Cancel()
-    end
+local function LeaderIcon_Enable(self)
+    self:RegisterEvent("GROUP_ROSTER_UPDATE", UpdateLeaderIcon)
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
-local function CombatIcon_LoadConfig(self, config)
+local function LeaderIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
-    self.texture:SetTexture(AW.GetTexture(config.texture))
 end
 
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
-function UF.CreateCombatIcon(parent, name)
+function UF.CreateLeaderIcon(parent, name)
     local frame = CreateFrame("Frame", name, parent)
     frame.root = parent
 
@@ -80,10 +69,10 @@ function UF.CreateCombatIcon(parent, name)
     BFI.AddEventHandler(frame)
 
     -- functions
-    frame.Enable = CombatIcon_Enable
-    frame.Disable = CombatIcon_Disable
-    frame.Update = CombatIcon_Update
-    frame.LoadConfig = CombatIcon_LoadConfig
+    frame.Enable = LeaderIcon_Enable
+    frame.Disable = LeaderIcon_Disable
+    frame.Update = LeaderIcon_Update
+    frame.LoadConfig = LeaderIcon_LoadConfig
 
     return frame
 end

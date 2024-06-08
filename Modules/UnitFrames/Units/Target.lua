@@ -14,6 +14,7 @@ local indicators = {
     "portrait",
     "castBar",
     "combatIcon",
+    "leaderIcon",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffsByMe", "HARMFUL", "castByMe"},
     {"auras", "debuffsByOthers", "HARMFUL", "castByOthers"},
