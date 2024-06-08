@@ -45,7 +45,7 @@ local IsInRaid = IsInRaid
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local strfind = string.find
 
---! for AI followers, UnitClassBase is buggy
+--! for AI followers
 local UnitClassBase = function(unit)
     return select(2, UnitClass(unit))
 end

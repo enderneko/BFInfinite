@@ -15,7 +15,7 @@ local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitGetIncomingHeals = UnitGetIncomingHeals
 local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
 
---! for AI followers, UnitClassBase is buggy
+--! for AI followers
 local UnitClassBase = function(unit)
     return select(2, UnitClass(unit))
 end

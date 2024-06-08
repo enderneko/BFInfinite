@@ -13,6 +13,7 @@ local indicators = {
     "targetCounter",
     "portrait",
     "castBar",
+    "combatIcon",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffsByMe", "HARMFUL", "castByMe"},
     {"auras", "debuffsByOthers", "HARMFUL", "castByOthers"},

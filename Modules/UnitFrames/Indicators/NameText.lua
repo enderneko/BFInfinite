@@ -9,7 +9,7 @@ local UF = BFI.M_UF
 local UnitName = UnitName
 local UnitIsConnected = UnitIsConnected
 
---! for AI followers, UnitClassBase is buggy
+--! for AI followers
 local UnitClassBase = function(unit)
     return select(2, UnitClass(unit))
 end

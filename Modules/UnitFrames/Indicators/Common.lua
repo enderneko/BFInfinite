@@ -18,6 +18,7 @@ local builders = {
     targetCounter = UF.CreateTargetCounter,
     portrait = UF.CreatePortrait,
     castBar = UF.CreateCastBar,
+    combatIcon = UF.CreateCombatIcon,
     auras = UF.CreateAuras,
 }
 

@@ -244,6 +244,14 @@ local defaults = {
                     },
                 },
             },
+            combatIcon = {
+                enabled = true,
+                position = {"CENTER", "BOTTOMLEFT", 1, 1},
+                frameLevel = 10,
+                width = 16,
+                height = 16,
+                texture = "Combat1",
+            },
             buffs = {
                 enabled = false,
                 position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
@@ -518,6 +526,14 @@ local defaults = {
                     succeeded = AW.GetColorTable("cast_succeeded"),
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                 },
+            },
+            combatIcon = {
+                enabled = true,
+                position = {"CENTER", "BOTTOMRIGHT", -1, 1},
+                frameLevel = 10,
+                width = 16,
+                height = 16,
+                texture = "Combat1",
             },
             buffs = {
                 enabled = true,

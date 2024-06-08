@@ -70,7 +70,7 @@ local function UpdateExtraData(self, auraData)
     auraData.start = auraData.expirationTime - auraData.duration
     auraData.castByMe = IsCastByMe(auraData.sourceUnit)
     auraData.castByOthers = auraData.isFromPlayerOrPlayerPet and not auraData.castByMe
-    auraData.castByUnit = UnitIsUnit(auraData.sourceUnit, self.root.unit)
+    auraData.castByUnit = auraData.sourceUnit and UnitIsUnit(auraData.sourceUnit, self.root.unit)
     auraData.castByBoss = auraData.isBossAura
     auraData.castByUnknown = not auraData.sourceUnit
     auraData.debuffType = U.GetDebuffType(auraData)

@@ -12,7 +12,7 @@ local UnitPowerType = UnitPowerType
 local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitIsConnected = UnitIsConnected
 
---! for AI followers, UnitClassBase is buggy
+--! for AI followers
 local UnitClassBase = function(unit)
     return select(2, UnitClass(unit))
 end

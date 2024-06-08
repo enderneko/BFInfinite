@@ -7,6 +7,8 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 -- local functions
 ---------------------------------------------------------------------
+local UnitIsUnit = UnitIsUnit
+
 --! for AI followers
 local UnitClassBase = function(unit)
     return select(2, UnitClass(unit))

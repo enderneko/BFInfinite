@@ -16,6 +16,7 @@ local indicators = {
     "portrait",
     "castBar",
     "staggerBar",
+    "combatIcon",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffs", "HARMFUL"},
 }
