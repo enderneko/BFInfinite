@@ -9,6 +9,7 @@ local indicators = {
     "nameText",
     "healthText",
     "powerText",
+    "levelText",
     "portrait",
     "castBar",
     {"auras", "buffs", "HELPFUL"},

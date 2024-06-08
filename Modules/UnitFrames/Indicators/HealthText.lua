@@ -13,7 +13,6 @@ local format = string.format
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
-local UnitIsCharmed = UnitIsCharmed
 local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
@@ -73,8 +72,6 @@ local function UpdateColor(self, event, unitId)
         if U.UnitIsPlayer(unit) then
             if not UnitIsConnected(unit) then
                 r, g, b = AW.GetClassColor(class)
-            elseif UnitIsCharmed(unit) then
-                r, g, b = 0.5, 0, 1
             else
                 r, g, b = unpack(self.color.rgb)
             end

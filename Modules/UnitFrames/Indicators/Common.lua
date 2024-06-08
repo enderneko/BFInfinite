@@ -12,6 +12,7 @@ local builders = {
     nameText = UF.CreateNameText,
     healthText = UF.CreateHealthText,
     powerText = UF.CreatePowerText,
+    levelText = UF.CreateLevelText,
     portrait = UF.CreatePortrait,
     castBar = UF.CreateCastBar,
     auras = UF.CreateAuras,

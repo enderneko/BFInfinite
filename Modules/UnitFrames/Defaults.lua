@@ -145,6 +145,13 @@ local defaults = {
                     noPercentSign = false,
                 },
             },
+            levelText = {
+                enabled = false,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
+                anchorTo = "powerBar",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            },
             portrait = {
                 enabled = true,
                 type = "3d", -- 3d, 2d, class_icon
@@ -436,6 +443,13 @@ local defaults = {
                     delimiter = " | ",
                     noPercentSign = false,
                 },
+            },
+            levelText = {
+                enabled = false,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
+                anchorTo = "powerBar",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             portrait = {
                 enabled = true,
@@ -748,6 +762,13 @@ local defaults = {
                     noPercentSign = false,
                 },
             },
+            levelText = {
+                enabled = false,
+                position = {"LEFT", "LEFT", 5, 0},
+                anchorTo = "healthBar",
+                font = {"BFI 1", 10, "none", true},
+                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            },
             portrait = {
                 enabled = false,
                 type = "3d", -- 3d, 2d, class_icon
@@ -1010,6 +1031,13 @@ local defaults = {
                     noPercentSign = false,
                 },
             },
+            levelText = {
+                enabled = false,
+                position = {"LEFT", "LEFT", 5, 0},
+                anchorTo = "healthBar",
+                font = {"BFI 1", 10, "none", true},
+                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            },
             portrait = {
                 enabled = false,
                 type = "3d", -- 3d, 2d, class_icon
@@ -1271,6 +1299,13 @@ local defaults = {
                     delimiter = " | ",
                     noPercentSign = false,
                 },
+            },
+            levelText = {
+                enabled = false,
+                position = {"LEFT", "LEFT", 5, 0},
+                anchorTo = "healthBar",
+                font = {"BFI 1", 10, "none", true},
+                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             portrait = {
                 enabled = false,
