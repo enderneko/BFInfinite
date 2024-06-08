@@ -73,7 +73,7 @@ end
 -- load
 ---------------------------------------------------------------------
 local function NameText_LoadConfig(self, config)
-    self:SetNameFont(unpack(config.font))
+    U.SetFont(self, unpack(config.font))
 
     if config.anchorTo == "button" then
         self:SetParent(self.root)
@@ -86,6 +86,9 @@ local function NameText_LoadConfig(self, config)
     self.color = config.color
 end
 
+---------------------------------------------------------------------
+-- create
+---------------------------------------------------------------------
 function UF.CreateNameText(parent, name)
     local text = parent:CreateFontString(name, "OVERLAY")
     text.root = parent
@@ -96,7 +99,6 @@ function UF.CreateNameText(parent, name)
     -- functions
     text.Enable = NameText_Enable
     text.Update = NameText_Update
-    text.SetNameFont = U.SetFont
     text.LoadConfig = NameText_LoadConfig
 
     return text

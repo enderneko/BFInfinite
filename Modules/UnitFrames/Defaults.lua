@@ -36,8 +36,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 225,
                 height = 31,
-                color = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf")},
-                lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
+                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -45,7 +45,7 @@ local defaults = {
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color=AW.GetColorTable("heal_prediction"),
+                    color = AW.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = true,
@@ -74,8 +74,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 225,
                 height = 17,
-                color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
-                lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -88,8 +88,8 @@ local defaults = {
                 frameLevel = 1,
                 width = 177,
                 height = 5,
-                color = {type="mana_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
-                lossColor = {type="mana_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+                color = {type = "mana_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
+                lossColor = {type = "mana_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -104,8 +104,8 @@ local defaults = {
                 width = 177,
                 height = 5,
                 spacing = 1,
-                color = {type="power_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
-                lossColor = {type="power_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+                color = {type = "power_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
+                lossColor = {type = "power_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -114,16 +114,16 @@ local defaults = {
                 enabled = true,
                 position = {"TOPLEFT", "TOPLEFT", 3, -4},
                 anchorTo = "healthBar",
-                        length = 0.5,
+                length = 0.5,
                 font = {"BFI 1", 12, "none", true},
-                color = {type="class_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = true,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 font = {"BFI 1", 12, "none", true},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -136,7 +136,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -150,7 +150,7 @@ local defaults = {
                 type = "3d", -- 3d, 2d, class_icon
                 position = {"CENTER", "CENTER", 0, -5},
                 -- anchorTo = "button",
-                        frameLevel = 5,
+                frameLevel = 5,
                 width = 207,
                 height = 20,
                 bgColor = AW.GetColorTable("background", 1),
@@ -254,7 +254,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -302,7 +302,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -356,8 +356,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 225,
                 height = 31,
-                color = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf")},
-                lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
+                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -394,8 +394,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 225,
                 height = 17,
-                color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
-                lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -408,14 +408,14 @@ local defaults = {
                 anchorTo = "healthBar",
                 length = 0.5,
                 font = {"BFI 1", 12, "none", true},
-                color = {type="class_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = true,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 font = {"BFI 1", 12, "none", true},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -428,7 +428,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -515,7 +515,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -564,7 +564,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -613,7 +613,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -667,8 +667,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 97,
                 height = 19,
-                color = {type="custom_color", alpha1, rgb=AW.GetColorTable("uf")},
-                lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
+                color = {type = "custom_color", alpha1, rgb = AW.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -705,8 +705,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 97,
                 height = 4,
-                color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
-                lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -719,14 +719,14 @@ local defaults = {
                 anchorTo = "healthBar",
                 length = 0.9,
                 font = {"BFI 1", 12, "none", true},
-                color = {type="class_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = false,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 font = {"BFI 1", 12, "none", true},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -739,7 +739,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -826,7 +826,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -875,7 +875,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -929,8 +929,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 200,
                 height = 20,
-                color = {type="custom_color", alpha1, rgb=AW.GetColorTable("uf")},
-                lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
+                color = {type = "custom_color", alpha1, rgb = AW.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -967,8 +967,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 200,
                 height = 4,
-                color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
-                lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -981,14 +981,14 @@ local defaults = {
                 anchorTo = "healthBar",
                 length = 0.9,
                 font = {"BFI 1", 12, "none", true},
-                color = {type="class_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = false,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 font = {"BFI 1", 12, "none", true},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -1001,7 +1001,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -1088,7 +1088,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -1137,7 +1137,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -1191,8 +1191,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 97,
                 height = 19,
-                color = {type="custom_color", alpha1, rgb=AW.GetColorTable("uf")},
-                lossColor = {type="custom_color", alpha=1, rgb=AW.GetColorTable("uf_loss")},
+                color = {type = "custom_color", alpha1, rgb = AW.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -1229,8 +1229,8 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 97,
                 height = 4,
-                color = {type="class_color", alpha=1, rgb=AW.GetColorTable("uf_power")},
-                lossColor = {type="class_color_dark", alpha=1, rgb=AW.GetColorTable("uf")},
+                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
@@ -1243,14 +1243,14 @@ local defaults = {
                 anchorTo = "healthBar",
                 length = 0.9,
                 font = {"BFI 1", 12, "none", true},
-                color = {type="class_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = false,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 font = {"BFI 1", 12, "none", true},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -1263,7 +1263,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
-                color = {type="custom_color", rgb=AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -1350,7 +1350,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
@@ -1399,7 +1399,7 @@ local defaults = {
                     color = {
                         AW.GetColorTable("white"), -- normal
                         {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true, 5, AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
