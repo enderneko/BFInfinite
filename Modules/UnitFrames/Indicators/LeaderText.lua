@@ -12,66 +12,82 @@ local UnitIsGroupLeader = UnitIsGroupLeader
 local UnitIsGroupAssistant = UnitIsGroupAssistant
 
 ---------------------------------------------------------------------
--- show/hide
+-- color
 ---------------------------------------------------------------------
-local function UpdateLeaderIcon(self)
+local function UpdateColor(self)
+    local unit = self.root.unit
+
+    local r, g, b
+    if self.color.type == "class_color" then
+        if U.UnitIsPlayer(unit) then
+            local class = U.UnitClassBase(unit)
+            r, g, b = AW.GetClassColor(class)
+        else
+            r, g, b = AW.GetReactionColor(unit)
+        end
+    else
+        r, g, b = unpack(self.color.rgb)
+    end
+    self:SetTextColor(r, g, b)
+end
+
+---------------------------------------------------------------------
+-- text
+---------------------------------------------------------------------
+local function UpdateLeaderText(self)
     local unit = self.root.unit
 
     local isLeader = UnitIsGroupLeader(unit)
     local isAssistant = IsInRaid() and UnitIsGroupAssistant(unit)
 
     if isLeader then
-        self.texture:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
-        self:Show()
+        self:SetText("L")
     elseif isAssistant then
-        self.texture:SetTexture("Interface\\GroupFrame\\UI-Group-AssistantIcon")
-        self:Show()
+        self:SetText("A")
     else
-        self:Hide()
+        self:SetText("")
     end
 end
 
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function LeaderIcon_Update(self)
-    UpdateLeaderIcon(self)
+local function LeaderText_Update(self)
+    UpdateLeaderText(self)
+    UpdateColor(self)
 end
 
 ---------------------------------------------------------------------
 -- enable
 ---------------------------------------------------------------------
-local function LeaderIcon_Enable(self)
-    self:RegisterEvent("GROUP_ROSTER_UPDATE", UpdateLeaderIcon)
+local function LeaderText_Enable(self)
+    self:RegisterEvent("GROUP_ROSTER_UPDATE", UpdateLeaderText, UpdateColor)
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
-local function LeaderIcon_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
-    AW.LoadWidgetPosition(self, config.position)
-    AW.SetSize(self, config.width, config.height)
+local function LeaderText_LoadConfig(self, config)
+    U.SetFont(self, unpack(config.font))
+    UF.LoadTextPosition(self, config)
+
+    self.color = config.color
 end
 
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
-function UF.CreateLeaderIcon(parent, name)
-    local frame = CreateFrame("Frame", name, parent)
-    frame.root = parent
-
-    -- texture
-    frame.texture = frame:CreateTexture(nil, "ARTWORK")
-    frame.texture:SetAllPoints()
+function UF.CreateLeaderText(parent, name)
+    local text = parent:CreateFontString(name, "OVERLAY")
+    text.root = parent
 
     -- events
-    BFI.AddEventHandler(frame)
+    BFI.AddEventHandler(text)
 
     -- functions
-    frame.Enable = LeaderIcon_Enable
-    frame.Update = LeaderIcon_Update
-    frame.LoadConfig = LeaderIcon_LoadConfig
+    text.Enable = LeaderText_Enable
+    text.Update = LeaderText_Update
+    text.LoadConfig = LeaderText_LoadConfig
 
-    return frame
+    return text
 end

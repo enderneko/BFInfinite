@@ -145,20 +145,6 @@ local defaults = {
                     noPercentSign = false,
                 },
             },
-            levelText = {
-                enabled = true,
-                position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
-                anchorTo = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
-            },
-            targetCounter = {
-                enabled = true,
-                position = {"LEFT", "RIGHT", 5, 0},
-                anchorTo = "levelText",
-                font = {"BFI 2", 9, "monochrome", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
-            },
             portrait = {
                 enabled = true,
                 type = "3d", -- 3d, 2d, class_icon
@@ -258,6 +244,27 @@ local defaults = {
                 frameLevel = 10,
                 width = 16,
                 height = 16,
+            },
+            leaderText = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
+                anchorTo = "powerBar",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
+            },
+            levelText = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 0, 0},
+                anchorTo = "leaderText",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            },
+            targetCounter = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
+                anchorTo = "levelText",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             buffs = {
                 enabled = false,
@@ -466,20 +473,6 @@ local defaults = {
                     noPercentSign = false,
                 },
             },
-            levelText = {
-                enabled = true,
-                position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
-                anchorTo = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
-            },
-            targetCounter = {
-                enabled = true,
-                position = {"LEFT", "RIGHT", 5, 0},
-                anchorTo = "levelText",
-                font = {"BFI 2", 9, "monochrome", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
-            },
             portrait = {
                 enabled = true,
                 type = "3d", -- 3d, 2d, class_icon
@@ -548,6 +541,27 @@ local defaults = {
                 frameLevel = 10,
                 width = 16,
                 height = 16,
+            },
+            leaderText = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
+                anchorTo = "powerBar",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
+            },
+            levelText = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 0, 0},
+                anchorTo = "leaderText",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            },
+            targetCounter = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
+                anchorTo = "levelText",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             buffs = {
                 enabled = true,

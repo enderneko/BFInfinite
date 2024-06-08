@@ -15,11 +15,6 @@ local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitGetIncomingHeals = UnitGetIncomingHeals
 local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
 
---! for AI followers
-local UnitClassBase = function(unit)
-    return select(2, UnitClass(unit))
-end
-
 ---------------------------------------------------------------------
 -- health
 ---------------------------------------------------------------------
@@ -199,7 +194,7 @@ end
 local function GetHealthColor(self, unit)
     if not (self.color and self.lossColor) then return end
 
-    local class = UnitClassBase(unit)
+    local class = U.UnitClassBase(unit)
     local inVehicle = UnitHasVehicleUI(unit)
 
     local r, g, b, a, lossR, lossG, lossB, lossA

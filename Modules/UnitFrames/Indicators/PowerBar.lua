@@ -12,11 +12,6 @@ local UnitPowerType = UnitPowerType
 local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitIsConnected = UnitIsConnected
 
---! for AI followers
-local UnitClassBase = function(unit)
-    return select(2, UnitClass(unit))
-end
-
 ---------------------------------------------------------------------
 -- GetClassColor
 ---------------------------------------------------------------------
@@ -66,7 +61,7 @@ local function GetPowerColor(self, unit)
 
     self.powerType = select(2, UnitPowerType(unit))
 
-    local class = UnitClassBase(unit)
+    local class = U.UnitClassBase(unit)
     local inVehicle = UnitHasVehicleUI(unit)
 
     local r, g, b, a, lossR, lossG, lossB, lossA

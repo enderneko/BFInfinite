@@ -14,11 +14,6 @@ local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
 
---! for AI followers
-local UnitClassBase = function(unit)
-    return select(2, UnitClass(unit))
-end
-
 ---------------------------------------------------------------------
 -- value
 ---------------------------------------------------------------------
@@ -53,12 +48,11 @@ local function UpdateColor(self, event, unitId)
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
 
-    local class = UnitClassBase(unit)
-
     -- color
     local r, g, b
     if self.color.type == "class_color" then
         if U.UnitIsPlayer(unit) then
+            local class = U.UnitClassBase(unit)
             r, g, b = AW.GetClassColor(class)
         else
             r, g, b = AW.GetReactionColor(unit)

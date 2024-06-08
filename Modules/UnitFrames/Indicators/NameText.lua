@@ -9,11 +9,6 @@ local UF = BFI.M_UF
 local UnitName = UnitName
 local UnitIsConnected = UnitIsConnected
 
---! for AI followers
-local UnitClassBase = function(unit)
-    return select(2, UnitClass(unit))
-end
-
 ---------------------------------------------------------------------
 -- name
 ---------------------------------------------------------------------
@@ -24,7 +19,7 @@ local function UpdateName(self, event, unitId)
     local name = UnitName(unit)
     if not name then return end
 
-    local class = UnitClassBase(unit)
+    local class = U.UnitClassBase(unit)
 
     -- length
     AW.SetText(self, name, self.length)

@@ -39,6 +39,8 @@ local function UpdateColor(self, event, unitId)
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
 
+    local class = U.UnitClassBase(unit)
+
     -- color
     local r, g, b
     if self.color.type == "class_color" then

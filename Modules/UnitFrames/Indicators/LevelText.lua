@@ -17,11 +17,6 @@ local GetCreatureDifficultyColor = GetCreatureDifficultyColor
 local QuestDifficultyColors = QuestDifficultyColors
 local GetPetTeamAverageLevel = C_PetJournal and C_PetJournal.GetPetTeamAverageLevel
 
---! for AI followers
-local UnitClassBase = function(unit)
-    return select(2, UnitClass(unit))
-end
-
 ---------------------------------------------------------------------
 -- color
 ---------------------------------------------------------------------
@@ -44,12 +39,11 @@ local function UpdateColor(self, event, unitId)
     local unit = self.root.unit
     if type(unitId) == "string" and unit ~= unitId then return end
 
-    local class = UnitClassBase(unit)
-
     local r, g, b
     if self.color.type == "level_color" then
         r, g, b = GetLevelColor(unit)
     elseif self.color.type == "class_color" then
+        local class = U.UnitClassBase(unit)
         if U.UnitIsPlayer(unit) then
             r, g, b = AW.GetClassColor(class)
         else

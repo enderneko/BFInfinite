@@ -9,11 +9,6 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 local UnitIsUnit = UnitIsUnit
 
---! for AI followers
-local UnitClassBase = function(unit)
-    return select(2, UnitClass(unit))
-end
-
 ---------------------------------------------------------------------
 -- color
 ---------------------------------------------------------------------
@@ -21,11 +16,10 @@ local function UpdateColor(self, event, unitId)
     local unit = self.root.unit
     if unitId and unit ~= unitId then return end
 
-    local class = UnitClassBase(unit)
-
     local r, g, b
     if self.color.type == "class_color" then
         if U.UnitIsPlayer(unit) then
+            local class = U.UnitClassBase(unit)
             r, g, b = AW.GetClassColor(class)
         else
             r, g, b = AW.GetReactionColor(unit)

@@ -45,11 +45,6 @@ local IsInRaid = IsInRaid
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local strfind = string.find
 
---! for AI followers
-local UnitClassBase = function(unit)
-    return select(2, UnitClass(unit))
-end
-
 ---------------------------------------------------------------------
 -- states
 ---------------------------------------------------------------------
@@ -59,7 +54,7 @@ local function UnitButton_UpdateBaseStates(self)
 
     self.states.name = UnitName(unit)
     self.states.fullName = U.UnitFullName(unit)
-    self.states.class = UnitClassBase(unit)
+    self.states.class = U.UnitClassBase(unit)
     self.states.guid = UnitGUID(unit)
     self.states.isPlayer = UnitIsPlayer(unit)
     self.states.inVehicle = UnitHasVehicleUI(unit)
