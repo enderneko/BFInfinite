@@ -1,6 +1,7 @@
 local addonName, ns = ...
 ns.AW = {}
 
+---@class AbstractWidgets
 local AW = ns.AW
 
 ---------------------------------------------------------------------

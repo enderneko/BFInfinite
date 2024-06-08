@@ -1,5 +1,6 @@
 local addonName, ns = ...
 local L = ns.L
+---@class AbstractWidgets
 local AW = ns.AW
 
 local MOVER_PARENT_FRAME_LEVEL = 700
@@ -52,20 +53,20 @@ local function CreateAlignmentGrid()
     -- center cross
     local centerX = math.floor((width-1) / 2)
     local centerY = math.floor((height-1) / 2)
-    
+
     -- v center
     CreateLine("red", 0.75, centerX, 0, 1, height, 1)
-    
+
     -- h center
     CreateLine("red", 0.75, 0, centerY, width, 1, 1)
-    
+
     -- vleft
     local offset = centerX
     repeat
         offset = offset - 25
         CreateLine("gray", 0.35, offset, 0, 1, height)
     until offset < 0
-    
+
     -- vright
     offset = centerX
     repeat
@@ -79,7 +80,7 @@ local function CreateAlignmentGrid()
         offset = offset - 25
         CreateLine("gray", 0.35, 0, offset, width, 1)
     until offset < 0
-    
+
     -- htop
     offset = centerY
     repeat
@@ -111,7 +112,7 @@ local function CalcPoint(mover)
     local centerX, centerY = AW.UIParent:GetCenter()
     local width = AW.UIParent:GetRight()
     local x, y = mover:GetCenter()
-    
+
     local point
     if y >= centerY then
         point = "TOP"
@@ -121,7 +122,7 @@ local function CalcPoint(mover)
         y = mover:GetBottom()
     end
 
-    if x >= (width * 2 / 3) then 
+    if x >= (width * 2 / 3) then
         point = point.."RIGHT"
         x = mover:GetRight() - width
     elseif x <= (width / 3) then
@@ -162,22 +163,22 @@ local function CreateFineTuningFrame()
     fineTuningFrame.anchor = AW.CreateTexture(fineTuningFrame.tp, AW.GetIcon("Anchor_BOTTOMLEFT", true))
     AW.SetSize(fineTuningFrame.anchor, 18, 18)
     AW.SetPoint(fineTuningFrame.anchor, "TOPLEFT", 0, -30)
-    
+
     -- x
     fineTuningFrame.x = AW.CreateEditBox(fineTuningFrame.tp, "", 60, 20)
     AW.SetPoint(fineTuningFrame.x, "LEFT", fineTuningFrame.anchor, "RIGHT", 20, 0)
-    
+
     local x = AW.CreateFontString(fineTuningFrame.tp, "X", "accent")
     AW.SetPoint(x, "RIGHT", fineTuningFrame.x, "LEFT", -2, 0)
-    
+
     -- y
     fineTuningFrame.y = AW.CreateEditBox(fineTuningFrame.tp, "", 60, 20)
     AW.SetPoint(fineTuningFrame.y, "BOTTOM", fineTuningFrame.x)
     AW.SetPoint(fineTuningFrame.y, "RIGHT")
-    
+
     local y = AW.CreateFontString(fineTuningFrame.tp, "Y", "accent")
     AW.SetPoint(y, "RIGHT", fineTuningFrame.y, "LEFT", -2, 0)
-    
+
     -- edit x
     fineTuningFrame.x:SetOnEditFocusGained(function()
         fineTuningFrame._x = fineTuningFrame.x:GetNumber()
@@ -192,7 +193,7 @@ local function CreateFineTuningFrame()
 
             local owner = fineTuningFrame.owner
             local _p, _, _, _x, _y = owner:GetPoint()
-            
+
             -- validate
             local mv = AW.UIParent:GetRight() - owner:GetWidth()
             if strfind(_p, "LEFT$") then
@@ -213,7 +214,7 @@ local function CreateFineTuningFrame()
             AnchorFineTuningFrame(owner)
         end
     end)
-    
+
     -- edit y
     fineTuningFrame.y:SetOnEditFocusGained(function()
         fineTuningFrame._y = fineTuningFrame.y:GetNumber()
@@ -241,7 +242,7 @@ local function CreateFineTuningFrame()
                 v = max(v, -mv/2)
                 v = min(v, mv/2)
             end
-            
+
             owner:ClearAllPoints()
             owner:SetPoint(_p, _x, v)
 
@@ -265,7 +266,7 @@ end
 
 UpdateFineTuningFrame = function(owner)
     if not (fineTuningFrame and fineTuningFrame:IsShown()) then return end
-    
+
     fineTuningFrame.tp:SetTitle(owner.mover.text:GetText())
 
     local p, _, _, x, y = owner:GetPoint()
@@ -294,10 +295,10 @@ AnchorFineTuningFrame = function(owner)
     local centerX, centerY = AW.UIParent:GetCenter()
     local width = AW.UIParent:GetRight()
     local x, y = owner.mover:GetCenter()
-    
+
     local point, relativePoint
 
-    if x >= (width * 2 / 3) then 
+    if x >= (width * 2 / 3) then
         point, relativePoint = "RIGHT", "LEFT"
         x, y = -1, 0
     elseif x <= (width / 3) then
@@ -384,7 +385,7 @@ function AW.CreateMover(owner, group, text, save)
 
     if not movers[group] then movers[group] = {} end
     tinsert(movers[group], mover)
-    
+
     mover:SetAllPoints(owner)
     mover:SetFrameLevel(MOVER_PARENT_FRAME_LEVEL)
     mover:EnableMouse(true)
@@ -400,9 +401,9 @@ function AW.CreateMover(owner, group, text, save)
 
         local scale = owner:GetEffectiveScale()
         local mouseX, mouseY = GetCursorPosition()
-        
+
         local minX, maxX, minY, maxY
-        
+
         local point, _, _, startX, startY = owner:GetPoint()
 
         if strfind(point, "^BOTTOM") then
@@ -415,7 +416,7 @@ function AW.CreateMover(owner, group, text, save)
             minY = -((AW.UIParent:GetHeight()-owner:GetHeight())/2)
             maxY = (AW.UIParent:GetHeight()-owner:GetHeight())/2
         end
-        
+
         if strfind(point, "LEFT$") then
             minX = 0
             maxX = AW.UIParent:GetWidth()-owner:GetWidth()
@@ -433,7 +434,7 @@ function AW.CreateMover(owner, group, text, save)
         mover:SetScript("OnUpdate", function()
             local newMouseX, newMouseY = GetCursorPosition()
             if newMouseX == lastX and newMouseY == lastY then return end
-            
+
             lastX = newMouseX
             lastY = newMouseY
 
@@ -484,7 +485,7 @@ function AW.CreateMover(owner, group, text, save)
         startY = Round(startY)
 
         mover.moved = true
-        
+
         if delta == 1 then
             if IsShiftKeyDown() then
                 -- move right
@@ -508,7 +509,7 @@ function AW.CreateMover(owner, group, text, save)
         -- update fine tuning
         UpdateFineTuningFrame(owner)
     end)
-    
+
     mover:SetScript("OnEnter", function()
         for _, g in pairs(movers) do
             for _, m in pairs(g) do
@@ -523,10 +524,10 @@ function AW.CreateMover(owner, group, text, save)
                 end
             end
         end
-        
+
         AnchorFineTuningFrame(owner)
     end)
-    
+
     mover:SetScript("onLeave", function()
         for _, g in pairs(movers) do
             for _, m in pairs(g) do
@@ -569,7 +570,7 @@ function AW.ShowMovers(group)
         for _, m in pairs(gt) do
             if show and (type(m.owner.enabled) ~= "boolean" or m.owner.enabled) then
                 m:Show()
-            else 
+            else
                 m:Hide()
             end
         end
@@ -580,7 +581,7 @@ end
 
 function AW.HideMovers()
     if not moverParent then return end
-    
+
     for _, g in pairs(movers) do
         for _, m in pairs(g) do
             m:Hide()

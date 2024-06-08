@@ -1,4 +1,5 @@
 local addonName, ns = ...
+---@class AbstractWidgets
 local AW = ns.AW
 
 -- NOTE: up to two decimal places value

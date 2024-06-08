@@ -1,4 +1,5 @@
 local addonName, ns = ...
+---@class AbstractWidgets
 local AW = ns.AW
 
 --TODO: adjust text colors
@@ -14,7 +15,7 @@ function AW.CreateNetStatsPane(parent, anchorPoint, showBandwidth, showLatency, 
     layout = strlower(layout)
 
     local f = AW.CreateFrame(parent, 20, 20)
-    
+
     f.text = AW.CreateFontString(f, nil, "sand", "small")
     AW.SetPoint(f.text, anchorPoint)
     if strfind(anchorPoint, "LEFT$") then
@@ -24,19 +25,19 @@ function AW.CreateNetStatsPane(parent, anchorPoint, showBandwidth, showLatency, 
     else
         f.text:SetJustifyH("CENTER")
     end
-    
+
     local str = ""
 
     if showBandwidth then
         str = str .. AW.GetIconString("Upload", true) .. "%sKB/s_"
         str = str .. AW.GetIconString("Download", true) .. "%sKB/s_"
     end
-    
+
     if showLatency then
         str = str .. AW.GetIconString("Home", true) .. "%sms_"
         str = str .. AW.GetIconString("World", true) .. "%sms_"
     end
-    
+
     if layout == "horizontal" then
         f.text:SetWordWrap(false)
         str = string.gsub(str, "_", " ")
@@ -86,7 +87,7 @@ function AW.CreateFPSPane(parent, anchorPoint)
     anchorPoint = strupper(anchorPoint)
 
     local f = AW.CreateFrame(parent, 20, 20)
-    
+
     f.text = AW.CreateFontString(f, nil, "sand", "small")
     AW.SetPoint(f.text, anchorPoint)
     if strfind(anchorPoint, "LEFT$") then

@@ -384,9 +384,25 @@ end
 ---------------------------------------------------------------------
 -- load widget position
 ---------------------------------------------------------------------
-function AW.LoadWidgetPosition(region, pos, relativeTo)
-    AW.ClearPoints(region)
-    AW.SetPoint(region, pos[1], relativeTo or region:GetParent(), pos[2], pos[3], pos[4])
+function AW.LoadWidgetPosition(widget, pos, relativeTo)
+    AW.ClearPoints(widget)
+    AW.SetPoint(widget, pos[1], relativeTo or widget:GetParent(), pos[2], pos[3], pos[4])
+end
+
+---------------------------------------------------------------------
+-- load text position
+---------------------------------------------------------------------
+function AW.LoadTextPosition(text, pos, relativeTo)
+    assert(relativeTo, "relativeTo can not be nil")
+
+    if relativeTo and relativeTo:GetObjectType() == "FontString" then
+        text:SetParent(relativeTo:GetParent())
+    else
+        text:SetParent(relativeTo)
+    end
+
+    AW.ClearPoints(text)
+    AW.SetPoint(text, pos[1], relativeTo or text:GetParent(), pos[2], pos[3], pos[4])
 end
 
 ---------------------------------------------------------------------

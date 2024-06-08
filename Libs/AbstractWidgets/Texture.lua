@@ -1,4 +1,5 @@
 local addonName, ns = ...
+---@class AbstractWidgets
 local AW = ns.AW
 
 ---------------------------------------------------------------------
@@ -52,7 +53,7 @@ function AW.CalcTexCoord(width, height, isIcon)
         local aspectRatio = (i % 2 == 1) and xRatio or yRatio
         texCoord[i] = (coord - 0.5) * aspectRatio + 0.5
     end
-    
+
     return texCoord
 end
 

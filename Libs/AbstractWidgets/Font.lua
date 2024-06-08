@@ -1,4 +1,5 @@
 local addonName, ns = ...
+---@class AbstractWidgets
 local AW = ns.AW
 
 ---------------------------------------------------------------------
@@ -130,7 +131,7 @@ function AW.UpdateFontSize(offset)
     font_accent_title:SetFont(BASE_FONT, FONT_ACCENT_TITLE_SIZE+offset, "")
     font_accent_outline:SetFont(BASE_FONT, FONT_ACCENT_OUTLINE_SIZE+offset, "")
     font_accent:SetFont(BASE_FONT, FONT_ACCENT_SIZE+offset, "")
-    
+
     for _, fs in ipairs(fontStrings) do
         local f, _, o = fs:GetFont()
         fs:SetFont(f, (fs.originalSize or FONT_NORMAL_SIZE)+offset, o)

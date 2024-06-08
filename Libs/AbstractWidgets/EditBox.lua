@@ -1,4 +1,5 @@
 local addonName, ns = ...
+---@class AbstractWidgets
 local AW = ns.AW
 
 ---------------------------------------------------------------------
@@ -6,7 +7,7 @@ local AW = ns.AW
 ---------------------------------------------------------------------
 function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, font)
     local eb = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
-    
+
     AW.StylizeFrame(eb, "widget")
     AW.SetWidth(eb, width or 40)
     AW.SetHeight(eb, height or 20)
@@ -16,7 +17,7 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
     eb.label:SetPoint("RIGHT", -4, 0)
     eb.label:SetJustifyH("LEFT")
     eb.label:SetWordWrap(false)
-    
+
     eb:SetMultiLine(isMultiLine)
     eb:SetNumeric(isNumeric)
     eb:SetFontObject(font or AW.GetFontName("normal"))
@@ -30,27 +31,27 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
         if eb.onEditFocusGained then eb.onEditFocusGained() end
         eb:HighlightText()
     end)
-    
+
     eb:SetScript("OnEditFocusLost", function()
         if eb.onEditFocusLost then eb.onEditFocusLost() end
         eb:HighlightText(0, 0)
     end)
-    
+
     eb:SetScript("OnEscapePressed", function()
         if eb.onEscapePressed then eb.onEscapePressed() end
         eb:ClearFocus()
     end)
-    
+
     eb:SetScript("OnEnterPressed", function()
         if eb.onEnterPressed then eb.onEnterPressed(eb:GetText()) end
         eb:ClearFocus()
     end)
-    
+
     eb:SetScript("OnDisable", function()
         eb:SetTextColor(AW.GetColorRGB("disabled"))
         eb:SetBackdropBorderColor(0, 0, 0, 0.7)
     end)
-    
+
     eb:SetScript("OnEnable", function()
         eb:SetTextColor(1, 1, 1, 1)
         eb:SetBackdropBorderColor(0, 0, 0, 1)
@@ -120,7 +121,7 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
         eb.confirmBtn:SetScript("OnHide", function()
             eb.confirmBtn:Hide()
         end)
-        
+
         eb.confirmBtn:SetScript("OnClick", function()
             local text = strtrim(eb:GetText())
             if func then func(text) end
@@ -134,7 +135,7 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
     function eb:SetOnEditFocusGained(func)
         eb.onEditFocusGained = func
     end
-    
+
     function eb:SetOnEditFocusLost(func)
         eb.onEditFocusLost = func
     end
@@ -163,7 +164,7 @@ function AW.CreateEditBox(parent, label, width, height, isMultiLine, isNumeric, 
     end
 
     AW.AddToPixelUpdater(eb)
-    
+
     return eb
 end
 
@@ -192,7 +193,7 @@ function AW.CreateScrollEditBox(parent, label, width, height, scrollStep)
         if not frame:IsEnabled() then return end
         highlight:Hide()
     end)
-    
+
     -- edit box
     local eb = AW.CreateEditBox(frame.scrollContent, label, 10, 20, true)
     frame.eb = eb
@@ -210,12 +211,12 @@ function AW.CreateScrollEditBox(parent, label, width, height, scrollStep)
     -- https://warcraft.wiki.gg/wiki/UIHANDLER_OnCursorChanged
     eb:SetScript("OnCursorChanged", function(self, x, y, arg, lineHeight)
         if not frame:IsEnabled() then return end
-        
+
         frame:SetScrollStep((lineHeight + eb:GetSpacing()) * scrollStep)
-        
+
         local vs = frame.scrollFrame:GetVerticalScroll()
         local h  = frame.scrollFrame:GetHeight()
-        
+
         local cursorHeight = lineHeight + abs(y) + 8 + eb:GetSpacing()
 
         if vs + y > 0 then -- cursor above current view
@@ -241,7 +242,7 @@ function AW.CreateScrollEditBox(parent, label, width, height, scrollStep)
 
         -- NOTE: should not use SetContentHeight
         frame.scrollContent:SetHeight(eb:GetHeight())
-        
+
         if eb.onTextChanged then
             eb.onTextChanged(text)
         end
