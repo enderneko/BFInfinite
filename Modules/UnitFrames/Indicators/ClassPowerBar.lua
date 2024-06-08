@@ -263,10 +263,9 @@ local function Check(self, event, unitId)
     UpdatePower(self)
 end
 
-local timer
 local function DelayedCheck(self)
-    if timer then timer:Cancel() end
-    timer = C_Timer.NewTimer(0.5, function()
+    if self.timer then self.timer:Cancel() end
+    self.timer = C_Timer.NewTimer(0.5, function()
         Check(self)
     end)
 end

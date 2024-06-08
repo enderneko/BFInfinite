@@ -17,6 +17,7 @@
     <Script file="Indicators\HealthText.lua"/>
     <Script file="Indicators\PowerText.lua"/>
     <Script file="Indicators\LevelText.lua"/>
+    <Script file="Indicators\TargetCounter.lua"/>
     <Script file="Indicators\Portrait.lua"/>
     <Script file="Indicators\StaggerBar.lua"/>
     <Script file="Indicators\Common.lua"/>

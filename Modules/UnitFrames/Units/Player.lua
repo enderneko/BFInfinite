@@ -12,6 +12,7 @@ local indicators = {
     "healthText",
     "powerText",
     "levelText",
+    "targetCounter",
     "portrait",
     "castBar",
     "staggerBar",

@@ -1,6 +1,8 @@
-local _, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
+---@class UnitFrame
 local UF = BFI.M_UF
 
 local builders = {
@@ -13,6 +15,7 @@ local builders = {
     healthText = UF.CreateHealthText,
     powerText = UF.CreatePowerText,
     levelText = UF.CreateLevelText,
+    targetCounter = UF.CreateTargetCounter,
     portrait = UF.CreatePortrait,
     castBar = UF.CreateCastBar,
     auras = UF.CreateAuras,
@@ -42,17 +45,11 @@ function UF.LoadConfigForIndicators(button, indicators, config)
 
         local indicator = button.indicators[name]
         indicator:LoadConfig(config.indicators[name])
-        if config.indicators[name].enabled then
+
+        indicator.enabled = config.indicators[name].enabled
+
+        if indicator.enabled and button:IsVisible() then
             indicator:Enable()
-            indicator.enabled = true
-        else
-            if indicator.Disable then
-                indicator:Disable()
-            else
-                indicator:UnregisterAllEvents()
-                indicator:Hide()
-            end
-            indicator.enabled = false
         end
     end
 end
@@ -90,4 +87,13 @@ function UF.OnButtonHide(button)
             indicator:UnregisterAllEvents()
         end
     end
+end
+
+function UF.LoadTextPosition(self, config)
+    if config.anchorTo == "button" then
+        anchorTo = self.root
+    else
+        anchorTo = self.root.indicators[config.anchorTo]
+    end
+    AW.LoadTextPosition(self, config.position, anchorTo)
 end

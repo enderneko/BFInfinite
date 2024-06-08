@@ -146,11 +146,18 @@ local defaults = {
                 },
             },
             levelText = {
-                enabled = false,
+                enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
                 anchorTo = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            },
+            targetCounter = {
+                enabled = true,
+                position = {"LEFT", "RIGHT", 5, 0},
+                anchorTo = "levelText",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
                 enabled = true,
@@ -445,11 +452,18 @@ local defaults = {
                 },
             },
             levelText = {
-                enabled = false,
+                enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
                 anchorTo = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            },
+            targetCounter = {
+                enabled = true,
+                position = {"LEFT", "RIGHT", 5, 0},
+                anchorTo = "levelText",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
                 enabled = true,
@@ -769,6 +783,13 @@ local defaults = {
                 font = {"BFI 1", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
+            targetCounter = {
+                enabled = false,
+                position = {"LEFT", "RIGHT", 5, 0},
+                anchorTo = "levelText",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            },
             portrait = {
                 enabled = false,
                 type = "3d", -- 3d, 2d, class_icon
@@ -1038,6 +1059,13 @@ local defaults = {
                 font = {"BFI 1", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
+            targetCounter = {
+                enabled = false,
+                position = {"LEFT", "RIGHT", 5, 0},
+                anchorTo = "levelText",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            },
             portrait = {
                 enabled = false,
                 type = "3d", -- 3d, 2d, class_icon
@@ -1306,6 +1334,13 @@ local defaults = {
                 anchorTo = "healthBar",
                 font = {"BFI 1", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            },
+            targetCounter = {
+                enabled = false,
+                position = {"LEFT", "RIGHT", 5, 0},
+                anchorTo = "levelText",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
                 enabled = false,
