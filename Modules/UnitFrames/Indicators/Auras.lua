@@ -275,7 +275,7 @@ end
 -- config
 ---------------------------------------------------------------------
 Auras_UpdateSize = function(self, numAuras)
-    if not (self.width and self.height and self.orientation) then return end
+    -- if not (self.width and self.height and self.orientation) then return end
 
     -- check shown slots
     if numAuras then
@@ -310,7 +310,7 @@ local function Auras_SetSize(self, width, height)
         AW.SetSize(self.slots[i], width, height)
     end
 
-    Auras_UpdateSize(self)
+    -- Auras_UpdateSize(self)
 end
 
 local function Auras_SetOrientation(self, orientation)
@@ -403,17 +403,17 @@ local function Auras_SetOrientation(self, orientation)
         end
     end
 
-    Auras_UpdateSize(self)
+    -- Auras_UpdateSize(self)
 end
 
 local function Auras_SetNumPerLine(self, numPerLine)
     self.numPerLine = min(numPerLine, self.numSlots)
 
-    if self.orientation then
-        Auras_SetOrientation(self, self.orientation)
-    else
-        Auras_UpdateSize(self)
-    end
+    -- if self.orientation then
+    --     Auras_SetOrientation(self, self.orientation)
+    -- else
+    --     Auras_UpdateSize(self)
+    -- end
 end
 
 local function Auras_SetNumSlots(self, numSlots)
@@ -467,6 +467,7 @@ local function Auras_LoadConfig(self, config)
     Auras_SetNumPerLine(self, config.numPerLine)
     Auras_SetOrientation(self, config.orientation)
     Auras_SetupAuras(self, config)
+    Auras_UpdateSize(self, 0)
 
     -- blacklist
     self.blacklist = U.ConvertSpellTable(config.blacklist)
