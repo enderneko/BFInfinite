@@ -70,8 +70,8 @@ local function HealthText_Enable(self)
     self:RegisterEvent("UNIT_HEALTH", UpdateHealth)
     self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealth)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateHealth)
-    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateColor)
-    self:RegisterEvent("UNIT_FACTION", UpdateColor)
+    -- self:RegisterEvent("UNIT_NAME_UPDATE", UpdateColor)
+    -- self:RegisterEvent("UNIT_FACTION", UpdateColor)
 
     self:Show()
     -- if self:IsVisible() then self:Update() end

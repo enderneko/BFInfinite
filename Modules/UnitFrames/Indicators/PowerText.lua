@@ -50,15 +50,7 @@ local function UpdateColor(self, event, unitId)
             r, g, b = AW.GetReactionColor(unit)
         end
     else
-        if U.UnitIsPlayer(unit) then
-            if not UnitIsConnected(unit) then
-                r, g, b = AW.GetClassColor(class)
-            else
-                r, g, b = unpack(self.color.rgb)
-            end
-        else
-            r, g, b = unpack(self.color.rgb)
-        end
+        r, g, b = unpack(self.color.rgb)
     end
     self:SetTextColor(r, g, b)
 end
