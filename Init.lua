@@ -76,3 +76,4 @@ end
 
 AddLib("LAB", "LibActionButton-1.0-BFI")
 AddLib("LCG", "LibCustomGlow-1.0")
+AddLib("LRC", "LibRangeCheck-3.0")
