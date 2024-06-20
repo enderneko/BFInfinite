@@ -47,8 +47,12 @@ end
 ---------------------------------------------------------------------
 -- UpdateExtraData
 ---------------------------------------------------------------------
-local function IsCastByMe(unit)
-    return unit and (UnitIsUnit("player", unit) or UnitIsOwnerOrControllerOfUnit("player", unit))
+local function IsCastByMe(source)
+    return source and (UnitIsUnit("player", source) or UnitIsOwnerOrControllerOfUnit("player", source))
+end
+
+local function IsCastByUnit(source, unit)
+    return source and not UnitIsUnit(source, "player") and UnitIsUnit(source, unit)
 end
 
 local function IsDispellable(self, auraData)
@@ -70,7 +74,7 @@ local function UpdateExtraData(self, auraData)
     auraData.start = auraData.expirationTime - auraData.duration
     auraData.castByMe = IsCastByMe(auraData.sourceUnit)
     auraData.castByOthers = auraData.isFromPlayerOrPlayerPet and not auraData.castByMe
-    auraData.castByUnit = auraData.sourceUnit and UnitIsUnit(auraData.sourceUnit, self.root.unit)
+    auraData.castByUnit = IsCastByUnit(auraData.sourceUnit, self.root.unit)
     auraData.castByBoss = auraData.isBossAura
     auraData.castByUnknown = not auraData.sourceUnit
     auraData.debuffType = U.GetDebuffType(auraData)
