@@ -563,6 +563,12 @@ local defaults = {
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
+            rangeText = {
+                enabled = true,
+                position = {"BOTTOM", "BOTTOM", 0, 1},
+                anchorTo = "powerBar",
+                font = {"BFI 2", 9, "monochrome", false},
+            },
             buffs = {
                 enabled = true,
                 position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
@@ -1109,6 +1115,12 @@ local defaults = {
                 anchorTo = "levelText",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            },
+            rangeText = {
+                enabled = true,
+                position = {"LEFT", "LEFT", 5, 0},
+                anchorTo = "healthBar",
+                font = {"BFI 2", 9, "monochrome", false},
             },
             portrait = {
                 enabled = false,

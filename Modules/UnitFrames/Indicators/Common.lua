@@ -21,6 +21,7 @@ local builders = {
     combatIcon = UF.CreateCombatIcon,
     leaderIcon = UF.CreateLeaderIcon,
     leaderText = UF.CreateLeaderText,
+    rangeText = UF.CreateRangeText,
     auras = UF.CreateAuras,
 }
 
