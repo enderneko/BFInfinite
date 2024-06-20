@@ -273,6 +273,13 @@ local defaults = {
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
+            statusIcon = {
+                enabled = true,
+                position = {"TOP", "TOP", 0, 0},
+                frameLevel = 15,
+                width = 20,
+                height = 20,
+            },
             buffs = {
                 enabled = false,
                 position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
@@ -582,6 +589,13 @@ local defaults = {
                 anchorTo = "targetCounter",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            },
+            statusIcon = {
+                enabled = true,
+                position = {"TOP", "TOP", 0, 0},
+                frameLevel = 15,
+                width = 20,
+                height = 20,
             },
             buffs = {
                 enabled = true,
