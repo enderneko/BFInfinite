@@ -24,6 +24,7 @@
     <Script file="Indicators\LeaderIcon.lua"/>
     <Script file="Indicators\LeaderText.lua"/>
     <Script file="Indicators\RangeText.lua"/>
+    <Script file="Indicators\StatusTimer.lua"/>
     <Script file="Indicators\Common.lua"/>
     <!-- units -->
     <Script file="Units\Player.lua"/>

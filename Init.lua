@@ -5,6 +5,7 @@ _G.BFI = BFI
 
 ---@class BFI
 ---@field AW AbstractWidgets
+---@field L table
 ---@field utils Utils
 ---@field vars table
 ---@field libs table

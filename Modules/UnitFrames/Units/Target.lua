@@ -17,6 +17,7 @@ local indicators = {
     "levelText",
     "targetCounter",
     "rangeText",
+    "statusTimer",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffsByMe", "HARMFUL", "castByMe"},
     {"auras", "debuffsByOthers", "HARMFUL", "castByOthers"},

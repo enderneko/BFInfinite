@@ -402,6 +402,22 @@ function AW.LoadTextPosition(text, pos, relativeTo)
         text:SetParent(relativeTo)
     end
 
+    if strfind(pos[1], "LEFT$") then
+        text:SetJustifyH("LEFT")
+    elseif strfind(pos[1], "RIGHT$") then
+        text:SetJustifyH("RIGHT")
+    else
+        text:SetJustifyH("CENTER")
+    end
+
+    if strfind(pos[1], "^TOP") then
+        text:SetJustifyV("TOP")
+    elseif strfind(pos[1], "^BOTTOM") then
+        text:SetJustifyV("BOTTOM")
+    else
+        text:SetJustifyV("MIDDLE")
+    end
+
     AW.ClearPoints(text)
     AW.SetPoint(text, pos[1], relativeTo or text:GetParent(), pos[2], pos[3], pos[4])
 end

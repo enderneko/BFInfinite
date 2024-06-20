@@ -266,6 +266,13 @@ local defaults = {
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
+            statusTimer = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
+                anchorTo = "targetCounter",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            },
             buffs = {
                 enabled = false,
                 position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
@@ -568,6 +575,13 @@ local defaults = {
                 position = {"BOTTOM", "BOTTOM", 0, 1},
                 anchorTo = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
+            },
+            statusTimer = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
+                anchorTo = "targetCounter",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             buffs = {
                 enabled = true,

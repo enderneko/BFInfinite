@@ -22,6 +22,7 @@ local builders = {
     leaderIcon = UF.CreateLeaderIcon,
     leaderText = UF.CreateLeaderText,
     rangeText = UF.CreateRangeText,
+    statusTimer = UF.CreateStatusTimer,
     auras = UF.CreateAuras,
 }
 
