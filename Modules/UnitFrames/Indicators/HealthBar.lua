@@ -351,6 +351,20 @@ local function HealPrediction_SetColor(self, color)
     self.healPrediction:SetVertexColor(unpack(color))
 end
 
+local function MouseoverHighlight_SetColor(self, color)
+    self.mouseoverHighlight:SetColorTexture(AW.UnpackColor(color))
+end
+
+local function MouseoverHighlight_OnEnter(self)
+    if self.indicators.healthBar.mouseoverHighlightEnabled then
+        self.indicators.healthBar.mouseoverHighlight:Show()
+    end
+end
+
+local function MouseoverHighlight_OnLeave(self)
+    self.indicators.healthBar.mouseoverHighlight:Hide()
+end
+
 local function HealthBar_SetTexture(self, texture)
     texture = U.GetBarTexture(texture)
     self.fg:SetTexture(texture)
@@ -389,6 +403,8 @@ local function HealthBar_LoadConfig(self, config)
     HealAbsorbBar_SetColor(self, config.healAbsorb.color)
     OverabsorbGlow_SetColor(self, config.overabsorbGlow.color)
 
+    MouseoverHighlight_SetColor(self, config.mouseoverHighlight.color)
+
     if config.healPrediction.useCustomColor then
         HealPrediction_SetColor(self, config.healPrediction.color)
     end
@@ -402,6 +418,7 @@ local function HealthBar_LoadConfig(self, config)
     self.overabsorbGlowEnabled = config.overabsorbGlow.enabled
     self.healPredictionEnabled = config.healPrediction.enabled
     self.healPredictionUseCustomColor = config.healPrediction.useCustomColor
+    self.mouseoverHighlightEnabled = config.mouseoverHighlight.enabled
 end
 
 ---------------------------------------------------------------------
@@ -469,6 +486,16 @@ function UF.CreateHealthBar(parent, name)
     AW.SetPoint(overabsorbGlow, "TOPLEFT", bar.fg)
     AW.SetPoint(overabsorbGlow, "BOTTOMLEFT", bar.fg)
     AW.SetWidth(overabsorbGlow, 4)
+
+    -- mouseover highlight
+    local mouseoverHighlight = bar:CreateTexture(name.."MouseoverHighlight", "ARTWORK", nil, 7)
+    -- local mouseoverHighlight = AW.CreateGradientTexture(bar, "VERTICAL", nil, {1, 1, 1, 0.1}, nil, "ARTWORK", 7)
+    bar.mouseoverHighlight = mouseoverHighlight
+    mouseoverHighlight:SetAllPoints(bar.bg)
+    mouseoverHighlight:Hide()
+
+    parent:HookScript("OnEnter", MouseoverHighlight_OnEnter)
+    parent:HookScript("OnLeave", MouseoverHighlight_OnLeave)
 
     -- functions
     bar.Update = HealthBar_Update
