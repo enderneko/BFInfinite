@@ -187,6 +187,9 @@ function AW.CreateColorPicker(parent, label, hasOpacity, onChange, onConfirm)
         cp.hasOpacity = enable
     end
 
+    cp.onChange = onChange
+    cp.onConfirm = onConfirm
+
     cp:SetScript("OnClick", function()
         -- reset temp
         cp._r = cp.color[1]
@@ -201,8 +204,8 @@ function AW.CreateColorPicker(parent, label, hasOpacity, onChange, onConfirm)
                 cp._g = g
                 cp._b = b
                 cp._a = a
-                if onChange then
-                    onChange(r, g, b, a)
+                if cp.onChange then
+                    cp.onChange(r, g, b, a)
                 end
             end
         end, function(r, g, b, a)
@@ -211,8 +214,8 @@ function AW.CreateColorPicker(parent, label, hasOpacity, onChange, onConfirm)
                 cp.color[2] = g
                 cp.color[3] = b
                 cp.color[4] = a
-                if onConfirm then
-                    onConfirm(r, g, b, a)
+                if cp.onConfirm then
+                    cp.onConfirm(r, g, b, a)
                 end
             end
         end, cp.hasOpacity, unpack(cp.color))
