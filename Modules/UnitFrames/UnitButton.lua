@@ -382,11 +382,13 @@ local function UnitButton_OnShow(self)
     -- self._powerBarUpdateRequired = 1
 
     UnitButton_RegisterEvents(self)
+    UnitButton_UpdateAllStates(self)
+    UnitButton_UpdateInRange(self)
     UF.OnButtonShow(self)
-    local success, result = pcall(UnitButton_UpdateAll, self, true)
-    if not success then
-        BFI.Debug("|cffabababUpdateAll FAILED|r", self:GetName(), result)
-    end
+    -- local success, result = pcall(UnitButton_UpdateAll, self, true)
+    -- if not success then
+    --     BFI.Debug("|cffabababUpdateAll FAILED|r", self:GetName(), result)
+    -- end
 end
 
 local function UnitButton_OnHide(self)
@@ -545,7 +547,7 @@ function UF.SetupUnitButton(self, config, indicators)
     AW.StylizeFrame(self, config.general.bgColor, config.general.borderColor)
 
     -- indicators
-    UF.LoadConfigForIndicators(self, indicators, config)
+    UF.SetupIndicators(self, indicators, config)
 end
 
 function UF.SetupTooltip(self, config)

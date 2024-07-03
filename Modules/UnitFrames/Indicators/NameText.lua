@@ -61,7 +61,7 @@ local function NameText_Enable(self)
     -- self:RegisterEvent("UNIT_FACTION", UpdateName)
 
     self:Show()
-    -- if self:IsVisible() then self:Update() end
+    if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -81,6 +81,7 @@ end
 function UF.CreateNameText(parent, name)
     local text = parent:CreateFontString(name, "OVERLAY")
     text.root = parent
+    text:Hide()
 
     -- events
     BFI.AddEventHandler(text)

@@ -167,7 +167,7 @@ local function PowerBar_Enable(self)
     self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateAll)
 
     self:Show()
-    -- if self:IsVisible() then self:Update() end
+    if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -204,6 +204,7 @@ function UF.CreatePowerBar(parent, name)
     -- bar
     local bar = AW.CreateSimpleBar(parent, name)
     bar.root = parent
+    bar:Hide()
 
     -- events
     BFI.AddEventHandler(bar)

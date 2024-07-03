@@ -195,6 +195,7 @@ function UF.CreateStaggerBar(parent, name)
     -- bar
     local bar = AW.CreateSimpleBar(parent, name)
     bar.root = parent
+    bar:Hide()
 
     bar:SetLossColor(0, 0, 0, 0)
 

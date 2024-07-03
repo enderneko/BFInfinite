@@ -43,6 +43,7 @@ end
 ---------------------------------------------------------------------
 local function LeaderIcon_Enable(self)
     self:RegisterEvent("GROUP_ROSTER_UPDATE", UpdateLeaderIcon)
+    self:Update()
 end
 
 ---------------------------------------------------------------------
@@ -60,6 +61,7 @@ end
 function UF.CreateLeaderIcon(parent, name)
     local frame = CreateFrame("Frame", name, parent)
     frame.root = parent
+    frame:Hide()
 
     -- texture
     frame.texture = frame:CreateTexture(nil, "ARTWORK")

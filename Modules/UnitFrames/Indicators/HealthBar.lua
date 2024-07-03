@@ -309,7 +309,7 @@ local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_HEAL_PREDICTION", UpdateHealPrediction)
 
     self:Show()
-    -- if self:IsVisible() then self:Update() end
+    if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -429,6 +429,7 @@ function UF.CreateHealthBar(parent, name)
     -- bar
     local bar = AW.CreateSimpleBar(parent, name)
     bar.root = parent
+    bar:Hide()
 
     -- events
     BFI.AddEventHandler(bar)

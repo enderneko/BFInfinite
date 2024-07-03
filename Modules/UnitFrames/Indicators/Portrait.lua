@@ -71,7 +71,7 @@ local function Portrait_Enable(self)
     self:RegisterEvent("UNIT_MODEL_CHANGED", UpdatePortrait)
 
     self:Show()
-    -- if self:IsVisible() then self:Update() end
+    if self:IsVisible() then self:Update(true) end
 end
 
 ---------------------------------------------------------------------
@@ -131,6 +131,7 @@ end
 function UF.CreatePortrait(parent, name)
     local portrait = CreateFrame("Frame", name, parent, "BackdropTemplate")
     portrait.root = parent
+    portrait:Hide()
     AW.SetDefaultBackdrop(portrait)
 
     -- events

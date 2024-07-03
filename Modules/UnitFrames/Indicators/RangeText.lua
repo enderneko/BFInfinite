@@ -107,6 +107,7 @@ end
 function UF.CreateRangeText(parent, name)
     local text = parent:CreateFontString(name, "OVERLAY")
     text.root = parent
+    text:Hide()
 
     -- updater
     local updater = CreateFrame("Frame", nil, parent)

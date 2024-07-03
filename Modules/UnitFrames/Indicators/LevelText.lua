@@ -88,7 +88,7 @@ local function LevelText_Enable(self)
     self:RegisterEvent("PLAYER_LEVEL_UP", UpdateLevel, UpdateColor)
 
     self:Show()
-    -- if self:IsVisible() then self:Update() end
+    if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -107,6 +107,7 @@ end
 function UF.CreateLevelText(parent, name)
     local text = parent:CreateFontString(name, "OVERLAY")
     text.root = parent
+    text:Hide()
 
     -- events
     BFI.AddEventHandler(text)

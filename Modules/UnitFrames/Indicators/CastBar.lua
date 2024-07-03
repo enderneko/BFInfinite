@@ -643,7 +643,7 @@ local function CastBar_Enable(self)
     -- onupdate
     self:SetScript("OnUpdate", OnUpdate)
 
-    -- self:Update()
+    self:Update()
 end
 
 ---------------------------------------------------------------------

@@ -173,6 +173,7 @@ end
 function UF.CreateStatusIcon(parent, name)
     local frame = CreateFrame("Frame", name, parent)
     frame.root = parent
+    frame:Hide()
 
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")

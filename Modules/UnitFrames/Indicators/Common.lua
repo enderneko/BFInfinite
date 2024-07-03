@@ -40,7 +40,7 @@ function UF.CreateIndicators(button, indicators)
     end
 end
 
-function UF.LoadConfigForIndicators(button, indicators, config)
+function UF.SetupIndicators(button, indicators, config)
     for _, v in pairs(indicators) do
         local name
         if type(v) == "table" then
@@ -48,14 +48,28 @@ function UF.LoadConfigForIndicators(button, indicators, config)
         else
             name = v
         end
+        UF.LoadIndicatorConfig(button, name, config.indicators[name])
+    end
+end
 
-        local indicator = button.indicators[name]
-        indicator:LoadConfig(config.indicators[name])
+function UF.LoadIndicatorConfig(button, indicatorName, indicatorConfig)
+    local indicator = button.indicators[indicatorName]
+    indicator:LoadConfig(indicatorConfig)
 
-        indicator.enabled = config.indicators[name].enabled
+    indicator.enabled = indicatorConfig.enabled
 
-        if indicator.enabled and button:IsVisible() then
-            indicator:Enable()
+    if indicator.enabled then
+        indicator:Enable()
+        -- NOTE: let each indicator handle this
+        -- if button:IsVisible() then
+        --     indicator:Update()
+        -- end
+    else
+        if indicator.Disable then
+            indicator:Disable()
+        else
+            indicator:UnregisterAllEvents()
+            indicator:Hide()
         end
     end
 end

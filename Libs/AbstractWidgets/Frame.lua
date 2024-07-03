@@ -56,12 +56,12 @@ end
 ---------------------------------------------------------------------
 -- backdrop
 ---------------------------------------------------------------------
-function AW.SetDefaultBackdrop(frame)
-    frame:SetBackdrop({bgFile=AW.GetPlainTexture(), edgeFile=AW.GetPlainTexture(), edgeSize=AW.GetOnePixelForRegion(frame)})
+function AW.SetDefaultBackdrop(frame, borderSize)
+    frame:SetBackdrop({bgFile=AW.GetPlainTexture(), edgeFile=AW.GetPlainTexture(), edgeSize=AW.ConvertPixelsForRegion(borderSize or 1, frame)})
 end
 
-function AW.SetDefaultBackdrop_NoBackground(frame)
-    frame:SetBackdrop({edgeFile=AW.GetPlainTexture(), edgeSize=AW.GetOnePixelForRegion(frame)})
+function AW.SetDefaultBackdrop_NoBackground(frame, borderSize)
+    frame:SetBackdrop({edgeFile=AW.GetPlainTexture(), edgeSize=AW.ConvertPixelsForRegion(borderSize or 1, frame)})
 end
 
 function AW.SetDefaultBackdrop_NoBorder(frame)

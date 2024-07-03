@@ -103,6 +103,7 @@ end
 function UF.CreateTargetCounter(parent, name)
     local text = parent:CreateFontString(name, "OVERLAY")
     text.root = parent
+    text:Hide()
 
     -- events
     BFI.AddEventHandler(text)

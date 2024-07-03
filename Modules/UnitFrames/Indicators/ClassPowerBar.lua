@@ -336,6 +336,7 @@ end
 function UF.CreateClassPowerBar(parent, name)
     local frame = CreateFrame("Frame", name, parent)
     frame.root = parent
+    frame:Hide()
 
     -- bars
     frame.bars = {}

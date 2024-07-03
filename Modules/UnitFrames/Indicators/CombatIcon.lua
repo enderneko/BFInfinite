@@ -71,6 +71,7 @@ end
 function UF.CreateCombatIcon(parent, name)
     local frame = CreateFrame("Frame", name, parent)
     frame.root = parent
+    frame:Hide()
 
     -- texture
     frame.texture = frame:CreateTexture(nil, "ARTWORK")

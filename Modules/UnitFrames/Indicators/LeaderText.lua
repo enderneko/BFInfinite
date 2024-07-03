@@ -62,6 +62,9 @@ end
 ---------------------------------------------------------------------
 local function LeaderText_Enable(self)
     self:RegisterEvent("GROUP_ROSTER_UPDATE", UpdateLeaderText, UpdateColor)
+
+    self:Show()
+    if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -80,6 +83,7 @@ end
 function UF.CreateLeaderText(parent, name)
     local text = parent:CreateFontString(name, "OVERLAY")
     text.root = parent
+    text:Hide()
 
     -- events
     BFI.AddEventHandler(text)

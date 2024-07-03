@@ -109,6 +109,7 @@ local function StatusTimer_Enable(self)
     self:RegisterEvent("PLAYER_FLAGS_CHANGED", UpdateStatus)
     self:RegisterEvent("UNIT_FLAGS", UpdateStatus)
     self:Show()
+    if self:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
@@ -136,6 +137,7 @@ end
 function UF.CreateStatusTimer(parent, name)
     local text = parent:CreateFontString(name, "OVERLAY")
     text.root = parent
+    text:Hide()
 
     -- updater
     text.updater = CreateFrame("Frame", nil, parent)
