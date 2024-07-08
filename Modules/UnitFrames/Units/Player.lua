@@ -21,6 +21,8 @@ local indicators = {
     "targetCounter",
     "statusTimer",
     "statusIcon",
+    "targetHighlight",
+    "mouseoverHighlight",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffs", "HARMFUL"},
 }

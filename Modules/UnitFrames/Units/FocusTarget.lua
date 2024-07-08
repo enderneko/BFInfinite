@@ -13,6 +13,8 @@ local indicators = {
     "targetCounter",
     "portrait",
     "castBar",
+    "targetHighlight",
+    "mouseoverHighlight",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffs", "HARMFUL"},
 }

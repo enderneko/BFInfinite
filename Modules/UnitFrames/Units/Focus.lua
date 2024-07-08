@@ -14,6 +14,8 @@ local indicators = {
     "levelText",
     "targetCounter",
     "rangeText",
+    "targetHighlight",
+    "mouseoverHighlight",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffs", "HARMFUL"},
 }

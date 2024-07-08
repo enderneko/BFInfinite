@@ -104,7 +104,7 @@ local defaults = {
             classPowerBar = {
                 enabled = true,
                 position = {"TOP", "BOTTOM", 0, 1},
-                frameLevel = 1,
+                frameLevel = 5,
                 width = 177,
                 height = 5,
                 spacing = 1,
@@ -215,7 +215,7 @@ local defaults = {
             staggerBar = {
                 enabled = true,
                 position = {"TOP", "BOTTOM", 0, 1},
-                frameLevel = 1,
+                frameLevel = 5,
                 width = 177,
                 height = 5,
                 bgColor = AW.GetColorTable("background"),
@@ -283,6 +283,18 @@ local defaults = {
                 frameLevel = 15,
                 width = 20,
                 height = 20,
+            },
+            targetHighlight = {
+                enabled = false,
+                frameLevel = 4,
+                size = 1,
+                color = {1, 0.31, 0.31, 1},
+            },
+            mouseoverHighlight = {
+                enabled = false,
+                frameLevel = 5,
+                size = 1,
+                color = {1, 1, 1, 0.6},
             },
             buffs = {
                 enabled = false,
@@ -604,6 +616,18 @@ local defaults = {
                 frameLevel = 15,
                 width = 20,
                 height = 20,
+            },
+            targetHighlight = {
+                enabled = false,
+                frameLevel = 4,
+                size = 1,
+                color = {1, 0.31, 0.31, 1},
+            },
+            mouseoverHighlight = {
+                enabled = false,
+                frameLevel = 5,
+                size = 1,
+                color = {1, 1, 1, 0.6},
             },
             buffs = {
                 enabled = true,
@@ -934,6 +958,18 @@ local defaults = {
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                 },
             },
+            targetHighlight = {
+                enabled = false,
+                frameLevel = 4,
+                size = 1,
+                color = {1, 0.31, 0.31, 1},
+            },
+            mouseoverHighlight = {
+                enabled = false,
+                frameLevel = 5,
+                size = 1,
+                color = {1, 1, 1, 0.6},
+            },
             buffs = {
                 enabled = false,
                 position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
@@ -1220,6 +1256,18 @@ local defaults = {
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                 },
             },
+            targetHighlight = {
+                enabled = false,
+                frameLevel = 4,
+                size = 1,
+                color = {1, 0.31, 0.31, 1},
+            },
+            mouseoverHighlight = {
+                enabled = false,
+                frameLevel = 5,
+                size = 1,
+                color = {1, 1, 1, 0.6},
+            },
             buffs = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "TOPLEFT", 0, 1},
@@ -1499,6 +1547,18 @@ local defaults = {
                     succeeded = AW.GetColorTable("cast_succeeded"),
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                 },
+            },
+            targetHighlight = {
+                enabled = false,
+                frameLevel = 4,
+                size = 1,
+                color = {1, 0.31, 0.31, 1},
+            },
+            mouseoverHighlight = {
+                enabled = false,
+                frameLevel = 5,
+                size = 1,
+                color = {1, 1, 1, 0.6},
             },
             buffs = {
                 enabled = false,

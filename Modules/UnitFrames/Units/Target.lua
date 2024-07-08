@@ -19,6 +19,8 @@ local indicators = {
     "rangeText",
     "statusTimer",
     "statusIcon",
+    "targetHighlight",
+    "mouseoverHighlight",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffsByMe", "HARMFUL", "castByMe"},
     {"auras", "debuffsByOthers", "HARMFUL", "castByOthers"},
