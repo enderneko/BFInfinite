@@ -19,6 +19,7 @@ local indicators = {
     "rangeText",
     "statusTimer",
     "statusIcon",
+    "raidIcon",
     "targetHighlight",
     "mouseoverHighlight",
     {"auras", "buffs", "HELPFUL"},

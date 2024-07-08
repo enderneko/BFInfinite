@@ -284,6 +284,13 @@ local defaults = {
                 width = 20,
                 height = 20,
             },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 0, 0},
+                frameLevel = 10,
+                width = 14,
+                height = 14,
+            },
             targetHighlight = {
                 enabled = false,
                 frameLevel = 4,
@@ -616,6 +623,13 @@ local defaults = {
                 frameLevel = 15,
                 width = 20,
                 height = 20,
+            },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 0, 0},
+                frameLevel = 10,
+                width = 14,
+                height = 14,
             },
             targetHighlight = {
                 enabled = false,
@@ -958,6 +972,13 @@ local defaults = {
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                 },
             },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 0, 0},
+                frameLevel = 10,
+                width = 14,
+                height = 14,
+            },
             targetHighlight = {
                 enabled = false,
                 frameLevel = 4,
@@ -1256,6 +1277,13 @@ local defaults = {
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                 },
             },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 0, 0},
+                frameLevel = 10,
+                width = 14,
+                height = 14,
+            },
             targetHighlight = {
                 enabled = false,
                 frameLevel = 4,
@@ -1547,6 +1575,13 @@ local defaults = {
                     succeeded = AW.GetColorTable("cast_succeeded"),
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                 },
+            },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 0, 0},
+                frameLevel = 10,
+                width = 14,
+                height = 14,
             },
             targetHighlight = {
                 enabled = false,

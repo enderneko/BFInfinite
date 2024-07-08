@@ -13,6 +13,7 @@ local indicators = {
     "targetCounter",
     "portrait",
     "castBar",
+    "raidIcon",
     "targetHighlight",
     "mouseoverHighlight",
     {"auras", "buffs", "HELPFUL"},

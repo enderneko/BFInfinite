@@ -14,6 +14,7 @@ local indicators = {
     "levelText",
     "targetCounter",
     "rangeText",
+    "raidIcon",
     "targetHighlight",
     "mouseoverHighlight",
     {"auras", "buffs", "HELPFUL"},

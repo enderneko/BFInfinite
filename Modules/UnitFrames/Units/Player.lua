@@ -21,6 +21,7 @@ local indicators = {
     "targetCounter",
     "statusTimer",
     "statusIcon",
+    "raidIcon",
     "targetHighlight",
     "mouseoverHighlight",
     {"auras", "buffs", "HELPFUL"},

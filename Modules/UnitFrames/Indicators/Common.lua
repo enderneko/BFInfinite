@@ -24,6 +24,7 @@ local builders = {
     rangeText = UF.CreateRangeText,
     statusTimer = UF.CreateStatusTimer,
     statusIcon = UF.CreateStatusIcon,
+    raidIcon = UF.CreateRaidIcon,
     targetHighlight = UF.CreateTargetHighlight,
     mouseoverHighlight = UF.CreateMouseoverHighlight,
     auras = UF.CreateAuras,

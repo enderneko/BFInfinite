@@ -154,7 +154,6 @@ local function StatusIcon_Enable(self)
     self:RegisterEvent("PARTY_MEMBER_DISABLE", UpdateStatus)
     self:RegisterEvent("PLAYER_ENTERING_WORLD", CheckBattleground)
 
-    self:Show()
     CheckBattleground(self)
 end
 
