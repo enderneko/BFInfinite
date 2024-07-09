@@ -591,9 +591,13 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     -- latency
     UpdateLatency(self, "UNIT_SPELLCAST_START", unitId)
 
+    if self.showDuration then
+        self.durationText:Show()
+    end
+    if self.showName then
+        AW.SetText(self.nameText, name, self.nameTextLength)
+    end
     self.status:Hide()
-    self.durationText:Show()
-    AW.SetText(self.nameText, name, self.nameTextLength)
     self.icon:SetTexture(texture or 134400)
     self.bar:SetMinMaxValues(0, self.duration)
     self.bar:SetValue(self.current)
@@ -659,20 +663,20 @@ end
 ---------------------------------------------------------------------
 -- base
 ---------------------------------------------------------------------
-local function CastBar_SetBackgroudColor(self, color)
-    self:SetBackdropColor(unpack(color))
-end
+-- local function CastBar_SetBackgroudColor(self, color)
+--     self:SetBackdropColor(unpack(color))
+-- end
 
-local function CastBar_SetBorderColor(self, color)
-    self:SetBackdropBorderColor(unpack(color))
-    self.gap:SetColorTexture(unpack(color))
-end
+-- local function CastBar_SetBorderColor(self, color)
+--     self:SetBackdropBorderColor(unpack(color))
+--     self.gap:SetColorTexture(unpack(color))
+-- end
 
-local function CastBar_SetPipsColor(self, color)
-    for i, pip in pairs(self.pips) do
-        pip.texture:SetVertexColor(AW.GetColorRGB(map[i], PIP_START_ALPHA))
-    end
-end
+-- local function CastBar_SetPipsColor(self, color)
+--     for i, pip in pairs(self.pips) do
+--         pip.texture:SetVertexColor(AW.GetColorRGB(map[i], PIP_START_ALPHA))
+--     end
+-- end
 
 local function CastBar_SetTexture(self, texture)
     texture = U.GetBarTexture(texture)
@@ -685,19 +689,23 @@ local function CastBar_SetTexture(self, texture)
 end
 
 local function CastBar_UpdateNameText(self, config, showIcon)
+    self.nameText:SetShown(config.enabled)
     U.SetFont(self.nameText, config.font)
     AW.LoadWidgetPosition(self.nameText, config.position, showIcon and self.icon)
     self.nameText:SetTextColor(unpack(config.color))
     self.nameTextLength = config.length
+    self.showName = config.enabled
 end
 
 local function CastBar_UpdateDurationText(self, config)
+    self.durationText:SetShown(config.enabled)
     U.SetFont(self.durationText, config.font)
     AW.LoadWidgetPosition(self.durationText, config.position)
     self.durationText:SetTextColor(unpack(config.color))
     self.durationFormat = config.format
     self.delayedDurationFormat = "|cffff0000%s%.2f|r "..config.format
     self.showDelay = config.showDelay
+    self.showDuration = config.enabled
 end
 
 local function CastBar_SetIconShown(self, show)
@@ -715,6 +723,13 @@ local function CastBar_SetIconShown(self, show)
 end
 
 local function CastBar_UpdateSpark(self, config)
+    if not config.enabled then
+        self.spark:Hide()
+        return
+    end
+
+    self.spark:Show()
+
     self.spark:ClearAllPoints()
     self.spark:SetPoint("RIGHT", self.bar:GetStatusBarTexture())
     if config.height == 0 then
@@ -793,26 +808,29 @@ local function CastBar_LoadConfig(self, config)
 
     AW.SetFrameLevel(self, config.frameLevel, self.root)
 
-    self:SetTexture(config.texture)
-    self:SetBackgroundColor(config.bgColor)
-    self:SetBorderColor(config.borderColor)
+    CastBar_SetTexture(self, config.texture)
+
+    self:SetBackdropColor(AW.UnpackColor(config.bgColor))
+    self:SetBackdropBorderColor(AW.UnpackColor(config.borderColor))
+    self.gap:SetColorTexture(AW.UnpackColor(config.borderColor))
+
     self.bar:SetStatusBarColor(unpack(config.colors.normal))
     self.bar.uninterruptible:SetVertexColor(unpack(config.colors.uninterruptible))
 
     AW.SetFadeInOutAnimationDuration(self, config.fadeDuration)
 
-    self:UpdateNameText(config.nameText, config.showIcon)
-    self:UpdateDurationText(config.durationText)
-    self:SetIconShown(config.showIcon)
-    self:UpdateSpark(config.spark)
+    CastBar_UpdateNameText(self, config.nameText, config.showIcon)
+    CastBar_UpdateDurationText(self, config.durationText)
+    CastBar_SetIconShown(self, config.showIcon)
+    CastBar_UpdateSpark(self, config.spark)
 
     if self.root.hasCastBarTicks then
-        self:UpdateTicks(config.ticks)
+        CastBar_UpdateTicks(self, config.ticks)
         self.ticksConfig = config.ticks
     end
 
     if self.root.hasLatency then
-        self:UpdateLatency(config.latency)
+        CastBar_UpdateLatency(self, config.latency)
     end
 
     self.failedColor = config.colors.failed
@@ -912,16 +930,16 @@ function UF.CreateCastBar(parent, name)
     frame.Update = CastBar_Update
     frame.Enable = CastBar_Enable
     frame.Disable = CastBar_Disable
-    frame.SetTexture = CastBar_SetTexture
-    frame.SetBorderColor = CastBar_SetBorderColor
-    frame.SetBackgroundColor = CastBar_SetBackgroudColor
-    frame.UpdateNameText = CastBar_UpdateNameText
-    frame.UpdateDurationText = CastBar_UpdateDurationText
-    frame.SetIconShown = CastBar_SetIconShown
-    frame.UpdateSpark = CastBar_UpdateSpark
-    frame.UpdateTicks = CastBar_UpdateTicks
-    frame.UpdateLatency = CastBar_UpdateLatency
-    frame.SetPipsColor = CastBar_SetPipsColor
+    -- frame.SetTexture = CastBar_SetTexture
+    -- frame.SetBorderColor = CastBar_SetBorderColor
+    -- frame.SetBackgroundColor = CastBar_SetBackgroudColor
+    -- frame.UpdateNameText = CastBar_UpdateNameText
+    -- frame.UpdateDurationText = CastBar_UpdateDurationText
+    -- frame.SetIconShown = CastBar_SetIconShown
+    -- frame.UpdateSpark = CastBar_UpdateSpark
+    -- frame.UpdateTicks = CastBar_UpdateTicks
+    -- frame.UpdateLatency = CastBar_UpdateLatency
+    -- frame.SetPipsColor = CastBar_SetPipsColor
     frame.LoadConfig = CastBar_LoadConfig
 
     -- pixel perfect

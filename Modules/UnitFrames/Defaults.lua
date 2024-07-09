@@ -183,12 +183,14 @@ local defaults = {
                 fadeDuration = 1,
                 showIcon = true,
                 nameText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
                 },
                 durationText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
@@ -196,9 +198,10 @@ local defaults = {
                     showDelay = false,
                 },
                 spark = {
+                    enabled = true,
                     texture = AW.GetPlainTexture(),
                     color = AW.GetColorTable("cast_spark"),
-                    width = 2,
+                    width = 1,
                     height = 0,
                 },
                 colors = {
@@ -559,12 +562,14 @@ local defaults = {
                 fadeDuration = 1,
                 showIcon = true,
                 nameText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
                 },
                 durationText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
@@ -572,9 +577,10 @@ local defaults = {
                     showDelay = false,
                 },
                 spark = {
+                    enabled = true,
                     texture = AW.GetPlainTexture(),
                     color = AW.GetColorTable("cast_spark"),
-                    width = 2,
+                    width = 1,
                     height = 0,
                 },
                 colors = {
@@ -974,12 +980,14 @@ local defaults = {
                 fadeDuration = 1,
                 showIcon = true,
                 nameText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
                 },
                 durationText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
@@ -987,9 +995,10 @@ local defaults = {
                     showDelay = false,
                 },
                 spark = {
+                    enabled = true,
                     texture = AW.GetPlainTexture(),
                     color = AW.GetColorTable("cast_spark"),
-                    width = 2,
+                    width = 1,
                     height = 0,
                 },
                 colors = {
@@ -1290,12 +1299,14 @@ local defaults = {
                 fadeDuration = 1,
                 showIcon = true,
                 nameText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
                 },
                 durationText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
@@ -1303,9 +1314,10 @@ local defaults = {
                     showDelay = false,
                 },
                 spark = {
+                    enabled = true,
                     texture = AW.GetPlainTexture(),
                     color = AW.GetColorTable("cast_spark"),
-                    width = 2,
+                    width = 1,
                     height = 0,
                 },
                 colors = {
@@ -1600,12 +1612,14 @@ local defaults = {
                 fadeDuration = 1,
                 showIcon = true,
                 nameText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
                 },
                 durationText = {
+                    enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
@@ -1613,9 +1627,10 @@ local defaults = {
                     showDelay = false,
                 },
                 spark = {
+                    enabled = true,
                     texture = AW.GetPlainTexture(),
                     color = AW.GetColorTable("cast_spark"),
-                    width = 2,
+                    width = 1,
                     height = 0,
                 },
                 colors = {
