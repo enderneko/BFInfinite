@@ -57,14 +57,23 @@ end
 -- backdrop
 ---------------------------------------------------------------------
 function AW.SetDefaultBackdrop(frame, borderSize)
+    if not frame.SetBackdrop then
+        Mixin(frame, BackdropTemplateMixin)
+    end
     frame:SetBackdrop({bgFile=AW.GetPlainTexture(), edgeFile=AW.GetPlainTexture(), edgeSize=AW.ConvertPixelsForRegion(borderSize or 1, frame)})
 end
 
 function AW.SetDefaultBackdrop_NoBackground(frame, borderSize)
+    if not frame.SetBackdrop then
+        Mixin(frame, BackdropTemplateMixin)
+    end
     frame:SetBackdrop({edgeFile=AW.GetPlainTexture(), edgeSize=AW.ConvertPixelsForRegion(borderSize or 1, frame)})
 end
 
 function AW.SetDefaultBackdrop_NoBorder(frame)
+    if not frame.SetBackdrop then
+        Mixin(frame, BackdropTemplateMixin)
+    end
     frame:SetBackdrop({bgFile=AW.GetPlainTexture()})
 end
 

@@ -308,6 +308,12 @@ local defaults = {
                 size = 1,
                 color = {1, 1, 1, 0.6},
             },
+            threatGlow = {
+                enabled = true,
+                frameLevel = 1,
+                size = 3,
+                alpha = 1,
+            },
             buffs = {
                 enabled = false,
                 position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
@@ -652,6 +658,12 @@ local defaults = {
                 frameLevel = 5,
                 size = 1,
                 color = {1, 1, 1, 0.6},
+            },
+            threatGlow = {
+                enabled = true,
+                frameLevel = 1,
+                size = 3,
+                alpha = 1,
             },
             buffs = {
                 enabled = true,
@@ -1006,6 +1018,12 @@ local defaults = {
                 size = 1,
                 color = {1, 1, 1, 0.6},
             },
+            threatGlow = {
+                enabled = true,
+                frameLevel = 1,
+                size = 3,
+                alpha = 1,
+            },
             buffs = {
                 enabled = false,
                 position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
@@ -1316,6 +1334,12 @@ local defaults = {
                 size = 1,
                 color = {1, 1, 1, 0.6},
             },
+            threatGlow = {
+                enabled = true,
+                frameLevel = 1,
+                size = 3,
+                alpha = 1,
+            },
             buffs = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "TOPLEFT", 0, 1},
@@ -1619,6 +1643,12 @@ local defaults = {
                 frameLevel = 5,
                 size = 1,
                 color = {1, 1, 1, 0.6},
+            },
+            threatGlow = {
+                enabled = true,
+                frameLevel = 1,
+                size = 3,
+                alpha = 1,
             },
             buffs = {
                 enabled = false,

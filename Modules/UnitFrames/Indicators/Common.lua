@@ -27,6 +27,7 @@ local builders = {
     raidIcon = UF.CreateRaidIcon,
     targetHighlight = UF.CreateTargetHighlight,
     mouseoverHighlight = UF.CreateMouseoverHighlight,
+    threatGlow = UF.CreateThreatGlow,
     auras = UF.CreateAuras,
 }
 

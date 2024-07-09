@@ -24,6 +24,7 @@ local indicators = {
     "raidIcon",
     "targetHighlight",
     "mouseoverHighlight",
+    "threatGlow",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffs", "HARMFUL"},
 }
