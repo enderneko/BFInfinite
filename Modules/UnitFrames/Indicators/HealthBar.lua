@@ -1,6 +1,7 @@
 local _, BFI = ...
 local U = BFI.utils
 local AW = BFI.AW
+local C = BFI.M_C
 local UF = BFI.M_UF
 
 ---------------------------------------------------------------------
@@ -14,6 +15,8 @@ local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitGetIncomingHeals = UnitGetIncomingHeals
 local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
+local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
+local GetAuraSlots = C_UnitAuras.GetAuraSlots
 
 ---------------------------------------------------------------------
 -- health
@@ -286,6 +289,53 @@ local function UpdateHealPrediction(self, event, unitId)
 end
 
 ---------------------------------------------------------------------
+-- dispel highlight
+---------------------------------------------------------------------
+local function ForEachAura(self, continuationToken, ...)
+    -- continuationToken is the first return value of GetAuraSlots()
+    local n = select("#", ...)
+    for i = 1, n do
+        local slot = select(i, ...)
+        local auraData = GetAuraDataBySlot(self.root.displayedUnit, slot)
+        local auraType = auraData.dispelName -- TODO: bleeds
+        if auraType and auraType ~= "" then
+            self.dispelTypes[auraType] = true
+        end
+    end
+end
+
+local dispel_order = {"Magic", "Curse", "Disease", "Poison"}
+
+local function UpdateDispelHighlight(self, event, unitId)
+    local unit = self.root.displayedUnit
+    if unitId and unit ~= unitId then return end
+
+    if not self.dispelHighlightEnabled then
+        self.dispelHighlight:Hide()
+        return
+    end
+
+    -- reset
+    wipe(self.dispelTypes)
+
+    -- iterate
+    ForEachAura(self, GetAuraSlots(self.root.displayedUnit, "HARMFUL"))
+
+    -- show
+    local found
+
+    for _, type in pairs(dispel_order) do
+        if self.dispelTypes[type] then
+            self.dispelHighlight:SetVertexColor(C.GetAuraTypeColor(type))
+            found = true
+            break
+        end
+    end
+
+    self.dispelHighlight:SetShown(found)
+end
+
+---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
 local function HealthBar_Update(self)
@@ -294,6 +344,7 @@ local function HealthBar_Update(self)
     UpdateHealth(self)
     UpdateShield(self)
     UpdateHealPrediction(self)
+    UpdateDispelHighlight(self)
 end
 
 ---------------------------------------------------------------------
@@ -307,6 +358,12 @@ local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
     self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", UpdateHealAbsorb)
     self:RegisterEvent("UNIT_HEAL_PREDICTION", UpdateHealPrediction)
+
+    if self.dispelHighlightEnabled then
+        self:RegisterEvent("UNIT_AURA", UpdateDispelHighlight)
+    else
+        self:UnregisterEvent("UNIT_AURA")
+    end
 
     self:Show()
     if self:IsVisible() then self:Update() end
@@ -351,6 +408,11 @@ local function HealPrediction_SetColor(self, color)
     self.healPrediction:SetVertexColor(unpack(color))
 end
 
+local function DispelHighlight_Setup(self, config)
+    self.dispelHighlight:SetBlendMode(config.blendMode)
+    self.dispelHighlight:SetAlpha(config.alpha)
+end
+
 local function MouseoverHighlight_SetColor(self, color)
     self.mouseoverHighlight:SetColorTexture(AW.UnpackColor(color))
 end
@@ -366,10 +428,10 @@ local function MouseoverHighlight_OnLeave(self)
 end
 
 local function HealthBar_SetTexture(self, texture)
-    texture = U.GetBarTexture(texture)
     self.fg:SetTexture(texture)
     self.loss:SetTexture(texture)
     self.healPrediction:SetTexture(texture)
+    self.dispelHighlight:SetTexture(texture)
 end
 
 local function HealthBar_UpdatePixels(self)
@@ -409,6 +471,8 @@ local function HealthBar_LoadConfig(self, config)
         HealPrediction_SetColor(self, config.healPrediction.color)
     end
 
+    DispelHighlight_Setup(self, config.dispelHighlight)
+
     self.color = config.color
     self.lossColor = config.lossColor
     self.shieldReverseFill = config.shield.reverseFill
@@ -419,6 +483,7 @@ local function HealthBar_LoadConfig(self, config)
     self.healPredictionEnabled = config.healPrediction.enabled
     self.healPredictionUseCustomColor = config.healPrediction.useCustomColor
     self.mouseoverHighlightEnabled = config.mouseoverHighlight.enabled
+    self.dispelHighlightEnabled = config.dispelHighlight.enabled
 end
 
 ---------------------------------------------------------------------
@@ -497,6 +562,14 @@ function UF.CreateHealthBar(parent, name)
 
     parent:HookScript("OnEnter", MouseoverHighlight_OnEnter)
     parent:HookScript("OnLeave", MouseoverHighlight_OnLeave)
+
+    -- dispel highlight
+    local dispelHighlight = bar:CreateTexture(name.."DispelHighlight", "ARTWORK", nil, 1)
+    bar.dispelHighlight = dispelHighlight
+    dispelHighlight:SetAllPoints(bar.fg)
+    dispelHighlight:Hide()
+
+    bar.dispelTypes = {}
 
     -- functions
     bar.Update = HealthBar_Update

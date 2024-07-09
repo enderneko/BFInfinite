@@ -70,6 +70,11 @@ local defaults = {
                     enabled = true,
                     color = AW.GetColorTable("absorb"),
                 },
+                dispelHighlight = {
+                    enabled = false,
+                    alpha = 1,
+                    blendMode = "ADD",
+                },
             },
             powerBar = {
                 enabled = true,
@@ -463,6 +468,11 @@ local defaults = {
                     enabled = true,
                     color = AW.GetColorTable("absorb"),
                 },
+                dispelHighlight = {
+                    enabled = false,
+                    alpha = 1,
+                    blendMode = "ADD",
+                },
             },
             powerBar = {
                 enabled = true,
@@ -853,6 +863,11 @@ local defaults = {
                     enabled = false,
                     color = AW.GetColorTable("absorb"),
                 },
+                dispelHighlight = {
+                    enabled = false,
+                    alpha = 1,
+                    blendMode = "ADD",
+                },
             },
             powerBar = {
                 enabled = true,
@@ -1151,6 +1166,11 @@ local defaults = {
                 overabsorbGlow = {
                     enabled = true,
                     color = AW.GetColorTable("absorb"),
+                },
+                dispelHighlight = {
+                    enabled = false,
+                    alpha = 1,
+                    blendMode = "ADD",
                 },
             },
             powerBar = {
@@ -1456,6 +1476,11 @@ local defaults = {
                 overabsorbGlow = {
                     enabled = false,
                     color = AW.GetColorTable("absorb"),
+                },
+                dispelHighlight = {
+                    enabled = false,
+                    alpha = 1,
+                    blendMode = "ADD",
                 },
             },
             powerBar = {

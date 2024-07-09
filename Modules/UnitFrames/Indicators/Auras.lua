@@ -191,9 +191,9 @@ local function HandleUpdateInfo(self, updateInfo)
     end
 end
 
--------------------------------------------------
+---------------------------------------------------------------------
 -- ForEachAura
--------------------------------------------------
+---------------------------------------------------------------------
 local function ForEachAura(self, continuationToken, ...)
     -- continuationToken is the first return value of GetAuraSlots()
     local n = select("#", ...)
