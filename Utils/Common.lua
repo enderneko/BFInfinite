@@ -160,7 +160,6 @@ function U.ConvertTable(t, value)
     return temp
 end
 
-local GetSpellInfo = GetSpellInfo
 function U.ConvertSpellTable(t, convertIdToName)
     if not convertIdToName then
         return U.ConvertTable(t)
@@ -168,7 +167,7 @@ function U.ConvertSpellTable(t, convertIdToName)
 
     local temp = {}
     for k, v in ipairs(t) do
-        local name = GetSpellInfo(v)
+        local name = U.GetSpellInfo(v)
         if name then
             temp[name] = k
         end

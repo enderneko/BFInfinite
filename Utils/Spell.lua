@@ -4,6 +4,20 @@ local BFI = select(2, ...)
 local U = BFI.utils
 
 ---------------------------------------------------------------------
+-- spells
+---------------------------------------------------------------------
+function U.GetSpellInfo(spellId)
+    local info = C_Spell.GetSpellInfo(spellId)
+    if not info then return end
+
+    -- if not info.iconID then
+    --     info.iconID = C_Spell.GetSpellTexture(spellId)
+    -- end
+
+    return info.name, info.iconID
+end
+
+---------------------------------------------------------------------
 -- auras
 ---------------------------------------------------------------------
 function U.FindAuraById(unit, filter, spellId)

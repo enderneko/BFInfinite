@@ -499,8 +499,7 @@ local function CreateColorGrid(color)
     return grid
 end
 
-local localizedClass = {}
-FillLocalizedClassList(localizedClass)
+local localizedClass = LocalizedClassList()
 
 local preset1 = {
     {"DEATHKNIGHT", localizedClass["DEATHKNIGHT"]},

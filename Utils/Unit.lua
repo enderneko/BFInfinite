@@ -107,15 +107,20 @@ local UnitInRange = UnitInRange
 local UnitCanAssist = UnitCanAssist
 local UnitCanAttack = UnitCanAttack
 local UnitCanCooperate = UnitCanCooperate
-local IsSpellInRange = IsSpellInRange
-local IsItemInRange = IsItemInRange
+local IsSpellInRange = (C_Spell and C_Spell.IsSpellInRange) and C_Spell.IsSpellInRange or IsSpellInRange
+local IsItemInRange = (C_Spell and C_Item.IsItemInRange) and C_Item.IsItemInRange or IsItemInRange
 local CheckInteractDistance = CheckInteractDistance
 local UnitIsDead = UnitIsDead
-local GetSpellTabInfo = GetSpellTabInfo
-local GetNumSpellTabs = GetNumSpellTabs
-local GetSpellBookItemName = GetSpellBookItemName
-local UnitClassBase = UnitClassBase
-local BOOKTYPE_SPELL = BOOKTYPE_SPELL
+local IsSpellKnown = IsSpellKnown
+
+local UnitInSamePhase
+if UnitPhaseReason then
+    UnitInSamePhase = function(unit)
+        return not UnitPhaseReason(unit)
+    end
+else
+    UnitInSamePhase = UnitInPhase
+end
 
 local playerClass = UnitClassBase("player")
 
@@ -124,15 +129,23 @@ local friendSpells = {
     -- ["DEMONHUNTER"] = ,
     ["DRUID"] = BFI.vars.isRetail and 8936 or 5185,
     ["EVOKER"] = 361469,
-    ["HUNTER"] = 136,
+    -- ["HUNTER"] = 136,
     ["MAGE"] = 1459,
     ["MONK"] = 116670,
     ["PALADIN"] = BFI.vars.isRetail and 19750 or 635,
     ["PRIEST"] = BFI.vars.isRetail and 2061 or 2050,
-    ["ROGUE"] = 2764,
+    ["ROGUE"] = BFI.vars.isWrath and 57934,
     ["SHAMAN"] = BFI.vars.isRetail and 8004 or 331,
     ["WARLOCK"] = 20707,
-    -- ["WARRIOR"] = ,
+    ["WARRIOR"] = 3411,
+}
+
+local deadSpells = {
+    ["EVOKER"] = 361227, -- resurrection range, need separately for evoker
+}
+
+local petSpells = {
+    ["HUNTER"] = 136,
 }
 
 local harmSpells = {
@@ -141,41 +154,41 @@ local harmSpells = {
     ["DRUID"] = 5176,
     ["EVOKER"] = 361469,
     ["HUNTER"] = 75,
-    ["MAGE"] = 116,
+    ["MAGE"] = BFI.vars.isRetail and 116 or 133,
     ["MONK"] = 117952,
     ["PALADIN"] = 20271,
     ["PRIEST"] = BFI.vars.isRetail and 589 or 585,
-    -- ["ROGUE"] = ,
+    ["ROGUE"] = 1752,
     ["SHAMAN"] = BFI.vars.isRetail and 188196 or 403,
     ["WARLOCK"] = 686,
     ["WARRIOR"] = 355,
 }
 
-local friendItems = {
-    ["DEATHKNIGHT"] = 34471,
-    ["DEMONHUNTER"] = 34471,
-    ["DRUID"] = 34471,
-    ["EVOKER"] = 1180, -- 30y
-    ["HUNTER"] = 34471,
-    ["MAGE"] = 34471,
-    ["MONK"] = 34471,
-    ["PALADIN"] = 34471,
-    ["PRIEST"] = 34471,
-    ["ROGUE"] = 34471,
-    ["SHAMAN"] = 34471,
-    ["WARLOCK"] = 34471,
-    ["WARRIOR"] = 34471,
-}
+-- local friendItems = {
+--     ["DEATHKNIGHT"] = 34471,
+--     ["DEMONHUNTER"] = 34471,
+--     ["DRUID"] = 34471,
+--     ["EVOKER"] = 1180, -- 30y
+--     ["HUNTER"] = 34471,
+--     ["MAGE"] = 34471,
+--     ["MONK"] = 34471,
+--     ["PALADIN"] = 34471,
+--     ["PRIEST"] = 34471,
+--     ["ROGUE"] = 34471,
+--     ["SHAMAN"] = 34471,
+--     ["WARLOCK"] = 34471,
+--     ["WARRIOR"] = 34471,
+-- }
 
 local harmItems = {
-    ["DEATHKNIGHT"] = 28767,
+    ["DEATHKNIGHT"] = 28767, -- 40y
     ["DEMONHUNTER"] = 28767,
     ["DRUID"] = 28767,
     ["EVOKER"] = 24268, -- 25y
     ["HUNTER"] = 28767,
     ["MAGE"] = 28767,
     ["MONK"] = 28767,
-    ["PALADIN"] = 28767,
+    ["PALADIN"] = 835, -- 30y
     ["PRIEST"] = 28767,
     ["ROGUE"] = 28767,
     ["SHAMAN"] = 28767,
@@ -183,160 +196,104 @@ local harmItems = {
     ["WARRIOR"] = 28767,
 }
 
-local function GetNumSpells()
-    local _, _, offset, numSpells = GetSpellTabInfo(GetNumSpellTabs())
-    return offset + numSpells
-end
-
-local function FindSpellIndex(spellName)
-    if not spellName or spellName == "" then
-        return nil
-    end
-    for i = 1, GetNumSpells() do
-        local spell = GetSpellBookItemName(i, BOOKTYPE_SPELL)
-        if spell == spellName then
-            return i
-        end
-    end
-    return nil
-end
-
--- do
---     -- NOTE: convert ID to NAME then to INDEX
---     for k, id in pairs(friendSpells) do
---         friendSpells[k] = FindSpellIndex(GetSpellInfo(id))
+-- local FindSpellIndex
+-- if C_SpellBook and C_SpellBook.FindSpellBookSlotForSpell then
+--     FindSpellIndex = function(spellName)
+--         if not spellName or spellName == "" then return end
+--         return C_SpellBook.FindSpellBookSlotForSpell(spellName)
 --     end
---     for k, id in pairs(harmSpells) do
---         harmSpells[k] = FindSpellIndex(GetSpellInfo(id))
+-- else
+--     local function GetNumSpells()
+--         local _, _, offset, numSpells = GetSpellTabInfo(GetNumSpellTabs())
+--         return offset + numSpells
+--     end
+
+--     FindSpellIndex = function(spellName)
+--         if not spellName or spellName == "" then return end
+--         for i = 1, GetNumSpells() do
+--             local spell = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+--             if spell == spellName then
+--                 return i
+--             end
+--         end
 --     end
 -- end
 
-local function UnitInSpellRange(spellIndex, unit)
-    if not spellIndex then return end
-    return IsSpellInRange(spellIndex, BOOKTYPE_SPELL, unit) == 1
+local UnitInSpellRange
+if C_Spell and C_Spell.IsSpellInRange then
+    UnitInSpellRange = function(spellName, unit)
+        return IsSpellInRange(spellName, unit)
+    end
+else
+    UnitInSpellRange = function(spellName, unit)
+        return IsSpellInRange(spellName, unit) == 1
+    end
 end
 
 local rc = CreateFrame("Frame")
 rc:RegisterEvent("SPELLS_CHANGED")
 
-if playerClass == "EVOKER" then
-    local spell_dead, spell_alive, spell_harm
-    rc:SetScript("OnEvent", function()
-        spell_dead = FindSpellIndex(GetSpellInfo(361227))
-        spell_alive = FindSpellIndex(GetSpellInfo(361469))
-        spell_harm = FindSpellIndex(GetSpellInfo(361469))
-    end)
+local spell_friend, spell_pet, spell_harm, spell_dead
+rc:SetScript("OnEvent", function()
+    if friendSpells[playerClass] and IsSpellKnown(friendSpells[playerClass]) then
+        spell_friend = U.GetSpellInfo(friendSpells[playerClass])
+    end
+    if petSpells[playerClass] and IsSpellKnown(petSpells[playerClass]) then
+        spell_pet = U.GetSpellInfo(petSpells[playerClass])
+    end
+    if harmSpells[playerClass] and IsSpellKnown(harmSpells[playerClass]) then
+        spell_harm = U.GetSpellInfo(harmSpells[playerClass])
+    end
+    if deadSpells[playerClass] and IsSpellKnown(deadSpells[playerClass]) then
+        spell_dead = U.GetSpellInfo(deadSpells[playerClass])
+    end
+end)
 
-    -- NOTE: UnitInRange for evoker is around 50y
-    function U.IsInRange(unit, check)
-        if not UnitIsVisible(unit) then
-            return false
-        end
+function U.IsInRange(unit)
+    if not UnitIsVisible(unit) then
+        return false
+    end
 
-        if UnitIsUnit("player", unit) then
-            return true
-        -- elseif not check and U.UnitInGroup(unit) then
-        --     -- NOTE: UnitInRange only works with group players/pets
-        --     local checked
-        --     inRange, checked = UnitInRange(unit)
-        --     if not checked then
-        --         return U.IsInRange(unit, true)
-        --     end
-        --     return inRange
-        else
-            -- UnitCanCooperate works with cross-faction, UnitCanAssist does not
-            if UnitCanAssist("player", unit) or UnitCanCooperate("player", unit) then
-                -- print("CanAssist", unit)
-                if UnitIsDead(unit) then
-                    return UnitInSpellRange(spell_dead, unit) -- 40y
-                else
-                    return UnitInSpellRange(spell_alive, unit) -- 25/30y
+    if UnitIsUnit("player", unit) then
+        return true
+
+    else
+        if UnitCanAssist("player", unit) then
+            if not (UnitIsConnected(unit) and UnitInSamePhase(unit)) then
+                return false
+            end
+
+            if UnitIsDead(unit) then
+                if spell_dead then
+                    return UnitInSpellRange(spell_dead, unit)
                 end
-            elseif UnitCanAttack("player", unit) then
-                -- print("CanAttack", unit)
+            elseif spell_friend then
+                return UnitInSpellRange(spell_friend, unit)
+            end
+
+            local inRange, checked = UnitInRange(unit)
+            if checked then
+                return inRange
+            end
+
+            if UnitIsUnit(unit, "pet") and spell_pet then
+                -- no spell_friend, use spell_pet
+                return UnitInSpellRange(spell_pet, unit)
+            end
+
+        elseif UnitCanAttack("player", unit) then
+            if UnitIsDead(unit) then
+                return CheckInteractDistance(unit, 4) -- 28 yards
+            elseif spell_harm then
                 return UnitInSpellRange(spell_harm, unit)
             end
-
-            -- print("InRange", unit)
-            return UnitInRange(unit)
+            return IsItemInRange(harmItems[playerClass], unit)
         end
-    end
-else
-    local spell_friend, spell_harm
-    rc:SetScript("OnEvent", function()
-        spell_friend = FindSpellIndex(GetSpellInfo(friendSpells[playerClass]))
-        spell_harm = FindSpellIndex(GetSpellInfo(harmSpells[playerClass]))
-    end)
 
-    if BFI.vars.isRetail then
-        function U.IsInRange(unit, check)
-            if not UnitIsVisible(unit) then
-                return false
-            end
-
-            if UnitIsUnit("player", unit) then
-                return true
-            elseif not check and U.UnitInGroup(unit) then
-                -- NOTE: UnitInRange only works with group players/pets --! but not available for PLAYER PET when SOLO
-                local checked
-                inRange, checked = UnitInRange(unit)
-                if not checked then
-                    return U.IsInRange(unit, true)
-                end
-                return inRange
-            else
-                if UnitCanAssist("player", unit) or UnitCanCooperate("player", unit) then
-                    -- print("CanAssist", unit)
-                    if spell_friend then
-                        return UnitInSpellRange(spell_friend, unit)
-                    end
-                elseif UnitCanAttack("player", unit) then
-                    -- print("CanAttack", unit)
-                    if spell_harm then
-                        return UnitInSpellRange(spell_harm, unit)
-                    end
-                end
-
-                -- print("InRange", unit)
-                return UnitInRange(unit)
-            end
+        if not InCombatLockdown() then
+            return CheckInteractDistance(unit, 4) -- 28 yards
         end
-    else
-        function U.IsInRange(unit, check)
-            if not UnitIsVisible(unit) then
-                return false
-            end
 
-            if UnitIsUnit("player", unit) then
-                return true
-            elseif not check and U.UnitInGroup(unit) then
-                -- NOTE: UnitInRange only works with group players/pets --! but not available for PLAYER PET when SOLO
-                local checked
-                inRange, checked = UnitInRange(unit)
-                if not checked then
-                    return U.IsInRange(unit, true)
-                end
-                return inRange
-            else
-                if UnitCanAssist("player", unit) then
-                    -- print("CanAssist", unit)
-                    if spell_friend then
-                        return UnitInSpellRange(spell_friend, unit)
-                    else
-                        return IsItemInRange(friendItems[playerClass], unit)
-                    end
-                elseif UnitCanAttack("player", unit) then
-                    -- print("CanAttack", unit)
-                    if spell_harm then
-                        return UnitInSpellRange(spell_harm, unit)
-                    else
-                        return IsItemInRange(harmItems[playerClass], unit)
-                    end
-                end
-
-                -- print("CheckInteractDistance", unit)
-                return CheckInteractDistance(unit, 4) -- 28 yards
-            end
-        end
+        return true
     end
 end
