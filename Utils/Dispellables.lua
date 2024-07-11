@@ -1,9 +1,10 @@
-local _, BFI = ...
-local UF = BFI.M_UF
-
+---@class BFI
+local BFI = select(2, ...)
+---@class Utils
+local U = BFI.utils
 local dispellable = {}
 
-function UF.CanDispel(debuffType)
+function U.CanDispel(debuffType)
     if not debuffType then return end
     return dispellable[debuffType]
 end
