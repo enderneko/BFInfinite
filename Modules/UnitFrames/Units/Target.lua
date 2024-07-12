@@ -24,8 +24,9 @@ local indicators = {
     "mouseoverHighlight",
     "threatGlow",
     {"auras", "buffs", "HELPFUL"},
-    {"auras", "debuffsByMe", "HARMFUL", "castByMe"},
-    {"auras", "debuffsByOthers", "HARMFUL", "castByOthers"},
+    {"auras", "debuffs", "HARMFUL", true},
+    -- {"auras", "debuffsByMe", "HARMFUL", "castByMe"},
+    -- {"auras", "debuffsByOthers", "HARMFUL", "castByOthers"},
 }
 
 ---------------------------------------------------------------------

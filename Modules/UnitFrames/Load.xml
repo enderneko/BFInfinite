@@ -3,7 +3,6 @@
     <Script file="Defaults.lua"/>
     <Script file="UnitButton.lua"/>
     <Include file="UnitButton.xml"/>
-    <Script file="Dispellables.lua"/>
     <!-- indicators -->
     <Include file="Indicators\AuraCooldown.xml"/>
     <Script file="Indicators\Aura.lua"/>

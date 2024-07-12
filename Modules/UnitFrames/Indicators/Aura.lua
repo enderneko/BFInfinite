@@ -154,7 +154,7 @@ local function UpdateDuration(self, elapsed)
     end
 end
 
-local function Aura_SetCooldown(self, start, duration, count, icon, auraType)
+local function Aura_SetCooldown(self, start, duration, count, icon, auraType, desaturated)
     if duration == 0 then
         if self.cooldown then self.cooldown:Hide() end
         self.duration:SetText("")
@@ -180,6 +180,7 @@ local function Aura_SetCooldown(self, start, duration, count, icon, auraType)
         self:SetScript("OnUpdate", UpdateDuration)
     end
 
+    self:SetDesaturated(desaturated)
     self:SetBackdropBorderColor(C.GetAuraTypeColor(auraType))
     self.stack:SetText((count == 0 or count == 1) and "" or count)
     self.icon:SetTexture(icon)
