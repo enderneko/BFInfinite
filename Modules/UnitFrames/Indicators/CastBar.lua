@@ -1,4 +1,5 @@
-local _, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
 local UF = BFI.M_UF
@@ -71,9 +72,9 @@ end
 do
     local temp = {}
     for id, ticks in pairs(channeledSpellTicks) do
-        local name = GetSpellInfo(id)
+        local name = U.GetSpellInfo(id)
         if name then
-            temp[GetSpellInfo(id)] = ticks
+            temp[name] = ticks
         else
             BFI.Debug("|cffabababChanneledSpellTicks INVALID|r", id)
         end
@@ -133,7 +134,7 @@ if BFI.vars.playerClass == "PRIEST" then
         return baseTicks + bonusTicks
     end
 
-    channeledSpellTicks[GetSpellInfo(47540)] = GetPenanceTicks
+    channeledSpellTicks[U.GetSpellInfo(47540)] = GetPenanceTicks
 end
 
 ---------------------------------------------------------------------
