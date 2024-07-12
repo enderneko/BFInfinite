@@ -14,6 +14,7 @@ local indicators = {
     "portrait",
     "castBar",
     "raidIcon",
+    "roleIcon",
     "targetHighlight",
     "mouseoverHighlight",
     "threatGlow",

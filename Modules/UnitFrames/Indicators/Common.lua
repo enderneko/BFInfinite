@@ -25,6 +25,7 @@ local builders = {
     statusTimer = UF.CreateStatusTimer,
     statusIcon = UF.CreateStatusIcon,
     raidIcon = UF.CreateRaidIcon,
+    roleIcon = UF.CreateRoleIcon,
     targetHighlight = UF.CreateTargetHighlight,
     mouseoverHighlight = UF.CreateMouseoverHighlight,
     threatGlow = UF.CreateThreatGlow,

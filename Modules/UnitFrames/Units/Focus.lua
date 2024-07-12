@@ -15,6 +15,7 @@ local indicators = {
     "targetCounter",
     "rangeText",
     "raidIcon",
+    "roleIcon",
     "targetHighlight",
     "mouseoverHighlight",
     "threatGlow",
