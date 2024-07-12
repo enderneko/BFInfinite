@@ -26,6 +26,7 @@ local builders = {
     statusIcon = UF.CreateStatusIcon,
     raidIcon = UF.CreateRaidIcon,
     roleIcon = UF.CreateRoleIcon,
+    factionIcon = UF.CreateFactionIcon,
     targetHighlight = UF.CreateTargetHighlight,
     mouseoverHighlight = UF.CreateMouseoverHighlight,
     threatGlow = UF.CreateThreatGlow,

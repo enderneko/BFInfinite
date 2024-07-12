@@ -23,6 +23,7 @@ local indicators = {
     "statusIcon",
     "raidIcon",
     "roleIcon",
+    "factionIcon",
     "targetHighlight",
     "mouseoverHighlight",
     "threatGlow",

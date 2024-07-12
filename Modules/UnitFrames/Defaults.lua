@@ -301,11 +301,18 @@ local defaults = {
             },
             roleIcon = {
                 enabled = false,
-                position = {"CENTER", "TOPLEFT", 0, 0},
+                position = {"CENTER", "TOPRIGHT", 0, 0},
                 frameLevel = 10,
                 width = 16,
                 height = 16,
                 hideDamager = false,
+            },
+            factionIcon = {
+                enabled = true,
+                position = {"CENTER", "TOPLEFT", 0, 0},
+                frameLevel = 10,
+                width = 16,
+                height = 16,
             },
             targetHighlight = {
                 enabled = false,
@@ -668,6 +675,13 @@ local defaults = {
                 width = 16,
                 height = 16,
                 hideDamager = false,
+            },
+            factionIcon = {
+                enabled = true,
+                position = {"CENTER", "TOPRIGHT", 0, 0},
+                frameLevel = 10,
+                width = 16,
+                height = 16,
             },
             targetHighlight = {
                 enabled = false,

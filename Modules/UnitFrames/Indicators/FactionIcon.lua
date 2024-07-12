@@ -7,45 +7,44 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 -- functions
 ---------------------------------------------------------------------
-local UnitGroupRolesAssigned = UnitGroupRolesAssigned
+local UnitFactionGroup = UnitFactionGroup
 
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function RoleIcon_Update(self)
+local function FactionIcon_Update(self)
     local unit = self.root.unit
-    local role = UnitGroupRolesAssigned(unit)
+    local faction = UnitFactionGroup(unit)
 
-    if role == "NONE" or (self.hideDamager and role == "DAMAGER") then
-        self:Hide()
-    else
-        self.icon:SetTexture(AW.GetTexture(role))
+    if faction == "Horde" or faction == "Alliance" then
+        self.icon:SetTexture(AW.GetTexture(faction))
         self:Show()
+    else
+        self:Hide()
     end
 end
 
 ---------------------------------------------------------------------
 -- enable
 ---------------------------------------------------------------------
-local function RoleIcon_Enable(self)
-    self:RegisterEvent("GROUP_ROSTER_UPDATE", RoleIcon_Update)
+local function FactionIcon_Enable(self)
+    -- self:RegisterEvent("UNIT_FACTION", FactionIcon_Update)
     if self.root:IsVisible() then self:Update() end
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
-local function RoleIcon_LoadConfig(self, config)
+local function FactionIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     AW.LoadWidgetPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
-    self.hideDamager = config.hideDamager
 end
 
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
-function UF.CreateRoleIcon(parent, name)
+function UF.CreateFactionIcon(parent, name)
     local frame = CreateFrame("Frame", name, parent)
     frame.root = parent
     frame:Hide()
@@ -59,9 +58,9 @@ function UF.CreateRoleIcon(parent, name)
     BFI.AddEventHandler(frame)
 
     -- functions
-    frame.Enable = RoleIcon_Enable
-    frame.Update = RoleIcon_Update
-    frame.LoadConfig = RoleIcon_LoadConfig
+    frame.Enable = FactionIcon_Enable
+    frame.Update = FactionIcon_Update
+    frame.LoadConfig = FactionIcon_LoadConfig
 
     return frame
 end
