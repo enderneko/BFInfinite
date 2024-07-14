@@ -74,6 +74,7 @@ local defaults = {
                     enabled = false,
                     alpha = 1,
                     blendMode = "ADD",
+                    dispellable = true,
                 },
             },
             powerBar = {

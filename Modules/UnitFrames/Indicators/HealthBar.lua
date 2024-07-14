@@ -326,9 +326,11 @@ local function UpdateDispelHighlight(self, event, unitId)
 
     for _, type in pairs(dispel_order) do
         if self.dispelTypes[type] then
-            self.dispelHighlight:SetVertexColor(C.GetAuraTypeColor(type))
-            found = true
-            break
+            if not self.dispelHighlightOnlyDispellable or U.CanDispel(type) then
+                self.dispelHighlight:SetVertexColor(C.GetAuraTypeColor(type))
+                found = true
+                break
+            end
         end
     end
 
@@ -484,6 +486,7 @@ local function HealthBar_LoadConfig(self, config)
     self.healPredictionUseCustomColor = config.healPrediction.useCustomColor
     self.mouseoverHighlightEnabled = config.mouseoverHighlight.enabled
     self.dispelHighlightEnabled = config.dispelHighlight.enabled
+    self.dispelHighlightOnlyDispellable = config.dispelHighlight.dispellable
 end
 
 ---------------------------------------------------------------------
