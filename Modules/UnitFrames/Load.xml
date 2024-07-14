@@ -28,6 +28,7 @@
     <Script file="Indicators\RaidIcon.lua"/>
     <Script file="Indicators\RoleIcon.lua"/>
     <Script file="Indicators\FactionIcon.lua"/>
+    <Script file="Indicators\RestingIndicator.lua"/>
     <Script file="Indicators\TargetHighlight.lua"/>
     <Script file="Indicators\MouseoverHighlight.lua"/>
     <Script file="Indicators\ThreatGlow.lua"/>

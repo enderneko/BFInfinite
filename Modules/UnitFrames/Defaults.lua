@@ -314,6 +314,13 @@ local defaults = {
                 width = 16,
                 height = 16,
             },
+            restingIndicator = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "TOPLEFT", 0, 0},
+                frameLevel = 5,
+                width = 32,
+                height = 16,
+            },
             targetHighlight = {
                 enabled = false,
                 frameLevel = 4,
