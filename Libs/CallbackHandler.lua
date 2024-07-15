@@ -2,20 +2,20 @@
 -- File: CallbackHandler.lua
 -- Author: enderneko (enderneko-dev@outlook.com)
 -- Created : 2024-03-04 17:24 +08:00
--- Modified: 2024-06-02 19:23 +08:00
+-- Modified: 2024-07-15 16:15 +08:00
 ---------------------------------------------------------------------
 
 local _, addon = ...
 
 local callbacks = {
-    -- invoke orders
+    -- invoke priority
     {}, -- 1
     {}, -- 2
     {}, -- 3
 }
 
-function addon.RegisterCallback(eventName, onEventFuncName, onEventFunc, order)
-    local t = order and callbacks[order] or callbacks[2]
+function addon.RegisterCallback(eventName, onEventFuncName, onEventFunc, priority)
+    local t = priority and callbacks[priority] or callbacks[2]
     if not t[eventName] then t[eventName] = {} end
     t[eventName][onEventFuncName] = onEventFunc
 end

@@ -89,15 +89,19 @@ local function UpdatePetButtons(event, unit)
         end
 
         if autoCastAllowed then
-            b.AutoCastable:Show()
+            -- b.AutoCastable:Show()
+            b.AutoCastOverlay:Show()
         else
-            b.AutoCastable:Hide()
+            -- b.AutoCastable:Hide()
+            b.AutoCastOverlay:Hide()
         end
 
         if autoCastEnabled then
-            AutoCastShine_AutoCastStart(b.AutoCastShine)
+            -- AutoCastShine_AutoCastStart(b.AutoCastShine)
+            b.AutoCastOverlay.Shine.Anim:Play()
         else
-            AutoCastShine_AutoCastStop(b.AutoCastShine)
+            -- AutoCastShine_AutoCastStop(b.AutoCastShine)
+            b.AutoCastOverlay.Shine.Anim:Stop()
         end
 
         if name == "PET_ACTION_FOLLOW" or name == "PET_ACTION_WAIT" or name == "PET_ACTION_MOVE_TO"
@@ -148,8 +152,9 @@ end
 ---------------------------------------------------------------------
 -- update bar
 ---------------------------------------------------------------------
-local function UpdatePetBar(module)
-    if module and module ~= "PetBar" then return end
+local function UpdatePetBar(module, which)
+    if module and module ~= "ActionBars" then return end
+    if which and which ~= "pet" then return end
 
     local config = BFI.vars.currentConfigTable.actionBars.barConfig.petbar
 

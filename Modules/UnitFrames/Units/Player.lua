@@ -56,7 +56,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdatePlayer(module, which)
-    if module and module ~= "UnitFrame" then return end
+    if module and module ~= "UnitFrames" then return end
     if which and which ~= "player" then return end
 
     local config = UF.config.player

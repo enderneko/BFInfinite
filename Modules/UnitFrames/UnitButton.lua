@@ -151,7 +151,6 @@ end
 ---------------------------------------------------------------------
 -- events
 ---------------------------------------------------------------------
--- TODO: REFACTOR
 local function UnitButton_RegisterEvents(self)
     -- self:RegisterEvent("GROUP_ROSTER_UPDATE")
 

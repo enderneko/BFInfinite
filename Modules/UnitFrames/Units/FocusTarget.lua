@@ -46,7 +46,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateFocusTarget(module, which)
-    if module and module ~= "UnitFrame" then return end
+    if module and module ~= "UnitFrames" then return end
     if which and which ~= "focustarget" then return end
 
     local config = UF.config.focustarget

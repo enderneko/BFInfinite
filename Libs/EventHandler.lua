@@ -2,7 +2,7 @@
 -- File: EventHandler.lua
 -- Author: enderneko (enderneko-dev@outlook.com)
 -- Created : 2024-03-14 11:46 +08:00
--- Modified: 2024-05-27 12:31 +08:00
+-- Modified: 2024-07-15 16:50 +08:00
 ---------------------------------------------------------------------
 
 local _, addon = ...
@@ -180,7 +180,7 @@ function addon.AddEventHandler(obj)
 
         obj.eventHandler:SetScript("OnEvent", function(self, event, ...)
             for fn in pairs(self.events[event]) do
-                fn(event, ...)
+                fn(self, event, ...)
             end
         end)
 

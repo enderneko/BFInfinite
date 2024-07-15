@@ -393,8 +393,9 @@ local function UpdateBar(bar, general, shared, specific)
     UpdateButton(bar, shared, specific.buttonConfig)
 end
 
-local function UpdateMainBars(module, barName)
-    if module and module ~= "ActionBar" then return end
+local function UpdateMainBars(module, which, barName)
+    if module and module ~= "ActionBars" then return end
+    if which and which ~= "main" then return end
 
     if barName then
         UpdateBar(AB.bars[barName], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[barName])

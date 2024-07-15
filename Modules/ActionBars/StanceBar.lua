@@ -96,8 +96,9 @@ end
 ---------------------------------------------------------------------
 -- update bar
 ---------------------------------------------------------------------
-local function UpdateStanceBar(module)
-    if module and module ~= "StanceBar" then return end
+local function UpdateStanceBar(module, which)
+    if module and module ~= "ActionBars" then return end
+    if which and which ~= "stance" then return end
 
     if InCombatLockdown() then
         AB:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceBar)

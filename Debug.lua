@@ -12,7 +12,7 @@ function BFI.Debug(arg, ...)
     elseif type(arg) == "function" then
         arg(...)
     elseif arg == nil then
-        return true
+        return debugMode
     end
 end
 
