@@ -52,9 +52,15 @@ local function UpdateFocusTarget(module, which)
     local config = UF.config.focustarget
 
     if not config.enabled then
-        UF.DisableIndicators(focustarget)
-        UnregisterUnitWatch(focustarget)
+        if focustarget then
+            UF.DisableIndicators(focustarget)
+            UnregisterUnitWatch(focustarget)
+        end
         return
+    end
+
+    if not focustarget then
+        CreateFocusTarget()
     end
 
     -- setup
@@ -68,8 +74,8 @@ BFI.RegisterCallback("UpdateModules", "UF_FocusTarget", UpdateFocusTarget)
 ---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
-local function InitFocusTarget()
-    CreateFocusTarget()
-    UpdateFocusTarget()
-end
-BFI.RegisterCallback("InitModules", "UF_FocusTarget", InitFocusTarget)
+-- local function InitFocusTarget()
+--     CreateFocusTarget()
+--     UpdateFocusTarget()
+-- end
+-- BFI.RegisterCallback("InitModules", "UF_FocusTarget", InitFocusTarget)

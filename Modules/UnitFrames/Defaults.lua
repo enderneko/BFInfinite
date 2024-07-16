@@ -1785,7 +1785,7 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("InitConfigs", "UnitFrames", function(t)
+BFI.RegisterCallback("UpdateConfigs", "UnitFrames", function(t)
     if not t["unitFrames"] then
         t["unitFrames"] = U.Copy(defaults)
     end

@@ -60,9 +60,15 @@ local function UpdateTarget(module, which)
     local config = UF.config.target
 
     if not config.enabled then
-        UF.DisableIndicators(target)
-        UnregisterUnitWatch(target)
+        if target then
+            UF.DisableIndicators(target)
+            UnregisterUnitWatch(target)
+        end
         return
+    end
+
+    if not target then
+        CreateTarget()
     end
 
     -- setup
@@ -76,8 +82,8 @@ BFI.RegisterCallback("UpdateModules", "UF_Target", UpdateTarget)
 ---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
-local function InitTarget()
-    CreateTarget()
-    UpdateTarget()
-end
-BFI.RegisterCallback("InitModules", "UF_Target", InitTarget)
+-- local function InitTarget()
+--     CreateTarget()
+--     UpdateTarget()
+-- end
+-- BFI.RegisterCallback("InitModules", "UF_Target", InitTarget)

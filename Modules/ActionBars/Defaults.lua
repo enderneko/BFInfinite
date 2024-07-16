@@ -5,6 +5,7 @@ local AB = BFI.M_AB
 
 local defaults = {
     general = {
+        enabled = true,
         frameLevel = 1,
         frameStrata = "LOW",
         flyoutSize = 32,
@@ -144,7 +145,7 @@ do
     end
 end
 
-BFI.RegisterCallback("InitConfigs", "ActionBars", function(t)
+BFI.RegisterCallback("UpdateConfigs", "ActionBars", function(t)
     if not t["actionBars"] then
         t["actionBars"] = U.Copy(defaults)
     end

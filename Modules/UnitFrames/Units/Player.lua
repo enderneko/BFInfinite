@@ -62,9 +62,15 @@ local function UpdatePlayer(module, which)
     local config = UF.config.player
 
     if not config.enabled then
-        UF.DisableIndicators(player)
-        UnregisterAttributeDriver(player, "state-visibility")
+        if player then
+            UF.DisableIndicators(player)
+            UnregisterAttributeDriver(player, "state-visibility")
+        end
         return
+    end
+
+    if not player then
+        CreatePlayer()
     end
 
     -- setup
@@ -78,8 +84,8 @@ BFI.RegisterCallback("UpdateModules", "UF_Player", UpdatePlayer)
 ---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
-local function InitPlayer()
-    CreatePlayer()
-    UpdatePlayer()
-end
-BFI.RegisterCallback("InitModules", "UF_Player", InitPlayer)
+-- local function InitPlayer()
+--     CreatePlayer()
+--     UpdatePlayer()
+-- end
+-- BFI.RegisterCallback("InitModules", "UF_Player", InitPlayer)

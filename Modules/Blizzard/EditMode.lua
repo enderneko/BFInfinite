@@ -28,10 +28,20 @@ function EM.LAYOUTS_UPDATED(event, arg1)
     end
 end
 
+-- hooksecurefunc(GameMenuFrame, "AddButton", function(...)
+--     print(...)
+-- end)
+
 function EM.PLAYER_REGEN(event)
     local editMode = _G.EditModeManagerFrame
     local combatLeave = event == "PLAYER_REGEN_ENABLED"
     -- _G.GameMenuButtonEditMode:SetEnabled(combatLeave)
+
+    -- if combatLeave then
+    --     EditModeManagerFrame:BlockEnteringEditMode(EM)
+    -- else
+    --     EditModeManagerFrame:UnblockEnteringEditMode(EM)
+    -- end
 
     if combatLeave then
         if next(hideFrames) then

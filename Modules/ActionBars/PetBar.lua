@@ -156,7 +156,39 @@ local function UpdatePetBar(module, which)
     if module and module ~= "ActionBars" then return end
     if which and which ~= "pet" then return end
 
-    local config = BFI.vars.currentConfigTable.actionBars.barConfig.petbar
+    local enabled = AB.config.general.enabled
+    local config = AB.config.barConfig.petbar
+
+    if not (enabled and config.enabled) then
+        AB:UnregisterEvent("PET_BAR_UPDATE")
+        AB:UnregisterEvent("UNIT_PET")
+        AB:UnregisterEvent("UNIT_FLAGS")
+        AB:UnregisterEvent("PLAYER_CONTROL_GAINED")
+        AB:UnregisterEvent("PLAYER_CONTROL_LOST")
+        AB:UnregisterEvent("PLAYER_ENTERING_WORLD")
+        AB:UnregisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED")
+        AB:UnregisterEvent("SPELLS_CHANGED")
+        AB:UnregisterEvent("PET_BAR_UPDATE_COOLDOWN")
+        AB:UnregisterEvent("UPDATE_BINDINGS", AssignBindings)
+        return
+    end
+
+    if not petBar then
+        CreatePetBar()
+        AssignBindings()
+    end
+
+    -- events
+    AB:RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
+    AB:RegisterEvent("UNIT_PET", UpdatePetButtons)
+    AB:RegisterEvent("UNIT_FLAGS", UpdatePetButtons)
+    AB:RegisterEvent("PLAYER_CONTROL_GAINED", UpdatePetButtons)
+    AB:RegisterEvent("PLAYER_CONTROL_LOST", UpdatePetButtons)
+    AB:RegisterEvent("PLAYER_ENTERING_WORLD", UpdatePetButtons)
+    AB:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED", UpdatePetButtons)
+    AB:RegisterEvent("SPELLS_CHANGED", UpdatePetButtons)
+    AB:RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
+    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 
     for i = 1, 10 do
         local b
@@ -206,21 +238,21 @@ BFI.RegisterCallback("UpdateModules", "AB_PetBar", UpdatePetBar)
 ---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
-local function InitPetBar()
-    CreatePetBar()
-    UpdatePetBar()
-    AssignBindings()
+-- local function InitPetBar()
+--     CreatePetBar()
+--     UpdatePetBar()
+--     AssignBindings()
 
-    -- events
-    AB:RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
-    AB:RegisterEvent("UNIT_PET", UpdatePetButtons)
-    AB:RegisterEvent("UNIT_FLAGS", UpdatePetButtons)
-    AB:RegisterEvent("PLAYER_CONTROL_GAINED", UpdatePetButtons)
-    AB:RegisterEvent("PLAYER_CONTROL_LOST", UpdatePetButtons)
-    AB:RegisterEvent("PLAYER_ENTERING_WORLD", UpdatePetButtons)
-    AB:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED", UpdatePetButtons)
-    AB:RegisterEvent("SPELLS_CHANGED", UpdatePetButtons)
-    AB:RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
-    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
-end
-BFI.RegisterCallback("InitModules", "AB_PetBar", InitPetBar)
+--     -- events
+--     AB:RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
+--     AB:RegisterEvent("UNIT_PET", UpdatePetButtons)
+--     AB:RegisterEvent("UNIT_FLAGS", UpdatePetButtons)
+--     AB:RegisterEvent("PLAYER_CONTROL_GAINED", UpdatePetButtons)
+--     AB:RegisterEvent("PLAYER_CONTROL_LOST", UpdatePetButtons)
+--     AB:RegisterEvent("PLAYER_ENTERING_WORLD", UpdatePetButtons)
+--     AB:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED", UpdatePetButtons)
+--     AB:RegisterEvent("SPELLS_CHANGED", UpdatePetButtons)
+--     AB:RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
+--     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+-- end
+-- BFI.RegisterCallback("InitModules", "AB_PetBar", InitPetBar)

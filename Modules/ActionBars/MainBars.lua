@@ -54,7 +54,7 @@ local function HandleFlyoutButton(b)
     end
 
     if not InCombatLockdown() then
-        AW.SetSize(b, AB.config.general.flyoutSize)
+        AW.SetSize(b, AB.config.general.flyoutSize) -- TODO: use bar button size instead
     end
 
     b.MasqueSkinned = true -- skip LAB styling
@@ -360,6 +360,16 @@ end
 local BAR1_PAGING_DEFAULT = format("[overridebar] %d; [vehicleui][possessbar] %d; [shapeshift] %d; [bonusbar:5] 11;", GetOverrideBarIndex(), GetVehicleBarIndex(), GetTempShapeshiftBarIndex())
 
 local function UpdateBar(bar, general, shared, specific)
+    bar.enabled = specific.enabled
+    if not specific.enabled then
+        bar:Hide()
+        UnregisterStateDriver(bar, "visibility")
+        return
+    end
+
+    bar:Show()
+    RegisterStateDriver(bar, "visibility", specific.visibility)
+
     -- bar
     AB.ReArrange(bar, specific.size, specific.spacing, specific.buttonsPerLine, specific.num, specific.anchor, specific.orientation)
     AW.LoadPosition(bar, specific.position)
@@ -369,15 +379,6 @@ local function UpdateBar(bar, general, shared, specific)
 
     bar.alpha = specific.alpha
     bar:SetAlpha(specific.alpha)
-
-    bar.enabled = specific.enabled
-    if specific.enabled then
-        bar:Show()
-        RegisterStateDriver(bar, "visibility", specific.visibility)
-    else
-        bar:Hide()
-        UnregisterStateDriver(bar, "visibility")
-    end
 
     -- paging
     local page
@@ -393,9 +394,62 @@ local function UpdateBar(bar, general, shared, specific)
     UpdateButton(bar, shared, specific.buttonConfig)
 end
 
+local init
 local function UpdateMainBars(module, which, barName)
     if module and module ~= "ActionBars" then return end
     if which and which ~= "main" then return end
+
+    if not AB.config.general.enabled then
+        LAB.UnregisterCallback(AB, "OnFlyoutSpells")
+        AB:UnregisterEvent("UPDATE_BINDINGS", AssignBindings)
+        if BFI.vars.isRetail then
+            AB:UnregisterEvent("PET_BATTLE_CLOSE", AssignBindings)
+            AB:UnregisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+        end
+        return
+    end
+
+    if not init then
+        init = true
+
+        _G.BINDING_HEADER_BFI = AW.WrapTextInColor(addonName, "accent")
+
+        local bars = {
+            [2] = L["Action Bar"].." 2 "..L["Button"].." %d",
+            [7] = L["Class Bar"].." 1 "..L["Button"].." %d",
+            [8] = L["Class Bar"].." 2 "..L["Button"].." %d",
+            [9] = L["Class Bar"].." 3 "..L["Button"].." %d",
+            [10] = L["Class Bar"].." 4 "..L["Button"].." %d",
+        }
+
+        for bar, text in pairs(bars) do
+            for slot = 1, 12 do
+                _G[format("BINDING_NAME_BFIACTIONBAR%dBUTTON%d", bar, slot)] = format(text, slot)
+            end
+        end
+
+        for i in pairs(ACTION_BAR_LIST) do
+            CreateBar(i)
+        end
+
+        LAB.RegisterCallback(AB, "OnFlyoutSpells", ActionBar_FlyoutSpells)
+        -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
+        -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
+
+        -- AB:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
+        AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+
+        if BFI.vars.isRetail then
+            AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
+            AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+        end
+
+        if BFI.vars.isRetail and C_PetBattles.IsInBattle() then
+            RemoveBindings()
+        else
+            AssignBindings()
+        end
+    end
 
     if barName then
         UpdateBar(AB.bars[barName], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[barName])
@@ -408,55 +462,48 @@ end
 BFI.RegisterCallback("UpdateModules", "AB_MainBars", UpdateMainBars)
 
 ---------------------------------------------------------------------
--- PLAYER_REGEN_ENABLED
----------------------------------------------------------------------
-local function PLAYER_REGEN_ENABLED()
-
-end
-
----------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
-local function InitMainBars()
-    AB.DisableBlizzard()
+-- local function InitMainBars()
+--     AB.DisableBlizzard()
 
-    _G.BINDING_HEADER_BFI = AW.WrapTextInColor(addonName, "accent")
+--     _G.BINDING_HEADER_BFI = AW.WrapTextInColor(addonName, "accent")
 
-    local bars = {
-        [2] = L["Action Bar"].." 2 "..L["Button"].." %d",
-        [7] = L["Class Bar"].." 1 "..L["Button"].." %d",
-        [8] = L["Class Bar"].." 2 "..L["Button"].." %d",
-        [9] = L["Class Bar"].." 3 "..L["Button"].." %d",
-        [10] = L["Class Bar"].." 4 "..L["Button"].." %d",
-    }
+--     local bars = {
+--         [2] = L["Action Bar"].." 2 "..L["Button"].." %d",
+--         [7] = L["Class Bar"].." 1 "..L["Button"].." %d",
+--         [8] = L["Class Bar"].." 2 "..L["Button"].." %d",
+--         [9] = L["Class Bar"].." 3 "..L["Button"].." %d",
+--         [10] = L["Class Bar"].." 4 "..L["Button"].." %d",
+--     }
 
-    for bar, text in pairs(bars) do
-        for slot = 1, 12 do
-            _G[format("BINDING_NAME_BFIACTIONBAR%dBUTTON%d", bar, slot)] = format(text, slot)
-        end
-    end
+--     for bar, text in pairs(bars) do
+--         for slot = 1, 12 do
+--             _G[format("BINDING_NAME_BFIACTIONBAR%dBUTTON%d", bar, slot)] = format(text, slot)
+--         end
+--     end
 
-    for i in pairs(ACTION_BAR_LIST) do
-        CreateBar(i)
-    end
-    UpdateMainBars()
+--     for i in pairs(ACTION_BAR_LIST) do
+--         CreateBar(i)
+--     end
+--     UpdateMainBars()
 
-    LAB.RegisterCallback(AB, "OnFlyoutSpells", ActionBar_FlyoutSpells)
-    -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
-    -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
+--     LAB.RegisterCallback(AB, "OnFlyoutSpells", ActionBar_FlyoutSpells)
+--     -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
+--     -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
 
-    AB:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
-    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+--     -- AB:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
+--     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 
-    if BFI.vars.isRetail then
-        AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
-        AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
-    end
+--     if BFI.vars.isRetail then
+--         AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
+--         AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+--     end
 
-    if BFI.vars.isRetail and C_PetBattles.IsInBattle() then
-        RemoveBindings()
-    else
-        AssignBindings()
-    end
-end
-BFI.RegisterCallback("InitModules", "AB_MainBars", InitMainBars)
+--     if BFI.vars.isRetail and C_PetBattles.IsInBattle() then
+--         RemoveBindings()
+--     else
+--         AssignBindings()
+--     end
+-- end
+-- BFI.RegisterCallback("InitModules", "AB_MainBars", InitMainBars)

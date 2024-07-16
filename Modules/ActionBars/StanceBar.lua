@@ -71,10 +71,22 @@ end
 -- update buttons
 ---------------------------------------------------------------------
 local function UpdateStanceButtons()
+    if InCombatLockdown() then
+        AB:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtons)
+        return
+    end
+
+    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtons)
+
     local num = GetNumShapeshiftForms()
 
     for i, b in pairs(stanceBar.buttons) do
         if i <= num then
+            local blz = _G["StanceButton"..i]
+            if blz and blz.commandName then
+                b.commandName = blz.commandName -- SHAPESHIFTBUTTON1
+            end
+
             local icon, active, castable, spellID = GetShapeshiftFormInfo(i)
             b.icon:SetTexture(GetSpellTexture(spellID))
 
@@ -89,7 +101,19 @@ local function UpdateStanceButtons()
             else
                 b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0.6))
             end
+
+            stanceBar.buttons[i]:Show()
+        else
+            stanceBar.buttons[i]:Hide()
         end
+    end
+
+    if num ~= 0 and stanceBar.enabled then
+        stanceBar:Show()
+        RegisterStateDriver(stanceBar, "visibility", stanceBar.visibility)
+    else
+        stanceBar:Hide()
+        UnregisterStateDriver(stanceBar, "visibility")
     end
 end
 
@@ -100,14 +124,29 @@ local function UpdateStanceBar(module, which)
     if module and module ~= "ActionBars" then return end
     if which and which ~= "stance" then return end
 
-    if InCombatLockdown() then
-        AB:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceBar)
+    local enabled = AB.config.general.enabled
+    local config = AB.config.barConfig.stancebar
+
+    if not (enabled and config.enabled) then
+        AB:UnregisterEvent("UPDATE_SHAPESHIFT_FORMS")
+        AB:UnregisterEvent("UPDATE_SHAPESHIFT_FORM")
+        AB:UnregisterEvent("UPDATE_SHAPESHIFT_USABLE")
+        AB:UnregisterEvent("UPDATE_SHAPESHIFT_COOLDOWN")
+        AB:UnregisterEvent("UPDATE_BINDINGS", AssignBindings)
         return
     end
 
-    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceBar)
+    if not stanceBar then
+        CreateStanceBar()
+        AssignBindings()
+    end
 
-    local config = BFI.vars.currentConfigTable.actionBars.barConfig.stancebar
+    -- events
+    AB:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceButtons)
+    AB:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateStanceButtons)
+	AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtons)
+    AB:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
+    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 
     for i = 1, 10 do
         local b
@@ -116,11 +155,6 @@ local function UpdateStanceBar(module, which)
             stanceBar.buttons[i] = b
         else
             b = stanceBar.buttons[i]
-        end
-
-        local blz = _G["StanceButton"..i]
-        if blz and blz.commandName then
-            b.commandName = blz.commandName -- SHAPESHIFTBUTTON1
         end
 
         if config.buttonConfig.hideElements.hotkey then
@@ -145,43 +179,25 @@ local function UpdateStanceBar(module, which)
     stanceBar.alpha = config.alpha
     stanceBar:SetAlpha(config.alpha)
 
-    local num = GetNumShapeshiftForms()
-
     stanceBar.enabled = config.enabled
-    if num ~= 0 and config.enabled then
-        stanceBar:Show()
-        RegisterStateDriver(stanceBar, "visibility", config.visibility)
-    else
-        stanceBar:Hide()
-        UnregisterStateDriver(stanceBar, "visibility")
-    end
-
-    -- update button status
+    stanceBar.visibility = config.visibility
     UpdateStanceButtons()
-
-    for i = 1, 10 do
-        if i <= num then
-            stanceBar.buttons[i]:Show()
-        else
-            stanceBar.buttons[i]:Hide()
-        end
-    end
 end
 BFI.RegisterCallback("UpdateModules", "AB_StanceBar", UpdateStanceBar)
 
 ---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
-local function InitStanceBar()
-    CreateStanceBar()
-    UpdateStanceBar()
-    AssignBindings()
+-- local function InitStanceBar()
+--     CreateStanceBar()
+--     UpdateStanceBar()
+--     AssignBindings()
 
-    -- events
-    AB:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceBar)
-    AB:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateStanceButtons)
-	AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtons)
-    AB:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
-    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
-end
-BFI.RegisterCallback("InitModules", "AB_StanceBar", InitStanceBar)
+--     -- events
+--     AB:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceButtons)
+--     AB:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateStanceButtons)
+-- 	AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtons)
+--     AB:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
+--     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+-- end
+-- BFI.RegisterCallback("InitModules", "AB_StanceBar", InitStanceBar)

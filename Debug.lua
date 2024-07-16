@@ -17,13 +17,13 @@ function BFI.Debug(arg, ...)
 end
 
 --@debug@
-BFI.RegisterCallback("InitConfigs", "Debug", function(tbl, name, ...)
-    print(AW.WrapTextInColor("InitConfigs:", "sand"), name, ...)
+BFI.RegisterCallback("UpdateConfigs", "Debug", function(tbl, name, ...)
+    print(AW.WrapTextInColor("UpdateConfigs:", "sand"), name, ...)
 end)
 
-BFI.RegisterCallback("InitModules", "Debug", function(name, ...)
-    print(AW.WrapTextInColor("InitModules:", "orange"), name, ...)
-end)
+-- BFI.RegisterCallback("InitModules", "Debug", function(name, ...)
+--     print(AW.WrapTextInColor("InitModules:", "orange"), name, ...)
+-- end)
 
 BFI.RegisterCallback("UpdateModules", "Debug", function(name, ...)
     print(AW.WrapTextInColor("UpdateModules:", "orange"), name, ...)

@@ -20,7 +20,7 @@ function eventFrame:ADDON_LOADED(arg)
         end
 
         -- init configs
-        BFI.Fire("InitConfigs", BFIConfig["default"], "default")
+        BFI.Fire("UpdateConfigs", BFIConfig["default"], "default")
 
         -- TODO:
         BFI.vars.currentConfig = "default"
@@ -29,5 +29,5 @@ function eventFrame:ADDON_LOADED(arg)
 end
 
 function eventFrame:PLAYER_LOGIN()
-    BFI.Fire("InitModules")
+    BFI.Fire("UpdateModules")
 end
