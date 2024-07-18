@@ -166,6 +166,7 @@ local function PowerText_LoadConfig(self, config)
     UF.LoadTextPosition(self, config)
 
     self.color = config.color
+    self.frequent = config.frequent
 end
 
 ---------------------------------------------------------------------

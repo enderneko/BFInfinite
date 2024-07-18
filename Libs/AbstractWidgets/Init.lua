@@ -35,7 +35,7 @@ AW.isCata = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 ---------------------------------------------------------------------
 AW.UIParent = CreateFrame("Frame", strupper(ns.prefix).."Parent", UIParent)
 AW.UIParent:SetAllPoints(UIParent)
-AW.UIParent:SetPoint("BOTTOM")
+-- AW.UIParent:SetPoint("BOTTOM")
 AW.UIParent:SetFrameLevel(0)
 
 local function UpdatePixels()

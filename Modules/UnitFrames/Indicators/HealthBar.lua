@@ -547,7 +547,7 @@ function UF.CreateHealthBar(parent, name)
     healAbsorb:SetHorizTile(true)
     healAbsorb:SetVertTile(true)
 
-    -- overshield
+    -- overabsorb
     local overabsorbGlow = bar:CreateTexture(name.."OverabsorbGlow", "ARTWORK", nil, 5)
     bar.overabsorbGlow = overabsorbGlow
     overabsorbGlow:Hide()

@@ -21,7 +21,7 @@ local ignoreFrames = {
 local hideFrames = {}
 local needsUpdate = false
 
-function EM.LAYOUTS_UPDATED(event, arg1)
+function EM.LAYOUTS_UPDATED(_, event, arg1)
     local allow = event ~= "PLAYER_SPECIALIZATION_CHANGED" or arg1 == "player"
     if allow and not _G.EditModeManagerFrame:IsEventRegistered(event) then
         needsUpdate = true
