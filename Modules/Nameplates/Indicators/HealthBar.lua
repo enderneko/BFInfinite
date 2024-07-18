@@ -28,6 +28,19 @@ local function UpdateHealthStates(self)
     else
         self.healthPercent = self.health / self.healthMax
     end
+
+    if self.thresholdEnabled then
+        self.threshold:Hide()
+        for _, t in pairs(self.thresholdValues) do
+            if self.healthPercent <= t.value then
+                matched = true
+                self.threshold:Show()
+                self.threshold:SetPoint("CENTER", self.bg, "LEFT", self:GetBarWidth() * t.value, 0)
+                self.threshold:SetVertexColor(AW.UnpackColor(t.color))
+                break
+            end
+        end
+    end
 end
 
 local function UpdateHealthMax(self, event, unitId)
@@ -253,6 +266,14 @@ local function HealthBar_SetTexture(self, texture)
     self.loss:SetTexture(texture)
 end
 
+local function Thresholds_Setup(self, config)
+    if not config.enabled then
+        self.threshold:Hide()
+        return
+    end
+    AW.SetSize(self.threshold, config.width, config.height)
+end
+
 local function HealthBar_UpdatePixels(self)
     AW.ReSize(self)
     AW.RePoint(self)
@@ -279,12 +300,15 @@ local function HealthBar_LoadConfig(self, config)
     ShieldBar_SetColor(self, config.shield.color)
     OvershieldGlow_SetColor(self, config.overshieldGlow.color)
     MouseoverHighlight_Setup(self, config.mouseoverHighlight)
+    Thresholds_Setup(self, config.thresholds)
 
     self.shieldReverseFill = config.shield.reverseFill
     self.shieldEnabled = config.shield.enabled
     self.colorByClass = config.colorByClass
     self.colorByThreat = config.colorByThreat
     self.colorByMarker = config.colorByMarker
+    self.thresholdEnabled = config.thresholds.enabled
+    self.thresholdValues = config.thresholds.values
 end
 
 ---------------------------------------------------------------------
@@ -328,11 +352,16 @@ function NP.CreateHealthBar(parent, name)
     AW.SetWidth(overshieldGlowR, 8)
 
     -- mouseover highlight
-    local mouseoverHighlight = bar:CreateTexture(name.."MouseoverHighlight", "ARTWORK", nil, 7)
-    -- local mouseoverHighlight = AW.CreateGradientTexture(bar, "VERTICAL", nil, {1, 1, 1, 0.1}, nil, "ARTWORK", 7)
+    local mouseoverHighlight = bar:CreateTexture(name.."MouseoverHighlight", "ARTWORK", nil, 5)
     bar.mouseoverHighlight = mouseoverHighlight
     mouseoverHighlight:SetAllPoints(bar.bg)
     mouseoverHighlight:Hide()
+
+    -- threshold
+    local threshold = bar:CreateTexture(name.."Threshold", "ARTWORK", nil, 7)
+    bar.threshold = threshold
+    threshold:Hide()
+    threshold:SetTexture(AW.GetTexture("Spark"))
 
     -- functions
     bar.Update = HealthBar_Update

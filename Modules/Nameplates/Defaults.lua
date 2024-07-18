@@ -51,6 +51,14 @@ do
                 enabled = true,
                 color = AW.GetColorTable("shield"),
             },
+            thresholds = {
+                enabled = true,
+                width = 7,
+                height = 25,
+                values = { --! must be descending sorted
+                    {value = 0.3, color = AW.GetColorTable("gold")},
+                },
+            },
         },
         nameText = {
             enabled = true,
