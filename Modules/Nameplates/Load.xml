@@ -4,5 +4,6 @@
     <Script file="Nameplates.lua"/>
      <!-- indicators -->
      <Script file="Indicators\HealthBar.lua"/>
+     <Script file="Indicators\CastBar.lua"/>
      <Script file="Indicators\Common.lua"/>
 </Ui>

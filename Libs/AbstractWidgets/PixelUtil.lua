@@ -393,13 +393,15 @@ end
 ---------------------------------------------------------------------
 -- load text position
 ---------------------------------------------------------------------
-function AW.LoadTextPosition(text, pos, relativeTo)
-    assert(relativeTo, "relativeTo can not be nil")
+function AW.LoadTextPosition(text, pos, relativeTo, skipReparent)
+    relativeTo = relativeTo or text:GetParent()
 
-    if relativeTo:GetObjectType() == "FontString" then
-        text:SetParent(relativeTo:GetParent())
-    else
-        text:SetParent(relativeTo)
+    if not skipReparent then
+        if relativeTo:GetObjectType() == "FontString" then
+            text:SetParent(relativeTo:GetParent())
+        else
+            text:SetParent(relativeTo)
+        end
     end
 
     if strfind(pos[1], "LEFT$") then

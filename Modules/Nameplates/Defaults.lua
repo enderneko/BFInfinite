@@ -25,16 +25,14 @@ local defaults = {
 
 do
     local nameplateDefaults = {
-        width = 110,
-        height = 10,
-        insetX = 10,
-        insetY = 20,
+        clickableAreaWidth = 120,
+        clickableAreaHeight = 40,
         healthBar = {
             enabled = true,
             position = {"CENTER", "CENTER", 0, 0},
-            width = 110,
-            height = 10,
-            bgColor = AW.GetColorTable("background"),
+            width = 125,
+            height = 13,
+            bgColor = AW.GetColorTable("background", 0.75),
             borderColor = AW.GetColorTable("border"),
             colorByClass = true,
             colorByThreat = true,
@@ -45,7 +43,7 @@ do
             },
             shield = {
                 enabled = true,
-                color = AW.GetColorTable("shield", 0.4),
+                color = AW.GetColorTable("shield", 0.5),
                 reverseFill = true,
             },
             overshieldGlow = {
@@ -69,7 +67,48 @@ do
 
         },
         castBar = {
-
+            enabled = true,
+            position = {"TOP", "BOTTOM", 0, -2},
+            anchorTo = "healthBar",
+            width = 125,
+            height = 15,
+            bgColor = AW.GetColorTable("background", 0.75),
+            borderColor = AW.GetColorTable("border"),
+            texture = "BFI 1",
+            fadeDuration = 1,
+            icon = {
+                enabled = true,
+                position = {"BOTTOMRIGHT", "BOTTOMLEFT", -2, 0},
+                width = 25,
+                height = 25
+            },
+            nameText = {
+                enabled = true,
+                font = {"BFI 1", 11, "none", true},
+                position = {"LEFT", "LEFT", 3, 0},
+                color = AW.GetColorTable("white"),
+                length = 0.75,
+            },
+            durationText = {
+                enabled = true,
+                font = {"BFI 1", 11 , "none", true},
+                position = {"RIGHT", "RIGHT", -3, 0},
+                format = "%.1f",
+                color = AW.GetColorTable("white"),
+            },
+            spark = {
+                enabled = true,
+                texture = AW.GetPlainTexture(),
+                color = AW.GetColorTable("cast_spark"),
+                width = 1,
+                height = 0,
+            },
+            colors = {
+                normal = AW.GetColorTable("cast_normal"),
+                failed = AW.GetColorTable("cast_failed"),
+                succeeded = AW.GetColorTable("cast_succeeded"),
+                uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+            },
         },
         buffs = {
 

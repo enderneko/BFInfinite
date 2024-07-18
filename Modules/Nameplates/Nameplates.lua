@@ -260,19 +260,8 @@ local function UpdateNameplates(module, which)
     -- cvar
     UpdateCVars()
 
-    -- update parent size
-    SetNamePlateFriendlySize(config.friendly.width + config.friendly.insetX, config.friendly.height + config.friendly.insetY)
-    SetNamePlateEnemySize(config.hostile.width + config.hostile.insetX, config.hostile.height + config.hostile.insetY)
+    -- update clickable area size
+    SetNamePlateFriendlySize(config.friendly.clickableAreaWidth, config.friendly.clickableAreaHeight)
+    SetNamePlateEnemySize(config.hostile.clickableAreaWidth, config.hostile.clickableAreaHeight)
 end
 BFI.RegisterCallback("UpdateModules", "Nameplates", UpdateNameplates)
-
----------------------------------------------------------------------
--- init
----------------------------------------------------------------------
--- local function InitNameplates()
---     UpdateNameplates()
-
---     NP:RegisterEvent("NAME_PLATE_CREATED", CreateNameplate)
---     NP:RegisterEvent("NAME_PLATE_UNIT_ADDED", ShowNameplate)
--- end
--- BFI.RegisterCallback("InitModules", "Nameplates", InitNameplates)
