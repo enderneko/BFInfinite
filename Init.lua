@@ -56,6 +56,9 @@ BFI.AddEventHandler(BFI.M_AB)
 BFI.M_UF = {}
 BFI.AddEventHandler(BFI.M_UF)
 
+BFI.M_NP = {}
+BFI.AddEventHandler(BFI.M_NP)
+
 ---------------------------------------------------------------------
 -- hidden parent
 ---------------------------------------------------------------------

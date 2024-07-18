@@ -396,7 +396,7 @@ end
 function AW.LoadTextPosition(text, pos, relativeTo)
     assert(relativeTo, "relativeTo can not be nil")
 
-    if relativeTo and relativeTo:GetObjectType() == "FontString" then
+    if relativeTo:GetObjectType() == "FontString" then
         text:SetParent(relativeTo:GetParent())
     else
         text:SetParent(relativeTo)
@@ -419,7 +419,7 @@ function AW.LoadTextPosition(text, pos, relativeTo)
     end
 
     AW.ClearPoints(text)
-    AW.SetPoint(text, pos[1], relativeTo or text:GetParent(), pos[2], pos[3], pos[4])
+    AW.SetPoint(text, pos[1], relativeTo, pos[2], pos[3], pos[4])
 end
 
 ---------------------------------------------------------------------

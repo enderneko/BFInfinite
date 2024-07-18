@@ -117,6 +117,7 @@ function UF.OnButtonHide(button)
 end
 
 function UF.LoadTextPosition(self, config)
+    local anchorTo
     if config.anchorTo == "button" then
         anchorTo = self.root
     else
