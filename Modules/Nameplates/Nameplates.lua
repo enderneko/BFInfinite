@@ -178,6 +178,8 @@ local function ShowNameplate(self, event, unit)
             np.unit = nil
             np:Hide()
         else
+            -- blz.UnitFrame:ClearAllPoints()
+            -- blz.UnitFrame:SetParent(nil)
             blz.UnitFrame:Hide()
             np.unit = blz.namePlateUnitToken
             np.guid = UnitGUID(np.unit)
@@ -211,6 +213,14 @@ end
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
+local function UpdatePixels(self)
+    for _, indicator in pairs(self.indicators) do
+        if indicator.UpdatePixels then
+            indicator:UpdatePixels()
+        end
+    end
+end
+
 local function CreateNameplate(self, event, nameplate)
     local np = CreateFrame("Frame", "BFI" .. nameplate:GetName(), AW.UIParent)
     np:Hide()
@@ -237,6 +247,20 @@ local function CreateNameplate(self, event, nameplate)
     np.clickableArea:SetAllPoints()
     np.clickableArea:SetColorTexture(0, 1, 0, 0.15)
     np.clickableArea:SetShown(NP.showClickableArea or true)
+
+    -- pixel perfect
+    AW.AddToPixelUpdater(np, UpdatePixels)
+end
+
+---------------------------------------------------------------------
+-- update all
+---------------------------------------------------------------------
+local function HideBlzNameplates()
+    for blz, np in pairs(NP.created) do
+        C_Timer.After(0.25, function()
+            blz.UnitFrame:Hide()
+        end)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -256,6 +280,7 @@ local function UpdateNameplates(module, which)
     NP:RegisterEvent("NAME_PLATE_CREATED", CreateNameplate)
     NP:RegisterEvent("NAME_PLATE_UNIT_ADDED", ShowNameplate)
     NP:RegisterEvent("NAME_PLATE_UNIT_REMOVED", HideNameplate)
+    NP:RegisterEvent("UI_SCALE_CHANGED", HideBlzNameplates)
 
     -- cvar
     UpdateCVars()
