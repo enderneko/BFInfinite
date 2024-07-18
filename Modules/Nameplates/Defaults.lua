@@ -52,7 +52,12 @@ do
             },
         },
         nameText = {
-
+            enabled = true,
+            position = {"BOTTOM", "TOP", 0, 1},
+            anchorTo = "healthBar",
+            length = 1,
+            font = {"BFI 1", 13, "none", true},
+            color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
         },
         healthText = {
 

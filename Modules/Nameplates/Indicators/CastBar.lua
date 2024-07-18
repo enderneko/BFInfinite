@@ -125,7 +125,7 @@ local function CastInterruptible(self, event, unit)
     if self.notInterruptible then
         self.bar.uninterruptible:Show()
         self:SetBackdropBorderColor(AW.UnpackColor(self.uninterruptibleColor, 1))
-        sself.iconBG:SetVertexColor(AW.UnpackColor(self.uninterruptibleColor, 1))
+        self.iconBG:SetVertexColor(AW.UnpackColor(self.uninterruptibleColor, 1))
     else
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))

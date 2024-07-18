@@ -8,6 +8,7 @@ local NP = BFI.M_NP
 local builders = {
     healthBar = NP.CreateHealthBar,
     castBar = NP.CreateCastBar,
+    nameText = NP.CreateNameText,
 }
 
 function NP.CreateIndicators(np)
