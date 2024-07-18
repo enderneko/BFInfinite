@@ -36,6 +36,7 @@ do
             borderColor = AW.GetColorTable("border"),
             colorByClass = true,
             colorByThreat = true,
+            colorByMarker = true,
             texture = "BFI 1",
             mouseoverHighlight = {
                 enabled = true,

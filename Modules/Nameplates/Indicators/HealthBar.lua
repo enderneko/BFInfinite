@@ -131,8 +131,12 @@ local function GetHealthColor(self, unit)
     local r, g, b, lossR, lossG, lossB
 
     -- TODO: OverrideColor, threat color
+    local marker = GetRaidTargetIndex(unit)
 
-    if U.UnitIsPlayer(unit) then
+    if marker and self.colorByMarker then
+        r, g, b = AW.GetColorRGB("marker_" .. marker)
+
+    elseif U.UnitIsPlayer(unit) then
         if not UnitIsConnected(unit) then
             r, g, b = 0.4, 0.4, 0.4
             lossR, lossG, lossB = 0.4, 0.4, 0.4
@@ -143,15 +147,13 @@ local function GetHealthColor(self, unit)
             else
                 r, g, b = AW.GetReactionColor(unit)
             end
-
-            -- loss
-            lossR, lossG, lossB = r * 0.2, g * 0.2, b * 0.2
         end
-    else
-        -- bar
-        r, g, b = AW.GetReactionColor(unit)
 
-        -- loss
+    else
+        r, g, b = AW.GetReactionColor(unit)
+    end
+
+    if not lossR then
         lossR, lossG, lossB = r * 0.2, g * 0.2, b * 0.2
     end
 
@@ -201,6 +203,11 @@ local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield)
     self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
+    if self.colorByMarker then
+        self:RegisterEvent("RAID_TARGET_UPDATE", UpdateHealthColor)
+    else
+        self:UnregisterEvent("RAID_TARGET_UPDATE")
+    end
 
     self:Show()
     if self:IsVisible() then self:Update() end
@@ -277,6 +284,7 @@ local function HealthBar_LoadConfig(self, config)
     self.shieldEnabled = config.shield.enabled
     self.colorByClass = config.colorByClass
     self.colorByThreat = config.colorByThreat
+    self.colorByMarker = config.colorByMarker
 end
 
 ---------------------------------------------------------------------

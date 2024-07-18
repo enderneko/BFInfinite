@@ -2,7 +2,7 @@ local _, BFI = ...
 local AW = BFI.AW
 
 ---------------------------------------------------------------------
--- colors preset for modules
+-- colors preset for modules, no persistence requirement
 ---------------------------------------------------------------------
 local uf_colors = {
     uf = {0.125, 0.125, 0.125}, -- unitframe foreground
@@ -18,5 +18,15 @@ local uf_colors = {
     shield = {1, 1, 1, 1},
     absorb = {1, 0.1, 0.1, 1},
     heal_prediction = {1, 1, 1, 0.4},
+    aura_percent = {1, 1, 0},
+    aura_seconds = {1, 0.3, 0.3},
+    marker_1 = {1, 0.9, 0},
+    marker_2 = {1, 0.5, 0},
+    marker_3 = {0.98, 0.47, 0.98},
+    marker_4 = {0.34, 0.94, 0.31},
+    marker_5 = {0.84, 0.92, 0.97},
+    marker_6 = {0, 0.64, 1},
+    marker_7 = {1, 0.33, 0.22},
+    marker_8 = {1, 1, 0.99},
 }
 AW.AddColors(uf_colors)

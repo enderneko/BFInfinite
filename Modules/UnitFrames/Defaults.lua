@@ -3,11 +3,6 @@ local AW = BFI.AW
 local U = BFI.utils
 local UF = BFI.M_UF
 
-AW.AddColors({
-    aura_percent = {1, 1, 0},
-    aura_seconds = {1, 0.3, 0.3},
-})
-
 -- TODO: presets
 
 local defaults = {
