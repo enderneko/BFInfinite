@@ -689,19 +689,19 @@ local function CastBar_SetTexture(self, texture)
     end
 end
 
-local function CastBar_UpdateNameText(self, config, showIcon)
+local function CastBar_SetupNameText(self, config, showIcon)
     self.nameText:SetShown(config.enabled)
     U.SetFont(self.nameText, config.font)
-    AW.LoadWidgetPosition(self.nameText, config.position, showIcon and self.icon)
+    AW.LoadTextPosition(self.nameText, config.position, showIcon and self.icon, true)
     self.nameText:SetTextColor(unpack(config.color))
     self.nameTextLength = config.length
     self.showName = config.enabled
 end
 
-local function CastBar_UpdateDurationText(self, config)
+local function CastBar_SetupDurationText(self, config)
     self.durationText:SetShown(config.enabled)
     U.SetFont(self.durationText, config.font)
-    AW.LoadWidgetPosition(self.durationText, config.position)
+    AW.LoadTextPosition(self.durationText, config.position, nil, true)
     self.durationText:SetTextColor(unpack(config.color))
     self.durationFormat = config.format
     self.delayedDurationFormat = "|cffff0000%s%.2f|r "..config.format
@@ -709,7 +709,7 @@ local function CastBar_UpdateDurationText(self, config)
     self.showDuration = config.enabled
 end
 
-local function CastBar_SetIconShown(self, show)
+local function CastBar_SetupIcon(self, show)
     if show then
         AW.SetPoint(self.bar, "TOPLEFT", self.gap, "TOPRIGHT")
         AW.SetPoint(self.status, "TOPLEFT", self.gap, "TOPRIGHT")
@@ -723,7 +723,7 @@ local function CastBar_SetIconShown(self, show)
     end
 end
 
-local function CastBar_UpdateSpark(self, config)
+local function CastBar_SetupSpark(self, config)
     if not config.enabled then
         self.spark:Hide()
         return
@@ -820,10 +820,10 @@ local function CastBar_LoadConfig(self, config)
 
     AW.SetFadeInOutAnimationDuration(self, config.fadeDuration)
 
-    CastBar_UpdateNameText(self, config.nameText, config.showIcon)
-    CastBar_UpdateDurationText(self, config.durationText)
-    CastBar_SetIconShown(self, config.showIcon)
-    CastBar_UpdateSpark(self, config.spark)
+    CastBar_SetupNameText(self, config.nameText, config.showIcon)
+    CastBar_SetupDurationText(self, config.durationText)
+    CastBar_SetupIcon(self, config.showIcon)
+    CastBar_SetupSpark(self, config.spark)
 
     if self.root.hasCastBarTicks then
         CastBar_UpdateTicks(self, config.ticks)
@@ -849,7 +849,7 @@ end
 -- bar: 0
 -- pipBound: 1
 -- ticks: 2
--- spart: 3
+-- spark: 3
 -- uninterruptible: 4
 
 function UF.CreateCastBar(parent, name)
@@ -934,10 +934,10 @@ function UF.CreateCastBar(parent, name)
     -- frame.SetTexture = CastBar_SetTexture
     -- frame.SetBorderColor = CastBar_SetBorderColor
     -- frame.SetBackgroundColor = CastBar_SetBackgroudColor
-    -- frame.UpdateNameText = CastBar_UpdateNameText
-    -- frame.UpdateDurationText = CastBar_UpdateDurationText
-    -- frame.SetIconShown = CastBar_SetIconShown
-    -- frame.UpdateSpark = CastBar_UpdateSpark
+    -- frame.UpdateNameText = CastBar_SetupNameText
+    -- frame.UpdateDurationText = CastBar_SetupDurationText
+    -- frame.SetIconShown = CastBar_SetupIcon
+    -- frame.UpdateSpark = CastBar_SetupSpark
     -- frame.UpdateTicks = CastBar_UpdateTicks
     -- frame.UpdateLatency = CastBar_UpdateLatency
     -- frame.SetPipsColor = CastBar_SetPipsColor

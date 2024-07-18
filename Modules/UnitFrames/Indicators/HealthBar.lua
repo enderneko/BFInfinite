@@ -81,8 +81,8 @@ local function UpdateShield(self, event, unitId)
 
         if self.shieldReverseFill and overs then -- reverse
             self.shield:ClearAllPoints()
-            self.shield:SetPoint("TOPRIGHT", self.fg)
-            self.shield:SetPoint("BOTTOMRIGHT", self.fg)
+            self.shield:SetPoint("TOPRIGHT", self.bg)
+            self.shield:SetPoint("BOTTOMRIGHT", self.bg)
         else
             self.shield:ClearAllPoints()
             self.shield:SetPoint("TOPLEFT", self.fg, "TOPRIGHT")
