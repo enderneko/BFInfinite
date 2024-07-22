@@ -12,6 +12,7 @@ local UnitIsConnected = UnitIsConnected
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
+local GetRaidTargetIndex = GetRaidTargetIndex
 
 ---------------------------------------------------------------------
 -- health
