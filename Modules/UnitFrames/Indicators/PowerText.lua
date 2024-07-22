@@ -1,4 +1,5 @@
-local _, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
 local UF = BFI.M_UF
@@ -11,6 +12,7 @@ local gsub = string.gsub
 local format = string.format
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
+local FormatNumber = U.FormatNumber
 
 ---------------------------------------------------------------------
 -- value
@@ -94,7 +96,7 @@ local numeric = {
     end,
 
     current_short = function(current)
-        return U.FormatNumber(current)
+        return FormatNumber(current)
     end,
 }
 
@@ -147,6 +149,12 @@ local function PowerText_SetFormat(self, format)
         self.delimiter = ""
     else
         self.delimiter = format.delimiter
+    end
+
+    if format.useAsianUnits and BFI.vars.isAsian then
+        FormatNumber = U.FormatNumber_Asian
+    else
+        FormatNumber = U.FormatNumber
     end
 end
 

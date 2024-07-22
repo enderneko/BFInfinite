@@ -12,6 +12,7 @@ local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitIsConnected = UnitIsConnected
+local FormatNumber = U.FormatNumber
 
 ---------------------------------------------------------------------
 -- value
@@ -88,7 +89,7 @@ local numeric = {
     end,
 
     current_short = function(current, absorbs)
-        return U.FormatNumber(current)
+        return FormatNumber(current)
     end,
 
     current_absorbs = function(current, absorbs)
@@ -105,14 +106,14 @@ local numeric = {
 
     current_absorbs_short = function(current, absorbs)
         if absorbs == 0 then
-            return U.FormatNumber(current)
+            return FormatNumber(current)
         else
-            return format("%s+%s", U.FormatNumber(current), U.FormatNumber(absorbs))
+            return format("%s+%s", FormatNumber(current), FormatNumber(absorbs))
         end
     end,
 
     current_absorbs_short_sum = function(current, absorbs)
-        return U.FormatNumber(current + absorbs)
+        return FormatNumber(current + absorbs)
     end,
 }
 
@@ -213,6 +214,12 @@ local function HealthText_SetFormat(self, format)
         self.delimiter = ""
     else
         self.delimiter = format.delimiter
+    end
+
+    if format.useAsianUnits and BFI.vars.isAsian then
+        FormatNumber = U.FormatNumber_Asian
+    else
+        FormatNumber = U.FormatNumber
     end
 end
 

@@ -134,6 +134,7 @@ local defaults = {
                     percent = "current_absorbs_sum_decimal",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             powerText = {
@@ -148,6 +149,7 @@ local defaults = {
                     percent = "none",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             portrait = {
@@ -235,6 +237,7 @@ local defaults = {
                         percent = "none",
                         delimiter = " | ",
                         noPercentSign = false,
+                        useAsianUnits = false,
                     },
                 },
             },
@@ -535,6 +538,7 @@ local defaults = {
                     percent = "current_absorbs_sum_decimal",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             powerText = {
@@ -549,6 +553,7 @@ local defaults = {
                     percent = "none",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             portrait = {
@@ -911,6 +916,7 @@ local defaults = {
                     percent = "current_absorbs_sum_decimal",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             powerText = {
@@ -925,6 +931,7 @@ local defaults = {
                     percent = "none",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             levelText = {
@@ -1231,6 +1238,7 @@ local defaults = {
                     percent = "current_absorbs_sum_decimal",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             powerText = {
@@ -1245,6 +1253,7 @@ local defaults = {
                     percent = "none",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             levelText = {
@@ -1557,6 +1566,7 @@ local defaults = {
                     percent = "current_absorbs_sum_decimal",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             powerText = {
@@ -1571,6 +1581,7 @@ local defaults = {
                     percent = "none",
                     delimiter = " | ",
                     noPercentSign = false,
+                    useAsianUnits = false,
                 },
             },
             levelText = {

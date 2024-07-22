@@ -1,3 +1,4 @@
+---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
 local U = BFI.utils
@@ -13,6 +14,7 @@ local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
+local FormatNumber = U.FormatNumber
 
 ---------------------------------------------------------------------
 -- value
@@ -97,7 +99,7 @@ local numeric = {
     end,
 
     current_short = function(current, absorbs)
-        return U.FormatNumber(current)
+        return FormatNumber(current)
     end,
 
     current_absorbs = function(current, absorbs)
@@ -114,14 +116,14 @@ local numeric = {
 
     current_absorbs_short = function(current, absorbs)
         if absorbs == 0 then
-            return U.FormatNumber(current)
+            return FormatNumber(current)
         else
-            return format("%s+%s", U.FormatNumber(current), U.FormatNumber(absorbs))
+            return format("%s+%s", FormatNumber(current), FormatNumber(absorbs))
         end
     end,
 
     current_absorbs_short_sum = function(current, absorbs)
-        return U.FormatNumber(current + absorbs)
+        return FormatNumber(current + absorbs)
     end,
 }
 
@@ -223,6 +225,12 @@ local function HealthText_SetFormat(self, format)
     else
         self.delimiter = format.delimiter
     end
+
+    if format.useAsianUnits and BFI.vars.isAsian then
+        FormatNumber = U.FormatNumber_Asian
+    else
+        FormatNumber = U.FormatNumber
+    end
 end
 
 ---------------------------------------------------------------------
@@ -236,8 +244,8 @@ end
 -- load
 ---------------------------------------------------------------------
 local function HealthText_LoadConfig(self, config)
-    self:SetHealthFont(unpack(config.font))
-    self:SetFormat(config.format)
+    U.SetFont(self, unpack(config.font))
+    HealthText_SetFormat(self, config.format)
     UF.LoadTextPosition(self, config)
 
     self.color = config.color
@@ -256,9 +264,9 @@ function UF.CreateHealthText(parent, name)
     -- functions
     text.Enable = HealthText_Enable
     text.Update = HealthText_Update
-    text.SetColor = HealthText_SetColor
-    text.SetFormat = HealthText_SetFormat
-    text.SetHealthFont = U.SetFont
+    -- text.SetColor = HealthText_SetColor
+    -- text.SetFormat = HealthText_SetFormat
+    -- text.SetHealthFont = U.SetFont
     text.LoadConfig = HealthText_LoadConfig
 
     return text

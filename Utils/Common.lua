@@ -15,29 +15,27 @@ elseif LOCALE_koKR then
     symbol_1K, symbol_10K, symbol_1B = "천", "만", "억"
 end
 
-if BFI.vars.isAsian then
-    function U.FormatNumber(n)
-        if abs(n) >= 100000000 then
-            return string.format("%.3f"..symbol_1B, n/100000000)
-        elseif abs(n) >= 10000 then
-            return string.format("%.2f"..symbol_10K, n/10000)
-        -- elseif abs(n) >= 1000 then
-        --     return string.format("%.1f"..symbol_1K, n/1000)
-        else
-            return n
-        end
+function U.FormatNumber_Asian(n)
+    if abs(n) >= 100000000 then
+        return string.format("%.3f"..symbol_1B, n/100000000)
+    elseif abs(n) >= 10000 then
+        return string.format("%.2f"..symbol_10K, n/10000)
+    -- elseif abs(n) >= 1000 then
+    --     return string.format("%.1f"..symbol_1K, n/1000)
+    else
+        return n
     end
-else
-    function U.FormatNumber(n)
-        if abs(n) >= 1000000000 then
-            return string.format("%.3fB", n/1000000000)
-        elseif abs(n) >= 1000000 then
-            return string.format("%.2fM", n/1000000)
-        elseif abs(n) >= 1000 then
-            return string.format("%.1fK", n/1000)
-        else
-            return n
-        end
+end
+
+function U.FormatNumber(n)
+    if abs(n) >= 1000000000 then
+        return string.format("%.3fB", n/1000000000)
+    elseif abs(n) >= 1000000 then
+        return string.format("%.2fM", n/1000000)
+    elseif abs(n) >= 1000 then
+        return string.format("%.1fK", n/1000)
+    else
+        return n
     end
 end
 

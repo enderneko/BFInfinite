@@ -79,6 +79,7 @@ do
                 percent = "current",
                 delimiter = " - ",
                 noPercentSign = false,
+                useAsianUnits = false,
             },
         },
         levelText = {
