@@ -24,14 +24,6 @@ local defaults = {
         empowerstage3 = {1, 1, 0.26},
         empowerstage4 = {0.66, 1, 0.4},
     },
-
-    ranges = {
-        range_5 = {1, 1, 1},
-        range_20 = {0.055, 0.875, 0.825},
-        range_30 = {0.035, 0.865, 0},
-        range_40 = {1.0, 0.82, 0},
-        range_out = {0.9, 0.055, 0.075, 1},
-    },
 }
 
 BFI.RegisterCallback("UpdateConfigs", "Colors", function(t)
