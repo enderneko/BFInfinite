@@ -7,9 +7,10 @@ local UF = BFI.M_UF
 -- functions
 ---------------------------------------------------------------------
 local UnitThreatSituation = UnitThreatSituation
+local GetThreatStatusColor = GetThreatStatusColor
 
 ---------------------------------------------------------------------
--- target
+-- threat
 ---------------------------------------------------------------------
 local function UpdateThreat(self, event, unitId)
     local unit = self.root.displayedUnit

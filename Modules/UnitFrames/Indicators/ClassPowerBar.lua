@@ -232,14 +232,6 @@ end
 local function Check(self, event, unitId)
     if unitId and (unitId ~= "player" and unitId ~= "vehicle") then return end
 
-    if not UF.ShouldShowClassPower() then
-        self:Hide()
-        self:UnregisterEvent("UNIT_MAXPOWER")
-        self:UnregisterEvent("UNIT_POWER_UPDATE")
-        self._enabled = nil
-        return
-    end
-
     if ShouldShowVehicleComboPoints() then
         self.unit = "vehicle"
         self.powerIndex = 4
@@ -248,8 +240,16 @@ local function Check(self, event, unitId)
         self.unit = "player"
         self.powerIndex, self.powerType = UF.GetClassPowerInfo()
     end
-
     self.powerMax = UnitPowerMax(self.unit, self.powerIndex)
+
+    if not UF.ShouldShowClassPower() or self.powerMax == 0 then
+        self:Hide()
+        self:UnregisterEvent("UNIT_MAXPOWER")
+        self:UnregisterEvent("UNIT_POWER_UPDATE")
+        self._enabled = nil
+        return
+    end
+
     SetupBars(self)
 
     self._enabled = true
