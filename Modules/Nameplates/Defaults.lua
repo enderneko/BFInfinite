@@ -30,6 +30,7 @@ do
         healthBar = {
             enabled = true,
             position = {"CENTER", "CENTER", 0, 0},
+            frameLevel = 1,
             width = 125,
             height = 15,
             bgColor = AW.GetColorTable("background", 0.75),
@@ -58,6 +59,11 @@ do
                 values = { --! must be descending sorted
                     {value = 0.3, color = AW.GetColorTable("gold")},
                 },
+            },
+            threatGlow = {
+                enabled = true,
+                size = 4,
+                alpha = 1,
             },
         },
         nameText = {
@@ -103,6 +109,7 @@ do
             enabled = true,
             position = {"TOP", "BOTTOM", 0, -2},
             anchorTo = "healthBar",
+            frameLevel = 5,
             width = 125,
             height = 15,
             bgColor = AW.GetColorTable("background", 0.75),

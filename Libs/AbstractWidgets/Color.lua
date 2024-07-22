@@ -367,6 +367,10 @@ function AW.UnpackColor(t, alpha)
     return t[1], t[2], t[3], alpha or t[4]
 end
 
+function AW.ExtractColor(t, alpha)
+    return t.r, t.g, t.b, alpha or t.a
+end
+
 ---------------------------------------------------------------------
 -- button colors
 ---------------------------------------------------------------------

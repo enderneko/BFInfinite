@@ -13,6 +13,143 @@ local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local GetRaidTargetIndex = GetRaidTargetIndex
+local UnitThreatSituation = UnitThreatSituation
+local UnitGUID = UnitGUID
+local UnitGroupRolesAssigned = UnitGroupRolesAssigned
+local UnitExists = UnitExists
+local UnitIsPlayer = UnitIsPlayer
+local UnitPlayerControlled = UnitPlayerControlled
+local UnitIsUnit = UnitIsUnit
+local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
+
+---------------------------------------------------------------------
+-- color
+---------------------------------------------------------------------
+local function GetHealthColor(self, unit)
+    local r, g, b, lossR, lossG, lossB
+
+    local marker = GetRaidTargetIndex(unit)
+
+    if marker and self.colorByMarker then
+        r, g, b = AW.GetColorRGB("marker_" .. marker)
+
+    elseif self.threatSituation and self.colorByThreat then
+        r, g, b = AW.GetColorRGB("threat_" .. self.threatSituation)
+
+    elseif U.UnitIsPlayer(unit) then
+        local class = U.UnitClassBase(unit)
+        if not UnitIsConnected(unit) then
+            r, g, b = 0.4, 0.4, 0.4
+            lossR, lossG, lossB = 0.4, 0.4, 0.4
+        else
+            -- bar
+            if self.colorByClass then
+                r, g, b = AW.GetClassColor(class)
+            else
+                r, g, b = AW.GetReactionColor(unit)
+            end
+        end
+
+    else
+        r, g, b = AW.GetReactionColor(unit)
+    end
+
+    if not lossR then
+        lossR, lossG, lossB = r * 0.2, g * 0.2, b * 0.2
+    end
+
+    return r, g, b, lossR, lossG, lossB
+end
+
+local function UpdateHealthColor(self)
+    local unit = self.root.unit
+    if not unit then return end
+
+    -- healthBar
+    local r, g, b, lossR, lossG, lossB = GetHealthColor(self, unit)
+    self:SetColor(r, g, b)
+    self:SetLossColor(lossR, lossG, lossB)
+end
+
+---------------------------------------------------------------------
+-- threat
+---------------------------------------------------------------------
+local threatSituations = {
+    [0] = "low",
+    [1] = "medium",
+    [2] = "medium",
+    [3] = "high",
+}
+
+local function IsTank(unit)
+    return UnitGroupRolesAssigned(unit) == "TANK"
+end
+
+local OFFTANK_PETS = {
+    ["61056"] = true, -- 原始土元素
+    ["95072"] = true, -- 巨型土元素
+    ["61146"] = true, -- 玄牛雕像
+    ["103822"] = true, -- 树人
+}
+
+local creatureCache = {}
+local function WipeCache()
+    wipe(creatureCache)
+end
+
+-- from ThreatPlates
+local function IsOffTankCreature(unit)
+    local guid = UnitGUID(unit)
+    if not guid then return end
+
+    local isOffTank = creatureCache[guid]
+    if isOffTank == nil then
+      local unitType, _,  _, _, _, npcId = strsplit("-", guid)
+      isOffTank = OFFTANK_PETS[npcId] and "Creature" == unitType
+      creatureCache[guid] = isOffTank
+    end
+
+    return isOffTank
+end
+
+local function IsOffTank(unit)
+    return UnitExists(unit) and (UnitIsPlayer(unit) or UnitPlayerControlled(unit)) and
+        ((IsTank(unit) and not UnitIsUnit("player", unit)) or (UnitIsUnit(unit, "pet") or UnitIsOtherPlayersPet(unit)) or IsOffTankCreature(unit))
+end
+
+local function UpdateThreat(self, event, unitId)
+    local unit = self.root.unit
+    if unitId and unitId ~= "player" then return end
+
+    local status = UnitThreatSituation("player", unit)
+    if status then
+        status = threatSituations[status]
+
+        -- check if is offtanked
+        if status == "low" and IsTank("player") then
+            if IsOffTank(unit .. "target") then
+                status = "offtank"
+            end
+        end
+
+        if self.threatGlowEnabled then
+            self.threat:SetBackdropBorderColor(AW.GetColorRGB("threat_" .. status))
+            self.threat:Show()
+        else
+            self.threat:Hide()
+        end
+    else
+        self.threat:Hide()
+    end
+
+    if self.colorByThreat then
+        self.threatSituation = status
+        UpdateHealthColor(self)
+    else
+        self.threatSituation = nil
+    end
+end
+
 
 ---------------------------------------------------------------------
 -- health
@@ -137,54 +274,6 @@ local function UpdateShield(self, event, unitId)
 end
 
 ---------------------------------------------------------------------
--- color
----------------------------------------------------------------------
-local function GetHealthColor(self, unit)
-    local class = U.UnitClassBase(unit)
-
-    local r, g, b, lossR, lossG, lossB
-
-    -- TODO: OverrideColor, threat color
-    local marker = GetRaidTargetIndex(unit)
-
-    if marker and self.colorByMarker then
-        r, g, b = AW.GetColorRGB("marker_" .. marker)
-
-    elseif U.UnitIsPlayer(unit) then
-        if not UnitIsConnected(unit) then
-            r, g, b = 0.4, 0.4, 0.4
-            lossR, lossG, lossB = 0.4, 0.4, 0.4
-        else
-            -- bar
-            if self.colorByClass then
-                r, g, b = AW.GetClassColor(class)
-            else
-                r, g, b = AW.GetReactionColor(unit)
-            end
-        end
-
-    else
-        r, g, b = AW.GetReactionColor(unit)
-    end
-
-    if not lossR then
-        lossR, lossG, lossB = r * 0.2, g * 0.2, b * 0.2
-    end
-
-    return r, g, b, lossR, lossG, lossB
-end
-
-local function UpdateHealthColor(self)
-    local unit = self.root.unit
-    if not unit then return end
-
-    -- healthBar
-    local r, g, b, lossR, lossG, lossB = GetHealthColor(self, unit)
-    self:SetColor(r, g, b)
-    self:SetLossColor(lossR, lossG, lossB)
-end
-
----------------------------------------------------------------------
 -- mouseover
 ---------------------------------------------------------------------
 local function UpdateMouseover(self, elapsed)
@@ -208,6 +297,7 @@ local function HealthBar_Update(self)
     UpdateHealthMax(self)
     UpdateHealth(self)
     UpdateShield(self)
+    UpdateThreat(self)
 end
 
 ---------------------------------------------------------------------
@@ -217,10 +307,22 @@ local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield)
     self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
+
     if self.colorByMarker then
         self:RegisterEvent("RAID_TARGET_UPDATE", UpdateHealthColor)
     else
         self:UnregisterEvent("RAID_TARGET_UPDATE")
+    end
+
+    if self.threatGlowEnabled or self.colorByThreat then
+        self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+        BFI.RegisterCallback("EnterInstance", "NP_HealthBarThreat", WipeCache)
+        BFI.RegisterCallback("LeaveInstance", "NP_HealthBarThreat", WipeCache)
+    else
+        self.threatSituation = nil
+        self:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE")
+        BFI.UnregisterCallback("EnterInstance", "NP_HealthBarThreat")
+        BFI.UnregisterCallback("LeaveInstance", "NP_HealthBarThreat")
     end
 
     self:Show()
@@ -238,6 +340,7 @@ local function HealthBar_Disable(self)
     self.healthPercent = nil
     self.shields = nil
     self.shieldPercent = nil
+    self.threatSituation = nil
 end
 
 ---------------------------------------------------------------------
@@ -275,6 +378,15 @@ local function Thresholds_Setup(self, config)
     AW.SetSize(self.threshold, config.width, config.height)
 end
 
+local function ThreatGlow_Setup(self, config)
+    if not config.enabled then
+        self.threat:Hide()
+        return
+    end
+    AW.SetOutside(self.threat, self, config.size, config.size)
+    self.threat:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow", true), edgeSize=AW.ConvertPixelsForRegion(config.size, self)})
+end
+
 local function HealthBar_UpdatePixels(self)
     AW.ReSize(self)
     AW.RePoint(self)
@@ -291,6 +403,7 @@ end
 -- load
 ---------------------------------------------------------------------
 local function HealthBar_LoadConfig(self, config)
+    AW.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config)
     AW.SetSize(self, config.width, config.height)
 
@@ -302,6 +415,7 @@ local function HealthBar_LoadConfig(self, config)
     OvershieldGlow_SetColor(self, config.overshieldGlow.color)
     MouseoverHighlight_Setup(self, config.mouseoverHighlight)
     Thresholds_Setup(self, config.thresholds)
+    ThreatGlow_Setup(self, config.threatGlow)
 
     self.shieldReverseFill = config.shield.reverseFill
     self.shieldEnabled = config.shield.enabled
@@ -310,6 +424,8 @@ local function HealthBar_LoadConfig(self, config)
     self.colorByMarker = config.colorByMarker
     self.thresholdEnabled = config.thresholds.enabled
     self.thresholdValues = config.thresholds.values
+    self.threatAlpha = config.threatGlow.alpha
+    self.threatGlowEnabled = config.threatGlow.enabled
 end
 
 ---------------------------------------------------------------------
@@ -363,6 +479,10 @@ function NP.CreateHealthBar(parent, name)
     bar.threshold = threshold
     threshold:Hide()
     threshold:SetTexture(AW.GetTexture("Spark"))
+
+    -- threatGlow
+    local threat = CreateFrame("Frame", name.."ThreatGlow", bar, "BackdropTemplate")
+    bar.threat = threat
 
     -- functions
     bar.Update = HealthBar_Update

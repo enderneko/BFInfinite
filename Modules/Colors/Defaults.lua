@@ -24,6 +24,13 @@ local defaults = {
         empowerstage3 = {1, 1, 0.26},
         empowerstage4 = {0.66, 1, 0.4},
     },
+
+    threat = {
+        threat_low = {0.059, 0.588, 0.902},
+        threat_medium = {1, 1, 0},
+        threat_high = {1, 0, 0},
+        threat_offtank = {0.392, 1, 0.392},
+    },
 }
 
 BFI.RegisterCallback("UpdateConfigs", "Colors", function(t)

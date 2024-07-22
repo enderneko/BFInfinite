@@ -9,6 +9,7 @@ local NP = BFI.M_NP
 ---------------------------------------------------------------------
 local UnitClassification = UnitClassification
 local UnitEffectiveLevel = UnitEffectiveLevel
+local GetCreatureDifficultyColor = GetCreatureDifficultyColor
 
 ---------------------------------------------------------------------
 -- color
@@ -19,7 +20,7 @@ local function UpdateColor(self, event, unitId)
 
     local r, g, b
     if self.color.type == "level_color" then
-        r, g, b = GetCreatureDifficultyColor(UnitEffectiveLevel(unit))
+        r, g, b = AW.ExtractColor(GetCreatureDifficultyColor(UnitEffectiveLevel(unit)))
     elseif self.color.type == "class_color" then
         local class = U.UnitClassBase(unit)
         if U.UnitIsPlayer(unit) then

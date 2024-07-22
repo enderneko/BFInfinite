@@ -474,6 +474,7 @@ local function CastBar_LoadConfig(self, config)
     self.uninterruptibleColor = config.colors.uninterruptible
     self.borderColor = config.borderColor
 
+    AW.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config)
     AW.SetSize(self, config.width, config.height)
     AW.SetWidth(self.icon, config.height-2)
