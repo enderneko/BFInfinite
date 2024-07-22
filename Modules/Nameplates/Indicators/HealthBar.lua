@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
-local C = BFI.M_C
+local C = BFI.M_Color
 local NP = BFI.M_NP
 
 ---------------------------------------------------------------------

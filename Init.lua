@@ -49,8 +49,8 @@ BFI.vars.playerSpecID = GetSpecialization()
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
-BFI.M_C = {}
-BFI.AddEventHandler(BFI.M_C)
+BFI.M_Color = {}
+BFI.AddEventHandler(BFI.M_Color)
 
 BFI.M_AB = {["bars"] = {}}
 BFI.AddEventHandler(BFI.M_AB)

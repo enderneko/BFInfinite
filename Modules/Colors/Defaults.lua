@@ -1,7 +1,7 @@
 local _, BFI = ...
 local AW = BFI.AW
 local U = BFI.utils
-local C = BFI.M_C
+local C = BFI.M_Color
 
 ---------------------------------------------------------------------
 -- shared colors
