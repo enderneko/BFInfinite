@@ -31,7 +31,7 @@ do
             enabled = true,
             position = {"CENTER", "CENTER", 0, 0},
             width = 125,
-            height = 13,
+            height = 15,
             bgColor = AW.GetColorTable("background", 0.75),
             borderColor = AW.GetColorTable("border"),
             colorByClass = true,
@@ -52,7 +52,7 @@ do
                 color = AW.GetColorTable("shield"),
             },
             thresholds = {
-                enabled = true,
+                enabled = false,
                 width = 7,
                 height = 25,
                 values = { --! must be descending sorted
@@ -69,7 +69,17 @@ do
             color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
         },
         healthText = {
-
+            enabled = true,
+            position = {"LEFT", "LEFT", 5, 0},
+            anchorTo = "healthBar",
+            font = {"BFI 1", 12, "none", true},
+            color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            format = {
+                numeric = "current_short",
+                percent = "current",
+                delimiter = " - ",
+                noPercentSign = false,
+            },
         },
         levelText = {
 

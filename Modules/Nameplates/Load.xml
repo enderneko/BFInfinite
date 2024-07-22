@@ -6,5 +6,6 @@
      <Script file="Indicators\HealthBar.lua"/>
      <Script file="Indicators\CastBar.lua"/>
      <Script file="Indicators\NameText.lua"/>
+     <Script file="Indicators\HealthText.lua"/>
      <Script file="Indicators\Common.lua"/>
 </Ui>

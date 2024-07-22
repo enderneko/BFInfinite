@@ -9,6 +9,7 @@ local builders = {
     healthBar = NP.CreateHealthBar,
     castBar = NP.CreateCastBar,
     nameText = NP.CreateNameText,
+    healthText = NP.CreateHealthText,
 }
 
 function NP.CreateIndicators(np)
