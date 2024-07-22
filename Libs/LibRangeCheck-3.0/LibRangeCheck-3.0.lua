@@ -631,7 +631,7 @@ end
 
 local function getNumSpells()
   local _, _, offset, numSpells = GetSpellTabInfo(GetNumSpellTabs())
-  return offset + numSpells
+  return (offset or 0) + (numSpells or 0)
 end
 
 -- return the spellIndex of the given spell by scanning the spellbook
