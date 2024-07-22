@@ -12,6 +12,7 @@ local gsub = string.gsub
 local format = string.format
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
+local UnitClassBase = UnitClassBase
 local FormatNumber = U.FormatNumber
 
 ---------------------------------------------------------------------
@@ -41,7 +42,7 @@ local function UpdateColor(self, event, unitId)
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
 
-    local class = U.UnitClassBase(unit)
+    local class = UnitClassBase(unit)
 
     -- color
     local r, g, b

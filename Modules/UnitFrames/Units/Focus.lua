@@ -31,6 +31,8 @@ local function CreateFocus()
     focus = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
     focus:SetAttribute("unit", "focus")
 
+    focus.skipDataCache = true -- BFI.vars.guids/names
+
     -- mover
     AW.CreateMover(focus, "UnitFrames", name)
 

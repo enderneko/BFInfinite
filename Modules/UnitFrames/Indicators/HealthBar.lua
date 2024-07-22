@@ -12,6 +12,7 @@ local UnitIsCharmed = UnitIsCharmed
 local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
+local UnitClassBase = UnitClassBase
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitGetIncomingHeals = UnitGetIncomingHeals
 local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
@@ -197,7 +198,7 @@ end
 local function GetHealthColor(self, unit)
     if not (self.color and self.lossColor) then return end
 
-    local class = U.UnitClassBase(unit)
+    local class = UnitClassBase(unit)
     local inVehicle = UnitHasVehicleUI(unit)
 
     local r, g, b, a, lossR, lossG, lossB, lossA

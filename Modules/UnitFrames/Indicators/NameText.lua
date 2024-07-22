@@ -8,6 +8,7 @@ local UF = BFI.M_UF
 ---------------------------------------------------------------------
 local UnitName = UnitName
 local UnitIsConnected = UnitIsConnected
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- name
@@ -19,7 +20,7 @@ local function UpdateName(self, event, unitId)
     local name = UnitName(unit)
     if not name then return end
 
-    local class = U.UnitClassBase(unit)
+    local class = UnitClassBase(unit)
 
     -- length
     AW.SetText(self, name, self.length)

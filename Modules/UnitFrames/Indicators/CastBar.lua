@@ -7,7 +7,6 @@ local UF = BFI.M_UF
 local strfind = string.find
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
-local UnitClassBase = UnitClassBase
 local GetUnitEmpowerHoldAtMaxTime = GetUnitEmpowerHoldAtMaxTime
 local GetUnitEmpowerStageDuration = GetUnitEmpowerStageDuration
 
@@ -304,6 +303,20 @@ local function CastInterruptible(self, event, unit)
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))
         self.gap:SetColorTexture(AW.UnpackColor(self.borderColor))
+    end
+end
+
+---------------------------------------------------------------------
+-- interrupt source
+---------------------------------------------------------------------
+local function UpdateInterrupt(self)
+    local _, subEvent, _, _, sourceName, _, _, destGUID, destName, _, _, spellId, spellName = CombatLogGetCurrentEventInfo()
+    if subEvent ~= "SPELL_INTERRUPT" then return end
+
+    if destGUID == self.root.states.guid then
+        if self.showName then
+            AW.SetText(self.nameText, sourceName, self.nameTextLength)
+        end
     end
 end
 
@@ -643,6 +656,16 @@ local function CastBar_Enable(self)
     if self.latencyEnabled then
         self:RegisterEvent("CURRENT_SPELL_CAST_CHANGED", UpdateLatency)
         self:RegisterEvent("UNIT_SPELLCAST_SENT", UpdateLatency)
+    else
+        self:UnregisterEvent("CURRENT_SPELL_CAST_CHANGED")
+        self:UnregisterEvent("UNIT_SPELLCAST_SENT")
+    end
+
+    -- interrupt source
+    if self.showInterruptSource then
+        self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", UpdateInterrupt)
+    else
+        self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     end
 
     -- onupdate
@@ -838,6 +861,7 @@ local function CastBar_LoadConfig(self, config)
     self.succeededColor = config.colors.succeeded
     self.uninterruptibleColor = config.colors.uninterruptible
     self.borderColor = config.borderColor
+    self.showInterruptSource = config.showInterruptSource
 end
 
 ---------------------------------------------------------------------

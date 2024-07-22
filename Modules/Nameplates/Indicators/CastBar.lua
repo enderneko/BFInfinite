@@ -7,7 +7,6 @@ local NP = BFI.M_NP
 local strfind = string.find
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
-local UnitClassBase = UnitClassBase
 local GetUnitEmpowerHoldAtMaxTime = GetUnitEmpowerHoldAtMaxTime
 local GetUnitEmpowerStageDuration = GetUnitEmpowerStageDuration
 

@@ -3,10 +3,10 @@ local BFI = select(2, ...)
 ---@class Utils
 local U = BFI.utils
 
---! for AI followers
-function U.UnitClassBase(unit)
-    return select(2, UnitClass(unit))
-end
+-- for AI followers
+-- function U.UnitClassBase(unit)
+--     return select(2, UnitClass(unit))
+-- end
 
 ---------------------------------------------------------------------
 -- IsXXX

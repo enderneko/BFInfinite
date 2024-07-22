@@ -39,6 +39,7 @@ local function CreateTarget()
     target = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
     target:SetAttribute("unit", "target")
     target._updateOnPlayerTargetChanged = true
+    target.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
     AW.CreateMover(target, "UnitFrames", name)

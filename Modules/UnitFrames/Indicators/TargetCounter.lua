@@ -8,6 +8,7 @@ local UF = BFI.M_UF
 -- local functions
 ---------------------------------------------------------------------
 local UnitIsUnit = UnitIsUnit
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- color
@@ -19,7 +20,7 @@ local function UpdateColor(self, event, unitId)
     local r, g, b
     if self.color.type == "class_color" then
         if U.UnitIsPlayer(unit) then
-            local class = U.UnitClassBase(unit)
+            local class = UnitClassBase(unit)
             r, g, b = AW.GetClassColor(class)
         else
             r, g, b = AW.GetReactionColor(unit)

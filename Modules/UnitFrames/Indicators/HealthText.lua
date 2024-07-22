@@ -14,6 +14,7 @@ local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
+local UnitClassBase = UnitClassBase
 local FormatNumber = U.FormatNumber
 
 ---------------------------------------------------------------------
@@ -54,7 +55,7 @@ local function UpdateColor(self, event, unitId)
     local r, g, b
     if self.color.type == "class_color" then
         if U.UnitIsPlayer(unit) then
-            local class = U.UnitClassBase(unit)
+            local class = UnitClassBase(unit)
             r, g, b = AW.GetClassColor(class)
         else
             r, g, b = AW.GetReactionColor(unit)

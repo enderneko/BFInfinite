@@ -43,7 +43,7 @@ local UnitPhaseReason = UnitPhaseReason
 local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
 local IsInRaid = IsInRaid
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
-local strfind = string.find
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- states
@@ -54,7 +54,7 @@ local function UnitButton_UpdateBaseStates(self)
 
     self.states.name = UnitName(unit)
     self.states.fullName = U.UnitFullName(unit)
-    self.states.class = U.UnitClassBase(unit)
+    self.states.class = UnitClassBase(unit)
     self.states.guid = UnitGUID(unit)
     self.states.isPlayer = UnitIsPlayer(unit)
     self.states.inVehicle = UnitHasVehicleUI(unit)
@@ -331,7 +331,10 @@ local function UnitButton_OnTick(self)
             if guid and guid ~= self.__unitGuid then
                 -- NOTE: unit entity changed
                 self.__unitGuid = guid
-                BFI.vars.guids[guid] = self.unit
+
+                if not self.skipDataCache then
+                    BFI.vars.guids[guid] = self.unit
+                end
 
                 -- NOTE: only save players' names
                 if UnitIsPlayer(self.unit) then
@@ -339,8 +342,11 @@ local function UnitButton_OnTick(self)
                     local name = GetUnitName(self.unit, true)
                     if (name and self.__nameRetries and self.__nameRetries >= 4) or (name and name ~= UNKNOWN and name ~= UNKNOWNOBJECT) then
                         self.__unitName = name
-                        BFI.vars.names[name] = self.unit
                         self.__nameRetries = nil
+
+                        if not self.skipDataCache then
+                            BFI.vars.names[name] = self.unit
+                        end
                     else
                         -- NOTE: update on next tick
                         self.__nameRetries = (self.__nameRetries or 0) + 1
@@ -396,11 +402,11 @@ local function UnitButton_OnHide(self)
     UF.OnButtonHide(self)
 
     if self.__unitGuid then
-        BFI.vars.guids[self.__unitGuid] = nil
+        if not self.skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
         self.__unitGuid = nil
     end
     if self.__unitName then
-        BFI.vars.names[self.__unitName] = nil
+        if not self.skipDataCache then BFI.vars.names[self.__unitName] = nil end
         self.__unitName = nil
     end
     self.__displayedGuid = nil
@@ -415,11 +421,11 @@ local function UnitButton_OnAttributeChanged(self, name, value)
         if not value or value ~= self.unit then
             -- NOTE: when unitId for this button changes
             if self.__unitGuid then -- self.__unitGuid is deleted when hide
-                BFI.vars.guids[self.__unitGuid] = nil
+                if not self.skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
                 self.__unitGuid = nil
             end
             if self.__unitName then
-                BFI.vars.names[self.__unitName] = nil
+                if not self.skipDataCache then BFI.vars.names[self.__unitName] = nil end
                 self.__unitName = nil
             end
             wipe(self.states)

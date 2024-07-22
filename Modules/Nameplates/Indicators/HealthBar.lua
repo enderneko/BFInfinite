@@ -21,6 +21,7 @@ local UnitIsPlayer = UnitIsPlayer
 local UnitPlayerControlled = UnitPlayerControlled
 local UnitIsUnit = UnitIsUnit
 local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- color
@@ -37,7 +38,7 @@ local function GetHealthColor(self, unit)
         r, g, b = AW.GetColorRGB("threat_" .. self.threatSituation)
 
     elseif U.UnitIsPlayer(unit) then
-        local class = U.UnitClassBase(unit)
+        local class = UnitClassBase(unit)
         if not UnitIsConnected(unit) then
             r, g, b = 0.4, 0.4, 0.4
             lossR, lossG, lossB = 0.4, 0.4, 0.4

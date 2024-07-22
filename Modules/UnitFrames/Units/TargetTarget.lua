@@ -32,6 +32,7 @@ local function CreateTargetTarget()
     targettarget._refreshOnUpdate = true
     targettarget._updateOnPlayerTargetChanged = true
     targettarget._updateOnUnitTargetChanged = "target"
+    targettarget.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
     AW.CreateMover(targettarget, "UnitFrames", name)

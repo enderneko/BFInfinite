@@ -15,6 +15,7 @@ local GetRelativeDifficultyColor = GetRelativeDifficultyColor
 local GetCreatureDifficultyColor = GetCreatureDifficultyColor
 local QuestDifficultyColors = QuestDifficultyColors
 local GetPetTeamAverageLevel = C_PetJournal and C_PetJournal.GetPetTeamAverageLevel
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- color
@@ -42,7 +43,7 @@ local function UpdateColor(self, event, unitId)
     if self.color.type == "level_color" then
         r, g, b = GetLevelColor(unit)
     elseif self.color.type == "class_color" then
-        local class = U.UnitClassBase(unit)
+        local class = UnitClassBase(unit)
         if U.UnitIsPlayer(unit) then
             r, g, b = AW.GetClassColor(class)
         else

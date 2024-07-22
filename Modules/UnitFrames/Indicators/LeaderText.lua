@@ -10,6 +10,7 @@ local UF = BFI.M_UF
 local IsInRaid = IsInRaid
 local UnitIsGroupLeader = UnitIsGroupLeader
 local UnitIsGroupAssistant = UnitIsGroupAssistant
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- color
@@ -20,7 +21,7 @@ local function UpdateColor(self)
     local r, g, b
     if self.color.type == "class_color" then
         if U.UnitIsPlayer(unit) then
-            local class = U.UnitClassBase(unit)
+            local class = UnitClassBase(unit)
             r, g, b = AW.GetClassColor(class)
         else
             r, g, b = AW.GetReactionColor(unit)

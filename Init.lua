@@ -28,8 +28,10 @@ BFI.prefix = "BFI"
 BFI.vars = {} -- vars
 -- BFI.widgets = {} -- widgets (regions/frames)
 -- BFI.funcs = {} -- functions
-BFI.utils = {} -- utils
 BFI.libs = {}
+
+BFI.utils = {} -- utils
+BFI.AddEventHandler(BFI.utils)
 
 ---------------------------------------------------------------------
 -- vars

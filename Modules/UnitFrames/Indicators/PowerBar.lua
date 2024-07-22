@@ -11,6 +11,7 @@ local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
 local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitIsConnected = UnitIsConnected
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- GetClassColor
@@ -61,7 +62,7 @@ local function GetPowerColor(self, unit)
 
     self.powerType = select(2, UnitPowerType(unit))
 
-    local class = U.UnitClassBase(unit)
+    local class = UnitClassBase(unit)
     local inVehicle = UnitHasVehicleUI(unit)
 
     local r, g, b, a, lossR, lossG, lossB, lossA
