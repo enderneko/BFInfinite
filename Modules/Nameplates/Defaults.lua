@@ -65,14 +65,14 @@ do
             position = {"BOTTOM", "TOP", 0, 1},
             anchorTo = "healthBar",
             length = 1,
-            font = {"BFI 1", 13, "none", true},
+            font = {"BFI 1", 12, "none", true},
             color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
         },
         healthText = {
             enabled = true,
-            position = {"LEFT", "LEFT", 5, 0},
+            position = {"CENTER", "CENTER", -5, 0},
             anchorTo = "healthBar",
-            font = {"BFI 1", 12, "none", true},
+            font = {"BFI 1", 11, "none", true},
             color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             format = {
                 numeric = "current_short",
@@ -83,7 +83,15 @@ do
             },
         },
         levelText = {
-
+            enabled = true,
+            position = {"RIGHT", "RIGHT", -5, 0},
+            anchorTo = "healthBar",
+            font = {"BFI 1", 11, "none", true},
+            color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            highLevelTexture = {
+                enabled = true,
+                size = 16,
+            },
         },
         raidIcon = {
 
