@@ -10,9 +10,9 @@ function U.GetSpellInfo(spellId)
     local info = C_Spell.GetSpellInfo(spellId)
     if not info then return end
 
-    -- if not info.iconID then
-    --     info.iconID = C_Spell.GetSpellTexture(spellId)
-    -- end
+    if not info.iconID then -- when?
+        info.iconID = C_Spell.GetSpellTexture(spellId)
+    end
 
     return info.name, info.iconID
 end

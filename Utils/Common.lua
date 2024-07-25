@@ -128,6 +128,17 @@ function U.Merge(t, ...)
     end
 end
 
+function U.IsEmpty(t)
+    if not t or type(t) ~= "table" then
+        return true
+    end
+
+    for k in pairs(t) do
+        return false
+    end
+    return true
+end
+
 function U.RemoveElementsExceptKeys(tbl, ...)
     local keys = {}
 

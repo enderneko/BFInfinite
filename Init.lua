@@ -21,6 +21,7 @@ BFI_DEFAULT = "BFI ".._G.DEFAULT
 -- prefix
 ---------------------------------------------------------------------
 BFI.prefix = "BFI"
+BFI.name = "BigFootInfinite"
 
 ---------------------------------------------------------------------
 -- tables
@@ -43,14 +44,14 @@ BFI.vars.isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 BFI.vars.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 BFI.vars.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
-BFI.vars.playerClass = UnitClassBase("player")
-BFI.vars.playerSpecID = GetSpecialization()
-
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
 BFI.M_Color = {}
 BFI.AddEventHandler(BFI.M_Color)
+
+BFI.M_Misc = {}
+BFI.AddEventHandler(BFI.M_Misc)
 
 BFI.M_AB = {["bars"] = {}}
 BFI.AddEventHandler(BFI.M_AB)

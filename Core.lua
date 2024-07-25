@@ -1,5 +1,7 @@
-local addonName, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
 local AW = BFI.AW
+local U = BFI.utils
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("ADDON_LOADED")
@@ -11,7 +13,7 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 end)
 
 function eventFrame:ADDON_LOADED(arg)
-    if arg == addonName then
+    if arg == BFI.name then
         eventFrame:UnregisterEvent("ADDON_LOADED")
 
         if type(BFIConfig) ~= "table" then BFIConfig = {} end
@@ -30,6 +32,13 @@ function eventFrame:ADDON_LOADED(arg)
 end
 
 function eventFrame:PLAYER_LOGIN()
+    BFI.vars.playerNameFull = U.UnitFullName("player")
+    BFI.vars.playerNameShort = GetUnitName("player")
+    BFI.vars.playerClass = UnitClassBase("player")
+    BFI.vars.playerSpecID = GetSpecialization()
+    BFI.vars.playerRealm = GetNormalizedRealmName()
+
+    BFI.Fire("PLAYER_LOGIN")
     BFI.Fire("UpdateModules")
 end
 

@@ -2,7 +2,8 @@
 ## Title: |cFFFF5F00BigFootInfinite|r
 ## Version: r1
 ## X-Flavor: Mainline
-## SavedVariables: BFIConfig
+## SavedVariables: BFIConfig, BFIPlayer
+## SavedVariablesPerCharacter: BFIGuild
 # AddonCompartmentFunc: BigFootInfinite_OnAddonCompartmentClick
 # IconTexture: Interface\icon.tga
 

@@ -9,6 +9,65 @@ local U = BFI.utils
 -- end
 
 ---------------------------------------------------------------------
+-- class
+---------------------------------------------------------------------
+local GetClassInfo = GetClassInfo
+local localizedClass = LocalizedClassList()
+local classFileToID = {}
+local localizedClassToID = {}
+
+do
+    -- WARRIOR = 1,
+    -- PALADIN = 2,
+    -- HUNTER = 3,
+    -- ROGUE = 4,
+    -- PRIEST = 5,
+    -- DEATHKNIGHT = 6,
+    -- SHAMAN = 7,
+    -- MAGE = 8,
+    -- WARLOCK = 9,
+    -- MONK = 10,
+    -- DRUID = 11,
+    -- DEMONHUNTER = 12,
+    -- EVOKER = 13,
+    for i = 1, GetNumClasses() do
+        local classFile = select(2, GetClassInfo(i))
+        if classFile then -- returns nil for classes not exist in Classic
+            classFileToID[classFile] = i
+            localizedClassToID[localizedClass[classFile]] = i
+        end
+    end
+end
+
+function U.GetClassID(class)
+    return classFileToID[class] or localizedClassToID[class]
+end
+
+---@param class number|string
+function U.GetClassFileName(class)
+    if type(class) == "number" then
+        return select(2, GetClassInfo(class))
+    elseif type(class) == "string" then
+        local id = localizedClassToID[class]
+        if id then
+            return select(2, GetClassInfo(id))
+        end
+    end
+end
+
+---@param class number|string
+function U.GetClassLocalizedName(class)
+    if type(class) == "number" then
+        return GetClassInfo(class)
+    elseif type(class) == "string" then
+        local id = classFileToID[class]
+        if id then
+            return GetClassInfo(id)
+        end
+    end
+end
+
+---------------------------------------------------------------------
 -- IsXXX
 ---------------------------------------------------------------------
 local UnitIsPlayer = UnitIsPlayer
@@ -44,8 +103,9 @@ function U.UnitFullName(unit)
     if not unit or not UnitIsPlayer(unit) then return end
 
     local name = GetUnitName(unit, true)
+    if not name or name == "" then return end
 
-    if name and not string.find(name, "-") then
+    if not string.find(name, "-") then
         local server = GetNormalizedRealmName()
         if server then
             name = name.."-"..server
@@ -53,6 +113,12 @@ function U.UnitFullName(unit)
     end
 
     return name
+end
+
+function U.ToShortName(fullName)
+    if not fullName then return "" end
+    local shortName = strsplit("-", fullName)
+    return shortName
 end
 
 ---------------------------------------------------------------------
