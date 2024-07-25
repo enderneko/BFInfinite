@@ -165,7 +165,12 @@ do
             height = 16,
         },
         classIcon = {
-
+            enabled = true,
+            position = {"RIGHT", "TOPRIGHT", 0, 0},
+            anchorTo = "healthBar",
+            frameLevel = 2,
+            width = 16,
+            height = 16,
         },
         rareIndicator = {
             enabled = true,

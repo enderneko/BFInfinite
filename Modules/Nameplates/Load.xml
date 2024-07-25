@@ -10,5 +10,6 @@
      <Script file="Indicators\LevelText.lua"/>
      <Script file="Indicators\RareIndicator.lua"/>
      <Script file="Indicators\RaidIcon.lua"/>
+     <Script file="Indicators\ClassIcon.lua"/>
      <Script file="Indicators\Common.lua"/>
 </Ui>

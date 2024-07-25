@@ -42,7 +42,7 @@ end
 
 local function Portrait_Update_ClassIcon(self, unit)
     self.texture:SetTexCoord(unpack(AW.CalcTexCoord(self:GetWidth(), self:GetHeight())))
-    local class = select(2, UnitClass(unit))
+    local class = UnitClassBase(unit)
     if class then
         self.texture:SetAtlas("classicon-"..class)
     else

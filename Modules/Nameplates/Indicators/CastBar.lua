@@ -526,7 +526,7 @@ function NP.CreateCastBar(parent, name)
     status:Hide()
 
     -- iconBG
-    local iconBG = frame:CreateTexture(nil, "BACKGROUND")
+    local iconBG = frame:CreateTexture(nil, "BORDER")
     frame.iconBG = iconBG
     iconBG:SetTexture(AW.GetPlainTexture())
 
