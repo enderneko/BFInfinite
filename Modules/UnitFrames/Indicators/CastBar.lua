@@ -708,7 +708,7 @@ local function CastBar_SetTexture(self, texture)
     self.bar:SetStatusBarTexture(texture)
     self.status:SetTexture(texture)
     for _, pip in pairs(self.pips) do
-        pip:SetTexture(texture)
+        pip.texture:SetTexture(texture)
     end
 end
 
