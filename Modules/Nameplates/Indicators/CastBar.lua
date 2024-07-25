@@ -476,7 +476,6 @@ local function CastBar_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config)
     AW.SetSize(self, config.width, config.height)
-    AW.SetWidth(self.icon, config.height-2)
 
     CastBar_SetTexture(self, config.texture)
 

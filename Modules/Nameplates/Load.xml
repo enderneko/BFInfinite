@@ -8,5 +8,6 @@
      <Script file="Indicators\NameText.lua"/>
      <Script file="Indicators\HealthText.lua"/>
      <Script file="Indicators\LevelText.lua"/>
+     <Script file="Indicators\RareIndicator.lua"/>
      <Script file="Indicators\Common.lua"/>
 </Ui>
