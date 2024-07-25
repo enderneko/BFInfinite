@@ -145,7 +145,7 @@ local defaults = {
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
-                    numeric = "current",
+                    numeric = "current_short",
                     percent = "none",
                     delimiter = " | ",
                     noPercentSign = false,
@@ -212,7 +212,7 @@ local defaults = {
                 ticks = {
                     enabled = true,
                     color = AW.GetColorTable("cast_tick"),
-                    width = 3,
+                    width = 2,
                 },
                 latency = {
                     enabled = true,
@@ -550,7 +550,7 @@ local defaults = {
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
-                    numeric = "current",
+                    numeric = "current_short",
                     percent = "none",
                     delimiter = " | ",
                     noPercentSign = false,

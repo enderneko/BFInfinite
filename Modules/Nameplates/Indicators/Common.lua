@@ -12,6 +12,7 @@ local builders = {
     healthText = NP.CreateHealthText,
     levelText = NP.CreateLevelText,
     rareIndicator = NP.CreateRareIndicator,
+    raidIcon = NP.CreateRaidIcon,
 }
 
 function NP.CreateIndicators(np)

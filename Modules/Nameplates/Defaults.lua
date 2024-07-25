@@ -8,6 +8,12 @@ local defaults = {
     enabled = true,
     occludedAlpha = 0.4,
     -- nameplateSelectedScale
+    cvars = {
+
+    },
+    alphas = {
+
+    },
     hostile = {
         -- castOnMe
         threat = {
@@ -62,7 +68,7 @@ do
             },
             threatGlow = {
                 enabled = true,
-                size = 4,
+                size = 5,
                 alpha = 1,
             },
         },
@@ -99,17 +105,11 @@ do
                 size = 16,
             },
         },
-        raidIcon = {
-
-        },
-        classIcon = {
-
-        },
         castBar = {
             enabled = true,
             position = {"TOP", "BOTTOM", 0, -2},
             anchorTo = "healthBar",
-            frameLevel = 5,
+            frameLevel = 3,
             width = 125,
             height = 15,
             bgColor = AW.GetColorTable("background", 0.75),
@@ -119,8 +119,8 @@ do
             icon = {
                 enabled = true,
                 position = {"BOTTOMRIGHT", "BOTTOMLEFT", -2, 0},
-                width = 25,
-                height = 25
+                width = 20,
+                height = 20
             },
             nameText = {
                 enabled = true,
@@ -155,6 +155,26 @@ do
         },
         debuffs = {
 
+        },
+        raidIcon = {
+            enabled = true,
+            position = {"RIGHT", "LEFT", 0, 0},
+            anchorTo = "healthBar",
+            frameLevel = 2,
+            width = 16,
+            height = 16,
+        },
+        classIcon = {
+
+        },
+        rareIndicator = {
+            enabled = true,
+            position = {"RIGHT", "TOPRIGHT", 0, 0},
+            anchorTo = "healthBar",
+            frameLevel = 2,
+            color = AW.GetColorTable("white"),
+            width = 16,
+            height = 16,
         },
         crowdControls = {
 
