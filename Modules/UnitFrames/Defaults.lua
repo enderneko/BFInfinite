@@ -380,6 +380,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = nil,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = false,
@@ -428,6 +429,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = true,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = false,
@@ -752,6 +754,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = true,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = true,
@@ -800,6 +803,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = true,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = false,
@@ -1081,6 +1085,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = true,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = true,
@@ -1129,6 +1134,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = true,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = false,
@@ -1409,6 +1415,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = true,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = true,
@@ -1457,6 +1464,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = true,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = false,
@@ -1731,6 +1739,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = true,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = true,
@@ -1779,6 +1788,7 @@ local defaults = {
                     isBossAura = true,
                     dispellable = true,
                 },
+                priorities = {},
                 blacklist = {},
                 auraTypeColor = {
                     castByMe = false,

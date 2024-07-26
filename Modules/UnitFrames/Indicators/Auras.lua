@@ -18,6 +18,10 @@ local Auras_UpdateSize
 -- sort
 ---------------------------------------------------------------------
 local function SortAuras(a, b)
+    if a.priority ~= b.priority then
+        return a.priority < b.priority
+    end
+
     if a.dispellable ~= b.dispellable then
         return a.dispellable
     end
@@ -43,7 +47,7 @@ local function SortAuras(a, b)
     --     return a.start > b.start
     -- end
 
-    return a.auraInstanceID > b.auraInstanceID
+    return a.auraInstanceID < b.auraInstanceID
 end
 
 ---------------------------------------------------------------------
@@ -84,6 +88,7 @@ local function UpdateExtraData(self, auraData)
     auraData.debuffType = U.GetDebuffType(auraData)
     auraData.dispellable = IsDispellable(self, auraData)
     auraData.noDuration = auraData.duration == 0
+    auraData.priority = self.priorities[auraData.spellId] or 999
 end
 
 ---------------------------------------------------------------------
@@ -551,6 +556,9 @@ local function Auras_LoadConfig(self, config)
     Auras_SetOrientation(self, config.orientation)
     Auras_SetupAuras(self, config)
     Auras_UpdateSize(self, 0)
+
+    -- priorities
+    self.priorities = config.priorities
 
     -- blacklist
     self.blacklist = U.ConvertSpellTable(config.blacklist)
