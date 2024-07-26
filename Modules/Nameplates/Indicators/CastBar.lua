@@ -474,7 +474,7 @@ local function CastBar_LoadConfig(self, config)
     self.borderColor = config.borderColor
 
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    NP.LoadIndicatorPosition(self, config)
+    NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
 
     CastBar_SetTexture(self, config.texture)

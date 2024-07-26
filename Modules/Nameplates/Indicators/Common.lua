@@ -83,17 +83,16 @@ function NP.OnNameplateHide(np)
     end
 end
 
-function NP.LoadIndicatorPosition(self, config)
-    local anchorTo
-    if config.anchorTo == "nameplate" then
+function NP.LoadIndicatorPosition(self, position, anchorTo)
+    if anchorTo == "nameplate" then
         anchorTo = self.root
-    elseif config.anchorTo then
-        anchorTo = self.root.indicators[config.anchorTo]
+    elseif anchorTo then
+        anchorTo = self.root.indicators[anchorTo]
     end
 
     if self:GetObjectType() == "FontString" then
-        AW.LoadTextPosition(self, config.position, anchorTo)
+        AW.LoadTextPosition(self, position, anchorTo)
     else
-        AW.LoadWidgetPosition(self, config.position, anchorTo)
+        AW.LoadWidgetPosition(self, position, anchorTo)
     end
 end

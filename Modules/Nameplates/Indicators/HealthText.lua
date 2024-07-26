@@ -236,7 +236,7 @@ end
 local function HealthText_LoadConfig(self, config)
     U.SetFont(self, unpack(config.font))
     HealthText_SetFormat(self, config.format)
-    NP.LoadIndicatorPosition(self, config)
+    NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
     self.color = config.color
     self.hideIfFull = config.hideIfFull

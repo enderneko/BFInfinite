@@ -39,6 +39,16 @@ function U.FormatNumber(n)
     end
 end
 
+U.epsilon = 0.001
+
+function U.ApproxEqual(a, b, epsilon)
+    return math.abs(a - b) <= (epsilon or U.epsilon)
+end
+
+function U.ApproxZero(n)
+    return U.ApproxEqual(n, 0)
+end
+
 ---------------------------------------------------------------------
 -- string
 ---------------------------------------------------------------------

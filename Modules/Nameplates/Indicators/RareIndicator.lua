@@ -43,7 +43,7 @@ end
 local function RareIndicator_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     AW.SetSize(self, config.width, config.height)
-    NP.LoadIndicatorPosition(self, config)
+    NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
     self.icon:SetVertexColor(AW.UnpackColor(config.color))
 end
 

@@ -409,7 +409,7 @@ end
 ---------------------------------------------------------------------
 local function HealthBar_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    NP.LoadIndicatorPosition(self, config)
+    NP.LoadIndicatorPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
 
     HealthBar_SetTexture(self, U.GetBarTexture(config.texture))

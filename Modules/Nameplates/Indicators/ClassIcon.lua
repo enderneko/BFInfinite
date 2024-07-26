@@ -50,7 +50,7 @@ end
 ---------------------------------------------------------------------
 local function ClassIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    NP.LoadIndicatorPosition(self, config)
+    NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
 end
 
