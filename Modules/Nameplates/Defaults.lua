@@ -39,11 +39,17 @@ do
             frameLevel = 1,
             width = 125,
             height = 15,
-            bgColor = AW.GetColorTable("background", 0.75),
-            borderColor = AW.GetColorTable("border"),
             colorByClass = true,
             colorByThreat = true,
             colorByMarker = true,
+            colorAlpha = 1,
+            lossColor = {
+                useDarkerForground = false,
+                alpha = 0.5,
+                rgb = AW.GetColorTable("black")
+            },
+            bgColor = AW.GetColorTable("background", 0),
+            borderColor = AW.GetColorTable("border"),
             texture = "BFI 1",
             mouseoverHighlight = {
                 enabled = true,

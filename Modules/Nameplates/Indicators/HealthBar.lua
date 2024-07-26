@@ -56,7 +56,11 @@ local function GetHealthColor(self, unit)
     end
 
     if not lossR then
-        lossR, lossG, lossB = r * 0.2, g * 0.2, b * 0.2
+        if self.lossColor.useDarkerForground then
+            lossR, lossG, lossB = r * 0.2, g * 0.2, b * 0.2
+        else
+            lossR, lossG, lossB = AW.UnpackColor(self.lossColor.rgb)
+        end
     end
 
     return r, g, b, lossR, lossG, lossB
@@ -68,8 +72,8 @@ local function UpdateHealthColor(self)
 
     -- healthBar
     local r, g, b, lossR, lossG, lossB = GetHealthColor(self, unit)
-    self:SetColor(r, g, b)
-    self:SetLossColor(lossR, lossG, lossB)
+    self:SetColor(r, g, b, self.colorAlpha)
+    self:SetLossColor(lossR, lossG, lossB, self.lossColor.alpha)
 end
 
 ---------------------------------------------------------------------
@@ -423,6 +427,8 @@ local function HealthBar_LoadConfig(self, config)
     self.colorByClass = config.colorByClass
     self.colorByThreat = config.colorByThreat
     self.colorByMarker = config.colorByMarker
+    self.colorAlpha = config.colorAlpha
+    self.lossColor = config.lossColor
     self.thresholdEnabled = config.thresholds.enabled
     self.thresholdValues = config.thresholds.values
     self.threatAlpha = config.threatGlow.alpha
