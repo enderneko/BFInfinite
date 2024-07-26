@@ -93,6 +93,7 @@ do
                 noPercentSign = false,
                 useAsianUnits = false,
             },
+            hideIfFull = true,
         },
         levelText = {
             enabled = true,

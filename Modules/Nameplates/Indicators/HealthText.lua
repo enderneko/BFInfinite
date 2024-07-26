@@ -30,10 +30,16 @@ local function UpdateHealth(self, event, unitId)
         self.healthMax = 1
     end
 
+    if self.hideIfFull and self.health >= self.healthMax then
+        self:Hide()
+        return
+    end
+
     self:SetFormattedText("%s%s%s",
         self.GetNumeric(self.health, self.totalAbsorbs),
         self.delimiter,
         self.GetPercent(self.health, self.healthMax, self.totalAbsorbs))
+    self:Show()
 end
 
 ---------------------------------------------------------------------
@@ -233,6 +239,7 @@ local function HealthText_LoadConfig(self, config)
     NP.LoadIndicatorPosition(self, config)
 
     self.color = config.color
+    self.hideIfFull = config.hideIfFull
 end
 
 ---------------------------------------------------------------------
