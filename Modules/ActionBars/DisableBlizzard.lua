@@ -1,5 +1,5 @@
 local _, BFI = ...
-local AB = BFI.M_AB
+local AB = BFI.M_ActionBars
 local U = BFI.utils
 
 ---------------------------------------------------------------------
@@ -104,16 +104,16 @@ function AB.DisableBlizzard()
                 if not iconIntro.isSkinned then
                     iconIntro.trail1.icon:SetTexCoord(l, r, t, b)
                     iconIntro.trail1.bg:SetTexCoord(l, r, t, b)
-        
+
                     iconIntro.trail2.icon:SetTexCoord(l, r, t, b)
                     iconIntro.trail2.bg:SetTexCoord(l, r, t, b)
-        
+
                     iconIntro.trail3.icon:SetTexCoord(l, r, t, b)
                     iconIntro.trail3.bg:SetTexCoord(l, r, t, b)
-        
+
                     iconIntro.icon.icon:SetTexCoord(l, r, t, b)
                     iconIntro.icon.bg:SetTexCoord(l, r, t, b)
-        
+
                     iconIntro.isSkinned = true
                 end
             end

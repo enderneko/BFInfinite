@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local AW = BFI.AW
-local UF = BFI.M_UF
+local UF = BFI.M_UnitFrames
 
 ---------------------------------------------------------------------
 -- functions

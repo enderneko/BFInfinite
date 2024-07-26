@@ -2,7 +2,7 @@ local addonName, BFI = ...
 local L = BFI.L
 local AW = BFI.AW
 local U = BFI.utils
-local AB = BFI.M_AB
+local AB = BFI.M_ActionBars
 
 local LAB = BFI.libs.LAB
 

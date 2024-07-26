@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local AW = BFI.AW
 local U = BFI.utils
-local NP = BFI.M_NP
+local NP = BFI.M_NamePlates
 
 local defaults = {
     enabled = true,
@@ -165,7 +165,7 @@ do
             height = 16,
         },
         classIcon = {
-            enabled = true,
+            enabled = false,
             position = {"RIGHT", "TOPRIGHT", 0, 0},
             anchorTo = "healthBar",
             frameLevel = 2,

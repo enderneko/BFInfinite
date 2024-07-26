@@ -2,7 +2,7 @@ local _, BFI = ...
 local L = BFI.L
 local U = BFI.utils
 local AW = BFI.AW
-local AB = BFI.M_AB
+local AB = BFI.M_ActionBars
 
 ---------------------------------------------------------------------
 -- create bar

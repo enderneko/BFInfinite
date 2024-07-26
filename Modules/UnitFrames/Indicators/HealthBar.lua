@@ -1,8 +1,8 @@
 local _, BFI = ...
 local U = BFI.utils
 local AW = BFI.AW
-local C = BFI.M_Color
-local UF = BFI.M_UF
+local C = BFI.M_Colors
+local UF = BFI.M_UnitFrames
 
 ---------------------------------------------------------------------
 -- local functions

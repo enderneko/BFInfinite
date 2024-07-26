@@ -9,7 +9,7 @@ _G.BFI = BFI
 ---@field utils Utils
 ---@field vars table
 ---@field libs table
----@field M_UF UnitFrame
+---@field M_UnitFrames UnitFrame
 
 ---------------------------------------------------------------------
 -- global
@@ -47,20 +47,23 @@ BFI.vars.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
-BFI.M_Color = {}
-BFI.AddEventHandler(BFI.M_Color)
+BFI.M_Colors = {}
+BFI.AddEventHandler(BFI.M_Colors)
 
 BFI.M_Misc = {}
 BFI.AddEventHandler(BFI.M_Misc)
 
-BFI.M_AB = {["bars"] = {}}
-BFI.AddEventHandler(BFI.M_AB)
+BFI.M_Shared = {}
+BFI.AddEventHandler(BFI.M_Shared)
 
-BFI.M_UF = {}
-BFI.AddEventHandler(BFI.M_UF)
+BFI.M_ActionBars = {["bars"] = {}}
+BFI.AddEventHandler(BFI.M_ActionBars)
 
-BFI.M_NP = {}
-BFI.AddEventHandler(BFI.M_NP)
+BFI.M_UnitFrames = {}
+BFI.AddEventHandler(BFI.M_UnitFrames)
+
+BFI.M_NamePlates = {}
+BFI.AddEventHandler(BFI.M_NamePlates)
 
 ---------------------------------------------------------------------
 -- hidden parent

@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
 ---@class UnitFrame
-local UF = BFI.M_UF
+local UF = BFI.M_UnitFrames
 
 local builders = {
     healthBar = UF.CreateHealthBar,

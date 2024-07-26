@@ -1,6 +1,6 @@
 local _, BFI = ...
 local AW = BFI.AW
-local UF = BFI.M_UF
+local UF = BFI.M_UnitFrames
 
 local player
 local indicators = {

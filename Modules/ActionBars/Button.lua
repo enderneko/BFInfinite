@@ -1,6 +1,6 @@
 local _, BFI = ...
 local AW = BFI.AW
-local AB = BFI.M_AB
+local AB = BFI.M_ActionBars
 local U = BFI.utils
 
 local LAB = BFI.libs.LAB

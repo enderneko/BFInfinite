@@ -1,7 +1,7 @@
 local _, BFI = ...
 local AW = BFI.AW
 local U = BFI.utils
-local AB = BFI.M_AB
+local AB = BFI.M_ActionBars
 
 local defaults = {
     general = {

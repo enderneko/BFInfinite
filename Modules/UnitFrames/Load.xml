@@ -4,8 +4,6 @@
     <Script file="UnitButton.lua"/>
     <Include file="UnitButton.xml"/>
     <!-- indicators -->
-    <Include file="Indicators\AuraCooldown.xml"/>
-    <Script file="Indicators\Aura.lua"/>
     <Script file="Indicators\Auras.lua"/>
     <Script file="Indicators\HealthBar.lua"/>
     <Script file="Indicators\PowerBar.lua"/>

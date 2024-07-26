@@ -2,7 +2,8 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
-local UF = BFI.M_UF
+local S = BFI.M_Shared
+local UF = BFI.M_UnitFrames
 
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots
@@ -441,7 +442,7 @@ local function Auras_SetNumSlots(self, numSlots)
 
     for i = 1, numSlots do
         if not self.slots[i] then
-            self.slots[i] = UF.CreateAura(self)
+            self.slots[i] = S.CreateAura(self)
         end
     end
 

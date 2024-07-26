@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
-local UF = BFI.M_UF
+local UF = BFI.M_UnitFrames
 
 ---------------------------------------------------------------------
 -- local functions
