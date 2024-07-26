@@ -224,6 +224,7 @@ local function Aura_EnableTooltip(self, config, helpful)
         self.tooltipPosition = nil
         self:SetScript("OnEnter", nil)
         self:SetScript("OnLeave", nil)
+        self:EnableMouse(false)
     end
 end
 

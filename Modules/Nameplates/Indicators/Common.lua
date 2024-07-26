@@ -14,6 +14,7 @@ local builders = {
     rareIndicator = NP.CreateRareIndicator,
     raidIcon = NP.CreateRaidIcon,
     classIcon = NP.CreateClassIcon,
+    debuffs = NP.CreateDebuffs,
 }
 
 function NP.CreateIndicators(np)

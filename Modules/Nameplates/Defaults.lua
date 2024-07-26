@@ -161,7 +161,49 @@ do
 
         },
         debuffs = {
-
+            enabled = true,
+            position = {"BOTTOM", "TOP", 0, 18  },
+            anchorTo = "healthBar",
+            orientation = "left_to_right",
+            cooldownStyle = "none",
+            width = 25,
+            height = 15,
+            spacingH = 3,
+            spacingV = 6,
+            numPerLine = 4,
+            numTotal = 8,
+            frameLevel = 2,
+            durationText = {
+                enabled = true,
+                font = {"BFI 1", 10, "outline", false},
+                position = {"RIGHT", "TOPRIGHT", 0, -2},
+                color = {
+                    AW.GetColorTable("white"), -- normal
+                    {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                    {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                },
+            },
+            stackText = {
+                enabled = true,
+                font = {"BFI 1", 10, "outline", false},
+                position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
+                color = AW.GetColorTable("white"),
+            },
+            filters = {
+                castByMe = true,
+                castByOthers = false,
+                castByUnit = false,
+                castByNPC = false,
+                isBossAura = false,
+                dispellable = false,
+            },
+            priorities = {},
+            blacklist = {},
+            auraTypeColor = {
+                castByMe = false,
+                dispellable = true,
+                debuffType = false,
+            },
         },
         raidIcon = {
             enabled = true,
