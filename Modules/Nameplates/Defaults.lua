@@ -65,7 +65,7 @@ local defaults = {
         },
         debuffs = {
             enabled = true,
-            position = {"BOTTOM", "TOP", 0, 18  },
+            position = {"BOTTOM", "TOP", 0, 18},
             anchorTo = "healthBar",
             orientation = "left_to_right",
             cooldownStyle = "none",
@@ -111,7 +111,7 @@ local defaults = {
     },
     friendly = {
         buffs = {
-            enabled = true,
+            enabled = false,
             position = {"BOTTOM", "TOP", 0, 10},
             anchorTo = "debuffs",
             orientation = "left_to_right",
@@ -140,12 +140,12 @@ local defaults = {
                 color = AW.GetColorTable("white"),
             },
             filters = {
-                castByMe = false,
+                castByMe = true,
                 castByOthers = false,
                 castByUnit = false,
                 castByNPC = false,
                 isBossAura = false,
-                dispellable = true,
+                dispellable = false,
             },
             priorities = {},
             blacklist = {},
@@ -157,7 +157,7 @@ local defaults = {
         },
         debuffs = {
             enabled = true,
-            position = {"BOTTOM", "TOP", 0, 18  },
+            position = {"BOTTOM", "TOP", 0, 18},
             anchorTo = "healthBar",
             orientation = "left_to_right",
             cooldownStyle = "none",

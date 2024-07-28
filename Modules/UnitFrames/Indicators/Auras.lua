@@ -661,6 +661,7 @@ function UF.CreateAuras(parent, name, auraFilter, hasSubFrame)
 
     -- functions
     frame.Enable = Auras_Enable
+    frame.Disable = Auras_Disable
     frame.Update = Auras_Update
     frame.LoadConfig = Auras_LoadConfig
 

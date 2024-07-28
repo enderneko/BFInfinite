@@ -279,6 +279,7 @@ local function Auras_Disable(self)
     wipe(self.auras)
     wipe(self.sortedAuras)
     self.numAuras = 0
+    Auras_UpdateSiblings(self)
 end
 
 ---------------------------------------------------------------------
@@ -553,10 +554,12 @@ local function CreateAuras(parent, name, auraFilter)
 
     -- functions
     frame.Enable = Auras_Enable
+    frame.Disable = Auras_Disable
     frame.Update = Auras_Update
     frame.LoadConfig = Auras_LoadConfig
     frame.AddSibling = Auras_AddSibling
     frame.RemoveSibling = Auras_RemoveSibling
+    frame.UpdateSiblings = Auras_UpdateSiblings
 
     -- pixel perfect
     AW.AddToPixelUpdater(frame, Auras_UpdatePixels)
