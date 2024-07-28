@@ -1,8 +1,10 @@
-local _, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
 local C = BFI.M_Colors
 local S = BFI.M_Shared
+local LCG = BFI.libs.LCG
 
 ---------------------------------------------------------------------
 -- recalc texcoords
@@ -154,7 +156,7 @@ local function UpdateDuration(self, elapsed)
     end
 end
 
-local function Aura_SetCooldown(self, start, duration, count, icon, auraType, desaturated)
+local function Aura_SetCooldown(self, start, duration, count, icon, auraType, desaturated, glow)
     if duration == 0 then
         if self.cooldown then self.cooldown:Hide() end
         self.duration:SetText("")
@@ -178,6 +180,12 @@ local function Aura_SetCooldown(self, start, duration, count, icon, auraType, de
         self._duration = duration
         self._elapsed = 0.1
         self:SetScript("OnUpdate", UpdateDuration)
+    end
+
+    if glow then
+        LCG.ButtonGlow_Start(self)
+    else
+        LCG.ButtonGlow_Stop(self)
     end
 
     self:SetDesaturated(desaturated)

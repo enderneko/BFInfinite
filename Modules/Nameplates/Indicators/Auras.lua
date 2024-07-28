@@ -44,6 +44,7 @@ local function IsCastByUnit(source, unit)
     return source and not UnitIsUnit(source, "player") and (UnitIsUnit(source, unit) or UnitIsOwnerOrControllerOfUnit(unit, source))
 end
 
+-- I can dispel
 local function IsDispellable(self, auraData)
     if auraData.isHelpful then
         return auraData.isStealable
@@ -51,6 +52,17 @@ local function IsDispellable(self, auraData)
 
     if auraData.isHarmful and UnitIsFriend("player", self.root.unit) and not UnitCanAttack("player", self.root.unit) then
         return U.CanDispel(auraData.debuffType)
+    end
+end
+
+-- can be dispelled by me/others
+local function CanBeDispelled(self, auraData)
+    if auraData.isHelpful and UnitCanAttack("player", self.root.unit) then
+        return auraData.dispelName == "" or auraData.dispelName == "Magic"
+    end
+
+    if auraData.isHarmful and UnitIsFriend("player", self.root.unit) and not UnitCanAttack("player", self.root.unit) then
+        return auraData.debuffType ~= nil and auraData.debuffType ~= "None"
     end
 end
 
@@ -70,6 +82,7 @@ local function UpdateExtraData(self, auraData)
     -- auraData.castByUnknown = not auraData.sourceUnit
     auraData.debuffType = U.GetDebuffType(auraData)
     auraData.dispellable = IsDispellable(self, auraData)
+    auraData.canBeDispelled = CanBeDispelled(self, auraData)
     auraData.noDuration = auraData.duration == 0
     auraData.priority = self.priorities[auraData.spellId] or 999
 end
@@ -116,9 +129,10 @@ end
 ---------------------------------------------------------------------
 -- ShowAura
 ---------------------------------------------------------------------
-local function ShowAura(self, auraData)
-    local aura = self.slots[self.numAuras]
-    aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData))
+local function ShowAura(self, auraData, index)
+    local aura = self.slots[index]
+    aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData),
+        nil, self.glowDispellableByMe and auraData.dispellable)
 end
 
 ---------------------------------------------------------------------
@@ -215,7 +229,7 @@ local function HandleAllAuras(self)
     -- show
     for i, auraData in pairs(self.sortedAuras) do
         self.numAuras = self.numAuras + 1
-        ShowAura(self, auraData)
+        ShowAura(self, auraData, i)
         if self.numAuras == self.numSlots then break end
     end
 
@@ -466,6 +480,7 @@ local function Auras_LoadConfig(self, config)
     self.anchor = config.position[1]
     self.spacingH = config.spacingH
     self.spacingV = config.spacingV
+    self.glowDispellableByMe = config.glowDispellableByMe
 
     Auras_SetNumSlots(self, config.numTotal)
     Auras_SetSize(self, config.width, config.height)
