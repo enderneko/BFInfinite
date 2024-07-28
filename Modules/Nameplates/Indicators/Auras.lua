@@ -12,7 +12,7 @@ local UnitIsOwnerOrControllerOfUnit = UnitIsOwnerOrControllerOfUnit
 local UnitIsFriend = UnitIsFriend
 local UnitCanAttack = UnitCanAttack
 
-local Auras_UpdateSize
+local Auras_UpdateSize, Auras_UpdateSiblings
 
 ---------------------------------------------------------------------
 -- sort
@@ -178,6 +178,8 @@ local function HandleUpdateInfo(self, updateInfo)
 
         -- resize
         Auras_UpdateSize(self, self.numAuras)
+    else
+        Auras_UpdateSiblings(self)
     end
 end
 
@@ -266,9 +268,40 @@ local function Auras_Disable(self)
 end
 
 ---------------------------------------------------------------------
+-- siblings
+---------------------------------------------------------------------
+local function Auras_AddSibling(self, sibling)
+    if not self.siblings then
+        self.siblings = {}
+    end
+    self.siblings[sibling] = true
+end
+
+local function Auras_RemoveSibling(self, sibling)
+    if not self.siblings then
+        return
+    end
+    self.siblings[sibling] = nil
+end
+
+function Auras_UpdateSiblings(self)
+    if not self.siblings then
+        return
+    end
+    for sibling in pairs(self.siblings) do
+        AW.ClearPoints(sibling)
+        if self.numAuras == 0 then
+            AW.SetPoint(sibling, sibling.position[1], self, sibling.position[2])
+        else
+            AW.SetPoint(sibling, sibling.position[1], self, sibling.position[2], sibling.position[3], sibling.position[4])
+        end
+    end
+end
+
+---------------------------------------------------------------------
 -- config
 ---------------------------------------------------------------------
-Auras_UpdateSize = function(self, numAuras)
+function Auras_UpdateSize(self, numAuras)
     -- if not (self.width and self.height and self.orientation) then return end
 
     -- hide unused
@@ -285,6 +318,8 @@ Auras_UpdateSize = function(self, numAuras)
     else
         AW.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, lines, numAuras)
     end
+
+    Auras_UpdateSiblings(self)
 end
 
 local function Auras_SetSize(self, width, height)
@@ -425,8 +460,9 @@ end
 
 local function Auras_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    NP.LoadIndicatorPosition(self, config)
+    NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
+    self.position = config.position -- for sibling update
     self.anchor = config.position[1]
     self.spacingH = config.spacingH
     self.spacingV = config.spacingV
@@ -482,6 +518,7 @@ local function CreateAuras(parent, name, auraFilter)
     frame.root = parent
     frame.auraFilter = auraFilter
     -- frame.overallFilter = sourceFilter
+    frame.canHaveSibling = true
 
     -- events
     BFI.AddEventHandler(frame)
@@ -503,6 +540,8 @@ local function CreateAuras(parent, name, auraFilter)
     frame.Enable = Auras_Enable
     frame.Update = Auras_Update
     frame.LoadConfig = Auras_LoadConfig
+    frame.AddSibling = Auras_AddSibling
+    frame.RemoveSibling = Auras_RemoveSibling
 
     -- pixel perfect
     AW.AddToPixelUpdater(frame, Auras_UpdatePixels)
@@ -512,4 +551,8 @@ end
 
 function NP.CreateDebuffs(parent, name)
     return CreateAuras(parent, name, "HARMFUL")
+end
+
+function NP.CreateBuffs(parent, name)
+    return CreateAuras(parent, name, "HELPFUL")
 end

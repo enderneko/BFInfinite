@@ -86,8 +86,16 @@ end
 function NP.LoadIndicatorPosition(self, position, anchorTo)
     if anchorTo == "nameplate" then
         anchorTo = self.root
+        if self.sibling then
+            self.sibling:RemoveSibling(self)
+            self.sibling = nil
+        end
     elseif anchorTo then
         anchorTo = self.root.indicators[anchorTo]
+        if anchorTo.canHaveSibling then
+            anchorTo:AddSibling(self)
+            self.sibling = anchorTo
+        end
     end
 
     if self:GetObjectType() == "FontString" then
