@@ -44,6 +44,8 @@ BFI.vars.isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 BFI.vars.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 BFI.vars.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
+BFI.vars.playerClass = UnitClassBase("player")
+
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------

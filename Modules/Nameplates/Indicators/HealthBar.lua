@@ -22,6 +22,8 @@ local UnitPlayerControlled = UnitPlayerControlled
 local UnitIsUnit = UnitIsUnit
 local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
 local UnitClassBase = U.UnitClassBase
+local IsInInstance = IsInInstance
+local UnitAffectingCombat = UnitAffectingCombat
 
 ---------------------------------------------------------------------
 -- color
@@ -127,6 +129,18 @@ local function UpdateThreat(self, event, unitId)
     if unitId and unitId ~= "player" then return end
 
     local status = UnitThreatSituation("player", unit)
+
+    if not status then
+        if IsInInstance() and UnitAffectingCombat(unit) and UnitAffectingCombat("player") then
+            local target = unit .. "target"
+            if UnitIsUnit(target, "player") or UnitIsUnit(target, "vehicle") then
+                status = 3
+            else
+                status = 0
+            end
+        end
+    end
+
     if status then
         status = threatSituations[status]
 

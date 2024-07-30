@@ -34,7 +34,6 @@ end
 function eventFrame:PLAYER_LOGIN()
     BFI.vars.playerNameFull = U.UnitFullName("player")
     BFI.vars.playerNameShort = GetUnitName("player")
-    BFI.vars.playerClass = UnitClassBase("player")
     BFI.vars.playerSpecID = GetSpecialization()
     BFI.vars.playerRealm = GetNormalizedRealmName()
 
