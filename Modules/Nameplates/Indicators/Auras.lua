@@ -67,25 +67,22 @@ local function CanBeDispelled(self, auraData)
 end
 
 local function UpdateExtraData(self, auraData)
-    -- local icon = auraData.icon
-    -- local count = auraData.applications
-    -- local auraType = auraData.dispelName
-    -- local duration = auraData.duration
-    -- local source = auraData.sourceUnit
     auraData.start = auraData.expirationTime - auraData.duration
+    auraData.debuffType = U.GetDebuffType(auraData)
+    auraData.noDuration = auraData.duration == 0
+
     auraData.castByMe = IsCastByMe(auraData.sourceUnit)
-    auraData.notCastByMe = not auraData.castByMe
+    -- auraData.notCastByMe = not auraData.castByMe
     auraData.castByOthers = auraData.isFromPlayerOrPlayerPet and not auraData.castByMe
     auraData.castByUnit = IsCastByUnit(auraData.sourceUnit, self.root.unit)
     auraData.castByNPC = not auraData.isFromPlayerOrPlayerPet
-    -- auraData.castByBoss = auraData.isBossAura
-    -- auraData.castByUnknown = not auraData.sourceUnit
-    auraData.debuffType = U.GetDebuffType(auraData)
+
     auraData.dispellable = IsDispellable(self, auraData)
     auraData.canBeDispelled = CanBeDispelled(self, auraData)
-    auraData.noDuration = auraData.duration == 0
     auraData.crowdControlType = U.GetCrowdControlType(auraData)
-    auraData.priority = self.priorities[auraData.spellId] or 999
+    if self.priorities then
+        auraData.priority = self.priorities[auraData.spellId] or 999
+    end
 end
 
 ---------------------------------------------------------------------
@@ -101,20 +98,31 @@ end
 
 local function CheckFilters(self, auraData)
     -- blacklist
-    if self.blacklist[auraData.spellId] then return end
+    if self.blacklist then
+        if self.blacklist[auraData.spellId] then return end
+    end
 
     -- blockers
-    for f in pairs(self.blockers) do
-        if auraData[f] then
-            return false
+    if self.blockers then
+        for f in pairs(self.blockers) do
+            if auraData[f] then
+                return false
+            end
         end
     end
 
     -- filter
-    for f in pairs(self.filters) do
-        if auraData[f] then
-            return true
+    if self.filters then
+        for f in pairs(self.filters) do
+            if auraData[f] then
+                return true
+            end
         end
+    end
+
+    -- crowdControlTypes
+    if self.crowdControlTypes then
+        return self.crowdControlTypes[auraData.crowdControlType]
     end
 end
 
@@ -499,28 +507,46 @@ local function Auras_LoadConfig(self, config)
     Auras_UpdateSize(self, 0)
 
     -- priorities
-    self.priorities = config.priorities
+    if config.priorities then
+        self.priorities = config.priorities
+    end
 
     -- blacklist
-    self.blacklist = U.ConvertSpellTable(config.blacklist)
+    if config.blacklist then
+        self.blacklist = U.ConvertSpellTable(config.blacklist)
+    end
 
     -- blockers
-    wipe(self.blockers)
-    for f, v in pairs(config.blockers) do
-        if v then
-            self.blockers[f] = true
+    if config.blockers then
+        self.blockers = wipe(self.blockers or {})
+        for f, v in pairs(config.blockers) do
+            if v then
+                self.blockers[f] = true
+            end
         end
     end
 
     -- filters
-    wipe(self.filters)
-    if self.overallFilter then
-        -- always add overall filter
-        self.filters[self.overallFilter] = true
+    if config.filters then
+        self.filters = wipe(self.filters or {})
+        if self.overallFilter then
+            -- always add overall filter
+            self.filters[self.overallFilter] = true
+        end
+        for f, v in pairs(config.filters) do
+            if v then
+                self.filters[f] = true
+            end
+        end
     end
-    for f, v in pairs(config.filters) do
-        if v then
-            self.filters[f] = true
+
+    -- crowdControlTypes
+    if config.crowdControlTypes then
+        self.crowdControlTypes = wipe(self.crowdControlTypes or {})
+        for k, v in pairs(config.crowdControlTypes) do
+            if v then
+                self.crowdControlTypes[k] = true
+            end
         end
     end
 
@@ -562,8 +588,6 @@ local function CreateAuras(parent, name, auraFilter)
     frame.auras = {}
     frame.sortedAuras = {}
     frame.numAuras = 0
-    frame.blockers = {}
-    frame.filters = {}
     frame.colorTypes = {}
 
     -- scripts
