@@ -126,6 +126,19 @@ local function Aura_SetCooldownStyle(self, style)
 end
 
 ---------------------------------------------------------------------
+-- glow
+---------------------------------------------------------------------
+local function Aura_CreateGlow(self)
+    self.glow = CreateFrame("Frame", nil, self, "BackdropTemplate")
+    self.glow:SetAllPoints()
+    self.glow:SetBackdrop({edgeFile = AW.GetTexture("CalloutGlow", true), edgeSize = 7})
+    self.glow:SetBorderBlendMode("ADD")
+    self.glow:SetFrameLevel(self:GetFrameLevel())
+    AW.SetOutside(self.glow, self, 4)
+    AW.CreateBlinkAnimation(self.glow, 0.5)
+end
+
+---------------------------------------------------------------------
 -- SetCooldown
 ---------------------------------------------------------------------
 local function UpdateDuration(self, elapsed)
@@ -183,8 +196,13 @@ local function Aura_SetCooldown(self, start, duration, count, icon, auraType, de
     end
 
     if glow then
-        LCG.ButtonGlow_Start(self)
+        LCG.ButtonGlow_Start(self, nil, nil, 0)
+        if not self.glow then
+            Aura_CreateGlow(self)
+        end
+        self.glow:Show()
     else
+        if self.glow then self.glow:Hide() end
         LCG.ButtonGlow_Stop(self)
     end
 
@@ -260,6 +278,10 @@ local function Aura_SetupDurationText(self, config)
     self.durationColor = config.color
 end
 
+local function Aura_OnHide(self)
+    LCG.ButtonGlow_Stop(self)
+end
+
 local function Aura_UpdatePixels(self)
     AW.ReSize(self)
     AW.RePoint(self)
@@ -278,6 +300,8 @@ function S.CreateAura(parent)
     frame:Hide()
 
     AW.SetDefaultBackdrop(frame)
+
+    frame:SetScript("OnHide", Aura_OnHide)
 
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")

@@ -179,6 +179,23 @@ function AW.SetFadeInOutAnimationDuration(region, duration)
 end
 
 ---------------------------------------------------------------------
+-- blink
+---------------------------------------------------------------------
+function AW.CreateBlinkAnimation(region, duration)
+    local blink = region:CreateAnimationGroup()
+    region.blink = blink
+
+    local alpha = blink:CreateAnimation("Alpha")
+    blink.alpha = alpha
+    alpha:SetFromAlpha(0.25)
+    alpha:SetToAlpha(1)
+    alpha:SetDuration(duration)
+
+    blink:SetLooping("BOUNCE")
+    blink:Play()
+end
+
+---------------------------------------------------------------------
 -- resize with animation
 ---------------------------------------------------------------------
 --- @param steps number total steps to final size

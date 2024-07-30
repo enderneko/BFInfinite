@@ -46,7 +46,7 @@ end
 ---------------------------------------------------------------------
 local function ThreatGlow_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    AW.SetOutside(self, self.root, config.size, config.size)
+    AW.SetOutside(self, self.root, config.size)
     self:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow", true), edgeSize=AW.ConvertPixelsForRegion(config.size, self)})
     self.alpha = config.alpha
 end

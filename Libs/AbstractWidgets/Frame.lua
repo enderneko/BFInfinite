@@ -250,7 +250,7 @@ function AW.SetFrameStaticGlow(parent, size, color, alpha)
     color = color or "accent"
 
     parent.staticGlow:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow", true), edgeSize=AW.ConvertPixelsForRegion(size, parent)})
-    AW.SetOutside(parent.staticGlow, parent, size, size)
+    AW.SetOutside(parent.staticGlow, parent, size)
     parent.staticGlow:SetBackdropBorderColor(AW.GetColorRGB(color, alpha))
 
     parent.staticGlow:Show()

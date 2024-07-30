@@ -15,6 +15,7 @@ local builders = {
     raidIcon = NP.CreateRaidIcon,
     classIcon = NP.CreateClassIcon,
     debuffs = NP.CreateDebuffs,
+    buffs = NP.CreateBuffs,
 }
 
 function NP.CreateIndicators(np)
@@ -59,18 +60,20 @@ function NP.DisableIndicators(np)
     end
 end
 
--- function NP.UpdateIndicators(np)
---     for _, indicator in pairs(np.indicators) do
---         if indicator.enabled then
---             indicator:Update()
---         end
---     end
--- end
+function NP.UpdateIndicators(np)
+    for _, indicator in pairs(np.indicators) do
+        if indicator.enabled then
+            indicator:Update()
+        end
+    end
+end
 
 function NP.OnNameplateShow(np)
     for _, indicator in pairs(np.indicators) do
         if indicator.enabled then
             indicator:Enable()
+        elseif indicator.siblings then
+            indicator:UpdateSiblings()
         end
     end
 end

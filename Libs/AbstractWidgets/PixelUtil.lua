@@ -232,16 +232,16 @@ function AW.SetOnePixelOutside(region, relativeTo)
     AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", 1, -1)
 end
 
-function AW.SetInside(region, relativeTo, x, y)
+function AW.SetInside(region, relativeTo, size)
     AW.ClearPoints(region)
-    AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", x, -y)
-    AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", -x, y)
+    AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", size, -size)
+    AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", -size, size)
 end
 
-function AW.SetOutside(region, relativeTo, x, y)
+function AW.SetOutside(region, relativeTo, size)
     AW.ClearPoints(region)
-    AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", -x, y)
-    AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", x, -y)
+    AW.SetPoint(region, "TOPLEFT", relativeTo, "TOPLEFT", -size, size)
+    AW.SetPoint(region, "BOTTOMRIGHT", relativeTo, "BOTTOMRIGHT", size, -size)
 end
 
 function AW.ClearPoints(region)

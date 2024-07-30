@@ -102,6 +102,13 @@ local function CheckFilters(self, auraData)
     -- blacklist
     if self.blacklist[auraData.spellId] then return end
 
+    -- blockers
+    for f in pairs(self.blockers) do
+        if auraData[f] then
+            return false
+        end
+    end
+
     -- filter
     for f in pairs(self.filters) do
         if auraData[f] then
@@ -496,6 +503,14 @@ local function Auras_LoadConfig(self, config)
     -- blacklist
     self.blacklist = U.ConvertSpellTable(config.blacklist)
 
+    -- blockers
+    wipe(self.blockers)
+    for f, v in pairs(config.blockers) do
+        if v then
+            self.blockers[f] = true
+        end
+    end
+
     -- filters
     wipe(self.filters)
     if self.overallFilter then
@@ -546,6 +561,7 @@ local function CreateAuras(parent, name, auraFilter)
     frame.auras = {}
     frame.sortedAuras = {}
     frame.numAuras = 0
+    frame.blockers = {}
     frame.filters = {}
     frame.colorTypes = {}
 

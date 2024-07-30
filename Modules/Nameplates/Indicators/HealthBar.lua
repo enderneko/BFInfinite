@@ -388,7 +388,7 @@ local function ThreatGlow_Setup(self, config)
         self.threat:Hide()
         return
     end
-    AW.SetOutside(self.threat, self, config.size, config.size)
+    AW.SetOutside(self.threat, self, config.size)
     self.threat:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow", true), edgeSize=AW.ConvertPixelsForRegion(config.size, self)})
 end
 
