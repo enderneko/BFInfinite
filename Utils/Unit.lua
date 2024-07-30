@@ -4,9 +4,9 @@ local BFI = select(2, ...)
 local U = BFI.utils
 
 -- for AI followers
--- function U.UnitClassBase(unit)
---     return select(2, UnitClass(unit))
--- end
+function U.UnitClassBase(unit)
+    return select(2, UnitClass(unit))
+end
 
 ---------------------------------------------------------------------
 -- class

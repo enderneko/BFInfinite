@@ -8,7 +8,7 @@ local UF = BFI.M_UnitFrames
 -- local functions
 ---------------------------------------------------------------------
 local UnitIsUnit = UnitIsUnit
-local UnitClassBase = UnitClassBase
+local UnitClassBase = U.UnitClassBase
 
 ---------------------------------------------------------------------
 -- color

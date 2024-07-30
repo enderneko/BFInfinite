@@ -7,7 +7,7 @@ local NP = BFI.M_NamePlates
 ---------------------------------------------------------------------
 -- functions
 ---------------------------------------------------------------------
-local UnitClassBase = UnitClassBase
+local UnitClassBase = U.UnitClassBase
 local UnitIsPlayer = UnitIsPlayer
 
 ---------------------------------------------------------------------

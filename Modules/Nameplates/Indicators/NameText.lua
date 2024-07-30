@@ -9,7 +9,7 @@ local NP = BFI.M_NamePlates
 ---------------------------------------------------------------------
 local UnitName = UnitName
 local UnitIsConnected = UnitIsConnected
-local UnitClassBase = UnitClassBase
+local UnitClassBase = U.UnitClassBase
 
 ---------------------------------------------------------------------
 -- name

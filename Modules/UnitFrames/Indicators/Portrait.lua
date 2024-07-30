@@ -8,7 +8,7 @@ local UF = BFI.M_UnitFrames
 ---------------------------------------------------------------------
 local UnitIsConnected = UnitIsConnected
 local UnitIsVisible = UnitIsVisible
-local UnitClassBase = UnitClassBase
+local UnitClassBase = U.UnitClassBase
 local mult = math.pi / 180
 
 local function Portrait_Update_3D(self, unit)

@@ -8,7 +8,7 @@ local UF = BFI.M_UnitFrames
 ---------------------------------------------------------------------
 local UnitName = UnitName
 local UnitIsConnected = UnitIsConnected
-local UnitClassBase = UnitClassBase
+local UnitClassBase = U.UnitClassBase
 
 ---------------------------------------------------------------------
 -- name

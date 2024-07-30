@@ -21,7 +21,7 @@ local UnitIsPlayer = UnitIsPlayer
 local UnitPlayerControlled = UnitPlayerControlled
 local UnitIsUnit = UnitIsUnit
 local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
-local UnitClassBase = UnitClassBase
+local UnitClassBase = U.UnitClassBase
 
 ---------------------------------------------------------------------
 -- color

@@ -11,7 +11,7 @@ local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
 local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitIsConnected = UnitIsConnected
-local UnitClassBase = UnitClassBase
+local UnitClassBase = U.UnitClassBase
 
 ---------------------------------------------------------------------
 -- GetClassColor

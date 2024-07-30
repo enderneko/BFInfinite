@@ -5,7 +5,7 @@ local U = BFI.utils
 local M = BFI.M_Misc
 
 local classCache = {}
-local UnitClassBase = UnitClassBase
+local UnitClassBase = U.UnitClassBase
 local UnitLevel = UnitLevel
 local GetNumGuildMembers = GetNumGuildMembers
 local GetGuildRosterInfo = GetGuildRosterInfo

@@ -15,7 +15,7 @@ local GetRelativeDifficultyColor = GetRelativeDifficultyColor
 local GetCreatureDifficultyColor = GetCreatureDifficultyColor
 local QuestDifficultyColors = QuestDifficultyColors
 local GetPetTeamAverageLevel = C_PetJournal and C_PetJournal.GetPetTeamAverageLevel
-local UnitClassBase = UnitClassBase
+local UnitClassBase = U.UnitClassBase
 
 ---------------------------------------------------------------------
 -- color
