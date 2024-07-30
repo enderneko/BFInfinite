@@ -84,6 +84,7 @@ local function UpdateExtraData(self, auraData)
     auraData.dispellable = IsDispellable(self, auraData)
     auraData.canBeDispelled = CanBeDispelled(self, auraData)
     auraData.noDuration = auraData.duration == 0
+    auraData.crowdControlType = U.GetCrowdControlType(auraData)
     auraData.priority = self.priorities[auraData.spellId] or 999
 end
 
@@ -589,4 +590,8 @@ end
 
 function NP.CreateBuffs(parent, name)
     return CreateAuras(parent, name, "HELPFUL")
+end
+
+function NP.CreateCrowdControls(parent, name)
+    return CreateAuras(parent, name, "HARMFUL")
 end

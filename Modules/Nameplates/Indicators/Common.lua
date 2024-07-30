@@ -16,6 +16,7 @@ local builders = {
     classIcon = NP.CreateClassIcon,
     debuffs = NP.CreateDebuffs,
     buffs = NP.CreateBuffs,
+    crowdControls = NP.CreateCrowdControls,
 }
 
 function NP.CreateIndicators(np)

@@ -112,6 +112,53 @@ local defaults = {
                 debuffType = false,
             },
         },
+        crowdControls = {
+            enabled = true,
+            position = {"BOTTOM", "TOP", 0, 15},
+            anchorTo = "buffs",
+            orientation = "left_to_right",
+            cooldownStyle = "none",
+            width = 40,
+            height = 24,
+            spacingH = 5,
+            spacingV = 10,
+            numPerLine = 3,
+            numTotal = 3,
+            frameLevel = 2,
+            durationText = {
+                enabled = true,
+                font = {"BFI 1", 13, "outline", false},
+                position = {"RIGHT", "TOPRIGHT", 0, -2},
+                color = {
+                    AW.GetColorTable("white"), -- normal
+                    {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                    {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                },
+            },
+            stackText = {
+                enabled = true,
+                font = {"BFI 1", 13, "outline", false},
+                position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
+                color = AW.GetColorTable("white"),
+            },
+            filters = {
+                -- castByMe = false,
+                -- castByOthers = false,
+                -- castByUnit = false,
+                -- castByNPC = false,
+                -- isBossAura = false,
+                -- dispellable = false,
+                crowdControlType = true,
+            },
+            blockers = {},
+            priorities = {},
+            blacklist = {},
+            auraTypeColor = {
+                castByMe = false,
+                dispellable = false,
+                debuffType = false,
+            },
+        },
     },
     friendly = {
         buffs = {
@@ -205,6 +252,53 @@ local defaults = {
             auraTypeColor = {
                 castByMe = false,
                 dispellable = true,
+                debuffType = false,
+            },
+        },
+        crowdControls = {
+            enabled = true,
+            position = {"BOTTOM", "TOP", 0, 15},
+            anchorTo = "buffs",
+            orientation = "left_to_right",
+            cooldownStyle = "none",
+            width = 45,
+            height = 25,
+            spacingH = 3,
+            spacingV = 6,
+            numPerLine = 3,
+            numTotal = 3,
+            frameLevel = 2,
+            durationText = {
+                enabled = true,
+                font = {"BFI 1", 10, "outline", false},
+                position = {"RIGHT", "TOPRIGHT", 0, -2},
+                color = {
+                    AW.GetColorTable("white"), -- normal
+                    {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                    {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                },
+            },
+            stackText = {
+                enabled = true,
+                font = {"BFI 1", 10, "outline", false},
+                position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
+                color = AW.GetColorTable("white"),
+            },
+            filters = {
+                -- castByMe = false,
+                -- castByOthers = false,
+                -- castByUnit = false,
+                -- castByNPC = false,
+                -- isBossAura = false,
+                -- dispellable = false,
+                crowdControlType = true,
+            },
+            blockers = {},
+            priorities = {},
+            blacklist = {},
+            auraTypeColor = {
+                castByMe = false,
+                dispellable = false,
                 debuffType = false,
             },
         },
@@ -367,9 +461,6 @@ do
             color = AW.GetColorTable("white"),
             width = 16,
             height = 16,
-        },
-        crowdControls = {
-
         },
         quest = {
 
