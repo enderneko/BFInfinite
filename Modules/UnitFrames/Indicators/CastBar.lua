@@ -3,6 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
 local UF = BFI.M_UnitFrames
+local M = BFI.M_Misc
 
 local strfind = string.find
 local UnitCastingInfo = UnitCastingInfo
@@ -310,13 +311,14 @@ end
 -- interrupt source
 ---------------------------------------------------------------------
 local function UpdateInterrupt(self)
-    local _, subEvent, _, _, sourceName, _, _, destGUID, destName, _, _, spellId, spellName = CombatLogGetCurrentEventInfo()
+    local _, subEvent, _, _, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
     if subEvent ~= "SPELL_INTERRUPT" then return end
 
     if destGUID == self.root.states.guid then
-        if self.showName then
-            AW.SetText(self.nameText, sourceName, self.nameTextLength)
-        end
+        local shortName = U.ToShortName(sourceName)
+        AW.SetText(self.nameText, shortName, self.nameTextLength)
+        local class = M.GetPlayerClass(sourceName)
+        self.nameText:SetText(AW.GetIconString("Warning", true) .. AW.WrapTextInColor(self.nameText:GetText(), class))
     end
 end
 
@@ -662,7 +664,7 @@ local function CastBar_Enable(self)
     end
 
     -- interrupt source
-    if self.showInterruptSource then
+    if self.showName and self.showInterruptSource then
         self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", UpdateInterrupt)
     else
         self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -719,6 +721,7 @@ local function CastBar_SetupNameText(self, config, showIcon)
     self.nameText:SetTextColor(unpack(config.color))
     self.nameTextLength = config.length
     self.showName = config.enabled
+    self.showInterruptSource = config.showInterruptSource
 end
 
 local function CastBar_SetupDurationText(self, config)
@@ -861,7 +864,6 @@ local function CastBar_LoadConfig(self, config)
     self.succeededColor = config.colors.succeeded
     self.uninterruptibleColor = config.colors.uninterruptible
     self.borderColor = config.borderColor
-    self.showInterruptSource = config.showInterruptSource
 end
 
 ---------------------------------------------------------------------

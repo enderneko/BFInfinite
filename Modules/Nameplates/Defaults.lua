@@ -435,6 +435,7 @@ do
                 position = {"LEFT", "LEFT", 3, 0},
                 color = AW.GetColorTable("white"),
                 length = 0.75,
+                showInterruptSource = true,
             },
             durationText = {
                 enabled = true,

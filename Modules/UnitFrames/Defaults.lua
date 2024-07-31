@@ -587,13 +587,13 @@ local defaults = {
                 texture = "BFI 1",
                 fadeDuration = 1,
                 showIcon = true,
-                showInterruptSource = true,
                 nameText = {
                     enabled = true,
                     font = {"BFI 1", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
+                    showInterruptSource = true,
                 },
                 durationText = {
                     enabled = true,

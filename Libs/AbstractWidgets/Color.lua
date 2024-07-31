@@ -353,8 +353,15 @@ function AW.ColorFontString(fs, name)
 end
 
 function AW.WrapTextInColor(text, name)
-    assert(colors[name], "no such color:", name)
-    return WrapTextInColorCode(text, colors[name]["hex"])
+    -- assert(colors[name], "no such color:", name)
+    if not colors[name] then
+        return text
+    end
+    return AW.WrapTextInColorCode(text, colors[name]["hex"])
+end
+
+function AW.WrapTextInColorCode(text, colorHexString)
+    return ("|c%s%s|r"):format(colorHexString, text)
 end
 
 function AW.AddColors(t)

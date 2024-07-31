@@ -3,6 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
 local NP = BFI.M_NamePlates
+local M = BFI.M_Misc
 
 local strfind = string.find
 local UnitCastingInfo = UnitCastingInfo
@@ -108,6 +109,21 @@ local function UpdateEmpowerPips(self, numStages)
 
     for i = numStages + 1, #self.pips do
         self.pips[i]:Hide()
+    end
+end
+
+---------------------------------------------------------------------
+-- interrupt source
+---------------------------------------------------------------------
+local function UpdateInterrupt(self)
+    local _, subEvent, _, _, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
+    if subEvent ~= "SPELL_INTERRUPT" then return end
+
+    if destGUID == self.root.guid then
+        local shortName = U.ToShortName(sourceName)
+        AW.SetText(self.nameText, shortName, self.nameTextLength)
+        local class = M.GetPlayerClass(sourceName)
+        self.nameText:SetText(AW.GetIconString("Warning", true) .. AW.WrapTextInColor(self.nameText:GetText(), class))
     end
 end
 
@@ -364,6 +380,13 @@ local function CastBar_Enable(self)
     self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE", CastInterruptible)
     self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", CastInterruptible)
 
+    -- interrupt source
+    if self.showName and self.showInterruptSource then
+        self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", UpdateInterrupt)
+    else
+        self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    end
+
     -- onupdate
     self:SetScript("OnUpdate", OnUpdate)
 
@@ -400,6 +423,7 @@ local function CastBar_SetupNameText(self, config, showIcon)
     self.nameText:SetTextColor(unpack(config.color))
     self.nameTextLength = config.length
     self.showName = config.enabled
+    self.showInterruptSource = config.showInterruptSource
 end
 
 local function CastBar_SetupDurationText(self, config)

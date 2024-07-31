@@ -17,8 +17,8 @@ local GetFriendInfoByIndex = C_FriendList.GetFriendInfoByIndex
 ---------------------------------------------------------------------
 -- functions
 ---------------------------------------------------------------------
-function M.GetPlayerClass(fullName)
-    return classCache[fullName]
+function M.GetPlayerClass(name)
+    return classCache[name]
 end
 
 function M.GetPlayerInfo(fullName)
@@ -54,6 +54,10 @@ local function CacheSelf()
     end
     BFIPlayer[BFI.vars.playerNameFull]["class"] = BFI.vars.playerClass
     BFIPlayer[BFI.vars.playerNameFull]["level"] = UnitLevel("player")
+
+    -- cache
+    classCache[BFI.vars.playerNameFull] = BFI.vars.playerClass
+    classCache[BFI.vars.playerNameShort] = BFI.vars.playerClass
 end
 BFI.RegisterCallback("PLAYER_LOGIN", "Misc_PlayerData", CacheSelf)
 
@@ -99,6 +103,11 @@ function CacheGroup(_, event)
                 BFIPlayer[name]["level"] = UnitLevel(unit)
             end
         end
+
+        local shortName = UnitName(unit)
+        if shortName then
+            classCache[shortName] = UnitClassBase(unit)
+        end
     end
 end
 
@@ -128,6 +137,8 @@ function CacheGuild(_, event)
 
         for i = 1, GetNumGuildMembers() do
             local name, _, _, level, _, _, _, _, _, _, classFile = GetGuildRosterInfo(i)
+            classCache[name] = classFile
+            classCache[U.ToShortName(name)] = classFile
 
             if not BFIGuild["members"][name] then
                 tinsert(newMember, {name = name, level = level, class = classFile})
@@ -184,9 +195,15 @@ function CacheFriends(_, event)
                 if not strfind(name, "-") then
                     name = name .. "-" .. BFI.vars.playerRealm
                 end
+
+                -- BFIPlayer
                 if not BFIPlayer[name] then BFIPlayer[name] = {} end
                 BFIPlayer[name]["class"] = U.GetClassFileName(info.className)
                 BFIPlayer[name]["level"] = info.level
+
+                -- cache
+                classCache[name] = BFIPlayer[name]["class"]
+                classCache[U.ToShortName(name)] = BFIPlayer[name]["class"]
             end
         end
     end

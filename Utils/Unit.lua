@@ -121,6 +121,18 @@ function U.ToShortName(fullName)
     return shortName
 end
 
+function U.ToFullName(shortName)
+    if not shortName then return "" end
+    local fullName = shortName
+    if not string.find(fullName, "-") then
+        local server = GetNormalizedRealmName()
+        if server then
+            fullName = fullName.."-"..server
+        end
+    end
+    return fullName
+end
+
 ---------------------------------------------------------------------
 -- in group
 ---------------------------------------------------------------------
