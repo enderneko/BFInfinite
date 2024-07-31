@@ -37,7 +37,7 @@ local function GetHealthColor(self, unit)
     if marker and self.colorByMarker then
         r, g, b = AW.GetColorRGB("marker_" .. marker)
 
-    elseif not UnitPlayerControlled(self.unit) and UnitIsTapDenied(self.unit) then
+    elseif not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
         r, g, b = 0.5, 0.5, 0.5
 
     elseif self.threatSituation and self.colorByThreat then

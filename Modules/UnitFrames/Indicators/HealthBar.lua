@@ -230,7 +230,7 @@ local function GetHealthColor(self, unit)
         end
     else
         -- bar
-        if not UnitPlayerControlled(self.unit) and UnitIsTapDenied(self.unit) then
+        if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
             r, g, b = 0.5, 0.5, 0.5
         elseif self.color.type == "custom_color" then
             r, g, b = unpack(self.color.rgb)

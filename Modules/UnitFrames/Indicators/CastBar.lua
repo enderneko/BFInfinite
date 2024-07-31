@@ -890,7 +890,7 @@ function UF.CreateCastBar(parent, name)
     BFI.AddEventHandler(frame)
 
     -- fade out
-    AW.CreateFadeInOutAnimation(frame)
+    AW.CreateFadeInOutAnimation(frame, 0.5)
     frame.fadeOut.alpha:SetSmoothing("IN")
 
     -- cast status texture
