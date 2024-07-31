@@ -24,6 +24,7 @@ local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
 local UnitClassBase = U.UnitClassBase
 local IsInInstance = IsInInstance
 local UnitAffectingCombat = UnitAffectingCombat
+local UnitIsTapDenied = UnitIsTapDenied
 
 ---------------------------------------------------------------------
 -- color
@@ -35,6 +36,9 @@ local function GetHealthColor(self, unit)
 
     if marker and self.colorByMarker then
         r, g, b = AW.GetColorRGB("marker_" .. marker)
+
+    elseif not UnitPlayerControlled(self.unit) and UnitIsTapDenied(self.unit) then
+        r, g, b = 0.5, 0.5, 0.5
 
     elseif self.threatSituation and self.colorByThreat then
         r, g, b = AW.GetColorRGB("threat_" .. self.threatSituation)
@@ -326,6 +330,7 @@ local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield)
     self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
+    self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
 
     if self.colorByMarker then
         self:RegisterEvent("RAID_TARGET_UPDATE", UpdateHealthColor)

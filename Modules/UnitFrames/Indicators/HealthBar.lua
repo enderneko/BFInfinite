@@ -230,7 +230,9 @@ local function GetHealthColor(self, unit)
         end
     else
         -- bar
-        if self.color.type == "custom_color" then
+        if not UnitPlayerControlled(self.unit) and UnitIsTapDenied(self.unit) then
+            r, g, b = 0.5, 0.5, 0.5
+        elseif self.color.type == "custom_color" then
             r, g, b = unpack(self.color.rgb)
         else
             r, g, b = GetReactionColor(self.color.type, unit)
@@ -356,8 +358,7 @@ end
 local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield, UpdateHealPrediction)
     self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield, UpdateHealPrediction)
-    -- self:RegisterEvent("UNIT_NAME_UPDATE", UpdateHealthColor)
-    -- self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
+    self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
     self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", UpdateHealAbsorb)
     self:RegisterEvent("UNIT_HEAL_PREDICTION", UpdateHealPrediction)
