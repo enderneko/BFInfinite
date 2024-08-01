@@ -17,6 +17,7 @@ local builders = {
     debuffs = NP.CreateDebuffs,
     buffs = NP.CreateBuffs,
     crowdControls = NP.CreateCrowdControls,
+    questIndicator = NP.CreateQuestIndicator,
 }
 
 function NP.CreateIndicators(np)

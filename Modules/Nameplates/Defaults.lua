@@ -169,6 +169,24 @@ local defaults = {
                 debuffType = false,
             },
         },
+        rareIndicator = {
+            enabled = true,
+            position = {"RIGHT", "TOPRIGHT", 0, 0},
+            anchorTo = "healthBar",
+            frameLevel = 2,
+            color = AW.GetColorTable("white"),
+            width = 16,
+            height = 16,
+        },
+        questIndicator = {
+            enabled = true,
+            position = {"LEFT", "RIGHT", 0, 0},
+            anchorTo = "healthBar",
+            frameLevel = 2,
+            width = 18,
+            height = 18,
+            hideInInstance = true,
+        },
     },
     friendly = {
         buffs = {
@@ -337,8 +355,8 @@ do
             enabled = true,
             position = {"CENTER", "CENTER", 0, 0},
             frameLevel = 1,
-            width = 125,
-            height = 15,
+            width = 120,
+            height = 13,
             colorByClass = true,
             colorByThreat = true,
             colorByMarker = true,
@@ -417,8 +435,8 @@ do
             position = {"TOP", "BOTTOM", 0, -2},
             anchorTo = "healthBar",
             frameLevel = 3,
-            width = 125,
-            height = 15,
+            width = 120,
+            height = 13,
             bgColor = AW.GetColorTable("background", 0.75),
             borderColor = AW.GetColorTable("border"),
             texture = "BFI 1",
@@ -426,8 +444,8 @@ do
             icon = {
                 enabled = true,
                 position = {"BOTTOMRIGHT", "BOTTOMLEFT", -2, 0},
-                width = 20,
-                height = 20
+                width = 18,
+                height = 18
             },
             nameText = {
                 enabled = true,
@@ -460,7 +478,7 @@ do
         },
         raidIcon = {
             enabled = true,
-            position = {"RIGHT", "LEFT", 0, 0},
+            position = {"RIGHT", "LEFT", -2, 0},
             anchorTo = "healthBar",
             frameLevel = 2,
             width = 16,
@@ -473,18 +491,6 @@ do
             frameLevel = 2,
             width = 16,
             height = 16,
-        },
-        rareIndicator = {
-            enabled = true,
-            position = {"RIGHT", "TOPRIGHT", 0, 0},
-            anchorTo = "healthBar",
-            frameLevel = 2,
-            color = AW.GetColorTable("white"),
-            width = 16,
-            height = 16,
-        },
-        quest = {
-
         },
     }
 
