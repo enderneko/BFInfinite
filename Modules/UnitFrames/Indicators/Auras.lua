@@ -7,6 +7,7 @@ local UF = BFI.M_UnitFrames
 
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots
+local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
 local UnitIsUnit = UnitIsUnit
 local UnitIsOwnerOrControllerOfUnit = UnitIsOwnerOrControllerOfUnit
 local UnitIsFriend = UnitIsFriend
@@ -66,7 +67,7 @@ local function IsDispellable(self, auraData)
         return auraData.isStealable
     end
 
-    if auraData.isHarmful and UnitIsFriend("player", self.root.unit) and not UnitCanAttack("player", self.root.unit) then
+    if auraData.isHarmful and UnitIsFriend("player", self.root.unit) and not self.canAttack then
         return U.CanDispel(auraData.debuffType)
     end
 end
@@ -134,7 +135,7 @@ end
 -- ShowAura
 ---------------------------------------------------------------------
 local function ShowAura(self, auraData)
-    if self.subFrameFilter and auraData[self.subFrameFilter] then
+    if self.canAttack and self.subFrameFilter and auraData[self.subFrameFilter] then
         self.subShown = self.subShown + 1
         local aura = self.subFrame.slots[self.subShown]
         aura.auraInstanceID = auraData.auraInstanceID -- tooltips
@@ -204,7 +205,7 @@ local function HandleUpdateInfo(self, updateInfo)
 
         -- sort
         for auraInstanceID in pairs(self.auras) do
-            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID)
+            local auraData = GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID)
             UpdateExtraData(self, auraData)
             if CheckFilters(self, auraData) then
                 tinsert(self.sortedAuras, auraData)
@@ -290,6 +291,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function Auras_Update(self)
+    self.canAttack = UnitCanAttack("player", self.root.unit)
     UpdateAuras(self)
 end
 

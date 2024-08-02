@@ -35,9 +35,12 @@ end
 
 function NP.LoadIndicatorConfig(np, indicatorName, indicatorConfig)
     local indicator = np.indicators[indicatorName]
-    indicator:LoadConfig(indicatorConfig)
 
-    indicator.enabled = indicatorConfig.enabled
+    if indicatorConfig then
+        indicator:LoadConfig(indicatorConfig)
+    end
+
+    indicator.enabled = indicatorConfig and indicatorConfig.enabled
 
     if indicator.enabled then
         indicator:Enable()

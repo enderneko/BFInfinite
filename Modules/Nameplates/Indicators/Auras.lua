@@ -7,6 +7,7 @@ local NP = BFI.M_NamePlates
 
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots
+local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
 local UnitIsUnit = UnitIsUnit
 local UnitIsOwnerOrControllerOfUnit = UnitIsOwnerOrControllerOfUnit
 local UnitIsFriend = UnitIsFriend
@@ -190,7 +191,7 @@ local function HandleUpdateInfo(self, updateInfo)
 
         -- sort
         for auraInstanceID in pairs(self.auras) do
-            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(self.root.unit, auraInstanceID)
+            local auraData = GetAuraDataByAuraInstanceID(self.root.unit, auraInstanceID)
             UpdateExtraData(self, auraData)
             if CheckFilters(self, auraData) then
                 tinsert(self.sortedAuras, auraData)

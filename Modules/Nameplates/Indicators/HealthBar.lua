@@ -130,7 +130,7 @@ end
 
 local function UpdateThreat(self, event, unitId)
     local unit = self.root.unit
-    if unitId and unitId ~= "player" then return end
+    if unitId and unitId ~= "player" and unitId ~= unit then return end
 
     local status = UnitThreatSituation("player", unit)
 
