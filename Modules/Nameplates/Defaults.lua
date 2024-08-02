@@ -6,13 +6,42 @@ local NP = BFI.M_NamePlates
 
 local defaults = {
     enabled = true,
-    occludedAlpha = 0.4,
     -- nameplateSelectedScale
     cvars = {
 
     },
     alphas = {
-
+        -- overwrite others
+        occluded = {enabled = true, value = 0.4},
+        mouseover = {enabled = true, value = 1},
+        marked = {enabled = true, value = 1},
+        casting = {enabled = true, value = 1},
+        -- target
+        target = {enabled = true, value = 1},
+        non_target = {enabled = true, value = 0.8},
+        no_target = {enabled = false, value = 0.5},
+        -- type
+        player = 1,
+        pet = 1,
+        guardian = 1,
+        npc = 1,
+        -- classification
+        boss = 1,
+        rare = 1,
+        elite = 1,
+        minor = 1,
+        totem = 1,
+    },
+    scales = {
+        casting_unit = 1,
+        target = 1.2,
+        non_target = 0.8,
+        -- rare = 1,
+        boss = 1,
+        guardian = 1,
+        pet = 1,
+        minor = 1,
+        totem = 0.5,
     },
     hostile = {
         -- castOnMe
@@ -345,6 +374,10 @@ local defaults = {
         -- modify some cvars
     },
     customs = {},
+    performanceModeUnits = {
+        tapDenied = true,
+        customs = {},
+    }
 }
 
 do
