@@ -46,6 +46,7 @@ local IsInInstance = IsInInstance
 -- local GetInstanceInfo = GetInstanceInfo
 function eventFrame:PLAYER_ENTERING_WORLD()
     local isIn, iType = IsInInstance()
+    BFI.vars.inInstance = isIn
     if isIn then
         inInstance = true
         BFI.Fire("EnterInstance", iType)

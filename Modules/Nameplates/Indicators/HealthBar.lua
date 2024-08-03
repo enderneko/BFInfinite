@@ -149,7 +149,7 @@ local function UpdateThreat(self, event, unitId)
         status = threatSituations[status]
 
         -- check if is offtanked
-        if status == "low" and IsTank("player") then
+        if BFI.vars.inInstance and status == "low" and IsTank("player") then
             if IsOffTank(unit .. "target") then
                 status = "offtank"
             end
