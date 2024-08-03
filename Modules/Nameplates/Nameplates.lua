@@ -19,6 +19,7 @@ local SetNamePlateEnemySize = C_NamePlate.SetNamePlateEnemySize
 local SetNamePlateFriendlySize = C_NamePlate.SetNamePlateFriendlySize
 local SetCVar = C_CVar.SetCVar
 local GetCVarDefault = C_CVar.GetCVarDefault
+local UnitNameplateShowsWidgetsOnly = UnitNameplateShowsWidgetsOnly
 local UnitGUID = UnitGUID
 local UnitExists = UnitExists
 local UnitIsUnit = UnitIsUnit
@@ -293,7 +294,7 @@ local function ShowNameplate(self, event, unit)
     local show
 
     if blz.UnitFrame then
-        if UnitIsUnit("player", unit) then
+        if UnitIsUnit("player", unit) or UnitNameplateShowsWidgetsOnly(unit) then
             blz.UnitFrame:Show()
             np.unit = nil
             np:Hide()

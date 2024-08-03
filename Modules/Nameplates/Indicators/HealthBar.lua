@@ -34,7 +34,7 @@ local function GetHealthColor(self, unit)
 
     local marker = GetRaidTargetIndex(unit)
 
-    if marker and self.colorByMarker then
+    if marker and marker <= 8 and self.colorByMarker then
         r, g, b = AW.GetColorRGB("marker_" .. marker)
 
     elseif not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
