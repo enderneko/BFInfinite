@@ -32,6 +32,11 @@ local function UpdateQuestIndicator(np)
     np.indicators.questIndicator:Update()
 end
 
+-- local inChallengeMode = (scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE);
+-- local inProvingGrounds = (scenarioType == LE_SCENARIO_TYPE_PROVING_GROUNDS);
+-- local dungeonDisplay = (scenarioType == LE_SCENARIO_TYPE_USE_DUNGEON_DISPLAY);
+-- local inWarfront = (scenarioType == LE_SCENARIO_TYPE_WARFRONT);
+
 local function UpdateQuests(_, event, unit)
     if unit and unit ~= "player" then return end
 
@@ -44,7 +49,7 @@ local function UpdateQuests(_, event, unit)
         local info = GetQuestInfo(i)
 
         if info and info.questID and not info.isHeader then
-            -- print(info.questID, info.title)
+            -- print(i, info.questID, info.title)
             quests[info.title] = wipe(quests[info.title] or {})
 
             -- objectives https://warcraft.wiki.gg/wiki/API_C_QuestLog.GetQuestObjectives

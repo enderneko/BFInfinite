@@ -422,7 +422,8 @@ local function UpdateNameplates(module, which)
 
     -- alphas
     alphas = NP.config.alphas
-    occluded_alpha = 0.6 * alphas.occluded.value
+    -- occluded_alpha = 0.6 * alphas.occluded.value
+    occluded_alpha = alphas.occluded.value + 0.05
     wipe(alpha_funcs)
     for _, k in pairs(alpha_order) do
         if alphas[k].enabled then
