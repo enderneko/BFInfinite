@@ -288,10 +288,17 @@ local function UpdateAuras(self, event, unitId, updateInfo)
 end
 
 ---------------------------------------------------------------------
+-- UNIT_FACTION
+---------------------------------------------------------------------
+local function UpdateFaction(self)
+    self.canAttack = UnitCanAttack("player", self.root.unit)
+end
+
+---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
 local function Auras_Update(self)
-    self.canAttack = UnitCanAttack("player", self.root.unit)
+    UpdateFaction(self)
     UpdateAuras(self)
 end
 
@@ -299,6 +306,7 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function Auras_Enable(self)
+    self:RegisterEvent("UNIT_FACTION", UpdateFaction)
     self:RegisterEvent("UNIT_AURA", UpdateAuras)
 
     self:Show()
