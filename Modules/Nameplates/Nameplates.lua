@@ -20,6 +20,7 @@ local SetNamePlateFriendlySize = C_NamePlate.SetNamePlateFriendlySize
 local SetCVar = C_CVar.SetCVar
 local GetCVarDefault = C_CVar.GetCVarDefault
 local UnitNameplateShowsWidgetsOnly = UnitNameplateShowsWidgetsOnly
+local UnitIsGameObject = UnitIsGameObject
 local UnitGUID = UnitGUID
 local UnitExists = UnitExists
 local UnitIsUnit = UnitIsUnit
@@ -36,7 +37,7 @@ local GetRaidTargetIndex = GetRaidTargetIndex
 function NP.GetNameplateForUnit(unit)
     local nameplate = GetNamePlateForUnit(unit)
     if nameplate then
-        return nameplate.bfi, nameplate
+        return nameplate.bfi, nameplate.UnitFrame
     end
 end
 
@@ -57,14 +58,20 @@ function NP.IterateAllVisibleNamePlates(func, reaction)
     end
 end
 
+local function GetNamePlateType(unit)
+    local reaction = UnitReaction(unit, "player") > 4 and "friendly" or "hostile"
+    local type = UnitIsPlayer(unit) and "player" or "npc"
+    return reaction .. "_" .. type
+end
+
 local function GetUnitReaction(unit)
     local reaction = UnitReaction(unit, "player")
     -- if reaction == 4 then
     --     return "neutral"
-    if reaction <= 4 then
-        return "hostile"
-    else
+    if reaction > 4 then
         return "friendly"
+    else
+        return "hostile"
     end
 end
 
@@ -141,7 +148,7 @@ local function UpdateNameplateBase(np)
 
     local unit = np.unit
 
-    np.reaction_current = GetUnitReaction(unit)
+    np.type = GetNamePlateType(unit)
 
     np.states.name, np.states.server = UnitName(unit)
     np.states.server = np.states.server or SERVER_NAME
@@ -150,27 +157,11 @@ local function UpdateNameplateBase(np)
     np.states.type = GetUnitType(unit)
     np.states.classification = GetUnitClassification(unit, np.states.level)
 
-    np.states.isHostile = np.reaction_current ~= "friendly"
     np.states.isSameServer = np.states.server == SERVER_NAME
 end
 
 ---------------------------------------------------------------------
--- OnNameplateShow
----------------------------------------------------------------------
-local function OnNameplateShow(np)
-    UpdateNameplateBase(np)
-
-    if np.reaction_previous ~= np.reaction_current then
-        np.reaction_previous = np.reaction_current
-        NP.SetupIndicators(np, NP.config[np.states.isHostile and "hostile" or "friendly"])
-        BFI.Debug("|cffffff00NameplateUnitTypeChanged:|r", np:GetName())
-    end
-
-    NP.OnNameplateShow(np)
-end
-
----------------------------------------------------------------------
--- OnNameplateUpdate
+-- alphas
 ---------------------------------------------------------------------
 local alphas
 local alpha_order = {"occluded", "mouseover", "marked", "casting"}
@@ -183,37 +174,37 @@ local occluded_alpha
 
 local alpha_funcs_default = {
     occluded = function(np)
-        if np.blz:GetAlpha() <= occluded_alpha then
+        if np.parent:GetAlpha() <= occluded_alpha then
             return alphas.occluded.value
         end
     end,
     mouseover = function(np)
-        if UnitIsUnit("mouseover", np.unit) then
+        if np.isMouseOver and not np.isTarget then
             return alphas.mouseover.value
         end
     end,
     marked = function(np)
-        if GetRaidTargetIndex(np.unit) then
+        if np.isMarked then
             return alphas.marked.value
         end
     end,
     casting = function(np)
-        if UnitCastingInfo(np.unit) or UnitChannelInfo(np.unit) then
+        if np.isCasting then
             return alphas.casting.value
         end
     end,
     target = function(np)
-        if UnitIsUnit("target", np.unit) then
+        if np.isTarget then
             return alphas.target.value
         end
     end,
     non_target = function(np)
-        if not UnitIsUnit("target", np.unit) then
+        if not np.isTarget then
             return alphas.non_target.value
         end
     end,
     target_non_target = function(np)
-        if UnitIsUnit("target", np.unit) then
+        if np.isTarget then
             return alphas.target.value
         else
             return alphas.non_target.value
@@ -262,30 +253,190 @@ local function GetAlpha(np)
     return alpha
 end
 
+---------------------------------------------------------------------
+-- scales
+---------------------------------------------------------------------
+local scales
+local scale_order = {"mouseover", "marked", "casting"}
+
+local scale_funcs = {}
+local scale_target_func
+local scale_no_target_func
+
+local scale_funcs_default = {
+    mouseover = function(np)
+        if np.isMouseOver and not np.isTarget then
+            return scales.mouseover.value
+        end
+    end,
+    marked = function(np)
+        if np.isMarked then
+            return scales.marked.value
+        end
+    end,
+    casting = function(np)
+        if np.isCasting then
+            return scales.casting.value
+        end
+    end,
+    target = function(np)
+        if np.isTarget then
+            return scales.target.value
+        end
+    end,
+    non_target = function(np)
+        if not np.isTarget then
+            return scales.non_target.value
+        end
+    end,
+    target_non_target = function(np)
+        if np.isTarget then
+            return scales.target.value
+        else
+            return scales.non_target.value
+        end
+    end,
+    no_target = function()
+        return scales.no_target.value
+    end,
+}
+
+local function GetScale(np)
+    local scale
+
+    -- return directly
+    for _, f in ipairs(scale_funcs) do
+        scale = f(np)
+        if scale then
+            return scale
+        end
+    end
+
+    -- target related
+    if UnitExists("target") then
+        if scale_target_func then
+            scale = scale_target_func(np)
+        end
+    else
+        if scale_no_target_func then
+            scale = scale_no_target_func()
+        end
+    end
+
+    scale = scale or 1
+
+    -- type & classification
+    if np.states.type == "npc" then
+        if np.states.classification == "normal" then
+            scale = NP.config.scales.npc * scale
+        else
+            scale = NP.config.scales[np.states.classification] * scale
+        end
+    else
+        scale = NP.config.scales[np.states.type] * scale
+    end
+
+    return scale
+end
+
+---------------------------------------------------------------------
+-- OnNameplateUpdate
+---------------------------------------------------------------------
 local function OnNameplateUpdate(np, elapsed)
     np.elapsed = (np.elapsed or 0) + elapsed
     if np.elapsed >= 0.25 then
         --! frame level
-        np:SetFrameLevel(np.blz:GetFrameLevel() * 10)
+        np:SetFrameLevel(np.parent:GetFrameLevel() * 10)
 
         if np.unit then
-            local guid = UnitGUID(np.unit)
-            if guid ~= np.guid then
-                np.guid = guid
-                BFI.Debug("|cffff7700NameplateUnitChanged:|r", np:GetName())
-                UpdateNameplateBase(np)
-            end
+            np.isMouseOver = UnitIsUnit("mouseover", np.unit)
+            np.isTarget = UnitIsUnit("target", np.unit)
+            np.isCasting = UnitCastingInfo(np.unit) or UnitChannelInfo(np.unit)
+            np.isMarked = (GetRaidTargetIndex(np.unit) or 9) <= 8
+
+            -- alpha
             np:SetAlpha(GetAlpha(np))
+
+            -- scale
+            if scales.animatedScaling then
+                AW.FrameZoomTo(np, 0.1, GetScale(np))
+            else
+                np:SetScale(GetScale(np))
+            end
         else
             np:SetAlpha(1)
+            np:SetScale(1)
         end
     end
 end
 
 ---------------------------------------------------------------------
--- show
+-- blizzard widget container
 ---------------------------------------------------------------------
-local function ShowNameplate(self, event, unit)
+local function UpdateWidgetContainer(np, reset)
+    if reset then
+        if np.widgetContainer then
+            np.widgetContainer:SetParent(np.blz)
+            np.widgetContainer:ClearAllPoints()
+            np.widgetContainer:SetPoint("TOP", np.blz.castBar, "BOTTOM")
+        end
+    else
+        np.widgetContainer = np.blz and np.blz.WidgetContainer
+        if np.widgetContainer then
+            np.widgetContainer:SetParent(np)
+			np.widgetContainer:ClearAllPoints()
+			np.widgetContainer:SetPoint("CENTER", 0, -10)
+        end
+    end
+end
+
+---------------------------------------------------------------------
+-- show / hide
+---------------------------------------------------------------------
+local function Show(np)
+    UpdateWidgetContainer(np)
+
+    np.unit = np.blz.displayedUnit
+    np.elapsed = 0.25 -- update now
+
+    local guid = UnitGUID(np.unit)
+    if guid ~= np.guid then
+        np.guid = guid
+        BFI.Debug("|cffff7700NP.UnitChanged:|r", np:GetName())
+        UpdateNameplateBase(np)
+    end
+
+    -- load indicator config
+    if np.previousType ~= np.type then
+        BFI.Debug("|cffffff00NP.UnitTypeChanged:|r", np:GetName(), np.previousType, "->", np.type)
+        np.previousType = np.type
+        NP.SetupIndicators(np, NP.config[np.type])
+    end
+
+    np:Show()
+
+    -- update indicators
+    NP.OnNameplateShow(np)
+end
+
+local function Hide(np)
+    UpdateWidgetContainer(np, true)
+    np:Hide()
+    wipe(np.states)
+    U.RemoveElementsByKeys(np,
+        "unit", "guid", "elapsed",
+        "widgetsOnly", "isGameObject",
+        "isTarget", "isMouseOver", "isCasting", "isMarked"
+    )
+
+    -- update indicators
+    NP.OnNameplateHide(np)
+end
+
+---------------------------------------------------------------------
+-- NAME_PLATE_UNIT_ADDED
+---------------------------------------------------------------------
+local function ShowNameplate(_, event, unit)
     local np, blz = NP.GetNameplateForUnit(unit)
     if not np then return end
 
@@ -293,48 +444,38 @@ local function ShowNameplate(self, event, unit)
 
     local show
 
-    if blz.UnitFrame then
-        if UnitIsUnit("player", unit) or UnitNameplateShowsWidgetsOnly(unit) then
-            blz.UnitFrame:Show()
-            np.unit = nil
-            np:Hide()
+    np.blz = blz
+
+    if blz then
+        np.widgetsOnly = UnitNameplateShowsWidgetsOnly(unit)
+        np.isGameObject = UnitIsGameObject(unit)
+
+        if UnitIsUnit("player", unit) or np.widgetsOnly or np.isGameObject then
+            blz:Show()
         else
-            -- blz.UnitFrame:ClearAllPoints()
-            -- blz.UnitFrame:SetParent(nil)
-            blz.UnitFrame:Hide()
-            np.unit = blz.namePlateUnitToken
-            np.guid = UnitGUID(np.unit)
+            blz:Hide()
             show = true
         end
-    -- else
-    --     np.unit = nil
-    --     show = true -- TODO: progress bar?
     end
 
     if show then
-        np:Show()
+        Show(np)
     else
-        np:Hide()
+        Hide(np)
     end
 
     -- TODO: filters
 end
 
 ---------------------------------------------------------------------
--- hide
+-- NAME_PLATE_UNIT_REMOVED
 ---------------------------------------------------------------------
-local function HideNameplate(self, event, unit)
+local function HideNameplate(_, event, unit)
     local np = NP.GetNameplateForUnit(unit)
     if not np then return end
 
     -- BFI.Debug("|cff229922HideNameplate:|r", np:GetName())
-
-    np:Hide()
-    wipe(np.states)
-    np.unit = nil
-    np.guid = nil
-
-    NP.OnNameplateHide(np)
+    Hide(np)
 end
 
 ---------------------------------------------------------------------
@@ -354,7 +495,7 @@ local function CreateNameplate(self, event, nameplate)
     np:SetFrameStrata("BACKGROUND")
     np:SetAllPoints(nameplate)
 
-    np.blz = nameplate
+    np.parent = nameplate
     nameplate.bfi = np
     NP.created[nameplate] = np
 
@@ -367,7 +508,6 @@ local function CreateNameplate(self, event, nameplate)
 
     -- script
     np:SetScript("OnUpdate", OnNameplateUpdate)
-    np:SetScript("OnShow", OnNameplateShow)
 
     -- clickable area
     np.clickableArea = np:CreateTexture(nil, "BACKGROUND", nil, -7)
@@ -385,9 +525,9 @@ end
 local function HideBlzNameplates(self, cvar)
     if not strfind(strlower(cvar), "nameplate") then return end
     C_Timer.After(0.25, function()
-        for blz, np in pairs(NP.created) do
-            if blz.UnitFrame then
-                blz.UnitFrame:Hide()
+        for _, np in pairs(NP.created) do
+            if np:IsVisible() and np.blz then
+                np.blz:Hide()
             end
         end
     end)
@@ -417,8 +557,8 @@ local function UpdateNameplates(module, which)
     UpdateCVars()
 
     -- update clickable area size
-    SetNamePlateFriendlySize(config.friendly.clickableAreaWidth, config.friendly.clickableAreaHeight)
-    SetNamePlateEnemySize(config.hostile.clickableAreaWidth, config.hostile.clickableAreaHeight)
+    SetNamePlateFriendlySize(config.friendlyClickableAreaWidth, config.friendlyClickableAreaHeight)
+    SetNamePlateEnemySize(config.hostileClickableAreaWidth, config.hostileClickableAreaHeight)
 
     -- alphas
     alphas = NP.config.alphas
@@ -446,8 +586,29 @@ local function UpdateNameplates(module, which)
     end
 
     -- scales
+    scales = NP.config.scales
+    wipe(scale_funcs)
+    for _, k in pairs(scale_order) do
+        if scales[k].enabled then
+            tinsert(scale_funcs, scale_funcs_default[k])
+        end
+    end
+    if scales.target.enabled and scales.non_target.enabled then
+        scale_target_func = scale_funcs_default.target_non_target
+    elseif scales.target.enabled then
+        scale_target_func = scale_funcs_default.target
+    elseif scales.non_target.enabled then
+        scale_target_func = scale_funcs_default.non_target
+    else
+        scale_target_func = nil
+    end
+    if scales.no_target.enabled then
+        scale_no_target_func = scale_funcs_default.no_target
+    else
+        scale_no_target_func = nil
+    end
 
     -- indicators
-    NP.EnableQuestIndicator(config.hostile.questIndicator.enabled, config.hostile.questIndicator.hideInInstance)
+    NP.EnableQuestIndicator(config.hostile_npc.questIndicator.enabled, config.hostile_npc.questIndicator.hideInInstance)
 end
 BFI.RegisterCallback("UpdateModules", "Nameplates", UpdateNameplates)

@@ -6,7 +6,10 @@ local NP = BFI.M_NamePlates
 
 local defaults = {
     enabled = true,
-    -- nameplateSelectedScale
+    friendlyClickableAreaWidth = 120,
+    friendlyClickableAreaHeight = 40,
+    hostileClickableAreaWidth = 120,
+    hostileClickableAreaHeight = 40,
     cvars = {
 
     },
@@ -33,17 +36,184 @@ local defaults = {
         totem = 1,
     },
     scales = {
-        casting_unit = 1,
-        target = 1.2,
-        non_target = 0.8,
-        -- rare = 1,
-        boss = 1,
-        guardian = 1,
+        animatedScaling = true,
+        -- overwrite others
+        -- occluded = {enabled = true, value = 0.4},
+        mouseover = {enabled = false, value = 1},
+        marked = {enabled = false, value = 1},
+        casting = {enabled = false, value = 1},
+        -- target
+        target = {enabled = false, value = 1},
+        non_target = {enabled = false, value = 1},
+        no_target = {enabled = false, value = 1},
+        -- type
+        player = 1,
         pet = 1,
+        guardian = 1,
+        npc = 1,
+        -- classification
+        boss = 1,
+        rare = 1,
+        elite = 1,
         minor = 1,
-        totem = 0.5,
+        totem = 1,
     },
-    hostile = {
+    playersInInstance = {
+        -- modify some cvars
+    },
+    customs = {},
+    performanceModeUnits = {
+        tapDenied = true,
+        customs = {},
+    }
+}
+
+do
+    local nameplateDefaults = {
+        healthBar = {
+            enabled = true,
+            position = {"CENTER", "CENTER", 0, 0},
+            frameLevel = 1,
+            width = 120,
+            height = 13,
+            colorByClass = true,
+            colorByThreat = true,
+            colorByMarker = true,
+            colorAlpha = 1,
+            lossColor = {
+                useDarkerForground = false,
+                alpha = 0.5,
+                rgb = AW.GetColorTable("black")
+            },
+            bgColor = AW.GetColorTable("background", 0),
+            borderColor = AW.GetColorTable("border"),
+            texture = "BFI 1",
+            mouseoverHighlight = {
+                enabled = true,
+                color = AW.GetColorTable("white", 0.1)
+            },
+            shield = {
+                enabled = true,
+                color = AW.GetColorTable("shield", 0.5),
+                reverseFill = true,
+            },
+            overshieldGlow = {
+                enabled = true,
+                color = AW.GetColorTable("shield"),
+            },
+            thresholds = {
+                enabled = false,
+                width = 7,
+                height = 25,
+                values = { --! must be descending sorted
+                    {value = 0.3, color = AW.GetColorTable("gold")},
+                },
+            },
+            threatGlow = {
+                enabled = true,
+                size = 5,
+                alpha = 1,
+            },
+        },
+        nameText = {
+            enabled = true,
+            position = {"BOTTOM", "TOP", 0, 1},
+            anchorTo = "healthBar",
+            length = 1,
+            font = {"BFI 1", 12, "none", true},
+            color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+        },
+        healthText = {
+            enabled = true,
+            position = {"CENTER", "CENTER", -5, 0},
+            anchorTo = "healthBar",
+            font = {"BFI 1", 11, "none", true},
+            color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            format = {
+                numeric = "current_short",
+                percent = "current",
+                delimiter = " - ",
+                noPercentSign = false,
+                useAsianUnits = false,
+            },
+            hideIfFull = true,
+        },
+        levelText = {
+            enabled = true,
+            position = {"RIGHT", "RIGHT", -5, 0},
+            anchorTo = "healthBar",
+            font = {"BFI 1", 11, "none", true},
+            color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            highLevelTexture = {
+                enabled = true,
+                size = 16,
+            },
+        },
+        castBar = {
+            enabled = true,
+            position = {"TOP", "BOTTOM", 0, -2},
+            anchorTo = "healthBar",
+            frameLevel = 3,
+            width = 120,
+            height = 13,
+            bgColor = AW.GetColorTable("background", 0.75),
+            borderColor = AW.GetColorTable("border"),
+            texture = "BFI 1",
+            fadeDuration = 1,
+            icon = {
+                enabled = true,
+                position = {"BOTTOMRIGHT", "BOTTOMLEFT", -2, 0},
+                width = 18,
+                height = 18
+            },
+            nameText = {
+                enabled = true,
+                font = {"BFI 1", 11, "none", true},
+                position = {"LEFT", "LEFT", 3, 0},
+                color = AW.GetColorTable("white"),
+                length = 0.75,
+                showInterruptSource = true,
+            },
+            durationText = {
+                enabled = true,
+                font = {"BFI 1", 11 , "none", true},
+                position = {"RIGHT", "RIGHT", -3, 0},
+                format = "%.1f",
+                color = AW.GetColorTable("white"),
+            },
+            spark = {
+                enabled = true,
+                texture = AW.GetPlainTexture(),
+                color = AW.GetColorTable("cast_spark"),
+                width = 1,
+                height = 0,
+            },
+            colors = {
+                normal = AW.GetColorTable("cast_normal"),
+                failed = AW.GetColorTable("cast_failed"),
+                succeeded = AW.GetColorTable("cast_succeeded"),
+                uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+            },
+        },
+        raidIcon = {
+            enabled = true,
+            position = {"RIGHT", "LEFT", -2, 0},
+            anchorTo = "healthBar",
+            frameLevel = 2,
+            width = 16,
+            height = 16,
+        },
+        classIcon = {
+            enabled = false,
+            position = {"RIGHT", "TOPRIGHT", 0, 0},
+            anchorTo = "healthBar",
+            frameLevel = 2,
+            width = 16,
+            height = 16,
+        },
+    }
+
+    local hostile = {
         -- castOnMe
         buffs = {
             enabled = true,
@@ -198,6 +368,9 @@ local defaults = {
                 debuffType = false,
             },
         },
+    }
+
+    local hostile_npc = {
         rareIndicator = {
             enabled = true,
             position = {"RIGHT", "TOPRIGHT", 0, 0},
@@ -215,9 +388,18 @@ local defaults = {
             width = 18,
             height = 18,
             hideInInstance = true,
+        }
+    }
+
+    local friendly = {
+        nameText = {
+            enabled = true,
+            position = {"CENTER", "CENTER", 0, -10},
+            anchorTo = "nameplate",
+            length = 0,
+            font = {"BFI 1", 13, "outline", false},
+            color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
         },
-    },
-    friendly = {
         buffs = {
             enabled = false,
             position = {"BOTTOM", "TOP", 0, 10},
@@ -265,7 +447,7 @@ local defaults = {
             },
         },
         debuffs = {
-            enabled = true,
+            enabled = false,
             position = {"BOTTOM", "TOP", 0, 18},
             anchorTo = "healthBar",
             orientation = "left_to_right",
@@ -313,7 +495,7 @@ local defaults = {
             },
         },
         crowdControls = {
-            enabled = true,
+            enabled = false,
             position = {"BOTTOM", "TOP", 0, 15},
             anchorTo = "buffs",
             orientation = "left_to_right",
@@ -369,166 +551,47 @@ local defaults = {
                 debuffType = false,
             },
         },
-    },
-    playersInInstance = {
-        -- modify some cvars
-    },
-    customs = {},
-    performanceModeUnits = {
-        tapDenied = true,
-        customs = {},
-    }
-}
-
-do
-    local nameplateDefaults = {
-        clickableAreaWidth = 120,
-        clickableAreaHeight = 40,
-        healthBar = {
-            enabled = true,
-            position = {"CENTER", "CENTER", 0, 0},
-            frameLevel = 1,
-            width = 120,
-            height = 13,
-            colorByClass = true,
-            colorByThreat = true,
-            colorByMarker = true,
-            colorAlpha = 1,
-            lossColor = {
-                useDarkerForground = false,
-                alpha = 0.5,
-                rgb = AW.GetColorTable("black")
-            },
-            bgColor = AW.GetColorTable("background", 0),
-            borderColor = AW.GetColorTable("border"),
-            texture = "BFI 1",
-            mouseoverHighlight = {
-                enabled = true,
-                color = AW.GetColorTable("white", 0.1)
-            },
-            shield = {
-                enabled = true,
-                color = AW.GetColorTable("shield", 0.5),
-                reverseFill = true,
-            },
-            overshieldGlow = {
-                enabled = true,
-                color = AW.GetColorTable("shield"),
-            },
-            thresholds = {
-                enabled = false,
-                width = 7,
-                height = 25,
-                values = { --! must be descending sorted
-                    {value = 0.3, color = AW.GetColorTable("gold")},
-                },
-            },
-            threatGlow = {
-                enabled = true,
-                size = 5,
-                alpha = 1,
-            },
-        },
-        nameText = {
-            enabled = true,
-            position = {"BOTTOM", "TOP", 0, 1},
-            anchorTo = "healthBar",
-            length = 1,
-            font = {"BFI 1", 12, "none", true},
-            color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
-        },
-        healthText = {
-            enabled = true,
-            position = {"CENTER", "CENTER", -5, 0},
-            anchorTo = "healthBar",
-            font = {"BFI 1", 11, "none", true},
-            color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
-            format = {
-                numeric = "current_short",
-                percent = "current",
-                delimiter = " - ",
-                noPercentSign = false,
-                useAsianUnits = false,
-            },
-            hideIfFull = true,
-        },
-        levelText = {
-            enabled = true,
-            position = {"RIGHT", "RIGHT", -5, 0},
-            anchorTo = "healthBar",
-            font = {"BFI 1", 11, "none", true},
-            color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
-            highLevelTexture = {
-                enabled = true,
-                size = 16,
-            },
-        },
-        castBar = {
-            enabled = true,
-            position = {"TOP", "BOTTOM", 0, -2},
-            anchorTo = "healthBar",
-            frameLevel = 3,
-            width = 120,
-            height = 13,
-            bgColor = AW.GetColorTable("background", 0.75),
-            borderColor = AW.GetColorTable("border"),
-            texture = "BFI 1",
-            fadeDuration = 1,
-            icon = {
-                enabled = true,
-                position = {"BOTTOMRIGHT", "BOTTOMLEFT", -2, 0},
-                width = 18,
-                height = 18
-            },
-            nameText = {
-                enabled = true,
-                font = {"BFI 1", 11, "none", true},
-                position = {"LEFT", "LEFT", 3, 0},
-                color = AW.GetColorTable("white"),
-                length = 0.75,
-                showInterruptSource = true,
-            },
-            durationText = {
-                enabled = true,
-                font = {"BFI 1", 11 , "none", true},
-                position = {"RIGHT", "RIGHT", -3, 0},
-                format = "%.1f",
-                color = AW.GetColorTable("white"),
-            },
-            spark = {
-                enabled = true,
-                texture = AW.GetPlainTexture(),
-                color = AW.GetColorTable("cast_spark"),
-                width = 1,
-                height = 0,
-            },
-            colors = {
-                normal = AW.GetColorTable("cast_normal"),
-                failed = AW.GetColorTable("cast_failed"),
-                succeeded = AW.GetColorTable("cast_succeeded"),
-                uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-            },
-        },
-        raidIcon = {
-            enabled = true,
-            position = {"RIGHT", "LEFT", -2, 0},
-            anchorTo = "healthBar",
-            frameLevel = 2,
-            width = 16,
-            height = 16,
-        },
-        classIcon = {
-            enabled = false,
-            position = {"RIGHT", "TOPRIGHT", 0, 0},
-            anchorTo = "healthBar",
-            frameLevel = 2,
-            width = 16,
-            height = 16,
-        },
     }
 
-    U.Merge(defaults.hostile, nameplateDefaults)
-    U.Merge(defaults.friendly, nameplateDefaults)
+    -- hostile
+    defaults.hostile_npc = U.Copy(nameplateDefaults, hostile, hostile_npc)
+    defaults.hostile_player = U.Copy(nameplateDefaults, hostile)
+
+    -- friendly
+    defaults.friendly_npc = U.Copy(nameplateDefaults, friendly)
+    defaults.friendly_player = U.Copy(nameplateDefaults, friendly)
+
+    -- update friendly_npc
+    for n, t in pairs(defaults.friendly_npc) do
+        if n == "nameText" then
+            defaults.friendly_npc.nameText = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, -10},
+                anchorTo = "nameplate",
+                length = 0,
+                font = {"BFI 1", 13, "outline", false},
+                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            }
+        else
+            t.enabled = false
+        end
+    end
+
+    -- update friendly_player
+    for n, t in pairs(defaults.friendly_player) do
+        if n == "nameText" then
+            defaults.friendly_player.nameText = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, -10},
+                anchorTo = "nameplate",
+                length = 0,
+                font = {"BFI 1", 13, "outline", false},
+                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            }
+        else
+            t.enabled = false
+        end
+    end
 end
 
 local customDefaults = {

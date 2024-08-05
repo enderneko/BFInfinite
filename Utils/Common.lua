@@ -87,13 +87,16 @@ function U.GetKeys(t)
     return keys
 end
 
-function U.Copy(t)
+function U.Copy(...)
     local newTbl = {}
-    for k, v in pairs(t) do
-        if type(v) == "table" then
-            newTbl[k] = U.Copy(v)
-        else
-            newTbl[k] = v
+    for i = 1, select("#", ...) do
+        local t = select(i, ...)
+        for k, v in pairs(t) do
+            if type(v) == "table" then
+                newTbl[k] = U.Copy(v)
+            else
+                newTbl[k] = v
+            end
         end
     end
     return newTbl

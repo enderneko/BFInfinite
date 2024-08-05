@@ -232,15 +232,19 @@ end
 ---------------------------------------------------------------------
 --- @param fs FontString
 function AW.SetText(fs, text, length)
-    if length <= 1 then
-        local width = fs:GetParent():GetWidth() - 2
-        for i = string.utf8len(text), 0, -1 do
-            fs:SetText(string.utf8sub(text, 1, i))
-            if fs:GetWidth() / width <= length then
-                break
+    if length > 0 then
+        if length <= 1 then
+            local width = fs:GetParent():GetWidth() - 2
+            for i = string.utf8len(text), 0, -1 do
+                fs:SetText(string.utf8sub(text, 1, i))
+                if fs:GetWidth() / width <= length then
+                    break
+                end
             end
+        else
+            fs:SetText(string.utf8sub(text, 1, length))
         end
     else
-        fs:SetText(string.utf8sub(text, 1, length))
+        fs:SetText(text)
     end
 end
