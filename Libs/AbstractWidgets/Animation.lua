@@ -2,15 +2,15 @@ local addonName, ns = ...
 ---@class AbstractWidgets
 local AW = ns.AW
 
------------------------------------------
+---------------------------------------------------------------------
 -- forked from ElvUI
------------------------------------------
+---------------------------------------------------------------------
 local FADEFRAMES, FADEMANAGER = {}, CreateFrame("FRAME")
 FADEMANAGER.interval = 0.025
 
------------------------------------------
+---------------------------------------------------------------------
 -- fade manager onupdate
------------------------------------------
+---------------------------------------------------------------------
 local function Fading(_, elapsed)
     FADEMANAGER.timer = (FADEMANAGER.timer or 0) + elapsed
 
@@ -48,9 +48,9 @@ local function Fading(_, elapsed)
     end
 end
 
------------------------------------------
+---------------------------------------------------------------------
 -- fade
------------------------------------------
+---------------------------------------------------------------------
 local function FrameFade(frame, info)
     frame:SetAlpha(info.startAlpha)
 
@@ -264,4 +264,121 @@ function AW.AnimatedResize(frame, targetWidth, targetHeight, frequency, steps, o
             if onFinish then onFinish() end
         end
     end)
+end
+
+---------------------------------------------------------------------
+-- zoom
+---------------------------------------------------------------------
+local ZOOMFRAMES, ZOOMMANAGER = {}, CreateFrame("FRAME")
+ZOOMMANAGER.interval = 0.025
+
+---------------------------------------------------------------------
+-- zoom manager onupdate
+---------------------------------------------------------------------
+local function Fading(_, elapsed)
+    ZOOMMANAGER.timer = (ZOOMMANAGER.timer or 0) + elapsed
+
+    if ZOOMMANAGER.timer > ZOOMMANAGER.interval then
+        ZOOMMANAGER.timer = 0
+
+        for frame, info in next, ZOOMFRAMES do
+            if frame:IsVisible() then
+                info.zoomTimer = (info.zoomTimer or 0) + (elapsed + ZOOMMANAGER.interval)
+            else -- faster for hidden frames
+                info.zoomTimer = info.timeToZoom + 1
+            end
+
+            if info.zoomTimer < info.timeToZoom then
+                if info.mode == "IN" then
+                    frame:SetScale((info.zoomTimer / info.timeToZoom) * info.diffScale + info.startScale)
+                else
+                    frame:SetScale(((info.timeToZoom - info.zoomTimer) / info.timeToZoom) * info.diffScale + info.endScale)
+                end
+            else
+                frame:SetScale(info.endScale)
+                -- NOTE: remove from ZOOMFRAMES
+                if frame and ZOOMFRAMES[frame] then
+                    if frame.zoom then
+                        frame.zoom.zoomTimer = nil
+                    end
+                    ZOOMFRAMES[frame] = nil
+                end
+            end
+        end
+
+        if not next(ZOOMFRAMES) then
+            ZOOMMANAGER:SetScript("OnUpdate", nil)
+        end
+    end
+end
+
+---------------------------------------------------------------------
+-- zoom
+---------------------------------------------------------------------
+local function FrameZoom(frame, info)
+    frame:SetScale(info.startScale)
+
+    if not frame:IsProtected() then
+        frame:Show()
+    end
+
+    if not ZOOMFRAMES[frame] then
+        ZOOMFRAMES[frame] = info
+        ZOOMMANAGER:SetScript("OnUpdate", Fading)
+    else
+        ZOOMFRAMES[frame] = info
+    end
+end
+
+function AW.FrameZoomIn(frame, timeToZoom, startScale, endScale)
+    if frame.zoom then
+        frame.zoom.zoomTimer = nil
+    else
+        frame.zoom = {}
+    end
+
+    frame.zoom.mode = "IN"
+    frame.zoom.timeToZoom = timeToZoom
+    frame.zoom.startScale = startScale or frame:GetScale()
+    frame.zoom.endScale = endScale or 1
+    frame.zoom.diffScale = frame.zoom.endScale - frame.zoom.startScale
+
+    FrameZoom(frame, frame.zoom)
+end
+
+function AW.FrameZoomOut(frame, timeToZoom, startScale, endScale)
+    if frame.zoom then
+        frame.zoom.zoomTimer = nil
+    else
+        frame.zoom = {}
+    end
+
+    frame.zoom.mode = "OUT"
+    frame.zoom.timeToZoom = timeToZoom
+    frame.zoom.startScale = startScale or frame:GetScale()
+    frame.zoom.endScale = endScale or 0
+    frame.zoom.diffScale = frame.zoom.startScale - frame.zoom.endScale
+
+    FrameZoom(frame, frame.zoom)
+end
+
+function AW.FrameZoomTo(frame, timeToZoom, endScale)
+    if frame.zoom then
+        frame.zoom.zoomTimer = nil
+    else
+        frame.zoom = {}
+    end
+
+    frame.zoom.timeToZoom = timeToZoom
+    frame.zoom.startScale = frame:GetScale()
+    frame.zoom.endScale = endScale
+    frame.zoom.diffScale = abs(frame.zoom.startScale - frame.zoom.endScale)
+
+    if frame.zoom.startScale > frame.zoom.endScale then
+        frame.zoom.mode = "OUT"
+        FrameZoom(frame, frame.zoom)
+    elseif frame.zoom.startScale < frame.zoom.endScale then
+        frame.zoom.mode = "IN"
+        FrameZoom(frame, frame.zoom)
+    end
 end
