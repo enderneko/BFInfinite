@@ -76,7 +76,7 @@ local function UpdateQuests(_, event, unit)
     end
 
     -- texplore(quests)
-    NP.IterateAllVisibleNamePlates(UpdateQuestIndicator, "hostile")
+    NP.IterateAllVisibleNamePlates(UpdateQuestIndicator, "hostile_npc")
 end
 
 local timer

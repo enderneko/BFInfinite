@@ -32,6 +32,8 @@ local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
 local UnitClassification = UnitClassification
 local UnitEffectiveLevel = UnitEffectiveLevel
 local UnitName = UnitName
+local UnitIsPVPSanctuary = UnitIsPVPSanctuary
+local UnitIsEnemy = UnitIsEnemy
 local GetRaidTargetIndex = GetRaidTargetIndex
 
 function NP.GetNameplateForUnit(unit)
@@ -48,9 +50,9 @@ function NP.ToggleClickableArea()
     end
 end
 
-function NP.IterateAllVisibleNamePlates(func, reaction)
+function NP.IterateAllVisibleNamePlates(func, type)
     for _, np in pairs(NP.created) do
-        if not reaction or reaction == np.reaction_current then
+        if not type or type == np.type then
             if np:IsVisible() then
                 func(np)
             end
@@ -58,22 +60,16 @@ function NP.IterateAllVisibleNamePlates(func, reaction)
     end
 end
 
-local function GetNamePlateType(unit)
-    local reaction = UnitReaction(unit, "player") > 4 and "friendly" or "hostile"
-    local type = UnitIsPlayer(unit) and "player" or "npc"
-    return reaction .. "_" .. type
-end
-
-local function GetUnitReaction(unit)
-    local reaction = UnitReaction(unit, "player")
-    -- if reaction == 4 then
-    --     return "neutral"
-    if reaction > 4 then
-        return "friendly"
-    else
-        return "hostile"
-    end
-end
+-- local function GetUnitReaction(unit)
+--     local reaction = UnitReaction("player", unit)
+--     -- if reaction == 4 then
+--     --     return "neutral"
+--     if reaction > 4 then
+--         return "friendly"
+--     else
+--         return "hostile"
+--     end
+-- end
 
 -- player,pet,guardian,npc
 local function GetUnitType(unit)
@@ -144,20 +140,26 @@ end
 local function UpdateNameplateBase(np)
     -- BFI.Debug("|cffffff00UpdateNameplateBase:|r", np:GetName())
 
-    wipe(np.states)
-
     local unit = np.unit
 
-    np.type = GetNamePlateType(unit)
-
+    np.states.reaction = UnitReaction("player", unit)
     np.states.name, np.states.server = UnitName(unit)
     np.states.server = np.states.server or SERVER_NAME
     np.states.level = UnitEffectiveLevel(unit)
-    np.states.reaction = GetUnitReaction(unit)
     np.states.type = GetUnitType(unit)
     np.states.classification = GetUnitClassification(unit, np.states.level)
-
     np.states.isSameServer = np.states.server == SERVER_NAME
+    np.states.isPVPSanctuary = UnitIsPVPSanctuary(unit)
+    np.states.isEnemy = UnitIsEnemy("player", unit)
+    np.states.isPlayer = UnitIsPlayer(unit)
+
+    if np.states.isPVPSanctuary then
+        np.type = "friendly_player"
+    elseif not np.states.isEnemy and (np.states.reaction and np.states.reaction > 4) then
+        np.type = np.states.isPlayer and "friendly_player" or "friendly_npc"
+    else
+        np.type = np.states.isPlayer and "hostile_player" or "hostile_npc"
+    end
 end
 
 ---------------------------------------------------------------------
@@ -377,15 +379,16 @@ local function UpdateWidgetContainer(np, reset)
     if reset then
         if np.widgetContainer then
             np.widgetContainer:SetParent(np.blz)
-            np.widgetContainer:ClearAllPoints()
-            np.widgetContainer:SetPoint("TOP", np.blz.castBar, "BOTTOM")
+            -- np.widgetContainer:ClearAllPoints()
+            -- np.widgetContainer:SetPoint("TOP", np.blz.castBar, "BOTTOM")
         end
     else
         np.widgetContainer = np.blz and np.blz.WidgetContainer
         if np.widgetContainer then
             np.widgetContainer:SetParent(np)
-			np.widgetContainer:ClearAllPoints()
-			np.widgetContainer:SetPoint("CENTER", 0, -10)
+            -- FIXME:
+            -- np.widgetContainer:ClearAllPoints()
+            -- np.widgetContainer:SetPoint("CENTER", 0, -10)
         end
     end
 end

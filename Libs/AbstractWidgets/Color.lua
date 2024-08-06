@@ -304,7 +304,7 @@ function AW.GetClassColor(class, alpha, saturation)
 end
 
 function AW.GetReactionColor(unit, alpha, saturation)
-    local reaction = UnitReaction(unit, "player") or 0
+    local reaction = UnitReaction("player", unit) or 0
     if reaction <= 2 then
         return AW.GetColorRGB("HOSTILE", alpha, saturation)
     elseif reaction <= 4 then
