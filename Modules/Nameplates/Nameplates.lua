@@ -31,7 +31,7 @@ local UnitIsGameObject = UnitIsGameObject
 local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
 local UnitIsPlayer = UnitIsPlayer
 local UnitIsPVPSanctuary = UnitIsPVPSanctuary
-local UnitIsSameServer = UnitIsSameServer
+-- local UnitIsSameServer = UnitIsSameServer
 local UnitIsUnit = UnitIsUnit
 local UnitName = UnitName
 local UnitNameplateShowsWidgetsOnly = UnitNameplateShowsWidgetsOnly
@@ -182,32 +182,32 @@ local alpha_funcs_default = {
         end
     end,
     mouseover = function(np)
-        if np.isMouseOver and not np.isTarget then
+        if np.states.isMouseOver and not np.states.isTarget then
             return alphas.mouseover.value
         end
     end,
     marked = function(np)
-        if np.isMarked then
+        if np.states.isMarked then
             return alphas.marked.value
         end
     end,
     casting = function(np)
-        if np.isCasting then
+        if np.states.isCasting then
             return alphas.casting.value
         end
     end,
     target = function(np)
-        if np.isTarget then
+        if np.states.isTarget then
             return alphas.target.value
         end
     end,
     non_target = function(np)
-        if not np.isTarget then
+        if not np.states.isTarget then
             return alphas.non_target.value
         end
     end,
     target_non_target = function(np)
-        if np.isTarget then
+        if np.states.isTarget then
             return alphas.target.value
         else
             return alphas.non_target.value
@@ -268,32 +268,32 @@ local scale_no_target_func
 
 local scale_funcs_default = {
     mouseover = function(np)
-        if np.isMouseOver and not np.isTarget then
+        if np.states.isMouseOver and not np.states.isTarget then
             return scales.mouseover.value
         end
     end,
     marked = function(np)
-        if np.isMarked then
+        if np.states.isMarked then
             return scales.marked.value
         end
     end,
     casting = function(np)
-        if np.isCasting then
+        if np.states.isCasting then
             return scales.casting.value
         end
     end,
     target = function(np)
-        if np.isTarget then
+        if np.states.isTarget then
             return scales.target.value
         end
     end,
     non_target = function(np)
-        if not np.isTarget then
+        if not np.states.isTarget then
             return scales.non_target.value
         end
     end,
     target_non_target = function(np)
-        if np.isTarget then
+        if np.states.isTarget then
             return scales.target.value
         else
             return scales.non_target.value
@@ -352,10 +352,10 @@ local function OnNameplateUpdate(np, elapsed)
         np:SetFrameLevel(np.parent:GetFrameLevel() * 10)
 
         if np.unit then
-            np.isMouseOver = UnitIsUnit("mouseover", np.unit)
-            np.isTarget = UnitIsUnit("target", np.unit)
-            np.isCasting = UnitCastingInfo(np.unit) or UnitChannelInfo(np.unit)
-            np.isMarked = (GetRaidTargetIndex(np.unit) or 9) <= 8
+            np.states.isMouseOver = UnitIsUnit("mouseover", np.unit)
+            np.states.isTarget = UnitIsUnit("target", np.unit)
+            np.states.isCasting = UnitCastingInfo(np.unit) or UnitChannelInfo(np.unit)
+            np.states.isMarked = (GetRaidTargetIndex(np.unit) or 9) <= 8
 
             -- alpha
             np:SetAlpha(GetAlpha(np))
@@ -429,8 +429,7 @@ local function Hide(np)
     wipe(np.states)
     U.RemoveElementsByKeys(np,
         "unit", "guid", "elapsed",
-        "widgetsOnly", "isGameObject",
-        "isTarget", "isMouseOver", "isCasting", "isMarked"
+        "widgetsOnly", "isGameObject"
     )
 
     -- update indicators
