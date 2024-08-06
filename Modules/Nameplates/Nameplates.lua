@@ -19,22 +19,23 @@ local SetNamePlateEnemySize = C_NamePlate.SetNamePlateEnemySize
 local SetNamePlateFriendlySize = C_NamePlate.SetNamePlateFriendlySize
 local SetCVar = C_CVar.SetCVar
 local GetCVarDefault = C_CVar.GetCVarDefault
-local UnitNameplateShowsWidgetsOnly = UnitNameplateShowsWidgetsOnly
-local UnitIsGameObject = UnitIsGameObject
-local UnitGUID = UnitGUID
-local UnitExists = UnitExists
-local UnitIsUnit = UnitIsUnit
+local GetRaidTargetIndex = GetRaidTargetIndex
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
-local UnitReaction = UnitReaction
-local UnitIsPlayer = UnitIsPlayer
-local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
 local UnitClassification = UnitClassification
 local UnitEffectiveLevel = UnitEffectiveLevel
-local UnitName = UnitName
-local UnitIsPVPSanctuary = UnitIsPVPSanctuary
+local UnitExists = UnitExists
+local UnitGUID = UnitGUID
 local UnitIsEnemy = UnitIsEnemy
-local GetRaidTargetIndex = GetRaidTargetIndex
+local UnitIsGameObject = UnitIsGameObject
+local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
+local UnitIsPlayer = UnitIsPlayer
+local UnitIsPVPSanctuary = UnitIsPVPSanctuary
+local UnitIsSameServer = UnitIsSameServer
+local UnitIsUnit = UnitIsUnit
+local UnitName = UnitName
+local UnitNameplateShowsWidgetsOnly = UnitNameplateShowsWidgetsOnly
+local UnitReaction = UnitReaction
 
 function NP.GetNameplateForUnit(unit)
     local nameplate = GetNamePlateForUnit(unit)
@@ -148,7 +149,7 @@ local function UpdateNameplateBase(np)
     np.states.level = UnitEffectiveLevel(unit)
     np.states.type = GetUnitType(unit)
     np.states.classification = GetUnitClassification(unit, np.states.level)
-    np.states.isSameServer = np.states.server == SERVER_NAME
+    -- np.states.isSameServer = UnitIsSameServer(unit)
     np.states.isPVPSanctuary = UnitIsPVPSanctuary(unit)
     np.states.isEnemy = UnitIsEnemy("player", unit)
     np.states.isPlayer = UnitIsPlayer(unit)

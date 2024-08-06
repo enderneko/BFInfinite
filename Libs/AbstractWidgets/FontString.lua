@@ -231,7 +231,7 @@ end
 -- SetText with length
 ---------------------------------------------------------------------
 --- @param fs FontString
-function AW.SetText(fs, text, length)
+function AW.SetText(fs, text, length, suffix)
     if length > 0 then
         if length <= 1 then
             local width = fs:GetParent():GetWidth() - 2
@@ -246,5 +246,9 @@ function AW.SetText(fs, text, length)
         end
     else
         fs:SetText(text)
+    end
+
+    if suffix then
+        fs:SetText(fs:GetText() .. suffix)
     end
 end

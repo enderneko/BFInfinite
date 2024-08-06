@@ -399,6 +399,7 @@ do
             length = 0,
             font = {"BFI 1", 13, "outline", false},
             color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            showOtherServerSign = true,
         },
         buffs = {
             enabled = false,
@@ -563,34 +564,12 @@ do
 
     -- update friendly_npc
     for n, t in pairs(defaults.friendly_npc) do
-        if n == "nameText" then
-            defaults.friendly_npc.nameText = {
-                enabled = true,
-                position = {"CENTER", "CENTER", 0, -10},
-                anchorTo = "nameplate",
-                length = 0,
-                font = {"BFI 1", 13, "outline", false},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
-            }
-        else
-            t.enabled = false
-        end
+        t.enabled = n == "nameText"
     end
 
     -- update friendly_player
     for n, t in pairs(defaults.friendly_player) do
-        if n == "nameText" then
-            defaults.friendly_player.nameText = {
-                enabled = true,
-                position = {"CENTER", "CENTER", 0, -10},
-                anchorTo = "nameplate",
-                length = 0,
-                font = {"BFI 1", 13, "outline", false},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
-            }
-        else
-            t.enabled = false
-        end
+        t.enabled = n == "nameText"
     end
 end
 

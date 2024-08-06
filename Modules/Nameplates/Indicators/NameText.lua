@@ -9,6 +9,7 @@ local NP = BFI.M_NamePlates
 ---------------------------------------------------------------------
 local UnitName = UnitName
 local UnitIsConnected = UnitIsConnected
+local UnitIsSameServer = UnitIsSameServer
 local UnitClassBase = U.UnitClassBase
 
 ---------------------------------------------------------------------
@@ -24,7 +25,7 @@ local function UpdateName(self, event, unitId)
     local class = UnitClassBase(unit)
 
     -- length
-    AW.SetText(self, name, self.length)
+    AW.SetText(self, name, self.length, (self.showOtherServerSign and not UnitIsSameServer(unit)) and "*")
 
     -- color
     local r, g, b
@@ -74,6 +75,7 @@ local function NameText_LoadConfig(self, config)
 
     self.length = config.length
     self.color = config.color
+    self.showOtherServerSign = config.showOtherServerSign
 end
 
 ---------------------------------------------------------------------
