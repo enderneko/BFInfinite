@@ -412,6 +412,8 @@ local function UpdateMainBars(module, which, barName)
     if not init then
         init = true
 
+        AB.DisableBlizzard()
+
         _G.BINDING_HEADER_BFI = AW.WrapTextInColor(addonName, "accent")
 
         local bars = {
