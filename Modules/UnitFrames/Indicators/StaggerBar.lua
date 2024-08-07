@@ -49,7 +49,7 @@ end
 -- check
 ---------------------------------------------------------------------
 local function Check(self, event, unitId)
-    if unitId and unitId ~= "player" then return end
+    if event ~= "ACTIVE_TALENT_GROUP_CHANGED" and unitId and unitId ~= "player" then return end
 
     if class ~= "MONK" or GetSpecialization() ~= 1 or UnitHasVehicleUI("player") then
         self:Hide()
