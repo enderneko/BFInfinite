@@ -21,8 +21,9 @@ local UnitIsPlayer = UnitIsPlayer
 local UnitPlayerControlled = UnitPlayerControlled
 local UnitIsUnit = UnitIsUnit
 local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
+local UnitPlayerOrPetInParty = UnitPlayerOrPetInParty
+local UnitPlayerOrPetInRaid = UnitPlayerOrPetInRaid
 local UnitClassBase = U.UnitClassBase
-local IsInInstance = IsInInstance
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitIsTapDenied = UnitIsTapDenied
 
@@ -135,12 +136,14 @@ local function UpdateThreat(self, event, unitId)
     local status = UnitThreatSituation("player", unit)
 
     if not status then
-        if IsInInstance() and UnitAffectingCombat(unit) and UnitAffectingCombat("player") then
+        if BFI.vars.inInstance and UnitAffectingCombat(unit) then
             local target = unit .. "target"
-            if UnitIsUnit(target, "player") or UnitIsUnit(target, "vehicle") then
-                status = 3
-            else
-                status = 0
+            if UnitExists(target) then
+                if UnitIsUnit(target, "player") or UnitIsUnit(target, "vehicle") then
+                    status = 3
+                elseif UnitPlayerOrPetInRaid(target) or UnitPlayerOrPetInParty(target) then
+                    status = 0
+                end
             end
         end
     end

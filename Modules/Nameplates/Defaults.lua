@@ -94,7 +94,7 @@ do
             },
             shield = {
                 enabled = true,
-                color = AW.GetColorTable("shield", 0.5),
+                color = AW.GetColorTable("shield", 0.6),
                 reverseFill = true,
             },
             overshieldGlow = {
