@@ -150,9 +150,9 @@ local function Check(self, event, unitId)
 
     -- update now
     self:Show()
-    -- UpdateManaColor(self)
-    -- UpdateManaMax(self)
-    -- UpdateMana(self)
+    UpdateManaColor(self)
+    UpdateManaMax(self)
+    UpdateMana(self)
 end
 
 ---------------------------------------------------------------------
