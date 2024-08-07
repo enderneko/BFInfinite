@@ -297,10 +297,12 @@ local function CastInterruptible(self, event, unit)
     end
 
     if self.notInterruptible then
+        self.bar:SetStatusBarColor(AW.UnpackColor(self.uninterruptibleColor))
         self.bar.uninterruptible:Show()
-        self:SetBackdropBorderColor(AW.UnpackColor(self.uninterruptibleColor, 1))
-        self.gap:SetColorTexture(AW.UnpackColor(self.uninterruptibleColor, 1))
+        self:SetBackdropBorderColor(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
+        self.gap:SetColorTexture(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
     else
+        self.bar:SetStatusBarColor(AW.UnpackColor(self.normalColor))
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))
         self.gap:SetColorTexture(AW.UnpackColor(self.borderColor))
@@ -842,7 +844,7 @@ local function CastBar_LoadConfig(self, config)
     self.gap:SetColorTexture(AW.UnpackColor(config.borderColor))
 
     self.bar:SetStatusBarColor(unpack(config.colors.normal))
-    self.bar.uninterruptible:SetVertexColor(unpack(config.colors.uninterruptible))
+    self.bar.uninterruptible:SetVertexColor(unpack(config.colors.uninterruptibleTexture))
 
     AW.SetFadeInOutAnimationDuration(self, config.fadeDuration)
 
@@ -860,9 +862,11 @@ local function CastBar_LoadConfig(self, config)
         CastBar_UpdateLatency(self, config.latency)
     end
 
+    self.normalColor = config.colors.normal
     self.failedColor = config.colors.failed
     self.succeededColor = config.colors.succeeded
     self.uninterruptibleColor = config.colors.uninterruptible
+    self.uninterruptibleTextureColor = config.colors.uninterruptibleTexture
     self.borderColor = config.borderColor
 end
 

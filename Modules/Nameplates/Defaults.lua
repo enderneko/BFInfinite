@@ -111,7 +111,7 @@ do
             },
             threatGlow = {
                 enabled = true,
-                size = 5,
+                size = 4,
                 alpha = 1,
             },
         },
@@ -193,6 +193,7 @@ do
                 failed = AW.GetColorTable("cast_failed"),
                 succeeded = AW.GetColorTable("cast_succeeded"),
                 uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+                uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
             },
         },
         raidIcon = {

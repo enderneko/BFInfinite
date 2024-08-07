@@ -208,6 +208,7 @@ local defaults = {
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
                 ticks = {
                     enabled = true,
@@ -615,6 +616,7 @@ local defaults = {
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             combatIcon = {
@@ -1009,6 +1011,7 @@ local defaults = {
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -1339,6 +1342,7 @@ local defaults = {
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -1663,6 +1667,7 @@ local defaults = {
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
