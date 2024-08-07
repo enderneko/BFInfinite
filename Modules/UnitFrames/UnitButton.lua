@@ -271,11 +271,7 @@ local function UnitButton_OnEvent(self, event, unit, arg)
 
         elseif event == "UNIT_TARGET" then
             if self._updateOnUnitTargetChanged == unit and not UnitIsUnit("player", unit) then
-                local exists = UnitExists(self.unit)
-                if type(self._refreshOnUpdate) == "boolean" then
-                    self._refreshOnUpdate = exists
-                end
-                if exists then
+                if UnitExists(self.unit) then
                     UnitButton_UpdateAll(self, true)
                 end
             end
