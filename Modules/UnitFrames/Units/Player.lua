@@ -28,6 +28,7 @@ local indicators = {
     "targetHighlight",
     "mouseoverHighlight",
     "threatGlow",
+    "incDmgHealText",
     {"auras", "buffs", "HELPFUL"},
     {"auras", "debuffs", "HARMFUL"},
 }

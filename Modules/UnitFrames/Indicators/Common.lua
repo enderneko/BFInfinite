@@ -31,6 +31,7 @@ local builders = {
     targetHighlight = UF.CreateTargetHighlight,
     mouseoverHighlight = UF.CreateMouseoverHighlight,
     threatGlow = UF.CreateThreatGlow,
+    incDmgHealText = UF.CreateIncDmgHealText,
     auras = UF.CreateAuras,
 }
 

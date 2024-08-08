@@ -39,5 +39,9 @@ local uf_colors = {
     range_30 = {0.035, 0.865, 0},
     range_40 = {1.0, 0.82, 0},
     range_out = {0.9, 0.055, 0.075, 1},
+
+    swing = {1, 1, 0.1, 1},
+    damage = {1, 0.1, 0.1, 1},
+    heal = {0.1, 1, 0.1, 1},
 }
 AW.AddColors(uf_colors)

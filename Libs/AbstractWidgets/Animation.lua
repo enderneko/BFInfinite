@@ -179,6 +179,49 @@ function AW.SetFadeInOutAnimationDuration(region, duration)
 end
 
 ---------------------------------------------------------------------
+-- continual fade-in-out
+---------------------------------------------------------------------
+local function FadeInOut(region)
+    region.fade:Restart()
+end
+
+function AW.CreateContinualFadeInOutAnimation(region, duration, delay)
+    duration = duration or 0.25
+    delay = delay or 1
+
+    region.FadeInOut = FadeInOut
+
+    local ag = region:CreateAnimationGroup()
+    region.fade = ag
+
+    -- in -----------------------------------------------------------
+    local in_a = ag:CreateAnimation("Alpha")
+    ag.fadeIn = in_a
+    in_a:SetOrder(1)
+    in_a:SetFromAlpha(0)
+    in_a:SetToAlpha(1)
+    in_a:SetDuration(duration)
+    -----------------------------------------------------------------
+
+    -- out ----------------------------------------------------------
+    local out_a = ag:CreateAnimation("Alpha")
+    ag.fadeOut = out_a
+    out_a:SetOrder(2)
+    out_a:SetStartDelay(delay)
+    out_a:SetFromAlpha(1)
+    out_a:SetToAlpha(0)
+    out_a:SetDuration(duration)
+    -----------------------------------------------------------------
+
+    ag:SetScript("OnPlay", function()
+        region:Show()
+    end)
+    ag:SetScript("OnFinished", function()
+        region:Hide()
+    end)
+end
+
+---------------------------------------------------------------------
 -- blink
 ---------------------------------------------------------------------
 function AW.CreateBlinkAnimation(region, duration)
