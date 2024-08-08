@@ -116,12 +116,16 @@ function UF.OnButtonHide(button)
     end
 end
 
-function UF.LoadTextPosition(self, config)
-    local anchorTo
-    if config.anchorTo == "button" then
+function UF.LoadIndicatorPosition(self, position, anchorTo)
+    if anchorTo == "button" then
         anchorTo = self.root
-    else
-        anchorTo = self.root.indicators[config.anchorTo]
+    elseif anchorTo then
+        anchorTo = self.root.indicators[anchorTo]
     end
-    AW.LoadTextPosition(self, config.position, anchorTo)
+
+    if self:GetObjectType() == "FontString" then
+        AW.LoadTextPosition(self, position, anchorTo)
+    else
+        AW.LoadWidgetPosition(self, position, anchorTo)
+    end
 end

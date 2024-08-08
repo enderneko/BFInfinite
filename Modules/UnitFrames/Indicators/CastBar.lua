@@ -831,7 +831,7 @@ end
 -- load
 ---------------------------------------------------------------------
 local function CastBar_LoadConfig(self, config)
-    AW.LoadWidgetPosition(self, config.position)
+    UF.LoadIndicatorPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
     AW.SetWidth(self.icon, config.height-2)
 

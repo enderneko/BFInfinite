@@ -30,6 +30,7 @@
     <Script file="Indicators\TargetHighlight.lua"/>
     <Script file="Indicators\MouseoverHighlight.lua"/>
     <Script file="Indicators\ThreatGlow.lua"/>
+    <Script file="Indicators\IncDmgHealText.lua"/>
     <Script file="Indicators\Common.lua"/>
     <!-- units -->
     <Script file="Units\Player.lua"/>

@@ -185,7 +185,7 @@ end
 ---------------------------------------------------------------------
 local function PowerBar_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    AW.LoadWidgetPosition(self, config.position)
+    UF.LoadIndicatorPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
 
     self:SetTexture(U.GetBarTexture(config.texture))

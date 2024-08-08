@@ -340,6 +340,17 @@ local defaults = {
                 size = 3,
                 alpha = 1,
             },
+            incDmgHealText = {
+                enabled = true,
+                position = {"BOTTOM", "BOTTOM", 0, 1},
+                anchorTo = "powerBar",
+                font = {"BFI 2", 9, "monochrome", false},
+                types = {
+                    swing = {enabled = true, color = AW.GetColorTable("swing")},
+                    damage = {enabled = true, color = AW.GetColorTable("damage")},
+                    heal = {enabled = true, color = AW.GetColorTable("heal")},
+                },
+            },
             buffs = {
                 enabled = false,
                 position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},

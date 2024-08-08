@@ -444,7 +444,7 @@ local function CastBar_SetupIcon(self, config)
         return
     end
 
-    AW.LoadWidgetPosition(self.iconBG, config.position)
+    NP.LoadIndicatorPosition(self.iconBG, config.position)
     AW.SetSize(self.iconBG, config.width, config.height)
 
     self.icon:SetTexCoord(unpack(AW.CalcTexCoord(config.width, config.height, true)))

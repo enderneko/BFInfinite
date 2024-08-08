@@ -88,7 +88,7 @@ end
 ---------------------------------------------------------------------
 local function RangeText_LoadConfig(self, config)
     U.SetFont(self, unpack(config.font))
-    UF.LoadTextPosition(self, config)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
     self.color = config.color
 end

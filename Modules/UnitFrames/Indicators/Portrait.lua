@@ -92,7 +92,7 @@ local function Portrait_LoadConfig(self, config)
 
     -- if config.anchorTo == "button" then
         self:SetParent(self.root)
-        AW.LoadWidgetPosition(self, config.position)
+        UF.LoadIndicatorPosition(self, config.position)
         AW.SetFrameLevel(self, config.frameLevel, self.root)
     -- elseif config.anchorTo == "healthBar" then
     --     AW.ClearPoints(self)

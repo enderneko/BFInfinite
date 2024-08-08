@@ -36,6 +36,7 @@ function eventFrame:PLAYER_LOGIN()
     BFI.vars.playerNameShort = GetUnitName("player")
     BFI.vars.playerSpecID = GetSpecialization()
     BFI.vars.playerRealm = GetNormalizedRealmName()
+    BFI.vars.playerGUID = UnitGUID("player")
 
     BFI.Fire("PLAYER_LOGIN")
     BFI.Fire("UpdateModules")

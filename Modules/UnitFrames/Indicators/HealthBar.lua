@@ -455,7 +455,7 @@ end
 ---------------------------------------------------------------------
 local function HealthBar_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    AW.LoadWidgetPosition(self, config.position)
+    UF.LoadIndicatorPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
 
     HealthBar_SetTexture(self, U.GetBarTexture(config.texture))

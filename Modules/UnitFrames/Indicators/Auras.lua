@@ -550,11 +550,7 @@ end
 local function Auras_LoadConfig(self, config)
     -- texplore(config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    if config.anchorTo then
-        AW.LoadWidgetPosition(self, config.position, self.root.indicators[config.anchorTo])
-    else
-        AW.LoadWidgetPosition(self, config.position)
-    end
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
     self.anchor = config.position[1]
     self.spacingH = config.spacingH
