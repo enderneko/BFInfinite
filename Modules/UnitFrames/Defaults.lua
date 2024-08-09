@@ -101,6 +101,7 @@ local defaults = {
                 smoothing = false,
                 frequent = false,
                 hideIfHasClassPower = true,
+                hideIfFull = true,
             },
             classPowerBar = {
                 enabled = true,

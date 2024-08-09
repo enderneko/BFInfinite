@@ -117,6 +117,12 @@ local function UpdateMana(self, event, unitId, powerType)
 
     self.mana = UnitPower("player", 0)
     self:SetBarValue(self.mana)
+
+    if self.hideIfFull and self.mana == self.manaMax then
+        self:Hide()
+    else
+        self:Show()
+    end
 end
 
 ---------------------------------------------------------------------
@@ -128,10 +134,10 @@ local function Check(self, event, unitId)
     if (self.hideIfHasClassPower and UF.ShouldShowClassPower())
         or not UF.ShouldShowExtraMana() then
 
-        self:Hide()
         self:UnregisterEvent("UNIT_MAXPOWER")
         self:UnregisterEvent("UNIT_POWER_UPDATE")
         self:UnregisterEvent("UNIT_POWER_FREQUENT")
+        self:Hide()
         self._enabled = nil
         return
     end
@@ -141,11 +147,11 @@ local function Check(self, event, unitId)
     -- register events
     self:RegisterEvent("UNIT_MAXPOWER", UpdateManaMax)
     if self.frequent then
-        self:RegisterEvent("UNIT_POWER_FREQUENT", UpdateMana)
         self:UnregisterEvent("UNIT_POWER_UPDATE")
+        self:RegisterEvent("UNIT_POWER_FREQUENT", UpdateMana)
     else
-        self:RegisterEvent("UNIT_POWER_UPDATE", UpdateMana)
         self:UnregisterEvent("UNIT_POWER_FREQUENT")
+        self:RegisterEvent("UNIT_POWER_UPDATE", UpdateMana)
     end
 
     -- update now
@@ -194,6 +200,7 @@ local function ExtraManaBar_LoadConfig(self, config)
     self.lossColor = config.lossColor
     self.frequent = config.frequent
     self.hideIfHasClassPower = config.hideIfHasClassPower
+    self.hideIfFull = config.hideIfFull
 end
 
 ---------------------------------------------------------------------
