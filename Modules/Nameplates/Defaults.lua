@@ -14,21 +14,21 @@ local defaults = {
 
     },
     alphas = {
-        -- overwrite others
+        -- base
         occluded = {enabled = true, value = 0.4},
-        mouseover = {enabled = true, value = 1},
+        focus = {enabled = true, value = 1},
+        target = {enabled = true, value = 1},
         marked = {enabled = true, value = 1},
         casting = {enabled = true, value = 1},
-        -- target
-        target = {enabled = true, value = 1},
+        mouseover = {enabled = true, value = 1},
         non_target = {enabled = true, value = 0.8},
         no_target = {enabled = false, value = 0.5},
-        -- type
+        -- type (multiplier)
         player = 1,
         pet = 1,
         guardian = 1,
-        npc = 1,
-        -- classification
+        npc = 1, -- classification == normal
+        -- classification (multiplier)
         boss = 1,
         rare = 1,
         elite = 1,
@@ -37,21 +37,21 @@ local defaults = {
     },
     scales = {
         animatedScaling = true,
-        -- overwrite others
+        -- base
         -- occluded = {enabled = true, value = 0.4},
-        mouseover = {enabled = false, value = 1},
+        focus = {enabled = false, value = 1},
+        target = {enabled = false, value = 1},
         marked = {enabled = false, value = 1},
         casting = {enabled = false, value = 1},
-        -- target
-        target = {enabled = false, value = 1},
+        mouseover = {enabled = false, value = 1},
         non_target = {enabled = false, value = 1},
         no_target = {enabled = false, value = 1},
-        -- type
+        -- type (multiplier)
         player = 1,
         pet = 1,
         guardian = 1,
-        npc = 1,
-        -- classification
+        npc = 1, -- classification == normal
+        -- classification (multiplier)
         boss = 1,
         rare = 1,
         elite = 1,

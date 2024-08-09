@@ -167,12 +167,18 @@ end
 -- alphas
 ---------------------------------------------------------------------
 local alphas
-local alpha_order = {"occluded", "mouseover", "marked", "casting"}
+local alpha_order = {
+    "occluded",
+    "focus",
+    "target",
+    "marked",
+    "casting",
+    "mouseover",
+    "non_target",
+    "no_target",
+}
 
 local alpha_funcs = {}
-local alpha_target_func
-local alpha_no_target_func
-
 local occluded_alpha
 
 local alpha_funcs_default = {
@@ -181,9 +187,14 @@ local alpha_funcs_default = {
             return alphas.occluded.value
         end
     end,
-    mouseover = function(np)
-        if np.states.isMouseOver and not np.states.isTarget then
-            return alphas.mouseover.value
+    focus = function(np)
+        if np.states.isFocus then
+            return alphas.focus.value
+        end
+    end,
+    target = function(np)
+        if np.states.isTarget then
+            return alphas.target.value
         end
     end,
     marked = function(np)
@@ -196,53 +207,37 @@ local alpha_funcs_default = {
             return alphas.casting.value
         end
     end,
-    target = function(np)
-        if np.states.isTarget then
-            return alphas.target.value
+    mouseover = function(np)
+        if np.states.isMouseOver then
+            return alphas.mouseover.value
         end
     end,
     non_target = function(np)
-        if not np.states.isTarget then
-            return alphas.non_target.value
-        end
-    end,
-    target_non_target = function(np)
-        if np.states.isTarget then
-            return alphas.target.value
-        else
+        if NP.targetExists and not np.states.isTarget then
             return alphas.non_target.value
         end
     end,
     no_target = function()
-        return alphas.no_target.value
+        if not NP.targetExists then
+            return alphas.no_target.value
+        end
     end,
 }
 
 local function GetAlpha(np)
     local alpha
 
-    -- return directly
+    -- base alpha
     for _, f in ipairs(alpha_funcs) do
         alpha = f(np)
         if alpha then
-            return alpha
-        end
-    end
-
-    -- target related
-    if UnitExists("target") then
-        if alpha_target_func then
-            alpha = alpha_target_func(np)
-        end
-    else
-        if alpha_no_target_func then
-            alpha = alpha_no_target_func()
+            break
         end
     end
 
     alpha = alpha or 1
 
-    -- type & classification
+    -- type & classification (multiplier)
     if np.states.type == "npc" then
         if np.states.classification == "normal" then
             alpha = NP.config.alphas.npc * alpha
@@ -260,16 +255,27 @@ end
 -- scales
 ---------------------------------------------------------------------
 local scales
-local scale_order = {"mouseover", "marked", "casting"}
+local scale_order = {
+    "focus",
+    "target",
+    "marked",
+    "casting",
+    "mouseover",
+    "non_target",
+    "no_target",
+}
 
 local scale_funcs = {}
-local scale_target_func
-local scale_no_target_func
 
 local scale_funcs_default = {
-    mouseover = function(np)
-        if np.states.isMouseOver and not np.states.isTarget then
-            return scales.mouseover.value
+    focus = function(np)
+        if np.states.isFocus then
+            return scales.focus.value
+        end
+    end,
+    target = function(np)
+        if np.states.isTarget then
+            return scales.target.value
         end
     end,
     marked = function(np)
@@ -282,25 +288,20 @@ local scale_funcs_default = {
             return scales.casting.value
         end
     end,
-    target = function(np)
-        if np.states.isTarget then
-            return scales.target.value
+    mouseover = function(np)
+        if np.states.isMouseOver then
+            return scales.mouseover.value
         end
     end,
     non_target = function(np)
-        if not np.states.isTarget then
-            return scales.non_target.value
-        end
-    end,
-    target_non_target = function(np)
-        if np.states.isTarget then
-            return scales.target.value
-        else
+        if NP.targetExists and not np.states.isTarget then
             return scales.non_target.value
         end
     end,
     no_target = function()
-        return scales.no_target.value
+        if not NP.targetExists then
+            return scales.no_target.value
+        end
     end,
 }
 
@@ -311,18 +312,7 @@ local function GetScale(np)
     for _, f in ipairs(scale_funcs) do
         scale = f(np)
         if scale then
-            return scale
-        end
-    end
-
-    -- target related
-    if UnitExists("target") then
-        if scale_target_func then
-            scale = scale_target_func(np)
-        end
-    else
-        if scale_no_target_func then
-            scale = scale_no_target_func()
+            break
         end
     end
 
@@ -343,6 +333,13 @@ local function GetScale(np)
 end
 
 ---------------------------------------------------------------------
+-- UpdateTarget
+---------------------------------------------------------------------
+local function UpdateTarget()
+    NP.targetExists = UnitExists("target")
+end
+
+---------------------------------------------------------------------
 -- OnNameplateUpdate
 ---------------------------------------------------------------------
 local function OnNameplateUpdate(np, elapsed)
@@ -352,10 +349,11 @@ local function OnNameplateUpdate(np, elapsed)
         np:SetFrameLevel(np.parent:GetFrameLevel() * 10)
 
         if np.unit then
-            np.states.isMouseOver = UnitIsUnit("mouseover", np.unit)
+            np.states.isFocus = UnitIsUnit("focus", np.unit)
             np.states.isTarget = UnitIsUnit("target", np.unit)
-            np.states.isCasting = UnitCastingInfo(np.unit) or UnitChannelInfo(np.unit)
             np.states.isMarked = (GetRaidTargetIndex(np.unit) or 9) <= 8
+            np.states.isCasting = UnitCastingInfo(np.unit) or UnitChannelInfo(np.unit)
+            np.states.isMouseOver = UnitIsUnit("mouseover", np.unit)
 
             -- alpha
             np:SetAlpha(GetAlpha(np))
@@ -555,6 +553,7 @@ local function UpdateNameplates(module, which)
     NP:RegisterEvent("NAME_PLATE_UNIT_REMOVED", HideNameplate)
     NP:RegisterEvent("UI_SCALE_CHANGED", HideBlzNameplates)
     NP:RegisterEvent("CVAR_UPDATE", HideBlzNameplates)
+    NP:RegisterEvent("PLAYER_TARGET_CHANGED", UpdateTarget)
 
     -- cvar
     UpdateCVars()
@@ -573,20 +572,6 @@ local function UpdateNameplates(module, which)
             tinsert(alpha_funcs, alpha_funcs_default[k])
         end
     end
-    if alphas.target.enabled and alphas.non_target.enabled then
-        alpha_target_func = alpha_funcs_default.target_non_target
-    elseif alphas.target.enabled then
-        alpha_target_func = alpha_funcs_default.target
-    elseif alphas.non_target.enabled then
-        alpha_target_func = alpha_funcs_default.non_target
-    else
-        alpha_target_func = nil
-    end
-    if alphas.no_target.enabled then
-        alpha_no_target_func = alpha_funcs_default.no_target
-    else
-        alpha_no_target_func = nil
-    end
 
     -- scales
     scales = NP.config.scales
@@ -595,20 +580,6 @@ local function UpdateNameplates(module, which)
         if scales[k].enabled then
             tinsert(scale_funcs, scale_funcs_default[k])
         end
-    end
-    if scales.target.enabled and scales.non_target.enabled then
-        scale_target_func = scale_funcs_default.target_non_target
-    elseif scales.target.enabled then
-        scale_target_func = scale_funcs_default.target
-    elseif scales.non_target.enabled then
-        scale_target_func = scale_funcs_default.non_target
-    else
-        scale_target_func = nil
-    end
-    if scales.no_target.enabled then
-        scale_no_target_func = scale_funcs_default.no_target
-    else
-        scale_no_target_func = nil
     end
 
     -- indicators
