@@ -206,9 +206,11 @@ local function HandleUpdateInfo(self, updateInfo)
         -- sort
         for auraInstanceID in pairs(self.auras) do
             local auraData = GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID)
-            UpdateExtraData(self, auraData)
-            if CheckFilters(self, auraData) then
-                tinsert(self.sortedAuras, auraData)
+            if auraData then
+                UpdateExtraData(self, auraData)
+                if CheckFilters(self, auraData) then
+                    tinsert(self.sortedAuras, auraData)
+                end
             end
         end
         sort(self.sortedAuras, SortAuras)
@@ -238,10 +240,12 @@ local function ForEachAura(self, continuationToken, ...)
     for i = 1, n do
         local slot = select(i, ...)
         local auraData = GetAuraDataBySlot(self.root.displayedUnit, slot)
-        UpdateExtraData(self, auraData)
-        if CheckFilters(self, auraData) then
-            self.auras[auraData.auraInstanceID] = true
-            tinsert(self.sortedAuras, auraData)
+        if auraData then
+            UpdateExtraData(self, auraData)
+            if CheckFilters(self, auraData) then
+                self.auras[auraData.auraInstanceID] = true
+                tinsert(self.sortedAuras, auraData)
+            end
         end
     end
 end

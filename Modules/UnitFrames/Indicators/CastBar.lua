@@ -720,7 +720,7 @@ local function CastBar_SetupNameText(self, config, showIcon)
     self.nameText:SetShown(config.enabled)
     U.SetFont(self.nameText, config.font)
     AW.LoadTextPosition(self.nameText, config.position, showIcon and self.icon, true)
-    self.nameText:SetTextColor(unpack(config.color))
+    self.nameText:SetTextColor(AW.UnpackColor(config.color))
     self.nameTextLength = config.length
     self.showName = config.enabled
     self.showInterruptSource = config.showInterruptSource
@@ -730,7 +730,7 @@ local function CastBar_SetupDurationText(self, config)
     self.durationText:SetShown(config.enabled)
     U.SetFont(self.durationText, config.font)
     AW.LoadTextPosition(self.durationText, config.position, nil, true)
-    self.durationText:SetTextColor(unpack(config.color))
+    self.durationText:SetTextColor(AW.UnpackColor(config.color))
     self.durationFormat = config.format
     self.delayedDurationFormat = "|cffff0000%s%.2f|r "..config.format
     self.showDelay = config.showDelay
@@ -771,7 +771,7 @@ local function CastBar_SetupSpark(self, config)
 
     AW.SetWidth(self.spark, config.width)
     self.spark:SetTexture(config.texture)
-    self.spark:SetVertexColor(unpack(config.color))
+    self.spark:SetVertexColor(AW.UnpackColor(config.color))
 end
 
 local function CastBar_UpdateTicks(self, config)
@@ -789,7 +789,7 @@ local function CastBar_UpdateTicks(self, config)
 
     for _, tick in pairs(self.ticks) do
         AW.SetWidth(tick, config.width)
-        tick:SetColorTexture(unpack(config.color))
+        tick:SetColorTexture(AW.UnpackColor(config.color))
     end
 end
 
@@ -805,7 +805,7 @@ local function CastBar_UpdateLatency(self, config)
     if not self.latency then
         self.latency = self.bar:CreateTexture(nil, "ARTWORK", nil, -1)
     end
-    self.latency:SetColorTexture(unpack(config.color))
+    self.latency:SetColorTexture(AW.UnpackColor(config.color))
 end
 
 local function CastBar_UpdatePixels(self)
@@ -843,8 +843,8 @@ local function CastBar_LoadConfig(self, config)
     self:SetBackdropBorderColor(AW.UnpackColor(config.borderColor))
     self.gap:SetColorTexture(AW.UnpackColor(config.borderColor))
 
-    self.bar:SetStatusBarColor(unpack(config.colors.normal))
-    self.bar.uninterruptible:SetVertexColor(unpack(config.colors.uninterruptibleTexture))
+    self.bar:SetStatusBarColor(AW.UnpackColor(config.colors.normal))
+    self.bar.uninterruptible:SetVertexColor(AW.UnpackColor(config.colors.uninterruptibleTexture))
 
     AW.SetFadeInOutAnimationDuration(self, config.fadeDuration)
 
