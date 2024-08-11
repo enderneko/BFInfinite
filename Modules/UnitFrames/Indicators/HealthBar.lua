@@ -213,7 +213,7 @@ local function GetHealthColor(self, unit)
             lossR, lossG, lossB = 0.4, 0.4, 0.4
         elseif UnitIsCharmed(unit) then
             r, g, b = 0.5, 0, 1
-            lossR, lossG, lossB = barR*0.2, barG*0.2, barB*0.2
+            lossR, lossG, lossB = r*0.2, g*0.2, b*0.2
         else
             -- bar
             if self.color.type == "custom_color" then
