@@ -23,6 +23,7 @@ local function Portrait_Update_3D(self, unit)
         model:SetRotation(config.rotation * mult)
         model:ClearModel()
         model:SetUnit(unit)
+        model:SetAnimation(804) -- StandCharacterCreate, no idle animation
     else
         model:SetCamDistanceScale(1.75)
         model:SetPortraitZoom(0)

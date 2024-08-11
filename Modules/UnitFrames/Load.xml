@@ -38,4 +38,5 @@
     <Script file="Units\TargetTarget.lua"/>
     <Script file="Units\Focus.lua"/>
     <Script file="Units\FocusTarget.lua"/>
+    <Script file="Units\Pet.lua"/>
 </Ui>
