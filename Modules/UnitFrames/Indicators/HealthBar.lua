@@ -349,6 +349,7 @@ local function HealthBar_Update(self)
     UpdateHealthMax(self)
     UpdateHealth(self)
     UpdateShield(self)
+    UpdateHealAbsorb(self)
     UpdateHealPrediction(self)
     UpdateDispelHighlight(self)
 end
