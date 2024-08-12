@@ -125,6 +125,9 @@ local function Portrait_UpdatePixels(self)
     AW.ReBorder(self)
     AW.RePoint(self.model)
     AW.RePoint(self.texture)
+    if self.type == "3d" then
+        UpdatePortrait(self)
+    end
 end
 
 ---------------------------------------------------------------------
