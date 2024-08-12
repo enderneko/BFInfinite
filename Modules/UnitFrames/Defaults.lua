@@ -12,7 +12,7 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 300, 300},
+            position = {"BOTTOMLEFT", 300, 301},
             width = 225,
             height = 49,
             frameStrata = "LOW",
@@ -209,6 +209,10 @@ local defaults = {
                     normal = AW.GetColorTable("cast_normal"),
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
+                    interruptible = {
+                        requireInterruptUsable = true,
+                        value = AW.GetColorTable("cast_interruptible"),
+                    },
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                     uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
@@ -461,7 +465,7 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 739, 300},
+            position = {"BOTTOMLEFT", 739, 301},
             width = 225,
             height = 49,
             frameStrata = "LOW",
@@ -628,6 +632,10 @@ local defaults = {
                     normal = AW.GetColorTable("cast_normal"),
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
+                    interruptible = {
+                        requireInterruptUsable = true,
+                        value = AW.GetColorTable("cast_interruptible"),
+                    },
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                     uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
@@ -843,7 +851,7 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 635, 300},
+            position = {"BOTTOMLEFT", 635, 301},
             width = 97,
             height = 22,
             frameStrata = "LOW",
@@ -1023,6 +1031,10 @@ local defaults = {
                     normal = AW.GetColorTable("cast_normal"),
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
+                    interruptible = {
+                        requireInterruptUsable = true,
+                        value = AW.GetColorTable("cast_interruptible"),
+                    },
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                     uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
@@ -1168,7 +1180,7 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 532, 326},
+            position = {"BOTTOMLEFT", 531, 327},
             width = 200,
             height = 23,
             frameStrata = "LOW",
@@ -1354,6 +1366,10 @@ local defaults = {
                     normal = AW.GetColorTable("cast_normal"),
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
+                    interruptible = {
+                        requireInterruptUsable = true,
+                        value = AW.GetColorTable("cast_interruptible"),
+                    },
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                     uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
@@ -1499,7 +1515,7 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 532, 300},
+            position = {"BOTTOMLEFT", 532, 301},
             width = 97,
             height = 22,
             frameStrata = "LOW",
@@ -1679,6 +1695,10 @@ local defaults = {
                     normal = AW.GetColorTable("cast_normal"),
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
+                    interruptible = {
+                        requireInterruptUsable = true,
+                        value = AW.GetColorTable("cast_interruptible"),
+                    },
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                     uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
@@ -1824,7 +1844,7 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 221, 318},
+            position = {"BOTTOMLEFT", 221, 319},
             width = 77,
             height = 31,
             frameStrata = "LOW",
@@ -2004,6 +2024,10 @@ local defaults = {
                     normal = AW.GetColorTable("cast_normal"),
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
+                    interruptible = {
+                        requireInterruptUsable = true,
+                        value = AW.GetColorTable("cast_interruptible"),
+                    },
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                     uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
@@ -2149,7 +2173,7 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 221, 300},
+            position = {"BOTTOMLEFT", 221, 301},
             width = 77,
             height = 17,
             frameStrata = "LOW",
@@ -2329,6 +2353,10 @@ local defaults = {
                     normal = AW.GetColorTable("cast_normal"),
                     failed = AW.GetColorTable("cast_failed"),
                     succeeded = AW.GetColorTable("cast_succeeded"),
+                    interruptible = {
+                        requireInterruptUsable = true,
+                        value = AW.GetColorTable("cast_interruptible"),
+                    },
                     uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                     uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
                 },
@@ -2465,7 +2493,7 @@ local defaults = {
                 },
             },
             privateAuras = {
-                enabled = true,
+                enabled = false,
             },
         },
     },
