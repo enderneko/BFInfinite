@@ -1,4 +1,5 @@
-local _, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
 
 local EM = {}
 BFI.AddEventHandler(EM)

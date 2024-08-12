@@ -1,4 +1,5 @@
-local _, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
 local AB = BFI.M_ActionBars
 local U = BFI.utils
 
