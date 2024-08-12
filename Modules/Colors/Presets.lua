@@ -13,6 +13,7 @@ local uf_colors = {
     cast_normal = {0.4, 0.4, 0.4, 0.9},
     cast_failed = {0.7, 0.3, 0.3, 0.9},
     cast_succeeded = {0.3, 0.7, 0.3, 0.9},
+    cast_interruptible = {0.7, 0.7, 0.3, 0.9},
     cast_uninterruptible = {0.4, 0.4, 0.4, 0.9},
     cast_uninterruptible_texture = {1, 0.2, 0.2, 0.6},
     cast_spark = {0.9, 0.9, 0.9, 0.6},

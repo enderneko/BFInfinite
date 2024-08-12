@@ -8,4 +8,5 @@
     <Script file="CrowdControls.lua"/>
     <Script file="Dispellables.lua"/>
     <Script file="Spell.lua"/>
+    <Script file="Interrupts.lua"/>
 </Ui>

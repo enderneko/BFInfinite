@@ -142,7 +142,12 @@ local function CastInterruptible(self, event, unit)
         self.bar.uninterruptible:Show()
         self:SetBackdropBorderColor(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
         self.iconBG:SetVertexColor(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
-    else
+    elseif not self.requireInterruptUsable or U.InterruptUsable() then -- interruptible
+        self.bar:SetStatusBarColor(AW.UnpackColor(self.interruptibleColor))
+        self.bar.uninterruptible:Hide()
+        self:SetBackdropBorderColor(AW.UnpackColor(self.interruptibleColor, 1))
+        self.iconBG:SetVertexColor(AW.UnpackColor(self.interruptibleColor, 1))
+    else -- interrupt cd
         self.bar:SetStatusBarColor(AW.UnpackColor(self.normalColor))
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))
@@ -229,14 +234,15 @@ local function CastUpdate(self, event, unitId, castGUID, castSpellID)
 		endTime = endTime + GetUnitEmpowerHoldAtMaxTime(unit)
 	end
 
-    if self.castType == "channel" then
-        self.current = endTime - GetTime() * 1000
-    else
-        self.current = GetTime() * 1000 - startTime
-    end
+    self.startTime = startTime / 1000
+    self.endTime = endTime / 1000
+    self.duration = self.endTime - self.startTime
 
-    self.duration = endTime - startTime
-    self.startTime = startTime
+    if self.castType == "channel" then
+        self.current = self.endTime - GetTime()
+    else
+        self.current = GetTime() - self.startTime
+    end
 
     self.bar:SetMinMaxValues(0, self.duration)
     self.bar:SetValue(self.current)
@@ -257,20 +263,22 @@ local function OnUpdate(self, elapsed)
 
         local isCasting = self.castType == "cast" or self.castType == "empower"
         if isCasting then
-            self.current = self.current + elapsed * 1000
+            self.current = self.current + elapsed
             if self.current >= self.duration then
                 CastStop(self)
                 return
             end
-            self.durationText:SetFormattedText(self.durationFormat, (self.duration - self.current) / 1000)
+            self.durationText:SetFormattedText(self.durationFormat, self.duration - self.current)
         else
-            self.current = self.current - elapsed * 1000
+            self.current = self.current - elapsed
             if self.current <= 0 then
                 CastStop(self)
                 return
             end
-            self.durationText:SetFormattedText(self.durationFormat, self.current / 1000)
+            self.durationText:SetFormattedText(self.durationFormat, self.current)
         end
+
+        self.bar:SetValue(self.current)
 
         if self.castType == "empower" then
 			for i = self.curStage + 1, self.numStages do
@@ -285,7 +293,12 @@ local function OnUpdate(self, elapsed)
 			end
 		end
 
-        self.bar:SetValue(self.current)
+        if self.requireInterruptUsable and not self.notInterruptible then
+            self.elapsed = (self.elapsed or 0) + elapsed
+            if self.elapsed >= 0.25 then
+                CastInterruptible(self)
+            end
+        end
     end
 end
 
@@ -315,22 +328,20 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     self.resetDelay = nil
     self.castGUID = castGUID or castID
     self.castSpellID = castSpellID or spellID
-    self.startTime = startTime
-    self.endTime = endTime
+    self.startTime = startTime / 1000
+    self.endTime = endTime / 1000
 
     -- curent progress
     if self.castType == "channel" then
-        self.current = endTime - GetTime() * 1000
+        self.current = self.endTime - GetTime()
     else
-        self.current = GetTime() * 1000 - startTime
+        self.current = GetTime() - self.startTime
     end
-    self.duration = endTime - startTime
+    self.duration = self.endTime - self.startTime
 
     -- interruptible
     self.notInterruptible = notInterruptible
-    if unit ~= "player" then
-        CastInterruptible(self)
-    end
+    CastInterruptible(self)
 
     -- empower
     UpdateEmpowerPips(self, numEmpowerStages)
@@ -497,9 +508,12 @@ local function CastBar_LoadConfig(self, config)
     self.normalColor = config.colors.normal
     self.failedColor = config.colors.failed
     self.succeededColor = config.colors.succeeded
+    self.interruptibleColor = config.colors.interruptible.value
     self.uninterruptibleColor = config.colors.uninterruptible
     self.uninterruptibleTextureColor = config.colors.uninterruptibleTexture
     self.borderColor = config.borderColor
+
+    self.requireInterruptUsable = config.colors.interruptible.requireInterruptUsable
 
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)

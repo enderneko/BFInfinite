@@ -178,7 +178,7 @@ function U.GroupMembersIterator()
 end
 
 -------------------------------------------------
--- range checker
+-- range check
 -------------------------------------------------
 local UnitIsVisible = UnitIsVisible
 local UnitInRange = UnitInRange
