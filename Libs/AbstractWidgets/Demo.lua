@@ -164,7 +164,7 @@ function AW.ShowDemo()
     -- ----------------------------------------------------------------------- --
     --                               button group                              --
     -- ----------------------------------------------------------------------- --
-    local bf2 = AW.CreateBorderedFrame(demo, 100, 60)
+    local bf2 = AW.CreateBorderedFrame(demo, 100)
     bf2:SetTitle("Button Group")
     AW.SetPoint(bf2, "TOPLEFT", eb4, "BOTTOMLEFT", 0, -27)
     AW.SetListHeight(bf2, 3, 20, -1)
@@ -253,7 +253,7 @@ function AW.ShowDemo()
     local sl1 = AW.CreateSlider(tp1, "Scale", 130, 0.5, 2, 0.1)
     AW.SetPoint(sl1, "TOPLEFT", 5, -40)
     AW.SetTooltips(sl1, "TOPLEFT", 0, 20, "Set scale of AW.UIParent", "If AW.UIParent:GetEffectiveScale() < 0.43, there can be errors")
-    sl1:SetValue(1)
+    sl1:SetValue(AW.GetScale())
     sl1:SetAfterValueChanged(function(value)
         AW.SetScale(value)
     end)

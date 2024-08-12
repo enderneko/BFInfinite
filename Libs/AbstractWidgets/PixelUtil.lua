@@ -51,46 +51,10 @@ end
 ---------------------------------------------------------------------
 -- size
 ---------------------------------------------------------------------
-local function Reset(region)
-    if not region._size_normal then
-        region._size_normal = nil
-        region._width = nil
-        region._minwidth = nil
-        region._height = nil
-        region._minheight = nil
-    end
-
-    if not region._size_list_h then
-        region._size_list_h = nil
-        region._itemWidth = nil
-        region._extraWidth = nil
-    end
-
-    if not region._size_list_v then
-        region._size_list_v = nil
-        region._itemHeight = nil
-        region._extraHeight = nil
-    end
-
-    if not (region._size_list_h or region._size_list_v) then
-        region._itemNum = nil
-        region._itemSpacing = nil
-    end
-
-    if not region._size_grid then
-        region._size_grid = nil
-        region._rows = nil
-        region._columns = nil
-        region._gridWidth = nil
-        region._gridHeight = nil
-        region._gridSpacingV = nil
-        region._gridSpacingH = nil
-    end
-end
-
 function AW.SetWidth(region, width, minPixels)
     -- clear conflicts
-    Reset(region)
+    region._size_grid = nil
+    region._size_list_h = nil
     -- add new
     minPixels = minPixels or 0.001
     region._size_normal = true
@@ -101,7 +65,8 @@ end
 
 function AW.SetHeight(region, height, minPixels)
     -- clear conflicts
-    Reset(region)
+    region._size_grid = nil
+    region._size_list_v = nil
     -- add new
     minPixels = minPixels or 0.001
     region._size_normal = true
@@ -112,8 +77,11 @@ end
 
 -- NOTE: DO NOT USE WITH SetListHeight
 function AW.SetListWidth(region, itemNum, itemWidth, itemSpacing, extraWidth)
-    -- clear old
-    Reset(region)
+    -- clear conflicts
+    region._size_grid = nil
+    region._size_list_v = nil
+    region._width = nil
+    region._minwidth = nil
     -- add new
     region._size_list_h = true
     region._itemNum = itemNum
@@ -134,7 +102,10 @@ end
 -- NOTE: DO NOT USE WITH SetListWidth
 function AW.SetListHeight(region, itemNum, itemHeight, itemSpacing, extraHeight)
     -- clear conflicts
-    Reset(region)
+    region._size_grid = nil
+    region._size_list_h = nil
+    region._height = nil
+    region._minheight = nil
     -- add new
     region._size_list_v = true
     region._itemNum = itemNum
@@ -154,7 +125,9 @@ end
 
 function AW.SetGridSize(region, gridWidth, gridHeight, gridSpacingH, gridSpacingV, columns, rows)
     -- clear conflicts
-    Reset(region)
+    region._size_list_h = nil
+    region._size_list_v = nil
+    region._size_normal = nil
     -- add new
     region._size_grid = true
     region._gridWidth = gridWidth
@@ -180,7 +153,7 @@ function AW.SetGridSize(region, gridWidth, gridHeight, gridSpacingH, gridSpacing
 end
 
 function AW.SetSize(region, width, height)
-    height = height or width
+    -- height = height or width
     if width then AW.SetWidth(region, width) end
     if height then AW.SetHeight(region, height) end
 end
@@ -260,10 +233,13 @@ function AW.ReSize(region)
         if region._height then
             AW.SetHeight(region, region._height, region._minheight)
         end
-    elseif region._size_list_h then
-        AW.SetListWidth(region, region._itemNum, region._itemWidth, region._itemSpacing, region._extraWidth)
-    elseif region._size_list_v then
-        AW.SetListHeight(region, region._itemNum, region._itemHeight, region._itemSpacing, region._extraHeight)
+
+        if region._size_list_h then
+            AW.SetListWidth(region, region._itemNum, region._itemWidth, region._itemSpacing, region._extraWidth)
+        elseif region._size_list_v then
+            AW.SetListHeight(region, region._itemNum, region._itemHeight, region._itemSpacing, region._extraHeight)
+        end
+
     elseif region._size_grid then
         AW.SetGridSize(region, region._gridWidth, region._gridHeight, region._gridSpacingH, region._gridSpacingV, region._columns, region._rows)
     end
@@ -428,32 +404,38 @@ end
 ---------------------------------------------------------------------
 -- load position
 ---------------------------------------------------------------------
---- @param pos table|string
+--- @param pos table
 function AW.LoadPosition(region, pos)
     region._useOriginalPoints = true
     AW.ClearPoints(region)
-    if type(pos) == "string" then
-        pos = string.gsub(pos, " ", "")
-        local p, x, y = strsplit(",", pos)
-        x = tonumber(x)
-        y = tonumber(y)
-        AW.SetPoint(region, p, x, y)
-    elseif type(pos) == "table" then
-        AW.SetPoint(region, unpack(pos))
-    end
+    -- if type(pos) == "string" then
+    --     pos = string.gsub(pos, " ", "")
+    --     local p, x, y = strsplit(",", pos)
+    --     x = tonumber(x)
+    --     y = tonumber(y)
+    --     AW.SetPoint(region, p, x, y)
+    -- elseif type(pos) == "table" then
+        local point, relativeTo, relativePoint, x, y = unpack(pos)
+        relativeTo = _G[relativeTo]
+        AW.SetPoint(region, point, relativeTo, relativePoint, x, y)
+    -- end
 end
 
 ---------------------------------------------------------------------
 -- save position
 ---------------------------------------------------------------------
 function AW.SavePositionAsTable(region, t)
-    wipe(t)
-    t[1], t[2], t[3], t[4], t[5] = region:GetPoint()
+    if t then
+        wipe(t)
+        t[1], t[2], t[3], t[4], t[5] = region:GetPoint()
+    else
+        return {region:GetPoint()}
+    end
 end
 
-function AW.SavePositionAsString(region, t, i)
-    t[i] = table.concat({region:GetPoint()}, ",")
-end
+-- function AW.SavePositionAsString(region, t, i)
+--     t[i] = table.concat({region:GetPoint()}, ",")
+-- end
 
 ---------------------------------------------------------------------
 -- pixel perfect (ElvUI)

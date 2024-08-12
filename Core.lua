@@ -22,6 +22,9 @@ function eventFrame:ADDON_LOADED(arg)
             BFIConfig["default"] = {}
         end
 
+        -- scale
+        AW.SetScale(1)
+
         -- init configs
         BFI.Fire("UpdateConfigs", BFIConfig["default"], "default")
 

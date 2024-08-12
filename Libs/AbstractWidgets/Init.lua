@@ -64,6 +64,10 @@ function AW.SetScale(scale)
     UpdatePixels()
 end
 
+function AW.GetScale()
+    return AW.UIParent:GetScale()
+end
+
 function AW.SetUIParentScale(scale)
     UIParent:SetScale(scale)
     if not AW.UIParent:IsIgnoringParentScale() then
