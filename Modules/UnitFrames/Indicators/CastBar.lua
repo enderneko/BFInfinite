@@ -305,7 +305,7 @@ local function CastInterruptible(self, event, unit)
         self.bar:SetStatusBarColor(AW.UnpackColor(self.interruptibleColor))
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.interruptibleColor, 1))
-        self.iconBG:SetVertexColor(AW.UnpackColor(self.interruptibleColor, 1))
+        self.gap:SetVertexColor(AW.UnpackColor(self.interruptibleColor, 1))
     else
         self.bar:SetStatusBarColor(AW.UnpackColor(self.normalColor))
         self.bar.uninterruptible:Hide()

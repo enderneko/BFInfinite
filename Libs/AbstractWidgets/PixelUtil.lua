@@ -408,17 +408,15 @@ end
 function AW.LoadPosition(region, pos)
     region._useOriginalPoints = true
     AW.ClearPoints(region)
-    -- if type(pos) == "string" then
-    --     pos = string.gsub(pos, " ", "")
-    --     local p, x, y = strsplit(",", pos)
-    --     x = tonumber(x)
-    --     y = tonumber(y)
-    --     AW.SetPoint(region, p, x, y)
-    -- elseif type(pos) == "table" then
-        local point, relativeTo, relativePoint, x, y = unpack(pos)
-        relativeTo = _G[relativeTo]
-        AW.SetPoint(region, point, relativeTo, relativePoint, x, y)
-    -- end
+    if type(pos) == "string" then
+        pos = string.gsub(pos, " ", "")
+        local p, x, y = strsplit(",", pos)
+        x = tonumber(x)
+        y = tonumber(y)
+        AW.SetPoint(region, p, x, y)
+    elseif type(pos) == "table" then
+        AW.SetPoint(region, unpack(pos))
+    end
 end
 
 ---------------------------------------------------------------------

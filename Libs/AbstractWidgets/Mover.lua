@@ -369,7 +369,7 @@ end
 ---------------------------------------------------------------------
 -- create mover
 ---------------------------------------------------------------------
---- @param save function
+--- @param save function|table
 function AW.CreateMover(owner, group, text, save)
     -- assert(owner:GetNumPoints() == 1, "mover owner must have 1 anchor point")
     assert(owner:GetParent() == AW.UIParent, "owner must be the direct child of AW.UIParent")
@@ -548,7 +548,7 @@ function AW.CreateMover(owner, group, text, save)
     end)
 end
 
---- @param save function
+--- @param save function|table
 function AW.UpdateMoverSave(owner, save)
     assert(owner.mover, string.format("no mover for %s", owner:GetName() or "owner"))
     owner.mover.save = save
