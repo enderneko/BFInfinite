@@ -192,6 +192,10 @@ do
                 normal = AW.GetColorTable("cast_normal"),
                 failed = AW.GetColorTable("cast_failed"),
                 succeeded = AW.GetColorTable("cast_succeeded"),
+                interruptible = {
+                    requireInterruptUsable = true,
+                    value = AW.GetColorTable("cast_interruptible"),
+                },
                 uninterruptible = AW.GetColorTable("cast_uninterruptible"),
                 uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
             },
