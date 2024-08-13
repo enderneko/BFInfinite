@@ -38,7 +38,7 @@ local function CreateFocus()
     AW.CreateMover(focus, "UnitFrames", name)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(focus)
+    -- AW.AddToPixelUpdater(focus)
 
     -- indicators
     UF.CreateIndicators(focus, indicators)
@@ -57,6 +57,7 @@ local function UpdateFocus(module, which)
         if focus then
             UF.DisableIndicators(focus)
             UnregisterUnitWatch(focus)
+            focus:Hide()
         end
         return
     end

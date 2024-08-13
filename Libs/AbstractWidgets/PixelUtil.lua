@@ -304,27 +304,20 @@ local function DefaultUpdatePixels(self)
 end
 
 local regions = {}
+-- AW.regions = regions
 
 --- @param fn function
 function AW.AddToPixelUpdater(r, fn)
-    r.UpdatePixels = fn or r.UpdatePixels
-    if not r.UpdatePixels then
-        r.UpdatePixels = DefaultUpdatePixels
-    end
-    tinsert(regions, r)
+    r.UpdatePixels = fn or r.UpdatePixels or DefaultUpdatePixels
+    regions[r] = r:GetName() or true
 end
 
 function AW.RemoveFromPixelUpdater(r)
-    for i, _r in ipairs(r) do
-        if r == _r then
-            tremove(regions, i)
-            break
-        end
-    end
+    regions[r] = nil
 end
 
 function AW.UpdatePixels()
-    for _, r in ipairs(regions) do
+    for r in next, regions do
         r:UpdatePixels()
     end
 end

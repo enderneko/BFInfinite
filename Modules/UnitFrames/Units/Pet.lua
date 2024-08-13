@@ -35,7 +35,7 @@ local function CreatePet()
     AW.CreateMover(pet, "UnitFrames", name)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(pet)
+    -- AW.AddToPixelUpdater(pet)
 
     -- indicators
     UF.CreateIndicators(pet, indicators)
@@ -54,6 +54,7 @@ local function UpdatePet(module, which)
         if pet then
             UF.DisableIndicators(pet)
             UnregisterAttributeDriver(pet, "state-visibility")
+            pet:Hide()
         end
         return
     end

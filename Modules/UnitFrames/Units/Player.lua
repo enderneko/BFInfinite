@@ -46,7 +46,7 @@ local function CreatePlayer()
     AW.CreateMover(player, "UnitFrames", name)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(player)
+    -- AW.AddToPixelUpdater(player)
 
     -- indicators
     player.hasCastBarTicks = true
@@ -67,6 +67,7 @@ local function UpdatePlayer(module, which)
         if player then
             UF.DisableIndicators(player)
             UnregisterAttributeDriver(player, "state-visibility")
+            player:Hide()
         end
         return
     end

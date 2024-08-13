@@ -38,7 +38,7 @@ local function CreateFocusTarget()
     AW.CreateMover(focustarget, "UnitFrames", name)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(focustarget)
+    -- AW.AddToPixelUpdater(focustarget)
 
     -- indicators
     UF.CreateIndicators(focustarget, indicators)
@@ -57,6 +57,7 @@ local function UpdateFocusTarget(module, which)
         if focustarget then
             UF.DisableIndicators(focustarget)
             UnregisterUnitWatch(focustarget)
+            focustarget:Hide()
         end
         return
     end

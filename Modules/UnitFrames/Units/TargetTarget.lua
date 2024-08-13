@@ -39,7 +39,7 @@ local function CreateTargetTarget()
     AW.CreateMover(targettarget, "UnitFrames", name)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(targettarget)
+    -- AW.AddToPixelUpdater(targettarget)
 
     -- indicators
     UF.CreateIndicators(targettarget, indicators)
@@ -58,6 +58,7 @@ local function UpdateTargetTarget(module, which)
         if targettarget then
             UF.DisableIndicators(targettarget)
             UnregisterUnitWatch(targettarget)
+            targettarget:Hide()
         end
         return
     end

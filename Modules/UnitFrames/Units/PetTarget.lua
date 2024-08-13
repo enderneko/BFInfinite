@@ -38,7 +38,7 @@ local function CreatePetTarget()
     AW.CreateMover(pettarget, "UnitFrames", name)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(pettarget)
+    -- AW.AddToPixelUpdater(pettarget)
 
     -- indicators
     UF.CreateIndicators(pettarget, indicators)
@@ -57,6 +57,7 @@ local function UpdatePetTarget(module, which)
         if pettarget then
             UF.DisableIndicators(pettarget)
             UnregisterUnitWatch(pettarget)
+            pettarget:Hide()
         end
         return
     end
