@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
-local C = BFI.M_Colors
-local UF = BFI.M_UnitFrames
+local C = BFI.Colors
+local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
 -- local functions

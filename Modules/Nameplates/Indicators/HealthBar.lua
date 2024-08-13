@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
-local C = BFI.M_Colors
-local NP = BFI.M_NamePlates
+local C = BFI.Colors
+local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
 -- local functions

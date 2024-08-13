@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
-local UF = BFI.M_UnitFrames
-local M = BFI.M_Misc
+local UF = BFI.UnitFrames
+local M = BFI.Misc
 
 local strfind = string.find
 local UnitCastingInfo = UnitCastingInfo

@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
-local S = BFI.M_Shared
-local UF = BFI.M_UnitFrames
+local S = BFI.Shared
+local UF = BFI.UnitFrames
 
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots

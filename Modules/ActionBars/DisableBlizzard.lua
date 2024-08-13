@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-local AB = BFI.M_ActionBars
+local AB = BFI.ActionBars
 local U = BFI.utils
 
 ---------------------------------------------------------------------

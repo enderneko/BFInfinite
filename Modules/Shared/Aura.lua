@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
-local C = BFI.M_Colors
-local S = BFI.M_Shared
+local C = BFI.Colors
+local S = BFI.Shared
 local LCG = BFI.libs.LCG
 
 ---------------------------------------------------------------------

@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local AW = BFI.AW
 local U = BFI.utils
-local C = BFI.M_Colors
+local C = BFI.Colors
 
 ---------------------------------------------------------------------
 -- shared colors

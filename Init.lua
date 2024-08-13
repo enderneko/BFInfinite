@@ -49,23 +49,23 @@ BFI.vars.playerClass = UnitClassBase("player")
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
-BFI.M_Colors = {}
-BFI.AddEventHandler(BFI.M_Colors)
+BFI.Colors = {}
+BFI.AddEventHandler(BFI.Colors)
 
-BFI.M_Misc = {}
-BFI.AddEventHandler(BFI.M_Misc)
+BFI.Misc = {}
+BFI.AddEventHandler(BFI.Misc)
 
-BFI.M_Shared = {}
-BFI.AddEventHandler(BFI.M_Shared)
+BFI.Shared = {}
+BFI.AddEventHandler(BFI.Shared)
 
-BFI.M_ActionBars = {["bars"] = {}}
-BFI.AddEventHandler(BFI.M_ActionBars)
+BFI.ActionBars = {["bars"] = {}}
+BFI.AddEventHandler(BFI.ActionBars)
 
-BFI.M_UnitFrames = {}
-BFI.AddEventHandler(BFI.M_UnitFrames)
+BFI.UnitFrames = {}
+BFI.AddEventHandler(BFI.UnitFrames)
 
-BFI.M_NamePlates = {}
-BFI.AddEventHandler(BFI.M_NamePlates)
+BFI.NamePlates = {}
+BFI.AddEventHandler(BFI.NamePlates)
 
 ---------------------------------------------------------------------
 -- hidden parent

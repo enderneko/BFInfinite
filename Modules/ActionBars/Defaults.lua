@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local AW = BFI.AW
 local U = BFI.utils
-local AB = BFI.M_ActionBars
+local AB = BFI.ActionBars
 
 local defaults = {
     general = {

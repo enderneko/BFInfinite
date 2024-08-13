@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 ---@class Misc
-local M = BFI.M_Misc
+local M = BFI.Misc
 
 local classCache = {}
 local UnitClassBase = U.UnitClassBase

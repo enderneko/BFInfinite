@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local AW = BFI.AW
 local U = BFI.utils
-local UF = BFI.M_UnitFrames
+local UF = BFI.UnitFrames
 
 -- TODO: presets
 
