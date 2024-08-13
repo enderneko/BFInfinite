@@ -84,6 +84,10 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "~\\.vscode\\extensions\\ketho.wow-api-0.16.5\\Annotations"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.16.6\\Annotations\\Data",
+        "~\\.vscode\\extensions\\ketho.wow-api-0.16.6\\Annotations\\Interface",
+        "~\\.vscode\\extensions\\ketho.wow-api-0.16.6\\Annotations\\Libraries",
+        "~\\.vscode\\extensions\\ketho.wow-api-0.16.6\\Annotations\\Type",
+        "~\\.vscode\\extensions\\ketho.wow-api-0.16.6\\Annotations\\Widget"
     ]
 }
