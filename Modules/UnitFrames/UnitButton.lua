@@ -306,6 +306,7 @@ end
 ---------------------------------------------------------------------
 BFI.vars.guids = {} -- guid to unitid
 BFI.vars.names = {} -- name to unitid
+BFI.vars.units = {} -- unitid to button
 
 local UNKNOWN = _G.UNKNOWN
 local UNKNOWNOBJECT = _G.UNKNOWNOBJECT
@@ -331,6 +332,10 @@ local function UnitButton_OnTick(self)
 
                 if not self.skipDataCache then
                     BFI.vars.guids[guid] = self.unit
+                end
+
+                if self.enableUnitButtonMapping then
+                    BFI.vars.units[self.unit] = self
                 end
 
                 -- NOTE: only save players' names
@@ -406,6 +411,9 @@ local function UnitButton_OnHide(self)
         if not self.skipDataCache then BFI.vars.names[self.__unitName] = nil end
         self.__unitName = nil
     end
+    if self.enableUnitButtonMapping then
+        BFI.vars.units[self.unit] = nil
+    end
     self.__displayedGuid = nil
     wipe(self.states)
 end
@@ -424,6 +432,9 @@ local function UnitButton_OnAttributeChanged(self, name, value)
             if self.__unitName then
                 if not self.skipDataCache then BFI.vars.names[self.__unitName] = nil end
                 self.__unitName = nil
+            end
+            if self.enableUnitButtonMapping then
+                BFI.vars.units[self.unit] = nil
             end
             wipe(self.states)
         end
