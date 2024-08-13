@@ -32,6 +32,9 @@ local function UpdateQuestIndicator(np)
     np.indicators.questIndicator:Update()
 end
 
+-- TODO:
+-- C_Scenario.GetInfo
+-- C_Scenario.GetStepInfo
 -- local inChallengeMode = (scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE);
 -- local inProvingGrounds = (scenarioType == LE_SCENARIO_TYPE_PROVING_GROUNDS);
 -- local dungeonDisplay = (scenarioType == LE_SCENARIO_TYPE_USE_DUNGEON_DISPLAY);
