@@ -12,12 +12,21 @@ local UnitFactionGroup = UnitFactionGroup
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
+--! CodePoints -> Unicode -> Decimal
+-- https://onlinetools.com/unicode/convert-code-points-to-unicode
+local GLYPHS = {
+    Horde = "\238\128\128",
+    Alliance = "\238\128\129",
+}
+
 local function FactionIcon_Update(self)
     local unit = self.root.unit
     local faction = UnitFactionGroup(unit)
 
     if faction == "Horde" or faction == "Alliance" then
         self.icon:SetTexture(AW.GetTexture(faction))
+        self.text:SetText(GLYPHS[faction])
+        self.text:SetTextColor(AW.GetColorRGB(faction))
         self:Show()
     else
         self:Hide()
@@ -39,6 +48,15 @@ local function FactionIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position)
     AW.SetSize(self, config.width, config.height)
+    self.text:SetFont(AW.GetFont("glyphs"), config.width, "OUTLINE")
+
+    if config.style == "font" then
+        self.text:Show()
+        self.icon:Hide()
+    else -- "icon"
+        self.icon:Show()
+        self.text:Hide()
+    end
 end
 
 ---------------------------------------------------------------------
@@ -53,6 +71,13 @@ function UF.CreateFactionIcon(parent, name)
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
     icon:SetAllPoints()
+
+    -- text
+    local text = frame:CreateFontString(nil, "ARTWORK")
+    frame.text = text
+    text:SetPoint("CENTER")
+    -- text:SetJustifyH("CENTER")
+    -- text:SetJustifyV("MIDDLE")
 
     -- events
     BFI.AddEventHandler(frame)
