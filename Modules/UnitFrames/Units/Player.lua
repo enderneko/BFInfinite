@@ -23,6 +23,7 @@ local indicators = {
     "statusTimer",
     "statusIcon",
     "raidIcon",
+    "readyCheckIcon",
     "roleIcon",
     "factionIcon",
     "restingIndicator",

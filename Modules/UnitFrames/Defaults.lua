@@ -306,6 +306,13 @@ local defaults = {
                 width = 14,
                 height = 14,
             },
+            readyCheckIcon = {
+                enabled = true,
+                position = {"CENTER", "BOTTOMRIGHT", 0, 0},
+                frameLevel = 15,
+                width = 16,
+                height = 16,
+            },
             roleIcon = {
                 enabled = false,
                 position = {"CENTER", "TOPRIGHT", 0, 0},
@@ -316,10 +323,11 @@ local defaults = {
             },
             factionIcon = {
                 enabled = true,
-                position = {"CENTER", "TOPLEFT", 0, 0},
+                position = {"CENTER", "TOPLEFT", 0, -1},
                 frameLevel = 10,
                 width = 16,
                 height = 16,
+                style = "font",
             },
             restingIndicator = {
                 enabled = true,
@@ -713,10 +721,11 @@ local defaults = {
             },
             factionIcon = {
                 enabled = true,
-                position = {"CENTER", "TOPRIGHT", 0, 0},
+                position = {"CENTER", "TOPRIGHT", -1, -1},
                 frameLevel = 10,
                 width = 16,
                 height = 16,
+                style = "font",
             },
             targetHighlight = {
                 enabled = false,
