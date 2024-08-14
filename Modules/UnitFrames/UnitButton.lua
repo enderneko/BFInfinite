@@ -165,29 +165,8 @@ local function UnitButton_RegisterEvents(self)
     self:RegisterEvent("UNIT_MAXPOWER")
     self:RegisterEvent("UNIT_DISPLAYPOWER")
 
-    -- self:RegisterEvent("UNIT_AURA")
-
-    -- self:RegisterEvent("UNIT_HEAL_PREDICTION")
-    -- self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
-
-    -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE")
-    -- self:RegisterEvent("UNIT_THREAT_LIST_UPDATE")
-    -- self:RegisterEvent("UNIT_ENTERED_VEHICLE")
-    -- self:RegisterEvent("UNIT_EXITED_VEHICLE")
-
-    -- self:RegisterEvent("INCOMING_SUMMON_CHANGED")
-    -- self:RegisterEvent("UNIT_FLAGS") -- afk
-    -- self:RegisterEvent("UNIT_FACTION") -- mind control
-
-    -- self:RegisterEvent("UNIT_CONNECTION") -- offline
-    -- self:RegisterEvent("PLAYER_FLAGS_CHANGED") -- afk
-    -- self:RegisterEvent("UNIT_NAME_UPDATE") -- unknown target
+    self:RegisterEvent("UNIT_CONNECTION") -- offline
     -- self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-
-    -- -- self:RegisterEvent("PARTY_LEADER_CHANGED") -- GROUP_ROSTER_UPDATE
-    -- -- self:RegisterEvent("PLAYER_ROLES_ASSIGNED") -- GROUP_ROSTER_UPDATE
-    -- self:RegisterEvent("PLAYER_REGEN_ENABLED")
-    -- self:RegisterEvent("PLAYER_REGEN_DISABLED")
 
     if self._updateOnPlayerTargetChanged then
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -196,15 +175,6 @@ local function UnitButton_RegisterEvents(self)
     if self._updateOnUnitTargetChanged then
         self:RegisterEvent("UNIT_TARGET")
     end
-
-    -- self:RegisterEvent("RAID_TARGET_UPDATE")
-
-    -- self:RegisterEvent("READY_CHECK")
-    -- self:RegisterEvent("READY_CHECK_FINISHED")
-    -- self:RegisterEvent("READY_CHECK_CONFIRM")
-
-    -- self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
-    -- self:RegisterEvent("UNIT_MODEL_CHANGED")
 end
 
 local function UnitButton_UnregisterEvents(self)
@@ -215,10 +185,6 @@ local function UnitButton_OnEvent(self, event, unit, arg)
     if unit and (self.displayedUnit == unit or self.unit == unit) then
         if  event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "UNIT_CONNECTION" then
             self._updateRequired = true
-            -- self._powerBarUpdateRequired = 1
-
-        elseif event == "UNIT_AURA" then
-            UnitButton_UpdateAuras(self, arg)
 
         elseif event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" or event == "UNIT_ABSORB_AMOUNT_CHANGED" then
             UnitButton_UpdateHealthStates(self)
@@ -226,49 +192,18 @@ local function UnitButton_OnEvent(self, event, unit, arg)
         elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER" or event == "UNIT_DISPLAYPOWER" then
             UnitButton_UpdatePowerStates(self)
 
-        elseif event == "UNIT_HEAL_PREDICTION" then
-            UnitButton_UpdateHealPrediction(self)
-
-        elseif event == "UNIT_HEAL_ABSORB_AMOUNT_CHANGED" then
-            UnitButton_UpdateHealAbsorbs(self)
-
         elseif event == "UNIT_MAXHEALTH" then
             UnitButton_UpdateHealthStates(self)
-            -- UnitButton_UpdateHealPrediction(self)
-            -- UnitButton_UpdateHealAbsorbs(self)
-
-        elseif event == "UNIT_TARGET" then
-            UnitButton_UpdateTargetRaidIcon(self)
-
-        elseif event == "PLAYER_FLAGS_CHANGED" or event == "UNIT_FLAGS" or event == "INCOMING_SUMMON_CHANGED" then
-            -- if CELL_SUMMON_ICONS_ENABLED then UnitButton_UpdateStatusIcon(self) end
-            UnitButton_UpdateStatusText(self)
-
-        elseif event == "UNIT_THREAT_SITUATION_UPDATE" then
-            UnitButton_UpdateThreat(self)
-
-        -- elseif event == "INCOMING_RESURRECT_CHANGED" or event == "UNIT_PHASE" or event == "PARTY_MEMBER_DISABLE" or event == "PARTY_MEMBER_ENABLE" then
-            -- UnitButton_UpdateStatusIcon(self)
-
-        elseif event == "READY_CHECK_CONFIRM" then
-            UnitButton_UpdateReadyCheck(self)
-
         end
 
     else
         if event == "GROUP_ROSTER_UPDATE" then
             self._updateRequired = true
-            -- self._powerBarUpdateRequired = 1
-
-        elseif event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED" then
-            UnitButton_UpdateLeader(self, event)
 
         elseif event == "PLAYER_TARGET_CHANGED" then
             if UnitExists(self.unit) then
                 UnitButton_UpdateAll(self, true)
             end
-            -- UnitButton_UpdateTarget(self)
-            -- UnitButton_UpdateThreatBar(self)
 
         elseif event == "UNIT_TARGET" then
             if self._updateOnUnitTargetChanged == unit and not UnitIsUnit("player", unit) then
@@ -276,27 +211,6 @@ local function UnitButton_OnEvent(self, event, unit, arg)
                     UnitButton_UpdateAll(self, true)
                 end
             end
-
-        elseif event == "UNIT_THREAT_LIST_UPDATE" then
-            UnitButton_UpdateThreatBar(self)
-
-        elseif event == "RAID_TARGET_UPDATE" then
-            UnitButton_UpdatePlayerRaidIcon(self)
-            UnitButton_UpdateTargetRaidIcon(self)
-
-        elseif event == "READY_CHECK" then
-            UnitButton_UpdateReadyCheck(self)
-
-        elseif event == "READY_CHECK_FINISHED" then
-            UnitButton_FinishReadyCheck(self)
-
-        elseif event == "ZONE_CHANGED_NEW_AREA" then
-            -- BFI.Debug("|cffbbbbbb=== ZONE_CHANGED_NEW_AREA ===")
-            -- self._updateRequired = true
-            UnitButton_UpdateStatusText(self)
-
-        -- elseif event == "VOICE_CHAT_CHANNEL_ACTIVATED" or event == "VOICE_CHAT_CHANNEL_DEACTIVATED" then
-        -- 	VOICE_CHAT_CHANNEL_MEMBER_SPEAKING_STATE_CHANGED
         end
     end
 end
@@ -386,7 +300,6 @@ end
 local function UnitButton_OnShow(self)
     -- print(GetTime(), "OnShow", self:GetName())
     self._updateRequired = nil -- prevent UnitButton_UpdateAll twice. when convert party <-> raid, GROUP_ROSTER_UPDATE fired.
-    -- self._powerBarUpdateRequired = 1
 
     UnitButton_RegisterEvents(self)
     UnitButton_UpdateAllStates(self)
@@ -517,9 +430,9 @@ function BFIUnitButton_OnLoad(self)
     self:SetAttribute("type2", "togglemenu")
 
     -- overlay
-    self.overlay = CreateFrame("Frame", self:GetName(), self)
-    AW.SetFrameLevel(self.overlay, 60, self)
-    self:SetAllPoints()
+    -- self.overlay = CreateFrame("Frame", self:GetName(), self)
+    -- AW.SetFrameLevel(self.overlay, 60, self)
+    -- self:SetAllPoints()
 
     -- events
     self:SetScript("OnAttributeChanged", UnitButton_OnAttributeChanged) -- init
@@ -531,46 +444,5 @@ function BFIUnitButton_OnLoad(self)
     self:SetScript("OnEvent", UnitButton_OnEvent)
 
     -- pixel perfect
-    self.UpdatePixels = UnitButton_UpdatePixels
-    AW.AddToPixelUpdater(self)
-end
-
----------------------------------------------------------------------
--- shared functions
----------------------------------------------------------------------
-function UF.SetupUnitButton(self, config, indicators)
-    -- mover
-    AW.UpdateMoverSave(self, config.general.position)
-
-    -- strata & level
-    self:SetFrameStrata(config.general.frameStrata)
-    self:SetFrameLevel(config.general.frameLevel)
-
-    -- tooltip
-    UF.SetupTooltip(self, config.general.tooltip)
-
-    -- size & point
-    AW.SetSize(self, config.general.width, config.general.height)
-    AW.LoadPosition(self, config.general.position)
-
-    -- out of range alpha
-    self.oorAlpha = config.general.oorAlpha
-
-    -- color
-    AW.StylizeFrame(self, config.general.bgColor, config.general.borderColor)
-
-    -- indicators
-    UF.SetupIndicators(self, indicators, config)
-end
-
-function UF.SetupTooltip(self, config)
-    if config.enabled then
-        self.tooltipEnabled = true
-        self.tooltipAnchorTo = config.anchorTo
-        self.tooltipPosition = config.position
-    else
-        self.tooltipEnabled = nil
-        self.tooltipAnchorTo = nil
-        self.tooltipPosition = nil
-    end
+    AW.AddToPixelUpdater(self, UnitButton_UpdatePixels)
 end

@@ -79,7 +79,9 @@ function AW.FrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
     frame.fade.endAlpha = endAlpha or 1
     frame.fade.diffAlpha = frame.fade.endAlpha - frame.fade.startAlpha
 
-    FrameFade(frame, frame.fade)
+    if frame.fade.startAlpha ~= frame.fade.endAlpha then
+        FrameFade(frame, frame.fade)
+    end
 end
 
 function AW.FrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
@@ -95,7 +97,9 @@ function AW.FrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
     frame.fade.endAlpha = endAlpha or 0
     frame.fade.diffAlpha = frame.fade.startAlpha - frame.fade.endAlpha
 
-    FrameFade(frame, frame.fade)
+    if frame.fade.startAlpha ~= frame.fade.endAlpha then
+        FrameFade(frame, frame.fade)
+    end
 end
 
 ---------------------------------------------------------------------

@@ -10,39 +10,46 @@ local UF = BFI.UnitFrames
 local UnitIsConnected = UnitIsConnected
 local UnitIsVisible = UnitIsVisible
 local UnitClassBase = U.UnitClassBase
-local mult = math.pi / 180
 
-local function Portrait_Update_3D(self, unit)
+local function UpdatePortrait3DAlpha(parent, alpha)
+    local portrait = parent.indicators.portrait
+    if portrait and portrait.enabled and portrait.type == "3d" then
+        portrait.model:SetModelAlpha(alpha)
+    end
+end
+
+local function UpdatePortrait3D(self, unit)
     local model = self.model
     local config = self.modelConfig
 
-    if UnitIsConnected(unit) and UnitIsVisible(unit) then
+    if UnitIsConnected(unit) then -- and UnitIsVisible(unit) then
         model:SetCamDistanceScale(config.camDistanceScale)
-        model:SetPortraitZoom(1)
+        model:SetPortraitZoom(config.zoom or 1)
         model:SetPosition(0, 0, 0)
+        model:SetRotation(rad(config.rotation))
         model:SetViewTranslation(config.xOffset, config.yOffset)
-        model:SetRotation(config.rotation * mult)
+        -- model:SetViewInsets(0, 0, 0, 0)
         model:ClearModel()
         model:SetUnit(unit)
         model:SetAnimation(804) -- StandCharacterCreate, no idle animation
     else
-        model:SetCamDistanceScale(1.75)
+        model:SetCamDistanceScale(0.75)
         model:SetPortraitZoom(0)
         model:SetPosition(0, 0, 0.25)
-        -- if model:GetFacing() ~= (config.rotation * mult) then
-        --     model:SetFacing(config.rotation * mult)
-        -- end
+        model:SetRotation(0)
+        model:SetViewTranslation(0, 0)
+        -- model:SetViewInsets(0, 0, 0, 0)
         model:ClearModel()
         model:SetModel([[Interface\Buttons\TalkToMeQuestionMark.m2]])
     end
 end
 
-local function Portrait_Update_2D(self, unit)
+local function UpdatePortrait2D(self, unit)
     self.texture:SetTexCoord(unpack(AW.CalcTexCoord(self:GetWidth(), self:GetHeight())))
     SetPortraitTexture(self.texture, unit)
 end
 
-local function Portrait_Update_ClassIcon(self, unit)
+local function UpdatePortraitClassIcon(self, unit)
     self.texture:SetTexCoord(unpack(AW.CalcTexCoord(self:GetWidth(), self:GetHeight())))
     local class = UnitClassBase(unit)
     if class then
@@ -57,11 +64,11 @@ local function UpdatePortrait(self, event, unitId)
     if unitId and unit ~= unitId then return end
 
     if self.type == "3d" then
-        Portrait_Update_3D(self, unit)
-    elseif config.type == "2d" then
-        Portrait_Update_2D(self, unit)
+        UpdatePortrait3D(self, unit)
+    elseif self.type == "2d" then
+        UpdatePortrait2D(self, unit)
     else
-        Portrait_Update_ClassIcon(self, unit)
+        UpdatePortraitClassIcon(self, unit)
     end
 end
 
@@ -91,16 +98,13 @@ end
 ---------------------------------------------------------------------
 local function Portrait_LoadConfig(self, config)
     AW.SetSize(self, config.width, config.height)
+    AW.SetFrameLevel(self, config.frameLevel, self.root)
 
-    -- if config.anchorTo == "button" then
-        self:SetParent(self.root)
-        UF.LoadIndicatorPosition(self, config.position)
-        AW.SetFrameLevel(self, config.frameLevel, self.root)
-    -- elseif config.anchorTo == "healthBar" then
+    -- if config.anchorTo == "healthBar" then
     --     AW.ClearPoints(self)
-    --     self:SetParent(self.root.indicators.healthBar)
-    --     self:SetAllPoints()
-    --     self:SetFrameLevel(0) -- bottom layer
+    --     self:SetAllPoints(self.root.indicators.healthBar)
+    -- else
+        UF.LoadIndicatorPosition(self, config.position)
     -- end
 
     self:SetBackdropColor(unpack(config.bgColor))
@@ -138,6 +142,8 @@ function UF.CreatePortrait(parent, name)
     portrait.root = parent
     portrait:Hide()
     AW.SetDefaultBackdrop(portrait)
+
+    hooksecurefunc(parent, "SetAlpha", UpdatePortrait3DAlpha)
 
     -- events
     BFI.AddEventHandler(portrait)

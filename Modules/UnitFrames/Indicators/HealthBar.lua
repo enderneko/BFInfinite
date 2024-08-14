@@ -199,7 +199,7 @@ end
 local function GetHealthColor(self, unit)
     if not (self.color and self.lossColor) then return end
 
-    local class = UnitClassBase(unit)
+    local class = UnitClassBase(unit) or "UNKNOWN"
     local inVehicle = UnitHasVehicleUI(unit)
 
     local r, g, b, a, lossR, lossG, lossB, lossA
@@ -209,10 +209,10 @@ local function GetHealthColor(self, unit)
 
     if U.UnitIsPlayer(unit) then
         if not UnitIsConnected(unit) then
-            r, g, b = 0.4, 0.4, 0.4
-            lossR, lossG, lossB = 0.4, 0.4, 0.4
+            r, g, b = AW.GetColorRGB("OFFLINE")
+            lossR, lossG, lossB = AW.GetColorRGB("OFFLINE")
         elseif UnitIsCharmed(unit) then
-            r, g, b = 0.5, 0, 1
+            r, g, b = AW.GetColorRGB("CHARMED")
             lossR, lossG, lossB = r*0.2, g*0.2, b*0.2
         else
             -- bar
@@ -232,7 +232,7 @@ local function GetHealthColor(self, unit)
     else
         -- bar
         if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
-            r, g, b = 0.5, 0.5, 0.5
+            r, g, b = AW.GetColorRGB("TAP_DENIED")
         elseif self.color.type == "custom_color" then
             r, g, b = unpack(self.color.rgb)
         else
@@ -361,6 +361,7 @@ local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield, UpdateHealPrediction)
     self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield, UpdateHealPrediction)
     self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
+    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateHealthColor)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
     self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", UpdateHealAbsorb)
     self:RegisterEvent("UNIT_HEAL_PREDICTION", UpdateHealPrediction)
@@ -537,9 +538,9 @@ function UF.CreateHealthBar(parent, name)
     bar.overshieldGlowR = overshieldGlowR
     overshieldGlowR:Hide()
     overshieldGlowR:SetTexture(AW.GetTexture("OvershieldR"))
-    AW.SetPoint(overshieldGlowR, "TOPLEFT", shield, "TOPLEFT", -4, 0)
-    AW.SetPoint(overshieldGlowR, "BOTTOMLEFT", shield, "BOTTOMLEFT", -4, 0)
-    AW.SetWidth(overshieldGlowR, 8)
+    AW.SetPoint(overshieldGlowR, "TOP", shield, "TOPLEFT")
+    AW.SetPoint(overshieldGlowR, "BOTTOM", shield, "BOTTOMLEFT")
+    AW.SetWidth(overshieldGlowR, 6)
 
     -- healAbsorb
     local healAbsorb = bar:CreateTexture(name.."HealAbsorb", "ARTWORK", nil, 4)

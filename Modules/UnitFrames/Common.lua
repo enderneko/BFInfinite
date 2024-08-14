@@ -5,6 +5,9 @@ local AW = BFI.AW
 ---@class UnitFrame
 local UF = BFI.UnitFrames
 
+---------------------------------------------------------------------
+-- indicator
+---------------------------------------------------------------------
 local builders = {
     healthBar = UF.CreateHealthBar,
     powerBar = UF.CreatePowerBar,
@@ -25,6 +28,7 @@ local builders = {
     statusTimer = UF.CreateStatusTimer,
     statusIcon = UF.CreateStatusIcon,
     raidIcon = UF.CreateRaidIcon,
+    readyCheckIcon = UF.CreateReadyCheckIcon,
     roleIcon = UF.CreateRoleIcon,
     factionIcon = UF.CreateFactionIcon,
     restingIndicator = UF.CreateRestingIndicator,
@@ -62,9 +66,12 @@ end
 
 function UF.LoadIndicatorConfig(button, indicatorName, indicatorConfig)
     local indicator = button.indicators[indicatorName]
-    indicator:LoadConfig(indicatorConfig)
 
-    indicator.enabled = indicatorConfig.enabled
+    if indicatorConfig then
+        indicator:LoadConfig(indicatorConfig)
+    end
+
+    indicator.enabled = indicatorConfig and indicatorConfig.enabled
 
     if indicator.enabled then
         indicator:Enable()
@@ -128,5 +135,119 @@ function UF.LoadIndicatorPosition(self, position, anchorTo)
         AW.LoadTextPosition(self, position, anchorTo)
     else
         AW.LoadWidgetPosition(self, position, anchorTo)
+    end
+end
+
+---------------------------------------------------------------------
+-- setup button
+---------------------------------------------------------------------
+function UF.SetupUnitButton(self, config, indicators)
+    -- mover
+    AW.UpdateMoverSave(self, config.general.position)
+
+    -- strata & level
+    self:SetFrameStrata(config.general.frameStrata)
+    self:SetFrameLevel(config.general.frameLevel)
+
+    -- tooltip
+    UF.SetupTooltip(self, config.general.tooltip)
+
+    -- size & position
+    AW.SetSize(self, config.general.width, config.general.height)
+    AW.LoadPosition(self, config.general.position)
+
+    -- out of range alpha
+    self.oorAlpha = config.general.oorAlpha
+
+    -- color
+    AW.StylizeFrame(self, config.general.bgColor, config.general.borderColor)
+
+    -- indicators
+    UF.SetupIndicators(self, indicators, config)
+end
+
+---------------------------------------------------------------------
+-- setup group
+---------------------------------------------------------------------
+function UF.SetupUnitGroup(self, config, indicators)
+    -- strata & level
+    self:SetFrameStrata(config.general.frameStrata)
+    self:SetFrameLevel(config.general.frameLevel)
+
+    -- position
+    AW.LoadPosition(self, config.general.position)
+
+    -- arrangement & size
+    local p, rp, x, y
+    if config.general.orientation == "bottom_to_top" then
+        p = "BOTTOMLEFT"
+        rp = "TOPLEFT"
+        x = 0
+        y = config.general.spacing
+        AW.SetWidth(self, config.general.width)
+        AW.SetListHeight(self, 4, config.general.height, config.general.spacing)
+    elseif config.general.orientation == "top_to_bottom" then
+        p = "TOPLEFT"
+        rp = "BOTTOMLEFT"
+        x = 0
+        y = -config.general.spacing
+    elseif config.general.orientation == "left_to_right" then
+        p = "BOTTOMLEFT"
+        rp = "BOTTOMRIGHT"
+        x = config.general.spacing
+        y = 0
+    elseif config.general.orientation == "right_to_left" then
+        p = "BOTTOMRIGHT"
+        rp = "BOTTOMLEFT"
+        x = -config.general.spacing
+        y = 0
+    end
+
+    local last
+    for _, b in ipairs(self) do
+        -- size
+        AW.SetSize(b, config.general.width, config.general.height)
+
+        -- indicators
+        UF.CreateIndicators(b, indicators)
+
+        -- out of range alpha
+        b.oorAlpha = config.general.oorAlpha
+
+        -- tooltip
+        UF.SetupTooltip(b, config.general.tooltip)
+
+        -- out of range alpha
+        b.oorAlpha = config.general.oorAlpha
+
+        -- color
+        AW.StylizeFrame(b, config.general.bgColor, config.general.borderColor)
+
+        -- indicators
+        UF.SetupIndicators(b, indicators, config)
+
+        -- position
+        AW.ClearPoints(b)
+        if last then
+            AW.SetPoint(b, p, last, rp, x, y)
+        else
+            AW.SetPoint(b, p)
+        end
+        last = b
+    end
+end
+
+---------------------------------------------------------------------
+-- setup tooltip
+---------------------------------------------------------------------
+function UF.SetupTooltip(self, config)
+    if config.enabled then
+        self.tooltipEnabled = true
+        self.tooltipAnchorTo = config.anchorTo
+        self.tooltipPosition = config.position
+    else
+        self.tooltipEnabled = nil
+        self.tooltipAnchorTo = nil
+        self.tooltipPosition = nil
     end
 end

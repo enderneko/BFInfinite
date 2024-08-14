@@ -236,6 +236,7 @@ local colors = {
     ["SHAMAN"] = {["hex"]="ff0070dd", ["t"]={0, 0.4392157196998596, 0.8666667342185974}},
     ["WARLOCK"] = {["hex"]="ff8788ee", ["t"]={0.529411792755127, 0.5333333611488342, 0.9333333969116211}},
     ["WARRIOR"] = {["hex"]="ffc69b6d", ["t"]={0.7764706611633301, 0.6078431606292725, 0.4274510145187378}},
+    ["UNKNOWN"] = {["hex"]="ff666666", ["t"]={0.4, 0.4, 0.4}},
 
     -- faction
     ["Horde"] = {["hex"]="c60000", ["t"]={0.78, 0, 0}},
@@ -304,7 +305,7 @@ function AW.GetClassColor(class, alpha, saturation)
         return r*saturation, g*saturation, b*saturation, alpha
     end
 
-    return AW.GetColorRGB("uf_fg")
+    return AW.GetColorRGB("UNKNOWN")
 end
 
 function AW.GetReactionColor(unit, alpha, saturation)

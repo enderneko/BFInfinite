@@ -32,6 +32,11 @@ local function UpdateHealth(self, event, unitId)
         self.healthMax = 1
     end
 
+    if self.hideIfFull and self.health >= self.healthMax then
+        self:Hide()
+        return
+    end
+
     if UnitIsGhost(unit) then
         self:SetText(L["GHOST"])
     elseif UnitIsDead(unit) then
@@ -42,6 +47,7 @@ local function UpdateHealth(self, event, unitId)
             self.delimiter,
             self.GetPercent(self.health, self.healthMax, self.totalAbsorbs))
     end
+    self:Show()
 end
 
 ---------------------------------------------------------------------
@@ -73,7 +79,7 @@ local function HealthText_Enable(self)
     self:RegisterEvent("UNIT_HEALTH", UpdateHealth)
     self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealth)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateHealth)
-    -- self:RegisterEvent("UNIT_NAME_UPDATE", UpdateColor)
+    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateColor)
     -- self:RegisterEvent("UNIT_FACTION", UpdateColor)
 
     self:Show()
@@ -250,6 +256,7 @@ local function HealthText_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
     self.color = config.color
+    self.hideIfFull = config.hideIfFull
 end
 
 ---------------------------------------------------------------------

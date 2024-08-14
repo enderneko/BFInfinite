@@ -32,6 +32,15 @@ local defaults = {
         threat_high = {1, 0, 0},
         threat_offtank = {0.392, 1, 0.392},
     },
+
+    unit = {
+        FRIENDLY = AW.GetColorTable("FRIENDLY"),
+        HOSTILE = AW.GetColorTable("HOSTILE"),
+        NEUTRAL = AW.GetColorTable("NEUTRAL"),
+        OFFLINE = AW.GetColorTable("UNKNOWN"),
+        CHARMED = {0.5, 0, 1},
+        TAP_DENIED = {0.5, 0.5, 0.5},
+    },
 }
 
 BFI.RegisterCallback("UpdateConfigs", "Colors", function(t)

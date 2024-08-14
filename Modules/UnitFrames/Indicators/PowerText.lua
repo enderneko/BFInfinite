@@ -29,10 +29,16 @@ local function UpdatePower(self, event, unitId)
         self.powerMax = 1
     end
 
+    if self.hideIfFull and self.power >= self.powerMax then
+        self:Hide()
+        return
+    end
+
     self:SetFormattedText("%s%s%s",
         self.GetNumeric(self.power),
         self.delimiter,
         self.GetPercent(self.power, self.powerMax))
+    self:Show()
 end
 
 ---------------------------------------------------------------------
@@ -176,6 +182,7 @@ local function PowerText_LoadConfig(self, config)
 
     self.color = config.color
     self.frequent = config.frequent
+    self.hideIfFull = config.hideIfFull
 end
 
 ---------------------------------------------------------------------

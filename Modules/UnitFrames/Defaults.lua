@@ -55,7 +55,7 @@ local defaults = {
                 },
                 overshieldGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("shield"),
+                    color = AW.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = true,
@@ -67,8 +67,8 @@ local defaults = {
                     color = AW.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
-                    enabled = false,
-                    alpha = 1,
+                    enabled = true,
+                    alpha = 0.75,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -138,6 +138,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = false,
             },
             powerText = {
                 enabled = true,
@@ -153,6 +154,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = false,
             },
             portrait = {
                 enabled = true,
@@ -168,7 +170,7 @@ local defaults = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
-                    camDistanceScale = 1.5,
+                    camDistanceScale = 1.75,
                 },
             },
             castBar = {
@@ -516,7 +518,7 @@ local defaults = {
                 },
                 overshieldGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("shield"),
+                    color = AW.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = true,
@@ -529,8 +531,9 @@ local defaults = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 1,
+                    alpha = 0.75,
                     blendMode = "ADD",
+                    dispellable = true,
                 },
             },
             powerBar = {
@@ -569,6 +572,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = false,
             },
             powerText = {
                 enabled = true,
@@ -584,6 +588,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = false,
             },
             portrait = {
                 enabled = true,
@@ -599,7 +604,7 @@ local defaults = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
-                    camDistanceScale = 1.5,
+                    camDistanceScale = 1.75,
                 },
             },
             castBar = {
@@ -903,7 +908,7 @@ local defaults = {
                 },
                 overshieldGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("shield"),
+                    color = AW.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = false,
@@ -916,8 +921,9 @@ local defaults = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 1,
+                    alpha = 0.75,
                     blendMode = "ADD",
+                    dispellable = true,
                 },
             },
             powerBar = {
@@ -956,6 +962,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = true,
             },
             powerText = {
                 enabled = false,
@@ -971,6 +978,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = true,
             },
             levelText = {
                 enabled = false,
@@ -1000,7 +1008,7 @@ local defaults = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
-                    camDistanceScale = 1.5,
+                    camDistanceScale = 1.75,
                 },
             },
             castBar = {
@@ -1232,7 +1240,7 @@ local defaults = {
                 },
                 overshieldGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("shield"),
+                    color = AW.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = true,
@@ -1245,8 +1253,9 @@ local defaults = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 1,
+                    alpha = 0.75,
                     blendMode = "ADD",
+                    dispellable = true,
                 },
             },
             powerBar = {
@@ -1274,17 +1283,18 @@ local defaults = {
             },
             healthText = {
                 enabled = false,
-                position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
+                position = {"RIGHT", "RIGHT", -3, 0},
                 anchorTo = "healthBar",
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "none",
+                    percent = "current_absorbs_sum",
                     delimiter = " | ",
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = true,
             },
             powerText = {
                 enabled = false,
@@ -1300,6 +1310,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = true,
             },
             levelText = {
                 enabled = false,
@@ -1335,7 +1346,7 @@ local defaults = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
-                    camDistanceScale = 1.5,
+                    camDistanceScale = 1.75,
                 },
             },
             castBar = {
@@ -1567,7 +1578,7 @@ local defaults = {
                 },
                 overshieldGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("shield"),
+                    color = AW.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = false,
@@ -1580,8 +1591,9 @@ local defaults = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 1,
+                    alpha = 0.75,
                     blendMode = "ADD",
+                    dispellable = true,
                 },
             },
             powerBar = {
@@ -1620,6 +1632,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = true,
             },
             powerText = {
                 enabled = false,
@@ -1635,6 +1648,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = true,
             },
             levelText = {
                 enabled = false,
@@ -1664,7 +1678,7 @@ local defaults = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
-                    camDistanceScale = 1.5,
+                    camDistanceScale = 1.75,
                 },
             },
             castBar = {
@@ -1858,7 +1872,7 @@ local defaults = {
             height = 31,
             frameStrata = "LOW",
             frameLevel = 1,
-            oorAlpha = 0.5,
+            oorAlpha = 0.45,
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
@@ -1873,9 +1887,9 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 77,
                 height = 27,
-                color = {type = "custom_color", alpha = 0, rgb = AW.GetColorTable("uf")},
+                color = {type = "custom_color", alpha = 0.5, rgb = AW.GetColorTable("uf")},
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background", 0.5),
+                bgColor = AW.GetColorTable("background", 0),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
                 smoothing = false,
@@ -1896,7 +1910,7 @@ local defaults = {
                 },
                 overshieldGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("shield"),
+                    color = AW.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = false,
@@ -1909,8 +1923,9 @@ local defaults = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 1,
+                    alpha = 0.75,
                     blendMode = "ADD",
+                    dispellable = true,
                 },
             },
             powerBar = {
@@ -1949,6 +1964,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = true,
             },
             powerText = {
                 enabled = false,
@@ -1964,6 +1980,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = true,
             },
             levelText = {
                 enabled = false,
@@ -1984,7 +2001,7 @@ local defaults = {
                 type = "3d", -- 3d, 2d, class_icon
                 position = {"TOPLEFT", "TOPLEFT", 0, 0},
                 -- anchorTo = "button",
-                frameLevel = 1,
+                frameLevel = 3,
                 width = 77,
                 height = 27,
                 bgColor = AW.GetColorTable("background", 1),
@@ -1993,7 +2010,7 @@ local defaults = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
-                    camDistanceScale = 1.5,
+                    camDistanceScale = 1.75,
                 },
             },
             castBar = {
@@ -2187,7 +2204,7 @@ local defaults = {
             height = 17,
             frameStrata = "LOW",
             frameLevel = 1,
-            oorAlpha = 1,
+            oorAlpha = 0.45,
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
@@ -2225,7 +2242,7 @@ local defaults = {
                 },
                 overshieldGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("shield"),
+                    color = AW.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = false,
@@ -2238,8 +2255,9 @@ local defaults = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 1,
+                    alpha = 0.75,
                     blendMode = "ADD",
+                    dispellable = true,
                 },
             },
             powerBar = {
@@ -2293,6 +2311,7 @@ local defaults = {
                     noPercentSign = false,
                     useAsianUnits = false,
                 },
+                hideIfFull = true,
             },
             levelText = {
                 enabled = false,
@@ -2322,7 +2341,7 @@ local defaults = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
-                    camDistanceScale = 1.5,
+                    camDistanceScale = 1.75,
                 },
             },
             castBar = {
@@ -2503,6 +2522,228 @@ local defaults = {
             },
             privateAuras = {
                 enabled = false,
+            },
+        },
+    },
+    party = {
+        enabled = true,
+        general = {
+            bgColor = AW.GetColorTable("none"),
+            borderColor = AW.GetColorTable("none"),
+            position = {"BOTTOMLEFT", 5, 399},
+            orientation = "bottom_to_top",
+            spacing = 9,
+            width = 140,
+            height = 25,
+            frameStrata = "LOW",
+            frameLevel = 1,
+            oorAlpha = 0.45,
+            tooltip = {
+                enabled = true,
+                anchorTo = "self",
+                position = {"LEFT", "RIGHT", 1, 0},
+            },
+        },
+        indicators = {
+            healthBar = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                frameLevel = 5,
+                -- orientation = "HORIZONTAL",
+                width = 140,
+                height = 20,
+                color = {type = "custom_color", alpha = 0.5, rgb = AW.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
+                bgColor = AW.GetColorTable("background", 0),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                smoothing = false,
+                mouseoverHighlight = {
+                    enabled = false,
+                    color = AW.GetColorTable("white", 0.05)
+                },
+                healPrediction = {
+                    enabled = true,
+                    useCustomColor = true,
+                    color = AW.GetColorTable("heal_prediction"),
+                },
+                shield = {
+                    enabled = true,
+                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    color = AW.GetColorTable("shield", 0.4),
+                    reverseFill = true,
+                },
+                overshieldGlow = {
+                    enabled = true,
+                    color = AW.GetColorTable("shield", 0.9),
+                },
+                healAbsorb = {
+                    enabled = true,
+                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    color = AW.GetColorTable("absorb", 0.7),
+                },
+                overabsorbGlow = {
+                    enabled = true,
+                    color = AW.GetColorTable("absorb"),
+                },
+                dispelHighlight = {
+                    enabled = true,
+                    alpha = 0.75,
+                    blendMode = "ADD",
+                    dispellable = true,
+                },
+            },
+            powerBar = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
+                frameLevel = 1,
+                -- orientation = "HORIZONTAL",
+                width = 140,
+                height = 4,
+                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
+                bgColor = AW.GetColorTable("background"),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                smoothing = false,
+                frequent = false,
+            },
+            nameText = {
+                enabled = true,
+                position = {"LEFT", "LEFT", 3, 0},
+                anchorTo = "healthBar",
+                length = 0.5,
+                font = {"BFI 1", 12, "none", true},
+                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            },
+            healthText = {
+                enabled = true,
+                position = {"RIGHT", "RIGHT", -3, 0},
+                anchorTo = "healthBar",
+                font = {"BFI 1", 12, "none", true},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                format = {
+                    numeric = "none",
+                    percent = "current_absorbs_sum_decimal",
+                    delimiter = " | ",
+                    noPercentSign = false,
+                    useAsianUnits = false,
+                },
+                hideIfFull = true,
+            },
+            powerText = {
+                enabled = false,
+                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
+                anchorTo = "powerBar",
+                font = {"BFI 2", 9, "monochrome", false},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                frequent = true,
+                format = {
+                    numeric = "current_short",
+                    percent = "none",
+                    delimiter = " | ",
+                    noPercentSign = false,
+                    useAsianUnits = false,
+                },
+                hideIfFull = true,
+            },
+            portrait = {
+                enabled = true,
+                type = "3d", -- 3d, 2d, class_icon
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                -- anchorTo = "healthBar",
+                frameLevel = 3,
+                width = 140,
+                height = 20,
+                bgColor = AW.GetColorTable("background", 1),
+                borderColor = AW.GetColorTable("border"),
+                model = {
+                    xOffset = 0, -- [-100, 100]
+                    yOffset = 0, -- [-100, 100]
+                    rotation = 0, -- [0, 360]
+                    camDistanceScale = 1.75,
+                },
+            },
+            castBar = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                frameLevel = 15,
+                width = 140,
+                height = 20,
+                bgColor = AW.GetColorTable("background", 0.5),
+                borderColor = AW.GetColorTable("border"),
+                texture = "BFI 1",
+                fadeDuration = 1,
+                showIcon = true,
+                nameText = {
+                    enabled = true,
+                    font = {"BFI 1", 12, "none", true},
+                    position = {"LEFT", "LEFT", 23, 0},
+                    color = AW.GetColorTable("white"),
+                    length = 0.5,
+                },
+                durationText = {
+                    enabled = false,
+                    font = {"BFI 1", 12, "none", true},
+                    position = {"RIGHT", "RIGHT", -3, 0},
+                    format = "%.1f",
+                    color = AW.GetColorTable("white"),
+                    showDelay = false,
+                },
+                spark = {
+                    enabled = true,
+                    texture = AW.GetPlainTexture(),
+                    color = AW.GetColorTable("cast_spark"),
+                    width = 1,
+                    height = 0,
+                },
+                colors = {
+                    normal = AW.GetColorTable("cast_normal"),
+                    failed = AW.GetColorTable("cast_failed"),
+                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    interruptible = {
+                        requireInterruptUsable = true,
+                        value = AW.GetColorTable("cast_interruptible"),
+                    },
+                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                },
+            },
+            combatIcon = {
+                enabled = false,
+                position = {"CENTER", "BOTTOMRIGHT", -1, 1},
+                frameLevel = 10,
+                width = 16,
+                height = 16,
+                texture = "Combat1",
+            },
+            leaderIcon = {
+                enabled = true,
+                position = {"CENTER", "TOPLEFT", 1, -1},
+                frameLevel = 10,
+                width = 12,
+                height = 12,
+            },
+            statusIcon = {
+                enabled = true,
+                position = {"TOP", "TOP", 0, 0},
+                frameLevel = 15,
+                width = 20,
+                height = 20,
+            },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 0, 0},
+                frameLevel = 10,
+                width = 14,
+                height = 14,
+            },
+            readyCheckIcon = {
+                enabled = true,
+                position = {"CENTER", "BOTTOMLEFT", 0, 0},
+                frameLevel = 15,
+                width = 15,
+                height = 15,
             },
         },
     },
