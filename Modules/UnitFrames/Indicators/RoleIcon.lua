@@ -2,6 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
+local S = BFI.Shared
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -12,14 +13,6 @@ local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
---! CodePoints -> Unicode -> Decimal
--- https://onlinetools.com/unicode/convert-code-points-to-unicode
-local GLYPHS = {
-    TANK = "\238\128\130",
-    HEALER = "\238\128\131",
-    DAMAGER = "\238\128\132",
-}
-
 local function RoleIcon_Update(self)
     local unit = self.root.unit
     local role = UnitGroupRolesAssigned(unit)
@@ -28,8 +21,8 @@ local function RoleIcon_Update(self)
         self:Hide()
     else
         -- self.icon:SetTexture(AW.GetTexture(role))
-        self.text:SetText(GLYPHS[role])
-        self.text:SetTextColor(AW.GetColorRGB(role))
+        self.text:SetText(S.RoleGlyphs[role].char)
+        self.text:SetTextColor(AW.UnpackColor(S.RoleGlyphs[role].color))
         self:Show()
     end
 end

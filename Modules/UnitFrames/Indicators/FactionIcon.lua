@@ -2,6 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
+local S = BFI.Shared
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -12,21 +13,14 @@ local UnitFactionGroup = UnitFactionGroup
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
---! CodePoints -> Unicode -> Decimal
--- https://onlinetools.com/unicode/convert-code-points-to-unicode
-local GLYPHS = {
-    Horde = "\238\128\128",
-    Alliance = "\238\128\129",
-}
-
 local function FactionIcon_Update(self)
     local unit = self.root.unit
     local faction = UnitFactionGroup(unit)
 
     if faction == "Horde" or faction == "Alliance" then
         self.icon:SetTexture(AW.GetTexture(faction))
-        self.text:SetText(GLYPHS[faction])
-        self.text:SetTextColor(AW.GetColorRGB(faction))
+        self.text:SetText(S.FactionGlyphs[faction].char)
+        self.text:SetTextColor(AW.UnpackColor(S.FactionGlyphs[faction].color))
         self:Show()
     else
         self:Hide()
@@ -50,7 +44,7 @@ local function FactionIcon_LoadConfig(self, config)
     AW.SetSize(self, config.width, config.height)
     self.text:SetFont(AW.GetFont("glyphs"), config.width, "OUTLINE")
 
-    if config.style == "font" then
+    if config.style == "text" then
         self.text:Show()
         self.icon:Hide()
     else -- "icon"

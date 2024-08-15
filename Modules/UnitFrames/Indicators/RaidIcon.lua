@@ -2,6 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
+local S = BFI.Shared
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -19,6 +20,8 @@ local function RaidIcon_Update(self)
     local index = GetRaidTargetIndex(unit)
     if index then
         SetRaidTargetIconTexture(self.icon, index)
+        self.text:SetText(S.MarkerGlyphs[index].char)
+        self.text:SetTextColor(AW.UnpackColor(S.MarkerGlyphs[index].color))
         self:Show()
     else
         self:Hide()
@@ -40,6 +43,15 @@ local function RaidIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
+    self.text:SetFont(AW.GetFont("glyphs"), config.width, "OUTLINE")
+
+    if config.style == "text" then
+        self.text:Show()
+        self.icon:Hide()
+    else -- "icon"
+        self.icon:Show()
+        self.text:Hide()
+    end
 end
 
 ---------------------------------------------------------------------
@@ -55,6 +67,11 @@ function UF.CreateRaidIcon(parent, name)
     frame.icon = icon
     icon:SetAllPoints()
     icon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons")
+
+    -- text
+    local text = frame:CreateFontString(nil, "ARTWORK")
+    frame.text = text
+    text:SetPoint("CENTER")
 
     -- events
     BFI.AddEventHandler(frame)

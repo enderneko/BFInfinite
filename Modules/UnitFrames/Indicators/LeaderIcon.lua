@@ -2,6 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
+local S = BFI.Shared
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -14,13 +15,6 @@ local UnitIsGroupAssistant = UnitIsGroupAssistant
 ---------------------------------------------------------------------
 -- show/hide
 ---------------------------------------------------------------------
---! CodePoints -> Unicode -> Decimal
--- https://onlinetools.com/unicode/convert-code-points-to-unicode
-local GLYPHS = {
-    leader = "\238\128\133",
-    assistant = "\238\128\134",
-}
-
 local function UpdateLeaderIcon(self)
     local unit = self.root.unit
 
@@ -29,11 +23,13 @@ local function UpdateLeaderIcon(self)
 
     if isLeader then
         -- self.icon:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
-        self.text:SetText(GLYPHS.leader)
+        self.text:SetText(S.LeaderGlyphs.leader.char)
+        self.text:SetTextColor(AW.UnpackColor(S.LeaderGlyphs.leader.color))
         self:Show()
     elseif isAssistant then
         -- self.icon:SetTexture("Interface\\GroupFrame\\UI-Group-AssistantIcon")
-        self.text:SetText(GLYPHS.assistant)
+        self.text:SetText(S.LeaderGlyphs.assistant.char)
+        self.text:SetTextColor(AW.UnpackColor(S.LeaderGlyphs.assistant.color))
         self:Show()
     else
         self:Hide()
@@ -62,7 +58,7 @@ local function LeaderIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
-    self.text:SetFont(AW.GetFont("glyphs4"), config.width, "OUTLINE")
+    self.text:SetFont(AW.GetFont("glyphs"), config.width, "OUTLINE")
 end
 
 ---------------------------------------------------------------------
@@ -81,7 +77,6 @@ function UF.CreateLeaderIcon(parent, name)
     local text = frame:CreateFontString(nil, "ARTWORK")
     frame.text = text
     text:SetPoint("CENTER")
-    text:SetTextColor(AW.GetColorRGB("leader"))
 
     -- events
     BFI.AddEventHandler(frame)
