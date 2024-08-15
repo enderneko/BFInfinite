@@ -61,6 +61,7 @@ end
 ---------------------------------------------------------------------
 local function NameText_Enable(self)
     self:RegisterEvent("UNIT_NAME_UPDATE", UpdateName)
+    self:RegisterEvent("UNIT_FACTION", UpdateName)
 
     self:Show()
     if self.root:IsVisible() then self:Update() end

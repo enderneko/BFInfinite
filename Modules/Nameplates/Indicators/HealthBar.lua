@@ -39,7 +39,7 @@ local function GetHealthColor(self, unit)
         r, g, b = AW.GetColorRGB("marker_" .. marker)
 
     elseif not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
-        r, g, b = 0.5, 0.5, 0.5
+        r, g, b = AW.GetColorRGB("TAP_DENIED")
 
     elseif self.threatSituation and self.colorByThreat then
         r, g, b = AW.GetColorRGB("threat_" .. self.threatSituation)
@@ -47,8 +47,8 @@ local function GetHealthColor(self, unit)
     elseif U.UnitIsPlayer(unit) then
         local class = UnitClassBase(unit)
         if not UnitIsConnected(unit) then
-            r, g, b = 0.4, 0.4, 0.4
-            lossR, lossG, lossB = 0.4, 0.4, 0.4
+            r, g, b = AW.GetColorRGB("OFFLINE")
+            lossR, lossG, lossB = AW.GetColorRGB("OFFLINE")
         else
             -- bar
             if self.colorByClass then
@@ -334,6 +334,7 @@ local function HealthBar_Enable(self)
     self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
     self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
+    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateHealthColor)
 
     if self.colorByMarker then
         self:RegisterEvent("RAID_TARGET_UPDATE", UpdateHealthColor)

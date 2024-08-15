@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 local U = BFI.utils
 local AW = BFI.AW
 local UF = BFI.UnitFrames
@@ -66,6 +67,9 @@ end
 local function SetStatus(self, status)
     self.status = status
     if status then
+        if not self.useEn then
+            self.status = L[status]
+        end
         ShowTimer(self)
     else
         HideTimer(self)
@@ -130,6 +134,7 @@ local function StatusTimer_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
     self.color = config.color
+    self.useEn = config.useEn
 end
 
 ---------------------------------------------------------------------
