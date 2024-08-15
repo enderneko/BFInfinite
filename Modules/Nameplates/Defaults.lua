@@ -73,6 +73,7 @@ do
         healthBar = {
             enabled = true,
             position = {"CENTER", "CENTER", 0, 0},
+            anchorTo = "nameplate",
             frameLevel = 1,
             width = 120,
             height = 13,
