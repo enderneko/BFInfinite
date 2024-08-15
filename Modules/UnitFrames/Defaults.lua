@@ -271,8 +271,8 @@ local defaults = {
                 position = {"CENTER", "LEFT", 1, 0},
                 anchorTo = "button",
                 frameLevel = 10,
-                width = 16,
-                height = 16,
+                width = 12,
+                height = 12,
             },
             leaderText = {
                 enabled = true,
@@ -687,8 +687,8 @@ local defaults = {
                 position = {"CENTER", "RIGHT", -1, 0},
                 anchorTo = "button",
                 frameLevel = 10,
-                width = 16,
-                height = 16,
+                width = 12,
+                height = 12,
             },
             leaderText = {
                 enabled = true,
@@ -2819,11 +2819,11 @@ local defaults = {
             },
             leaderIcon = {
                 enabled = true,
-                position = {"CENTER", "TOPLEFT", 1, -1},
+                position = {"CENTER", "TOPLEFT", 2, -1},
                 anchorTo = "button",
                 frameLevel = 10,
-                width = 12,
-                height = 12,
+                width = 10,
+                height = 10,
             },
             statusIcon = {
                 enabled = true,
@@ -2851,11 +2851,11 @@ local defaults = {
             },
             roleIcon = {
                 enabled = true,
-                position = {"CENTER", "BOTTOMLEFT", 0, 1},
+                position = {"CENTER", "BOTTOMLEFT", 2, 1},
                 anchorTo = "healthBar",
                 frameLevel = 10,
-                width = 12,
-                height = 12,
+                width = 10,
+                height = 10,
                 hideDamager = true,
             },
             targetHighlight = {

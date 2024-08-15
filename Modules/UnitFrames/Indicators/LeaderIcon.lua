@@ -14,6 +14,13 @@ local UnitIsGroupAssistant = UnitIsGroupAssistant
 ---------------------------------------------------------------------
 -- show/hide
 ---------------------------------------------------------------------
+--! CodePoints -> Unicode -> Decimal
+-- https://onlinetools.com/unicode/convert-code-points-to-unicode
+local GLYPHS = {
+    leader = "\238\128\133",
+    assistant = "\238\128\134",
+}
+
 local function UpdateLeaderIcon(self)
     local unit = self.root.unit
 
@@ -21,10 +28,12 @@ local function UpdateLeaderIcon(self)
     local isAssistant = IsInRaid() and UnitIsGroupAssistant(unit)
 
     if isLeader then
-        self.texture:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
+        -- self.icon:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
+        self.text:SetText(GLYPHS.leader)
         self:Show()
     elseif isAssistant then
-        self.texture:SetTexture("Interface\\GroupFrame\\UI-Group-AssistantIcon")
+        -- self.icon:SetTexture("Interface\\GroupFrame\\UI-Group-AssistantIcon")
+        self.text:SetText(GLYPHS.assistant)
         self:Show()
     else
         self:Hide()
@@ -53,6 +62,7 @@ local function LeaderIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
+    self.text:SetFont(AW.GetFont("glyphs4"), config.width, "OUTLINE")
 end
 
 ---------------------------------------------------------------------
@@ -63,9 +73,15 @@ function UF.CreateLeaderIcon(parent, name)
     frame.root = parent
     frame:Hide()
 
-    -- texture
-    frame.texture = frame:CreateTexture(nil, "ARTWORK")
-    frame.texture:SetAllPoints()
+    -- icon
+    -- frame.icon = frame:CreateTexture(nil, "ARTWORK")
+    -- frame.icon:SetAllPoints()
+
+    -- text
+    local text = frame:CreateFontString(nil, "ARTWORK")
+    frame.text = text
+    text:SetPoint("CENTER")
+    text:SetTextColor(AW.GetColorRGB("leader"))
 
     -- events
     BFI.AddEventHandler(frame)
