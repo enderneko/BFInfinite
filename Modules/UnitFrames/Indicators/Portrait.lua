@@ -22,7 +22,7 @@ local function UpdatePortrait3D(self, unit)
     local model = self.model
     local config = self.modelConfig
 
-    if UnitIsConnected(unit) then -- and UnitIsVisible(unit) then
+    if UnitIsConnected(unit) and UnitIsVisible(unit) then
         model:SetCamDistanceScale(config.camDistanceScale)
         model:SetPortraitZoom(config.zoom or 1)
         model:SetPosition(0, 0, 0)
@@ -78,6 +78,7 @@ end
 local function Portrait_Enable(self)
     self:RegisterEvent("UNIT_PORTRAIT_UPDATE", UpdatePortrait)
     self:RegisterEvent("UNIT_MODEL_CHANGED", UpdatePortrait)
+    self:RegisterEvent("UNIT_CONNECTION", UpdatePortrait)
 
     self:Show()
     if self:IsVisible() then self:Update(true) end
@@ -104,7 +105,7 @@ local function Portrait_LoadConfig(self, config)
     --     AW.ClearPoints(self)
     --     self:SetAllPoints(self.root.indicators.healthBar)
     -- else
-        UF.LoadIndicatorPosition(self, config.position)
+        UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     -- end
 
     self:SetBackdropColor(unpack(config.bgColor))

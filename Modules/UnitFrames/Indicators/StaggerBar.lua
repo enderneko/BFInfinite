@@ -170,7 +170,7 @@ end
 
 local function StaggerBar_SetupText(self, config)
     U.SetFont(self.text, config.font)
-    UF.LoadIndicatorPosition(self, config.position)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     self.text:SetTextColor(AW.UnpackColor(config.color))
     StaggerText_SetFormat(self, config.format)
 end
@@ -180,7 +180,7 @@ end
 ---------------------------------------------------------------------
 local function StaggerBar_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    UF.LoadIndicatorPosition(self, config.position)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
 
     self:SetTexture(U.GetBarTexture(config.texture))

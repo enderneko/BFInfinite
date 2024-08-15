@@ -321,7 +321,7 @@ end
 ---------------------------------------------------------------------
 local function ClassPowerBar_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
-    UF.LoadIndicatorPosition(self, config.position)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
 
     self.config = config

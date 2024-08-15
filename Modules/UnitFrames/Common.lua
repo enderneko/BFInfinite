@@ -124,6 +124,14 @@ function UF.OnButtonHide(button)
     end
 end
 
+local function LoadPosition(self, position, anchorTo)
+    if self:GetObjectType() == "FontString" then
+        AW.LoadTextPosition(self, position, anchorTo)
+    else
+        AW.LoadWidgetPosition(self, position, anchorTo)
+    end
+end
+
 function UF.LoadIndicatorPosition(self, position, anchorTo)
     if anchorTo == "button" then
         anchorTo = self.root
@@ -131,10 +139,11 @@ function UF.LoadIndicatorPosition(self, position, anchorTo)
         anchorTo = self.root.indicators[anchorTo]
     end
 
-    if self:GetObjectType() == "FontString" then
-        AW.LoadTextPosition(self, position, anchorTo)
-    else
-        AW.LoadWidgetPosition(self, position, anchorTo)
+    local success = pcall(LoadPosition, self, position, anchorTo)
+    if not success then
+        -- Cannot anchor to itself
+        -- Cannot anchor to a region dependent on it
+        BFI.Fire("IncorrectAnchor", self)
     end
 end
 
