@@ -10,6 +10,8 @@ local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 local GetUnitEmpowerHoldAtMaxTime = GetUnitEmpowerHoldAtMaxTime
 local GetUnitEmpowerStageDuration = GetUnitEmpowerStageDuration
+local UnitIsUnit = UnitIsUnit
+local UnitCanAttack = UnitCanAttack
 
 ---------------------------------------------------------------------
 -- channeled spell ticks
@@ -301,7 +303,7 @@ local function CastInterruptible(self, event, unit)
         self.bar.uninterruptible:Show()
         self:SetBackdropBorderColor(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
         self.gap:SetColorTexture(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
-    elseif not self.requireInterruptUsable or U.InterruptUsable() then -- interruptible
+    elseif self.checkInterruptCD and (not self.requireInterruptUsable or U.InterruptUsable()) then -- interruptible
         self.bar:SetStatusBarColor(AW.UnpackColor(self.interruptibleColor))
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.interruptibleColor, 1))
@@ -561,7 +563,7 @@ local function OnUpdate(self, elapsed)
 			end
 		end
 
-        if self.requireInterruptUsable and not self.notInterruptible then
+        if self.checkInterruptCD and self.requireInterruptUsable and not self.notInterruptible then
             self.elapsed = (self.elapsed or 0) + elapsed
             if self.elapsed >= 0.25 then
                 CastInterruptible(self)
@@ -611,12 +613,13 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     self.duration = self.endTime - self.startTime
 
     -- interruptible
-    if unit ~= "player" then
-        self.notInterruptible = notInterruptible
-        CastInterruptible(self)
+    if UnitIsUnit(unit, "player") or not UnitCanAttack("player", unit) then
+        self.checkInterruptCD = nil
     else
-        self.notInterruptible = true
+        self.checkInterruptCD = true
     end
+    self.notInterruptible = notInterruptible
+    CastInterruptible(self)
 
     -- empower
     UpdateEmpowerPips(self, numEmpowerStages)
@@ -673,6 +676,7 @@ local function CastBar_Enable(self)
     -- interruptible
     self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE", CastInterruptible)
     self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", CastInterruptible)
+    self:RegisterEvent("UNIT_FACTION", CastInterruptible)
 
     -- latency
     if self.latencyEnabled then

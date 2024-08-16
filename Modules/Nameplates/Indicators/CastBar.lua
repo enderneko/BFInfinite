@@ -10,6 +10,7 @@ local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 local GetUnitEmpowerHoldAtMaxTime = GetUnitEmpowerHoldAtMaxTime
 local GetUnitEmpowerStageDuration = GetUnitEmpowerStageDuration
+local UnitCanAttack = UnitCanAttack
 
 ---------------------------------------------------------------------
 -- reset
@@ -142,7 +143,7 @@ local function CastInterruptible(self, event, unit)
         self.bar.uninterruptible:Show()
         self:SetBackdropBorderColor(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
         self.iconBG:SetVertexColor(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
-    elseif not self.requireInterruptUsable or U.InterruptUsable() then -- interruptible
+    elseif self.checkInterruptCD and (not self.requireInterruptUsable or U.InterruptUsable()) then -- interruptible
         self.bar:SetStatusBarColor(AW.UnpackColor(self.interruptibleColor))
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.interruptibleColor, 1))
@@ -293,7 +294,7 @@ local function OnUpdate(self, elapsed)
 			end
 		end
 
-        if self.requireInterruptUsable and not self.notInterruptible then
+        if self.checkInterruptCD and self.requireInterruptUsable and not self.notInterruptible then
             self.elapsed = (self.elapsed or 0) + elapsed
             if self.elapsed >= 0.25 then
                 CastInterruptible(self)
@@ -340,6 +341,11 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     self.duration = self.endTime - self.startTime
 
     -- interruptible
+    if UnitCanAttack("player", unit) then
+        self.checkInterruptCD = true
+    else
+        self.checkInterruptCD = nil
+    end
     self.notInterruptible = notInterruptible
     CastInterruptible(self)
 
