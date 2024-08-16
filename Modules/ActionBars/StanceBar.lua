@@ -89,7 +89,7 @@ local function UpdateStanceButtons()
             end
 
             local icon, active, castable, spellID = GetShapeshiftFormInfo(i)
-            b.icon:SetTexture(GetSpellTexture(spellID))
+            b.icon:SetTexture(C_Spell.GetSpellTexture(spellID))
 
             b:SetChecked(GetShapeshiftForm() ~= 0) -- not checked if no stance
 
