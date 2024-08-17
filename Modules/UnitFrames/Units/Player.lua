@@ -78,7 +78,7 @@ local function UpdatePlayer(module, which)
     end
 
     -- setup
-    UF.SetupUnitButton(player, config, indicators)
+    UF.SetupUnitFrame(player, config, indicators)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(player, "state-visibility", "[petbattle] hide; show")

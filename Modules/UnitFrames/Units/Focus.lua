@@ -67,7 +67,7 @@ local function UpdateFocus(module, which)
     end
 
     -- setup
-    UF.SetupUnitButton(focus, config, indicators)
+    UF.SetupUnitFrame(focus, config, indicators)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(focus)

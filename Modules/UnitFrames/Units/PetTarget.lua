@@ -67,7 +67,7 @@ local function UpdatePetTarget(module, which)
     end
 
     -- setup
-    UF.SetupUnitButton(pettarget, config, indicators)
+    UF.SetupUnitFrame(pettarget, config, indicators)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(pettarget)

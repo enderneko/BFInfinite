@@ -64,7 +64,7 @@ local function UpdatePet(module, which)
     end
 
     -- setup
-    UF.SetupUnitButton(pet, config, indicators)
+    UF.SetupUnitFrame(pet, config, indicators)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(pet, "state-visibility", "[petbattle] hide; [nopet] hide; show")

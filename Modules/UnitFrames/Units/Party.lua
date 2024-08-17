@@ -39,6 +39,7 @@ local function CreateParty()
 
     for i = 1, 4 do
         party[i] = CreateFrame("Button", name .. i, party, "BFIUnitButtonTemplate")
+        -- party[i]:SetAttribute("unit", "player")
         party[i]:SetAttribute("unit", "party" .. i)
     end
 
@@ -68,7 +69,9 @@ local function UpdateParty(module, which)
             UnregisterAttributeDriver(party)
             for i = 1, 4 do
                 UF.DisableIndicators(party[i])
-                UnregisterAttributeDriver(party[i], "state-visibility")
+                -- UnregisterAttributeDriver(party[i], "state-visibility")
+                UnregisterUnitWatch(party[i])
+                UF.RemoveFromConfigMode(party[i])
             end
             party:Hide()
         end
@@ -85,7 +88,9 @@ local function UpdateParty(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(party, "state-visibility", "[petbattle] hide;[@raid1,exists] hide;[@party1,exists] show;[group:party] show;hide")
     for i = 1, 4 do
-        RegisterAttributeDriver(party[i], "state-visibility", "[@party" .. i .. ",exists] show;hide")
+        -- RegisterAttributeDriver(party[i], "state-visibility", "[@party" .. i .. ",exists] show;hide")
+        RegisterUnitWatch(party[i])
+        UF.AddToConfigMode(party[i])
     end
 end
 BFI.RegisterCallback("UpdateModules", "UF_Party", UpdateParty)

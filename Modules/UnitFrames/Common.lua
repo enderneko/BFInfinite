@@ -39,20 +39,20 @@ local builders = {
     auras = UF.CreateAuras,
 }
 
-function UF.CreateIndicators(button, indicators)
+function UF.CreateIndicators(frame, indicators)
     for _, v in pairs(indicators) do
         if type(v) == "table" then
             local builder, name = v[1], v[2]
-            button.indicators[name] = builders[builder](button, button:GetName().."_"..U.UpperFirst(name), select(3, unpack(v)))
-            button.indicators[name].indicatorName = name
+            frame.indicators[name] = builders[builder](frame, frame:GetName().."_"..U.UpperFirst(name), select(3, unpack(v)))
+            frame.indicators[name].indicatorName = name
         else -- string:name
-            button.indicators[v] = builders[v](button, button:GetName().."_"..U.UpperFirst(v))
-            button.indicators[v].indicatorName = v
+            frame.indicators[v] = builders[v](frame, frame:GetName().."_"..U.UpperFirst(v))
+            frame.indicators[v].indicatorName = v
         end
     end
 end
 
-function UF.SetupIndicators(button, indicators, config)
+function UF.SetupIndicators(frame, indicators, config)
     for _, v in pairs(indicators) do
         local name
         if type(v) == "table" then
@@ -60,12 +60,12 @@ function UF.SetupIndicators(button, indicators, config)
         else
             name = v
         end
-        UF.LoadIndicatorConfig(button, name, config.indicators[name])
+        UF.LoadIndicatorConfig(frame, name, config.indicators[name])
     end
 end
 
-function UF.LoadIndicatorConfig(button, indicatorName, indicatorConfig)
-    local indicator = button.indicators[indicatorName]
+function UF.LoadIndicatorConfig(frame, indicatorName, indicatorConfig)
+    local indicator = frame.indicators[indicatorName]
 
     if indicatorConfig then
         indicator:LoadConfig(indicatorConfig)
@@ -76,7 +76,7 @@ function UF.LoadIndicatorConfig(button, indicatorName, indicatorConfig)
     if indicator.enabled then
         indicator:Enable()
         -- NOTE: let each indicator handle this
-        -- if button:IsVisible() then
+        -- if frame:IsVisible() then
         --     indicator:Update()
         -- end
     else
@@ -89,8 +89,8 @@ function UF.LoadIndicatorConfig(button, indicatorName, indicatorConfig)
     end
 end
 
-function UF.DisableIndicators(button)
-    for _, indicator in pairs(button.indicators) do
+function UF.DisableIndicators(frame)
+    for _, indicator in pairs(frame.indicators) do
         if indicator.Disable then
             indicator:Disable()
         else
@@ -100,29 +100,30 @@ function UF.DisableIndicators(button)
     end
 end
 
-function UF.UpdateIndicators(button, force)
-    for _, indicator in pairs(button.indicators) do
+function UF.UpdateIndicators(frame, force)
+    for _, indicator in pairs(frame.indicators) do
         if indicator.enabled then
             indicator:Update(force)
         end
     end
 end
 
-function UF.OnButtonShow(button)
-    for _, indicator in pairs(button.indicators) do
+function UF.OnButtonShow(frame)
+    for _, indicator in pairs(frame.indicators) do
         if indicator.enabled then
             indicator:Enable()
         end
     end
 end
 
-function UF.OnButtonHide(button)
-    for _, indicator in pairs(button.indicators) do
+function UF.OnButtonHide(frame)
+    for _, indicator in pairs(frame.indicators) do
         if indicator.enabled then
             indicator:UnregisterAllEvents()
         end
     end
 end
+
 
 local function LoadPosition(self, position, anchorTo)
     if self:GetObjectType() == "FontString" then
@@ -133,7 +134,7 @@ local function LoadPosition(self, position, anchorTo)
 end
 
 function UF.LoadIndicatorPosition(self, position, anchorTo)
-    if anchorTo == "button" then
+    if anchorTo == "root" then
         anchorTo = self.root
     elseif anchorTo then
         anchorTo = self.root.indicators[anchorTo]
@@ -148,9 +149,9 @@ function UF.LoadIndicatorPosition(self, position, anchorTo)
 end
 
 ---------------------------------------------------------------------
--- setup button
+-- setup frame
 ---------------------------------------------------------------------
-function UF.SetupUnitButton(self, config, indicators)
+function UF.SetupUnitFrame(self, config, indicators)
     -- mover
     AW.UpdateMoverSave(self, config.general.position)
 
@@ -260,3 +261,51 @@ function UF.SetupTooltip(self, config)
         self.tooltipPosition = nil
     end
 end
+
+---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local inConfigMode = {}
+
+function UF.AddToConfigMode(frame)
+    inConfigMode[frame] = true
+end
+
+function UF.RemoveFromConfigMode(frame)
+    inConfigMode[frame] = nil
+end
+
+local EnableConfigMode, DisableConfigMode
+
+function EnableConfigMode()
+    UF.configModeEnabled = true
+    UF:RegisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
+    for frame in pairs(inConfigMode) do
+        UnregisterUnitWatch(frame)
+        frame.oldUnit = frame.unit
+        frame:SetAttribute("unit", "player")
+        RegisterUnitWatch(frame)
+    end
+end
+
+function DisableConfigMode()
+    UF.configModeEnabled = nil
+    UF:UnregisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
+    for frame in pairs(inConfigMode) do
+        UnregisterUnitWatch(frame)
+        frame:SetAttribute("unit", frame.oldUnit)
+        frame.oldUnit = nil
+        RegisterUnitWatch(frame)
+    end
+end
+
+local function ToggleConfigMode(module)
+    if InCombatLockdown() then return end
+    if module and module ~= "UnitFrames" then return end
+    if UF.configModeEnabled then
+        DisableConfigMode()
+    else
+        EnableConfigMode()
+    end
+end
+BFI.RegisterCallback("ConfigMode", "UnitFrames", ToggleConfigMode)

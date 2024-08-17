@@ -68,7 +68,7 @@ local function UpdateTargetTarget(module, which)
     end
 
     -- setup
-    UF.SetupUnitButton(targettarget, config, indicators)
+    UF.SetupUnitFrame(targettarget, config, indicators)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(targettarget)
