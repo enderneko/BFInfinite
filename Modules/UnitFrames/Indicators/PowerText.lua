@@ -29,6 +29,11 @@ local function UpdatePower(self, event, unitId)
         self.powerMax = 1
     end
 
+    if self.hideIfEmpty and self.power == 0 then
+        self:Hide()
+        return
+    end
+
     if self.hideIfFull and self.power >= self.powerMax then
         self:Hide()
         return
@@ -183,6 +188,7 @@ local function PowerText_LoadConfig(self, config)
     self.color = config.color
     self.frequent = config.frequent
     self.hideIfFull = config.hideIfFull
+    self.hideIfEmpty = config.hideIfEmpty
 end
 
 ---------------------------------------------------------------------

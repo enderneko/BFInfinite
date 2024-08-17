@@ -159,6 +159,7 @@ local defaults = {
                     useAsianUnits = false,
                 },
                 hideIfFull = false,
+                hideIfEmpty = false,
             },
             portrait = {
                 enabled = true,
@@ -609,6 +610,7 @@ local defaults = {
                     useAsianUnits = false,
                 },
                 hideIfFull = false,
+                hideIfEmpty = false,
             },
             portrait = {
                 enabled = true,
@@ -1012,6 +1014,7 @@ local defaults = {
                     useAsianUnits = false,
                 },
                 hideIfFull = true,
+                hideIfEmpty = false,
             },
             levelText = {
                 enabled = false,
@@ -1352,6 +1355,7 @@ local defaults = {
                     useAsianUnits = false,
                 },
                 hideIfFull = true,
+                hideIfEmpty = false,
             },
             levelText = {
                 enabled = false,
@@ -1699,6 +1703,7 @@ local defaults = {
                     useAsianUnits = false,
                 },
                 hideIfFull = true,
+                hideIfEmpty = false,
             },
             levelText = {
                 enabled = false,
@@ -2039,6 +2044,7 @@ local defaults = {
                     useAsianUnits = false,
                 },
                 hideIfFull = true,
+                hideIfEmpty = false,
             },
             levelText = {
                 enabled = false,
@@ -2378,6 +2384,7 @@ local defaults = {
                     useAsianUnits = false,
                 },
                 hideIfFull = true,
+                hideIfEmpty = false,
             },
             levelText = {
                 enabled = false,
@@ -2721,6 +2728,7 @@ local defaults = {
                     useAsianUnits = false,
                 },
                 hideIfFull = true,
+                hideIfEmpty = false,
             },
             leaderText = {
                 enabled = false,
@@ -2883,6 +2891,57 @@ local defaults = {
                 frameLevel = 1,
                 size = 3,
                 alpha = 1,
+            },
+            buffs = {
+                enabled = true,
+                position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
+                anchorTo = "root",
+                orientation = "right_to_left",
+                cooldownStyle = "vertical",
+                width = 10,
+                height = 10,
+                spacingH = 1,
+                spacingV = 1,
+                numPerLine = 11,
+                numTotal = 22,
+                frameLevel = 1,
+                tooltip = {
+                    enabled = false,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
+                durationText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 0},
+                    color = {
+                        AW.GetColorTable("white"), -- normal
+                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AW.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = false,
+                    castByUnit = false,
+                    castByNPC = false,
+                    isBossAura = false,
+                    dispellable = nil,
+                },
+                priorities = {},
+                blacklist = {},
+                whitelist = {},
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = nil,
+                    debuffType = nil,
+                },
             },
         },
     },
