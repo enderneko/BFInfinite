@@ -13,10 +13,23 @@ local UnitClassBase = U.UnitClassBase
 
 local function UpdatePortrait3DAlpha(parent, alpha)
     local portrait = parent.indicators.portrait
-    if portrait and portrait.enabled and portrait.type == "3d" then
+    if portrait and portrait.enabled and portrait.style == "3d" then
         portrait.model:SetModelAlpha(alpha)
     end
 end
+
+--! only for non-smooth health bar
+-- local function UpdatePortrait3DCutaway(self, _, unitId)
+--     local unit = self.root.displayedUnit
+--     if unitId and unit ~= unitId then return end
+
+--     local cur = UnitHealth(unit)
+--     local max = UnitHealthMax(unit)
+
+--     local width = self.healthBar:GetBarWidth()
+--     local inset = (cur / max * width) - width
+--     self.model:SetViewInsets(0, inset, 0, 0)
+-- end
 
 local function UpdatePortrait3D(self, unit)
     local model = self.model
@@ -63,9 +76,12 @@ local function UpdatePortrait(self, event, unitId)
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
 
-    if self.type == "3d" then
+    if self.style == "3d" then
         UpdatePortrait3D(self, unit)
-    elseif self.type == "2d" then
+        -- if self.cutaway then
+        --     UpdatePortrait3DCutaway(self)
+        -- end
+    elseif self.style == "2d" then
         UpdatePortrait2D(self, unit)
     else
         UpdatePortraitClassIcon(self, unit)
@@ -79,6 +95,14 @@ local function Portrait_Enable(self)
     self:RegisterEvent("UNIT_PORTRAIT_UPDATE", UpdatePortrait)
     self:RegisterEvent("UNIT_MODEL_CHANGED", UpdatePortrait)
     self:RegisterEvent("UNIT_CONNECTION", UpdatePortrait)
+
+    -- if self.cutaway then
+    --     self:RegisterEvent("UNIT_HEALTH", UpdatePortrait3DCutaway)
+    --     self:RegisterEvent("UNIT_MAXHEALTH", UpdatePortrait3DCutaway)
+    -- else
+    --     self:UnregisterEvent("UNIT_HEALTH")
+    --     self:UnregisterEvent("UNIT_MAXHEALTH")
+    -- end
 
     self:Show()
     if self:IsVisible() then self:Update(true) end
@@ -101,17 +125,42 @@ local function Portrait_LoadConfig(self, config)
     AW.SetSize(self, config.width, config.height)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
 
+    -- cutaway (not ideal)
     -- if config.anchorTo == "healthBar" then
     --     AW.ClearPoints(self)
-    --     self:SetAllPoints(self.root.indicators.healthBar)
+    --     if config.style == "3d" and config.cutaway then
+    --         self.cutaway = true
+    --         self.healthBar = self.root.indicators.healthBar
+    --         AW.SetPoint(self, "TOPLEFT")
+    --         AW.SetPoint(self, "BOTTOMRIGHT", self.healthBar.fg)
+    --         self:SetBackdropColor(0, 0, 0, 0)
+    --         self:SetBackdropBorderColor(0, 0, 0, 0)
+    --     else
+    --         self.cutaway = nil
+    --         self.healthBar = nil
+    --         self:SetAllPoints(self.root.indicators.healthBar)
+    --         self:SetBackdropColor(unpack(config.bgColor))
+    --         self:SetBackdropBorderColor(unpack(config.borderColor))
+    --     end
     -- else
-        UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
+    --     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
+    --     self.cutaway = nil
+    --     self.healthBar = nil
+    --     self:SetBackdropColor(unpack(config.bgColor))
+    --     self:SetBackdropBorderColor(unpack(config.borderColor))
     -- end
+
+    if config.anchorTo == "healthBar" then
+        AW.ClearPoints(self)
+        self:SetAllPoints(self.root.indicators.healthBar)
+    else
+        UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
+    end
 
     self:SetBackdropColor(unpack(config.bgColor))
     self:SetBackdropBorderColor(unpack(config.borderColor))
 
-    if config.type == "3d" then
+    if config.style == "3d" then
         self.model:Show()
         self.texture:Hide()
         self.modelConfig = config.model
@@ -121,7 +170,7 @@ local function Portrait_LoadConfig(self, config)
         self.modelConfig = nil
     end
 
-    self.type = config.type
+    self.style = config.style
 end
 
 local function Portrait_UpdatePixels(self)
@@ -130,7 +179,7 @@ local function Portrait_UpdatePixels(self)
     AW.ReBorder(self)
     AW.RePoint(self.model)
     AW.RePoint(self.texture)
-    if self.type == "3d" then
+    if self.style == "3d" then
         UpdatePortrait(self)
     end
 end
