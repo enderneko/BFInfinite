@@ -34,3 +34,5 @@ S.MarkerGlyphs = {
     {char = "\238\128\141", color = {1, 0.27, 0.18}}, -- cross
     {char = "\238\128\142", color = {0.95, 0.95, 0.95}}, -- skull
 }
+
+S.CombatGlyph = {char = "\238\128\143", color = {0.85, 0.85, 0.85}}

@@ -2,6 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
+local S = BFI.Shared
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -62,7 +63,9 @@ local function CombatIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
-    self.texture:SetTexture(AW.GetTexture(config.texture))
+    -- self.icon:SetTexture(AW.GetTexture(config.texture))
+    self.text:SetFont(AW.GetFont("glyphs"), config.width, "OUTLINE")
+    self.text:SetText(S.CombatGlyph.char)
 end
 
 ---------------------------------------------------------------------
@@ -73,9 +76,15 @@ function UF.CreateCombatIcon(parent, name)
     frame.root = parent
     frame:Hide()
 
-    -- texture
-    frame.texture = frame:CreateTexture(nil, "ARTWORK")
-    frame.texture:SetAllPoints()
+    -- icon
+    -- frame.icon = frame:CreateTexture(nil, "ARTWORK")
+    -- frame.icon:SetAllPoints()
+
+    -- text
+    local text = frame:CreateFontString(nil, "ARTWORK")
+    frame.text = text
+    text:SetPoint("CENTER")
+    text:SetTextColor(AW.UnpackColor(S.CombatGlyph.color))
 
     -- events
     BFI.AddEventHandler(frame)
