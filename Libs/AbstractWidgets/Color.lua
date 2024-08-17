@@ -292,7 +292,11 @@ local colors = {
 }
 
 function AW.GetColorRGB(name, alpha, saturation)
-    assert(colors[name], "no such color:", name)
+    -- assert(colors[name], "no such color:", name)
+    if not colors[name] then
+        return 1, 1, 1, 1
+    end
+
     saturation = saturation or 1
     alpha = alpha or colors[name]["t"][4]
     return colors[name]["t"][1]*saturation, colors[name]["t"][2]*saturation, colors[name]["t"][3]*saturation, alpha

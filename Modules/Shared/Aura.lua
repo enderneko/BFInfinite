@@ -29,13 +29,15 @@ local function VerticalCooldown_GetCooldownDuration()
     return 0
 end
 
-local function VerticalCooldown_ShowCooldown(self, start, duration, _, icon, auraType )
+local function VerticalCooldown_ShowCooldown(self, start, duration, _, icon, auraType)
     if auraType then
         self.spark:SetColorTexture(C.GetAuraTypeColor(auraType))
     else
         self.spark:SetColorTexture(0.5, 0.5, 0.5, 1)
     end
+    if self.icon then
     self.icon:SetTexture(icon)
+    end
 
     self.elapsed = 0.1 -- update immediately
     self:SetMinMaxValues(0, duration)
@@ -43,7 +45,7 @@ local function VerticalCooldown_ShowCooldown(self, start, duration, _, icon, aur
     self:Show()
 end
 
-local function CreateCooldown_Vertical(self)
+local function CreateCooldown_Vertical(self, hasIcon)
     local cooldown = CreateFrame("StatusBar", nil, self)
     self.cooldown = cooldown
     cooldown:Hide()
@@ -59,7 +61,6 @@ local function CreateCooldown_Vertical(self)
     cooldown:SetStatusBarTexture(AW.GetPlainTexture())
 
     local texture = cooldown:GetStatusBarTexture()
-    texture:SetAlpha(0)
 
     local spark = cooldown:CreateTexture(nil, "BORDER")
     cooldown.spark = spark
@@ -67,6 +68,9 @@ local function CreateCooldown_Vertical(self)
     spark:SetBlendMode("ADD")
     spark:SetPoint("TOPLEFT", texture, "BOTTOMLEFT")
     spark:SetPoint("TOPRIGHT", texture, "BOTTOMRIGHT")
+
+    if hasIcon then
+        texture:SetAlpha(0)
 
     local mask = cooldown:CreateMaskTexture()
     mask:SetTexture(AW.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
@@ -81,6 +85,9 @@ local function CreateCooldown_Vertical(self)
     icon:SetVertexColor(0.5, 0.5, 0.5, 1)
     icon:AddMaskTexture(mask)
     cooldown:SetScript("OnSizeChanged", ReCalcTexCoord)
+    else
+        texture:SetVertexColor(0, 0, 0, 0.8)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -98,7 +105,7 @@ local function CreateCooldown_Clock(self, drawEdge)
     -- NOTE: shit, why this EDGE not work, but xml does?
     -- cooldown:SetSwipeTexture(AW.GetPlainTexture())
     -- cooldown:SetSwipeColor(0, 0, 0, 0.8)
-    -- cooldown:SetEdgeTexture([[Interface\Cooldown\UI-HUD-ActionBar-SecondaryCooldown]])
+    -- cooldown:SetEdgeTexture([[Interface\Cooldown\UI-HUD-ActionBar-SecondaryCooldown]], 1, 1, 0, 1)
 
     -- cooldown text
     cooldown:SetHideCountdownNumbers(true)
@@ -118,10 +125,20 @@ local function Aura_SetCooldownStyle(self, style)
     end
 
     self.style = style
-    if style == "vertical_progress" then
-        CreateCooldown_Vertical(self)
-    elseif strfind(style, "^clock") then
+    if style == "vertical" then
+        CreateCooldown_Vertical(self, true)
+    elseif style == "block_vertical" then
+        CreateCooldown_Vertical(self, false)
+    elseif strfind(style, "^clock") or strfind(style, "^block_clock") then
+        -- clock, clock_with_leading_edge
+        -- block_clock, block_clock_with_leading_edge
         CreateCooldown_Clock(self, strfind(style, "edge$") and true or false)
+    end
+
+    if strfind(style, "^block") then
+        self.icon:Hide()
+    else
+        self.icon:Show()
     end
 end
 
@@ -169,7 +186,7 @@ local function UpdateDuration(self, elapsed)
     end
 end
 
-local function Aura_SetCooldown(self, start, duration, count, icon, auraType, desaturated, glow)
+local function Aura_SetCooldown(self, start, duration, count, icon, auraType, desaturated, glow, r, g, b, a)
     if duration == 0 then
         if self.cooldown then self.cooldown:Hide() end
         self.duration:SetText("")
@@ -204,6 +221,10 @@ local function Aura_SetCooldown(self, start, duration, count, icon, auraType, de
     else
         if self.glow then self.glow:Hide() end
         LCG.ButtonGlow_Stop(self)
+    end
+
+    if r then
+        self:SetBackdropColor(r, g, b, a)
     end
 
     self:SetDesaturated(desaturated)
@@ -300,6 +321,7 @@ function S.CreateAura(parent)
     frame:Hide()
 
     AW.SetDefaultBackdrop(frame)
+    frame:SetBackdropColor(AW.GetColorRGB("black"))
 
     frame:SetScript("OnHide", Aura_OnHide)
 

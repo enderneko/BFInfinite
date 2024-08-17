@@ -51,6 +51,12 @@ local function SortAuras(a, b)
     return a.auraInstanceID < b.auraInstanceID
 end
 
+local function SortAuras_Whitelist(a, b)
+    if a.priority ~= b.priority then
+        return a.priority < b.priority
+    end
+end
+
 ---------------------------------------------------------------------
 -- UpdateExtraData
 ---------------------------------------------------------------------
@@ -89,7 +95,11 @@ local function UpdateExtraData(self, auraData)
     auraData.debuffType = U.GetDebuffType(auraData)
     auraData.dispellable = IsDispellable(self, auraData)
     auraData.noDuration = auraData.duration == 0
-    auraData.priority = self.priorities[auraData.spellId] or 999
+    if self.whitelist then
+        auraData.priority = self.whitelist[auraData.spellId] or 999
+    else
+        auraData.priority = self.priorities[auraData.spellId] or 999
+    end
 end
 
 ---------------------------------------------------------------------
@@ -103,15 +113,23 @@ local function CheckAuraFilter(self, auraData)
     end
 end
 
-local function CheckFilters(self, auraData)
-    -- blacklist
-    if self.blacklist[auraData.spellId] then return end
-
-    -- filter
+local function CheckAdvancedFilters(self, auraData)
     for f in pairs(self.filters) do
         if auraData[f] then
             return true
         end
+    end
+end
+
+local function CheckWhitelist(self, auraData)
+    if self.whitelist[auraData.spellId] then
+        return true
+    end
+end
+
+local function CheckBlacklist(self, auraData)
+    if not self.blacklist[auraData.spellId] then
+        return true
     end
 end
 
@@ -144,7 +162,11 @@ local function ShowAura(self, auraData)
         self.mainShown = self.mainShown + 1
         local aura = self.slots[self.mainShown]
         aura.auraInstanceID = auraData.auraInstanceID -- tooltips
-        aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData))
+        if self.isBlock then
+            aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData), nil, nil, AW.GetColorRGB(auraData.spellId))
+        else
+            aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData))
+        end
     end
 end
 
@@ -206,14 +228,14 @@ local function HandleUpdateInfo(self, updateInfo)
         -- sort
         for auraInstanceID in pairs(self.auras) do
             local auraData = GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID)
-            if auraData then
+            if auraData and self:CheckBasicFilter(auraData) then
                 UpdateExtraData(self, auraData)
-                if CheckFilters(self, auraData) then
+                if CheckAdvancedFilters(self, auraData) then
                     tinsert(self.sortedAuras, auraData)
                 end
             end
         end
-        sort(self.sortedAuras, SortAuras)
+        sort(self.sortedAuras, self.Comparator)
 
         -- show
         self.numAuras = 0
@@ -240,9 +262,9 @@ local function ForEachAura(self, continuationToken, ...)
     for i = 1, n do
         local slot = select(i, ...)
         local auraData = GetAuraDataBySlot(self.root.displayedUnit, slot)
-        if auraData then
+        if auraData and self:CheckBasicFilter(auraData) then
             UpdateExtraData(self, auraData)
-            if CheckFilters(self, auraData) then
+            if CheckAdvancedFilters(self, auraData) then
                 self.auras[auraData.auraInstanceID] = true
                 tinsert(self.sortedAuras, auraData)
             end
@@ -262,7 +284,7 @@ local function HandleAllAuras(self)
     ForEachAura(self, GetAuraSlots(self.root.displayedUnit, self.auraFilter))
 
     -- sort
-    sort(self.sortedAuras, SortAuras)
+    sort(self.sortedAuras, self.Comparator)
 
     -- show
     for i, auraData in pairs(self.sortedAuras) do
@@ -559,6 +581,7 @@ local function Auras_LoadConfig(self, config)
     self.anchor = config.position[1]
     self.spacingH = config.spacingH
     self.spacingV = config.spacingV
+    self.isBlock = strfind(config.cooldownStyle, "^block")
 
     Auras_SetNumSlots(self, config.numTotal)
     Auras_SetSize(self, config.width, config.height)
@@ -567,11 +590,23 @@ local function Auras_LoadConfig(self, config)
     Auras_SetupAuras(self, config)
     Auras_UpdateSize(self, 0)
 
-    -- priorities
-    self.priorities = config.priorities
-
-    -- blacklist
-    self.blacklist = U.ConvertSpellTable(config.blacklist)
+    if config.whitelist and #config.whitelist ~= 0 then
+        -- use whitelist
+        self.whitelist = U.ConvertSpellTable(config.whitelist)
+        -- comparator
+        self.Comparator = SortAuras_Whitelist
+        -- basic filter
+        self.CheckBasicFilter = CheckWhitelist
+    else
+        -- priorities
+        self.priorities = config.priorities
+        -- blacklist
+        self.blacklist = U.ConvertSpellTable(config.blacklist)
+        -- comparator
+        self.Comparator = SortAuras
+        -- basic filter
+        self.CheckBasicFilter = CheckBlacklist
+    end
 
     -- filters
     wipe(self.filters)

@@ -2612,7 +2612,7 @@ local defaults = {
             borderColor = AW.GetColorTable("none"),
             position = {"BOTTOMLEFT", 20, 399},
             orientation = "bottom_to_top",
-            spacing = 9,
+            spacing = 15,
             width = 140,
             height = 25,
             frameStrata = "LOW",
@@ -2678,7 +2678,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0},
                 anchorTo = "root",
-                frameLevel = 1,
+                frameLevel = 5,
                 -- orientation = "HORIZONTAL",
                 width = 140,
                 height = 4,
@@ -2897,13 +2897,13 @@ local defaults = {
                 position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
                 anchorTo = "root",
                 orientation = "right_to_left",
-                cooldownStyle = "vertical",
+                cooldownStyle = "block_vertical",
                 width = 10,
                 height = 10,
                 spacingH = 1,
                 spacingV = 1,
-                numPerLine = 11,
-                numTotal = 22,
+                numPerLine = 10,
+                numTotal = 10,
                 frameLevel = 1,
                 tooltip = {
                     enabled = false,
@@ -2911,8 +2911,8 @@ local defaults = {
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
-                    enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    enabled = false,
+                    font = {"BFI 2", 9, "monochrome", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -2921,8 +2921,8 @@ local defaults = {
                     },
                 },
                 stackText = {
-                    enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    enabled = false,
+                    font = {"BFI 2", 9, "monochrome", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -2936,7 +2936,8 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
-                whitelist = {},
+                whitelist = {
+                },
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = nil,

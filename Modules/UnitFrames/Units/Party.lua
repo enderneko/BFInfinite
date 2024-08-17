@@ -26,7 +26,7 @@ local indicators = {
     "targetHighlight",
     "mouseoverHighlight",
     "threatGlow",
-    -- {"auras", "buffs", "HELPFUL"},
+    {"auras", "buffs", "HELPFUL"},
     -- {"auras", "debuffs", "HARMFUL"},
 }
 
@@ -48,11 +48,6 @@ local function CreateParty()
 
     -- pixel perfect
     AW.AddToPixelUpdater(party)
-
-    -- -- indicators
-    -- party.hasCastBarTicks = true
-    -- party.hasLatency = true
-    -- UF.CreateIndicators(party, indicators)
 end
 
 ---------------------------------------------------------------------
