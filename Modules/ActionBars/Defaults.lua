@@ -79,17 +79,17 @@ do
             },
             text = {
                 hotkey = {
-                    font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
+                    font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
                     color = {1, 1, 1},
                     position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
                 },
                 count = {
-                    font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
+                    font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
                     color = {1, 1, 1},
                     position = {anchor = "BOTTOMRIGHT", relAnchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 1}
                 },
                 macro = {
-                    font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
+                    font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
                     color = {1, 1, 1},
                     position = {anchor = "BOTTOMLEFT", relAnchor = "BOTTOMLEFT", offsetX = 0, offsetY = 0}
                 },
@@ -133,7 +133,7 @@ do
                 },
                 text = {
                     hotkey = {
-                        font = {font = AW.GetFont("visitor"), size = 10, flags = "OUTLINE,MONOCHROME"},
+                        font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
                         color = {1, 1, 1},
                         position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
                     },

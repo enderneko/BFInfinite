@@ -2,16 +2,17 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
     <Script file="Defaults.lua"/>
     <Script file="Nameplates.lua"/>
-     <!-- indicators -->
-     <Script file="Indicators\HealthBar.lua"/>
-     <Script file="Indicators\Auras.lua"/>
-     <Script file="Indicators\CastBar.lua"/>
-     <Script file="Indicators\NameText.lua"/>
-     <Script file="Indicators\HealthText.lua"/>
-     <Script file="Indicators\LevelText.lua"/>
-     <Script file="Indicators\RaidIcon.lua"/>
-     <Script file="Indicators\ClassIcon.lua"/>
-     <Script file="Indicators\RareIndicator.lua"/>
-     <Script file="Indicators\QuestIndicator.lua"/>
-     <Script file="Indicators\Common.lua"/>
+    <!-- indicators -->
+    <Script file="Indicators\HealthBar.lua"/>
+    <Script file="Indicators\Auras.lua"/>
+    <Script file="Indicators\CastBar.lua"/>
+    <Script file="Indicators\NameText.lua"/>
+    <Script file="Indicators\HealthText.lua"/>
+    <Script file="Indicators\LevelText.lua"/>
+    <Script file="Indicators\RaidIcon.lua"/>
+    <Script file="Indicators\ClassIcon.lua"/>
+    <Script file="Indicators\RareIndicator.lua"/>
+    <Script file="Indicators\QuestIndicator.lua"/>
+    <!-- common -->
+    <Script file="Common.lua"/>
 </Ui>

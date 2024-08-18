@@ -91,6 +91,14 @@ function NP.OnNameplateHide(np)
     end
 end
 
+local function LoadPosition(self, position, anchorTo)
+    if self:GetObjectType() == "FontString" then
+        AW.LoadTextPosition(self, position, anchorTo)
+    else
+        AW.LoadWidgetPosition(self, position, anchorTo)
+    end
+end
+
 function NP.LoadIndicatorPosition(self, position, anchorTo)
     if anchorTo == "nameplate" then
         anchorTo = self.root
@@ -106,9 +114,10 @@ function NP.LoadIndicatorPosition(self, position, anchorTo)
         end
     end
 
-    if self:GetObjectType() == "FontString" then
-        AW.LoadTextPosition(self, position, anchorTo)
-    else
-        AW.LoadWidgetPosition(self, position, anchorTo)
+    local success = pcall(LoadPosition, self, position, anchorTo)
+    if not success then
+        -- Cannot anchor to itself
+        -- Cannot anchor to a region dependent on it
+        BFI.Fire("IncorrectAnchor", self)
     end
 end

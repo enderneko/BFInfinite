@@ -41,6 +41,9 @@ local defaults = {
         CHARMED = {0.5, 0, 1},
         TAP_DENIED = {0.5, 0.5, 0.5},
     },
+
+    spells = {
+    },
 }
 
 BFI.RegisterCallback("UpdateConfigs", "Colors", function(t)

@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local AW = BFI.AW
 local U = BFI.utils
-local NP = BFI.M_NamePlates
+local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
 -- vars
@@ -102,7 +102,7 @@ local function GetUnitClassification(unit, level)
 end
 
 ---------------------------------------------------------------------
--- cvars
+-- reset cvar to game default
 ---------------------------------------------------------------------
 local function ResetCVar(cvar)
     SetCVar(cvar, GetCVarDefault(cvar))
@@ -110,29 +110,51 @@ end
 
 function NP.ResetCVars()
     ResetCVar("nameplateOccludedAlphaMult")
+    -- nameOnly
+    ResetCVar("nameplateShowOnlyNames")
+    -- scale
+    ResetCVar("nameplateGlobalScale")
+    ResetCVar("nameplateLargerScale")
     ResetCVar("NamePlateHorizontalScale")
     ResetCVar("NamePlateVerticalScale")
     ResetCVar("nameplateMaxScale")
     ResetCVar("nameplateMinScale")
-    ResetCVar("nameplateLargerScale")
-    ResetCVar("nameplateGlobalScale")
     ResetCVar("nameplateSelectedScale")
+    -- overlap
     ResetCVar("nameplateOverlapH")
     ResetCVar("nameplateOverlapV")
+    -- motion
+    ResetCVar("nameplateMotion")
+    ResetCVar("nameplateMotionSpeed")
+    -- distance
+    ResetCVar("nameplateMaxDistance")
+    ResetCVar("nameplateTargetBehindMaxDistance")
+    -- inset
+    ResetCVar("nameplateTargetRadialPosition")
+    ResetCVar("nameplateLargeTopInset")
+    ResetCVar("nameplateLargeBottomInset")
+    ResetCVar("nameplateOtherTopInset")
+    ResetCVar("nameplateOtherBottomInset")
 end
 
-local function UpdateCVars()
-    SetCVar("NamePlateHorizontalScale", 1.0)
-    SetCVar("NamePlateVerticalScale", 1.0)
-    SetCVar("NamePlateClassificationScale", 1.0)
-    if NP.config.alphas.occluded.enabled then
+---------------------------------------------------------------------
+-- reset cvar to BFI default
+---------------------------------------------------------------------
+function NP.ResetCVarDefaults()
+    -- TODO:
+end
+
+---------------------------------------------------------------------
+-- UpdateCVars
+---------------------------------------------------------------------
+local function UpdateCVars(config)
+    if config.alphas.occluded.enabled then
         SetCVar("nameplateOccludedAlphaMult", NP.config.alphas.occluded.value)
     end
-    SetCVar("nameplateMaxScale", 1.0)
-    SetCVar("nameplateMinScale", 1.0)
-    SetCVar("nameplateLargerScale", 1.0)
-    SetCVar("nameplateGlobalScale", 1.0)
-    SetCVar("nameplateSelectedScale", 1.0)
+
+    for cvar, value in pairs(config.cvars) do
+        SetCVar(cvar, value)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -404,7 +426,7 @@ local function Show(np)
     local guid = UnitGUID(np.unit)
     if guid ~= np.guid then
         np.guid = guid
-        BFI.Debug("|cffff7700NP.UnitChanged:|r", np:GetName())
+        -- BFI.Debug("|cffff7700NP.UnitChanged:|r", np:GetName())
         UpdateNameplateBase(np)
     end
 
@@ -500,7 +522,7 @@ local function CreateNameplate(self, event, nameplate)
     nameplate.bfi = np
     NP.created[nameplate] = np
 
-    BFI.Debug("|cffff7777CreateNameplate:|r", np:GetName())
+    -- BFI.Debug("|cffff7777CreateNameplate:|r", np:GetName())
 
     np.states = {}
     np.indicators = {}
@@ -523,8 +545,8 @@ end
 ---------------------------------------------------------------------
 -- hide blizzard
 ---------------------------------------------------------------------
-local function HideBlzNameplates(self, cvar)
-    if not strfind(strlower(cvar), "nameplate") then return end
+local function HideBlzNameplates(_, event, cvar)
+    if cvar and not strfind(strlower(cvar), "nameplate") then return end
     C_Timer.After(0.25, function()
         for _, np in pairs(NP.created) do
             if np:IsVisible() and np.blz then
@@ -556,7 +578,9 @@ local function UpdateNameplates(module, which)
     NP:RegisterEvent("PLAYER_TARGET_CHANGED", UpdateTarget)
 
     -- cvar
-    UpdateCVars()
+    if not which or which == "cvar" then
+        UpdateCVars(config)
+    end
 
     -- update clickable area size
     SetNamePlateFriendlySize(config.friendlyClickableAreaWidth, config.friendlyClickableAreaHeight)

@@ -2,17 +2,61 @@
 local BFI = select(2, ...)
 local AW = BFI.AW
 local U = BFI.utils
-local NP = BFI.M_NamePlates
+local NP = BFI.NamePlates
 
+---------------------------------------------------------------------
+-- BFI default cvar values
+---------------------------------------------------------------------
+-- nameplateShowSelf = 1
+-- NameplatePersonalShowAlways = 0
+-- NameplatePersonalShowInCombat = 1
+-- NameplatePersonalShowWithTarget = 0
+local CVAR_DEFAULTS = {
+    -- nameOnly
+    nameplateShowOnlyNames = 1,
+    -- color
+    ShowClassColorInNameplate = 1,
+    ShowClassColorInFriendlyNameplate = 1,
+    nameplateOtherAtBase = 0,
+    -- scale
+    nameplateGlobalScale = 1.0,
+    nameplateLargerScale = 1.0,
+    NamePlateHorizontalScale = 1.0,
+    NamePlateVerticalScale = 1.0,
+    nameplateMaxScale = 1.0,
+    nameplateMinScale = 1.0,
+    nameplateSelectedScale = 1.0,
+    --! overlap: the smaller the number, the more it overlaps
+    nameplateOverlapH = 0.5,
+    nameplateOverlapV = 0.5,
+    -- motion
+    nameplateMotion = 1,
+    nameplateMotionSpeed = 0.025,
+    -- distance
+    nameplateMaxDistance = 45,
+    nameplateTargetBehindMaxDistance = 15, --? what's this cvar for?
+    -- inset
+    nameplateTargetRadialPosition = 1, --? 1 & 2 seems the
+    nameplateLargeTopInset = 0.2,
+    nameplateLargeBottomInset = 0.2,
+    nameplateOtherTopInset = 0.08,
+    nameplateOtherBottomInset = -1,
+}
+
+function NP.GetCVarDefaults()
+    return CVAR_DEFAULTS
+end
+
+---------------------------------------------------------------------
+-- defaults
+---------------------------------------------------------------------
 local defaults = {
     enabled = true,
     friendlyClickableAreaWidth = 120,
     friendlyClickableAreaHeight = 40,
     hostileClickableAreaWidth = 120,
     hostileClickableAreaHeight = 40,
-    cvars = {
-
-    },
+    cvars = nil,
     alphas = {
         -- base
         occluded = {enabled = true, value = 0.4},
@@ -69,6 +113,8 @@ local defaults = {
 }
 
 do
+    defaults.cvars = U.Copy(NP.GetCVarDefaults())
+
     local nameplateDefaults = {
         healthBar = {
             enabled = true,
@@ -206,8 +252,9 @@ do
             position = {"RIGHT", "LEFT", -2, 0},
             anchorTo = "healthBar",
             frameLevel = 2,
-            width = 16,
-            height = 16,
+            width = 13,
+            height = 13,
+            style = "text",
         },
         classIcon = {
             enabled = false,
