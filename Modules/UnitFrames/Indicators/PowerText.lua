@@ -183,7 +183,7 @@ end
 local function PowerText_LoadConfig(self, config)
     self:SetHealthFont(unpack(config.font))
     self:SetFormat(config.format)
-    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
 
     self.color = config.color
     self.frequent = config.frequent

@@ -39,9 +39,11 @@ local function CombatIcon_Enable(self)
         self:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateCombatIcon)
         self:RegisterEvent("PLAYER_REGEN_DISABLED", UpdateCombatIcon)
     else
-        self.ticker = C_Timer.NewTicker(0.5, function()
-            CombatIcon_Update(self)
-        end)
+        if not self.ticker then
+            self.ticker = C_Timer.NewTicker(0.5, function()
+                CombatIcon_Update(self)
+            end)
+        end
     end
 end
 
@@ -52,7 +54,8 @@ local function CombatIcon_Disable(self)
     self:Hide()
     self:UnregisterAllEvents()
     if self.ticker then
-        self:Cancel()
+        self.ticker:Cancel()
+        self.ticker = nil
     end
 end
 
@@ -66,6 +69,23 @@ local function CombatIcon_LoadConfig(self, config)
     -- self.icon:SetTexture(AW.GetTexture(config.texture))
     self.text:SetFont(AW.GetFont("glyphs"), config.width, "OUTLINE")
     self.text:SetText(S.CombatGlyph.char)
+end
+
+---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function CombatIcon_EnableConfigMode(self)
+    self.Enable = CombatIcon_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    if self.ticker then self.ticker:Cancel() end
+    self:Show()
+end
+
+local function CombatIcon_DisableConfigMode(self)
+    self.Enable = CombatIcon_Enable
+    self.Update = CombatIcon_Update
 end
 
 ---------------------------------------------------------------------
@@ -93,6 +113,8 @@ function UF.CreateCombatIcon(parent, name)
     frame.Enable = CombatIcon_Enable
     frame.Disable = CombatIcon_Disable
     frame.Update = CombatIcon_Update
+    frame.EnableConfigMode = CombatIcon_EnableConfigMode
+    frame.DisableConfigMode = CombatIcon_DisableConfigMode
     frame.LoadConfig = CombatIcon_LoadConfig
 
     return frame

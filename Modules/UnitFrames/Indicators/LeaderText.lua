@@ -73,9 +73,26 @@ end
 ---------------------------------------------------------------------
 local function LeaderText_LoadConfig(self, config)
     U.SetFont(self, unpack(config.font))
-    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
 
     self.color = config.color
+end
+
+---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function LeaderText_EnableConfigMode(self)
+    self.Enable = LeaderText_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:SetText("L")
+    self:Show()
+end
+
+local function LeaderText_DisableConfigMode(self)
+    self.Enable = LeaderText_Enable
+    self.Update = LeaderText_Update
 end
 
 ---------------------------------------------------------------------

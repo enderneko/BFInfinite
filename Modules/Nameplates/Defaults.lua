@@ -119,7 +119,7 @@ do
         healthBar = {
             enabled = true,
             position = {"CENTER", "CENTER", 0, 0},
-            anchorTo = "nameplate",
+            anchorTo = "root",
             frameLevel = 1,
             width = 120,
             height = 13,
@@ -166,6 +166,7 @@ do
             enabled = true,
             position = {"BOTTOM", "TOP", 0, 1},
             anchorTo = "healthBar",
+            parent = "healthBar",
             length = 1,
             font = {"BFI 1", 12, "none", true},
             color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
@@ -174,6 +175,7 @@ do
             enabled = true,
             position = {"CENTER", "CENTER", -5, 0},
             anchorTo = "healthBar",
+            parent = "healthBar",
             font = {"BFI 1", 11, "none", true},
             color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             format = {
@@ -189,6 +191,7 @@ do
             enabled = true,
             position = {"RIGHT", "RIGHT", -5, 0},
             anchorTo = "healthBar",
+            parent = "healthBar",
             font = {"BFI 1", 11, "none", true},
             color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             highLevelTexture = {
@@ -448,7 +451,8 @@ do
         nameText = {
             enabled = true,
             position = {"CENTER", "CENTER", 0, -10},
-            anchorTo = "nameplate",
+            anchorTo = "root",
+            parent = "root",
             length = 0,
             font = {"BFI 1", 13, "outline", false},
             color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom

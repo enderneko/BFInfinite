@@ -71,7 +71,7 @@ end
 ---------------------------------------------------------------------
 local function NameText_LoadConfig(self, config)
     U.SetFont(self, unpack(config.font))
-    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
 
     self.length = config.length
     self.color = config.color

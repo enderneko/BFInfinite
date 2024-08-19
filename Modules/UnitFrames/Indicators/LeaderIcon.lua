@@ -62,6 +62,24 @@ local function LeaderIcon_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function LeaderIcon_EnableConfigMode(self)
+    self.Enable = LeaderIcon_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self.text:SetText(S.LeaderGlyphs.leader.char)
+    self.text:SetTextColor(AW.UnpackColor(S.LeaderGlyphs.leader.color))
+    self:Show()
+end
+
+local function LeaderIcon_DisableConfigMode(self)
+    self.Enable = LeaderIcon_Enable
+    self.Update = LeaderIcon_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateLeaderIcon(parent, name)
@@ -84,6 +102,8 @@ function UF.CreateLeaderIcon(parent, name)
     -- functions
     frame.Enable = LeaderIcon_Enable
     frame.Update = LeaderIcon_Update
+    frame.EnableConfigMode = LeaderIcon_EnableConfigMode
+    frame.DisableConfigMode = LeaderIcon_DisableConfigMode
     frame.LoadConfig = LeaderIcon_LoadConfig
 
     return frame

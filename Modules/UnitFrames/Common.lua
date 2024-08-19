@@ -73,6 +73,8 @@ function UF.LoadIndicatorConfig(frame, indicatorName, indicatorConfig)
 
     indicator.enabled = indicatorConfig and indicatorConfig.enabled
 
+    if not frame:IsShown() then return end
+
     if indicator.enabled then
         indicator:Enable()
         -- NOTE: let each indicator handle this
@@ -119,7 +121,12 @@ end
 function UF.OnButtonHide(frame)
     for _, indicator in pairs(frame.indicators) do
         if indicator.enabled then
-            indicator:UnregisterAllEvents()
+            if indicator.Disable then
+                indicator:Disable()
+            else
+                indicator:UnregisterAllEvents()
+                indicator:Hide()
+            end
         end
     end
 end
@@ -133,11 +140,20 @@ local function LoadPosition(self, position, anchorTo)
     end
 end
 
-function UF.LoadIndicatorPosition(self, position, anchorTo)
+function UF.LoadIndicatorPosition(self, position, anchorTo, parent)
     if anchorTo == "root" then
         anchorTo = self.root
     elseif anchorTo then
         anchorTo = self.root.indicators[anchorTo]
+    end
+
+    if parent then
+        if parent == "root" then
+            parent = self.root
+        else
+            parent = self.root.indicators[parent]
+        end
+        self:SetParent(parent)
     end
 
     local success = pcall(LoadPosition, self, position, anchorTo)
@@ -267,20 +283,33 @@ end
 ---------------------------------------------------------------------
 local inConfigMode = {}
 
-function UF.AddToConfigMode(frame)
-    inConfigMode[frame] = true
+function UF.AddToConfigMode(group, frame)
+    if not inConfigMode[group] then
+        inConfigMode[group] = {}
+    end
+    inConfigMode[group][frame] = true
 end
 
-function UF.RemoveFromConfigMode(frame)
-    inConfigMode[frame] = nil
+function UF.RemoveFromConfigMode(group, frame)
+    if not inConfigMode[group] then return end
+    inConfigMode[group][frame] = nil
+    if U.IsEmpty(inConfigMode[group]) then
+        inConfigMode[group] = nil
+    end
 end
 
-local EnableConfigMode, DisableConfigMode
+local function EnableConfigModeForGroup(group)
+    for frame in pairs(inConfigMode[group]) do
+        frame.configModeEnabled = true
 
-function EnableConfigMode()
-    UF.configModeEnabled = true
-    UF:RegisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
-    for frame in pairs(inConfigMode) do
+        -- force show indicators
+        for _, indicator in pairs(frame.indicators) do
+            if indicator.enabled and indicator.EnableConfigMode then
+                indicator:EnableConfigMode()
+            end
+        end
+
+        -- force show frame as player
         UnregisterUnitWatch(frame)
         frame.oldUnit = frame.unit
         frame:SetAttribute("unit", "player")
@@ -288,24 +317,59 @@ function EnableConfigMode()
     end
 end
 
-function DisableConfigMode()
-    UF.configModeEnabled = nil
-    UF:UnregisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
-    for frame in pairs(inConfigMode) do
+local function DisableConfigModeForGroup(group)
+    for frame in pairs(inConfigMode[group]) do
+        frame.configModeEnabled = nil
+
+        -- restore indicators
+        for _, indicator in pairs(frame.indicators) do
+            if indicator.enabled and indicator.DisableConfigMode then
+                indicator:DisableConfigMode()
+            end
+        end
+
+        -- restore unit
         UnregisterUnitWatch(frame)
         frame:SetAttribute("unit", frame.oldUnit)
         frame.oldUnit = nil
+        frame:Hide()
         RegisterUnitWatch(frame)
     end
 end
 
-local function ToggleConfigMode(module)
+local EnableConfigMode, DisableConfigMode
+
+function EnableConfigMode(group)
+    UF.configModeEnabled = true
+    UF:RegisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
+    if group then
+        EnableConfigModeForGroup(group)
+    else
+        for group in pairs(inConfigMode) do
+            EnableConfigModeForGroup(group)
+        end
+    end
+end
+
+function DisableConfigMode(group)
+    UF.configModeEnabled = nil
+    UF:UnregisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
+    if group and inConfigMode[group] then
+        DisableConfigModeForGroup(group)
+    else
+        for group in pairs(inConfigMode) do
+            DisableConfigModeForGroup(group)
+        end
+    end
+end
+
+local function ToggleConfigMode(module, which)
     if InCombatLockdown() then return end
     if module and module ~= "UnitFrames" then return end
     if UF.configModeEnabled then
-        DisableConfigMode()
+        DisableConfigMode(which)
     else
-        EnableConfigMode()
+        EnableConfigMode(which)
     end
 end
 BFI.RegisterCallback("ConfigMode", "UnitFrames", ToggleConfigMode)

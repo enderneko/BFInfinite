@@ -99,8 +99,8 @@ local function LoadPosition(self, position, anchorTo)
     end
 end
 
-function NP.LoadIndicatorPosition(self, position, anchorTo)
-    if anchorTo == "nameplate" then
+function NP.LoadIndicatorPosition(self, position, anchorTo, parent)
+    if anchorTo == "root" then
         anchorTo = self.root
         if self.sibling then
             self.sibling:RemoveSibling(self)
@@ -112,6 +112,15 @@ function NP.LoadIndicatorPosition(self, position, anchorTo)
             anchorTo:AddSibling(self)
             self.sibling = anchorTo
         end
+    end
+
+    if parent then
+        if parent == "root" then
+            parent = self.root
+        else
+            parent = self.root.indicators[parent]
+        end
+        self:SetParent(parent)
     end
 
     local success = pcall(LoadPosition, self, position, anchorTo)

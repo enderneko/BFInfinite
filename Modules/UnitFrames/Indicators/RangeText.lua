@@ -73,6 +73,7 @@ end
 local function RangeText_Enable(self)
     self:Show()
     self.updater:Show()
+    if self.root:IsVisible() then UpdateRange(self) end
 end
 
 ---------------------------------------------------------------------
@@ -88,7 +89,7 @@ end
 ---------------------------------------------------------------------
 local function RangeText_LoadConfig(self, config)
     U.SetFont(self, unpack(config.font))
-    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
 
     self.color = config.color
 end

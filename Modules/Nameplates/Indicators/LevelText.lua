@@ -79,7 +79,7 @@ end
 ---------------------------------------------------------------------
 local function LevelText_LoadConfig(self, config)
     U.SetFont(self, unpack(config.font))
-    NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
+    NP.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
 
     self.color = config.color
     self.highLevelTextureEnabled = config.highLevelTexture.enabled

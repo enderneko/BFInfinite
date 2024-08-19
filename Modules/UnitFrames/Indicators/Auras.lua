@@ -582,6 +582,7 @@ local function Auras_LoadConfig(self, config)
     self.spacingH = config.spacingH
     self.spacingV = config.spacingV
     self.isBlock = strfind(config.cooldownStyle, "^block")
+    self.tooltipEnabled = config.tooltip.enabled
 
     Auras_SetNumSlots(self, config.numTotal)
     Auras_SetSize(self, config.width, config.height)
@@ -670,6 +671,55 @@ local function Auras_UpdatePixels(self)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function ConfigMode_RefreshAuras(self)
+    local icon = self.auraFilter == "HELPFUL" and 135953 or 136071
+    if self.isBlock then
+        for i = 1, self.numSlots do
+            self.slots[i]:SetCooldown(GetTime(), 15, i, icon, nil, nil, nil, AW.GetColorRGB("accent"))
+            self.slots[i]:EnableMouse(false)
+        end
+    else
+        for i = 1, self.numSlots do
+            self.slots[i]:SetCooldown(GetTime(), 15, i, icon)
+            self.slots[i]:EnableMouse(false)
+        end
+    end
+    Auras_UpdateSize(self, self.numSlots)
+end
+
+local function Auras_EnableConfigMode(self)
+    self.Enable = Auras_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    if not self.configModeTicker then
+        ConfigMode_RefreshAuras(self)
+        self.configModeTicker = C_Timer.NewTicker(15, function()
+            ConfigMode_RefreshAuras(self)
+        end)
+    end
+    self:Show()
+end
+
+local function Auras_DisableConfigMode(self)
+    self.Enable = Auras_Enable
+    self.Update = Auras_Update
+
+    if self.configModeTicker then
+        self.configModeTicker:Cancel()
+        self.configModeTicker = nil
+    end
+
+    if self.tooltipEnabled then
+        for i = 1, self.numSlots do
+            self.slots[i]:EnableMouse(true)
+        end
+    end
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateAuras(parent, name, auraFilter, hasSubFrame)
@@ -708,6 +758,8 @@ function UF.CreateAuras(parent, name, auraFilter, hasSubFrame)
     frame.Enable = Auras_Enable
     frame.Disable = Auras_Disable
     frame.Update = Auras_Update
+    frame.EnableConfigMode = Auras_EnableConfigMode
+    frame.DisableConfigMode = Auras_DisableConfigMode
     frame.LoadConfig = Auras_LoadConfig
 
     -- pixel perfect

@@ -438,7 +438,7 @@ end
 local function CastBar_SetupNameText(self, config, showIcon)
     self.nameText:SetShown(config.enabled)
     U.SetFont(self.nameText, config.font)
-    AW.LoadTextPosition(self.nameText, config.position, showIcon and self.icon, true)
+    AW.LoadTextPosition(self.nameText, config.position, showIcon and self.icon)
     self.nameText:SetTextColor(unpack(config.color))
     self.nameTextLength = config.length
     self.showName = config.enabled
@@ -448,7 +448,7 @@ end
 local function CastBar_SetupDurationText(self, config)
     self.durationText:SetShown(config.enabled)
     U.SetFont(self.durationText, config.font)
-    AW.LoadTextPosition(self.durationText, config.position, nil, true)
+    AW.LoadTextPosition(self.durationText, config.position)
     self.durationText:SetTextColor(unpack(config.color))
     self.durationFormat = config.format
     self.showDuration = config.enabled

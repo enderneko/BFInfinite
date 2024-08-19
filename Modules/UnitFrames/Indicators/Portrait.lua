@@ -94,7 +94,6 @@ end
 local function Portrait_Enable(self)
     self:RegisterEvent("UNIT_PORTRAIT_UPDATE", UpdatePortrait)
     self:RegisterEvent("UNIT_MODEL_CHANGED", UpdatePortrait)
-    self:RegisterEvent("UNIT_CONNECTION", UpdatePortrait)
 
     -- if self.cutaway then
     --     self:RegisterEvent("UNIT_HEALTH", UpdatePortrait3DCutaway)

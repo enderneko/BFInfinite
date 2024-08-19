@@ -108,8 +108,8 @@ end
 ---------------------------------------------------------------------
 local function UnitButton_UpdateAllStates(self)
     UnitButton_UpdateBaseStates(self)
-    UnitButton_UpdateHealthStates(self)
-    UnitButton_UpdatePowerStates(self)
+    -- UnitButton_UpdateHealthStates(self)
+    -- UnitButton_UpdatePowerStates(self)
 end
 
 ---------------------------------------------------------------------
@@ -153,20 +153,26 @@ end
 -- events
 ---------------------------------------------------------------------
 local function UnitButton_RegisterEvents(self)
-    -- self:RegisterEvent("GROUP_ROSTER_UPDATE")
-
     -- health states
-    self:RegisterEvent("UNIT_HEALTH")
-    self:RegisterEvent("UNIT_MAXHEALTH")
-    self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
+    -- self:RegisterEvent("UNIT_HEALTH")
+    -- self:RegisterEvent("UNIT_MAXHEALTH")
+    -- self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
 
     -- powers states
-    self:RegisterEvent("UNIT_POWER_UPDATE")
-    self:RegisterEvent("UNIT_MAXPOWER")
-    self:RegisterEvent("UNIT_DISPLAYPOWER")
+    -- self:RegisterEvent("UNIT_POWER_UPDATE")
+    -- self:RegisterEvent("UNIT_MAXPOWER")
+    -- self:RegisterEvent("UNIT_DISPLAYPOWER")
 
-    self:RegisterEvent("UNIT_CONNECTION") -- offline
+    self:RegisterEvent("UNIT_CONNECTION")
+    self:RegisterEvent("UNIT_ENTERED_VEHICLE")
+    self:RegisterEvent("UNIT_EXITED_VEHICLE")
+    -- self:RegisterEvent("PARTY_MEMBER_ENABLE")
+    -- self:RegisterEvent("PARTY_MEMBER_DISABLE")
     -- self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+
+    if self._updateOnGroupChanged then
+        self:RegisterEvent("GROUP_ROSTER_UPDATE")
+    end
 
     if self._updateOnPlayerTargetChanged then
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -191,9 +197,6 @@ local function UnitButton_OnEvent(self, event, unit, arg)
 
         elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER" or event == "UNIT_DISPLAYPOWER" then
             UnitButton_UpdatePowerStates(self)
-
-        elseif event == "UNIT_MAXHEALTH" then
-            UnitButton_UpdateHealthStates(self)
         end
 
     else

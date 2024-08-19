@@ -125,6 +125,7 @@ local defaults = {
                 enabled = true,
                 position = {"TOPLEFT", "TOPLEFT", 3, -4},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 length = 0.5,
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
@@ -133,6 +134,7 @@ local defaults = {
                 enabled = true,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
@@ -148,6 +150,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
@@ -279,6 +282,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
             },
@@ -286,6 +290,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 0, 0},
                 anchorTo = "leaderText",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
@@ -293,6 +298,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
                 anchorTo = "levelText",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
@@ -300,6 +306,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
                 anchorTo = "targetCounter",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
@@ -377,6 +384,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOM", "BOTTOM", 0, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 types = {
                     swing = {enabled = true, color = AW.GetColorTable("swing")},
@@ -578,6 +586,7 @@ local defaults = {
                 enabled = true,
                 position = {"TOPLEFT", "TOPLEFT", 3, -4},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 length = 0.5,
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
@@ -586,6 +595,7 @@ local defaults = {
                 enabled = true,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
@@ -601,6 +611,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
@@ -699,6 +710,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
             },
@@ -706,6 +718,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 0, 0},
                 anchorTo = "leaderText",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
@@ -713,6 +726,7 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
                 anchorTo = "levelText",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
@@ -720,12 +734,14 @@ local defaults = {
                 enabled = true,
                 position = {"BOTTOM", "BOTTOM", 0, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
             },
             statusTimer = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
                 anchorTo = "targetCounter",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
@@ -984,6 +1000,7 @@ local defaults = {
                 enabled = true,
                 position = {"CENTER", "CENTER", 0, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 length = 0.9,
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
@@ -992,6 +1009,7 @@ local defaults = {
                 enabled = false,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
@@ -1007,6 +1025,7 @@ local defaults = {
                 enabled = false,
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
@@ -1024,6 +1043,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
@@ -1031,6 +1051,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
+                parent = "healthBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
@@ -1327,6 +1348,7 @@ local defaults = {
                 enabled = true,
                 position = {"CENTER", "CENTER", 0, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 length = 0.9,
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
@@ -1335,6 +1357,7 @@ local defaults = {
                 enabled = false,
                 position = {"RIGHT", "RIGHT", -3, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
@@ -1350,6 +1373,7 @@ local defaults = {
                 enabled = false,
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
@@ -1367,6 +1391,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
@@ -1374,6 +1399,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
+                parent = "healthBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
@@ -1381,6 +1407,7 @@ local defaults = {
                 enabled = true,
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 2", 9, "monochrome", false},
             },
             portrait = {
@@ -1677,6 +1704,7 @@ local defaults = {
                 enabled = true,
                 position = {"CENTER", "CENTER", 0, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 length = 0.9,
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
@@ -1685,6 +1713,7 @@ local defaults = {
                 enabled = false,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
@@ -1700,6 +1729,7 @@ local defaults = {
                 enabled = false,
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
@@ -1717,6 +1747,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
@@ -1724,6 +1755,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
+                parent = "healthBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
@@ -2020,6 +2052,7 @@ local defaults = {
                 enabled = true,
                 position = {"CENTER", "CENTER", 0, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 length = 0.9,
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
@@ -2028,6 +2061,7 @@ local defaults = {
                 enabled = false,
                 position = {"RIGHT", "RIGHT", -5, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
@@ -2043,6 +2077,7 @@ local defaults = {
                 enabled = false,
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
@@ -2060,6 +2095,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
@@ -2067,6 +2103,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
+                parent = "healthBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
@@ -2363,6 +2400,7 @@ local defaults = {
                 enabled = true,
                 position = {"CENTER", "CENTER", 0, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 length = 0.9,
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
@@ -2371,6 +2409,7 @@ local defaults = {
                 enabled = false,
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
@@ -2385,6 +2424,7 @@ local defaults = {
                 enabled = false,
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
@@ -2402,6 +2442,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
@@ -2409,6 +2450,7 @@ local defaults = {
                 enabled = false,
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
+                parent = "healthBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
@@ -2647,7 +2689,7 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 140,
                 height = 20,
-                color = {type = "custom_color", alpha = 0.5, rgb = AW.GetColorTable("uf")},
+                color = {type = "custom_color", alpha = 0.4, rgb = AW.GetColorTable("uf")},
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background", 0),
                 borderColor = AW.GetColorTable("border"),
@@ -2708,6 +2750,7 @@ local defaults = {
                 enabled = true,
                 position = {"LEFT", "LEFT", 3, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 length = 0.5,
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
@@ -2716,6 +2759,7 @@ local defaults = {
                 enabled = true,
                 position = {"RIGHT", "RIGHT", -3, 0},
                 anchorTo = "healthBar",
+                parent = "healthBar",
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
@@ -2731,6 +2775,7 @@ local defaults = {
                 enabled = false,
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
@@ -2745,16 +2790,18 @@ local defaults = {
                 hideIfEmpty = false,
             },
             leaderText = {
-                enabled = false,
-                position = {"BOTTOMLEFT", "BOTTOMLEFT", 2, 0},
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 3, -1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
             },
             levelText = {
                 enabled = true,
-                position = {"TOPLEFT", "TOPLEFT", 3, -1},
-                anchorTo = "powerBar",
+                position = {"TOPLEFT", "TOPRIGHT", 0, 0},
+                anchorTo = "leaderText",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
@@ -2762,6 +2809,7 @@ local defaults = {
                 enabled = false,
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
                 anchorTo = "levelText",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
@@ -2769,6 +2817,7 @@ local defaults = {
                 enabled = true,
                 position = {"TOPRIGHT", "TOPRIGHT", 0, -1},
                 anchorTo = "powerBar",
+                parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
@@ -2929,7 +2978,7 @@ local defaults = {
                 numTotal = 10,
                 frameLevel = 1,
                 tooltip = {
-                    enabled = false,
+                    enabled = true,
                     anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
@@ -2960,8 +3009,8 @@ local defaults = {
                 priorities = {},
                 blacklist = {},
                 whitelist = {
-                    119611,
-                    8936,
+                    -- 774,
+                    -- 8936,
                 },
                 auraTypeColor = {
                     castByMe = false,

@@ -39,8 +39,10 @@ local function CreateParty()
 
     for i = 1, 4 do
         party[i] = CreateFrame("Button", name .. i, party, "BFIUnitButtonTemplate")
+        party[i]._updateOnGroupChanged = true
         -- party[i]:SetAttribute("unit", "player")
         party[i]:SetAttribute("unit", "party" .. i)
+        UF.AddToConfigMode("party", party[i])
     end
 
     -- mover
@@ -66,7 +68,7 @@ local function UpdateParty(module, which)
                 UF.DisableIndicators(party[i])
                 -- UnregisterAttributeDriver(party[i], "state-visibility")
                 UnregisterUnitWatch(party[i])
-                UF.RemoveFromConfigMode(party[i])
+                UF.RemoveFromConfigMode("party", party[i])
             end
             party:Hide()
         end
@@ -85,7 +87,6 @@ local function UpdateParty(module, which)
     for i = 1, 4 do
         -- RegisterAttributeDriver(party[i], "state-visibility", "[@party" .. i .. ",exists] show;hide")
         RegisterUnitWatch(party[i])
-        UF.AddToConfigMode(party[i])
     end
 end
 BFI.RegisterCallback("UpdateModules", "UF_Party", UpdateParty)

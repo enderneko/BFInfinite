@@ -363,17 +363,7 @@ end
 ---------------------------------------------------------------------
 -- load text position
 ---------------------------------------------------------------------
-function AW.LoadTextPosition(text, pos, relativeTo, skipReparent)
-    relativeTo = relativeTo or text:GetParent()
-
-    if not skipReparent then
-        if relativeTo:GetObjectType() == "FontString" then
-            text:SetParent(relativeTo:GetParent())
-        else
-            text:SetParent(relativeTo)
-        end
-    end
-
+function AW.LoadTextPosition(text, pos, relativeTo)
     if strfind(pos[1], "LEFT$") then
         text:SetJustifyH("LEFT")
     elseif strfind(pos[1], "RIGHT$") then
@@ -391,7 +381,7 @@ function AW.LoadTextPosition(text, pos, relativeTo, skipReparent)
     end
 
     AW.ClearPoints(text)
-    AW.SetPoint(text, pos[1], relativeTo, pos[2], pos[3], pos[4])
+    AW.SetPoint(text, pos[1], relativeTo or text:GetParent(), pos[2], pos[3], pos[4])
 end
 
 ---------------------------------------------------------------------
