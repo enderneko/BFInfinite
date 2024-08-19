@@ -99,9 +99,14 @@ local function UpdateShield(self, event, unitId)
                 self.shield:Show()
 
                 if self.overshieldGlowEnabled then
-                    self.overshieldGlowR:Show()
+                    if p == 1 then
+                        self.overshieldGlowR:Hide()
+                        self.fullOvershieldGlowR:Show()
+                    else
+                        self.overshieldGlowR:Show()
+                        self.fullOvershieldGlowR:Hide()
+                    end
                 end
-                self.overshieldGlow:Hide()
             else -- normal
                 local p = 1 - self.healthPercent
                 if p ~= 0 then
@@ -115,17 +120,20 @@ local function UpdateShield(self, event, unitId)
                     self.overshieldGlow:Show()
                 end
                 self.overshieldGlowR:Hide()
+                self.fullOvershieldGlowR:Hide()
             end
         else
             self.shield:SetWidth(self.shieldPercent * barWidth)
             self.shield:Show()
             self.overshieldGlow:Hide()
             self.overshieldGlowR:Hide()
+            self.fullOvershieldGlowR:Hide()
         end
     else
         self.shield:Hide()
         self.overshieldGlow:Hide()
         self.overshieldGlowR:Hide()
+        self.fullOvershieldGlowR:Hide()
     end
 end
 
@@ -541,6 +549,14 @@ function UF.CreateHealthBar(parent, name)
     AW.SetPoint(overshieldGlowR, "TOP", shield, "TOPLEFT")
     AW.SetPoint(overshieldGlowR, "BOTTOM", shield, "BOTTOMLEFT")
     AW.SetWidth(overshieldGlowR, 6)
+
+    local fullOvershieldGlowR = bar:CreateTexture(name.."FullOvershieldGlowR", "ARTWORK", nil, 3)
+    bar.fullOvershieldGlowR = fullOvershieldGlowR
+    fullOvershieldGlowR:Hide()
+    fullOvershieldGlowR:SetTexture(AW.GetTexture("Overabsorb"))
+    AW.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg)
+    AW.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg)
+    AW.SetWidth(fullOvershieldGlowR, 4)
 
     -- healAbsorb
     local healAbsorb = bar:CreateTexture(name.."HealAbsorb", "ARTWORK", nil, 4)
