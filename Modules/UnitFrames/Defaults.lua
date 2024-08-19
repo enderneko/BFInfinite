@@ -428,6 +428,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = nil,
@@ -478,6 +479,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = true,
@@ -825,6 +827,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = true,
                     dispellable = true,
@@ -875,6 +878,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = true,
@@ -1173,6 +1177,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = true,
                     dispellable = true,
@@ -1223,6 +1228,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = true,
@@ -1521,6 +1527,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = true,
                     dispellable = true,
@@ -1571,6 +1578,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = true,
@@ -1862,6 +1870,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = true,
                     dispellable = true,
@@ -1912,6 +1921,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = true,
@@ -2203,6 +2213,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = true,
                     dispellable = true,
@@ -2253,6 +2264,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = true,
@@ -2544,6 +2556,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = true,
                     dispellable = true,
@@ -2594,6 +2607,7 @@ local defaults = {
                 },
                 priorities = {},
                 blacklist = {},
+                whitelist = {},
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = true,
@@ -2937,11 +2951,64 @@ local defaults = {
                 priorities = {},
                 blacklist = {},
                 whitelist = {
+                    119611,
+                    8936,
                 },
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = nil,
                     debuffType = nil,
+                },
+            },
+            debuffs = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPRIGHT", 1, 0},
+                anchorTo = "root",
+                orientation = "left_to_right",
+                cooldownStyle = "none",
+                width = 19,
+                height = 19,
+                spacingH = 1,
+                spacingV = 1,
+                numPerLine = 5,
+                numTotal = 5,
+                frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
+                durationText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 0},
+                    color = {
+                        AW.GetColorTable("white"), -- normal
+                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI 1", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AW.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = true,
+                    castByUnit = true,
+                    castByNPC = true,
+                    isBossAura = true,
+                    dispellable = true,
+                },
+                priorities = {},
+                blacklist = {},
+                whitelist = {},
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = true,
+                    debuffType = true,
                 },
             },
         },
