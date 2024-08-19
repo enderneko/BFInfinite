@@ -2888,6 +2888,15 @@ local defaults = {
                 height = 10,
                 hideDamager = true,
             },
+            factionIcon = {
+                enabled = true,
+                position = {"CENTER", "TOPRIGHT", -1, -1},
+                anchorTo = "root",
+                frameLevel = 10,
+                width = 13,
+                height = 13,
+                style = "text",
+            },
             targetHighlight = {
                 enabled = true,
                 frameLevel = 1,
