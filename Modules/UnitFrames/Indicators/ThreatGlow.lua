@@ -52,6 +52,23 @@ local function ThreatGlow_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function ThreatGlow_EnableConfigMode(self)
+    self.Enable = ThreatGlow_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:SetBackdropBorderColor(1, 0, 0, self.alpha)
+    self:Show()
+end
+
+local function ThreatGlow_DisableConfigMode(self)
+    self.Enable = ThreatGlow_Enable
+    self.Update = ThreatGlow_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateThreatGlow(parent, name)
@@ -65,6 +82,8 @@ function UF.CreateThreatGlow(parent, name)
     -- functions
     glow.Enable = ThreatGlow_Enable
     glow.Update = ThreatGlow_Update
+    glow.EnableConfigMode = ThreatGlow_EnableConfigMode
+    glow.DisableConfigMode = ThreatGlow_DisableConfigMode
     glow.LoadConfig = ThreatGlow_LoadConfig
 
     -- pixel perfect

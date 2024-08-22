@@ -20,7 +20,7 @@ end
 --@debug@
 BFI.RegisterCallback("UpdateConfigs", "Debug", function(tbl, name, ...)
     print(AW.WrapTextInColor("UpdateConfigs:", "sand"), name, ...)
-end)
+end, 1)
 
 -- BFI.RegisterCallback("InitModules", "Debug", function(name, ...)
 --     print(AW.WrapTextInColor("InitModules:", "orange"), name, ...)
@@ -28,5 +28,5 @@ end)
 
 BFI.RegisterCallback("UpdateModules", "Debug", function(name, ...)
     print(AW.WrapTextInColor("UpdateModules:", "orange"), name, ...)
-end)
+end, 1)
 --@end-debug@

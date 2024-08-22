@@ -36,13 +36,33 @@ local indicators = {
 local function CreateParty()
     local name = "BFIUF_Party"
     party = CreateFrame("Frame", name, AW.UIParent, "SecureFrameTemplate")
+    UF.AddToConfigMode("party.container", party)
 
-    for i = 1, 4 do
-        party[i] = CreateFrame("Button", name .. i, party, "BFIUnitButtonTemplate")
-        party[i]._updateOnGroupChanged = true
-        -- party[i]:SetAttribute("unit", "player")
-        party[i]:SetAttribute("unit", "party" .. i)
-        UF.AddToConfigMode("party", party[i])
+    local header = CreateFrame("Frame", name .. "Header", party, "SecureGroupHeaderTemplate")
+    party.header = header
+    UF.AddToConfigMode("party.header", header)
+    header:SetAttribute("template", "BFIUnitButtonTemplate")
+    header:SetAttribute("showParty", true)
+
+    --! to make needButtons == 5 cheat configureChildren in SecureGroupHeaders.lua
+    header:SetAttribute("startingIndex", -4)
+    header:Show()
+    header:SetAttribute("startingIndex", 1)
+
+    header:HookScript("OnAttributeChanged", function(self, attr)
+        if not self.inConfigMode then return end
+        if self:GetAttribute("startingIndex") ~= -4 then
+            self:SetAttribute("startingIndex", -4)
+        end
+    end)
+
+    party.driverKey = "state-visibility"
+    party.driverValue = "[petbattle] hide;[@raid1,exists] hide;[@party1,exists] show;[group:party] show;hide"
+
+    for i = 1, 5 do
+        header[i]._updateOnGroupChanged = true
+        UF.AddToConfigMode("party", header[i])
+        UF.CreateIndicators(header[i], indicators)
     end
 
     -- mover
@@ -64,12 +84,11 @@ local function UpdateParty(module, which)
     if not config.enabled then
         if party then
             UnregisterAttributeDriver(party)
-            for i = 1, 4 do
-                UF.DisableIndicators(party[i])
-                -- UnregisterAttributeDriver(party[i], "state-visibility")
-                UnregisterUnitWatch(party[i])
-                UF.RemoveFromConfigMode("party", party[i])
+            for i = 1, 5 do
+                UF.DisableIndicators(party.header[i])
             end
+            UF.RemoveFromConfigMode("party")
+            party.enabled = false -- for mover
             party:Hide()
         end
         return
@@ -79,14 +98,71 @@ local function UpdateParty(module, which)
         CreateParty()
     end
 
+    party.enabled = true -- for mover
+
     -- setup
-    UF.SetupUnitGroup(party, config, indicators)
+    local header = party.header
+    local unitCount = config.general.showPlayer and 5 or 4
+
+    -- strata & level
+    party:SetFrameStrata(config.general.frameStrata)
+    party:SetFrameLevel(config.general.frameLevel)
+
+    -- mover
+    AW.UpdateMoverSave(party, config.general.position)
+
+    -- position
+    AW.LoadPosition(party, config.general.position)
+
+    -- container size
+    if config.general.orientation == "top_to_bottom" or config.general.orientation == "bottom_to_top" then
+        AW.SetWidth(party, config.general.width)
+        AW.SetListHeight(party, unitCount, config.general.height, config.general.spacing)
+    else
+        AW.SetHeight(party, config.general.height)
+        AW.SetListWidth(party, unitCount, config.general.width, config.general.spacing)
+    end
+
+    -- header
+    local p, rp, x, y, hp = UF.GetSimplePositionArgs(config)
+    header:ClearAllPoints()
+    header:SetPoint(p, party)
+    header:SetAttribute("point", hp)
+    header:SetAttribute("xOffset", x)
+    header:SetAttribute("yOffset", y)
+    header:SetAttribute("buttonWidth", AW.ConvertPixelsForRegion(config.general.width, party))
+    header:SetAttribute("buttonHeight", AW.ConvertPixelsForRegion(config.general.height, party))
+    header:SetAttribute("showPlayer", config.general.showPlayer)
+    header:SetAttribute("showSolo", true)
+    header:SetAttribute("showRaid", true)
+    header:SetAttribute("showParty", true)
+    header:SetSize(config.general.width, config.general.height)
+    header:Show()
+
+    -- buttons
+    for i = 1, 5 do
+        local button = header[i]
+        button:ClearAllPoints()
+
+        -- size
+        AW.SetSize(button, config.general.width, config.general.height)
+        -- out of range alpha
+        button.oorAlpha = config.general.oorAlpha
+        -- tooltip
+        UF.SetupTooltip(button, config.general.tooltip)
+        -- color
+        AW.StylizeFrame(button, config.general.bgColor, config.general.borderColor)
+        -- indicators
+        UF.SetupIndicators(button, indicators, config)
+    end
+
+    header:SetAttribute("unitsPerColumn", 5)
 
     -- visibility NOTE: show must invoke after settings applied
-    RegisterAttributeDriver(party, "state-visibility", "[petbattle] hide;[@raid1,exists] hide;[@party1,exists] show;[group:party] show;hide")
-    for i = 1, 4 do
+    RegisterAttributeDriver(party, party.driverKey, party.driverValue)
+    -- for i = 1, 4 do
         -- RegisterAttributeDriver(party[i], "state-visibility", "[@party" .. i .. ",exists] show;hide")
-        RegisterUnitWatch(party[i])
-    end
+        -- RegisterUnitWatch(party[i])
+    -- end
 end
 BFI.RegisterCallback("UpdateModules", "UF_Party", UpdateParty)

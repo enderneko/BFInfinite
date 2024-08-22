@@ -34,6 +34,7 @@
     <Script file="Indicators\IncDmgHealText.lua"/>
     <!-- common -->
     <Script file="Common.lua"/>
+    <Script file="ConfigMode.lua"/>
     <!-- units -->
     <Script file="Units\Player.lua"/>
     <Script file="Units\Target.lua"/>

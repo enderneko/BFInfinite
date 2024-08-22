@@ -95,6 +95,25 @@ local function RangeText_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function RangeText_EnableConfigMode(self)
+    self.Enable = RangeText_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:SetText("30-35")
+    UpdateColor(self, 35)
+    self.updater:Hide()
+    self:Show()
+end
+
+local function RangeText_DisableConfigMode(self)
+    self.Enable = RangeText_Enable
+    self.Update = RangeText_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateRangeText(parent, name)
@@ -116,6 +135,8 @@ function UF.CreateRangeText(parent, name)
     text.Enable = RangeText_Enable
     text.Disable = RangeText_Disable
     text.Update = RangeText_Update
+    text.EnableConfigMode = RangeText_EnableConfigMode
+    text.DisableConfigMode = RangeText_DisableConfigMode
     text.LoadConfig = RangeText_LoadConfig
 
     return text

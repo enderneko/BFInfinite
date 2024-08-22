@@ -380,7 +380,9 @@ local function HealthBar_Enable(self)
     end
 
     self:Show()
-    self:Update()
+    -- C_Timer.After(1, function()
+        self:Update()
+    -- end)
 end
 
 ---------------------------------------------------------------------
@@ -502,6 +504,30 @@ local function HealthBar_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function SetupConfigModeValues(self)
+    self:SetBarMinMaxValues(0, 100)
+    self:SetBarValue(random(20, 100))
+    UpdateHealthColor(self)
+    -- HealthBar_Update(self)
+end
+
+local function HealthBar_EnableConfigMode(self)
+    self.Enable = HealthBar_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    SetupConfigModeValues(self)
+    self:Show()
+end
+
+local function HealthBar_DisableConfigMode(self)
+    self.Enable = HealthBar_Enable
+    self.Update = HealthBar_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 -- TODO: gradient texture & mask
@@ -598,6 +624,8 @@ function UF.CreateHealthBar(parent, name)
     bar.Update = HealthBar_Update
     bar.Enable = HealthBar_Enable
     bar.Disable = HealthBar_Disable
+    bar.EnableConfigMode = HealthBar_EnableConfigMode
+    bar.DisableConfigMode = HealthBar_DisableConfigMode
     bar.LoadConfig = HealthBar_LoadConfig
 
     -- pixel perfect

@@ -137,7 +137,7 @@ end
 ---------------------------------------------------------------------
 --- @param force boolean tell some indicator to perform a force update
 local function UnitButton_UpdateAll(self, force)
-    if not self:IsVisible() then return end
+    if not self:IsVisible() or self.inConfigMode then return end
 
     -- update indicators
     UF.UpdateIndicators(self, force)

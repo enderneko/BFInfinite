@@ -83,7 +83,13 @@ local function UpdateValue(self)
     else
         self.value = Clamp(self.value, self.min, self.max)
         local p = (self.value - self.min) / (self.max - self.min)
-        self.fg:SetWidth(p * self:GetBarWidth())
+        if self:GetBarWidth() == 0 then
+            C_Timer.After(0, function()
+                self.fg:SetWidth(p * self:GetBarWidth())
+            end)
+        else
+            self.fg:SetWidth(p * self:GetBarWidth())
+        end
     end
 end
 

@@ -45,6 +45,9 @@ local function CreateTarget()
     -- mover
     AW.CreateMover(target, "UnitFrames", name)
 
+    -- config mode
+    UF.AddToConfigMode("target", target)
+
     -- pixel perfect
     -- AW.AddToPixelUpdater(target)
 
@@ -65,6 +68,8 @@ local function UpdateTarget(module, which)
         if target then
             UF.DisableIndicators(target)
             UnregisterUnitWatch(target)
+            UF.RemoveFromConfigMode("target")
+            target.enabled = false -- for mover
             target:Hide()
         end
         return
@@ -73,6 +78,8 @@ local function UpdateTarget(module, which)
     if not target then
         CreateTarget()
     end
+
+    target.enabled = true -- for mover
 
     -- setup
     UF.SetupUnitFrame(target, config, indicators)

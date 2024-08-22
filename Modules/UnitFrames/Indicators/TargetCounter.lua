@@ -99,6 +99,23 @@ local function TargetCounter_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function TargetCounter_EnableConfigMode(self)
+    self.Enable = TargetCounter_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:SetText(8)
+    self:Show()
+end
+
+local function TargetCounter_DisableConfigMode(self)
+    self.Enable = TargetCounter_Enable
+    self.Update = TargetCounter_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateTargetCounter(parent, name)
@@ -112,6 +129,8 @@ function UF.CreateTargetCounter(parent, name)
     -- functions
     text.Enable = TargetCounter_Enable
     text.Update = TargetCounter_Update
+    text.EnableConfigMode = TargetCounter_EnableConfigMode
+    text.DisableConfigMode = TargetCounter_DisableConfigMode
     text.LoadConfig = TargetCounter_LoadConfig
 
     return text
