@@ -336,7 +336,7 @@ local function Auras_Enable(self)
     self:RegisterEvent("UNIT_AURA", UpdateAuras)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

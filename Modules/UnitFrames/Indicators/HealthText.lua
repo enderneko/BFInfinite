@@ -83,7 +83,7 @@ local function HealthText_Enable(self)
     -- self:RegisterEvent("UNIT_FACTION", UpdateColor)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

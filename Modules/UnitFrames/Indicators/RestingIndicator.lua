@@ -22,7 +22,7 @@ end
 local function RestingIndicator_Enable(self)
     self:RegisterEvent("PLAYER_UPDATE_RESTING", RestingIndicator_Update)
     self:RegisterEvent("PLAYER_ENTERING_WORLD", RestingIndicator_Update)
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

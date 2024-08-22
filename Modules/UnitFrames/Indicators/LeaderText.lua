@@ -65,7 +65,7 @@ local function LeaderText_Enable(self)
     self:RegisterEvent("GROUP_ROSTER_UPDATE", UpdateLeaderText, UpdateColor)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

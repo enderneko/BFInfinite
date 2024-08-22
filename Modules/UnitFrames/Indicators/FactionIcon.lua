@@ -32,7 +32,7 @@ end
 ---------------------------------------------------------------------
 local function FactionIcon_Enable(self)
     -- self:RegisterEvent("UNIT_FACTION", FactionIcon_Update)
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

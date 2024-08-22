@@ -33,7 +33,7 @@ end
 ---------------------------------------------------------------------
 local function RaidIcon_Enable(self)
     self:RegisterEvent("RAID_TARGET_UPDATE", RaidIcon_Update)
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

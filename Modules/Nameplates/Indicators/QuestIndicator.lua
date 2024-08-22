@@ -197,7 +197,7 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function QuestIndicator_Enable(self)
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

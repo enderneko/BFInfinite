@@ -73,7 +73,7 @@ end
 local function RangeText_Enable(self)
     self:Show()
     self.updater:Show()
-    if self.root:IsVisible() then UpdateRange(self) end
+    UpdateRange(self)
 end
 
 ---------------------------------------------------------------------

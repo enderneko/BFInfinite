@@ -1,16 +1,23 @@
 {
     "scm.diffDecorationsIgnoreTrimWhitespace": "true",
-    "trailing-spaces.trimOnSave": true,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "Lua.workspace.library": [
-        "~\\.vscode\\extensions\\ketho.wow-api-0.17.4\\Annotations\\Data",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.17.4\\Annotations\\Interface",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.17.4\\Annotations\\Libraries",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.17.4\\Annotations\\Type",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.17.4\\Annotations\\Widget"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.17.4\\Annotations"
     ],
     "Lua.diagnostics.globals": [
         "BFI"
     ],
+    "Lua.runtime.version": "Lua 5.1",
+    "Lua.runtime.builtin": {
+        "basic": "disable",
+        "debug": "disable",
+        "io": "disable",
+        "math": "disable",
+        "os": "disable",
+        "package": "disable",
+        "string": "disable",
+        "table": "disable",
+        "utf8": "disable"
+    },
 }

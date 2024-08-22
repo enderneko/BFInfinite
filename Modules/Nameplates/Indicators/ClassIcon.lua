@@ -33,7 +33,7 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function ClassIcon_Enable(self)
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

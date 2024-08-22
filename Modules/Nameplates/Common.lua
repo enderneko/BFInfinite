@@ -38,9 +38,12 @@ function NP.LoadIndicatorConfig(np, indicatorName, indicatorConfig)
 
     if indicatorConfig then
         indicator:LoadConfig(indicatorConfig)
+        indicator.enabled = indicatorConfig.enabled
+    else
+        indicator.enabled = false
     end
 
-    indicator.enabled = indicatorConfig and indicatorConfig.enabled
+    if not np:IsShown() then return end
 
     if indicator.enabled then
         indicator:Enable()

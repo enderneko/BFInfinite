@@ -362,7 +362,7 @@ local function HealthBar_Enable(self)
     end
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

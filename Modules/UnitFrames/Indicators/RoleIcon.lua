@@ -32,7 +32,7 @@ end
 ---------------------------------------------------------------------
 local function RoleIcon_Enable(self)
     self:RegisterEvent("GROUP_ROSTER_UPDATE", RoleIcon_Update)
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

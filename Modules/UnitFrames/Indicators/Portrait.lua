@@ -104,7 +104,7 @@ local function Portrait_Enable(self)
     -- end
 
     self:Show()
-    if self:IsVisible() then self:Update(true) end
+    self:Update(true)
 end
 
 ---------------------------------------------------------------------

@@ -169,7 +169,7 @@ local function PowerBar_Enable(self)
     self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateAll)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

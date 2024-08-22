@@ -34,7 +34,7 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function RareIndicator_Enable(self)
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

@@ -42,7 +42,7 @@ end
 local function IncDmgHealText_Enable(self)
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", CLEU)
 
-    if self:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

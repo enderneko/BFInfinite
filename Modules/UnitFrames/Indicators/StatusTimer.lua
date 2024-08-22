@@ -130,7 +130,7 @@ local function StatusTimer_Enable(self)
     self:Show()
     self.updater.elapsed = 1
     self.updater:SetScript("OnUpdate", StatusTimer_OnUpdate)
-    if self:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

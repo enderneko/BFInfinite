@@ -84,7 +84,7 @@ local function PowerText_Enable(self)
     self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateColor, UpdatePower)
 
     self:Show()
-    if self:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

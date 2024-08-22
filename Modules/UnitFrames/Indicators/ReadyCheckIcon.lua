@@ -46,7 +46,7 @@ local function ReadyCheckIcon_Enable(self)
     self:RegisterEvent("READY_CHECK", ReadyCheckIcon_Update)
     self:RegisterEvent("READY_CHECK_CONFIRM", ReadyCheckIcon_Update)
     self:RegisterEvent("READY_CHECK_FINISHED", ReadyCheckIcon_Finish)
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

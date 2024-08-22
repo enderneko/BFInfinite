@@ -34,7 +34,7 @@ end
 ---------------------------------------------------------------------
 local function TargetHighlight_Enable(self)
     self:RegisterEvent("PLAYER_TARGET_CHANGED", UpdateTarget)
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------

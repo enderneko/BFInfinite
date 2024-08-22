@@ -73,7 +73,7 @@ local function HealthText_Enable(self)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateHealth)
 
     self:Show()
-    if self.root:IsVisible() then self:Update() end
+    self:Update()
 end
 
 ---------------------------------------------------------------------
