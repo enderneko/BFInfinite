@@ -261,7 +261,7 @@ local function UpdateEmpowerPips(self, numStages)
     self.curStage = 0
 
     for stage = 1, numStages do
-        local duration = GetUnitEmpowerStageDuration(self.root.displayedUnit, stage - 1)
+        local duration = GetUnitEmpowerStageDuration(self.root.displayedUnit, stage - 1) / 1000
         totalDuration = totalDuration + duration
         self.stageBounds[stage] = totalDuration
 
@@ -276,7 +276,7 @@ local function UpdateEmpowerPips(self, numStages)
         if stage == numStages then
             pip:SetPoint("RIGHT")
         else
-            local nextDuration = GetUnitEmpowerStageDuration(self.root.displayedUnit, stage)
+            local nextDuration = GetUnitEmpowerStageDuration(self.root.displayedUnit, stage) / 1000
             pip:SetWidth(nextDuration / self.duration * width)
         end
 
