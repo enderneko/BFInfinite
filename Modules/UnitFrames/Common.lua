@@ -2,8 +2,23 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
----@class UnitFrame
+---@class UnitFrames
 local UF = BFI.UnitFrames
+
+---------------------------------------------------------------------
+-- unit frame parent
+---------------------------------------------------------------------
+UF.Parent = CreateFrame("Frame", "BFIUnitFrameParent", AW.UIParent, "SecureHandlerStateTemplate")
+UF.Parent:SetFrameStrata("LOW")
+UF.Parent:SetAllPoints(AW.UIParent)
+RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
+
+local function UpdateGeneral(module, which)
+    if module and module ~= "UnitFrames" then return end
+    if which and which ~= "general" then return end
+    UF.Parent:SetFrameStrata(UF.config.general.frameStrata)
+end
+BFI.RegisterCallback("UpdateModules", "UF_General", UpdateGeneral)
 
 ---------------------------------------------------------------------
 -- indicator
@@ -116,7 +131,6 @@ function UF.UpdateIndicators(frame, force)
 end
 
 function UF.OnButtonShow(frame)
-    print(frame:GetName())
     for _, indicator in pairs(frame.indicators) do
         if indicator.enabled then
             indicator:Enable()
@@ -178,8 +192,8 @@ function UF.SetupUnitFrame(frame, config, indicators)
     AW.UpdateMoverSave(frame, config.general.position)
 
     -- strata & level
-    frame:SetFrameStrata(config.general.frameStrata)
-    frame:SetFrameLevel(config.general.frameLevel)
+    -- frame:SetFrameStrata(config.general.frameStrata)
+    -- frame:SetFrameLevel(config.general.frameLevel)
 
     -- tooltip
     UF.SetupTooltip(frame, config.general.tooltip)

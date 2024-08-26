@@ -7,6 +7,9 @@ local UF = BFI.UnitFrames
 -- TODO: presets
 
 local defaults = {
+    general = {
+        frameStrata = "LOW",
+    },
     player = {
         enabled = true,
         general = {
@@ -15,8 +18,6 @@ local defaults = {
             position = {"BOTTOMLEFT", 300, 301},
             width = 225,
             height = 49,
-            frameStrata = "LOW",
-            frameLevel = 1,
             oorAlpha = nil,
             tooltip = {
                 enabled = true,
@@ -376,7 +377,6 @@ local defaults = {
             },
             threatGlow = {
                 enabled = true,
-                frameLevel = 1,
                 size = 3,
                 alpha = 1,
             },
@@ -507,8 +507,6 @@ local defaults = {
             position = {"BOTTOMLEFT", 739, 301},
             width = 225,
             height = 49,
-            frameStrata = "LOW",
-            frameLevel = 1,
             oorAlpha = 1,
             tooltip = {
                 enabled = true,
@@ -795,7 +793,6 @@ local defaults = {
             },
             threatGlow = {
                 enabled = true,
-                frameLevel = 1,
                 size = 3,
                 alpha = 1,
             },
@@ -921,8 +918,6 @@ local defaults = {
             position = {"BOTTOMLEFT", 635, 301},
             width = 97,
             height = 22,
-            frameStrata = "LOW",
-            frameLevel = 1,
             oorAlpha = 1,
             tooltip = {
                 enabled = false,
@@ -1150,7 +1145,6 @@ local defaults = {
             },
             threatGlow = {
                 enabled = true,
-                frameLevel = 1,
                 size = 3,
                 alpha = 1,
             },
@@ -1266,11 +1260,9 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 531, 327},
+            position = {"BOTTOMLEFT", 532, 327},
             width = 200,
             height = 23,
-            frameStrata = "LOW",
-            frameLevel = 1,
             oorAlpha = 1,
             tooltip = {
                 enabled = true,
@@ -1506,7 +1498,6 @@ local defaults = {
             },
             threatGlow = {
                 enabled = true,
-                frameLevel = 1,
                 size = 3,
                 alpha = 1,
             },
@@ -1625,8 +1616,6 @@ local defaults = {
             position = {"BOTTOMLEFT", 532, 301},
             width = 97,
             height = 22,
-            frameStrata = "LOW",
-            frameLevel = 1,
             oorAlpha = 1,
             tooltip = {
                 enabled = false,
@@ -1854,7 +1843,6 @@ local defaults = {
             },
             threatGlow = {
                 enabled = true,
-                frameLevel = 1,
                 size = 3,
                 alpha = 1,
             },
@@ -1970,11 +1958,9 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 221, 319},
+            position = {"BOTTOMLEFT", 219, 319},
             width = 77,
             height = 31,
-            frameStrata = "LOW",
-            frameLevel = 1,
             oorAlpha = 0.45,
             tooltip = {
                 enabled = false,
@@ -2202,7 +2188,6 @@ local defaults = {
             },
             threatGlow = {
                 enabled = true,
-                frameLevel = 1,
                 size = 3,
                 alpha = 1,
             },
@@ -2318,11 +2303,9 @@ local defaults = {
         general = {
             bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
-            position = {"BOTTOMLEFT", 221, 301},
+            position = {"BOTTOMLEFT", 219, 301},
             width = 77,
             height = 17,
-            frameStrata = "LOW",
-            frameLevel = 1,
             oorAlpha = 0.45,
             tooltip = {
                 enabled = false,
@@ -2550,7 +2533,6 @@ local defaults = {
             },
             threatGlow = {
                 enabled = false,
-                frameLevel = 1,
                 size = 3,
                 alpha = 1,
             },
@@ -2672,8 +2654,6 @@ local defaults = {
             spacing = 15,
             width = 140,
             height = 25,
-            frameStrata = "LOW",
-            frameLevel = 1,
             oorAlpha = 0.45,
             tooltip = {
                 enabled = true,
@@ -2843,18 +2823,18 @@ local defaults = {
             },
             castBar = {
                 enabled = true,
-                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
                 anchorTo = "root",
-                frameLevel = 15,
+                frameLevel = 5,
                 width = 140,
-                height = 20,
-                bgColor = AW.GetColorTable("background", 0.5),
+                height = 4,
+                bgColor = AW.GetColorTable("background", 0.5, 0),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
                 fadeDuration = 1,
-                showIcon = true,
+                showIcon = false,
                 nameText = {
-                    enabled = true,
+                    enabled = false,
                     font = {"BFI 1", 12, "none", true},
                     position = {"LEFT", "LEFT", 23, 0},
                     color = AW.GetColorTable("white"),
@@ -2961,7 +2941,6 @@ local defaults = {
             },
             threatGlow = {
                 enabled = true,
-                frameLevel = 1,
                 size = 3,
                 alpha = 1,
             },

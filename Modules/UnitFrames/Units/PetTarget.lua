@@ -28,7 +28,7 @@ local indicators = {
 ---------------------------------------------------------------------
 local function CreatePetTarget()
     local name = "BFIUF_PetTarget"
-    pettarget = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
+    pettarget = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     pettarget:SetAttribute("unit", "pettarget")
     pettarget._refreshOnUpdate = true
     pettarget._updateOnUnitTargetChanged = "pet"
@@ -36,6 +36,9 @@ local function CreatePetTarget()
 
     -- mover
     AW.CreateMover(pettarget, "UnitFrames", name)
+
+    -- config mode
+    UF.AddToConfigMode("pettarget", pettarget)
 
     -- pixel perfect
     -- AW.AddToPixelUpdater(pettarget)

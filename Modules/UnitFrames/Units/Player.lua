@@ -40,11 +40,14 @@ local indicators = {
 ---------------------------------------------------------------------
 local function CreatePlayer()
     local name = "BFIUF_Player"
-    player = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
+    player = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     player:SetAttribute("unit", "player")
 
     -- mover
     AW.CreateMover(player, "UnitFrames", name)
+
+    -- config mode
+    UF.AddToConfigMode("player", player)
 
     -- pixel perfect
     -- AW.AddToPixelUpdater(player)
@@ -67,7 +70,7 @@ local function UpdatePlayer(module, which)
     if not config.enabled then
         if player then
             UF.DisableIndicators(player)
-            UnregisterAttributeDriver(player, "state-visibility")
+            UnregisterUnitWatch(player)
             player:Hide()
         end
         return
@@ -81,7 +84,7 @@ local function UpdatePlayer(module, which)
     UF.SetupUnitFrame(player, config, indicators)
 
     -- visibility NOTE: show must invoke after settings applied
-    RegisterAttributeDriver(player, "state-visibility", "[petbattle] hide; show")
+    RegisterUnitWatch(player)
 end
 BFI.RegisterCallback("UpdateModules", "UF_Player", UpdatePlayer)
 

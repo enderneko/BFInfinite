@@ -28,7 +28,7 @@ local indicators = {
 ---------------------------------------------------------------------
 local function CreateTargetTarget()
     local name = "BFIUF_TargetTarget"
-    targettarget = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
+    targettarget = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     targettarget:SetAttribute("unit", "targettarget")
     targettarget._refreshOnUpdate = true
     targettarget._updateOnPlayerTargetChanged = true
@@ -37,6 +37,9 @@ local function CreateTargetTarget()
 
     -- mover
     AW.CreateMover(targettarget, "UnitFrames", name)
+
+    -- config mode
+    UF.AddToConfigMode("targettarget", targettarget)
 
     -- pixel perfect
     -- AW.AddToPixelUpdater(targettarget)

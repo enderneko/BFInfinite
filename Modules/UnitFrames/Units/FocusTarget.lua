@@ -28,7 +28,7 @@ local indicators = {
 ---------------------------------------------------------------------
 local function CreateFocusTarget()
     local name = "BFIUF_FocusTarget"
-    focustarget = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
+    focustarget = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     focustarget:SetAttribute("unit", "focustarget")
     focustarget._refreshOnUpdate = true
     focustarget._updateOnUnitTargetChanged = "focus"
@@ -36,6 +36,9 @@ local function CreateFocusTarget()
 
     -- mover
     AW.CreateMover(focustarget, "UnitFrames", name)
+
+    -- config mode
+    UF.AddToConfigMode("focustarget", focustarget)
 
     -- pixel perfect
     -- AW.AddToPixelUpdater(focustarget)

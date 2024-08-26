@@ -35,7 +35,7 @@ local indicators = {
 ---------------------------------------------------------------------
 local function CreateParty()
     local name = "BFIUF_Party"
-    party = CreateFrame("Frame", name, AW.UIParent, "SecureFrameTemplate")
+    party = CreateFrame("Frame", name, UF.Parent, "SecureFrameTemplate")
     UF.AddToConfigMode("party.container", party)
 
     local header = CreateFrame("Frame", name .. "Header", party, "SecureGroupHeaderTemplate")
@@ -105,8 +105,8 @@ local function UpdateParty(module, which)
     local unitCount = config.general.showPlayer and 5 or 4
 
     -- strata & level
-    party:SetFrameStrata(config.general.frameStrata)
-    party:SetFrameLevel(config.general.frameLevel)
+    -- party:SetFrameStrata(config.general.frameStrata)
+    -- party:SetFrameLevel(config.general.frameLevel)
 
     -- mover
     AW.UpdateMoverSave(party, config.general.position)

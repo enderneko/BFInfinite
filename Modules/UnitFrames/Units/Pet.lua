@@ -28,11 +28,14 @@ local indicators = {
 ---------------------------------------------------------------------
 local function CreatePet()
     local name = "BFIUF_Pet"
-    pet = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
+    pet = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     pet:SetAttribute("unit", "pet")
 
     -- mover
     AW.CreateMover(pet, "UnitFrames", name)
+
+    -- config mode
+    UF.AddToConfigMode("pet", pet)
 
     -- pixel perfect
     -- AW.AddToPixelUpdater(pet)
@@ -53,7 +56,7 @@ local function UpdatePet(module, which)
     if not config.enabled then
         if pet then
             UF.DisableIndicators(pet)
-            UnregisterAttributeDriver(pet, "state-visibility")
+            UnregisterUnitWatch(pet)
             pet:Hide()
         end
         return
@@ -67,6 +70,6 @@ local function UpdatePet(module, which)
     UF.SetupUnitFrame(pet, config, indicators)
 
     -- visibility NOTE: show must invoke after settings applied
-    RegisterAttributeDriver(pet, "state-visibility", "[petbattle] hide; [nopet] hide; show")
+    RegisterUnitWatch(pet)
 end
 BFI.RegisterCallback("UpdateModules", "UF_Pet", UpdatePet)

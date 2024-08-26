@@ -29,13 +29,16 @@ local indicators = {
 ---------------------------------------------------------------------
 local function CreateFocus()
     local name = "BFIUF_Focus"
-    focus = CreateFrame("Button", name, AW.UIParent, "BFIUnitButtonTemplate")
+    focus = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     focus:SetAttribute("unit", "focus")
 
     focus.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
     AW.CreateMover(focus, "UnitFrames", name)
+
+    -- config mode
+    UF.AddToConfigMode("focus", focus)
 
     -- pixel perfect
     -- AW.AddToPixelUpdater(focus)
