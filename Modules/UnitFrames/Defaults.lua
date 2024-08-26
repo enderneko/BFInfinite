@@ -297,7 +297,7 @@ local defaults = {
             },
             targetCounter = {
                 enabled = true,
-                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
@@ -305,7 +305,7 @@ local defaults = {
             },
             statusTimer = {
                 enabled = true,
-                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "targetCounter",
                 parent = "powerBar",
                 font = {"BFI 2", 9, "monochrome", false},
@@ -390,6 +390,10 @@ local defaults = {
                     swing = {enabled = true, color = AW.GetColorTable("swing")},
                     damage = {enabled = true, color = AW.GetColorTable("damage")},
                     heal = {enabled = true, color = AW.GetColorTable("heal")},
+                },
+                format = {
+                    numeric = "current_short",
+                    useAsianUnits = false,
                 },
             },
             buffs = {

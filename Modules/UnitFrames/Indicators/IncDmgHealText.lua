@@ -4,6 +4,8 @@ local U = BFI.utils
 local AW = BFI.AW
 local UF = BFI.UnitFrames
 
+local FormatNumber = U.FormatNumber
+
 ---------------------------------------------------------------------
 -- cleu
 ---------------------------------------------------------------------
@@ -18,13 +20,13 @@ local function CLEU(self)
 
     self:SetTextColor(AW.UnpackColor(CLEU_EVENT_COLORS[event]))
     if event == "SWING_DAMAGE" then
-        self:SetFormattedText("%s%s", swing_amount, swing_heal_critical and "!" or "")
+        self:SetFormattedText("%s%s", self.GetNumeric(swing_amount), swing_heal_critical and "!" or "")
     elseif strfind(event, "^SPELL_.*HEAL$") then
-        self:SetFormattedText("%s%s", amount, swing_heal_critical and "!" or "")
+        self:SetFormattedText("%s%s", self.GetNumeric(amount), swing_heal_critical and "!" or "")
     elseif strfind(event, "^SPELL_.*DAMAGE$") then
-        self:SetFormattedText("%s%s", amount, spell_critical and "!" or "")
+        self:SetFormattedText("%s%s", self.GetNumeric(amount), spell_critical and "!" or "")
     else
-        self:SetText(env_amount)
+        self:SetText(self.GetNumeric(env_amount))
     end
     self:FadeInOut()
 end
@@ -44,6 +46,19 @@ local function IncDmgHealText_Enable(self)
 
     self:Update()
 end
+
+---------------------------------------------------------------------
+-- numeric
+---------------------------------------------------------------------
+local numeric = {
+    current = function(current)
+        return current
+    end,
+
+    current_short = function(current)
+        return FormatNumber(current)
+    end,
+}
 
 ---------------------------------------------------------------------
 -- load
@@ -69,7 +84,33 @@ local function IncDmgHealText_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
     UpdateEvents(config.types)
 
+    self.GetNumeric = numeric[config.format.numeric]
+    if config.format.useAsianUnits and BFI.vars.isAsian then
+        FormatNumber = U.FormatNumber_Asian
+    else
+        FormatNumber = U.FormatNumber
+    end
+
     self.color = config.color
+end
+
+---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function IncDmgHealText_EnableConfigMode(self)
+    self.Enable = IncDmgHealText_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    self:SetTextColor(AW.UnpackColor(CLEU_EVENT_COLORS["SPELL_DAMAGE"]))
+    self:SetFormattedText("%s!", self.GetNumeric(12345))
+end
+
+local function IncDmgHealText_DisableConfigMode(self)
+    self.Enable = IncDmgHealText_Enable
+    self.Update = IncDmgHealText_Update
 end
 
 ---------------------------------------------------------------------
@@ -89,6 +130,8 @@ function UF.CreateIncDmgHealText(parent, name)
     -- functions
     text.Enable = IncDmgHealText_Enable
     text.Update = IncDmgHealText_Update
+    text.EnableConfigMode = IncDmgHealText_EnableConfigMode
+    text.DisableConfigMode = IncDmgHealText_DisableConfigMode
     text.LoadConfig = IncDmgHealText_LoadConfig
 
     return text
