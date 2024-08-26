@@ -372,7 +372,11 @@ end
 --- @param save function|table
 function AW.CreateMover(owner, group, text, save)
     -- assert(owner:GetNumPoints() == 1, "mover owner must have 1 anchor point")
-    assert(owner:GetParent() == AW.UIParent, "owner must be the direct child of AW.UIParent")
+    -- assert(owner:GetParent() == AW.UIParent, "owner must be the direct child of AW.UIParent")
+    -- NOTE:
+    -- owner must be the direct child of AW.UIParent
+    -- or
+    -- its parent must SetAllPoints(AW.UIParent)
 
     if not moverParent then CreateMoverParent() end
 
