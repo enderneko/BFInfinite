@@ -45,7 +45,7 @@ end
 -- load
 ---------------------------------------------------------------------
 local function ThreatGlow_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    -- AW.SetFrameLevel(self, config.frameLevel, self.root)
     AW.SetOutside(self, self.root, config.size)
     self:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow", true), edgeSize=AW.ConvertPixelsForRegion(config.size, self)})
     self.alpha = config.alpha
@@ -73,6 +73,7 @@ end
 ---------------------------------------------------------------------
 function UF.CreateThreatGlow(parent, name)
     local glow = CreateFrame("Frame", name, parent, "BackdropTemplate")
+    glow:SetFrameStrata("BACKGROUND")
     glow.root = parent
     glow:Hide()
 
