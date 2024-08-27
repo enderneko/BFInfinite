@@ -205,6 +205,34 @@ local function ExtraManaBar_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function ExtraManaBar_EnableConfigMode(self)
+    self.Enable = ExtraManaBar_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    UnitPower = UF.CFG_UnitPower
+    UnitPowerMax = UF.CFG_UnitPowerMax
+    UnitHasVehicleUI = UF.CFG_UnitHasVehicleUI
+
+    UpdateManaColor(self)
+    UpdateManaMax(self)
+    UpdateMana(self)
+end
+
+local function ExtraManaBar_DisableConfigMode(self)
+    self.Enable = ExtraManaBar_Enable
+    self.Update = ExtraManaBar_Update
+
+    UnitPower = UF.UnitPower
+    UnitPowerMax = UF.UnitPowerMax
+    UnitHasVehicleUI = UF.UnitHasVehicleUI
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateExtraManaBar(parent, name)
@@ -218,6 +246,8 @@ function UF.CreateExtraManaBar(parent, name)
     -- functions
     bar.Update = ExtraManaBar_Update
     bar.Enable = ExtraManaBar_Enable
+    bar.EnableConfigMode = ExtraManaBar_EnableConfigMode
+    bar.DisableConfigMode = ExtraManaBar_DisableConfigMode
     bar.LoadConfig = ExtraManaBar_LoadConfig
 
     -- pixel perfect

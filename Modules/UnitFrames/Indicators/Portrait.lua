@@ -184,6 +184,23 @@ local function Portrait_UpdatePixels(self)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function Portrait_EnableConfigMode(self)
+    self.Enable = Portrait_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+    Portrait_Update(self, true)
+end
+
+local function Portrait_DisableConfigMode(self)
+    self.Enable = Portrait_Enable
+    self.Update = Portrait_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreatePortrait(parent, name)
@@ -214,6 +231,8 @@ function UF.CreatePortrait(parent, name)
     -- functions
     portrait.Enable = Portrait_Enable
     portrait.Update = Portrait_Update
+    portrait.EnableConfigMode = Portrait_EnableConfigMode
+    portrait.DisableConfigMode = Portrait_DisableConfigMode
     portrait.LoadConfig = Portrait_LoadConfig
 
     -- pixel perfect

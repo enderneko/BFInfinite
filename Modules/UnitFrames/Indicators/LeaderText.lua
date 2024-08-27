@@ -86,8 +86,10 @@ local function LeaderText_EnableConfigMode(self)
     self.Update = BFI.dummy
 
     self:UnregisterAllEvents()
-    self:SetText("L")
     self:Show()
+
+    self:SetText("L")
+    UpdateColor(self)
 end
 
 local function LeaderText_DisableConfigMode(self)
@@ -109,6 +111,8 @@ function UF.CreateLeaderText(parent, name)
     -- functions
     text.Enable = LeaderText_Enable
     text.Update = LeaderText_Update
+    text.EnableConfigMode = LeaderText_EnableConfigMode
+    text.DisableConfigMode = LeaderText_DisableConfigMode
     text.LoadConfig = LeaderText_LoadConfig
 
     return text

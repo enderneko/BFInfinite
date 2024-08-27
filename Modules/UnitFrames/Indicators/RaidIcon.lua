@@ -8,6 +8,7 @@ local UF = BFI.UnitFrames
 ---------------------------------------------------------------------
 -- functions
 ---------------------------------------------------------------------
+local GetRaidTargetIndex = GetRaidTargetIndex
 local SetRaidTargetIconTexture = SetRaidTargetIconTexture
 
 ---------------------------------------------------------------------
@@ -55,6 +56,28 @@ local function RaidIcon_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function RaidIcon_EnableConfigMode(self)
+    self.Enable = RaidIcon_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    GetRaidTargetIndex = UF.CFG_GetRaidTargetIndex
+
+    RaidIcon_Update(self)
+end
+
+local function RaidIcon_DisableConfigMode(self)
+    self.Enable = RaidIcon_Enable
+    self.Update = RaidIcon_Update
+
+    GetRaidTargetIndex = UF.GetRaidTargetIndex
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateRaidIcon(parent, name)
@@ -79,6 +102,8 @@ function UF.CreateRaidIcon(parent, name)
     -- functions
     frame.Enable = RaidIcon_Enable
     frame.Update = RaidIcon_Update
+    frame.EnableConfigMode = RaidIcon_EnableConfigMode
+    frame.DisableConfigMode = RaidIcon_DisableConfigMode
     frame.LoadConfig = RaidIcon_LoadConfig
 
     return frame

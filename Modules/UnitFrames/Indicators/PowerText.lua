@@ -171,24 +171,41 @@ local function PowerText_SetFormat(self, format)
 end
 
 ---------------------------------------------------------------------
--- base
----------------------------------------------------------------------
-local function PowerText_SetColor(self, color)
-    self:SetTextColor(unpack(color))
-end
-
----------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
 local function PowerText_LoadConfig(self, config)
-    self:SetHealthFont(unpack(config.font))
-    self:SetFormat(config.format)
+    U.SetFont(self, unpack(config.font))
+    PowerText_SetFormat(self, config.format)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
 
     self.color = config.color
     self.frequent = config.frequent
     self.hideIfFull = config.hideIfFull
     self.hideIfEmpty = config.hideIfEmpty
+end
+
+---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function PowerText_EnableConfigMode(self)
+    self.Enable = PowerText_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    UnitPower = UF.CFG_UnitPower
+    UnitPowerMax = UF.CFG_UnitPowerMax
+
+    PowerText_Update(self)
+end
+
+local function PowerText_DisableConfigMode(self)
+    self.Enable = PowerText_Enable
+    self.Update = PowerText_Update
+
+    UnitPower = UF.UnitPower
+    UnitPowerMax = UF.UnitPowerMax
 end
 
 ---------------------------------------------------------------------
@@ -205,9 +222,8 @@ function UF.CreatePowerText(parent, name)
     -- functions
     text.Enable = PowerText_Enable
     text.Update = PowerText_Update
-    text.SetColor = PowerText_SetColor
-    text.SetFormat = PowerText_SetFormat
-    text.SetHealthFont = U.SetFont
+    text.EnableConfigMode = PowerText_EnableConfigMode
+    text.DisableConfigMode = PowerText_DisableConfigMode
     text.LoadConfig = PowerText_LoadConfig
 
     return text

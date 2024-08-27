@@ -154,7 +154,6 @@ local function UpdateHealAbsorb(self, event, unitId)
         return
     end
 
-
     self.healAbsorbs = UnitGetTotalHealAbsorbs(unit)
 
     if self.healAbsorbs > 0 then
@@ -506,25 +505,30 @@ end
 ---------------------------------------------------------------------
 -- config mode
 ---------------------------------------------------------------------
-local function SetupConfigModeValues(self)
-    self:SetBarMinMaxValues(0, 100)
-    self:SetBarValue(random(20, 100))
-    UpdateHealthColor(self)
-    -- HealthBar_Update(self)
-end
-
+local _UpdateHealthStates = UpdateHealthStates
 local function HealthBar_EnableConfigMode(self)
     self.Enable = HealthBar_EnableConfigMode
     self.Update = BFI.dummy
 
     self:UnregisterAllEvents()
-    SetupConfigModeValues(self)
     self:Show()
+
+    UnitGetTotalAbsorbs = UF.CFG_UnitGetTotalAbsorbs
+    UpdateHealthStates = BFI.dummy
+
+    self.health = UF.CFG_UnitHealth()
+    self.healthMax = UF.CFG_UnitHealthMax()
+    self.healthPercent = self.health / self.healthMax
+
+    HealthBar_Update(self)
 end
 
 local function HealthBar_DisableConfigMode(self)
     self.Enable = HealthBar_Enable
     self.Update = HealthBar_Update
+
+    UnitGetTotalAbsorbs = UF.UnitGetTotalAbsorbs
+    UpdateHealthStates = _UpdateHealthStates
 end
 
 ---------------------------------------------------------------------

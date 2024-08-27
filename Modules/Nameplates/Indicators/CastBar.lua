@@ -139,17 +139,17 @@ local function CastInterruptible(self, event, unit)
     end
 
     if self.notInterruptible then
-        self.bar:SetStatusBarColor(AW.UnpackColor(self.uninterruptibleColor))
+        self.bar:SetColor(AW.UnpackColor(self.uninterruptibleColor))
         self.bar.uninterruptible:Show()
         self:SetBackdropBorderColor(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
         self.iconBG:SetVertexColor(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
     elseif self.checkInterruptCD and (not self.requireInterruptUsable or U.InterruptUsable()) then -- interruptible
-        self.bar:SetStatusBarColor(AW.UnpackColor(self.interruptibleColor))
+        self.bar:SetColor(AW.UnpackColor(self.interruptibleColor))
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.interruptibleColor, 1))
         self.iconBG:SetVertexColor(AW.UnpackColor(self.interruptibleColor, 1))
     else -- interrupt cd
-        self.bar:SetStatusBarColor(AW.UnpackColor(self.normalColor))
+        self.bar:SetColor(AW.UnpackColor(self.normalColor))
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))
         self.iconBG:SetVertexColor(AW.UnpackColor(self.borderColor))
@@ -245,8 +245,8 @@ local function CastUpdate(self, event, unitId, castGUID, castSpellID)
         self.current = GetTime() - self.startTime
     end
 
-    self.bar:SetMinMaxValues(0, self.duration)
-    self.bar:SetValue(self.current)
+    self.bar:SetBarMinMaxValues(0, self.duration)
+    self.bar:SetBarValue(self.current)
 end
 
 ---------------------------------------------------------------------
@@ -279,7 +279,7 @@ local function OnUpdate(self, elapsed)
             self.durationText:SetFormattedText(self.durationFormat, self.current)
         end
 
-        self.bar:SetValue(self.current)
+        self.bar:SetBarValue(self.current)
 
         if self.castType == "empower" then
 			for i = self.curStage + 1, self.numStages do
@@ -360,8 +360,8 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     end
     self.status:Hide()
     self.icon:SetTexture(texture or 134400)
-    self.bar:SetMinMaxValues(0, self.duration)
-    self.bar:SetValue(self.current)
+    self.bar:SetBarMinMaxValues(0, self.duration)
+    self.bar:SetBarValue(self.current)
     self.bar:Show()
     self:ShowNow()
 end
@@ -406,9 +406,6 @@ local function CastBar_Enable(self)
         self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     end
 
-    -- onupdate
-    self:SetScript("OnUpdate", OnUpdate)
-
     self:Update()
 end
 
@@ -418,7 +415,6 @@ end
 local function CastBar_Disable(self)
     Reset(self)
     self:UnregisterAllEvents()
-    self:SetScript("OnUpdate", nil)
     self:Hide()
 end
 
@@ -428,7 +424,7 @@ end
 local function CastBar_SetTexture(self, texture)
     texture = U.GetBarTexture(texture)
     self.texture = texture
-    self.bar:SetStatusBarTexture(texture)
+    self.bar.fg:SetTexture(texture)
     self.status:SetTexture(texture)
     for _, pip in pairs(self.pips) do
         pip.texture:SetTexture(texture)
@@ -480,11 +476,11 @@ local function CastBar_SetupSpark(self, config)
     self.spark:Show()
 
     self.spark:ClearAllPoints()
-    self.spark:SetPoint("RIGHT", self.bar:GetStatusBarTexture())
+    self.spark:SetPoint("RIGHT", self.bar.fg)
     if config.height == 0 then
         self.spark:SetPoint("TOP")
         self.spark:SetPoint("BOTTOM")
-        self.spark:SetPoint("RIGHT", self.bar:GetStatusBarTexture())
+        self.spark:SetPoint("RIGHT", self.bar.fg)
     else
         self.spark:SetHeight(config.height)
     end
@@ -530,7 +526,7 @@ local function CastBar_LoadConfig(self, config)
     self:SetBackdropColor(AW.UnpackColor(config.bgColor))
     self:SetBackdropBorderColor(AW.UnpackColor(config.borderColor))
 
-    self.bar:SetStatusBarColor(unpack(config.colors.normal))
+    self.bar:SetColor(AW.UnpackColor(config.colors.normal))
     self.bar.uninterruptible:SetVertexColor(unpack(config.colors.uninterruptibleTexture))
 
     AW.SetFadeInOutAnimationDuration(self, config.fadeDuration)
@@ -560,6 +556,8 @@ function NP.CreateCastBar(parent, name)
 
     frame.root = parent
 
+    frame:SetScript("OnUpdate", OnUpdate)
+
     -- events
     BFI.AddEventHandler(frame)
 
@@ -585,11 +583,10 @@ function NP.CreateCastBar(parent, name)
     AW.SetPoint(icon, "BOTTOMRIGHT", iconBG, -1, 1)
 
     -- bar
-    local bar = CreateFrame("StatusBar", nil, frame)
+    local bar = AW.CreateSimpleBar(frame, nil, true)
     frame.bar = bar
     AW.SetOnePixelInside(bar, frame)
-    bar:SetStatusBarTexture(AW.GetTexture("StatusBar"))
-    bar:GetStatusBarTexture():SetDrawLayer("ARTWORK", 0)
+    bar.fg:SetDrawLayer("ARTWORK", 0)
     AW.SetFrameLevel(bar, 1, frame)
 
     -- spark

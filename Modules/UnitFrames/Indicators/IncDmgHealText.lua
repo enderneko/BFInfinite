@@ -105,7 +105,7 @@ local function IncDmgHealText_EnableConfigMode(self)
     self:Show()
 
     self:SetTextColor(AW.UnpackColor(CLEU_EVENT_COLORS["SPELL_DAMAGE"]))
-    self:SetFormattedText("%s!", self.GetNumeric(12345))
+    self:SetFormattedText("%s!", self.GetNumeric(1234567))
 end
 
 local function IncDmgHealText_DisableConfigMode(self)

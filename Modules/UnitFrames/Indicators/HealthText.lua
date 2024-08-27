@@ -260,6 +260,32 @@ local function HealthText_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function HealthText_EnableConfigMode(self)
+    self.Enable = HealthText_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    UnitHealth = UF.CFG_UnitHealth
+    UnitHealthMax = UF.CFG_UnitHealthMax
+    UnitGetTotalAbsorbs = UF.CFG_UnitGetTotalAbsorbs
+
+    HealthText_Update(self)
+end
+
+local function HealthText_DisableConfigMode(self)
+    self.Enable = HealthText_Enable
+    self.Update = HealthText_Update
+
+    UnitHealth = UF.UnitHealth
+    UnitHealthMax = UF.UnitHealthMax
+    UnitGetTotalAbsorbs = UF.UnitGetTotalAbsorbs
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateHealthText(parent, name)
@@ -272,9 +298,8 @@ function UF.CreateHealthText(parent, name)
     -- functions
     text.Enable = HealthText_Enable
     text.Update = HealthText_Update
-    -- text.SetColor = HealthText_SetColor
-    -- text.SetFormat = HealthText_SetFormat
-    -- text.SetHealthFont = U.SetFont
+    text.EnableConfigMode = HealthText_EnableConfigMode
+    text.DisableConfigMode = HealthText_DisableConfigMode
     text.LoadConfig = HealthText_LoadConfig
 
     return text

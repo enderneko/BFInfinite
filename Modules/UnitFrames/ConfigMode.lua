@@ -1,24 +1,85 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class UnitFrame
+---@class UnitFrames
 local UF = BFI.UnitFrames
+local U = BFI.utils
 
 ---------------------------------------------------------------------
 -- config mode random functions
 ---------------------------------------------------------------------
-function UF.UnitHealth()
-    return random(20, 90)
+UF.UnitHealth = UnitHealth
+function UF.CFG_UnitHealth()
+    return random(20, 100)
 end
 
-function UF.UnitHealthMax()
+UF.UnitHealthMax = UnitHealthMax
+function UF.CFG_UnitHealthMax()
     return 100
 end
 
-function UF.UnitClassBase()
-    return CLASS_SORT_ORDER[random(1, 13)]
+UF.UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
+function UF.CFG_UnitGetTotalAbsorbs()
+    return random(0, 60)
 end
 
--- function UF.
+-- UF.UnitClassBase = U.UnitClassBase
+-- function UF.CFG_UnitClassBase()
+--     -- return CLASS_SORT_ORDER[random(1, 13)]
+--     return BFI.vars.playerClass
+-- end
+
+-- UF.UnitName = UnitName
+-- function UF.CFG_UnitName(unit)
+--     return U.UpperFirst(unit)
+-- end
+
+UF.UnitHasVehicleUI = UnitHasVehicleUI
+function UF.CFG_UnitHasVehicleUI()
+    return false
+end
+
+-- UF.UnitPowerType = UnitPowerType
+-- function UF.CFG_UnitPowerType()
+--     -- return Enum.PowerType[random(0, 3)]
+--     return UnitPowerType("player")
+-- end
+
+UF.UnitPower = UnitPower
+function UF.CFG_UnitPower()
+    return random(20, 100)
+end
+
+UF.UnitPowerMax = UnitPowerMax
+function UF.CFG_UnitPowerMax()
+    return 100
+end
+
+UF.GetRaidTargetIndex = GetRaidTargetIndex
+function UF.CFG_GetRaidTargetIndex()
+    return random(1, 8)
+end
+
+local name, texture
+local spell = Spell:CreateFromSpellID(19750)
+spell:ContinueOnSpellLoad(function()
+    name = spell:GetSpellName()
+    texture = spell:GetSpellTexture()
+end)
+UF.UnitCastingInfo = UnitCastingInfo
+function UF.CFG_UnitCastingInfo()
+    local start = GetTime() * 1000
+    return name, nil, texture, start, start + 3000
+end
+
+UF.UnitIsUnit = UnitIsUnit
+function UF.CFG_UnitIsUnit()
+    return true
+end
+
+UF.UnitStagger = UnitStagger
+function UF.CFG_UnitStagger()
+    return 50
+end
 
 ---------------------------------------------------------------------
 -- config mode
@@ -62,14 +123,13 @@ end
 
 local function EnableConfigModeForGroup(group)
     for i, frame in pairs(configModeGroups[group]["children"]) do
-        -- force show frame as player
         frame.inConfigMode = true
         frame.oldUnit = frame.unit
-        frame:SetAttribute("unit", "player")
         UnregisterUnitWatch(frame)
-        RegisterUnitWatch(frame, true)
+        frame:SetAttribute("unit", "player")
+        frame.unit = "player"
+        frame.displayedUnit = "player"
         frame:EnableMouse(false)
-        frame:Show()
 
         -- force show indicators
         for _, indicator in pairs(frame.indicators) do
@@ -77,6 +137,9 @@ local function EnableConfigModeForGroup(group)
                 indicator:EnableConfigMode()
             end
         end
+
+        -- force show frame as player
+        frame:Show()
     end
 
     if configModeGroups[group]["headers"] then
@@ -94,6 +157,13 @@ end
 
 local function DisableConfigModeForGroup(group)
     for _, frame in pairs(configModeGroups[group]["children"]) do
+        -- restore indicators
+        for _, indicator in pairs(frame.indicators) do
+            if indicator.enabled and indicator.DisableConfigMode then
+                indicator:DisableConfigMode()
+            end
+        end
+
         -- restore unit
         UnregisterUnitWatch(frame)
         RegisterUnitWatch(frame)
@@ -102,13 +172,6 @@ local function DisableConfigModeForGroup(group)
         frame.inConfigMode = nil
         frame:EnableMouse(true)
         frame:Hide()
-
-        -- restore indicators
-        for _, indicator in pairs(frame.indicators) do
-            if indicator.enabled and indicator.DisableConfigMode then
-                indicator:DisableConfigMode()
-            end
-        end
     end
 
     if configModeGroups[group]["headers"] then
@@ -138,25 +201,22 @@ function EnableConfigMode(group)
     end
 end
 
-function DisableConfigMode(group)
+function DisableConfigMode()
     UF.configModeEnabled = nil
     UF:UnregisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
-    if group and configModeGroups[group] then
+
+    for group in pairs(configModeGroups) do
         DisableConfigModeForGroup(group)
-    else
-        for group in pairs(configModeGroups) do
-            DisableConfigModeForGroup(group)
-        end
     end
 end
 
-local function ToggleConfigMode(module, which)
+local function ToggleConfigMode(module)
     if InCombatLockdown() then return end
     if module and module ~= "UnitFrames" then return end
     if UF.configModeEnabled then
-        DisableConfigMode(which)
+        DisableConfigMode()
     else
-        EnableConfigMode(which)
+        EnableConfigMode()
     end
 end
 BFI.RegisterCallback("ConfigMode", "UnitFrames", ToggleConfigMode)

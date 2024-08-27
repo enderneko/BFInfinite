@@ -35,6 +35,22 @@ local function RestingIndicator_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function RestingIndicator_EnableConfigMode(self)
+    self.Enable = RestingIndicator_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+end
+
+local function RestingIndicator_DisableConfigMode(self)
+    self.Enable = RestingIndicator_Enable
+    self.Update = RestingIndicator_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateRestingIndicator(parent, name)
@@ -75,6 +91,8 @@ function UF.CreateRestingIndicator(parent, name)
     -- functions
     frame.Enable = RestingIndicator_Enable
     frame.Update = RestingIndicator_Update
+    frame.EnableConfigMode = RestingIndicator_EnableConfigMode
+    frame.DisableConfigMode = RestingIndicator_DisableConfigMode
     frame.LoadConfig = RestingIndicator_LoadConfig
 
     return frame

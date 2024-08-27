@@ -167,6 +167,27 @@ local function StatusIcon_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function StatusIcon_EnableConfigMode(self)
+    self.Enable = StatusIcon_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    self.icon:SetVertexColor(1, 1, 1, 1)
+    self.icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Rez")
+    self.icon:SetTexCoord(0, 1, 0, 1)
+    self:Show()
+end
+
+local function StatusIcon_DisableConfigMode(self)
+    self.Enable = StatusIcon_Enable
+    self.Update = StatusIcon_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateStatusIcon(parent, name)
@@ -185,6 +206,8 @@ function UF.CreateStatusIcon(parent, name)
     -- functions
     frame.Enable = StatusIcon_Enable
     frame.Update = StatusIcon_Update
+    frame.EnableConfigMode = StatusIcon_EnableConfigMode
+    frame.DisableConfigMode = StatusIcon_DisableConfigMode
     frame.LoadConfig = StatusIcon_LoadConfig
 
     return frame

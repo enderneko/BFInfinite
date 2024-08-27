@@ -47,6 +47,25 @@ local function RoleIcon_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function RoleIcon_EnableConfigMode(self)
+    self.Enable = RoleIcon_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    self.text:SetText(S.RoleGlyphs.HEALER.char)
+    self.text:SetTextColor(AW.UnpackColor(S.RoleGlyphs.HEALER.color))
+end
+
+local function RoleIcon_DisableConfigMode(self)
+    self.Enable = RoleIcon_Enable
+    self.Update = RoleIcon_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateRoleIcon(parent, name)
@@ -70,6 +89,8 @@ function UF.CreateRoleIcon(parent, name)
     -- functions
     frame.Enable = RoleIcon_Enable
     frame.Update = RoleIcon_Update
+    frame.EnableConfigMode = RoleIcon_EnableConfigMode
+    frame.DisableConfigMode = RoleIcon_DisableConfigMode
     frame.LoadConfig = RoleIcon_LoadConfig
 
     return frame

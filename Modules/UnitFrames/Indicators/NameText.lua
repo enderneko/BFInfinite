@@ -78,6 +78,23 @@ local function NameText_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function NameText_EnableConfigMode(self)
+    self.Enable = NameText_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    UpdateName(self)
+    self:Show()
+end
+
+local function NameText_DisableConfigMode(self)
+    self.Enable = NameText_Enable
+    self.Update = NameText_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateNameText(parent, name)
@@ -91,6 +108,8 @@ function UF.CreateNameText(parent, name)
     -- functions
     text.Enable = NameText_Enable
     text.Update = NameText_Update
+    text.EnableConfigMode = NameText_EnableConfigMode
+    text.DisableConfigMode = NameText_DisableConfigMode
     text.LoadConfig = NameText_LoadConfig
 
     return text

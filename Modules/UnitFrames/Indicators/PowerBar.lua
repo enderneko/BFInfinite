@@ -176,9 +176,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function PowerBar_Update(self)
-    UpdatePowerColor(self)
-    UpdatePowerMax(self)
-    UpdatePower(self)
+    UpdateAll(self)
 end
 
 ---------------------------------------------------------------------
@@ -200,6 +198,32 @@ local function PowerBar_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function PowerBar_EnableConfigMode(self)
+    self.Enable = PowerBar_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    UnitPower = UF.CFG_UnitPower
+    UnitPowerMax = UF.CFG_UnitPowerMax
+    UnitHasVehicleUI = UF.CFG_UnitHasVehicleUI
+
+    PowerBar_Update(self)
+end
+
+local function PowerBar_DisableConfigMode(self)
+    self.Enable = PowerBar_Enable
+    self.Update = PowerBar_Update
+
+    UnitPower = UF.UnitPower
+    UnitPowerMax = UF.UnitPowerMax
+    UnitHasVehicleUI = UF.UnitHasVehicleUI
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreatePowerBar(parent, name)
@@ -214,6 +238,8 @@ function UF.CreatePowerBar(parent, name)
     -- functions
     bar.Update = PowerBar_Update
     bar.Enable = PowerBar_Enable
+    bar.EnableConfigMode = PowerBar_EnableConfigMode
+    bar.DisableConfigMode = PowerBar_DisableConfigMode
     bar.LoadConfig = PowerBar_LoadConfig
 
     -- pixel perfect

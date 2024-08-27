@@ -9,7 +9,8 @@ _G.BFI = BFI
 ---@field utils Utils
 ---@field vars table
 ---@field libs table
----@field M_UnitFrames UnitFrame
+---@field UnitFrames UnitFrames
+---@field Nameplates Nameplates
 
 ---------------------------------------------------------------------
 -- global

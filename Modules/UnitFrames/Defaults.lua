@@ -2890,11 +2890,11 @@ local defaults = {
             },
             statusIcon = {
                 enabled = true,
-                position = {"TOP", "TOP", 0, 0},
-                anchorTo = "root",
+                position = {"CENTER", "CENTER", 0, 0},
+                anchorTo = "healthBar",
                 frameLevel = 15,
-                width = 20,
-                height = 20,
+                width = 16,
+                height = 16,
             },
             raidIcon = {
                 enabled = true,

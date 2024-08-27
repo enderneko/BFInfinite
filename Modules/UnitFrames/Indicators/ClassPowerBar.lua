@@ -332,6 +332,32 @@ local function ClassPowerBar_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function ClassPowerBar_EnableConfigMode(self)
+    self.Enable = ClassPowerBar_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    class = "PALADIN"
+    self.power = 3
+    self.powerMax = 5
+    self.powerMod = 1
+
+    SetupBars(self)
+    SetBarValues(self)
+end
+
+local function ClassPowerBar_DisableConfigMode(self)
+    self.Enable = ClassPowerBar_Enable
+    self.Update = ClassPowerBar_Update
+
+    class = BFI.vars.playerClass
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateClassPowerBar(parent, name)
@@ -348,6 +374,8 @@ function UF.CreateClassPowerBar(parent, name)
     -- functions
     frame.Update = ClassPowerBar_Update
     frame.Enable = ClassPowerBar_Enable
+    frame.EnableConfigMode = ClassPowerBar_EnableConfigMode
+    frame.DisableConfigMode = ClassPowerBar_DisableConfigMode
     frame.LoadConfig = ClassPowerBar_LoadConfig
 
     -- pixel perfect

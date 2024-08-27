@@ -197,6 +197,30 @@ local function StaggerBar_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function StaggerBar_EnableConfigMode(self)
+    self.Enable = StaggerBar_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    UnitStagger = UF.CFG_UnitStagger
+    UnitHealthMax = UF.CFG_UnitHealthMax
+
+    UpdateStagger(self)
+end
+
+local function StaggerBar_DisableConfigMode(self)
+    self.Enable = StaggerBar_Enable
+    self.Update = StaggerBar_Update
+
+    UnitStagger = UF.UnitStagger
+    UnitHealthMax = UF.UnitHealthMax
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateStaggerBar(parent, name)
@@ -216,6 +240,8 @@ function UF.CreateStaggerBar(parent, name)
     -- functions
     bar.Update = StaggerBar_Update
     bar.Enable = StaggerBar_Enable
+    bar.EnableConfigMode = StaggerBar_EnableConfigMode
+    bar.DisableConfigMode = StaggerBar_DisableConfigMode
     bar.LoadConfig = StaggerBar_LoadConfig
 
     -- pixel perfect

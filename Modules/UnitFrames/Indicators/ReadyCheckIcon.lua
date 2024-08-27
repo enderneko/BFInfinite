@@ -59,6 +59,24 @@ local function ReadyCheckIcon_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function ReadyCheckIcon_EnableConfigMode(self)
+    self.Enable = ReadyCheckIcon_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    self.icon:SetTexture(READY_CHECK_STATUS.waiting)
+end
+
+local function ReadyCheckIcon_DisableConfigMode(self)
+    self.Enable = ReadyCheckIcon_Enable
+    self.Update = ReadyCheckIcon_Update
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateReadyCheckIcon(parent, name)
@@ -79,6 +97,8 @@ function UF.CreateReadyCheckIcon(parent, name)
     -- functions
     frame.Enable = ReadyCheckIcon_Enable
     frame.Update = ReadyCheckIcon_Update
+    frame.EnableConfigMode = ReadyCheckIcon_EnableConfigMode
+    frame.DisableConfigMode = ReadyCheckIcon_DisableConfigMode
     frame.LoadConfig = ReadyCheckIcon_LoadConfig
 
     return frame

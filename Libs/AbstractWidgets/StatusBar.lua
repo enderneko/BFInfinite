@@ -95,9 +95,9 @@ end
 
 local prototype = {
     -- appearance
-    SetTexture = function(self, texture)
+    SetTexture = function(self, texture, lossTexture)
         self.fg:SetTexture(texture)
-        self.loss:SetTexture(texture)
+        self.loss:SetTexture(lossTexture or texture)
     end,
     SetColor = function(self, r, g, b, a)
         self.fg:SetVertexColor(r, g, b, a)
