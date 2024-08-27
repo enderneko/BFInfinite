@@ -54,6 +54,28 @@ local function FactionIcon_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function FactionIcon_EnableConfigMode(self)
+    self.Enable = FactionIcon_EnableConfigMode
+    self.Update = BFI.dummy
+
+    self:UnregisterAllEvents()
+    self:Show()
+
+    UnitFactionGroup = UF.CFG_UnitFactionGroup
+
+    FactionIcon_Update(self)
+end
+
+local function FactionIcon_DisableConfigMode(self)
+    self.Enable = FactionIcon_Enable
+    self.Update = FactionIcon_Update
+
+    UnitFactionGroup = UF.UnitFactionGroup
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 function UF.CreateFactionIcon(parent, name)
@@ -79,6 +101,8 @@ function UF.CreateFactionIcon(parent, name)
     -- functions
     frame.Enable = FactionIcon_Enable
     frame.Update = FactionIcon_Update
+    frame.EnableConfigMode = FactionIcon_EnableConfigMode
+    frame.DisableConfigMode = FactionIcon_DisableConfigMode
     frame.LoadConfig = FactionIcon_LoadConfig
 
     return frame

@@ -81,6 +81,11 @@ function UF.CFG_UnitStagger()
     return 50
 end
 
+UF.UnitFactionGroup = UnitFactionGroup
+function UF.CFG_UnitFactionGroup()
+    return UnitFactionGroup("player")
+end
+
 ---------------------------------------------------------------------
 -- config mode
 ---------------------------------------------------------------------
