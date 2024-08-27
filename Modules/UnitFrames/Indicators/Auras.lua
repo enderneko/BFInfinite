@@ -591,7 +591,7 @@ local function Auras_LoadConfig(self, config)
     Auras_SetupAuras(self, config)
     Auras_UpdateSize(self, 0)
 
-    if config.whitelist and #config.whitelist ~= 0 then
+    if config.mode == "whitelist" then
         -- use whitelist
         self.whitelist = U.ConvertSpellTable(config.whitelist)
         -- comparator
