@@ -19,7 +19,7 @@ local function RaidIcon_Update(self)
     if not unit then return end
 
     local index = GetRaidTargetIndex(unit)
-    if index then
+    if index and index <= 8 then
         SetRaidTargetIconTexture(self.icon, index)
         self.text:SetText(S.MarkerGlyphs[index].char)
         self.text:SetTextColor(AW.UnpackColor(S.MarkerGlyphs[index].color))
