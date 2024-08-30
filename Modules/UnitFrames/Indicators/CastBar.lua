@@ -788,7 +788,11 @@ local function CastBar_SetupSpark(self, config)
     end
 
     AW.SetWidth(self.spark, config.width)
-    self.spark:SetTexture(config.texture)
+    if config.texture == "plain" then
+        self.spark:SetTexture(AW.GetPlainTexture())
+    else
+        -- TODO:
+    end
     self.spark:SetVertexColor(AW.UnpackColor(config.color))
 end
 
