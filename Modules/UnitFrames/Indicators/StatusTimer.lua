@@ -108,7 +108,11 @@ local function StatusTimer_OnUpdate(self, elapsed)
     if self.elapsed >= 1 then
         self.elapsed = 0
         local sec = GetTime() - self.text.start
-        self.text:SetFormattedText("%s %02d:%02d", self.text.status, sec / 60, sec % 60)
+        if self.text.showLabel then
+            self.text:SetFormattedText("%s %02d:%02d", self.text.status, sec / 60, sec % 60)
+        else
+            self.text:SetFormattedText("%02d:%02d", sec / 60, sec % 60)
+        end
     end
 end
 
@@ -151,6 +155,7 @@ local function StatusTimer_LoadConfig(self, config)
 
     self.color = config.color
     self.useEn = config.useEn
+    self.showLabel = config.showLabel
 end
 
 ---------------------------------------------------------------------
@@ -162,10 +167,12 @@ local function StatusTimer_EnableConfigMode(self)
 
     self.updater:Hide()
     self:UnregisterAllEvents()
-    if self.useEn then
-        self:SetText("AFK 00:30")
+
+    local status = self.useEn and "AFK" or L["AFK"]
+    if self.showLabel then
+        self:SetText(status .. " 00:30")
     else
-        self:SetText(L["AFK"] .. " 00:30")
+        self:SetText("00:30")
     end
     self:Show()
 end
