@@ -10,7 +10,7 @@ _G.BFI = BFI
 ---@field vars table
 ---@field libs table
 ---@field UnitFrames UnitFrames
----@field Nameplates Nameplates
+---@field NamePlates NamePlates
 
 ---------------------------------------------------------------------
 -- global

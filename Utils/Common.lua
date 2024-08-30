@@ -146,7 +146,7 @@ function U.IsEmpty(t)
         return true
     end
 
-    for k in pairs(t) do
+    if next(t) then
         return false
     end
     return true
