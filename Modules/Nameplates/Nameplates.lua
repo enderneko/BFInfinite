@@ -432,7 +432,7 @@ local function Show(np)
 
     -- load indicator config
     if np.previousType ~= np.type then
-        BFI.Debug("|cffffff00NP.UnitTypeChanged:|r", np:GetName(), np.previousType, "->", np.type)
+        -- BFI.Debug("|cffffff00NP.UnitTypeChanged:|r", np:GetName(), np.previousType, "->", np.type)
         np.previousType = np.type
         NP.SetupIndicators(np, NP.config[np.type])
     end

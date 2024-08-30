@@ -13,6 +13,7 @@
     <Script file="Indicators\ClassIcon.lua"/>
     <Script file="Indicators\RareIndicator.lua"/>
     <Script file="Indicators\QuestIndicator.lua"/>
+    <Script file="Indicators\TargetIndicator.lua"/>
     <!-- common -->
     <Script file="Common.lua"/>
 </Ui>

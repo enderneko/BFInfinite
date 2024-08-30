@@ -233,7 +233,7 @@ do
             },
             spark = {
                 enabled = true,
-                texture = AW.GetPlainTexture(),
+                texture = "plain",
                 color = AW.GetColorTable("cast_spark"),
                 width = 1,
                 height = 0,
@@ -270,7 +270,22 @@ do
     }
 
     local hostile = {
-        -- castOnMe
+        targetIndicator = {
+            enabled = true,
+            position = {"BOTTOM", "TOP", 0, 30},
+            anchorTo = "healthBar",
+            frameLevel = 1,
+            width = 36,
+            height = 36,
+            target = {
+                texture = "Arrow1_Red",
+                color = AW.GetColorTable("white"),
+            },
+            focus = {
+                texture = "Arrow1_Blue",
+                color = AW.GetColorTable("white"),
+            },
+        },
         buffs = {
             enabled = true,
             position = {"BOTTOM", "TOP", 0, 10},
@@ -458,6 +473,22 @@ do
             color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             showOtherServerSign = true,
         },
+        targetIndicator = {
+            enabled = true,
+            position = {"BOTTOM", "TOP", 0, 15},
+            anchorTo = "nameText",
+            frameLevel = 1,
+            width = 36,
+            height = 36,
+            target = {
+                texture = "Arrow1_Green",
+                color = AW.GetColorTable("white"),
+            },
+            focus = {
+                texture = "none",
+                color = AW.GetColorTable("white"),
+            },
+        },
         buffs = {
             enabled = false,
             position = {"BOTTOM", "TOP", 0, 10},
@@ -621,38 +652,38 @@ do
 
     -- update friendly_npc
     for n, t in pairs(defaults.friendly_npc) do
-        t.enabled = n == "nameText"
+        t.enabled = n == "nameText" or n == "targetIndicator"
     end
 
     -- update friendly_player
     for n, t in pairs(defaults.friendly_player) do
-        t.enabled = n == "nameText"
+        t.enabled = n == "nameText" or n == "targetIndicator"
     end
 end
 
-local customDefaults = {
-    trigger = "npcName",
-    hide = false,
-    scale = {
-        enabled = false,
-        value = 1,
-    },
-    color = {
-        enabled = false,
-        value = AW.GetColorTable("white"),
-    },
-    glow = {
-        enabled = false,
-        color = AW.GetColorTable("yellow"),
-    },
-    texture = {
-        enabled = false,
-        width = 32,
-        height = 32,
-        useCustom = false,
-        path = "star",
-    },
-}
+-- local customDefaults = {
+--     trigger = "npcName",
+--     hide = false,
+--     scale = {
+--         enabled = false,
+--         value = 1,
+--     },
+--     color = {
+--         enabled = false,
+--         value = AW.GetColorTable("white"),
+--     },
+--     glow = {
+--         enabled = false,
+--         color = AW.GetColorTable("yellow"),
+--     },
+--     texture = {
+--         enabled = false,
+--         width = 32,
+--         height = 32,
+--         useCustom = false,
+--         path = "star",
+--     },
+-- }
 
 BFI.RegisterCallback("UpdateConfigs", "Nameplates", function(t)
     if not t["nameplates"] then

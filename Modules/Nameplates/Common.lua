@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local AW = BFI.AW
----@class NamePlate
+---@class NamePlates
 local NP = BFI.NamePlates
 
 local builders = {
@@ -18,6 +18,7 @@ local builders = {
     buffs = NP.CreateBuffs,
     crowdControls = NP.CreateCrowdControls,
     questIndicator = NP.CreateQuestIndicator,
+    targetIndicator = NP.CreateTargetIndicator,
 }
 
 function NP.CreateIndicators(np)
@@ -43,10 +44,10 @@ function NP.LoadIndicatorConfig(np, indicatorName, indicatorConfig)
         indicator.enabled = false
     end
 
-    if not np:IsShown() then return end
-
     if indicator.enabled then
-        indicator:Enable()
+        if np:IsShown() then
+            indicator:Enable()
+        end
     else
         if indicator.Disable then
             indicator:Disable()
