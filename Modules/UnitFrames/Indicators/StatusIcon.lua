@@ -23,7 +23,10 @@ local function UpdateStatus(self, event, unitId)
     local unit = self.root.unit
     if unitId and unitId ~= unit then return end
 
-    if not UnitIsPlayer(unit) then return end
+    if not UnitIsPlayer(unit) then
+        self:Hide()
+        return
+    end
 
     local phaseReason = UnitPhaseReason(unit)
 
