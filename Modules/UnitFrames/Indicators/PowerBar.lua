@@ -167,6 +167,7 @@ local function PowerBar_Enable(self)
     end
     self:RegisterEvent("UNIT_MAXPOWER", UpdatePowerMax)
     self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateAll)
+    self:RegisterEvent("UNIT_FACTION", UpdatePowerColor)
 
     self:Show()
     self:Update()
