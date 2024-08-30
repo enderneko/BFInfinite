@@ -150,7 +150,7 @@ local function EnableConfigModeForGroup(group)
     if configModeGroups[group]["headers"] then
         for _, header in pairs(configModeGroups[group]["headers"]) do
             header.inConfigMode = true
-            header:SetAttribute("startingIndex", -4)
+            header:SetAttribute("startingIndex", 1 - header:GetNumChildren())
         end
     end
 

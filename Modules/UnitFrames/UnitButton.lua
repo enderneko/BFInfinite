@@ -170,7 +170,7 @@ local function UnitButton_RegisterEvents(self)
     -- self:RegisterEvent("PARTY_MEMBER_DISABLE")
     -- self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
-    if self._updateOnGroupChanged then
+    if self._updateOnGroupUpdate then
         self:RegisterEvent("GROUP_ROSTER_UPDATE")
     end
 
@@ -382,6 +382,9 @@ local function UnitButton_OnEnter(self)
         if self.tooltipAnchorTo == "self" then
             GameTooltip:SetOwner(self, "ANCHOR_NONE")
             GameTooltip:SetPoint(self.tooltipPosition[1], self, self.tooltipPosition[2], self.tooltipPosition[3], self.tooltipPosition[4])
+        elseif self.tooltipAnchorTo == "container" then -- party/raid
+            GameTooltip:SetOwner(self, "ANCHOR_NONE")
+            GameTooltip:SetPoint(self.tooltipPosition[1], self:GetParent():GetParent(), self.tooltipPosition[2], self.tooltipPosition[3], self.tooltipPosition[4])
         else -- default
             GameTooltip_SetDefaultAnchor(GameTooltip, self)
         end

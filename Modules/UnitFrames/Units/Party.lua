@@ -42,9 +42,11 @@ local function CreateParty()
     party.header = header
     UF.AddToConfigMode("party.header", header)
     header:SetAttribute("template", "BFIUnitButtonTemplate")
+    header:SetAttribute("showSolo", true)
+    header:SetAttribute("showRaid", true)
     header:SetAttribute("showParty", true)
 
-    --! to make needButtons == 5 cheat configureChildren in SecureGroupHeaders.lua
+    --! to make needButtons == 5 in SecureGroupHeaders.lua
     header:SetAttribute("startingIndex", -4)
     header:Show()
     header:SetAttribute("startingIndex", 1)
@@ -57,10 +59,10 @@ local function CreateParty()
     end)
 
     party.driverKey = "state-visibility"
-    party.driverValue = "[petbattle] hide;[@raid1,exists] hide;[@party1,exists] show;[group:party] show;hide"
+    party.driverValue = "[@raid1,exists] hide;[@party1,exists] show;[group:party] show;hide"
 
     for i = 1, 5 do
-        header[i]._updateOnGroupChanged = true
+        header[i]._updateOnGroupUpdate = true
         UF.AddToConfigMode("party", header[i])
         UF.CreateIndicators(header[i], indicators)
     end
@@ -133,9 +135,6 @@ local function UpdateParty(module, which)
     header:SetAttribute("buttonWidth", AW.ConvertPixelsForRegion(config.general.width, party))
     header:SetAttribute("buttonHeight", AW.ConvertPixelsForRegion(config.general.height, party))
     header:SetAttribute("showPlayer", config.general.showPlayer)
-    header:SetAttribute("showSolo", true)
-    header:SetAttribute("showRaid", true)
-    header:SetAttribute("showParty", true)
     header:SetSize(config.general.width, config.general.height)
     header:Show()
 

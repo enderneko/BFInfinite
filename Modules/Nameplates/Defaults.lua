@@ -30,13 +30,13 @@ local CVAR_DEFAULTS = {
     nameplateOverlapH = 0.5,
     nameplateOverlapV = 0.5,
     -- motion
-    nameplateMotion = 1,
+    nameplateMotion = 1, -- 0:Overlapping 1:Stacking
     nameplateMotionSpeed = 0.025,
     -- distance
     nameplateMaxDistance = 45,
-    nameplateTargetBehindMaxDistance = 15, --? what's this cvar for?
+    nameplateTargetBehindMaxDistance = 15, --? what's this cvar for? (broken?)
     -- inset
-    nameplateTargetRadialPosition = 1, --? 1 & 2 seems the
+    nameplateTargetRadialPosition = 1, --? 0:off, 1/2:seems broken, they're the same
     nameplateLargeTopInset = 0.2,
     nameplateLargeBottomInset = 0.2,
     nameplateOtherTopInset = 0.08,
@@ -473,6 +473,15 @@ do
             color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             showOtherServerSign = true,
         },
+        raidIcon = {
+            enabled = true,
+            position = {"RIGHT", "LEFT", -2, 2},
+            anchorTo = "nameText",
+            frameLevel = 2,
+            width = 13,
+            height = 13,
+            style = "text",
+        },
         targetIndicator = {
             enabled = true,
             position = {"BOTTOM", "TOP", 0, 15},
@@ -650,14 +659,20 @@ do
     defaults.friendly_npc = U.Copy(nameplateDefaults, friendly)
     defaults.friendly_player = U.Copy(nameplateDefaults, friendly)
 
+    local friendly_enabled = {
+        nameText = true,
+        raidIcon = true,
+        targetIndicator = true,
+    }
+
     -- update friendly_npc
     for n, t in pairs(defaults.friendly_npc) do
-        t.enabled = n == "nameText" or n == "targetIndicator"
+        t.enabled = friendly_enabled[n]
     end
 
     -- update friendly_player
     for n, t in pairs(defaults.friendly_player) do
-        t.enabled = n == "nameText" or n == "targetIndicator"
+        t.enabled = friendly_enabled[n]
     end
 end
 

@@ -89,10 +89,10 @@ function UF.LoadIndicatorConfig(frame, indicatorName, indicatorConfig)
         indicator.enabled = false
     end
 
-    if not frame:IsVisible() then return end
-
     if indicator.enabled then
-        indicator:Enable()
+        if frame:IsVisible() then
+            indicator:Enable()
+        end
         -- NOTE: let each indicator handle this
         -- if frame:IsVisible() then
         --     indicator:Update()
@@ -213,7 +213,7 @@ function UF.SetupUnitFrame(frame, config, indicators)
 end
 
 ---------------------------------------------------------------------
--- setup group
+-- header arrangement
 ---------------------------------------------------------------------
 function UF.GetSimplePositionArgs(config)
     local p, rp, x, y, hp
@@ -245,130 +245,59 @@ function UF.GetSimplePositionArgs(config)
     return p, rp, x, y, hp
 end
 
--- function UF.SetupGroupContainer(container, config)
---     -- strata & level
---     container:SetFrameStrata(config.general.frameStrata)
---     container:SetFrameLevel(config.general.frameLevel)
-
---     -- position
---     AW.LoadPosition(container, config.general.position)
-
---     -- size
---     if config.general.orientation == "top_to_bottom" or config.general.orientation == "bottom_to_top" then
---         AW.SetWidth(container, config.general.width)
---         AW.SetListHeight(container, #container, config.general.height, config.general.spacing)
---     else
---         AW.SetHeight(container, config.general.height)
---         AW.SetListWidth(container, #container, config.general.width, config.general.spacing)
---     end
--- end
-
--- function UF.SetupUnitGroup(self, config, indicators)
---     local p, rp, x, y = GetPositionArgs(config)
---     local last
---     for _, b in ipairs(self) do
---         -- size
---         AW.SetSize(b, config.general.width, config.general.height)
-
---         -- indicators
---         UF.CreateIndicators(b, indicators)
-
---         -- out of range alpha
---         b.oorAlpha = config.general.oorAlpha
-
---         -- tooltip
---         UF.SetupTooltip(b, config.general.tooltip)
-
---         -- out of range alpha
---         b.oorAlpha = config.general.oorAlpha
-
---         -- color
---         AW.StylizeFrame(b, config.general.bgColor, config.general.borderColor)
-
---         -- indicators
---         UF.SetupIndicators(b, indicators, config)
-
---         -- position
---         AW.ClearPoints(b)
---         if last then
---             AW.SetPoint(b, p, last, rp, x, y)
---         else
---             AW.SetPoint(b, p)
---         end
---         last = b
---     end
--- end
-
--- function UF.SetHeaderGroup(self, config, indicators)
---     -- strata & level
---     self:SetFrameStrata(config.general.frameStrata)
---     self:SetFrameLevel(config.general.frameLevel)
-
---     -- position
---     AW.LoadPosition(self, config.general.position)
-
---     -- container size
---     local unitCount = #self
---     if config.general.orientation == "top_to_bottom" or config.general.orientation == "bottom_to_top" then
---         AW.SetWidth(self, config.general.width)
---         AW.SetListHeight(self, unitCount, config.general.height, config.general.spacing)
---     else
---         AW.SetHeight(self, config.general.height)
---         AW.SetListWidth(self, unitCount, config.general.width, config.general.spacing)
---     end
-
---     -- arrangement & size
---     local p, rp, x, y = GetPositionArgs(config)
-
---     -- local last
---     for _, b in ipairs(self) do
---         -- size
---         AW.SetSize(b, config.general.width, config.general.height)
-
---         -- indicators
---         UF.CreateIndicators(b, indicators)
-
---         -- out of range alpha
---         b.oorAlpha = config.general.oorAlpha
-
---         -- tooltip
---         UF.SetupTooltip(b, config.general.tooltip)
-
---         -- out of range alpha
---         b.oorAlpha = config.general.oorAlpha
-
---         -- color
---         AW.StylizeFrame(b, config.general.bgColor, config.general.borderColor)
-
---         -- indicators
---         UF.SetupIndicators(b, indicators, config)
-
---         -- position
---         -- AW.ClearPoints(b)
---         -- if last then
---         --     AW.SetPoint(b, p, last, rp, x, y)
---         -- else
---         --     AW.SetPoint(b, p)
---         -- end
---         -- last = b
---     end
-
---     -- update header
-
-
---     --! force update unitbutton's point
---     for i = 1, unitCount do
---         header[j]:ClearAllPoints()
---         -- update petButton's point
---         header[j].petButton:ClearAllPoints()
---         if orientation == "vertical" then
---             header[j].petButton:SetPoint(point, header[j], petAnchorPoint, petSpacing, 0)
---         else
---             header[j].petButton:SetPoint(point, header[j], petAnchorPoint, 0, petSpacing)
---         end
---     end
---     header:SetAttribute("unitsPerColumn", 5)
--- end
+function UF.GetCombinedPositionArgs(config)
+    local p, rp, x, y, hp
+    if config.general.orientation == "bottom_to_top_then_left" then
+        p = "BOTTOMRIGHT"
+        rp = "TOPRIGHT"
+        x = -config.general.spacingH
+        y = config.general.spacingV
+        hp = "BOTTOM"
+    elseif config.general.orientation == "bottom_to_top_then_right" then
+        p = "BOTTOMLEFT"
+        rp = "TOPLEFT"
+        x = config.general.spacingH
+        y = config.general.spacingV
+        hp = "BOTTOM"
+    elseif config.general.orientation == "top_to_bottom_then_left" then
+        p = "TOPTOPRIGHT"
+        rp = "BOTTOMRIGHT"
+        x = -config.general.spacingH
+        y = -config.general.spacingV
+        hp = "TOP"
+    elseif config.general.orientation == "top_to_bottom_then_right" then
+        p = "TOPLEFT"
+        rp = "BOTTOMLEFT"
+        x = config.general.spacingH
+        y = -config.general.spacingV
+        hp = "TOP"
+    elseif config.general.orientation == "left_to_right_then_bottom" then
+        p = "TOPLEFT"
+        rp = "TOPRIGHT"
+        x = config.general.spacingH
+        y = -config.general.spacingV
+        hp = "LEFT"
+    elseif config.general.orientation == "left_to_right_then_top" then
+        p = "BOTTOMLEFT"
+        rp = "BOTTOMRIGHT"
+        x = config.general.spacingH
+        y = config.general.spacingV
+        hp = "LEFT"
+    elseif config.general.orientation == "right_to_left_then_bottom" then
+        p = "TOPRIGHT"
+        rp = "TOPLEFT"
+        x = -config.general.spacingH
+        y = -config.general.spacingV
+        hp = "RIGHT"
+    elseif config.general.orientation == "right_to_left_then_top" then
+        p = "BOTTOMRIGHT"
+        rp = "BOTTOMLEFT"
+        x = -config.general.spacingH
+        y = config.general.spacingV
+        hp = "RIGHT"
+    end
+    return p, rp, x, y, hp
+end
 
 ---------------------------------------------------------------------
 -- setup tooltip
