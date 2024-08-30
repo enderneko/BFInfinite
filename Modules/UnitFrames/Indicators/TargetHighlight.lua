@@ -93,6 +93,7 @@ function UF.CreateTargetHighlight(parent, name)
     highlight.root = parent
     highlight:Hide()
     highlight:SetAllPoints()
+    highlight:SetIgnoreParentAlpha(true)
 
     -- mask
     local mask = highlight:CreateMaskTexture()

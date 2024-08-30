@@ -78,6 +78,7 @@ function UF.CreateMouseoverHighlight(parent, name)
     highlight.root = parent
     highlight:Hide()
     highlight:SetAllPoints()
+    highlight:SetIgnoreParentAlpha(true)
 
     parent:HookScript("OnEnter", MouseoverHighlight_OnEnter)
     parent:HookScript("OnLeave", MouseoverHighlight_OnLeave)
