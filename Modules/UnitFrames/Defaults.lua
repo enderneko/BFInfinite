@@ -150,7 +150,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -282,7 +282,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
             },
             levelText = {
@@ -290,7 +290,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 0, 0},
                 anchorTo = "leaderText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -298,7 +298,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             statusTimer = {
@@ -306,9 +306,10 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "targetCounter",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
+                showLabel = true,
             },
             statusIcon = {
                 enabled = true,
@@ -320,7 +321,7 @@ local defaults = {
             },
             raidIcon = {
                 enabled = true,
-                position = {"CENTER", "TOP", 0, 0},
+                position = {"CENTER", "TOP", 1, 0},
                 anchorTo = "root",
                 frameLevel = 10,
                 width = 12,
@@ -383,7 +384,7 @@ local defaults = {
                 position = {"BOTTOM", "BOTTOM", 0, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 types = {
                     swing = {enabled = true, color = AW.GetColorTable("swing")},
                     damage = {enabled = true, color = AW.GetColorTable("damage")},
@@ -614,7 +615,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -713,7 +714,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
             },
             levelText = {
@@ -721,7 +722,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 0, 0},
                 anchorTo = "leaderText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -729,7 +730,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             rangeText = {
@@ -737,16 +738,17 @@ local defaults = {
                 position = {"BOTTOM", "BOTTOM", 0, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
             },
             statusTimer = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "targetCounter",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
+                showLabel = true,
             },
             statusIcon = {
                 enabled = true,
@@ -758,7 +760,7 @@ local defaults = {
             },
             raidIcon = {
                 enabled = true,
-                position = {"CENTER", "TOP", 0, 0},
+                position = {"CENTER", "TOP", 1, 0},
                 anchorTo = "root",
                 frameLevel = 10,
                 width = 12,
@@ -1027,7 +1029,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -1053,7 +1055,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
@@ -1121,7 +1123,7 @@ local defaults = {
             },
             raidIcon = {
                 enabled = true,
-                position = {"CENTER", "TOP", 0, 0},
+                position = {"CENTER", "TOP", 1, 0},
                 anchorTo = "root",
                 frameLevel = 10,
                 width = 12,
@@ -1374,7 +1376,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -1400,7 +1402,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             rangeText = {
@@ -1408,7 +1410,7 @@ local defaults = {
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
             },
             portrait = {
                 enabled = false,
@@ -1476,7 +1478,7 @@ local defaults = {
             },
             raidIcon = {
                 enabled = true,
-                position = {"CENTER", "TOP", 0, 0},
+                position = {"CENTER", "TOP", 1, 0},
                 anchorTo = "root",
                 frameLevel = 10,
                 width = 12,
@@ -1729,7 +1731,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -1755,7 +1757,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
@@ -1823,7 +1825,7 @@ local defaults = {
             },
             raidIcon = {
                 enabled = true,
-                position = {"CENTER", "TOP", 0, 0},
+                position = {"CENTER", "TOP", 1, 0},
                 anchorTo = "root",
                 frameLevel = 10,
                 width = 12,
@@ -2076,7 +2078,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -2102,7 +2104,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
@@ -2179,7 +2181,7 @@ local defaults = {
             },
             raidIcon = {
                 enabled = true,
-                position = {"CENTER", "TOP", 0, 0},
+                position = {"CENTER", "TOP", 1, 0},
                 anchorTo = "root",
                 frameLevel = 10,
                 width = 12,
@@ -2422,7 +2424,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -2448,7 +2450,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 5, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
@@ -2517,7 +2519,7 @@ local defaults = {
             },
             raidIcon = {
                 enabled = true,
-                position = {"CENTER", "TOP", 0, 0},
+                position = {"CENTER", "TOP", 1, 0},
                 anchorTo = "root",
                 frameLevel = 10,
                 width = 12,
@@ -2773,7 +2775,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -2791,7 +2793,7 @@ local defaults = {
                 position = {"TOPLEFT", "TOPLEFT", 3, -1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
             },
             levelText = {
@@ -2799,7 +2801,7 @@ local defaults = {
                 position = {"TOPLEFT", "TOPRIGHT", 0, 0},
                 anchorTo = "leaderText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -2807,7 +2809,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 5, 0},
                 anchorTo = "levelText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             statusTimer = {
@@ -2815,9 +2817,10 @@ local defaults = {
                 position = {"TOPRIGHT", "TOPRIGHT", 0, -1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome", false},
+                font = {"BFI 2", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
+                showLabel = true,
             },
             portrait = {
                 enabled = true,
@@ -2910,7 +2913,7 @@ local defaults = {
             },
             raidIcon = {
                 enabled = true,
-                position = {"CENTER", "TOP", 0, 0},
+                position = {"CENTER", "TOP", 1, 0},
                 anchorTo = "root",
                 frameLevel = 10,
                 width = 12,
@@ -2980,7 +2983,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = false,
-                    font = {"BFI 2", 9, "monochrome", false},
+                    font = {"BFI 2", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -2990,7 +2993,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 2", 9, "monochrome", false},
+                    font = {"BFI 2", 9, "monochrome_outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -3069,16 +3072,16 @@ local defaults = {
     raid = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("green", 0.25),
+            bgColor = AW.GetColorTable("none"),
             borderColor = AW.GetColorTable("none"),
             position = {"BOTTOMLEFT", 200, 399},
             orientation = "top_to_bottom_then_right",
-            spacingV = 2,
-            spacingH = 2,
+            spacingV = 3,
+            spacingH = 3,
             maxColumns = 8,
             unitsPerColumn = 5,
-            width = 66,
-            height = 46,
+            width = 65,
+            height = 40,
             oorAlpha = 0.45,
             tooltip = {
                 enabled = true,
@@ -3093,9 +3096,9 @@ local defaults = {
                 anchorTo = "root",
                 frameLevel = 3,
                 -- orientation = "HORIZONTAL",
-                width = 66,
-                height = 46,
-                color = {type = "custom_color", alpha = 0.4, rgb = AW.GetColorTable("uf")},
+                width = 65,
+                height = 40,
+                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background", 0),
                 borderColor = AW.GetColorTable("border"),
@@ -3138,12 +3141,12 @@ local defaults = {
             },
             powerBar = {
                 enabled = true,
-                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0},
+                position = {"CENTER", "BOTTOM", 0, 0},
                 anchorTo = "root",
-                frameLevel = 5,
+                frameLevel = 6,
                 -- orientation = "HORIZONTAL",
-                width = 66,
-                height = 4,
+                width = 49,
+                height = 5,
                 color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
@@ -3154,12 +3157,81 @@ local defaults = {
             },
             nameText = {
                 enabled = true,
-                position = {"LEFT", "LEFT", 3, 0},
+                position = {"CENTER", "CENTER", 0, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                length = 0.5,
+                length = 0.75,
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            },
+            leaderIcon = {
+                enabled = true,
+                position = {"CENTER", "BOTTOMLEFT", 4, 4},
+                anchorTo = "healthBar",
+                frameLevel = 10,
+                width = 10,
+                height = 10,
+            },
+            statusTimer = {
+                enabled = true,
+                position = {"BOTTOM", "BOTTOM", 0, 4},
+                anchorTo = "healthBar",
+                parent = "healthBar",
+                font = {"BFI 2", 9, "monochrome", true},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                useEn = true,
+                showLabel = false,
+            },
+            statusIcon = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, 0},
+                anchorTo = "healthBar",
+                frameLevel = 15,
+                width = 16,
+                height = 16,
+            },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 1, -3},
+                anchorTo = "root",
+                frameLevel = 10,
+                width = 10,
+                height = 10,
+                style = "text",
+            },
+            readyCheckIcon = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, 0},
+                anchorTo = "healthBar",
+                frameLevel = 20,
+                width = 15,
+                height = 15,
+            },
+            roleIcon = {
+                enabled = true,
+                position = {"CENTER", "TOPLEFT", 4, -4},
+                anchorTo = "healthBar",
+                frameLevel = 10,
+                width = 10,
+                height = 10,
+                hideDamager = true,
+            },
+            targetHighlight = {
+                enabled = true,
+                frameLevel = 4,
+                size = 1,
+                color = {1, 0.31, 0.31, 1},
+            },
+            mouseoverHighlight = {
+                enabled = true,
+                frameLevel = 5,
+                size = 1,
+                color = {1, 1, 1, 0.6},
+            },
+            threatGlow = {
+                enabled = true,
+                size = 3,
+                alpha = 1,
             },
         },
     },

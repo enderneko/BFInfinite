@@ -42,8 +42,10 @@ function U.SetFont(fs, font, size, outline, shadow)
         flags = ""
     elseif outline == "outline" then
         flags = "OUTLINE"
-    else
+    elseif outline == "monochrome_outline" then
         flags = "OUTLINE,MONOCHROME"
+    elseif outline == "monochrome" then
+        flags = "MONOCHROME"
     end
 
     fs:SetFont(font, size, flags)
