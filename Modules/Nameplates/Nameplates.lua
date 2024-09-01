@@ -175,10 +175,11 @@ local function UpdateNameplateBase(np)
     np.states.isPVPSanctuary = UnitIsPVPSanctuary(unit)
     np.states.isEnemy = UnitIsEnemy("player", unit)
     np.states.isPlayer = UnitIsPlayer(unit)
+    np.states.canAttack = UnitCanAttack("player", unit)
 
     if np.states.isPVPSanctuary then
         np.type = "friendly_player"
-    elseif not np.states.isEnemy and (np.states.reaction and np.states.reaction > 4) then
+    elseif not np.states.isEnemy and (np.states.reaction and (np.states.reaction > 4 or np.states.reaction == 4 and not np.states.canAttack)) then
         np.type = np.states.isPlayer and "friendly_player" or "friendly_npc"
     else
         np.type = np.states.isPlayer and "hostile_player" or "hostile_npc"
@@ -418,17 +419,18 @@ end
 -- show / hide
 ---------------------------------------------------------------------
 local function Show(np)
-    UpdateWidgetContainer(np)
-
     np.unit = np.blz.displayedUnit
     np.elapsed = 0.25 -- update now
+    np.guid = UnitGUID(np.unit)
 
-    local guid = UnitGUID(np.unit)
-    if guid ~= np.guid then
-        np.guid = guid
-        -- BFI.Debug("|cffff7700NP.UnitChanged:|r", np:GetName())
-        UpdateNameplateBase(np)
-    end
+    UpdateWidgetContainer(np)
+    UpdateNameplateBase(np)
+
+    -- if guid ~= np.guid then
+    --     np.guid = guid
+    --     -- BFI.Debug("|cffff7700NP.UnitChanged:|r", np:GetName())
+    --     UpdateNameplateBase(np)
+    -- end
 
     -- load indicator config
     if np.previousType ~= np.type then
@@ -576,6 +578,7 @@ local function UpdateNameplates(module, which)
     NP:RegisterEvent("UI_SCALE_CHANGED", HideBlzNameplates)
     NP:RegisterEvent("CVAR_UPDATE", HideBlzNameplates)
     NP:RegisterEvent("PLAYER_TARGET_CHANGED", UpdateTarget)
+    NP:RegisterEvent("UNIT_FACTION", ShowNameplate)
 
     -- cvar
     if not which or which == "cvar" then
