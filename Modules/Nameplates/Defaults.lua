@@ -170,6 +170,7 @@ do
             length = 1,
             font = {"BFI 1", 12, "none", true},
             color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            showOtherServerSign = false,
         },
         healthText = {
             enabled = true,
@@ -210,6 +211,7 @@ do
             borderColor = AW.GetColorTable("border"),
             texture = "BFI 1",
             fadeDuration = 1,
+            enableInterruptibleCheck = true,
             icon = {
                 enabled = true,
                 position = {"BOTTOMRIGHT", "BOTTOMLEFT", -2, 0},

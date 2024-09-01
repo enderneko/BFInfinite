@@ -294,7 +294,7 @@ local function OnUpdate(self, elapsed)
 			end
 		end
 
-        if self.checkInterruptCD and self.requireInterruptUsable and not self.notInterruptible then
+        if self.enableInterruptibleCheck and self.checkInterruptCD and self.requireInterruptUsable and not self.notInterruptible then
             self.elapsed = (self.elapsed or 0) + elapsed
             if self.elapsed >= 0.25 then
                 CastInterruptible(self)
@@ -341,13 +341,15 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     self.duration = self.endTime - self.startTime
 
     -- interruptible
-    if UnitCanAttack("player", unit) then
-        self.checkInterruptCD = true
-    else
-        self.checkInterruptCD = nil
+    if self.enableInterruptibleCheck then
+        if UnitCanAttack("player", unit) then
+            self.checkInterruptCD = true
+        else
+            self.checkInterruptCD = nil
+        end
+        self.notInterruptible = notInterruptible
+        CastInterruptible(self)
     end
-    self.notInterruptible = notInterruptible
-    CastInterruptible(self)
 
     -- empower
     UpdateEmpowerPips(self, numEmpowerStages)
@@ -396,8 +398,11 @@ local function CastBar_Enable(self)
     self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", CastFail)
 
     -- interruptible
-    self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE", CastInterruptible)
-    self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", CastInterruptible)
+    if self.enableInterruptibleCheck then
+        self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE", CastInterruptible)
+        self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", CastInterruptible)
+        self:RegisterEvent("UNIT_FACTION", CastInterruptible)
+    end
 
     -- interrupt source
     if self.showName and self.showInterruptSource then
@@ -520,6 +525,7 @@ local function CastBar_LoadConfig(self, config)
     self.borderColor = config.borderColor
 
     self.requireInterruptUsable = config.colors.interruptible.requireInterruptUsable
+    self.enableInterruptibleCheck = config.enableInterruptibleCheck
 
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
