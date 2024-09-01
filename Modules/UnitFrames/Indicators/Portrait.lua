@@ -55,6 +55,8 @@ local function UpdatePortrait3D(self, unit)
         model:ClearModel()
         model:SetModel([[Interface\Buttons\TalkToMeQuestionMark.m2]])
     end
+
+    model:SetModelAlpha(self.root:GetAlpha())
 end
 
 local function UpdatePortrait2D(self, unit)
