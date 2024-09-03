@@ -180,7 +180,7 @@ local function Portrait_UpdatePixels(self)
     AW.ReBorder(self)
     AW.RePoint(self.model)
     AW.RePoint(self.texture)
-    if self.style == "3d" then
+    if self:IsVisible() and self.style == "3d" then
         UpdatePortrait(self)
     end
 end
