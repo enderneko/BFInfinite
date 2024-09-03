@@ -8,6 +8,14 @@ local MOVER_ON_TOP_FRAME_LEVEL = 777
 local FINE_TUNING_FRAME_LEVEL = 800
 local movers = {}
 
+local function Round(num, numDecimalPlaces)
+    if numDecimalPlaces and numDecimalPlaces >= 0 then
+        local mult = 10 ^ numDecimalPlaces
+        return floor(num * mult + 0.5) / mult
+    end
+    return floor(num + 0.5)
+end
+
 ---------------------------------------------------------------------
 -- parent
 ---------------------------------------------------------------------
@@ -134,8 +142,8 @@ local function CalcPoint(mover)
 
     -- x = tonumber(string.format("%.2f", x))
     -- y = tonumber(string.format("%.2f", y))
-    x = Round(x)
-    y = Round(y)
+    x = Round(x, 1)
+    y = Round(y, 1)
 
     return point, x, y
 end
@@ -270,8 +278,8 @@ UpdateFineTuningFrame = function(owner)
     fineTuningFrame.tp:SetTitle(owner.mover.text:GetText())
 
     local p, _, _, x, y = owner:GetPoint()
-    x = Round(x)
-    y = Round(y)
+    x = Round(x, 1)
+    y = Round(y, 1)
 
     fineTuningFrame.x:ClearFocus()
     fineTuningFrame.y:ClearFocus()
@@ -485,8 +493,8 @@ function AW.CreateMover(owner, group, text, save)
         if mover.isDragging then return end
 
         local point, _, _, startX, startY = owner:GetPoint()
-        startX = Round(startX)
-        startY = Round(startY)
+        startX = Round(startX, 1)
+        startY = Round(startY, 1)
 
         mover.moved = true
 
@@ -547,7 +555,7 @@ function AW.CreateMover(owner, group, text, save)
     mover:SetScript("OnShow", function()
         if not mover._original then
             local p, _, _, x, y = owner:GetPoint()
-            mover._original = {p, Round(x), Round(y)}
+            mover._original = {p, Round(x, 1), Round(y, 1)}
         end
     end)
 end
