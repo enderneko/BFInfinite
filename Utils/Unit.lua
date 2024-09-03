@@ -151,6 +151,23 @@ function U.UnitInGroup(unit, ignorePets)
 end
 
 ---------------------------------------------------------------------
+-- pet
+---------------------------------------------------------------------
+function U.GetPetUnit(playerUnit)
+    if not strfind(playerUnit, "^[p|r]") then return end
+
+    local unit
+    if playerUnit == "player" then
+        unit = "pet"
+    elseif strfind(playerUnit, "^party") then
+        unit = playerUnit:gsub("party", "partypet")
+    elseif strfind(playerUnit, "^raid") then
+        unit = playerUnit:gsub("raid", "raidpet")
+    end
+    return unit
+end
+
+---------------------------------------------------------------------
 -- iterate group members
 ---------------------------------------------------------------------
 function U.GroupMembersIterator()

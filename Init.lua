@@ -11,6 +11,7 @@ _G.BFI = BFI
 ---@field libs table
 ---@field UnitFrames UnitFrames
 ---@field NamePlates NamePlates
+---@field Misc Misc
 
 ---------------------------------------------------------------------
 -- global

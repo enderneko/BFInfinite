@@ -4,7 +4,6 @@ local U = BFI.utils
 ---@class Misc
 local M = BFI.Misc
 
-local classCache = {}
 local UnitClassBase = U.UnitClassBase
 local UnitLevel = UnitLevel
 local GetNumGuildMembers = GetNumGuildMembers
@@ -15,14 +14,24 @@ local GetNumFriends = C_FriendList.GetNumFriends
 local GetFriendInfoByIndex = C_FriendList.GetFriendInfoByIndex
 
 ---------------------------------------------------------------------
+-- cache
+---------------------------------------------------------------------
+local nameToClass = {}
+petToOwner = {}
+
+---------------------------------------------------------------------
 -- functions
 ---------------------------------------------------------------------
 function M.GetPlayerClass(name)
-    return classCache[name]
+    return nameToClass[name]
 end
 
 function M.GetPlayerInfo(fullName)
     return BFIPlayer[fullName]
+end
+
+function M.GetPetOwner(guid)
+    return petToOwner[guid]
 end
 
 function M.GetMain(fullName)
@@ -56,10 +65,24 @@ local function CacheSelf()
     BFIPlayer[BFI.vars.playerNameFull]["level"] = UnitLevel("player")
 
     -- cache
-    classCache[BFI.vars.playerNameFull] = BFI.vars.playerClass
-    classCache[BFI.vars.playerNameShort] = BFI.vars.playerClass
+    nameToClass[BFI.vars.playerNameFull] = BFI.vars.playerClass
+    nameToClass[BFI.vars.playerNameShort] = BFI.vars.playerClass
 end
 BFI.RegisterCallback("PLAYER_LOGIN", "Misc_PlayerData", CacheSelf)
+
+---------------------------------------------------------------------
+-- UNIT_PET
+---------------------------------------------------------------------
+local function CachePet(_, event, unit)
+    if U.UnitInGroup(unit, true) then
+        local owner = U.UnitFullName(unit)
+        local pet = UnitGUID(U.GetPetUnit(unit) or "")
+        if owner and pet then
+            petToOwner[pet] = owner
+        end
+    end
+end
+M:RegisterEvent("UNIT_PET", CachePet)
 
 ---------------------------------------------------------------------
 -- all
@@ -70,7 +93,7 @@ function CacheAll(_, event)
     M:UnregisterEvent("PLAYER_ENTERING_WORLD", CacheAll)
     CacheGroup(nil, event)
     -- CacheGuild(nil, event)
-    CacheFriends(nil, event)
+    -- CacheFriends(nil, event)
 end
 M:RegisterEvent("PLAYER_ENTERING_WORLD", CacheAll)
 
@@ -95,7 +118,7 @@ function CacheGroup(_, event)
         local name = U.UnitFullName(unit)
         if name then
             local class = UnitClassBase(unit)
-            classCache[name] = class
+            nameToClass[name] = class
 
             -- BFIPlayer
             if BFIPlayer[name] then
@@ -106,7 +129,7 @@ function CacheGroup(_, event)
 
         local shortName = UnitName(unit)
         if shortName then
-            classCache[shortName] = UnitClassBase(unit)
+            nameToClass[shortName] = UnitClassBase(unit)
         end
     end
 end
@@ -137,8 +160,8 @@ function CacheGuild(_, event)
 
         for i = 1, GetNumGuildMembers() do
             local name, _, _, level, _, _, _, _, _, _, classFile = GetGuildRosterInfo(i)
-            classCache[name] = classFile
-            classCache[U.ToShortName(name)] = classFile
+            nameToClass[name] = classFile
+            nameToClass[U.ToShortName(name)] = classFile
 
             if not BFIGuild["members"][name] then
                 tinsert(newMember, {name = name, level = level, class = classFile})
@@ -202,8 +225,8 @@ function CacheFriends(_, event)
                 BFIPlayer[name]["level"] = info.level
 
                 -- cache
-                classCache[name] = BFIPlayer[name]["class"]
-                classCache[U.ToShortName(name)] = BFIPlayer[name]["class"]
+                nameToClass[name] = BFIPlayer[name]["class"]
+                nameToClass[U.ToShortName(name)] = BFIPlayer[name]["class"]
             end
         end
     end

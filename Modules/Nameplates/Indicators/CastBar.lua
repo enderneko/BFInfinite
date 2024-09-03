@@ -117,8 +117,10 @@ end
 -- interrupt source
 ---------------------------------------------------------------------
 local function UpdateInterrupt(self)
-    local _, subEvent, _, _, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
+    local _, subEvent, _, sourceGUID, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
     if subEvent ~= "SPELL_INTERRUPT" then return end
+
+    sourceName = M.GetPetOwner(sourceGUID) or sourceName
 
     if destGUID == self.root.guid then
         local shortName = U.ToShortName(sourceName)
