@@ -125,19 +125,6 @@ local function UpdateParty(module, which)
         AW.SetListWidth(party, unitCount, config.general.width, config.general.spacing)
     end
 
-    -- header
-    local p, rp, x, y, hp = UF.GetSimplePositionArgs(config)
-    header:ClearAllPoints()
-    header:SetPoint(p, party)
-    header:SetAttribute("point", hp)
-    header:SetAttribute("xOffset", x)
-    header:SetAttribute("yOffset", y)
-    header:SetAttribute("buttonWidth", AW.ConvertPixelsForRegion(config.general.width, party))
-    header:SetAttribute("buttonHeight", AW.ConvertPixelsForRegion(config.general.height, party))
-    header:SetAttribute("showPlayer", config.general.showPlayer)
-    header:SetSize(config.general.width, config.general.height)
-    header:Show()
-
     -- buttons
     for i = 1, 5 do
         local button = header[i]
@@ -155,13 +142,21 @@ local function UpdateParty(module, which)
         UF.SetupIndicators(button, indicators, config)
     end
 
+    -- header
+    local p, rp, x, y, hp = UF.GetSimplePositionArgs(config)
+    header:ClearAllPoints()
+    header:SetPoint(p, party)
+    header:SetAttribute("point", hp)
+    header:SetAttribute("xOffset", x)
+    header:SetAttribute("yOffset", y)
+    header:SetAttribute("buttonWidth", AW.ConvertPixelsForRegion(config.general.width, party))
+    header:SetAttribute("buttonHeight", AW.ConvertPixelsForRegion(config.general.height, party))
+    header:SetAttribute("showPlayer", config.general.showPlayer)
+    header:SetSize(config.general.width, config.general.height)
     header:SetAttribute("unitsPerColumn", 5)
+    header:Show()
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(party, party.driverKey, party.driverValue)
-    -- for i = 1, 4 do
-        -- RegisterAttributeDriver(party[i], "state-visibility", "[@party" .. i .. ",exists] show;hide")
-        -- RegisterUnitWatch(party[i])
-    -- end
 end
 BFI.RegisterCallback("UpdateModules", "UF_Party", UpdateParty)

@@ -4,6 +4,101 @@ local AW = BFI.AW
 local U = BFI.utils
 local UF = BFI.UnitFrames
 
+local default_whitelist = {
+    -- druid
+    8936, -- 愈合 - Regrowth
+    774, -- 回春术 - Rejuvenation
+    155777, -- 回春术（萌芽） - Rejuvenation (Germination)
+    33763, -- 生命绽放 - Lifebloom
+    188550, -- 生命绽放 - Lifebloom
+    48438, -- 野性成长 - Wild Growth
+    102351, -- 塞纳里奥结界 - Cenarion Ward
+    102352, -- 塞纳里奥结界 - Cenarion Ward
+    391891, -- 激变蜂群 - Adaptive Swarm
+    145205, -- 百花齐放 - Efflorescence
+    383193, -- 林地护理 - Grove Tending
+    439530, -- 共生绽华 - Symbiotic Blooms
+    429224, -- 次级塞纳里奥结界 - Minor Cenarion Ward
+
+    -- evoker
+    363502, -- 梦境飞行 - Dream Flight
+    370889, -- 双生护卫 - Twin Guardian
+    364343, -- 回响 - Echo
+    355941, -- 梦境吐息 - Dream Breath
+    376788, -- 梦境吐息（回响） - Dream Breath (Echo)
+    366155, -- 逆转 - Reversion
+    367364, -- 逆转（回响） - Reversion (Echo)
+    373862, -- 时空畸体 - Temporal Anomaly
+    378001, -- 梦境投影（pvp） - Dream Projection (pvp)
+    373267, -- 缚誓生命 - Lifebind
+    395296, -- 黑檀之力 (self) - Ebon Might
+    395152, -- 黑檀之力 - Ebon Might
+    360827, -- 炽火龙鳞 - Blistering Scales
+    410089, -- 先知先觉 - Prescience
+    406732, -- 空间悖论 (self) - Spatial Paradox
+    406789, -- 空间悖论 - Spatial Paradox
+    445740, -- 纵焰 - Enkindle
+    409895, -- 精神之花 - Spiritbloom (Reverberations, Chronowarden Hero Talent)
+
+    -- monk
+    119611, -- 复苏之雾 - Renewing Mist
+    124682, -- 氤氲之雾 - Enveloping Mist
+    325209, -- 氤氲之息 - Enveloping Breath
+    406139, -- 真气之茧 - Chi Cocoon
+    450805, -- 净化之魂 - Purified Spirit
+    423439, -- 真气宁和 - Chi Harmony
+
+    -- paladin
+    53563, -- 圣光道标 - Beacon of Light
+    223306, -- 赋予信仰 - Bestow Faith
+    148039, -- 信仰屏障 - Barrier of Faith
+    156910, -- 信仰道标 - Beacon of Faith
+    200025, -- 美德道标 - Beacon of Virtue
+    287280, -- 圣光闪烁 - Glimmer of Light
+    156322, -- 永恒之火 - Eternal Flame
+    431381, -- 晨光 - Dawnlight
+    388013, -- 阳春祝福 - Blessing of Spring
+    388007, -- 仲夏祝福 - Blessing of Summer
+    388010, -- 暮秋祝福 - Blessing of Autumn
+    388011, -- 凛冬祝福 - Blessing of Winter
+    200654, -- 提尔的拯救 - Tyr's Deliverance
+
+    -- priest
+    139, -- 恢复 - Renew
+    41635, -- 愈合祷言 - Prayer of Mending
+    17, -- 真言术：盾 - Power Word: Shield
+    194384, -- 救赎 - Atonement
+    77489, -- 圣光回响 - Echo of Light
+    372847, -- 光明之泉恢复 - Blessed Bolt
+    443526, -- 慰藉预兆 - Premonition of Solace
+
+    -- shaman
+    974, -- 大地之盾 - Earth Shield
+    383648, -- 大地之盾（天赋） - Earth Shield
+    61295, -- 激流 - Riptide
+    382024, -- 大地生命武器 - Earthliving Weapon
+    375986, -- 始源之潮 - Primordial Wave
+    444490, -- 源水气泡 - Hydrobubble
+}
+
+local default_blacklist = {
+    8326, -- 鬼魂 - Ghost
+    160029, -- 正在复活 - Resurrecting
+    255234, -- 图腾复生 - Totemic Revival
+    225080, -- 复生 - Reincarnation
+    57723, -- 筋疲力尽 - Exhaustion
+    57724, -- 心满意足 - Sated
+    80354, -- 时空错位 - Temporal Displacement
+    264689, -- 疲倦 - Fatigued
+    390435, -- 筋疲力尽 - Exhaustion
+    206151, -- 挑战者的负担 - Challenger's Burden
+    195776, -- 月羽疫病 - Moonfeather Fever
+    352562, -- 起伏机动 - Undulating Maneuvers
+    356419, -- 审判灵魂 - Judge Soul
+    387847, -- 邪甲术 - Fel Armor
+    213213, -- 伪装 - Masquerade
+}
+
 local defaults = {
     general = {
         frameStrata = "LOW",
@@ -3092,7 +3187,7 @@ local defaults = {
             orientation = "top_to_bottom_then_right",
             spacingV = 3,
             spacingH = 3,
-            maxColumns = 8,
+            maxColumns = 6,
             unitsPerColumn = 5,
             width = 65,
             height = 40,
@@ -3131,7 +3226,7 @@ local defaults = {
                     enabled = true,
                     -- texture = AW.GetTexture("Shield"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
-                    reverseFill = true,
+                    reverseFill = false,
                 },
                 overshieldGlow = {
                     enabled = true,
@@ -3178,11 +3273,27 @@ local defaults = {
                 font = {"BFI 1", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
+            healthText = {
+                enabled = false,
+                position = {"TOP", "BOTTOM", 0, -1},
+                anchorTo = "nameText",
+                parent = "healthBar",
+                font = {"BFI 1", 12, "none", true},
+                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                format = {
+                    numeric = "none",
+                    percent = "current",
+                    delimiter = " | ",
+                    showPercentSign = true,
+                    useAsianUnits = false,
+                },
+                hideIfFull = true,
+            },
             leaderIcon = {
                 enabled = true,
-                position = {"CENTER", "BOTTOMLEFT", 4, 4},
+                position = {"CENTER", "LEFT", 4, 1},
                 anchorTo = "healthBar",
-                frameLevel = 10,
+                frameLevel = 5,
                 width = 10,
                 height = 10,
             },
@@ -3200,7 +3311,7 @@ local defaults = {
                 enabled = true,
                 position = {"CENTER", "CENTER", 0, 0},
                 anchorTo = "healthBar",
-                frameLevel = 15,
+                frameLevel = 5,
                 width = 16,
                 height = 16,
             },
@@ -3208,7 +3319,7 @@ local defaults = {
                 enabled = true,
                 position = {"CENTER", "TOP", 1, -3},
                 anchorTo = "root",
-                frameLevel = 10,
+                frameLevel = 5,
                 width = 10,
                 height = 10,
                 style = "text",
@@ -3225,7 +3336,7 @@ local defaults = {
                 enabled = true,
                 position = {"CENTER", "TOPLEFT", 4, -4},
                 anchorTo = "healthBar",
-                frameLevel = 10,
+                frameLevel = 5,
                 width = 10,
                 height = 10,
                 hideDamager = true,
@@ -3246,6 +3357,110 @@ local defaults = {
                 enabled = true,
                 size = 3,
                 alpha = 1,
+            },
+            buffs = {
+                enabled = true,
+                position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
+                anchorTo = "root",
+                orientation = "right_to_left",
+                cooldownStyle = "vertical",
+                width = 12,
+                height = 12,
+                spacingH = 0,
+                spacingV = 0,
+                numPerLine = 4,
+                numTotal = 4,
+                frameLevel = 10,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
+                durationText = {
+                    enabled = false,
+                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    position = {"TOP", "TOP", 1, 0},
+                    color = {
+                        AW.GetColorTable("white"), -- normal
+                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AW.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = false,
+                    castByUnit = false,
+                    castByNPC = false,
+                    isBossAura = false,
+                    dispellable = nil,
+                },
+                mode = "whitelist",
+                priorities = {},
+                blacklist = {},
+                whitelist = U.Copy(default_whitelist),
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = nil,
+                    debuffType = nil,
+                },
+            },
+            debuffs = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
+                anchorTo = "root",
+                orientation = "left_to_right",
+                cooldownStyle = "vertical",
+                width = 12,
+                height = 12,
+                spacingH = 0,
+                spacingV = 0,
+                numPerLine = 4,
+                numTotal = 4,
+                frameLevel = 10,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                },
+                durationText = {
+                    enabled = false,
+                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    position = {"TOP", "TOP", 1, 0},
+                    color = {
+                        AW.GetColorTable("white"), -- normal
+                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AW.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = true,
+                    castByUnit = true,
+                    castByNPC = true,
+                    isBossAura = true,
+                    dispellable = true,
+                },
+                mode = "blacklist",
+                priorities = {},
+                blacklist = U.Copy(default_blacklist),
+                whitelist = {},
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = true,
+                    debuffType = true,
+                },
             },
         },
     },
