@@ -10,6 +10,9 @@ local uf_colors = {
     uf_loss = {0.6, 0, 0}, -- unitframe background
     uf_power = {0.7, 0.7, 0.7}, -- unitframe background
 
+    target_highlight = AW.GetColorTable("accent", 0.6),
+    mouseover_highlight = {1, 1, 1, 0.6},
+
     cast_normal = {0.4, 0.4, 0.4, 0.9},
     cast_failed = {0.7, 0.3, 0.3, 0.9},
     cast_succeeded = {0.3, 0.7, 0.3, 0.9},

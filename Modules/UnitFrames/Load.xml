@@ -45,4 +45,5 @@
     <Script file="Units\PetTarget.lua"/>
     <Script file="Units\Party.lua"/>
     <Script file="Units\Raid.lua"/>
+    <Script file="Units\Boss.lua"/>
 </Ui>

@@ -213,6 +213,48 @@ function UF.SetupUnitFrame(frame, config, indicators)
 end
 
 ---------------------------------------------------------------------
+-- setup group
+---------------------------------------------------------------------
+function UF.SetupUnitGroup(group, config, indicators)
+    -- position
+    AW.LoadPosition(group, config.general.position)
+
+    -- container size
+    if config.general.orientation == "top_to_bottom" or config.general.orientation == "bottom_to_top" then
+        AW.SetWidth(group, config.general.width)
+        AW.SetListHeight(group, #group, config.general.height, config.general.spacing)
+    else
+        AW.SetHeight(group, config.general.height)
+        AW.SetListWidth(group, #group, config.general.width, config.general.spacing)
+    end
+
+    -- arrangement & size
+    local p, rp, x, y = UF.GetSimplePositionArgs(config)
+
+    local last
+    for _, b in ipairs(group) do
+        -- size
+        AW.SetSize(b, config.general.width, config.general.height)
+        -- out of range alpha
+        b.oorAlpha = config.general.oorAlpha
+        -- tooltip
+        UF.SetupTooltip(b, config.general.tooltip)
+        -- color
+        AW.StylizeFrame(b, config.general.bgColor, config.general.borderColor)
+        -- indicators
+        UF.SetupIndicators(b, indicators, config)
+        -- position
+        AW.ClearPoints(b)
+        if last then
+            AW.SetPoint(b, p, last, rp, x, y)
+        else
+            AW.SetPoint(b, p)
+        end
+        last = b
+    end
+end
+
+---------------------------------------------------------------------
 -- header arrangement
 ---------------------------------------------------------------------
 function UF.GetSimplePositionArgs(config)

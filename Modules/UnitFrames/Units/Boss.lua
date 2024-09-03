@@ -1,0 +1,81 @@
+---@class BFI
+local BFI = select(2, ...)
+local AW = BFI.AW
+local UF = BFI.UnitFrames
+
+local boss
+local indicators = {
+    "healthBar",
+    "powerBar",
+    "nameText",
+    "healthText",
+    "powerText",
+    "portrait",
+    "castBar",
+    "levelText",
+    "targetCounter",
+    "raidIcon",
+    "targetHighlight",
+    "mouseoverHighlight",
+    {"auras", "buffs", "HELPFUL"},
+    {"auras", "debuffs", "HARMFUL"},
+}
+
+---------------------------------------------------------------------
+-- create
+---------------------------------------------------------------------
+local function CreateBoss()
+    local name = "BFIUF_Boss"
+    boss = CreateFrame("Frame", name, AW.UIParent, "SecureFrameTemplate")
+    UF.AddToConfigMode("boss.container", boss)
+
+    for i = 1, 8 do
+        boss[i] = CreateFrame("Button", name .. i, boss, "BFIUnitButtonTemplate")
+        boss[i]:SetAttribute("unit", "boss" .. i)
+        UF.AddToConfigMode("boss", boss[i])
+        UF.CreateIndicators(boss[i], indicators)
+        RegisterUnitWatch(boss[i])
+    end
+
+    boss.driverKey = "state-visibility"
+    boss.driverValue = "[@boss1,exists] show;hide"
+
+    -- mover
+    AW.CreateMover(boss, "UnitFrames", name)
+
+    -- pixel perfect
+    AW.AddToPixelUpdater(boss)
+end
+
+---------------------------------------------------------------------
+-- update
+---------------------------------------------------------------------
+local function UpdateBoss(module, which)
+    if module and module ~= "UnitFrames" then return end
+    if which and which ~= "boss" then return end
+
+    local config = UF.config.boss
+
+    if not config.enabled then
+        if boss then
+            UnregisterAttributeDriver(boss)
+            for i = 1, 8 do
+                UF.DisableIndicators(boss[i])
+                UnregisterUnitWatch(boss[i])
+            end
+            boss:Hide()
+        end
+        return
+    end
+
+    if not boss then
+        CreateBoss()
+    end
+
+    -- setup
+    UF.SetupUnitGroup(boss, config, indicators)
+
+    -- visibility NOTE: show must invoke after settings applied
+    RegisterAttributeDriver(boss, boss.driverKey, boss.driverValue)
+end
+BFI.RegisterCallback("UpdateModules", "UF_Boss", UpdateBoss)
