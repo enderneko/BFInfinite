@@ -380,6 +380,8 @@ function AW.LoadTextPosition(text, pos, relativeTo)
         text:SetJustifyV("MIDDLE")
     end
 
+    -- NOTE: text positioning is a pain!
+    text._useOriginalPoints = true
     AW.ClearPoints(text)
     AW.SetPoint(text, pos[1], relativeTo or text:GetParent(), pos[2], pos[3], pos[4])
 end
