@@ -19,7 +19,12 @@ end
 
 UF.UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 function UF.CFG_UnitGetTotalAbsorbs()
-    return random(0, 60)
+    return random(0, 50)
+end
+
+UF.UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
+function UF.CFG_UnitGetTotalHealAbsorbs()
+    return random(0, 50)
 end
 
 -- UF.UnitClassBase = U.UnitClassBase

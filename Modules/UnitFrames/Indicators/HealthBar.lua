@@ -506,7 +506,7 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local _UpdateHealthStates = UpdateHealthStates
-local function HealthBar_EnableConfigMode(self)
+local function HealthBar_EnableConfigMode(self, isRepeatCall)
     self.Enable = HealthBar_EnableConfigMode
     self.Update = BFI.dummy
 
@@ -514,6 +514,7 @@ local function HealthBar_EnableConfigMode(self)
     self:Show()
 
     UnitGetTotalAbsorbs = UF.CFG_UnitGetTotalAbsorbs
+    UnitGetTotalHealAbsorbs = UF.CFG_UnitGetTotalHealAbsorbs
     UpdateHealthStates = BFI.dummy
 
     self.health = UF.CFG_UnitHealth()
@@ -521,6 +522,13 @@ local function HealthBar_EnableConfigMode(self)
     self.healthPercent = self.health / self.healthMax
 
     HealthBar_Update(self)
+
+    if not isRepeatCall then
+        -- fix shield
+        C_Timer.After(0.01, function()
+            HealthBar_EnableConfigMode(self, true)
+        end)
+    end
 end
 
 local function HealthBar_DisableConfigMode(self)
@@ -528,6 +536,7 @@ local function HealthBar_DisableConfigMode(self)
     self.Update = HealthBar_Update
 
     UnitGetTotalAbsorbs = UF.UnitGetTotalAbsorbs
+    UnitGetTotalHealAbsorbs = UF.UnitGetTotalHealAbsorbs
     UpdateHealthStates = _UpdateHealthStates
 end
 

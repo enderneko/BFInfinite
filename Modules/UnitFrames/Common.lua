@@ -246,57 +246,74 @@ function UF.GetSimplePositionArgs(config)
 end
 
 function UF.GetCombinedPositionArgs(config)
-    local p, rp, x, y, hp
+    -- point, relativePoint, headerPoint, columnSpacing, columnAnchorPoint
+    local p, rp, x, y, cs, hp, cp
     if config.general.orientation == "bottom_to_top_then_left" then
         p = "BOTTOMRIGHT"
         rp = "TOPRIGHT"
-        x = -config.general.spacingH
+        x = 0
         y = config.general.spacingV
+        cs = -config.general.spacingH
         hp = "BOTTOM"
+        cp = "RIGHT"
     elseif config.general.orientation == "bottom_to_top_then_right" then
         p = "BOTTOMLEFT"
         rp = "TOPLEFT"
-        x = config.general.spacingH
+        x = 0
         y = config.general.spacingV
+        cs = config.general.spacingH
         hp = "BOTTOM"
+        cp = "LEFT"
     elseif config.general.orientation == "top_to_bottom_then_left" then
         p = "TOPTOPRIGHT"
         rp = "BOTTOMRIGHT"
-        x = -config.general.spacingH
+        x = 0
         y = -config.general.spacingV
+        cs = -config.general.spacingH
         hp = "TOP"
+        cp = "RIGHT"
     elseif config.general.orientation == "top_to_bottom_then_right" then
         p = "TOPLEFT"
         rp = "BOTTOMLEFT"
-        x = config.general.spacingH
+        x = 0
         y = -config.general.spacingV
+        cs = config.general.spacingH
         hp = "TOP"
+        cp = "LEFT"
     elseif config.general.orientation == "left_to_right_then_bottom" then
         p = "TOPLEFT"
         rp = "TOPRIGHT"
         x = config.general.spacingH
-        y = -config.general.spacingV
+        y = 0
+        cs = -config.general.spacingV
         hp = "LEFT"
+        cp = "TOP"
     elseif config.general.orientation == "left_to_right_then_top" then
         p = "BOTTOMLEFT"
         rp = "BOTTOMRIGHT"
         x = config.general.spacingH
-        y = config.general.spacingV
+        y = 0
+        cs = config.general.spacingV
         hp = "LEFT"
+        cp = "BOTTOM"
     elseif config.general.orientation == "right_to_left_then_bottom" then
         p = "TOPRIGHT"
         rp = "TOPLEFT"
         x = -config.general.spacingH
-        y = -config.general.spacingV
+        y = 0
+        cs = -config.general.spacingV
         hp = "RIGHT"
+        cp = "TOP"
     elseif config.general.orientation == "right_to_left_then_top" then
         p = "BOTTOMRIGHT"
         rp = "BOTTOMLEFT"
         x = -config.general.spacingH
-        y = config.general.spacingV
+        y = 0
+        cs = config.general.spacingV
         hp = "RIGHT"
+        cp = "BOTTOM"
     end
-    return p, rp, x, y, hp
+    return p, rp, x, y, cs, hp, cp
 end
 
 ---------------------------------------------------------------------
