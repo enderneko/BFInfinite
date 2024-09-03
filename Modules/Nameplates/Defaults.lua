@@ -183,7 +183,7 @@ do
                 numeric = "current_short",
                 percent = "current",
                 delimiter = " - ",
-                noPercentSign = false,
+                showPercentSign = true,
                 useAsianUnits = false,
             },
             hideIfFull = true,

@@ -211,10 +211,10 @@ local percent_np = {
 ---------------------------------------------------------------------
 local function HealthText_SetFormat(self, format)
     self.GetNumeric = numeric[format.numeric]
-    if format.noPercentSign then
-        self.GetPercent = percent_np[format.percent]
-    else
+    if format.showPercentSign then
         self.GetPercent = percent[format.percent]
+    else
+        self.GetPercent = percent_np[format.percent]
     end
 
     if format.numeric == "none" or format.percent == "none" then
