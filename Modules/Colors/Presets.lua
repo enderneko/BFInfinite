@@ -6,7 +6,7 @@ local AW = BFI.AW
 -- colors preset for modules, no persistence requirement
 ---------------------------------------------------------------------
 local uf_colors = {
-    uf = {0.125, 0.125, 0.125}, -- unitframe foreground
+    uf = {0.135, 0.135, 0.135}, -- unitframe foreground
     uf_loss = {0.6, 0, 0}, -- unitframe background
     uf_power = {0.7, 0.7, 0.7}, -- unitframe background
 

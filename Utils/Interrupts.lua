@@ -39,6 +39,7 @@ local INTERRUPT_SPELLS = {
     },
     WARLOCK = {
         [119910] = false, -- 法术封锁
+        [119914] = false, -- 巨斧投掷
     },
     MONK = {
         [116705] = false, -- 切喉手
@@ -60,7 +61,7 @@ local known_spells = {}
 local function SPELLS_CHANGED()
     wipe(known_spells)
     for spell, checkGCD in pairs(INTERRUPT_SPELLS[BFI.vars.playerClass]) do
-        if IsSpellKnown(spell) then
+        if IsSpellKnownOrOverridesKnown(spell) then
             known_spells[spell] = checkGCD
         end
     end
