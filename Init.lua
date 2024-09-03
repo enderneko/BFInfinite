@@ -12,6 +12,7 @@ _G.BFI = BFI
 ---@field UnitFrames UnitFrames
 ---@field NamePlates NamePlates
 ---@field Misc Misc
+---@field Blizzard Blizzard
 
 ---------------------------------------------------------------------
 -- global
@@ -59,6 +60,9 @@ BFI.AddEventHandler(BFI.Misc)
 
 BFI.Shared = {}
 BFI.AddEventHandler(BFI.Shared)
+
+BFI.Blizzard = {}
+BFI.AddEventHandler(BFI.Blizzard)
 
 BFI.ActionBars = {["bars"] = {}}
 BFI.AddEventHandler(BFI.ActionBars)
