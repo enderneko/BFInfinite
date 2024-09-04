@@ -11,6 +11,7 @@ local defaults = {
         party = true,
         raid = true,
         manager = true,
+        castBar = true,
     },
 }
 

@@ -96,8 +96,12 @@ local function DisableBlizzard(module, which)
 
     -- manager
     if config.manager then
-        _G.CompactRaidFrameManager:UnregisterAllEvents()
-        _G.CompactRaidFrameManager:SetParent(BFI.hiddenParent)
+        DisableFrame(_G.CompactRaidFrameManager)
+    end
+
+    -- castBar
+    if config.castBar then
+        DisableFrame(_G.PlayerCastingBarFrame)
     end
 end
 BFI.RegisterCallback("UpdateModules", "DisableBlizzard", DisableBlizzard)
