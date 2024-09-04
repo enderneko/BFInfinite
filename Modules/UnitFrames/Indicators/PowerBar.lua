@@ -10,7 +10,7 @@ local UF = BFI.UnitFrames
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
-local UnitHasVehicleUI = UnitHasVehicleUI
+-- local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitIsConnected = UnitIsConnected
 local UnitClassBase = U.UnitClassBase
 
@@ -19,17 +19,17 @@ local UnitClassBase = U.UnitClassBase
 ---------------------------------------------------------------------
 local function GetClassColor(type, class, inVehicle)
     if type == "class_color" then
-        if inVehicle then
-            return AW.GetColorRGB("FRIENDLY")
-        else
+        -- if inVehicle then
+        --     return AW.GetColorRGB("FRIENDLY")
+        -- else
             return AW.GetClassColor(class)
-        end
+        -- end
     elseif type == "class_color_dark" then
-        if inVehicle then
-            return AW.GetColorRGB("FRIENDLY", nil, 0.2)
-        else
+        -- if inVehicle then
+        --     return AW.GetColorRGB("FRIENDLY", nil, 0.2)
+        -- else
             return AW.GetClassColor(class, nil, 0.2)
-        end
+        -- end
     end
 end
 
@@ -64,7 +64,7 @@ local function GetPowerColor(self, unit)
     self.powerType = select(2, UnitPowerType(unit))
 
     local class = UnitClassBase(unit)
-    local inVehicle = UnitHasVehicleUI(unit)
+    -- local inVehicle = UnitHasVehicleUI(unit)
 
     local r, g, b, a, lossR, lossG, lossB, lossA
 
@@ -210,7 +210,7 @@ local function PowerBar_EnableConfigMode(self)
 
     UnitPower = UF.CFG_UnitPower
     UnitPowerMax = UF.CFG_UnitPowerMax
-    UnitHasVehicleUI = UF.CFG_UnitHasVehicleUI
+    -- UnitHasVehicleUI = UF.CFG_UnitHasVehicleUI
 
     PowerBar_Update(self)
 end
@@ -221,7 +221,7 @@ local function PowerBar_DisableConfigMode(self)
 
     UnitPower = UF.UnitPower
     UnitPowerMax = UF.UnitPowerMax
-    UnitHasVehicleUI = UF.UnitHasVehicleUI
+    -- UnitHasVehicleUI = UF.UnitHasVehicleUI
 end
 
 ---------------------------------------------------------------------

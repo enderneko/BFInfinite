@@ -46,10 +46,13 @@ local function ShouldShowVehicleComboPoints()
 end
 
 function UF.ShouldShowClassPower()
-    if should_show_class_power[class] then
-        return should_show_class_power[class]()
+    if UnitHasVehicleUI("player") then
+        return PlayerVehicleHasComboPoints()
+    else
+        if should_show_class_power[class] then
+            return should_show_class_power[class]()
+        end
     end
-    return ShouldShowVehicleComboPoints()
 end
 
 ---------------------------------------------------------------------

@@ -59,6 +59,25 @@ local function UnitButton_UpdateBaseStates(self)
     self.states.guid = UnitGUID(unit)
     self.states.isPlayer = UnitIsPlayer(unit)
     self.states.inVehicle = UnitHasVehicleUI(unit)
+
+    if self.states.inVehicle then
+        if unit == "player" then
+            self.displayedUnit = "vehicle"
+        else
+            local prefix, id = strmatch(unit, "([^%d]+)([%d]+)")
+            self.displayedUnit = prefix.."pet"..id
+        end
+    else
+        self.displayedUnit = self.unit
+    end
+
+    if unit == "pet" then
+        if UnitHasVehicleUI("player") then
+            self.displayedUnit = "player"
+        else
+            self.displayedUnit = "pet"
+        end
+    end
 end
 
 ---------------------------------------------------------------------
