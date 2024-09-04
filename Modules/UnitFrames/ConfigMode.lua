@@ -96,6 +96,7 @@ end
 ---------------------------------------------------------------------
 local configModeGroups = {
     -- [group] = {
+    --     ["enabled"] = (boolean),
     --     ["container"] = frame,
     --     ["headers"] = {...},
     --     ["children"] = {...},
@@ -108,7 +109,7 @@ function UF.AddToConfigMode(group, frame)
     local main, sub = strsplit(".", group)
 
     if not configModeGroups[main] then
-        configModeGroups[main] = {}
+        configModeGroups[main] = {enabled = true}
     end
 
     if sub == "container" then
@@ -131,7 +132,44 @@ function UF.RemoveFromConfigMode(group)
     configModeGroups[group] = nil
 end
 
+---------------------------------------------------------------------
+-- force show/hide
+---------------------------------------------------------------------
+local function ForceShowGroup(group)
+    for i, frame in pairs(configModeGroups[group]["children"]) do
+        frame:Show()
+    end
+
+    if configModeGroups[group]["container"] then
+        configModeGroups[group]["container"]:Show()
+    end
+end
+
+local function ForceHideGroup(group)
+    for i, frame in pairs(configModeGroups[group]["children"]) do
+        frame:Hide()
+    end
+
+    if configModeGroups[group]["container"] then
+        configModeGroups[group]["container"]:Hide()
+    end
+end
+
+---------------------------------------------------------------------
+-- enable config mode
+---------------------------------------------------------------------
 local function EnableConfigModeForGroup(group)
+    if configModeGroups[group]["container"] then
+        UnregisterAttributeDriver(configModeGroups[group]["container"])
+    end
+
+    if configModeGroups[group]["headers"] then
+        for _, header in pairs(configModeGroups[group]["headers"]) do
+            header.inConfigMode = true
+            header:SetAttribute("startingIndex", 1 - header:GetNumChildren())
+        end
+    end
+
     for i, frame in pairs(configModeGroups[group]["children"]) do
         frame.inConfigMode = true
         frame.oldUnit = frame.unit
@@ -147,24 +185,16 @@ local function EnableConfigModeForGroup(group)
                 indicator:EnableConfigMode()
             end
         end
-
-        -- force show frame as player
-        frame:Show()
     end
 
-    if configModeGroups[group]["headers"] then
-        for _, header in pairs(configModeGroups[group]["headers"]) do
-            header.inConfigMode = true
-            header:SetAttribute("startingIndex", 1 - header:GetNumChildren())
-        end
-    end
-
-    if configModeGroups[group]["container"] then
-        UnregisterAttributeDriver(configModeGroups[group]["container"])
-        configModeGroups[group]["container"]:Show()
+    if configModeGroups[group]["enabled"] then
+        ForceShowGroup(group)
     end
 end
 
+---------------------------------------------------------------------
+-- disable config mode
+---------------------------------------------------------------------
 local function DisableConfigModeForGroup(group)
     for _, frame in pairs(configModeGroups[group]["children"]) do
         -- restore indicators
@@ -197,36 +227,44 @@ local function DisableConfigModeForGroup(group)
     end
 end
 
-local EnableConfigMode, DisableConfigMode
-
-function EnableConfigMode(group)
-    UF.configModeEnabled = true
-    UF:RegisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
-    if group then
+---------------------------------------------------------------------
+-- toggle
+---------------------------------------------------------------------
+local function EnableConfigMode()
+    for group, t in pairs(configModeGroups) do
         EnableConfigModeForGroup(group)
-    else
-        for group in pairs(configModeGroups) do
-            EnableConfigModeForGroup(group)
-        end
     end
 end
 
-function DisableConfigMode()
-    UF.configModeEnabled = nil
-    UF:UnregisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
-
+local function DisableConfigMode()
     for group in pairs(configModeGroups) do
         DisableConfigModeForGroup(group)
     end
 end
 
-local function ToggleConfigMode(module)
+local function ToggleConfigMode(module, group)
     if InCombatLockdown() then return end
     if module and module ~= "UnitFrames" then return end
-    if UF.configModeEnabled then
-        DisableConfigMode()
+
+    if group then
+        if UF.configModeEnabled then
+            configModeGroups[group]["enabled"] = not configModeGroups[group]["enabled"]
+            if configModeGroups[group]["enabled"] then
+                ForceShowGroup(group)
+            else
+                ForceHideGroup(group)
+            end
+        end
     else
-        EnableConfigMode()
+        UF.configModeEnabled = not UF.configModeEnabled
+
+        if UF.configModeEnabled then
+            UF:RegisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
+            EnableConfigMode()
+        else
+            UF:UnregisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
+            DisableConfigMode()
+        end
     end
 end
 BFI.RegisterCallback("ConfigMode", "UnitFrames", ToggleConfigMode)
