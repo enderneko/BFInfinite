@@ -167,7 +167,9 @@ local function UnitIsQuestTarget(unit)
             if name and quests[title][name] then
                 current = tonumber(current)
                 required = tonumber(required)
-                return current ~= required
+                if current ~= required then
+                    return true
+                end
             end
         end
     end
