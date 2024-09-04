@@ -4,7 +4,7 @@
     <Include file="Misc\Load.xml"/>
     <Include file="Blizzard\Load.xml"/>
     <Include file="Shared\Load.xml"/>
-    <!-- <Include file="ActionBars\Load.xml"/> -->
+    <Include file="ActionBars\Load.xml"/>
     <Include file="UnitFrames\Load.xml"/>
     <Include file="Nameplates\Load.xml"/>
 </Ui>

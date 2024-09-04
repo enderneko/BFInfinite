@@ -561,7 +561,7 @@ function Generic:PlaySpellCastAnim(actionButtonCastType, spellID)
 
 	local isChannelCast = actionButtonCastType == ActionButtonCastType.Channel
 	local isEmpoweredCast = actionButtonCastType == ActionButtonCastType.Empowered
-	if(isChannelCast or isEmpoweredCast) then
+	if (isChannelCast or isEmpoweredCast) then
 		_, _, _, startTime, endTime = UnitChannelInfo("player")
 	else
 		_, _, _, startTime, endTime = UnitCastingInfo("player")
@@ -605,7 +605,7 @@ function Generic:OnButtonEvent(event, ...)
 		if self.abilityID == select(3, ...) then
 			self:ClearReticle()
 		end
-	elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
+	elseif event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_CHANNEL_STOP" then
 		self:PlaySpellInterruptedAnim(select(3, ...))
 	elseif event == "UNIT_SPELLCAST_EMPOWER_STOP" then
 		local spellID, castComplete = select(4, ...)
@@ -1348,6 +1348,7 @@ function Generic:UpdateConfig(config)
 		if self.config.interruptDisplay or self.config.spellCastAnim then
 			self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
 			self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
 		end
 
 		if self.config.spellCastAnim then

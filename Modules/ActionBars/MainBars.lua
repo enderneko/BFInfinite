@@ -10,32 +10,32 @@ local RegisterStateDriver = RegisterStateDriver
 local UnregisterStateDriver = UnregisterStateDriver
 local SetModifiedClick = SetModifiedClick
 
-local ACTION_BAR_LIST = {
-    [1] = "bar1",
-    [2] = "bar2",
-    [3] = "bar3",
-    [4] = "bar4",
-    [5] = "bar5",
-    [6] = "bar6",
-    [7] = "classbar1",
-    [8] = "classbar2",
-    [9] = "classbar3",
-    [10] = "classbar4",
-    [13] = "bar7",
-    [14] = "bar8",
-    [15] = "bar9",
+local BAR_MAPPINGS = {
+    bar1 = 1,
+    bar2 = 5,
+    bar3 = 6,
+    bar4 = 3,
+    bar5 = 4,
+    bar6 = 13,
+    bar7 = 14,
+    bar8 = 15,
+    bar9 = 2, -- bonusbar
+    classbar1 = 7,
+    classbar2 = 8,
+    classbar3 = 9,
+    classbar4 = 10,
 }
 
 local BINDING_MAPPINGS = {
     bar1 = "ACTIONBUTTON%d",
-    bar2 = "BFIACTIONBAR2BUTTON%d",
-    bar3 = "MULTIACTIONBAR3BUTTON%d",
-    bar4 = "MULTIACTIONBAR4BUTTON%d",
-    bar5 = "MULTIACTIONBAR2BUTTON%d",
-    bar6 = "MULTIACTIONBAR1BUTTON%d",
-    bar7 = "MULTIACTIONBAR5BUTTON%d",
-    bar8 = "MULTIACTIONBAR6BUTTON%d",
-    bar9 = "MULTIACTIONBAR7BUTTON%d",
+    bar2 = "MULTIACTIONBAR2BUTTON%d",
+    bar3 = "MULTIACTIONBAR1BUTTON%d",
+    bar4 = "MULTIACTIONBAR3BUTTON%d",
+    bar5 = "MULTIACTIONBAR4BUTTON%d",
+    bar6 = "MULTIACTIONBAR5BUTTON%d",
+    bar7 = "MULTIACTIONBAR6BUTTON%d",
+    bar8 = "MULTIACTIONBAR7BUTTON%d",
+    bar9 = "BFIACTIONBAR2BUTTON%d",
     classbar1 = "BFIACTIONBAR7BUTTON%d",
     classbar2 = "BFIACTIONBAR8BUTTON%d",
     classbar3 = "BFIACTIONBAR9BUTTON%d",
@@ -80,22 +80,24 @@ end
 ---------------------------------------------------------------------
 -- create bar
 ---------------------------------------------------------------------
-local function CreateBar(id)
-    local name = "BFI_ActionBar"..id
-    local bar = CreateFrame("Frame", name, AW.UIParent, "SecureHandlerStateTemplate")
+local function CreateBar(name, id)
+    local index = name:match("%d")
+    local globalName = "BFI_ActionBar"..index
+
+    local bar = CreateFrame("Frame", globalName, AW.UIParent, "SecureHandlerStateTemplate")
 
     bar.id = id
-    bar.name = ACTION_BAR_LIST[id]
+    bar.name = name
     bar.buttons = {}
 
-    AB.bars[bar.name] = bar
+    AB.bars[name] = bar
 
     -- mover ----------------------------------------------------------------- --
     local moverName
-    if strfind(bar.name, "^bar") then
-        moverName = L["Action Bar"].." "..bar.name:match("%d")
+    if strfind(name, "^bar") then
+        moverName = L["Action Bar"].." "..index
     else
-        moverName = L["Class Bar"].." "..bar.name:match("%d")
+        moverName = L["Class Bar"].." "..index
     end
     AW.CreateMover(bar, "ActionBars", moverName, function(p,x,y) print(moverName..":", p, x, y) end)
 
@@ -115,13 +117,13 @@ local function CreateBar(id)
             end
         end
 
-        self:SetAttribute("state", newstate)
+        -- self:SetAttribute("state", newstate)
         control:ChildUpdate("state", newstate)
     ]])
 
     -- create buttons -------------------------------------------------------- --
     for i = 1, NUM_ACTIONBAR_BUTTONS do
-        local b = AB.CreateButton(bar, i, name.."Button"..i)
+        local b = AB.CreateButton(bar, i, globalName.."Button"..i)
         -- local b = LAB:CreateButton(i, name.."_Button"..i, bar)
         tinsert(bar.buttons, b)
 
@@ -165,7 +167,7 @@ local function AssignBindings()
 
         for _, b in ipairs(bar.buttons) do
             if b.keyBoundTarget then
-                for _, key in next, {GetBindingKey(b.keyBoundTarget)} do
+                for _, key in pairs({GetBindingKey(b.keyBoundTarget)}) do
                     if key ~= "" then
                         SetOverrideBindingClick(bar, false, key, b:GetName())
                     end
@@ -322,11 +324,11 @@ local function UpdateButton(bar, shared, specific)
     for i, b in pairs(bar.buttons) do
         -- state
         for k = 1, 18 do
-            b:SetState(k, "action", (k - 1) * 12 + i)
+            b:SetState(k, "action", (k - 1) * NUM_ACTIONBAR_BUTTONS + i)
         end
-        b:SetState(0, "action", (bar.id - 1) * 12 + i)
+        b:SetState(0, "action", (bar.id - 1) * NUM_ACTIONBAR_BUTTONS + i)
 
-        if i == 12 then
+        if i == NUM_ACTIONBAR_BUTTONS then
             if BFI.vars.isRetail then
                 b:SetState(GetVehicleBarIndex(), "custom", customExitButton) -- 16
                 b:SetState(GetTempShapeshiftBarIndex(), "custom", customExitButton) -- 17
@@ -356,8 +358,8 @@ end
 -- update bar
 ---------------------------------------------------------------------
 -- NOTE: no support for default page "[bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;"
--- TODO: no GetOverrideBarIndex and GetVehicleBarIndex on Vanilla
 local BAR1_PAGING_DEFAULT = format("[overridebar] %d; [vehicleui][possessbar] %d; [shapeshift] %d; [bonusbar:5] 11;", GetOverrideBarIndex(), GetVehicleBarIndex(), GetTempShapeshiftBarIndex())
+-- 18, 16, 17
 
 local function UpdateBar(bar, general, shared, specific)
     bar.enabled = specific.enabled
@@ -388,7 +390,6 @@ local function UpdateBar(bar, general, shared, specific)
         page = specific.paging[BFI.vars.playerClass] or bar.id
     end
     RegisterStateDriver(bar, "page", page)
-    bar:SetAttribute("page", page)
 
     -- button
     UpdateButton(bar, shared, specific.buttonConfig)
@@ -425,13 +426,13 @@ local function UpdateMainBars(module, which, barName)
         }
 
         for bar, text in pairs(bars) do
-            for slot = 1, 12 do
+            for slot = 1, NUM_ACTIONBAR_BUTTONS do
                 _G[format("BINDING_NAME_BFIACTIONBAR%dBUTTON%d", bar, slot)] = format(text, slot)
             end
         end
 
-        for i in pairs(ACTION_BAR_LIST) do
-            CreateBar(i)
+        for name, id in pairs(BAR_MAPPINGS) do
+            CreateBar(name, id)
         end
 
         LAB.RegisterCallback(AB, "OnFlyoutSpells", ActionBar_FlyoutSpells)
@@ -445,20 +446,20 @@ local function UpdateMainBars(module, which, barName)
             AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
             AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
         end
-
-        if BFI.vars.isRetail and C_PetBattles.IsInBattle() then
-            RemoveBindings()
-        else
-            AssignBindings()
-        end
     end
 
     if barName then
         UpdateBar(AB.bars[barName], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[barName])
     else
-        for _, name in pairs(ACTION_BAR_LIST) do
+        for name in pairs(BAR_MAPPINGS) do
             UpdateBar(AB.bars[name], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[name])
         end
+    end
+
+    if BFI.vars.isRetail and C_PetBattles.IsInBattle() then
+        RemoveBindings()
+    else
+        AssignBindings()
     end
 end
 BFI.RegisterCallback("UpdateModules", "AB_MainBars", UpdateMainBars)
