@@ -169,6 +169,8 @@ local function UpdateHealAbsorb(self, event, unitId)
 
         if self.overabsorbGlowEnabled and self.healAbsorbPercent > self.healthPercent then
             self.overabsorbGlow:Show()
+        else
+            self.overabsorbGlow:Hide()
         end
     else
         self.healAbsorb:Hide()

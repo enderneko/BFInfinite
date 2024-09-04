@@ -60,8 +60,8 @@ local function UpdateBoss(module, which)
         if boss then
             UnregisterAttributeDriver(boss)
             for i = 1, 8 do
-                UF.DisableIndicators(boss[i])
                 UnregisterUnitWatch(boss[i])
+                UF.DisableIndicators(boss[i])
             end
             boss:Hide()
         end

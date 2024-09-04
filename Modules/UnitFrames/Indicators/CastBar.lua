@@ -919,7 +919,7 @@ local function CastBar_EnableConfigMode(self)
         self._preview:Hide()
         self._preview:SetScript("OnUpdate", function(_, elapsed)
             self._elapsed = self._elapsed + elapsed
-            if self._elapsed >= 5 then
+            if self._elapsed >= 9 then
                 self._elapsed = 0
                 self._previewInterrupt = not self._previewInterrupt
                 self._isPreviewInterrupt = false
@@ -932,7 +932,7 @@ local function CastBar_EnableConfigMode(self)
         end)
     end
 
-    self._elapsed = 5
+    self._elapsed = 9
     self._previewInterrupt = false
     self._preview:Show()
 end
