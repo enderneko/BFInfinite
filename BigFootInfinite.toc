@@ -15,4 +15,5 @@ Debug.lua
 Utils\LoadUtils.xml
 
 Core.lua
+Slash.lua
 Modules\LoadModules.xml
