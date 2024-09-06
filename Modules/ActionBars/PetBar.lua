@@ -79,21 +79,8 @@ local function UpdatePetButtons(event, unit)
             end)
         end
 
-        if autoCastAllowed then
-            -- b.AutoCastable:Show()
-            b.AutoCastOverlay:Show()
-        else
-            -- b.AutoCastable:Hide()
-            b.AutoCastOverlay:Hide()
-        end
-
-        if autoCastEnabled then
-            -- AutoCastShine_AutoCastStart(b.AutoCastShine)
-            b.AutoCastOverlay.Shine.Anim:Play()
-        else
-            -- AutoCastShine_AutoCastStop(b.AutoCastShine)
-            b.AutoCastOverlay.Shine.Anim:Stop()
-        end
+        b.AutoCastOverlay:SetShown(autoCastAllowed)
+        b.AutoCastOverlay:ShowAutoCastEnabled(autoCastEnabled)
 
         if name == "PET_ACTION_FOLLOW" or name == "PET_ACTION_WAIT" or name == "PET_ACTION_MOVE_TO"
             or name == "PET_MODE_AGGRESSIVE" or name == "PET_MODE_DEFENSIVE" or name == "PET_MODE_DEFENSIVEASSIST"
@@ -151,7 +138,6 @@ local function UpdatePetBar(module, which)
     local config = AB.config.barConfig.petbar
 
     if not (enabled and config.enabled) then
-        AB:UnregisterEvent("PET_BAR_UPDATE")
         AB:UnregisterEvent("UNIT_PET")
         AB:UnregisterEvent("UNIT_FLAGS")
         AB:UnregisterEvent("PLAYER_CONTROL_GAINED")
@@ -159,6 +145,7 @@ local function UpdatePetBar(module, which)
         AB:UnregisterEvent("PLAYER_ENTERING_WORLD")
         AB:UnregisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED")
         AB:UnregisterEvent("SPELLS_CHANGED")
+        AB:UnregisterEvent("PET_BAR_UPDATE")
         AB:UnregisterEvent("PET_BAR_UPDATE_COOLDOWN")
         AB:UnregisterEvent("UPDATE_BINDINGS", AssignBindings)
         return
@@ -173,7 +160,6 @@ local function UpdatePetBar(module, which)
     AW.UpdateMoverSave(petBar, config.position)
 
     -- events
-    AB:RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
     AB:RegisterEvent("UNIT_PET", UpdatePetButtons)
     AB:RegisterEvent("UNIT_FLAGS", UpdatePetButtons)
     AB:RegisterEvent("PLAYER_CONTROL_GAINED", UpdatePetButtons)
@@ -181,6 +167,8 @@ local function UpdatePetBar(module, which)
     AB:RegisterEvent("PLAYER_ENTERING_WORLD", UpdatePetButtons)
     AB:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED", UpdatePetButtons)
     AB:RegisterEvent("SPELLS_CHANGED", UpdatePetButtons)
+    AB:RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
+    AB:RegisterUnitEvent("UNIT_AURA", "pet", UpdatePetButtons)
     AB:RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 

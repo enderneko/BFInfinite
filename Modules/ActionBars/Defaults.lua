@@ -13,9 +13,9 @@ local defaults = {
     },
     barConfig = {
         bar1 = {enabled = true, position = {"BOTTOM", 0, 10}},
-        bar2 = {enabled = true, position =  {"BOTTOM", 0, 50}},
-        bar3 = {enabled = true, position =  {"BOTTOM", 0, 90}},
-        bar4 = {enabled = false, position =  {"BOTTOM", 0, 130}},
+        bar2 = {enabled = true, position =  {"BOTTOM", 0, 44}},
+        bar3 = {enabled = true, position =  {"BOTTOM", 0, 78}},
+        bar4 = {enabled = true, position =  {"BOTTOM", 275, 10}},
         bar5 = {enabled = false, position =  {"BOTTOM", 0, 170}},
         bar6 = {enabled = false, position =  {"BOTTOM", 0, 210}},
         bar7 = {enabled = false, position =  {"BOTTOM", 0, 250}},
@@ -124,7 +124,10 @@ do
         end
 
         -- others
-        if bar == "stancebar" then
+        if bar == "bar4" then
+            t.buttonsPerLine = 4
+            t.size = 27
+        elseif bar == "stancebar" then
             t.num = 10
             t.buttonsPerLine = 10
             t.buttonConfig = {

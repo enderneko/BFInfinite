@@ -2,7 +2,7 @@
 -- File: EventHandler.lua
 -- Author: enderneko (enderneko-dev@outlook.com)
 -- Created : 2024-03-14 11:46 +08:00
--- Modified: 2024-07-15 16:50 +08:00
+-- Modified: 2024-09-06 20:48 +08:00
 ---------------------------------------------------------------------
 
 local _, addon = ...
@@ -19,6 +19,7 @@ end
 ---------------------------------------------------------------------
 local sharedEventHandler = CreateFrame("Frame", "BFI_EVENT_HANDLER")
 local _RegisterEvent = sharedEventHandler.RegisterEvent
+local _RegisterUnitEvent = sharedEventHandler.RegisterUnitEvent
 local _UnregisterEvent = sharedEventHandler.UnregisterEvent
 local _UnregisterAllEvents = sharedEventHandler.UnregisterAllEvents
 
@@ -74,6 +75,17 @@ local function RegisterEvent_Embeded(self, event, ...)
     end
 
     _RegisterEvent(self.eventHandler, event)
+end
+
+local function RegisterUnitEvent_Embeded(self, event, unit, ...)
+    if not self.eventHandler.events[event] then self.eventHandler.events[event] = {} end
+
+    for i = 1, select("#", ...) do
+        local fn = select(i, ...)
+        self.eventHandler.events[event][fn] = true
+    end
+
+    _RegisterUnitEvent(self.eventHandler, event, unit)
 end
 
 local function UnregisterEvent_Embeded(self, event, ...)
@@ -172,6 +184,7 @@ function addon.AddEventHandler(obj)
     if not obj.GetObjectType then
         -- use embeded
         obj.RegisterEvent = RegisterEvent_Embeded
+        obj.RegisterUnitEvent = RegisterUnitEvent_Embeded
         obj.UnregisterEvent = UnregisterEvent_Embeded
         obj.UnregisterAllEvents = UnregisterAllEvents_Embeded
 

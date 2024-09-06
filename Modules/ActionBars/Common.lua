@@ -71,13 +71,12 @@ end
 function AB.StylizeButton(b)
     b.MasqueSkinned = true
 
-    local name = b:GetName()
-    local icon = b.icon or _G[name.."Icon"]
-    local hotkey = b.HotKey or _G[name.."HotKey"]
-    local shine = b.AutoCastShine or _G[name.."Shine"]
-    local flash = b.Flash or _G[name.."Flash"]
-    local border = b.Border or _G[name.."Border"]
-    local normal = b.NormalTexture or _G[name.."NormalTexture"]
+    local icon = b.icon
+    local hotkey = b.HotKey
+    local autoCast = b.AutoCastOverlay
+    local flash = b.Flash
+    local border = b.Border
+    local normal = b.NormalTexture
     local normal2 = b:GetNormalTexture()
 
     -- hide and remove ------------------------------------------------------- --
@@ -125,8 +124,12 @@ function AB.StylizeButton(b)
     end
 
     -- AutoCastShine --------------------------------------------------------- --
-    if shine then
-        AW.SetOnePixelInside(shine, b)
+    if autoCast then
+        autoCast:SetAllPoints(b)
+        autoCast.Shine:ClearAllPoints()
+        AW.SetOutside(autoCast.Shine, b, 5)
+        autoCast.Mask:ClearAllPoints()
+        AW.SetInside(autoCast.Mask, b, 1)
     end
 
     -- Flash ----------------------------------------------------------------- --
@@ -152,6 +155,102 @@ end
 function AB.ActionBar_OnLeave(bar)
     bar = bar.header and bar.header or bar
     AW.FrameFadeOut(bar, 0.25, nil, bar.alpha)
+end
+
+---------------------------------------------------------------------
+-- arrangement
+---------------------------------------------------------------------
+function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientation)
+    -- update buttons -------------------------------------------------------- --
+    local p, rp, rp_new_line
+    local x, y, x_new_line, y_new_line
+
+    p = anchor
+
+    if orientation == "horizontal" then
+        if strfind(anchor, "^TOP") then
+            rp = "TOP"
+            rp_new_line = "BOTTOM"
+            y_new_line = -spacing
+        elseif strfind(anchor, "^BOTTOM") then
+            rp = "BOTTOM"
+            rp_new_line = "TOP"
+            y_new_line = spacing
+        end
+
+        if strfind(anchor, "LEFT$") then
+            rp = rp.."RIGHT"
+            rp_new_line = rp_new_line.."LEFT"
+            x = spacing
+        elseif strfind(anchor, "RIGHT$") then
+            rp = rp.."LEFT"
+            rp_new_line = rp_new_line.."RIGHT"
+            x = -spacing
+        end
+
+        y = 0
+        x_new_line = 0
+    else
+        if strfind(anchor, "^TOP") then
+            rp = "BOTTOM"
+            rp_new_line = "TOP"
+            y = -spacing
+        elseif strfind(anchor, "^BOTTOM") then
+            rp = "TOP"
+            rp_new_line = "BOTTOM"
+            y = spacing
+        end
+
+        if strfind(anchor, "LEFT$") then
+            rp = rp.."LEFT"
+            rp_new_line = rp_new_line.."RIGHT"
+            x_new_line = spacing
+        elseif strfind(anchor, "RIGHT$") then
+            rp = rp.."RIGHT"
+            rp_new_line = rp_new_line.."LEFT"
+            x_new_line = -spacing
+        end
+
+        x = 0
+        y_new_line = 0
+    end
+
+    -- shown
+    for i = 1, num do
+        local b = bar.buttons[i]
+
+        b:Show()
+        b:SetAttribute("statehidden", nil)
+
+        -- size
+        AW.SetSize(b, size, size)
+
+        -- point
+        if i == 1 then
+            AW.SetPoint(b, p)
+        else
+            if (i - 1) % buttonsPerLine == 0 then
+                AW.SetPoint(b, p, bar.buttons[i-buttonsPerLine], rp_new_line, x_new_line, y_new_line)
+            else
+                AW.SetPoint(b, p, bar.buttons[i-1], rp, x, y)
+            end
+        end
+    end
+
+    -- hidden
+    for i = num + 1, #bar.buttons do
+        bar.buttons[i]:Hide()
+        bar.buttons[i]:SetAttribute("statehidden", true)
+    end
+
+    -- update bar ------------------------------------------------------------ --
+    if orientation == "horizontal" then
+        AW.SetListWidth(bar, min(buttonsPerLine, num), size, spacing)
+        AW.SetListHeight(bar, ceil(num / buttonsPerLine), size, spacing)
+    else
+        AW.SetListWidth(bar, ceil(num / buttonsPerLine), size, spacing)
+        AW.SetListHeight(bar, min(buttonsPerLine, num), size, spacing)
+    end
 end
 
 ---------------------------------------------------------------------
