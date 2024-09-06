@@ -1,10 +1,24 @@
 ---@class BFI
 local BFI = select(2, ...)
 local AW = BFI.AW
+---@class ActionBars
 local AB = BFI.ActionBars
 local U = BFI.utils
 
 local LAB = BFI.libs.LAB
+
+---------------------------------------------------------------------
+-- hotkey
+---------------------------------------------------------------------
+function AB.GetHotkey(key)
+    key = key:gsub("ALT%-", "A")
+    key = key:gsub("CTRL%-", "C")
+    key = key:gsub("SHIFT%-", "S")
+    key = key:gsub("BUTTON", "B")
+    key = key:gsub("MOUSEWHEELUP", "WU")
+    key = key:gsub("MOUSEWHEELDOWN", "WD")
+    return key
+end
 
 ---------------------------------------------------------------------
 -- glow

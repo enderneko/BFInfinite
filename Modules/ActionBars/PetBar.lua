@@ -26,16 +26,6 @@ end
 ---------------------------------------------------------------------
 -- assign bindings
 ---------------------------------------------------------------------
-local function GetHotKey(key)
-    key = key:gsub("ALT%-", "A")
-    key = key:gsub("CTRL%-", "C")
-    key = key:gsub("SHIFT%-", "S")
-    key = key:gsub("BUTTON", "B")
-    key = key:gsub("MOUSEWHEELUP", "WU")
-    key = key:gsub("MOUSEWHEELDOWN", "WD")
-    return key
-end
-
 local function AssignBindings()
     if InCombatLockdown() then return end
 
@@ -43,7 +33,7 @@ local function AssignBindings()
 
     for i, b in ipairs(petBar.buttons) do
         for _, key in next, {GetBindingKey("BONUSACTIONBUTTON"..i)} do
-            b.hotkey:SetText(GetHotKey(key))
+            b.hotkey:SetText(AB.GetHotKey(key))
             if key ~= "" then
                 SetOverrideBindingClick(petBar, false, key, b:GetName())
             end

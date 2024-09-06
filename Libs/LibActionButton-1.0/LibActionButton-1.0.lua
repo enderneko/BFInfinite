@@ -1348,7 +1348,7 @@ function Generic:UpdateConfig(config)
 		if self.config.interruptDisplay or self.config.spellCastAnim then
 			self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
 			self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
+			-- self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
 		end
 
 		if self.config.spellCastAnim then

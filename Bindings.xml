@@ -1,44 +1,5 @@
 <Bindings>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON1" header="BFIBAR2"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON2"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON3"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON4"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON5"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON6"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON7"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON8"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON9"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON10"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON11"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR2BUTTON12"/>
-
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON1" header="BFIBAR7"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON2"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON3"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON4"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON5"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON6"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON7"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON8"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON9"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON10"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON11"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR7BUTTON12"/>
-
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON1" header="BFIBAR8"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON2"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON3"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON4"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON5"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON6"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON7"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON8"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON9"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON10"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON11"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR8BUTTON12"/>
-
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR9BUTTON1" header="BFIBAR9"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR9BUTTON1" header="BFIACTIONBAR9"/>
     <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR9BUTTON2"/>
     <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR9BUTTON3"/>
     <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR9BUTTON4"/>
@@ -51,16 +12,55 @@
     <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR9BUTTON11"/>
     <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR9BUTTON12"/>
 
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON1" header="BFIBAR10"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON2"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON3"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON4"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON5"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON6"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON7"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON8"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON9"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON10"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON11"/>
-    <Binding category="BINDING_HEADER_BFI" name="BFIACTIONBAR10BUTTON12"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON1" header="BFICLASSBAR1"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON2"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON3"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON4"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON5"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON6"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON7"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON8"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON9"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON10"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON11"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR1BUTTON12"/>
+
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON1" header="BFICLASSBAR2"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON2"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON3"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON4"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON5"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON6"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON7"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON8"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON9"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON10"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON11"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR2BUTTON12"/>
+
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON1" header="BFICLASSBAR3"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON2"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON3"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON4"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON5"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON6"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON7"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON8"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON9"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON10"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON11"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR3BUTTON12"/>
+
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON1" header="BFICLASSBAR4"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON2"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON3"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON4"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON5"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON6"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON7"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON8"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON9"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON10"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON11"/>
+    <Binding category="BINDING_HEADER_BFI" name="BFICLASSBAR4BUTTON12"/>
 </Bindings>

@@ -26,26 +26,16 @@ end
 ---------------------------------------------------------------------
 -- assign bindings
 ---------------------------------------------------------------------
-local function GetHotKey(key)
-    key = key:gsub("ALT%-", "A")
-    key = key:gsub("CTRL%-", "C")
-    key = key:gsub("SHIFT%-", "S")
-    key = key:gsub("BUTTON", "B")
-    key = key:gsub("MOUSEWHEELUP", "WU")
-    key = key:gsub("MOUSEWHEELDOWN", "WD")
-    return key
-end
-
 local function AssignBindings()
     if InCombatLockdown() then return end
 
     ClearOverrideBindings(stanceBar)
 
     for i, b in ipairs(stanceBar.buttons) do
-        local command = b.commandName:format(i)
-        for _, key in next, {GetBindingKey(command)} do
-            b.hotkey:SetText(GetHotKey(key))
-            if key ~= "" then
+        local command = ("SHAPESHIFTBUTTON%d"):format(i)
+        for _, key in pairs({GetBindingKey(command)}) do
+            b.hotkey:SetText(AB.GetHotKey(key) or "")
+            if key and key ~= "" then
                 SetOverrideBindingClick(stanceBar, false, key, b:GetName())
             end
         end
@@ -71,38 +61,41 @@ end
 ---------------------------------------------------------------------
 -- update buttons
 ---------------------------------------------------------------------
+local function UpdateStanceButtonStatus()
+    local num = GetNumShapeshiftForms()
+    for i, b in pairs(stanceBar.buttons) do
+        if i <= num then
+            local icon, active, castable, spellID = GetShapeshiftFormInfo(i)
+            b.icon:SetTexture(icon)
+            b.icon:SetVertexColor(AW.GetColorRGB(castable and "white" or "disabled"))
+
+            -- ElvUI
+            -- b.icon:SetTexture(C_Spell.GetSpellTexture(spellID))
+            -- b:SetChecked(GetShapeshiftForm() ~= 0) -- not checked if no stance
+            -- if active then
+            --     if num == 1 then
+            --         b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.25))
+            --     else
+            --         b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0))
+            --     end
+            -- else
+            --     b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0.6))
+            -- end
+        end
+    end
+end
+
 local function UpdateStanceButtons()
     if InCombatLockdown() then
-        AB:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtons)
+        AB:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtonVisibility)
         return
     end
-
-    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtons)
+    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtonVisibility)
 
     local num = GetNumShapeshiftForms()
 
     for i, b in pairs(stanceBar.buttons) do
         if i <= num then
-            local blz = _G["StanceButton"..i]
-            if blz and blz.commandName then
-                b.commandName = blz.commandName -- SHAPESHIFTBUTTON1
-            end
-
-            local icon, active, castable, spellID = GetShapeshiftFormInfo(i)
-            b.icon:SetTexture(C_Spell.GetSpellTexture(spellID))
-
-            b:SetChecked(GetShapeshiftForm() ~= 0) -- not checked if no stance
-
-            if active then
-                if num == 1 then
-                    b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.25))
-                else
-                    b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0))
-                end
-            else
-                b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0.6))
-            end
-
             stanceBar.buttons[i]:Show()
         else
             stanceBar.buttons[i]:Hide()
@@ -116,6 +109,8 @@ local function UpdateStanceButtons()
         stanceBar:Hide()
         UnregisterStateDriver(stanceBar, "visibility")
     end
+
+    UpdateStanceButtonStatus()
 end
 
 ---------------------------------------------------------------------
@@ -139,13 +134,12 @@ local function UpdateStanceBar(module, which)
 
     if not stanceBar then
         CreateStanceBar()
-        AssignBindings()
     end
 
     -- events
     AB:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceButtons)
-    AB:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateStanceButtons)
-	AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtons)
+    AB:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateStanceButtonStatus)
+	AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtonStatus)
     AB:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 
@@ -182,23 +176,8 @@ local function UpdateStanceBar(module, which)
 
     stanceBar.enabled = config.enabled
     stanceBar.visibility = config.visibility
+
     UpdateStanceButtons()
+    AssignBindings()
 end
 BFI.RegisterCallback("UpdateModules", "AB_StanceBar", UpdateStanceBar)
-
----------------------------------------------------------------------
--- init
----------------------------------------------------------------------
--- local function InitStanceBar()
---     CreateStanceBar()
---     UpdateStanceBar()
---     AssignBindings()
-
---     -- events
---     AB:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceButtons)
---     AB:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateStanceButtons)
--- 	AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtons)
---     AB:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
---     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
--- end
--- BFI.RegisterCallback("InitModules", "AB_StanceBar", InitStanceBar)

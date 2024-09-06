@@ -1,4 +1,5 @@
-local addonName, BFI = ...
+---@class BFI
+local BFI = select(2, ...)
 local L = BFI.L
 local AW = BFI.AW
 local U = BFI.utils
@@ -35,11 +36,11 @@ local BINDING_MAPPINGS = {
     bar6 = "MULTIACTIONBAR5BUTTON%d",
     bar7 = "MULTIACTIONBAR6BUTTON%d",
     bar8 = "MULTIACTIONBAR7BUTTON%d",
-    bar9 = "BFIACTIONBAR2BUTTON%d",
-    classbar1 = "BFIACTIONBAR7BUTTON%d",
-    classbar2 = "BFIACTIONBAR8BUTTON%d",
-    classbar3 = "BFIACTIONBAR9BUTTON%d",
-    classbar4 = "BFIACTIONBAR10BUTTON%d",
+    bar9 = "BFIACTIONBAR9BUTTON%d",
+    classbar1 = "BFICLASSBAR1BUTTON%d",
+    classbar2 = "BFICLASSBAR2BUTTON%d",
+    classbar3 = "BFICLASSBAR3BUTTON%d",
+    classbar4 = "BFICLASSBAR4BUTTON%d",
 }
 
 ---------------------------------------------------------------------
@@ -81,10 +82,18 @@ end
 -- create bar
 ---------------------------------------------------------------------
 local function CreateBar(name, id)
-    local index = name:match("%d")
-    local globalName = "BFI_ActionBar"..index
+    local moverName
+    local global, index = name:match("(%a+)(%d+)")
 
-    local bar = CreateFrame("Frame", globalName, AW.UIParent, "SecureHandlerStateTemplate")
+    if global == "bar" then
+        global = "BFIAB_Bar" .. index
+        moverName = L["Action Bar"].." "..index
+    elseif global == "classbar" then
+        global = "BFIAB_ClassBar" .. index
+        moverName = L["Class Bar"].." "..index
+    end
+
+    local bar = CreateFrame("Frame", global, AW.UIParent, "SecureHandlerStateTemplate")
 
     bar.id = id
     bar.name = name
@@ -93,12 +102,6 @@ local function CreateBar(name, id)
     AB.bars[name] = bar
 
     -- mover ----------------------------------------------------------------- --
-    local moverName
-    if strfind(name, "^bar") then
-        moverName = L["Action Bar"].." "..index
-    else
-        moverName = L["Class Bar"].." "..index
-    end
     AW.CreateMover(bar, "ActionBars", moverName, function(p,x,y) print(moverName..":", p, x, y) end)
 
     -- page ------------------------------------------------------------------ --
@@ -123,7 +126,7 @@ local function CreateBar(name, id)
 
     -- create buttons -------------------------------------------------------- --
     for i = 1, NUM_ACTIONBAR_BUTTONS do
-        local b = AB.CreateButton(bar, i, globalName.."Button"..i)
+        local b = AB.CreateButton(bar, i, global.."Button"..i)
         -- local b = LAB:CreateButton(i, name.."_Button"..i, bar)
         tinsert(bar.buttons, b)
 
@@ -168,7 +171,7 @@ local function AssignBindings()
         for _, b in ipairs(bar.buttons) do
             if b.keyBoundTarget then
                 for _, key in pairs({GetBindingKey(b.keyBoundTarget)}) do
-                    if key ~= "" then
+                    if key and key ~= "" then
                         SetOverrideBindingClick(bar, false, key, b:GetName())
                     end
                 end
@@ -288,7 +291,7 @@ local customExitButton = {
     func = function(button)
         VehicleExit()
     end,
-    texture = "Interface\\AddOns\\Bartender4\\Artwork\\LeaveVehicle.tga", --"Interface\\Icons\\Spell_Shadow_SacrificialShield", TODO:
+    texture = AW.GetTexture("Exit"),
     tooltip = LEAVE_VEHICLE,
 }
 
@@ -333,10 +336,10 @@ local function UpdateButton(bar, shared, specific)
                 b:SetState(GetVehicleBarIndex(), "custom", customExitButton) -- 16
                 b:SetState(GetTempShapeshiftBarIndex(), "custom", customExitButton) -- 17
                 b:SetState(GetOverrideBarIndex(), "custom", customExitButton) -- 18
-            else
-                -- FIXME:
-                b:SetState(11, "custom", customExitButton)
-                b:SetState(12, "custom", customExitButton)
+            -- else
+            --     -- FIXME:
+            --     b:SetState(11, "custom", customExitButton)
+            --     b:SetState(12, "custom", customExitButton)
             end
         end
 
@@ -413,23 +416,23 @@ local function UpdateMainBars(module, which, barName)
     if not init then
         init = true
 
-        AB.DisableBlizzard()
+        -- binding frame --------------------------------------------------------------------------
+        _G.BINDING_HEADER_BFI = AW.WrapTextInColor(BFI.name, "accent")
 
-        _G.BINDING_HEADER_BFI = AW.WrapTextInColor(addonName, "accent")
+        -- bar9
+        local text = L["Action Bar"].." 9 "..L["Button"].." %d"
+        for slot = 1, NUM_ACTIONBAR_BUTTONS do
+            _G[format("BINDING_NAME_BFIACTIONBAR9BUTTON%d", slot)] = format(text, slot)
+        end
 
-        local bars = {
-            [2] = L["Action Bar"].." 2 "..L["Button"].." %d",
-            [7] = L["Class Bar"].." 1 "..L["Button"].." %d",
-            [8] = L["Class Bar"].." 2 "..L["Button"].." %d",
-            [9] = L["Class Bar"].." 3 "..L["Button"].." %d",
-            [10] = L["Class Bar"].." 4 "..L["Button"].." %d",
-        }
-
-        for bar, text in pairs(bars) do
+        -- class bar
+        text = L["Class Bar"].." %d "..L["Button"].." %d"
+        for bar = 1, 4 do
             for slot = 1, NUM_ACTIONBAR_BUTTONS do
-                _G[format("BINDING_NAME_BFIACTIONBAR%dBUTTON%d", bar, slot)] = format(text, slot)
+                _G[format("BINDING_NAME_BFICLASSBAR%dBUTTON%d", bar, slot)] = format(text, bar, slot)
             end
         end
+        -------------------------------------------------------------------------------------------
 
         for name, id in pairs(BAR_MAPPINGS) do
             CreateBar(name, id)
@@ -439,9 +442,7 @@ local function UpdateMainBars(module, which, barName)
         -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
         -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
 
-        -- AB:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
         AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
-
         if BFI.vars.isRetail then
             AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
             AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
@@ -463,50 +464,3 @@ local function UpdateMainBars(module, which, barName)
     end
 end
 BFI.RegisterCallback("UpdateModules", "AB_MainBars", UpdateMainBars)
-
----------------------------------------------------------------------
--- init
----------------------------------------------------------------------
--- local function InitMainBars()
---     AB.DisableBlizzard()
-
---     _G.BINDING_HEADER_BFI = AW.WrapTextInColor(addonName, "accent")
-
---     local bars = {
---         [2] = L["Action Bar"].." 2 "..L["Button"].." %d",
---         [7] = L["Class Bar"].." 1 "..L["Button"].." %d",
---         [8] = L["Class Bar"].." 2 "..L["Button"].." %d",
---         [9] = L["Class Bar"].." 3 "..L["Button"].." %d",
---         [10] = L["Class Bar"].." 4 "..L["Button"].." %d",
---     }
-
---     for bar, text in pairs(bars) do
---         for slot = 1, 12 do
---             _G[format("BINDING_NAME_BFIACTIONBAR%dBUTTON%d", bar, slot)] = format(text, slot)
---         end
---     end
-
---     for i in pairs(ACTION_BAR_LIST) do
---         CreateBar(i)
---     end
---     UpdateMainBars()
-
---     LAB.RegisterCallback(AB, "OnFlyoutSpells", ActionBar_FlyoutSpells)
---     -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
---     -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
-
---     -- AB:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
---     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
-
---     if BFI.vars.isRetail then
---         AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
---         AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
---     end
-
---     if BFI.vars.isRetail and C_PetBattles.IsInBattle() then
---         RemoveBindings()
---     else
---         AssignBindings()
---     end
--- end
--- BFI.RegisterCallback("InitModules", "AB_MainBars", InitMainBars)
