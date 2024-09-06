@@ -22,10 +22,10 @@ function AW.CreateTexture(parent, texture, color, drawLayer, subLevel, wrapModeH
 
     tex:SetColor(color)
 
-    function tex:UpdatePixels()
-        AW.ReSize(tex)
-        AW.RePoint(tex)
-    end
+    -- function tex:UpdatePixels()
+    --     AW.ReSize(tex)
+    --     AW.RePoint(tex)
+    -- end
 
     AW.AddToPixelUpdater(tex)
 

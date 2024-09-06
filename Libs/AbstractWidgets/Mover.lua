@@ -20,12 +20,13 @@ end
 -- parent
 ---------------------------------------------------------------------
 local moverParent, alignmentGrid
+local lines = {}
 
-local function CreateLine(color, alpha, x, y, w, h, subLevel)
-    local l = AW.CreateTexture(alignmentGrid, nil, AW.GetColorTable(color, alpha), "BACKGROUND", subLevel or 0, nil, nil, "NEAREST")
-    AW.SetSize(l, w, h)
-    AW.SetPoint(l, "BOTTOMLEFT", x, y)
-    return l
+local function CreateLine(key, color, alpha, x, y, w, h, subLevel)
+    lines[key] = lines[key] or AW.CreateTexture(alignmentGrid, nil, AW.GetColorTable(color, alpha), "BACKGROUND", subLevel or 0, nil, nil, "NEAREST")
+    AW.SetSize(lines[key], w, h)
+    AW.ClearPoints(lines[key])
+    AW.SetPoint(lines[key], "CENTER", x, y)
 end
 
 -- local function CreateLine2(color, alpha, x1, y1, x2, y2)
@@ -37,64 +38,73 @@ end
 --     return l
 -- end
 
-local function CreateAlignmentGrid()
-    alignmentGrid = CreateFrame("Frame", strupper(ns.prefix).."AlignmentGrid", moverParent)
-    alignmentGrid:SetFrameStrata("BACKGROUND")
-    -- alignmentGrid:SetBackdrop({bgFile=AW.GetPlainTexture()})
-    -- alignmentGrid:SetBackdropColor(AW.GetColorRGB("disabled", 0)) -- for user customization?
-    alignmentGrid:SetAllPoints(moverParent)
-    alignmentGrid:SetIgnoreParentScale(true)
-    alignmentGrid:SetScale(AW.GetPixelFactor())
+local function UpdateLines()
+    -- local width, height = GetPhysicalScreenSize()
 
-    -- re-create if DISPLAY_SIZE_CHANGED
-    alignmentGrid:RegisterEvent("DISPLAY_SIZE_CHANGED")
-    alignmentGrid:SetScript("OnEvent", function()
-        alignmentGrid:Hide()
-        alignmentGrid:SetParent(nil)
-        alignmentGrid:ClearAllPoints()
-        -- re-create
-        CreateAlignmentGrid()
-    end)
-
-    local width, height = GetPhysicalScreenSize()
+    local width, height = alignmentGrid:GetSize()
+    local halfWidth, halfHeight = width / 2, height / 2
 
     -- center cross
     local centerX = math.floor((width-1) / 2)
     local centerY = math.floor((height-1) / 2)
 
     -- v center
-    CreateLine("red", 0.75, centerX, 0, 1, height, 1)
+    CreateLine("v0", "red", 0.75, 0, 0, 1, height, 1)
 
     -- h center
-    CreateLine("red", 0.75, 0, centerY, width, 1, 1)
+    CreateLine("h0", "red", 0.75, 0, 0, width, 1, 1)
 
     -- vleft
-    local offset = centerX
+    local n = 0
+    local offset = 0
     repeat
+        n = n - 1
         offset = offset - 25
-        CreateLine("gray", 0.35, offset, 0, 1, height)
-    until offset < 0
+        CreateLine("v" .. n, "gray", 0.35, offset, 0, 1, height)
+    until offset < -halfWidth
 
     -- vright
-    offset = centerX
+    n = 0
+    offset = 0
     repeat
+        n = n + 1
         offset = offset + 25
-        CreateLine("gray", 0.35, offset, 0, 1, height)
-    until offset > width
+        CreateLine("v" .. n, "gray", 0.35, offset, 0, 1, height)
+    until offset > halfWidth
 
     -- hbottom
-    local offset = centerY
+    n = 0
+    offset = 0
     repeat
+        n = n - 1
         offset = offset - 25
-        CreateLine("gray", 0.35, 0, offset, width, 1)
-    until offset < 0
+        CreateLine("h" .. n, "gray", 0.35, 0, offset, width, 1)
+    until offset < -halfHeight
 
     -- htop
-    offset = centerY
+    n = 0
+    offset = 0
     repeat
+        n = n + 1
         offset = offset + 25
-        CreateLine("gray", 0.35, 0, offset, width, 1)
-    until offset > height
+        CreateLine("h" .. n, "gray", 0.35, 0, offset, width, 1)
+    until offset > halfHeight
+end
+
+local function CreateAlignmentGrid()
+    alignmentGrid = CreateFrame("Frame", strupper(ns.prefix).."AlignmentGrid", moverParent)
+    alignmentGrid:SetFrameStrata("BACKGROUND")
+    -- alignmentGrid:SetBackdrop({bgFile=AW.GetPlainTexture()})
+    -- alignmentGrid:SetBackdropColor(AW.GetColorRGB("disabled", 0)) -- for user customization?
+    alignmentGrid:SetAllPoints()
+    -- alignmentGrid:SetIgnoreParentScale(true)
+    alignmentGrid:SetScale(AW.GetPixelFactor())
+
+    -- DISPLAY_SIZE_CHANGED
+    alignmentGrid:RegisterEvent("DISPLAY_SIZE_CHANGED")
+    alignmentGrid:SetScript("OnEvent", UpdateLines)
+
+    UpdateLines()
 end
 
 local function CreateMoverParent()
