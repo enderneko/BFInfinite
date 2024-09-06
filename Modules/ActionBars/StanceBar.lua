@@ -17,10 +17,10 @@ local function CreateStanceBar()
 
     AB.bars[stanceBar.name] = stanceBar
 
-    AW.CreateMover(stanceBar, "ActionBars", L["Stance Bar"], function(p,x,y) print("StanceBar:", p, x, y) end)
+    AW.CreateMover(stanceBar, "ActionBars", L["Stance Bar"])
 
-    -- stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
-    -- stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
+    stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
+    stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 end
 
 ---------------------------------------------------------------------
@@ -135,6 +135,9 @@ local function UpdateStanceBar(module, which)
     if not stanceBar then
         CreateStanceBar()
     end
+
+    -- mover
+    AW.UpdateMoverSave(stanceBar, config.position)
 
     -- events
     AB:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceButtons)

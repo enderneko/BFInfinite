@@ -604,6 +604,14 @@ function AW.HideMovers()
     if fineTuningFrame then fineTuningFrame:Hide() end
 end
 
+function AW.ToggleMovers()
+    if not (moverParent and moverParent:IsShown()) then
+        AW.ShowMovers()
+    else
+        AW.HideMovers()
+    end
+end
+
 function AW.UndoMovers()
     if not moverParent:IsShown() then return end
 

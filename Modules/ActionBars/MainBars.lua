@@ -102,7 +102,7 @@ local function CreateBar(name, id)
     AB.bars[name] = bar
 
     -- mover ----------------------------------------------------------------- --
-    AW.CreateMover(bar, "ActionBars", moverName, function(p,x,y) print(moverName..":", p, x, y) end)
+    AW.CreateMover(bar, "ActionBars", moverName)
 
     -- page ------------------------------------------------------------------ --
     bar:SetAttribute("_onstate-page", [[
@@ -372,8 +372,10 @@ local function UpdateBar(bar, general, shared, specific)
         return
     end
 
-    bar:Show()
     RegisterStateDriver(bar, "visibility", specific.visibility)
+
+    -- mover
+    AW.UpdateMoverSave(bar, specific.position)
 
     -- bar
     AB.ReArrange(bar, specific.size, specific.spacing, specific.buttonsPerLine, specific.num, specific.anchor, specific.orientation)

@@ -17,7 +17,7 @@ local function CreatePetBar()
 
     AB.bars[petBar.name] = petBar
 
-    AW.CreateMover(petBar, "ActionBars", L["Pet Bar"], function(p,x,y) print("PetBar:", p, x, y) end)
+    AW.CreateMover(petBar, "ActionBars", L["Pet Bar"])
 
     petBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     petBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
@@ -168,6 +168,9 @@ local function UpdatePetBar(module, which)
         CreatePetBar()
         AssignBindings()
     end
+
+    -- mover
+    AW.UpdateMoverSave(petBar, config.position)
 
     -- events
     AB:RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
