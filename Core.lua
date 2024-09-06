@@ -43,6 +43,7 @@ function eventFrame:PLAYER_LOGIN()
 
     BFI.Fire("PLAYER_LOGIN")
     BFI.Fire("UpdateModules")
+    BFI.Fire("DisableBlizzard")
 end
 
 local inInstance

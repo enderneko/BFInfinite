@@ -1,18 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-
-local EM = {}
-BFI.AddEventHandler(EM)
-
-local CheckTargetFrame = function() return true end
-local CheckCastFrame = function() return true end
-local CheckArenaFrame = function() return true end
-local CheckPartyFrame = function() return true end
-local CheckFocusFrame = function() return true end
-local CheckRaidFrame = function() return true end
-local CheckBossFrame = function() return true end
-local CheckAuraFrame = function() return true end
-local CheckActionBar = function() return true end
+local DB = BFI.DisableBlizzard
 
 local ignoreFrames = {
     "MainStatusTrackingBarContainer", -- Experience Bar
@@ -22,7 +10,7 @@ local ignoreFrames = {
 local hideFrames = {}
 local needsUpdate = false
 
-function EM.LAYOUTS_UPDATED(_, event, arg1)
+local function LAYOUTS_UPDATED(_, event, arg1)
     local allow = event ~= "PLAYER_SPECIALIZATION_CHANGED" or arg1 == "player"
     if allow and not _G.EditModeManagerFrame:IsEventRegistered(event) then
         needsUpdate = true
@@ -33,7 +21,7 @@ end
 --     print(...)
 -- end)
 
-function EM.PLAYER_REGEN(event)
+local function PLAYER_REGEN(event)
     local editMode = _G.EditModeManagerFrame
     local combatLeave = event == "PLAYER_REGEN_ENABLED"
     -- _G.GameMenuButtonEditMode:SetEnabled(combatLeave)
@@ -68,7 +56,7 @@ function EM.PLAYER_REGEN(event)
     end
 end
 
-function EM.HandleHide(frame)
+local function HandleHide(frame)
     local combat = InCombatLockdown()
     if combat then -- fake hide the editmode system
         hideFrames[frame] = true
@@ -82,68 +70,78 @@ function EM.HandleHide(frame)
     frame:SetScale(combat and 0.00001 or 1)
 end
 
-function EM.OnProceed()
+local function OnProceed()
     local editMode = _G.EditModeManagerFrame
     local dialog = _G.EditModeUnsavedChangesDialog
     if dialog.selectedLayoutIndex then
         editMode:SelectLayout(dialog.selectedLayoutIndex)
     else
-        EM.HandleHide(editMode, dialog)
+        HandleHide(editMode, dialog)
     end
 
     StaticPopupSpecial_Hide(dialog)
 end
 
-function EM.OnSaveProceed()
+local function OnSaveProceed()
     _G.EditModeManagerFrame:SaveLayoutChanges()
-    EM.OnProceed()
+    OnProceed()
 end
 
-function EM.OnClose()
+local function OnClose()
     local editMode = _G.EditModeManagerFrame
     if editMode:HasActiveChanges() then
         editMode:ShowRevertWarningDialog()
     else
-        EM.HandleHide(editMode)
+        HandleHide(editMode)
     end
 end
 
-function EM.SetEnabled(self, enabled)
+local function SetEnabled(self, enabled)
     if InCombatLockdown() and enabled then
         self:Disable()
     end
 end
 
-function EM.Initialize()
+---------------------------------------------------------------------
+-- update
+---------------------------------------------------------------------
+local init
+local function DisableBlizzard()
+    --! require ReloadUI to take effect
+    if init then return end
+    init = true
+
+    local config = DB.config
+
     -- unsaved changes cant open or close the window in combat
     local dialog = _G.EditModeUnsavedChangesDialog
-    dialog.ProceedButton:SetScript("OnClick", EM.OnProceed)
-    dialog.SaveAndProceedButton:SetScript("OnClick", EM.OnSaveProceed)
+    dialog.ProceedButton:SetScript("OnClick", OnProceed)
+    dialog.SaveAndProceedButton:SetScript("OnClick", OnSaveProceed)
 
     -- the panel itself cant either
-    _G.EditModeManagerFrame.onCloseCallback = EM.OnClose
+    _G.EditModeManagerFrame.onCloseCallback = OnClose
 
     -- keep the button off during combat
-    -- hooksecurefunc(_G.GameMenuButtonEditMode, "SetEnabled", EM.SetEnabled)
+    -- hooksecurefunc(_G.GameMenuButtonEditMode, "SetEnabled", SetEnabled)
 
     -- wait for combat leave to do stuff
-    EM:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED", EM.LAYOUTS_UPDATED)
-    EM:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", EM.LAYOUTS_UPDATED)
-    EM:RegisterEvent("PLAYER_REGEN_ENABLED", EM.PLAYER_REGEN)
-    EM:RegisterEvent("PLAYER_REGEN_DISABLED", EM.PLAYER_REGEN)
+    DB:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED", LAYOUTS_UPDATED)
+    DB:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", LAYOUTS_UPDATED)
+    DB:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN)
+    DB:RegisterEvent("PLAYER_REGEN_DISABLED", PLAYER_REGEN)
 
     -- account settings will be tainted
     local mixin = _G.EditModeManagerFrame.AccountSettings
-    if CheckCastFrame() then mixin.RefreshCastBar = BFI.dummy end
-    if CheckAuraFrame() then mixin.RefreshBuffsAndDebuffs = BFI.dummy end
-    if CheckBossFrame() then mixin.RefreshBossFrames = BFI.dummy end
-    if CheckArenaFrame() then mixin.RefreshArenaFrames = BFI.dummy end
-    if CheckRaidFrame() then mixin.RefreshRaidFrames = BFI.dummy end
-    if CheckPartyFrame() then mixin.RefreshPartyFrames = BFI.dummy end
-    if CheckTargetFrame() and CheckFocusFrame() then
+    if config.castBar then mixin.RefreshCastBar = BFI.dummy end
+    if config.auras then mixin.RefreshBuffsAndDebuffs = BFI.dummy end
+    if config.boss then mixin.RefreshBossFrames = BFI.dummy end
+    if config.arena then mixin.RefreshArenaFrames = BFI.dummy end
+    if config.raid then mixin.RefreshRaidFrames = BFI.dummy end
+    if config.party then mixin.RefreshPartyFrames = BFI.dummy end
+    if config.target and config.focus then
         mixin.RefreshTargetAndFocus = BFI.dummy
     end
-    if CheckActionBar() then
+    if config.actionBars then
         mixin.RefreshVehicleLeaveButton = BFI.dummy
         mixin.RefreshActionBarShown = BFI.dummy
         mixin.RefreshEncounterBar = BFI.dummy
@@ -157,5 +155,4 @@ function EM.Initialize()
         end
     end
 end
-
-EM:RegisterEvent("PLAYER_LOGIN", EM.Initialize)
+BFI.RegisterCallback("DisableBlizzard", "EditMode", DisableBlizzard)
