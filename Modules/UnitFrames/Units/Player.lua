@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 local AW = BFI.AW
 local UF = BFI.UnitFrames
 
@@ -44,7 +45,7 @@ local function CreatePlayer()
     player:SetAttribute("unit", "player")
 
     -- mover
-    AW.CreateMover(player, "UnitFrames", name)
+    AW.CreateMover(player, "UnitFrames", _G.PLAYER)
 
     -- config mode
     UF.AddToConfigMode("player", player)

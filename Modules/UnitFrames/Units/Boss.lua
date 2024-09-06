@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 local AW = BFI.AW
 local UF = BFI.UnitFrames
 
@@ -41,7 +42,7 @@ local function CreateBoss()
     boss.driverValue = "[@boss1,exists] show;hide"
 
     -- mover
-    AW.CreateMover(boss, "UnitFrames", name)
+    AW.CreateMover(boss, "UnitFrames", _G.BOSS)
 
     -- pixel perfect
     AW.AddToPixelUpdater(boss)

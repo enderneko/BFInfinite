@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 local AW = BFI.AW
 local UF = BFI.UnitFrames
 
@@ -43,7 +44,7 @@ local function CreateTarget()
     target.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
-    AW.CreateMover(target, "UnitFrames", name)
+    AW.CreateMover(target, "UnitFrames", _G.TARGET)
 
     -- config mode
     UF.AddToConfigMode("target", target)

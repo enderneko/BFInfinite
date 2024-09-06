@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 local AW = BFI.AW
 local UF = BFI.UnitFrames
 
@@ -32,7 +33,7 @@ local function CreatePet()
     pet:SetAttribute("unit", "pet")
 
     -- mover
-    AW.CreateMover(pet, "UnitFrames", name)
+    AW.CreateMover(pet, "UnitFrames", _G.PET)
 
     -- config mode
     UF.AddToConfigMode("pet", pet)

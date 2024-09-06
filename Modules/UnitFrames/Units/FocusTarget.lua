@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 local AW = BFI.AW
 local UF = BFI.UnitFrames
 
@@ -35,7 +36,7 @@ local function CreateFocusTarget()
     focustarget.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
-    AW.CreateMover(focustarget, "UnitFrames", name)
+    AW.CreateMover(focustarget, "UnitFrames", L["Focus Target"])
 
     -- config mode
     UF.AddToConfigMode("focustarget", focustarget)

@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 local AW = BFI.AW
 local UF = BFI.UnitFrames
 
@@ -68,7 +69,7 @@ local function CreateParty()
     end
 
     -- mover
-    AW.CreateMover(party, "UnitFrames", name)
+    AW.CreateMover(party, "UnitFrames", _G.PARTY)
 
     -- pixel perfect
     AW.AddToPixelUpdater(party)

@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 local AW = BFI.AW
 local UF = BFI.UnitFrames
 
@@ -72,7 +73,7 @@ local function CreateRaid()
     end
 
     -- mover
-    AW.CreateMover(raid, "UnitFrames", name)
+    AW.CreateMover(raid, "UnitFrames", _G.RAID)
 
     -- pixel perfect
     AW.AddToPixelUpdater(raid)

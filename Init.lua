@@ -13,6 +13,7 @@ _G.BFI = BFI
 ---@field UnitFrames UnitFrames
 ---@field NamePlates NamePlates
 ---@field DisableBlizzard DisableBlizzard
+---@field UIWidgets UIWidgets
 ---@field Misc Misc
 
 ---------------------------------------------------------------------
@@ -64,6 +65,9 @@ BFI.AddEventHandler(BFI.Shared)
 
 BFI.DisableBlizzard = {}
 BFI.AddEventHandler(BFI.DisableBlizzard)
+
+BFI.UIWidgets = {}
+BFI.AddEventHandler(BFI.UIWidgets)
 
 BFI.ActionBars = {["bars"] = {}}
 BFI.AddEventHandler(BFI.ActionBars)

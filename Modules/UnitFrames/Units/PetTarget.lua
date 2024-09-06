@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 local AW = BFI.AW
 local UF = BFI.UnitFrames
 
@@ -35,7 +36,7 @@ local function CreatePetTarget()
     pettarget.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
-    AW.CreateMover(pettarget, "UnitFrames", name)
+    AW.CreateMover(pettarget, "UnitFrames", L["Pet Target"])
 
     -- config mode
     UF.AddToConfigMode("pettarget", pettarget)
