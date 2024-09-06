@@ -3,6 +3,7 @@ local BFI = select(2, ...)
 local AW = BFI.AW
 local U = BFI.utils
 local NP = BFI.NamePlates
+local DB = BFI.DisableBlizzard
 
 ---------------------------------------------------------------------
 -- vars
@@ -363,7 +364,7 @@ local function UpdateTarget()
 end
 
 ---------------------------------------------------------------------
--- OnNameplateUpdate
+-- OnNameplateUpdate -- REVIEW: use event to mark "updateRequired"?
 ---------------------------------------------------------------------
 local function OnNameplateUpdate(np, elapsed)
     np.elapsed = (np.elapsed or 0) + elapsed
@@ -545,17 +546,24 @@ local function CreateNameplate(self, event, nameplate)
 end
 
 ---------------------------------------------------------------------
--- hide blizzard
+-- NamePlateDriverFrame.AcquireUnitFrame
 ---------------------------------------------------------------------
-local function HideBlzNameplates(_, event, cvar)
-    if cvar and not strfind(strlower(cvar), "nameplate") then return end
-    C_Timer.After(0.25, function()
-        for _, np in pairs(NP.created) do
-            if np:IsVisible() and np.blz then
-                np.blz:Hide()
-            end
-        end
-    end)
+local function InsecureHide(self)
+    self:Hide()
+end
+
+local hookedNameplates = {}
+
+local function NamePlateDriverFrame_AcquireUnitFrame(_, nameplate)
+    if not (nameplate and nameplate.UnitFrame) then return end
+    if nameplate.UnitFrame:IsForbidden() then return end
+
+    if not hookedNameplates[nameplate] then
+        hookedNameplates[nameplate] = true
+        nameplate.UnitFrame:HookScript("OnShow", InsecureHide)
+    end
+
+    DB.DisableFrame(nameplate.UnitFrame, true)
 end
 
 ---------------------------------------------------------------------
@@ -575,10 +583,13 @@ local function UpdateNameplates(module, which)
     NP:RegisterEvent("NAME_PLATE_CREATED", CreateNameplate)
     NP:RegisterEvent("NAME_PLATE_UNIT_ADDED", ShowNameplate)
     NP:RegisterEvent("NAME_PLATE_UNIT_REMOVED", HideNameplate)
-    NP:RegisterEvent("UI_SCALE_CHANGED", HideBlzNameplates)
-    NP:RegisterEvent("CVAR_UPDATE", HideBlzNameplates)
     NP:RegisterEvent("PLAYER_TARGET_CHANGED", UpdateTarget)
     NP:RegisterEvent("UNIT_FACTION", ShowNameplate)
+
+    if not NP.isAcquireUnitFrameHooked then
+        NP.isAcquireUnitFrameHooked = true
+        hooksecurefunc(NamePlateDriverFrame, "AcquireUnitFrame", NamePlateDriverFrame_AcquireUnitFrame)
+    end
 
     -- cvar
     if not which or which == "cvar" then

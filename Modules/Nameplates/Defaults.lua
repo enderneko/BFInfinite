@@ -102,10 +102,13 @@ local defaults = {
         minor = 1,
         totem = 1,
     },
+    -- TODO:
     playersInInstance = {
         -- modify some cvars
     },
+    -- TODO:
     customs = {},
+    -- TODO:
     performanceModeUnits = {
         tapDenied = true,
         customs = {},
