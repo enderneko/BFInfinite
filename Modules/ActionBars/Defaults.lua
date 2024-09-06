@@ -13,19 +13,19 @@ local defaults = {
     },
     barConfig = {
         bar1 = {enabled = true, position = {"BOTTOM", 0, 10}},
-        bar2 = {enabled = true, position =  {"BOTTOM", 0, 44}},
-        bar3 = {enabled = true, position =  {"BOTTOM", 0, 78}},
+        bar2 = {enabled = true, position =  {"BOTTOM", 0, 45}},
+        bar3 = {enabled = true, position =  {"BOTTOM", 0, 80}},
         bar4 = {enabled = true, position =  {"BOTTOM", 272, 10}},
         bar5 = {enabled = true, position =  {"BOTTOM", 394, 10}},
         bar6 = {enabled = true, position =  {"BOTTOM", -272, 10}},
-        bar7 = {enabled = false, position =  {"BOTTOM", 0, 250}},
+        bar7 = {enabled = true, position =  {"BOTTOM", 158, 117}},
         bar8 = {enabled = false, position =  {"BOTTOM", 0, 290}},
         bar9 = {enabled = false, position =  {"BOTTOM", 0, 330}},
         classbar1 = {enabled = false, position =  {"BOTTOM", 0, 370}},
         classbar2 = {enabled = false, position =  {"BOTTOM", 0, 410}},
         classbar3 = {enabled = false, position =  {"BOTTOM", 0, 450}},
         classbar4 = {enabled = false, position =  {"BOTTOM", 0, 490}},
-        stancebar = {enabled = true, position =  {"BOTTOM", 0, 130}},
+        stancebar = {enabled = true, position =  {"BOTTOM", -112, 117}},
         petbar = {enabled = true, position =  {"BOTTOM", -272, 102}},
     },
     sharedButtonConfig = {
@@ -133,9 +133,13 @@ do
         elseif bar == "bar6" then
             t.buttonsPerLine = 4
             t.size = 28
+        elseif bar == "bar7" then
+            t.num = 3
+            -- t.size = 28
         elseif bar == "stancebar" then
-            t.num = 10
+            t.num = 7
             t.buttonsPerLine = 10
+            t.size = 26
             t.buttonConfig = {
                 hideElements = {
                     hotkey = false,
