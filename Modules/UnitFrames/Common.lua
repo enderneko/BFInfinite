@@ -216,6 +216,9 @@ end
 -- setup group
 ---------------------------------------------------------------------
 function UF.SetupUnitGroup(group, config, indicators)
+    -- mover
+    AW.UpdateMoverSave(group, config.general.position)
+
     -- position
     AW.LoadPosition(group, config.general.position)
 

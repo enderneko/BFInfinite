@@ -15,9 +15,9 @@ local defaults = {
         bar1 = {enabled = true, position = {"BOTTOM", 0, 10}},
         bar2 = {enabled = true, position =  {"BOTTOM", 0, 44}},
         bar3 = {enabled = true, position =  {"BOTTOM", 0, 78}},
-        bar4 = {enabled = true, position =  {"BOTTOM", 275, 10}},
-        bar5 = {enabled = false, position =  {"BOTTOM", 0, 170}},
-        bar6 = {enabled = false, position =  {"BOTTOM", 0, 210}},
+        bar4 = {enabled = true, position =  {"BOTTOM", 272, 10}},
+        bar5 = {enabled = true, position =  {"BOTTOM", 394, 10}},
+        bar6 = {enabled = true, position =  {"BOTTOM", -272, 10}},
         bar7 = {enabled = false, position =  {"BOTTOM", 0, 250}},
         bar8 = {enabled = false, position =  {"BOTTOM", 0, 290}},
         bar9 = {enabled = false, position =  {"BOTTOM", 0, 330}},
@@ -26,7 +26,7 @@ local defaults = {
         classbar3 = {enabled = false, position =  {"BOTTOM", 0, 450}},
         classbar4 = {enabled = false, position =  {"BOTTOM", 0, 490}},
         stancebar = {enabled = true, position =  {"BOTTOM", 0, 130}},
-        petbar = {enabled = true, position =  {"BOTTOM", 0, 170}},
+        petbar = {enabled = true, position =  {"BOTTOM", -272, 102}},
     },
     sharedButtonConfig = {
         lock = true,
@@ -65,7 +65,7 @@ do
         alpha = 1,
         anchor = "TOPLEFT",
         orientation = "horizontal",
-        size = 32,
+        size = 33,
         spacing = 2,
         num = 12,
         buttonsPerLine = 12,
@@ -126,7 +126,13 @@ do
         -- others
         if bar == "bar4" then
             t.buttonsPerLine = 4
-            t.size = 27
+            t.size = 28
+        elseif bar == "bar5" then
+            t.buttonsPerLine = 4
+            t.size = 28
+        elseif bar == "bar6" then
+            t.buttonsPerLine = 4
+            t.size = 28
         elseif bar == "stancebar" then
             t.num = 10
             t.buttonsPerLine = 10
@@ -144,8 +150,8 @@ do
             }
         elseif bar == "petbar" then
             t.num = 10
-            t.buttonsPerLine = 10
-            t.size = 27
+            t.buttonsPerLine = 5
+            t.size = 22
         end
     end
 end
