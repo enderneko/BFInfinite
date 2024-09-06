@@ -27,11 +27,9 @@ function UF.CFG_UnitGetTotalHealAbsorbs()
     return random(0, 50) * random(0, 1)
 end
 
--- UF.UnitClassBase = U.UnitClassBase
--- function UF.CFG_UnitClassBase()
---     -- return CLASS_SORT_ORDER[random(1, 13)]
---     return BFI.vars.playerClass
--- end
+function UF.CFG_UnitClassBase()
+    return BFI.vars.playerClass
+end
 
 -- UF.UnitName = UnitName
 -- function UF.CFG_UnitName(unit)
@@ -89,6 +87,15 @@ end
 UF.UnitFactionGroup = UnitFactionGroup
 function UF.CFG_UnitFactionGroup()
     return UnitFactionGroup("player")
+end
+
+function UF.CFG_UnitIsPlayer()
+    return true
+end
+
+UF.UnitGUID = UnitGUID
+function UF.CFG_UnitGUID()
+    return "TEST"
 end
 
 ---------------------------------------------------------------------
@@ -159,21 +166,11 @@ end
 -- enable config mode
 ---------------------------------------------------------------------
 local function EnableConfigModeForGroup(group)
-    if configModeGroups[group]["container"] then
-        UnregisterAttributeDriver(configModeGroups[group]["container"])
-    end
-
-    if configModeGroups[group]["headers"] then
-        for _, header in pairs(configModeGroups[group]["headers"]) do
-            header.inConfigMode = true
-            header:SetAttribute("startingIndex", 1 - header:GetNumChildren())
-        end
-    end
-
     for i, frame in pairs(configModeGroups[group]["children"]) do
         frame.inConfigMode = true
         frame.oldUnit = frame.unit
         UnregisterUnitWatch(frame)
+        frame:Hide()
         frame:SetAttribute("unit", "player")
         frame.unit = "player"
         frame.displayedUnit = "player"
@@ -185,6 +182,17 @@ local function EnableConfigModeForGroup(group)
                 indicator:EnableConfigMode()
             end
         end
+    end
+
+    if configModeGroups[group]["headers"] then
+        for _, header in pairs(configModeGroups[group]["headers"]) do
+            header.inConfigMode = true
+            header:SetAttribute("startingIndex", 1 - header:GetNumChildren())
+        end
+    end
+
+    if configModeGroups[group]["container"] then
+        UnregisterAttributeDriver(configModeGroups[group]["container"])
     end
 
     if configModeGroups[group]["enabled"] then

@@ -8,8 +8,13 @@ local UF = BFI.UnitFrames
 ---------------------------------------------------------------------
 -- local functions
 ---------------------------------------------------------------------
-local UnitIsPlayer = UnitIsPlayer
+local UnitGUID = UnitGUID
+local UnitIsPlayer = U.UnitIsPlayer
 local UnitClassBase = U.UnitClassBase
+local UnitIsConnected = UnitIsConnected
+local UnitIsAFK = UnitIsAFK
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitIsGhost = UnitIsGhost
 
 ---------------------------------------------------------------------
 -- color
@@ -20,7 +25,7 @@ local function UpdateColor(self, event, unitId)
 
     local r, g, b
     if self.color.type == "class_color" then
-        if U.UnitIsPlayer(unit) then
+        if UnitIsPlayer(unit) then
             local class = UnitClassBase(unit)
             r, g, b = AW.GetClassColor(class)
         else
@@ -133,7 +138,6 @@ local function StatusTimer_Enable(self)
     self:RegisterEvent("UNIT_FLAGS", UpdateStatus)
     self:Show()
     self.updater.elapsed = 1
-    self.updater:SetScript("OnUpdate", StatusTimer_OnUpdate)
     self:Update()
 end
 
@@ -143,7 +147,7 @@ end
 local function StatusTimer_Disable(self)
     self:UnregisterAllEvents()
     self:Hide()
-    self.updater:SetScript("OnUpdate", nil)
+    self.updater:Hide()
 end
 
 ---------------------------------------------------------------------
@@ -165,21 +169,25 @@ local function StatusTimer_EnableConfigMode(self)
     self.Enable = StatusTimer_EnableConfigMode
     self.Update = BFI.dummy
 
-    self.updater:Hide()
     self:UnregisterAllEvents()
 
-    local status = self.useEn and "AFK" or L["AFK"]
-    if self.showLabel then
-        self:SetText(status .. " 00:30")
-    else
-        self:SetText("00:30")
-    end
+    UnitGUID = UF.CFG_UnitGUID
+    UnitIsPlayer = UF.CFG_UnitIsPlayer
+    UnitClassBase = UF.CFG_UnitClassBase
+
+    timers["TEST"] = nil
+    self.updater.elapsed = 1
+    SetStatus(self, "AFK")
     self:Show()
 end
 
 local function StatusTimer_DisableConfigMode(self)
     self.Enable = StatusTimer_Enable
     self.Update = StatusTimer_Update
+
+    UnitGUID = UF.UnitGUID
+    UnitIsPlayer = U.UnitIsPlayer
+    UnitClassBase = U.UnitClassBase
 end
 
 ---------------------------------------------------------------------
@@ -195,6 +203,8 @@ function UF.CreateStatusTimer(parent, name)
     text.updater = updater
     updater:Hide()
     updater.text = text
+
+    updater:SetScript("OnUpdate", StatusTimer_OnUpdate)
 
     -- events
     BFI.AddEventHandler(text)
