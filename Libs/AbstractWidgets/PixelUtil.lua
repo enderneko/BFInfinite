@@ -223,6 +223,23 @@ function AW.ClearPoints(region)
 end
 
 ---------------------------------------------------------------------
+-- backdrop
+---------------------------------------------------------------------
+function AW.SetBackdrop(region, backdropInfo)
+    region._edge_size = backdropInfo.edgeSize
+    backdropInfo.edgeSize = AW.ConvertPixelsForRegion(region._edge_size, region)
+
+    if backdropInfo.insets then
+        region._inset_size = next(backdropInfo.insets)
+        for k in pairs(backdropInfo.insets) do
+            backdropInfo.insets[k] = AW.ConvertPixelsForRegion(region._inset_size, region)
+        end
+    end
+
+    region:SetBackdrop(backdropInfo)
+end
+
+---------------------------------------------------------------------
 -- re-set
 ---------------------------------------------------------------------
 function AW.ReSize(region)
@@ -280,9 +297,16 @@ function AW.ReBorder(region)
 
     local n = AW.GetOnePixelForRegion(region)
     if backdropInfo.edgeSize then
-        backdropInfo.edgeSize = n
+        if region._edge_size then
+            backdropInfo.edgeSize = AW.ConvertPixelsForRegion(region._edge_size, region)
+        else
+            backdropInfo.edgeSize = n
+        end
     end
     if backdropInfo.insets then
+        if region._inset_size then
+            n = AW.ConvertPixelsForRegion(region._inset_size, region)
+        end
         backdropInfo.insets.left = n
         backdropInfo.insets.right = n
         backdropInfo.insets.top = n
