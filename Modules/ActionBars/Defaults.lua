@@ -142,6 +142,7 @@ do
         elseif bar == "petbar" then
             t.num = 10
             t.buttonsPerLine = 10
+            t.size = 27
         end
     end
 end

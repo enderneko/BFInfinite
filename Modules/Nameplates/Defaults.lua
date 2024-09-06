@@ -30,7 +30,7 @@ local CVAR_DEFAULTS = {
     nameplateOverlapH = 0.5,
     nameplateOverlapV = 0.5,
     -- motion
-    nameplateMotion = 1, -- 0:Overlapping 1:Stacking
+    nameplateMotion = 0, -- 0:Overlapping 1:Stacking
     nameplateMotionSpeed = 0.025,
     -- distance
     nameplateMaxDistance = 45,
@@ -65,8 +65,8 @@ local defaults = {
         marked = {enabled = true, value = 1},
         casting = {enabled = true, value = 1},
         mouseover = {enabled = true, value = 1},
-        non_target = {enabled = true, value = 0.8},
-        no_target = {enabled = false, value = 0.5},
+        non_target = {enabled = true, value = 0.85},
+        no_target = {enabled = false, value = 0.6},
         -- type (multiplier)
         player = 1,
         pet = 1,
@@ -132,7 +132,7 @@ do
             colorAlpha = 1,
             lossColor = {
                 useDarkerForground = false,
-                alpha = 0.5,
+                alpha = 0.6,
                 rgb = AW.GetColorTable("black")
             },
             bgColor = AW.GetColorTable("background", 0),
@@ -280,8 +280,8 @@ do
             position = {"BOTTOM", "TOP", 0, 30},
             anchorTo = "healthBar",
             frameLevel = 1,
-            width = 36,
-            height = 36,
+            width = 40,
+            height = 40,
             target = {
                 texture = "Arrow1_Red",
                 color = AW.GetColorTable("white"),
@@ -492,8 +492,8 @@ do
             position = {"BOTTOM", "TOP", 0, 15},
             anchorTo = "nameText",
             frameLevel = 1,
-            width = 36,
-            height = 36,
+            width = 40,
+            height = 40,
             target = {
                 texture = "Arrow1_Green",
                 color = AW.GetColorTable("white"),

@@ -29,7 +29,9 @@ local proc = {xOffset = 3, yOffset = 3}
 
 function LCG.ShowButtonGlow(b)
     local config = AB.config and AB.config.sharedButtonConfig.glow
-    if not config then return end
+    if not config or b.glowing then return end
+
+    b.glowing = true
 
     if config.style == "Proc" then -- this uses an options table
         proc.color = config.color
@@ -54,6 +56,7 @@ function LCG.HideButtonGlow(b)
         hiders[b](b)
         hiders[b] = nil
     end
+    b.glowing = nil
 end
 
 function AB.HideAllGlows()
