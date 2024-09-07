@@ -103,26 +103,29 @@ end
 ---------------------------------------------------------------------
 -- close dropdown
 ---------------------------------------------------------------------
+function AW.CloseDropdown()
+    list:Hide()
+    horizontalList:Hide()
+    if list.menu and not list.menu.isMini then
+        list.menu.button:SetTexture(AW.GetIcon("ArrowDown", true))
+    end
+end
+
 function AW.RegisterForCloseDropdown(f)
     assert(f and f.HasScript and f:HasScript("OnMouseDown"), "no OnMouseDown for this region!")
-    f:HookScript("OnMouseDown", function()
-        list:Hide()
-        horizontalList:Hide()
-        if list.menu and not list.menu.isMini then
-            list.menu.button:SetTexture(AW.GetIcon("ArrowDown", true))
-        end
-    end)
+    f:HookScript("OnMouseDown", AW.CloseDropdown)
 end
 
 ---------------------------------------------------------------------
 -- dropdown menu
 ---------------------------------------------------------------------
 --- @param maxSlots number max items per "page"
-function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHorizontal, justify)
+function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHorizontal, justify, textureAlpha)
     if not list then CreateListFrame() end
     if not horizontalList then CreateHorizontalList() end
 
     maxSlots = maxSlots or 10
+    textureAlpha = textureAlpha or 0.75
 
     local menu = AW.CreateBorderedFrame(parent, width, 20, "widget")
     menu:EnableMouse(true)
@@ -192,14 +195,14 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
     menu.text:SetWordWrap(false)
 
     if dropdownType == "texture" then
-        menu.texture = AW.CreateTexture(menu)
+        menu.texture = AW.CreateTexture(isMini and menu.button or menu)
         AW.SetPoint(menu.texture, "TOPLEFT", 1, -1)
         if isMini then
             AW.SetPoint(menu.texture, "BOTTOMRIGHT", -1, 1)
         else
             AW.SetPoint(menu.texture, "BOTTOMRIGHT", menu.button, "BOTTOMLEFT", -1, 1)
         end
-        menu.texture:SetVertexColor(AW.GetColorRGB("white", 0.7))
+        menu.texture:SetVertexColor(AW.GetColorRGB("white", textureAlpha))
         menu.texture:Hide()
     end
 
@@ -329,7 +332,7 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
                 b.bgTexture = AW.CreateTexture(b)
                 AW.SetPoint(b.bgTexture, "TOPLEFT", 1, -1)
                 AW.SetPoint(b.bgTexture, "BOTTOMRIGHT", -1, 1)
-                b.bgTexture:SetVertexColor(AW.GetColorRGB("white", 0.7))
+                b.bgTexture:SetVertexColor(AW.GetColorRGB("white", textureAlpha))
                 b.bgTexture:Hide()
 
                 AW.AddToFontSizeUpdater(b.text)
@@ -453,7 +456,12 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
     end)
 
     -- scripts
-    menu.button:HookScript("OnClick", function()
+    menu.button:HookScript("OnClick", function(self, button)
+        if button ~= "LeftButton" then
+            currentList:Hide()
+            return
+        end
+
         if currentList.menu ~= menu then -- list shown by other dropdown
             if currentList.menu and not currentList.menu.isMini then
                 -- restore previous menu's button texture
