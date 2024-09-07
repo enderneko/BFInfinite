@@ -36,7 +36,7 @@ local function CreatePetTarget()
     pettarget.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
-    AW.CreateMover(pettarget, "UnitFrames", L["Pet Target"])
+    AW.CreateMover(pettarget, L["Unit Frames"], L["Pet Target"])
 
     -- config mode
     UF.AddToConfigMode("pettarget", pettarget)

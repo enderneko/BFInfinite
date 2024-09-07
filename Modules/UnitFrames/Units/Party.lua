@@ -69,7 +69,7 @@ local function CreateParty()
     end
 
     -- mover
-    AW.CreateMover(party, "UnitFrames", _G.PARTY)
+    AW.CreateMover(party, L["Unit Frames"], _G.PARTY)
 
     -- pixel perfect
     AW.AddToPixelUpdater(party)

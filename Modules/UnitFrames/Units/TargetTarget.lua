@@ -37,7 +37,7 @@ local function CreateTargetTarget()
     targettarget.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
-    AW.CreateMover(targettarget, "UnitFrames", L["Target Target"])
+    AW.CreateMover(targettarget, L["Unit Frames"], L["Target Target"])
 
     -- config mode
     UF.AddToConfigMode("targettarget", targettarget)

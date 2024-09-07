@@ -8,11 +8,14 @@ L["GHOST"] = "鬼魂"
 ---------------------------------------------------------------------
 -- mover
 ---------------------------------------------------------------------
+L["Unit Frames"] = "单位框体"
 L["Focus"] = "焦点"
 L["Focus Target"] = "焦点的目标"
 L["Target Target"] = "目标的目标"
 L["Pet Target"] = "宠物的目标"
 L["Action Bar"] = "动作条"
+L["Action Bars"] = "动作条"
 L["Stance Bar"] = "姿态条"
 L["Pet Bar"] = "宠物动作条"
 L["Power Bar Widget"] = "能量条组件"
+L["UI Widgets"] = "界面小组件"

@@ -79,6 +79,20 @@ function AW.SetDefaultBackdrop_NoBorder(frame)
 end
 
 ---------------------------------------------------------------------
+-- drag
+---------------------------------------------------------------------
+function AW.SetDraggable(frame, notUserPlaced)
+    frame:RegisterForDrag("LeftButton")
+    frame:SetMovable(true)
+    frame:SetMouseClickEnabled(true)
+    frame:SetScript("OnDragStart", function(self)
+        self:StartMoving()
+        if notUserPlaced then self:SetUserPlaced(false) end
+    end)
+    frame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+end
+
+---------------------------------------------------------------------
 -- normal frame
 ---------------------------------------------------------------------
 function AW.CreateFrame(parent, width, height)

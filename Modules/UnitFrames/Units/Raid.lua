@@ -73,7 +73,7 @@ local function CreateRaid()
     end
 
     -- mover
-    AW.CreateMover(raid, "UnitFrames", _G.RAID)
+    AW.CreateMover(raid, L["Unit Frames"], _G.RAID)
 
     -- pixel perfect
     AW.AddToPixelUpdater(raid)

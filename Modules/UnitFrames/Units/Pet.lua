@@ -33,7 +33,7 @@ local function CreatePet()
     pet:SetAttribute("unit", "pet")
 
     -- mover
-    AW.CreateMover(pet, "UnitFrames", _G.PET)
+    AW.CreateMover(pet, L["Unit Frames"], _G.PET)
 
     -- config mode
     UF.AddToConfigMode("pet", pet)

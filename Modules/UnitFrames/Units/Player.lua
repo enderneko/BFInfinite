@@ -45,7 +45,7 @@ local function CreatePlayer()
     player:SetAttribute("unit", "player")
 
     -- mover
-    AW.CreateMover(player, "UnitFrames", _G.PLAYER)
+    AW.CreateMover(player, L["Unit Frames"], _G.PLAYER)
 
     -- config mode
     UF.AddToConfigMode("player", player)

@@ -36,7 +36,7 @@ local function CreateFocusTarget()
     focustarget.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
-    AW.CreateMover(focustarget, "UnitFrames", L["Focus Target"])
+    AW.CreateMover(focustarget, L["Unit Frames"], L["Focus Target"])
 
     -- config mode
     UF.AddToConfigMode("focustarget", focustarget)

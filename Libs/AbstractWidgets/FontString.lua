@@ -18,9 +18,9 @@ function AW.CreateFontString(parent, text, color, font, isDisabled, layer)
         AW.ColorFontString(fs, color)
     end
 
-    function fs:UpdatePixels()
-        AW.RePoint(fs)
-    end
+    -- function fs:UpdatePixels()
+    --     AW.RePoint(fs)
+    -- end
 
     AW.AddToPixelUpdater(fs)
 

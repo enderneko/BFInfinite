@@ -5,7 +5,7 @@
 -- key - A key in the table (cannot be nil) (value)
 -- value - New value to set for the key (value)
 select(2, ...).L = setmetatable({
-    
+
 }, {
     __index = function(self, Key)
         if (Key ~= nil) then

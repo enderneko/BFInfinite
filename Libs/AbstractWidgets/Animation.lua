@@ -236,7 +236,7 @@ function AW.CreateBlinkAnimation(region, duration)
     blink.alpha = alpha
     alpha:SetFromAlpha(0.25)
     alpha:SetToAlpha(1)
-    alpha:SetDuration(duration)
+    alpha:SetDuration(duration or 0.5)
 
     blink:SetLooping("BOUNCE")
     blink:Play()

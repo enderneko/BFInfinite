@@ -429,7 +429,8 @@ function AW.CreateDropdown(parent, width, maxSlots, dropdownType, isMini, isHori
 
         else -- using scroll list
             AW.SetPoint(currentList, "TOPLEFT", menu, "BOTTOMLEFT", 0, -2)
-            AW.SetWidth(currentList, width)
+            AW.SetPoint(currentList, "TOPRIGHT", menu, "BOTTOMRIGHT", 0, -2)
+            -- AW.SetWidth(currentList, width)
 
             currentList:SetSlotNum(min(#buttons, maxSlots))
             currentList:SetWidgets(buttons)

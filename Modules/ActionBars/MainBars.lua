@@ -102,7 +102,7 @@ local function CreateBar(name, id)
     AB.bars[name] = bar
 
     -- mover ----------------------------------------------------------------- --
-    AW.CreateMover(bar, "ActionBars", moverName)
+    AW.CreateMover(bar, L["Action Bars"], moverName)
 
     -- page ------------------------------------------------------------------ --
     bar:SetAttribute("_onstate-page", [[

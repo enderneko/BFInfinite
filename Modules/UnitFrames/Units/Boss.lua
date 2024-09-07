@@ -42,7 +42,7 @@ local function CreateBoss()
     boss.driverValue = "[@boss1,exists] show;hide"
 
     -- mover
-    AW.CreateMover(boss, "UnitFrames", _G.BOSS)
+    AW.CreateMover(boss, L["Unit Frames"], _G.BOSS)
 
     -- pixel perfect
     AW.AddToPixelUpdater(boss)
