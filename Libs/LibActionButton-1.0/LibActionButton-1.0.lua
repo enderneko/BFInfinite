@@ -131,9 +131,10 @@ local DefaultConfig = {
 	spellCastAnim = true,
 	desaturate = true,
 	colors = {
-		range = { 0.8, 0.1, 0.1 },
-		mana = { 0.5, 0.5, 1.0 },
-		equipped = {0.4, 1, 0.4},
+		range = {0.8, 0.3, 0.3},
+		mana = {0.5, 0.5, 1.0},
+		equipped = {0.3, 0.8, 0.3},
+		macro = {0.8, 0.3, 0.8},
 		notUsable = {0.4, 0.4, 0.4},
 	},
 	hideElements = {
@@ -163,6 +164,7 @@ local DefaultConfig = {
 				offsetY = -4,
 			},
 			justifyH = "RIGHT",
+			shadow = false,
 		},
 		count = {
 			font = {
@@ -178,6 +180,7 @@ local DefaultConfig = {
 				offsetY = 4,
 			},
 			justifyH = "RIGHT",
+			shadow = false,
 		},
 		macro = {
 			font = {
@@ -193,6 +196,7 @@ local DefaultConfig = {
 				offsetY = 2,
 			},
 			justifyH = "CENTER",
+			shadow = false,
 		},
 	},
 }
@@ -1288,6 +1292,14 @@ local function UpdateTextElement(element, config, defaultFont)
 	element:SetPoint(config.position.anchor, element:GetParent(), config.position.relAnchor or config.position.anchor, config.position.offsetX or 0, config.position.offsetY or 0)
 
 	element:SetVertexColor(unpack(config.color))
+
+	if config.shadow then
+        element:SetShadowOffset(1, -1)
+        element:SetShadowColor(0, 0, 0, 1)
+    else
+        element:SetShadowOffset(0, 0)
+        element:SetShadowColor(0, 0, 0, 0)
+    end
 end
 
 local function UpdateTextElements(button)
@@ -1836,6 +1848,16 @@ function Update(self)
 	if self:IsEquipped() and not self.config.hideElements.equipped then
 		if self.SetBackdropBorderColor then
 			self:SetBackdropBorderColor(unpack(self.config.colors.equipped))
+		end
+	elseif not self:IsConsumableOrStackable() then
+		if self:GetActionText() then
+			if self.SetBackdropBorderColor then
+				self:SetBackdropBorderColor(unpack(self.config.colors.macro))
+			end
+		else
+			if self.SetBackdropBorderColor then
+				self:SetBackdropBorderColor(0, 0, 0, 1)
+			end
 		end
 	else
 		if self.SetBackdropBorderColor then

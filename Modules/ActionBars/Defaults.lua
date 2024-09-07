@@ -39,7 +39,8 @@ local defaults = {
         colors = {
             range = {0.8, 0.3, 0.3},
             mana = {0.5, 0.5, 1.0},
-            equipped = {0.4, 1, 0.4},
+            equipped = {0.3, 0.8, 0.3},
+            macro = {0.8, 0.3, 0.8},
             notUsable = {0.4, 0.4, 0.4},
         },
         hideElements = {
@@ -81,17 +82,23 @@ do
                 hotkey = {
                     font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
                     color = {1, 1, 1},
-                    position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
+                    position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0},
+                    justifyH = "RIGHT",
+                    shadow = false,
                 },
                 count = {
                     font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
                     color = {1, 1, 1},
-                    position = {anchor = "BOTTOMRIGHT", relAnchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 1}
+                    position = {anchor = "BOTTOMRIGHT", relAnchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 1},
+                    justifyH = "RIGHT",
+                    shadow = false,
                 },
                 macro = {
                     font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
                     color = {1, 1, 1},
-                    position = {anchor = "BOTTOMLEFT", relAnchor = "BOTTOMLEFT", offsetX = 0, offsetY = 0}
+                    position = {anchor = "BOTTOMLEFT", relAnchor = "BOTTOMLEFT", offsetX = -2, offsetY = 0},
+                    justifyH = "CENTER",
+                    shadow = false,
                 },
             },
         },
