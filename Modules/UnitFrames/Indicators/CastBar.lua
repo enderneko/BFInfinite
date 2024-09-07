@@ -615,7 +615,7 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     self.duration = self.endTime - self.startTime
 
     -- interruptible
-    if self.enableInterruptibleCheck then
+    if self.enableInterruptibleCheck and not isTradeSkill then
         if UnitIsUnit(unit, "player") or not UnitCanAttack("player", unit) then
             self.checkInterruptCD = nil
         else
