@@ -15,9 +15,9 @@ local defaults = {
         bar1 = {enabled = true, position = {"BOTTOM", 0, 10}},
         bar2 = {enabled = true, position =  {"BOTTOM", 0, 45}},
         bar3 = {enabled = true, position =  {"BOTTOM", 0, 80}},
-        bar4 = {enabled = true, position =  {"BOTTOM", 272, 10}},
-        bar5 = {enabled = true, position =  {"BOTTOM", 394, 10}},
-        bar6 = {enabled = true, position =  {"BOTTOM", -272, 10}},
+        bar4 = {enabled = true, position =  {"BOTTOM", -272, 10}},
+        bar5 = {enabled = true, position =  {"BOTTOM", 272, 10}},
+        bar6 = {enabled = true, position =  {"BOTTOM", 394, 10}},
         bar7 = {enabled = true, position =  {"BOTTOM", 158, 117}},
         bar8 = {enabled = false, position =  {"BOTTOM", 0, 290}},
         bar9 = {enabled = false, position =  {"BOTTOM", 0, 330}},
@@ -125,12 +125,15 @@ do
 
         -- others
         if bar == "bar4" then
+            t.alpha = 0.75
             t.buttonsPerLine = 4
             t.size = 28
         elseif bar == "bar5" then
+            t.alpha = 0.75
             t.buttonsPerLine = 4
             t.size = 28
         elseif bar == "bar6" then
+            t.alpha = 0.75
             t.buttonsPerLine = 4
             t.size = 28
         elseif bar == "bar7" then

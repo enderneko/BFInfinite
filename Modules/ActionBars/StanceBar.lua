@@ -34,7 +34,7 @@ local function AssignBindings()
     for i, b in ipairs(stanceBar.buttons) do
         local command = ("SHAPESHIFTBUTTON%d"):format(i)
         for _, key in pairs({GetBindingKey(command)}) do
-            b.hotkey:SetText(AB.GetHotKey(key) or "")
+            b.hotkey:SetText(AB.GetHotkey(key) or "")
             if key and key ~= "" then
                 SetOverrideBindingClick(stanceBar, false, key, b:GetName())
             end

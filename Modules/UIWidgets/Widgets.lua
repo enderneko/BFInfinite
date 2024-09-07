@@ -12,15 +12,15 @@ local function SetPoint(self, _, anchorTo)
     end
 end
 
-local function InitWidget(frame, name, anchor, config)
+local function InitWidget(frame, name, anchor, width, height, config)
     frame._container = CreateFrame("Frame", nil, AW.UIParent)
-    AW.SetSize(frame._container, frame:GetSize())
-    frame._container:SetScale(config.scale)
+    AW.SetSize(frame._container, width, height)
 
     AW.CreateMover(frame._container, "UIWidgets", name, config.position)
     AW.LoadPosition(frame._container, config.position)
 
-    -- parent & point
+    -- frame
+    frame:SetScale(config.scale)
     frame:SetParent(frame._container)
     frame._containerAnchor = anchor
     SetPoint(frame)
@@ -41,7 +41,8 @@ local function UpdateWidgets(module, which)
     local config = UI.config
 
     if not init then
-        InitWidget(_G.UIWidgetPowerBarContainerFrame, L["Power Bar Widget"], "CENTER", config.powerBarWidget)
+        init = true
+        InitWidget(_G.UIWidgetPowerBarContainerFrame, L["Power Bar Widget"], "CENTER", 150, 30, config.powerBarWidget)
     end
 end
 BFI.RegisterCallback("UpdateModules", "UI_Widgets", UpdateWidgets)

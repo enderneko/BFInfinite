@@ -33,7 +33,7 @@ local function AssignBindings()
 
     for i, b in ipairs(petBar.buttons) do
         for _, key in next, {GetBindingKey("BONUSACTIONBUTTON"..i)} do
-            b.hotkey:SetText(AB.GetHotKey(key))
+            b.hotkey:SetText(AB.GetHotkey(key))
             if key ~= "" then
                 SetOverrideBindingClick(petBar, false, key, b:GetName())
             end
