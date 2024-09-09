@@ -13,8 +13,8 @@ local SetModifiedClick = SetModifiedClick
 
 local BAR_MAPPINGS = {
     bar1 = 1,
-    bar2 = 5,
-    bar3 = 6,
+    bar2 = 6,
+    bar3 = 5,
     bar4 = 3,
     bar5 = 4,
     bar6 = 13,
@@ -29,8 +29,8 @@ local BAR_MAPPINGS = {
 
 local BINDING_MAPPINGS = {
     bar1 = "ACTIONBUTTON%d",
-    bar2 = "MULTIACTIONBAR2BUTTON%d",
-    bar3 = "MULTIACTIONBAR1BUTTON%d",
+    bar2 = "MULTIACTIONBAR1BUTTON%d",
+    bar3 = "MULTIACTIONBAR2BUTTON%d",
     bar4 = "MULTIACTIONBAR3BUTTON%d",
     bar5 = "MULTIACTIONBAR4BUTTON%d",
     bar6 = "MULTIACTIONBAR5BUTTON%d",
