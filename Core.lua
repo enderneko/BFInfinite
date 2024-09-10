@@ -22,8 +22,13 @@ function eventFrame:ADDON_LOADED(arg)
             BFIConfig["default"] = {}
         end
 
-        -- scale
-        AW.SetScale(1)
+        -- appearance
+        if type(BFIConfig["appearance"]) ~= "table" then
+            BFIConfig["appearance"] = {
+                ["scale"] = 1,
+            }
+        end
+        AW.SetScale(BFIConfig["appearance"]["scale"])
 
         -- init configs
         BFI.Fire("UpdateConfigs", BFIConfig["default"], "default")
