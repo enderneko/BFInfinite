@@ -35,23 +35,24 @@ end
 ---------------------------------------------------------------------
 -- calc texcoord
 ---------------------------------------------------------------------
-function AW.CalcTexCoord(width, height, isIcon)
-    local texCoord
-    if isIcon then
-        -- ULx,ULy, LLx,LLy, URx,URy, LRx,LRy
-        texCoord = {0.12, 0.12, 0.12, 0.88, 0.88, 0.12, 0.88, 0.88}
-    else
-        texCoord = {0, 0, 0, 1, 1, 0, 1, 1}
-    end
+function AW.CalcTexCoordPreCrop(width, height, aspectRatio, crop)
+    -- apply cropping to initial texCoord
+    local texCoord = {
+        crop, crop,          -- ULx, ULy
+        crop, 1 - crop,      -- LLx, LLy
+        1 - crop, crop,      -- URx, URy
+        1 - crop, 1 - crop   -- LRx, LRy
+    }
 
-    local aspectRatio = width / height
+    local newAspectRatio = width / height
+    newAspectRatio = newAspectRatio / aspectRatio
 
-    local xRatio = aspectRatio < 1 and aspectRatio or 1
-    local yRatio = aspectRatio > 1 and 1 / aspectRatio or 1
+    local xRatio = newAspectRatio < 1 and newAspectRatio or 1
+    local yRatio = newAspectRatio > 1 and 1 / newAspectRatio or 1
 
     for i, coord in ipairs(texCoord) do
-        local aspectRatio = (i % 2 == 1) and xRatio or yRatio
-        texCoord[i] = (coord - 0.5) * aspectRatio + 0.5
+        local ratio = (i % 2 == 1) and xRatio or yRatio
+        texCoord[i] = (coord - 0.5) * ratio + 0.5
     end
 
     return texCoord

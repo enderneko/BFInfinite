@@ -10,7 +10,7 @@ local LCG = BFI.libs.LCG
 -- recalc texcoords
 ---------------------------------------------------------------------
 local function ReCalcTexCoord(self, width, height)
-    self.icon:SetTexCoord(unpack(AW.CalcTexCoord(width, height, true)))
+    self.icon:SetTexCoord(unpack(AW.CalcTexCoordPreCrop(width, height, 1, 0.12)))
 end
 
 ---------------------------------------------------------------------

@@ -623,6 +623,12 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
         end
         self.notInterruptible = notInterruptible
         CastInterruptible(self)
+    else
+        -- restore to normal
+        self.bar:SetColor(AW.UnpackColor(self.normalColor))
+        self.bar.uninterruptible:Hide()
+        self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))
+        self.gap:SetColorTexture(AW.UnpackColor(self.borderColor))
     end
 
     -- empower

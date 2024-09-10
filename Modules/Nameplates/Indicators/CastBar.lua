@@ -351,6 +351,12 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
         end
         self.notInterruptible = notInterruptible
         CastInterruptible(self)
+    else
+        -- restore to normal
+        self.bar:SetColor(AW.UnpackColor(self.normalColor))
+        self.bar.uninterruptible:Hide()
+        self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))
+        self.gap:SetColorTexture(AW.UnpackColor(self.borderColor))
     end
 
     -- empower
@@ -467,7 +473,7 @@ local function CastBar_SetupIcon(self, config)
     NP.LoadIndicatorPosition(self.iconBG, config.position)
     AW.SetSize(self.iconBG, config.width, config.height)
 
-    self.icon:SetTexCoord(unpack(AW.CalcTexCoord(config.width, config.height, true)))
+    self.icon:SetTexCoord(unpack(AW.CalcTexCoordPreCrop(config.width, config.height, 1, 0.12)))
     self.iconBG:SetVertexColor(AW.UnpackColor(self.borderColor))
 
     self.icon:Show()

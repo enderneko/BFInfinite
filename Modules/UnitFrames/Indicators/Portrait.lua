@@ -60,12 +60,12 @@ local function UpdatePortrait3D(self, unit)
 end
 
 local function UpdatePortrait2D(self, unit)
-    self.texture:SetTexCoord(unpack(AW.CalcTexCoord(self:GetWidth(), self:GetHeight())))
+    self.texture:SetTexCoord(unpack(AW.CalcTexCoordPreCrop(self:GetWidth(), self:GetHeight(), 1, 0.12)))
     SetPortraitTexture(self.texture, unit)
 end
 
 local function UpdatePortraitClassIcon(self, unit)
-    self.texture:SetTexCoord(unpack(AW.CalcTexCoord(self:GetWidth(), self:GetHeight())))
+    self.texture:SetTexCoord(unpack(AW.CalcTexCoordPreCrop(self:GetWidth(), self:GetHeight(), 1, 0.12)))
     local class = UnitClassBase(unit)
     if class then
         self.texture:SetAtlas("classicon-"..class)
