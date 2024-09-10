@@ -58,6 +58,16 @@ function AW.CalcTexCoordPreCrop(width, height, aspectRatio, crop)
     return texCoord
 end
 
+function AW.CalcScale(baseOriginalWidth, baseOriginalHeight, baseNewWidth, baseNewHeight, crop)
+    local effectiveBaseWidth = baseOriginalWidth * (1 - 2 * crop)
+    local effectiveBaseHeight = baseOriginalHeight * (1 - 2 * crop)
+
+    local wScale = baseNewWidth / effectiveBaseWidth
+    local hScale = baseNewHeight / effectiveBaseHeight
+
+    return math.max(wScale, hScale)
+end
+
 ---------------------------------------------------------------------
 -- gradient texture
 ---------------------------------------------------------------------
