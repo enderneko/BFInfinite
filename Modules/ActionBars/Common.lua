@@ -245,11 +245,9 @@ function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientati
 
     -- update bar ------------------------------------------------------------ --
     if orientation == "horizontal" then
-        AW.SetListWidth(bar, min(buttonsPerLine, num), size, spacing)
-        AW.SetListHeight(bar, ceil(num / buttonsPerLine), size, spacing)
+        AW.SetGridSize(bar, size, size, spacing, spacing, min(buttonsPerLine, num), ceil(num / buttonsPerLine))
     else
-        AW.SetListWidth(bar, ceil(num / buttonsPerLine), size, spacing)
-        AW.SetListHeight(bar, min(buttonsPerLine, num), size, spacing)
+        AW.SetGridSize(bar, size, size, spacing, spacing, ceil(num / buttonsPerLine), min(buttonsPerLine, num))
     end
 end
 
@@ -306,6 +304,8 @@ function AB.CreateButton(parent, id, name)
         end)
     end
 
+    AW.AddToPixelUpdater(b)
+
     return b
 end
 
@@ -328,6 +328,8 @@ function AB.CreateStanceButton(parent, id)
     b.hotkey:SetShadowColor(0, 0, 0, 0)
     b.hotkey:SetShadowOffset(0, 0)
 
+    AW.AddToPixelUpdater(b)
+
     return b
 end
 
@@ -347,6 +349,8 @@ function AB.CreatePetButton(parent, id)
     b.hotkey = AW.CreateFontString(b)
     b.hotkey:SetShadowColor(0, 0, 0, 0)
     b.hotkey:SetShadowOffset(0, 0)
+
+    AW.AddToPixelUpdater(b)
 
     return b
 end

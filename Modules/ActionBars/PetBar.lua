@@ -10,7 +10,7 @@ local AB = BFI.ActionBars
 ---------------------------------------------------------------------
 local petBar
 local function CreatePetBar()
-    petBar = CreateFrame("Frame", "BFI_PetBar", AW.UIParent, "SecureHandlerStateTemplate")
+    petBar = CreateFrame("Frame", "BFIAB_PetBar", AW.UIParent, "SecureHandlerStateTemplate")
 
     petBar.name = "petbar"
     petBar.buttons = {}
@@ -21,6 +21,8 @@ local function CreatePetBar()
 
     petBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     petBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
+
+    AW.AddToPixelUpdater(petBar)
 end
 
 ---------------------------------------------------------------------

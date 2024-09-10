@@ -142,17 +142,6 @@ local function CreateBar(name, id)
     bar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 
     -- update pixels --------------------------------------------------------- --
-    function bar:UpdatePixels()
-        AW.ReSize(bar)
-        AW.RePoint(bar)
-
-        for _, b in pairs(bar.buttons) do
-            AW.ReSize(b)
-            AW.RePoint(b)
-            AW.ReBorder(b)
-        end
-    end
-
     AW.AddToPixelUpdater(bar)
 
     return bar

@@ -328,7 +328,7 @@ local function DefaultUpdatePixels(self)
 end
 
 local regions = {}
--- AW.regions = regions
+AW.regions = regions
 
 --- @param fn function
 function AW.AddToPixelUpdater(r, fn)

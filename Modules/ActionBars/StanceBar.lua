@@ -10,7 +10,7 @@ local AB = BFI.ActionBars
 ---------------------------------------------------------------------
 local stanceBar
 local function CreateStanceBar()
-    stanceBar = CreateFrame("Frame", "BFI_StanceBar", AW.UIParent, "SecureHandlerStateTemplate")
+    stanceBar = CreateFrame("Frame", "BFIAB_StanceBar", AW.UIParent, "SecureHandlerStateTemplate")
 
     stanceBar.name = "stancebar"
     stanceBar.buttons = {}
@@ -21,6 +21,8 @@ local function CreateStanceBar()
 
     stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
+
+    AW.AddToPixelUpdater(stanceBar)
 end
 
 ---------------------------------------------------------------------

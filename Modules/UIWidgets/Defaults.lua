@@ -6,7 +6,17 @@ local AW = BFI.AW
 local U = BFI.utils
 
 local defaults = {
+    microMenu = {
+        enabled = true,
+        position = {"BOTTOM", 333, 101},
+        alpha = 0,
+        width = 20,
+        height = 25,
+        spacing = 2,
+        buttonsPerRow = 11,
+    },
     powerBarWidget = {
+        enabled = true,
         scale = 0.8,
         position = {"TOP", 0, -70},
     },
