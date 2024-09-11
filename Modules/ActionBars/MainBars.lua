@@ -86,10 +86,10 @@ local function CreateBar(name, id)
     local global, index = name:match("(%a+)(%d+)")
 
     if global == "bar" then
-        global = "BFIAB_Bar" .. index
+        global = "BFI_ActionBar" .. index
         moverName = L["Action Bar"].." "..index
     elseif global == "classbar" then
-        global = "BFIAB_ClassBar" .. index
+        global = "BFI_ClassBar" .. index
         moverName = L["Class Bar"].." "..index
     end
 
@@ -205,6 +205,7 @@ local function UpdateButton(bar, shared, specific)
     bar.buttonConfig.colors = shared.colors
     bar.buttonConfig.hideElements.equipped = shared.hideElements.equipped
     bar.buttonConfig.glow = shared.glow
+    bar.buttonConfig.desaturateOnCooldown = shared.desaturateOnCooldown
 
     -- specific bar
     bar.buttonConfig.showGrid = specific.showGrid

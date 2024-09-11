@@ -129,7 +129,7 @@ local DefaultConfig = {
 	targetReticle = true,
 	interruptDisplay = true,
 	spellCastAnim = true,
-	desaturate = true,
+	desaturateOnCooldown = true,
 	colors = {
 		range = {0.8, 0.3, 0.3},
 		mana = {0.5, 0.5, 1.0},
@@ -2130,6 +2130,15 @@ function UpdateCooldown(self)
 
 	local hasLocCooldown = locStart and locDuration and locStart > 0 and locDuration > 0
 	local hasCooldown = enable and start and duration and start > 0 and duration > 0
+
+	if self.config.desaturateOnCooldown then
+		if hasCooldown then
+			self.icon:SetDesaturated(duration > 1.5)
+		else
+			self.icon:SetDesaturated(false)
+		end
+	end
+
 	if hasLocCooldown and ((not hasCooldown) or ((locStart + locDuration) > (start + duration))) then
 		if self.cooldown.currentCooldownType ~= COOLDOWN_TYPE_LOSS_OF_CONTROL then
 			self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge-LoC")

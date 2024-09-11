@@ -51,6 +51,9 @@ local function UpdatePetCooldowns()
         local start, duration = GetPetActionCooldown(i)
         b.cooldown:SetCooldown(start, duration)
 
+        -- FIXME: not work
+        b.icon:SetDesaturated(duration and duration > 1.5)
+
         if not GameTooltip:IsForbidden() and GameTooltip:GetOwner() == b then
             b:OnEnter()
         end
