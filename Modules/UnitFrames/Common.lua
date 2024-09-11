@@ -14,9 +14,9 @@ UF.Parent:SetAllPoints(AW.UIParent)
 RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
 
 -- hide during minigame
-UF.Parent:RegisterEvent("CLIENT_SCENE_OPENED")
-UF.Parent:RegisterEvent("CLIENT_SCENE_CLOSED")
-UF.Parent:SetScript("OnEvent", function(_, event)
+-- UF.Parent:RegisterEvent("CLIENT_SCENE_OPENED")
+-- UF.Parent:RegisterEvent("CLIENT_SCENE_CLOSED")
+UF.Parent:SetScript("OnEvent", function(_, event, sceneType)
     if InCombatLockdown() then
         UF.Parent:RegisterEvent("PLAYER_REGEN_ENABLED")
         return

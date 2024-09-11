@@ -476,7 +476,7 @@ local function ShowNameplate(_, event, unit)
         np.widgetsOnly = UnitNameplateShowsWidgetsOnly(unit)
         np.isGameObject = UnitIsGameObject(unit)
 
-        if UnitIsUnit("player", unit) or np.widgetsOnly or np.isGameObject then
+        if UnitIsUnit("player", unit) then -- or np.widgetsOnly or np.isGameObject then
             blz:Show()
         else
             blz:Hide()
