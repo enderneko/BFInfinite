@@ -13,6 +13,27 @@ UF.Parent:SetFrameStrata("LOW")
 UF.Parent:SetAllPoints(AW.UIParent)
 RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
 
+-- hide during minigame
+UF.Parent:RegisterEvent("CLIENT_SCENE_OPENED")
+UF.Parent:RegisterEvent("CLIENT_SCENE_CLOSED")
+UF.Parent:SetScript("OnEvent", function(_, event)
+    if InCombatLockdown() then
+        UF.Parent:RegisterEvent("PLAYER_REGEN_ENABLED")
+        return
+    end
+
+    if event == "CLIENT_SCENE_OPENED" then
+        UnregisterAttributeDriver(UF.Parent, "state-visibility")
+        UF.Parent:Hide()
+    elseif event == "CLIENT_SCENE_CLOSED" then
+        RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
+    else -- PLAYER_REGEN_ENABLED
+        UF.Parent:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
+    end
+end)
+
+
 local function UpdateGeneral(module, which)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "general" then return end
