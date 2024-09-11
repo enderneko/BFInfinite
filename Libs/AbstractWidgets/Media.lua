@@ -36,6 +36,13 @@ function AW.GetPlainTexture()
 end
 
 ---------------------------------------------------------------------
+-- get empty texture
+---------------------------------------------------------------------
+function AW.GetEmptyTexture()
+    return "Interface\\AddOns\\"..addonName.."\\Libs\\AbstractWidgets\\Media\\Textures\\Empty"
+end
+
+---------------------------------------------------------------------
 -- get sound
 ---------------------------------------------------------------------
 function AW.GetSound(sound, inAW)
