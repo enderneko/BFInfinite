@@ -33,19 +33,19 @@ function LCG.ShowButtonGlow(b)
 
     b.glowing = true
 
-    if config.style == "Proc" then -- this uses an options table
+    if config.style == "proc" then -- this uses an options table
         proc.color = config.color
         proc.duration = config.duration
         proc.startAnim = config.startAnim
         LCG.ProcGlow_Start(b, proc)
         hiders[b] = LCG.ProcGlow_Stop
-    elseif config.style == "Normal" then
+    elseif config.style == "normal" then
         LCG.ButtonGlow_Start(b, config.color)
         hiders[b] = LCG.ButtonGlow_Stop
-    elseif config.style == "Pixel" then
+    elseif config.style == "pixel" then
         LCG.PixelGlow_Start(b, config.color, config.num, config.speed, config.length, config.thickness)
         hiders[b] = LCG.PixelGlow_Stop
-    elseif config.style == "Shine" then
+    elseif config.style == "shine" then
         LCG.AutoCastGlow_Start(b, config.color, config.num, config.speed, config.scale)
         hiders[b] = LCG.AutoCastGlow_Stop
     end

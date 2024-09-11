@@ -47,7 +47,8 @@ local defaults = {
             equipped = false,
         },
         glow = {
-            style = "Proc",
+            -- style = "pixel",
+            style = "proc",
             color = nil,
             duration = 1,
             startAnim = true,
