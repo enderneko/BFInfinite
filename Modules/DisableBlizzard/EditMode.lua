@@ -2,6 +2,9 @@
 local BFI = select(2, ...)
 local DB = BFI.DisableBlizzard
 
+---------------------------------------------------------------------
+-- forked from ElvUI
+---------------------------------------------------------------------
 local ignoreFrames = {
     "MainStatusTrackingBarContainer", -- Experience Bar
     "MicroMenuContainer", -- MicroBar / Menu
@@ -10,6 +13,17 @@ local ignoreFrames = {
 local hideFrames = {}
 local needsUpdate = false
 
+---------------------------------------------------------------------
+-- edit mode button
+---------------------------------------------------------------------
+local function GetGameMenuEditModeButton()
+    local menu = _G.GameMenuFrame
+    return menu and menu.MenuButtons and menu.MenuButtons[_G.HUD_EDIT_MODE_MENU]
+end
+
+---------------------------------------------------------------------
+-- events
+---------------------------------------------------------------------
 local function LAYOUTS_UPDATED(_, event, arg1)
     local allow = event ~= "PLAYER_SPECIALIZATION_CHANGED" or arg1 == "player"
     if allow and not _G.EditModeManagerFrame:IsEventRegistered(event) then
@@ -17,20 +31,14 @@ local function LAYOUTS_UPDATED(_, event, arg1)
     end
 end
 
--- hooksecurefunc(GameMenuFrame, "AddButton", function(...)
---     print(...)
--- end)
-
 local function PLAYER_REGEN(event)
     local editMode = _G.EditModeManagerFrame
     local combatLeave = event == "PLAYER_REGEN_ENABLED"
-    -- _G.GameMenuButtonEditMode:SetEnabled(combatLeave)
 
-    -- if combatLeave then
-    --     EditModeManagerFrame:BlockEnteringEditMode(EM)
-    -- else
-    --     EditModeManagerFrame:UnblockEnteringEditMode(EM)
-    -- end
+    local btn = GetGameMenuEditModeButton()
+    if btn then
+        btn:SetEnabled(combatLeave)
+    end
 
     if combatLeave then
         if next(hideFrames) then
@@ -56,6 +64,9 @@ local function PLAYER_REGEN(event)
     end
 end
 
+---------------------------------------------------------------------
+-- handle
+---------------------------------------------------------------------
 local function HandleHide(frame)
     local combat = InCombatLockdown()
     if combat then -- fake hide the editmode system
@@ -96,6 +107,9 @@ local function OnClose()
     end
 end
 
+---------------------------------------------------------------------
+-- SetEnabled
+---------------------------------------------------------------------
 local function SetEnabled(self, enabled)
     if InCombatLockdown() and enabled then
         self:Disable()
@@ -121,8 +135,11 @@ local function DisableBlizzard()
     -- the panel itself cant either
     _G.EditModeManagerFrame.onCloseCallback = OnClose
 
-    -- keep the button off during combat
-    -- hooksecurefunc(_G.GameMenuButtonEditMode, "SetEnabled", SetEnabled)
+    -- disable EM button during combat
+    local btn = GetGameMenuEditModeButton()
+    if btn then
+        hooksecurefunc(btn, "SetEnabled", SetEnabled)
+    end
 
     -- wait for combat leave to do stuff
     DB:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED", LAYOUTS_UPDATED)
@@ -130,7 +147,6 @@ local function DisableBlizzard()
     DB:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN)
     DB:RegisterEvent("PLAYER_REGEN_DISABLED", PLAYER_REGEN)
 
-    -- account settings will be tainted
     local mixin = _G.EditModeManagerFrame.AccountSettings
     if config.castBar then mixin.RefreshCastBar = BFI.dummy end
     if config.auras then mixin.RefreshBuffsAndDebuffs = BFI.dummy end
