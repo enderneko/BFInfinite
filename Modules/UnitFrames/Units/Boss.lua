@@ -26,7 +26,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreateBoss()
-    local name = "BFIUF_Boss"
+    local name = "BFI_Boss"
     boss = CreateFrame("Frame", name, AW.UIParent, "SecureFrameTemplate")
     UF.AddToConfigMode("boss.container", boss)
 

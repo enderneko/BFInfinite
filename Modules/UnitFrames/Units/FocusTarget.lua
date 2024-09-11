@@ -28,7 +28,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreateFocusTarget()
-    local name = "BFIUF_FocusTarget"
+    local name = "BFI_FocusTarget"
     focustarget = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     focustarget:SetAttribute("unit", "focustarget")
     focustarget._refreshOnUpdate = true

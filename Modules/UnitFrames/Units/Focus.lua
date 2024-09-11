@@ -29,7 +29,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreateFocus()
-    local name = "BFIUF_Focus"
+    local name = "BFI_Focus"
     focus = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     focus:SetAttribute("unit", "focus")
 

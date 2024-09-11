@@ -37,7 +37,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreateTarget()
-    local name = "BFIUF_Target"
+    local name = "BFI_Target"
     target = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     target:SetAttribute("unit", "target")
     target._updateOnPlayerTargetChanged = true

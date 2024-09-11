@@ -28,7 +28,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreatePet()
-    local name = "BFIUF_Pet"
+    local name = "BFI_Pet"
     pet = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     pet:SetAttribute("unit", "pet")
 

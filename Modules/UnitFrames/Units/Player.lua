@@ -40,7 +40,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreatePlayer()
-    local name = "BFIUF_Player"
+    local name = "BFI_Player"
     player = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     player:SetAttribute("unit", "player")
 

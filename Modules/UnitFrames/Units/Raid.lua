@@ -38,7 +38,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreateRaid()
-    local name = "BFIUF_Raid"
+    local name = "BFI_Raid"
     raid = CreateFrame("Frame", name, UF.Parent, "SecureFrameTemplate")
     UF.AddToConfigMode("raid.container", raid)
 

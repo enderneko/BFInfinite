@@ -35,7 +35,7 @@ local indicators = {
 -- create
 ---------------------------------------------------------------------
 local function CreateParty()
-    local name = "BFIUF_Party"
+    local name = "BFI_Party"
     party = CreateFrame("Frame", name, UF.Parent, "SecureFrameTemplate")
     UF.AddToConfigMode("party.container", party)
 
