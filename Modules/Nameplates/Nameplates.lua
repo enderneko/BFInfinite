@@ -516,7 +516,7 @@ local function UpdatePixels(self)
 end
 
 local function CreateNameplate(self, event, nameplate)
-    local np = CreateFrame("Frame", "BFI" .. nameplate:GetName(), AW.UIParent)
+    local np = CreateFrame("Frame", "BFI_" .. nameplate:GetName(), AW.UIParent)
     np:Hide()
     np:SetFrameStrata("BACKGROUND")
     np:SetAllPoints(nameplate)

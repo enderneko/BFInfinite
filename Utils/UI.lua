@@ -5,7 +5,7 @@ local U = BFI.utils
 local AW = BFI.AW
 
 ---------------------------------------------------------------------
--- hide
+-- hide frame
 ---------------------------------------------------------------------
 function U.Hide(region)
     if region.UnregisterAllEvents then
@@ -16,6 +16,14 @@ function U.Hide(region)
     end
 
     region:Hide()
+end
+
+---------------------------------------------------------------------
+-- remove texture
+---------------------------------------------------------------------
+function U.RemoveTexture(texture)
+    texture:SetTexture(AW.GetEmptyTexture())
+    texture:SetAtlas("")
 end
 
 ---------------------------------------------------------------------
