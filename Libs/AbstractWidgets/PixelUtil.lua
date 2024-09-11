@@ -326,6 +326,7 @@ local function DefaultUpdatePixels(self)
     AW.RePoint(self)
     AW.ReBorder(self)
 end
+AW.DefaultUpdatePixels = DefaultUpdatePixels
 
 local regions = {}
 AW.regions = regions
