@@ -74,7 +74,7 @@ local function CreateMicroMenu()
     hooksecurefunc(_G.MicroMenu, "UpdateHelpTicketButtonAnchor", UpdateHelpTicketButtonAnchor)
 
     -- mover
-    AW.CreateMover(microMenu, L["UI Widget"], L["Micro Menu"])
+    AW.CreateMover(microMenu, L["UI Widgets"], L["Micro Menu"])
 end
 
 ---------------------------------------------------------------------
