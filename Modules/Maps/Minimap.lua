@@ -81,14 +81,15 @@ local function InitMinimap()
     -- zoneText
     Minimap.zoneText = Minimap:CreateFontString(nil, "OVERLAY")
     Minimap.zoneText:Hide()
+    AW.CreateFadeInOutAnimation(Minimap.zoneText, 0.25)
     Minimap:HookScript("OnEnter", function()
         if Minimap.zoneText.enabled then
-            AW.FrameFadeIn(Minimap.zoneText, 0.25)
+            Minimap.zoneText:FadeIn()
         end
     end)
     Minimap:HookScript("OnLeave", function()
         if Minimap.zoneText.enabled then
-            AW.FrameFadeOut(Minimap.zoneText, 0.25)
+            Minimap.zoneText:FadeOut()
         end
     end)
 
@@ -97,10 +98,11 @@ local function InitMinimap()
         _G.MinimapCompassTexture,
         Minimap.ZoomIn,
         Minimap.ZoomOut,
-        MinimapCluster.BorderTop,
-        MinimapCluster.Tracking.Background,
-        MinimapCluster.IndicatorFrame,
-        MinimapCluster.ZoneTextButton,
+        MinimapCluster,
+        -- MinimapCluster.BorderTop,
+        -- MinimapCluster.Tracking.Background,
+        -- MinimapCluster.IndicatorFrame,
+        -- MinimapCluster.ZoneTextButton,
         _G.MinimapBackdrop,
         _G.GameTimeFrame,
     }
@@ -139,7 +141,6 @@ local function UpdateMinimap(module, which)
         InitMinimap()
         AW.UpdateMoverSave(minimapContainer, config.position)
     end
-
 
     -- minimap
     AW.ClearPoints(minimapContainer)
