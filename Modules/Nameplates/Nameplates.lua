@@ -401,12 +401,12 @@ end
 local function UpdateWidgetContainer(np, reset)
     if reset then
         if np.widgetContainer then
-            np.widgetContainer:SetParent(np.blz)
+            np.widgetContainer:SetParent(np.bUnitFrame)
             -- np.widgetContainer:ClearAllPoints()
-            -- np.widgetContainer:SetPoint("TOP", np.blz.castBar, "BOTTOM")
+            -- np.widgetContainer:SetPoint("TOP", np.bUnitFrame.castBar, "BOTTOM")
         end
     else
-        np.widgetContainer = np.blz and np.blz.WidgetContainer
+        np.widgetContainer = np.bUnitFrame and np.bUnitFrame.WidgetContainer
         if np.widgetContainer then
             np.widgetContainer:SetParent(np)
             -- FIXME:
@@ -420,9 +420,11 @@ end
 -- show / hide
 ---------------------------------------------------------------------
 local function Show(np)
-    np.unit = np.blz.displayedUnit
+    np.unit = np.bUnitFrame.displayedUnit
     np.elapsed = 0.25 -- update now
     np.guid = UnitGUID(np.unit)
+    np.widgetsOnly = UnitNameplateShowsWidgetsOnly(np.unit)
+    np.isGameObject = UnitIsGameObject(np.unit)
 
     UpdateWidgetContainer(np)
     UpdateNameplateBase(np)
@@ -440,10 +442,15 @@ local function Show(np)
         NP.SetupIndicators(np, NP.config[np.type])
     end
 
+    -- show
     np:Show()
 
     -- update indicators
-    NP.OnNameplateShow(np)
+    if np.widgetsOnly or np.isGameObject then
+        NP.DisableIndicators(np)
+    else
+        NP.OnNameplateShow(np)
+    end
 end
 
 local function Hide(np)
@@ -463,31 +470,22 @@ end
 -- NAME_PLATE_UNIT_ADDED
 ---------------------------------------------------------------------
 local function ShowNameplate(_, event, unit)
-    local np, blz = NP.GetNameplateForUnit(unit)
+    local np, bUnitFrame = NP.GetNameplateForUnit(unit)
     if not np then return end
 
     -- BFI.Debug("|cff00ff00ShowNameplate:|r", np:GetName())
 
-    local show
+    np.bUnitFrame = bUnitFrame
 
-    np.blz = blz
-
-    if blz then
-        np.widgetsOnly = UnitNameplateShowsWidgetsOnly(unit)
-        np.isGameObject = UnitIsGameObject(unit)
-
-        if UnitIsUnit("player", unit) then -- or np.widgetsOnly or np.isGameObject then
-            blz:Show()
-        else
-            blz:Hide()
-            show = true
-        end
-    end
-
-    if show then
-        Show(np)
-    else
-        Hide(np)
+    if bUnitFrame then
+        -- TODO: self nameplate
+        -- if UnitIsUnit("player", unit) then
+        --     bUnitFrame:Show()
+        --     Hide(np)
+        -- else
+            bUnitFrame:Hide()
+            Show(np)
+        -- end
     end
 
     -- TODO: filters
