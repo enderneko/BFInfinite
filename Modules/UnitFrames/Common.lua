@@ -15,23 +15,28 @@ RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
 
 -- hide during minigame
 -- UF.Parent:RegisterEvent("CLIENT_SCENE_OPENED")
--- UF.Parent:RegisterEvent("CLIENT_SCENE_CLOSED")
-UF.Parent:SetScript("OnEvent", function(_, event, sceneType)
-    if InCombatLockdown() then
-        UF.Parent:RegisterEvent("PLAYER_REGEN_ENABLED")
-        return
-    end
+-- UF.Parent:SetScript("OnEvent", function()
+--     --TODO: show a popup or a text
+-- end)
 
-    if event == "CLIENT_SCENE_OPENED" then
-        UnregisterAttributeDriver(UF.Parent, "state-visibility")
-        UF.Parent:Hide()
-    elseif event == "CLIENT_SCENE_CLOSED" then
-        RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
-    else -- PLAYER_REGEN_ENABLED
-        UF.Parent:UnregisterEvent("PLAYER_REGEN_ENABLED")
-        RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
-    end
-end)
+-- NOTE: 无法区分小游戏类型，携带的 Enum.ClientSceneType 似乎不太对劲儿
+-- UF.Parent:RegisterEvent("CLIENT_SCENE_CLOSED")
+-- UF.Parent:SetScript("OnEvent", function(_, event, sceneType)
+--     if InCombatLockdown() then
+--         UF.Parent:RegisterEvent("PLAYER_REGEN_ENABLED")
+--         return
+--     end
+
+--     if event == "CLIENT_SCENE_OPENED" then
+--         UnregisterAttributeDriver(UF.Parent, "state-visibility")
+--         UF.Parent:Hide()
+--     elseif event == "CLIENT_SCENE_CLOSED" then
+--         RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
+--     else -- PLAYER_REGEN_ENABLED
+--         UF.Parent:UnregisterEvent("PLAYER_REGEN_ENABLED")
+--         RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
+--     end
+-- end)
 
 
 local function UpdateGeneral(module, which)
