@@ -89,10 +89,10 @@ end
 
 local function UpdateStanceButtons()
     if InCombatLockdown() then
-        AB:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtonVisibility)
+        AB:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtons)
         return
     end
-    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtonVisibility)
+    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", UpdateStanceButtons)
 
     local num = GetNumShapeshiftForms()
 
