@@ -98,6 +98,7 @@ local function InitMinimap()
         _G.MinimapCompassTexture,
         Minimap.ZoomIn,
         Minimap.ZoomOut,
+        Minimap.ZoomHitArea,
         MinimapCluster,
         -- MinimapCluster.BorderTop,
         -- MinimapCluster.Tracking.Background,
