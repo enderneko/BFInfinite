@@ -131,7 +131,13 @@ end
 
 local function UpdateThreat(self, event, unitId)
     local unit = self.root.unit
-    if unitId and unitId ~= "player" and unitId ~= unit then return end
+    if unitId and unitId ~= unit then return end
+
+    if U.UnitIsPlayer(unit) then
+        self.threatSituation = nil
+        self.threat:Hide()
+        return
+    end
 
     local status = UnitThreatSituation("player", unit)
 
@@ -351,12 +357,14 @@ local function HealthBar_Enable(self)
     end
 
     if self.threatGlowEnabled or self.colorByThreat then
-        self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+        -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+        self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
         BFI.RegisterCallback("EnterInstance", "NP_HealthBarThreat", WipeCache)
         BFI.RegisterCallback("LeaveInstance", "NP_HealthBarThreat", WipeCache)
     else
         self.threatSituation = nil
-        self:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE")
+        -- self:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE")
+        self:UnregisterEvent("UNIT_THREAT_LIST_UPDATE")
         BFI.UnregisterCallback("EnterInstance", "NP_HealthBarThreat")
         BFI.UnregisterCallback("LeaveInstance", "NP_HealthBarThreat")
     end
