@@ -9,6 +9,7 @@ local MinimapCluster = _G.MinimapCluster
 local Minimap = _G.Minimap
 local ExpansionButton = _G.ExpansionLandingPageMinimapButton
 local minimapContainer
+local GameTimeFrame = _G.GameTimeFrame
 
 local GetMinimapZoneText = GetMinimapZoneText
 
@@ -259,7 +260,6 @@ local function InitMinimap()
         -- MinimapCluster.IndicatorFrame,
         -- MinimapCluster.ZoneTextButton,
         _G.MinimapBackdrop,
-        -- _G.GameTimeFrame,
     }
 
     for _, f in pairs(frames) do
@@ -309,6 +309,9 @@ local function UpdateMinimap(module, which)
 
     -- tracking button
     UpdateMinimapWidgets(MinimapCluster.Tracking, config.trackingButton)
+
+    -- calendar
+    UpdateMinimapWidgets(GameTimeFrame, config.calendar)
 
     -- mail frame
     UpdateMinimapWidgets(MinimapCluster.IndicatorFrame.MailFrame, config.mailFrame)

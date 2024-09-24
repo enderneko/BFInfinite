@@ -52,6 +52,12 @@ local defaults = {
             anchor = "TOPLEFT",
             fadeOut = true,
         },
+        calendar = {
+            enabled = true,
+            position = {"RIGHT", 0, 0},
+            width = 19,
+            height = 18,
+        },
 
         dungeonDifficulty = {
             enabled = true,
