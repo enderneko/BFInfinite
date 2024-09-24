@@ -3490,9 +3490,9 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 140,
                 height = 20,
-                color = {type = "custom_color", alpha = 0.6, rgb = AW.GetColorTable("uf")},
+                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background", 0),
+                bgColor = AW.GetColorTable("background", 1),
                 borderColor = AW.GetColorTable("border"),
                 texture = "BFI 1",
                 smoothing = false,
@@ -3607,7 +3607,7 @@ local defaults = {
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
-                enabled = true,
+                enabled = false,
                 style = "3d", -- 3d, 2d, class_icon
                 position = {"TOPLEFT", "TOPLEFT", 0, 0},
                 anchorTo = "healthBar",
