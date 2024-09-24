@@ -220,7 +220,9 @@ local function UnitButton_OnEvent(self, event, unit, arg)
 
     else
         if event == "GROUP_ROSTER_UPDATE" then
-            self._updateRequired = true
+            -- self._updateRequired = true
+            self.__updateElapsed = 0.25
+            self.__tickCount = 2
 
         elseif event == "PLAYER_TARGET_CHANGED" then
             if UnitExists(self.unit) then
