@@ -3,6 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class Maps
 local M = BFI.Maps
+local AW = BFI.AW
 
 local defaults = {
     minimap = {
@@ -12,34 +13,34 @@ local defaults = {
         height = 150,
         expansionButton = {
             enabled = true,
-            position = {"BOTTOMLEFT", -2, -2},
+            position = {"BOTTOMLEFT", "BOTTOMLEFT", -2, -2},
             scale = 1,
             width = 35,
             height = 35,
         },
         trackingButton = {
             enabled = true,
-            position = {"BOTTOMRIGHT", 0, 0},
+            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0},
             width = 20,
             height = 20,
         },
         mailFrame = {
             enabled = true,
-            position = {"BOTTOMRIGHT", -20, 0},
+            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -20, 0},
             width = 20,
             height = 20,
         },
         craftingOrderFrame = {
             enabled = true,
-            position = {"BOTTOMRIGHT", 0, 20},
+            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 20},
             width = 20,
             height = 20,
         },
         zoneText = {
             enabled = true,
-            position = {"TOPLEFT", 0, 0},
+            position = {"TOPLEFT", "TOPLEFT", 0, 0},
             length = 0.75,
-            font = {"BFI 1", 12, "none", true},
+            font = {"BFI 1", 12, "outline", false},
         },
         addonButtonHolder = {
             enabled = true,
@@ -54,14 +55,19 @@ local defaults = {
         },
         calendar = {
             enabled = true,
-            position = {"RIGHT", 0, 0},
+            position = {"RIGHT", "RIGHT", 0, 0},
             width = 19,
             height = 18,
         },
-
+        clock = {
+            enabled = true,
+            position = {"BOTTOM", "BOTTOM", 0, 0},
+            font = {"BFI 1", 12, "outline", false},
+            color = AW.GetColorTable("white"),
+        },
         dungeonDifficulty = {
             enabled = true,
-            position = {"TOPRIGHT", 0, 0},
+            position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
             width = 50,
             height = 50,
         },

@@ -8,10 +8,13 @@ local M = BFI.Maps
 local MinimapCluster = _G.MinimapCluster
 local Minimap = _G.Minimap
 local ExpansionButton = _G.ExpansionLandingPageMinimapButton
-local minimapContainer
 local GameTimeFrame = _G.GameTimeFrame
+local minimapContainer
 
+local GameTime_GetTime = GameTime_GetTime
 local GetMinimapZoneText = GetMinimapZoneText
+local UIFrameFlash = UIFrameFlash
+local UIFrameFlashStop = UIFrameFlashStop
 
 ---------------------------------------------------------------------
 -- expansion button
@@ -40,6 +43,7 @@ local function UpdateMinimapWidgets(widget, config)
     end
 
     widget:SetParent(Minimap)
+    widget:Show()
 
     AW.ClearPoints(widget)
     AW.LoadWidgetPosition(widget, config.position, minimapContainer)
@@ -195,39 +199,14 @@ local function CreateAddonButtonHolder()
 end
 
 ---------------------------------------------------------------------
--- init
+-- zone text
 ---------------------------------------------------------------------
-local function UpdatePixels()
-    AW.DefaultUpdatePixels(minimapContainer)
-    AW.DefaultUpdatePixels(Minimap)
-    AW.DefaultUpdatePixels(ExpansionButton)
-    AW.DefaultUpdatePixels(MinimapCluster.Tracking)
-    -- TODO: addonButtonHolder
-end
-
 local function UpdateZoneText()
     AW.SetText(Minimap.zoneText, GetMinimapZoneText(), Minimap.zoneText.length)
     Minimap.zoneText:SetTextColor(MinimapZoneText:GetTextColor())
 end
 
-local function InitMinimap()
-    -- MinimapCluster
-    U.DisableEditMode(MinimapCluster)
-    MinimapCluster:EnableMouse(false)
-
-    -- minimapContainer
-    minimapContainer = CreateFrame("Frame", "BFI_MinimapContainer", AW.UIParent, "BackdropTemplate")
-    AW.StylizeFrame(minimapContainer)
-    AW.CreateMover(minimapContainer, _G.OTHER, _G.HUD_EDIT_MODE_MINIMAP_LABEL)
-    AW.AddToPixelUpdater(minimapContainer, UpdatePixels)
-
-    -- Minimap
-    Minimap.Layout = BFI.dummy -- MinimapCluster.IndicatorFrame
-    Minimap:SetMaskTexture(AW.GetPlainTexture())
-    Minimap:SetParent(minimapContainer)
-    AW.SetPoint(Minimap, "TOPLEFT", 1, -1)
-    AW.SetPoint(Minimap, "BOTTOMRIGHT", -1, 1)
-
+local function CreateZoneText()
     -- zoneText
     Minimap.zoneText = Minimap:CreateFontString(nil, "OVERLAY")
     Minimap.zoneText:Hide()
@@ -247,6 +226,114 @@ local function InitMinimap()
 
     Minimap:HookScript("OnEnter", Minimap.onEnter)
     Minimap:HookScript("OnLeave", Minimap.onLeave)
+end
+
+---------------------------------------------------------------------
+-- clock
+---------------------------------------------------------------------
+local function UpdateClockSize()
+    local width = ceil(Minimap.clockButton.text:GetWidth() + 2)
+    local height = ceil(Minimap.clockButton.text:GetHeight() + 2)
+    Minimap.clockButton:SetSize(width, height)
+end
+
+local function UpdateClockTime()
+    Minimap.clockButton.text:SetText(GameTime_GetTime(false))
+end
+
+local function UpdateClockFlash()
+
+end
+
+local function CreateClockButton()
+    local clockButton = CreateFrame("Button", "BFI_MinimapClock", Minimap)
+    Minimap.clockButton = clockButton
+
+    -- AW.SetDefaultBackdrop(clockButton)
+    -- clockButton:SetBackdropBorderColor(AW.GetColorRGB("border"))
+    -- clockButton:SetBackdropColor(AW.GetColorRGB("background"))
+
+    -- alarm flash
+    local flash = CreateFrame("Frame", nil, clockButton)
+    Minimap.clockButton.flash = flash
+    flash:Hide()
+    flash:SetAllPoints()
+    flash:SetFrameLevel(clockButton:GetFrameLevel())
+
+    flash.texture = flash:CreateTexture(nil, "BORDER")
+    flash.texture:SetTexture(AW.GetPlainTexture())
+    flash.texture:SetAllPoints()
+
+    -- hook alarm
+    hooksecurefunc("TimeManager_FireAlarm", function()
+        UIFrameFlash(flash, 0.5, 0.5, -1)
+    end)
+    hooksecurefunc("TimeManager_TurnOffAlarm", function()
+        UIFrameFlashStop(flash)
+    end)
+
+    -- text
+    local text = clockButton:CreateFontString(nil, "OVERLAY")
+    Minimap.clockButton.text = text
+    text:SetPoint("CENTER")
+    text:SetJustifyH("CENTER")
+    text:SetJustifyV("MIDDLE")
+
+    -- OnClick
+    clockButton:SetScript("OnClick", function()
+        _G.TimeManagerFrame:ClearAllPoints()
+        if Minimap:GetBottom() > 240 then
+            _G.TimeManagerFrame:SetPoint("TOP", Minimap, "BOTTOM")
+        else
+            _G.TimeManagerFrame:SetPoint("BOTTOM", Minimap, "TOP")
+        end
+
+        if _G.TimeManagerClockButton.alarmFiring then
+            PlaySound(SOUNDKIT.IG_MAINMENU_QUIT)
+            TimeManager_TurnOffAlarm()
+        else
+            TimeManager_Toggle()
+        end
+    end)
+
+    -- OnUpdate
+    clockButton:SetScript("OnUpdate", function(self, elapsed)
+        self.elapsed = (self.elapsed or 0) + elapsed
+        if self.elapsed >= 0.1 then
+            UpdateClockTime()
+        end
+    end)
+end
+
+---------------------------------------------------------------------
+-- init
+---------------------------------------------------------------------
+local function UpdatePixels()
+    AW.DefaultUpdatePixels(minimapContainer)
+    AW.DefaultUpdatePixels(Minimap)
+    AW.DefaultUpdatePixels(ExpansionButton)
+    AW.DefaultUpdatePixels(MinimapCluster.Tracking)
+    -- TODO: addonButtonHolder
+    -- TODO: Minimap.clockButton
+end
+
+local function InitMinimap()
+    -- MinimapCluster
+    U.DisableEditMode(MinimapCluster)
+    MinimapCluster:EnableMouse(false)
+
+    -- minimapContainer
+    minimapContainer = CreateFrame("Frame", "BFI_MinimapContainer", AW.UIParent, "BackdropTemplate")
+    AW.StylizeFrame(minimapContainer)
+    AW.CreateMover(minimapContainer, _G.OTHER, _G.HUD_EDIT_MODE_MINIMAP_LABEL)
+    AW.AddToPixelUpdater(minimapContainer, UpdatePixels)
+
+    -- Minimap
+    Minimap.Layout = BFI.dummy -- MinimapCluster.IndicatorFrame
+    Minimap:SetMaskTexture(AW.GetPlainTexture())
+    Minimap:SetParent(minimapContainer)
+    AW.SetPoint(Minimap, "TOPLEFT", 1, -1)
+    AW.SetPoint(Minimap, "BOTTOMRIGHT", -1, 1)
 
     -- Minimap frames
     local frames = {
@@ -295,6 +382,8 @@ local function UpdateMinimap(module, which)
         init = true
         InitMinimap()
         CreateAddonButtonHolder()
+        CreateZoneText()
+        CreateClockButton()
         AW.UpdateMoverSave(minimapContainer, config.position)
     end
 
@@ -312,6 +401,30 @@ local function UpdateMinimap(module, which)
 
     -- calendar
     UpdateMinimapWidgets(GameTimeFrame, config.calendar)
+
+    -- clock
+    if config.clock.enabled then
+        Minimap.clockButton:Show()
+        AW.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
+        U.SetFont(Minimap.clockButton.text, unpack(config.clock.font))
+        Minimap.clockButton.text:SetText("00:00")
+        UpdateClockSize()
+
+        -- flash
+        local anchor = config.clock.position[1]
+        local flashTexture = Minimap.clockButton.flash.texture
+        if anchor == "TOP" then
+            flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("accent")))
+        elseif strfind(anchor, "LEFT$") then
+            flashTexture:SetGradient("HORIZONTAL", CreateColor(AW.GetColorRGB("accent")), CreateColor(AW.GetColorRGB("none")))
+        elseif strfind(anchor, "RIGHT$") then
+            flashTexture:SetGradient("HORIZONTAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("accent")))
+        else -- BOTTOM / CENTER
+            flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("accent")), CreateColor(AW.GetColorRGB("none")))
+        end
+    else
+        Minimap.clockButton:Hide()
+    end
 
     -- mail frame
     UpdateMinimapWidgets(MinimapCluster.IndicatorFrame.MailFrame, config.mailFrame)
@@ -334,6 +447,7 @@ local function UpdateMinimap(module, which)
         M:RegisterEvent("ZONE_CHANGED_INDOORS", UpdateZoneText)
         M:RegisterEvent("ZONE_CHANGED", UpdateZoneText)
         UpdateZoneText()
+        Minimap.zoneText:Show()
     else
         M:UnregisterEvent("PLAYER_ENTERING_WORLD", UpdateZoneText)
         M:UnregisterEvent("ZONE_CHANGED_NEW_AREA", UpdateZoneText)
