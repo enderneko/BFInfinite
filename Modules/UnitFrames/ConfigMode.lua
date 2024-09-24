@@ -239,12 +239,14 @@ end
 -- toggle
 ---------------------------------------------------------------------
 local function EnableConfigMode()
+    UF.configModeEnabled = true
     for group, t in pairs(configModeGroups) do
         EnableConfigModeForGroup(group)
     end
 end
 
 local function DisableConfigMode()
+    UF.configModeEnabled = false
     for group in pairs(configModeGroups) do
         DisableConfigModeForGroup(group)
     end
