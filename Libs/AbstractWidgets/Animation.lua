@@ -121,17 +121,19 @@ local fade_in_out = {
     ShowNow = function(region)
         region.fadeIn:Stop()
         region.fadeOut:Stop()
+        region:SetAlpha(1)
         region:Show()
     end,
 
     HideNow = function(region)
         region.fadeIn:Stop()
         region.fadeOut:Stop()
+        region:SetAlpha(0)
         region:Hide()
     end,
 }
 
-function AW.CreateFadeInOutAnimation(region, duration)
+function AW.CreateFadeInOutAnimation(region, duration, noHide)
     duration = duration or 0.25
 
     local in_ag = region:CreateAnimationGroup()
@@ -155,6 +157,10 @@ function AW.CreateFadeInOutAnimation(region, duration)
         out_ag:Stop()
         region:Show()
     end)
+
+    in_ag:SetScript("OnFinished", function()
+        region:SetAlpha(1)
+    end)
     -----------------------------------------------------------------
 
     -- out ----------------------------------------------------------
@@ -170,7 +176,10 @@ function AW.CreateFadeInOutAnimation(region, duration)
     end)
 
     out_ag:SetScript("OnFinished", function()
-        region:Hide()
+        region:SetAlpha(0)
+        if not noHide then
+            region:Hide()
+        end
     end)
     -----------------------------------------------------------------
 end
