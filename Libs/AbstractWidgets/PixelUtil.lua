@@ -412,6 +412,237 @@ function AW.LoadTextPosition(text, pos, relativeTo)
 end
 
 ---------------------------------------------------------------------
+-- get anchor points
+---------------------------------------------------------------------
+function AW.GetAnchorPoints_Simple(anchor, orientation, spacingH, spacingV)
+    local point, relativePoint, newLineRelativePoint -- normal
+    local x, y, newLineX, newLineY -- normal
+    local headerPoint
+
+    spacingV = spacingV or spacingH
+
+    if orientation == "left_to_right" then
+        if strfind(anchor, "^BOTTOM") then
+            point = "BOTTOMLEFT"
+            relativePoint = "BOTTOMRIGHT"
+            newLineRelativePoint = "TOPLEFT"
+            y = 0
+            newLineY = spacingV
+        else
+            point = "TOPLEFT"
+            relativePoint = "TOPRIGHT"
+            newLineRelativePoint = "BOTTOMLEFT"
+            y = 0
+            newLineY = -spacingV
+        end
+        x = spacingH
+        newLineX = 0
+        headerPoint = "LEFT"
+
+    elseif orientation == "right_to_left" then
+        if strfind(anchor, "^BOTTOM") then
+            point = "BOTTOMRIGHT"
+            relativePoint = "BOTTOMLEFT"
+            newLineRelativePoint = "TOPRIGHT"
+            y = 0
+            newLineY = spacingV
+        else
+            point = "TOPRIGHT"
+            relativePoint = "TOPLEFT"
+            newLineRelativePoint = "BOTTOMRIGHT"
+            y = 0
+            newLineY = -spacingV
+        end
+        x = -spacingH
+        newLineX = 0
+        headerPoint = "RIGHT"
+
+    elseif orientation == "top_to_bottom" then
+        if strfind(anchor, "RIGHT$") then
+            point = "TOPRIGHT"
+            relativePoint = "BOTTOMRIGHT"
+            newLineRelativePoint = "TOPLEFT"
+            x = 0
+            newLineX = -spacingH
+        else
+            point = "TOPLEFT"
+            relativePoint = "BOTTOMLEFT"
+            newLineRelativePoint = "TOPRIGHT"
+            x = 0
+            newLineX = spacingH
+        end
+        y = -spacingV
+        newLineY = 0
+        headerPoint = "TOP"
+
+    elseif orientation == "bottom_to_top" then
+        if strfind(anchor, "RIGHT$") then
+            point = "BOTTOMRIGHT"
+            relativePoint = "TOPRIGHT"
+            newLineRelativePoint = "BOTTOMLEFT"
+            x = 0
+            newLineX = -spacingH
+        else
+            point = "BOTTOMLEFT"
+            relativePoint = "TOPLEFT"
+            newLineRelativePoint = "BOTTOMRIGHT"
+            x = 0
+            newLineX = spacingH
+        end
+        y = spacingV
+        newLineY = 0
+        headerPoint = "BOTTOM"
+    end
+
+    return point, relativePoint, newLineRelativePoint, x, y, newLineX, newLineY, headerPoint
+end
+
+function AW.GetAnchorPoints_Complex(orientation, spacingH, spacingV)
+    local point, relativePoint, newLineRelativePoint
+    local x, y, newLineX, newLineY
+
+    if orientation == "bottom_to_top_then_left" then
+        point = "BOTTOMRIGHT"
+        relativePoint = "TOPRIGHT"
+        newLineRelativePoint = "BOTTOMLEFT"
+        x = 0
+        y = spacingV
+        newLineX = -spacingH
+        newLineY = 0
+    elseif orientation == "bottom_to_top_then_right" then
+        point = "BOTTOMLEFT"
+        relativePoint = "TOPLEFT"
+        newLineRelativePoint = "BOTTOMRIGHT"
+        x = 0
+        y = spacingV
+        newLineX = spacingH
+        newLineY = 0
+    elseif orientation == "top_to_bottom_then_left" then
+        point = "TOPRIGHT"
+        relativePoint = "BOTTOMRIGHT"
+        newLineRelativePoint = "TOPLEFT"
+        x = 0
+        y = -spacingV
+        newLineX = -spacingH
+        newLineY = 0
+    elseif orientation == "top_to_bottom_then_right" then
+        point = "TOPLEFT"
+        relativePoint = "BOTTOMLEFT"
+        newLineRelativePoint = "TOPRIGHT"
+        x = 0
+        y = -spacingV
+        newLineX = spacingH
+        newLineY = 0
+    elseif orientation == "left_to_right_then_bottom" then
+        point = "TOPLEFT"
+        relativePoint = "TOPRIGHT"
+        newLineRelativePoint = "BOTTOMLEFT"
+        x = spacingH
+        y = 0
+        newLineX = 0
+        newLineY = -spacingV
+    elseif orientation == "left_to_right_then_top" then
+        point = "BOTTOMLEFT"
+        relativePoint = "BOTTOMRIGHT"
+        newLineRelativePoint = "TOPLEFT"
+        x = spacingH
+        y = 0
+        newLineX = 0
+        newLineY = spacingV
+    elseif orientation == "right_to_left_then_bottom" then
+        point = "TOPRIGHT"
+        relativePoint = "TOPLEFT"
+        newLineRelativePoint = "BOTTOMRIGHT"
+        x = -spacingH
+        y = 0
+        newLineX = 0
+        newLineY = -spacingV
+    elseif orientation == "right_to_left_then_top" then
+        point = "BOTTOMRIGHT"
+        relativePoint = "BOTTOMLEFT"
+        newLineRelativePoint = "TOPRIGHT"
+        x = -spacingH
+        y = 0
+        newLineX = 0
+        newLineY = spacingV
+    end
+
+    return point, relativePoint, newLineRelativePoint, x, y, newLineX, newLineY
+end
+
+function AW.GetAnchorPoints_GroupHeader(orientation, spacingH, spacingV)
+    local point, relativePoint, x, y -- normal
+    local headerPoint, columnAnchorPoint, columnSpacing -- SecureGroupHeader
+
+    if orientation == "bottom_to_top_then_left" then
+        point = "BOTTOMRIGHT"
+        relativePoint = "TOPRIGHT"
+        x = 0
+        y = spacingV
+        columnSpacing = -spacingH
+        headerPoint = "BOTTOM"
+        columnAnchorPoint = "RIGHT"
+    elseif orientation == "bottom_to_top_then_right" then
+        point = "BOTTOMLEFT"
+        relativePoint = "TOPLEFT"
+        x = 0
+        y = spacingV
+        columnSpacing = spacingH
+        headerPoint = "BOTTOM"
+        columnAnchorPoint = "LEFT"
+    elseif orientation == "top_to_bottom_then_left" then
+        point = "TOPRIGHT"
+        relativePoint = "BOTTOMRIGHT"
+        x = 0
+        y = -spacingV
+        columnSpacing = -spacingH
+        headerPoint = "TOP"
+        columnAnchorPoint = "RIGHT"
+    elseif orientation == "top_to_bottom_then_right" then
+        point = "TOPLEFT"
+        relativePoint = "BOTTOMLEFT"
+        x = 0
+        y = -spacingV
+        columnSpacing = spacingH
+        headerPoint = "TOP"
+        columnAnchorPoint = "LEFT"
+    elseif orientation == "left_to_right_then_bottom" then
+        point = "TOPLEFT"
+        relativePoint = "TOPRIGHT"
+        x = spacingH
+        y = 0
+        columnSpacing = -spacingV
+        headerPoint = "LEFT"
+        columnAnchorPoint = "TOP"
+    elseif orientation == "left_to_right_then_top" then
+        point = "BOTTOMLEFT"
+        relativePoint = "BOTTOMRIGHT"
+        x = spacingH
+        y = 0
+        columnSpacing = spacingV
+        headerPoint = "LEFT"
+        columnAnchorPoint = "BOTTOM"
+    elseif orientation == "right_to_left_then_bottom" then
+        point = "TOPRIGHT"
+        relativePoint = "TOPLEFT"
+        x = -spacingH
+        y = 0
+        columnSpacing = -spacingV
+        headerPoint = "RIGHT"
+        columnAnchorPoint = "TOP"
+    elseif orientation == "right_to_left_then_top" then
+        point = "BOTTOMRIGHT"
+        relativePoint = "BOTTOMLEFT"
+        x = -spacingH
+        y = 0
+        columnSpacing = spacingV
+        headerPoint = "RIGHT"
+        columnAnchorPoint = "BOTTOM"
+    end
+    return point, relativePoint, x, y, columnSpacing, headerPoint, columnAnchorPoint
+end
+
+---------------------------------------------------------------------
 -- load position
 ---------------------------------------------------------------------
 --- @param pos table
@@ -420,10 +651,10 @@ function AW.LoadPosition(region, pos)
     AW.ClearPoints(region)
     if type(pos) == "string" then
         pos = string.gsub(pos, " ", "")
-        local p, x, y = strsplit(",", pos)
+        local point, x, y = strsplit(",", pos)
         x = tonumber(x)
         y = tonumber(y)
-        AW.SetPoint(region, p, x, y)
+        AW.SetPoint(region, point, x, y)
     elseif type(pos) == "table" then
         AW.SetPoint(region, unpack(pos))
     end

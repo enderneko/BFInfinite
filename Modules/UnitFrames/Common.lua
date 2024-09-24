@@ -258,7 +258,7 @@ function UF.SetupUnitGroup(group, config, indicators)
     end
 
     -- arrangement & size
-    local p, rp, x, y = UF.GetSimplePositionArgs(config)
+    local p, rp, _, x, y = AW.GetAnchorPoints_Simple("BOTTOMLEFT", config.general.orientation, config.general.spacing)
 
     local last
     for _, b in ipairs(group) do
@@ -281,110 +281,6 @@ function UF.SetupUnitGroup(group, config, indicators)
         end
         last = b
     end
-end
-
----------------------------------------------------------------------
--- header arrangement
----------------------------------------------------------------------
-function UF.GetSimplePositionArgs(config)
-    local p, rp, x, y, hp
-    if config.general.orientation == "bottom_to_top" then
-        p = "BOTTOMLEFT"
-        rp = "TOPLEFT"
-        x = 0
-        y = config.general.spacing
-        hp = "BOTTOM"
-    elseif config.general.orientation == "top_to_bottom" then
-        p = "TOPLEFT"
-        rp = "BOTTOMLEFT"
-        x = 0
-        y = -config.general.spacing
-        hp = "TOP"
-    elseif config.general.orientation == "left_to_right" then
-        p = "BOTTOMLEFT"
-        rp = "BOTTOMRIGHT"
-        x = config.general.spacing
-        y = 0
-        hp = "LEFT"
-    elseif config.general.orientation == "right_to_left" then
-        p = "BOTTOMRIGHT"
-        rp = "BOTTOMLEFT"
-        x = -config.general.spacing
-        y = 0
-        hp = "RIGHT"
-    end
-    return p, rp, x, y, hp
-end
-
-function UF.GetCombinedPositionArgs(config)
-    -- point, relativePoint, headerPoint, columnSpacing, columnAnchorPoint
-    local p, rp, x, y, cs, hp, cp
-    if config.general.orientation == "bottom_to_top_then_left" then
-        p = "BOTTOMRIGHT"
-        rp = "TOPRIGHT"
-        x = 0
-        y = config.general.spacingV
-        cs = -config.general.spacingH
-        hp = "BOTTOM"
-        cp = "RIGHT"
-    elseif config.general.orientation == "bottom_to_top_then_right" then
-        p = "BOTTOMLEFT"
-        rp = "TOPLEFT"
-        x = 0
-        y = config.general.spacingV
-        cs = config.general.spacingH
-        hp = "BOTTOM"
-        cp = "LEFT"
-    elseif config.general.orientation == "top_to_bottom_then_left" then
-        p = "TOPTOPRIGHT"
-        rp = "BOTTOMRIGHT"
-        x = 0
-        y = -config.general.spacingV
-        cs = -config.general.spacingH
-        hp = "TOP"
-        cp = "RIGHT"
-    elseif config.general.orientation == "top_to_bottom_then_right" then
-        p = "TOPLEFT"
-        rp = "BOTTOMLEFT"
-        x = 0
-        y = -config.general.spacingV
-        cs = config.general.spacingH
-        hp = "TOP"
-        cp = "LEFT"
-    elseif config.general.orientation == "left_to_right_then_bottom" then
-        p = "TOPLEFT"
-        rp = "TOPRIGHT"
-        x = config.general.spacingH
-        y = 0
-        cs = -config.general.spacingV
-        hp = "LEFT"
-        cp = "TOP"
-    elseif config.general.orientation == "left_to_right_then_top" then
-        p = "BOTTOMLEFT"
-        rp = "BOTTOMRIGHT"
-        x = config.general.spacingH
-        y = 0
-        cs = config.general.spacingV
-        hp = "LEFT"
-        cp = "BOTTOM"
-    elseif config.general.orientation == "right_to_left_then_bottom" then
-        p = "TOPRIGHT"
-        rp = "TOPLEFT"
-        x = -config.general.spacingH
-        y = 0
-        cs = -config.general.spacingV
-        hp = "RIGHT"
-        cp = "TOP"
-    elseif config.general.orientation == "right_to_left_then_top" then
-        p = "BOTTOMRIGHT"
-        rp = "BOTTOMLEFT"
-        x = -config.general.spacingH
-        y = 0
-        cs = config.general.spacingV
-        hp = "RIGHT"
-        cp = "BOTTOM"
-    end
-    return p, rp, x, y, cs, hp, cp
 end
 
 ---------------------------------------------------------------------

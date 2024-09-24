@@ -147,7 +147,7 @@ local function UpdateRaid(module, which)
     end
 
     -- header
-    local p, rp, x, y, cs, hp, cp = UF.GetCombinedPositionArgs(config)
+    local p, rp, x, y, cs, hp, cp = AW.GetAnchorPoints_GroupHeader(config.general.orientation, config.general.spacingH, config.general.spacingV)
     header:SetSize(config.general.width, config.general.height)
     header:ClearAllPoints()
     header:SetPoint(p, raid)

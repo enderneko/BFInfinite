@@ -144,7 +144,7 @@ local function UpdateParty(module, which)
     end
 
     -- header
-    local p, rp, x, y, hp = UF.GetSimplePositionArgs(config)
+    local p, rp, _, x, y, _, _, hp = AW.GetAnchorPoints_Simple("BOTTOMLEFT", config.general.orientation, config.general.spacing)
     header:ClearAllPoints()
     header:SetPoint(p, party)
     header:SetAttribute("point", hp)
