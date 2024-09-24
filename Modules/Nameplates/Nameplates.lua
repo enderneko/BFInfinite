@@ -478,14 +478,14 @@ local function ShowNameplate(_, event, unit)
     np.bUnitFrame = bUnitFrame
 
     if bUnitFrame then
-        -- TODO: self nameplate
-        -- if UnitIsUnit("player", unit) then
-        --     bUnitFrame:Show()
-        --     Hide(np)
-        -- else
+        if UnitIsUnit("player", unit) then
+            -- TODO: self nameplate
+            bUnitFrame:Show()
+            Hide(np)
+        else
             bUnitFrame:Hide()
             Show(np)
-        -- end
+        end
     end
 
     -- TODO: filters
