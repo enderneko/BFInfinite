@@ -46,6 +46,154 @@ local function UpdateMinimapWidgets(widget, config)
 end
 
 ---------------------------------------------------------------------
+-- minimap addon buttons
+---------------------------------------------------------------------
+-- TODO: AddonCompartmentFrame
+local addonButtonHolder
+
+local function GetPositionArgs_HolderFrame()
+    local p, x, y
+    local anchor = addonButtonHolder.config.anchor
+    local spacing = addonButtonHolder.config.spacing
+
+    if anchor == "TOPLEFT" then
+        p = "BOTTOMLEFT"
+        x, y = 0, spacing
+    elseif anchor == "TOPRIGHT" then
+        p = "BOTTOMRIGHT"
+        x, y = 0, spacing
+    elseif anchor == "BOTTOMLEFT" then
+        p = "TOPLEFT"
+        x, y = 0, -spacing
+    elseif anchor == "BOTTOMRIGHT" then
+        p = "TOPRIGHT"
+        x, y = 0, -spacing
+    elseif anchor == "TOP" then
+        p = "BOTTOM"
+        x, y = 0, spacing
+    elseif anchor == "BOTTOM" then
+        p = "TOP"
+        x, y = 0, -spacing
+    elseif anchor == "LEFT" then
+        p = "RIGHT"
+        x, y = -spacing, 0
+    elseif anchor == "RIGHT" then
+        p = "LEFT"
+        x, y = spacing, 0
+    end
+
+    return p, anchor, x, y
+end
+
+local function UpdateAddonButtons()
+    if not addonButtonHolder.init then return end
+
+    -- create
+    local name
+    for _, child in pairs({Minimap:GetChildren()}) do
+        name = child:GetName()
+        if name and strfind(name, "^LibDBIcon10_") then
+            if not child.isHandled then
+                child.isHandled = true
+                tinsert(addonButtonHolder.buttons, child)
+
+                for _, obj in pairs({child:GetRegions()}) do
+                    if obj ~= child.icon then
+                        obj:Hide()
+                    end
+                end
+
+                child:SetScript("OnDragStart", nil)
+                child:SetScript("OnDragStop", nil)
+                child:SetParent(addonButtonHolder.frame)
+                child:RegisterForDrag()
+                AW.SetOnePixelInside(child.icon, child)
+                AW.StylizeFrame(child)
+
+                -- re-arrange when show/hide
+                child:HookScript("OnShow", UpdateAddonButtons)
+                child:HookScript("OnHide", UpdateAddonButtons)
+            end
+        end
+    end
+
+    -- check visibility
+    wipe(addonButtonHolder.shownButtons)
+    for _, b in pairs(addonButtonHolder.buttons) do
+        if b:IsShown() then
+            tinsert(addonButtonHolder.shownButtons, b)
+        end
+    end
+
+    -- re-arrange
+    local p, rp, np, x, y, nx, ny = AW.GetAnchorPoints_Simple(addonButtonHolder.buttonAnchor, addonButtonHolder.config.orientation, addonButtonHolder.config.spacing)
+    for i, b in pairs(addonButtonHolder.shownButtons) do
+        AW.ClearPoints(b)
+        AW.SetSize(b, addonButtonHolder.config.width, addonButtonHolder.config.height)
+
+        if i == 1 then
+            AW.SetPoint(b, p)
+        elseif i % addonButtonHolder.config.numPerLine == 1 then
+            AW.SetPoint(b, p, addonButtonHolder.shownButtons[i - addonButtonHolder.config.numPerLine], np, nx, ny)
+        else
+            AW.SetPoint(b, p, addonButtonHolder.shownButtons[i - 1], rp, x, y)
+        end
+    end
+
+    local num = #addonButtonHolder.shownButtons
+    AW.SetGridSize(addonButtonHolder.frame, addonButtonHolder.config.width, addonButtonHolder.config.height,
+        addonButtonHolder.config.spacing, addonButtonHolder.config.spacing,
+        min(addonButtonHolder.config.numPerLine, num), ceil(num / addonButtonHolder.config.numPerLine)
+    )
+end
+
+local function CreateAddonButtonHolder()
+    local lib = LibStub("LibDBIcon-1.0", true)
+    if not lib then return end
+
+    lib:RegisterCallback("LibDBIcon_IconCreated", UpdateAddonButtons)
+
+    -- button
+    addonButtonHolder = AW.CreateButton(Minimap, "", "accent-hover", 20, 20)
+    -- addonButtonHolder:Hide()
+    addonButtonHolder:SetTexture(AW.GetIcon("Menu"), {20, 20}, {"CENTER", 0, 0}, nil, true)
+    AW.RemoveFromPixelUpdater(addonButtonHolder)
+    AW.CreateFadeInOutAnimation(addonButtonHolder, 0.25, true)
+
+    addonButtonHolder.buttons = {}
+    addonButtonHolder.shownButtons = {}
+
+    -- container frame
+    local frame = CreateFrame("Frame", nil, addonButtonHolder)
+    addonButtonHolder.frame = frame
+    AW.SetPoint(frame, "BOTTOMLEFT", addonButtonHolder, "TOPLEFT", 0, 1)
+    frame:Hide()
+
+    addonButtonHolder:SetScript("OnClick", function()
+        if frame:IsShown() then
+            frame:Hide()
+        else
+            UpdateAddonButtons()
+            frame:Show()
+        end
+    end)
+
+    addonButtonHolder:HookScript("OnEnter", function()
+        if not frame:IsShown() and addonButtonHolder.FadeIn and addonButtonHolder.config.fadeOut then
+            addonButtonHolder:FadeIn()
+        end
+    end)
+
+    addonButtonHolder:HookScript("OnLeave", function()
+        if not frame:IsShown() and addonButtonHolder.config.fadeOut then
+            addonButtonHolder:FadeOut()
+        end
+    end)
+
+    addonButtonHolder.init = true
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function UpdatePixels()
@@ -53,6 +201,7 @@ local function UpdatePixels()
     AW.DefaultUpdatePixels(Minimap)
     AW.DefaultUpdatePixels(ExpansionButton)
     AW.DefaultUpdatePixels(MinimapCluster.Tracking)
+    -- TODO: addonButtonHolder
 end
 
 local function UpdateZoneText()
@@ -82,16 +231,21 @@ local function InitMinimap()
     Minimap.zoneText = Minimap:CreateFontString(nil, "OVERLAY")
     Minimap.zoneText:Hide()
     AW.CreateFadeInOutAnimation(Minimap.zoneText, 0.25)
-    Minimap:HookScript("OnEnter", function()
+
+    Minimap.onEnter = function()
         if Minimap.zoneText.enabled then
             Minimap.zoneText:FadeIn()
         end
-    end)
-    Minimap:HookScript("OnLeave", function()
+    end
+
+    Minimap.onLeave = function()
         if Minimap.zoneText.enabled then
             Minimap.zoneText:FadeOut()
         end
-    end)
+    end
+
+    Minimap:HookScript("OnEnter", Minimap.onEnter)
+    Minimap:HookScript("OnLeave", Minimap.onLeave)
 
     -- Minimap frames
     local frames = {
@@ -99,13 +253,13 @@ local function InitMinimap()
         Minimap.ZoomIn,
         Minimap.ZoomOut,
         Minimap.ZoomHitArea,
-        MinimapCluster,
+        -- MinimapCluster,
+        MinimapCluster.Tracking.Background,
         -- MinimapCluster.BorderTop,
-        -- MinimapCluster.Tracking.Background,
         -- MinimapCluster.IndicatorFrame,
         -- MinimapCluster.ZoneTextButton,
         _G.MinimapBackdrop,
-        _G.GameTimeFrame,
+        -- _G.GameTimeFrame,
     }
 
     for _, f in pairs(frames) do
@@ -140,6 +294,7 @@ local function UpdateMinimap(module, which)
     if not init then
         init = true
         InitMinimap()
+        CreateAddonButtonHolder()
         AW.UpdateMoverSave(minimapContainer, config.position)
     end
 
@@ -182,6 +337,31 @@ local function UpdateMinimap(module, which)
         M:UnregisterEvent("ZONE_CHANGED_INDOORS", UpdateZoneText)
         M:UnregisterEvent("ZONE_CHANGED", UpdateZoneText)
         Minimap.zoneText:Hide()
+    end
+
+    -- minimap button holder
+    addonButtonHolder.enabled = config.addonButtonHolder.enabled
+    if config.addonButtonHolder.enabled then
+        addonButtonHolder.config = config.addonButtonHolder
+
+        addonButtonHolder:Show()
+        if addonButtonHolder.config.fadeOut then
+            addonButtonHolder:FadeOut()
+        else
+            addonButtonHolder:FadeIn()
+        end
+
+        AW.LoadWidgetPosition(addonButtonHolder, config.addonButtonHolder.position, Minimap)
+        AW.SetSize(addonButtonHolder, config.addonButtonHolder.width, config.addonButtonHolder.height)
+
+        local p, rp, x, y = GetPositionArgs_HolderFrame()
+        addonButtonHolder.buttonAnchor = p
+        AW.ClearPoints(addonButtonHolder.frame)
+        AW.SetPoint(addonButtonHolder.frame, p, addonButtonHolder, rp, x, y)
+
+        UpdateAddonButtons()
+    else
+        addonButtonHolder:Hide()
     end
 end
 BFI.RegisterCallback("UpdateModules", "M_Minimap", UpdateMinimap)

@@ -41,11 +41,16 @@ local defaults = {
             length = 0.75,
             font = {"BFI 1", 12, "none", true},
         },
-        addonButton = {
+        addonButtonHolder = {
             enabled = true,
-            position = {"BOTTOMRIGHT", 0, 0},
-            width = 20,
-            height = 20,
+            position = {"LEFT", "LEFT", -1, 0},
+            width = 22,
+            height = 22,
+            numPerLine = 3,
+            orientation = "left_to_right",
+            spacing = 3,
+            anchor = "TOPLEFT",
+            fadeOut = true,
         },
 
         dungeonDifficulty = {
