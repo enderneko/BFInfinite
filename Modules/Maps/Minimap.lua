@@ -15,6 +15,12 @@ local GameTime_GetTime = GameTime_GetTime
 local GetMinimapZoneText = GetMinimapZoneText
 local UIFrameFlash = UIFrameFlash
 local UIFrameFlashStop = UIFrameFlashStop
+local IsInInstance = IsInInstance
+local InGuildParty = InGuildParty
+local GetInstanceInfo = GetInstanceInfo
+local GetGuildInfo = GetGuildInfo
+local GetLFGDungeonInfo = GetLFGDungeonInfo
+local GetDifficultyInfo = GetDifficultyInfo
 
 ---------------------------------------------------------------------
 -- expansion button
@@ -231,18 +237,8 @@ end
 ---------------------------------------------------------------------
 -- clock
 ---------------------------------------------------------------------
-local function UpdateClockSize()
-    local width = ceil(Minimap.clockButton.text:GetWidth() + 2)
-    local height = ceil(Minimap.clockButton.text:GetHeight() + 2)
-    Minimap.clockButton:SetSize(width, height)
-end
-
 local function UpdateClockTime()
     Minimap.clockButton.text:SetText(GameTime_GetTime(false))
-end
-
-local function UpdateClockFlash()
-
 end
 
 local function CreateClockButton()
@@ -302,6 +298,117 @@ local function CreateClockButton()
         if self.elapsed >= 0.1 then
             UpdateClockTime()
         end
+    end)
+end
+
+---------------------------------------------------------------------
+-- instance difficulty
+---------------------------------------------------------------------
+local function GetString(arg1, arg2)
+    if not arg2 then
+        arg2 = arg1.text
+        arg1 = arg1.color
+    end
+    return "|cff" .. AW.ConvertRGBToHEX(AW.ConvertRGB_256(AW.UnpackColor(arg1))) .. arg2 .. "|r"
+end
+
+local function UpdateInstanceDifficulty(_, event, arg)
+    -- NOTE: IsInGuildGroup() seems not correct, InGuildParty() seems fine
+    if event == "GUILD_PARTY_STATE_UPDATED" then
+        Minimap.instanceDifficultyFrame.isGuildGroup = arg
+    end
+
+    if IsInInstance() then
+        local _, _, difficulty, _, _, _, _, _, groupSize = GetInstanceInfo()
+
+        local config = Minimap.instanceDifficultyFrame.config
+
+        groupSize = GetString(Minimap.instanceDifficultyFrame.isGuildGroup and config.guildColor or config.normalColor, groupSize)
+
+        -- https://warcraft.wiki.gg/wiki/DifficultyID
+        if difficulty == 1 or difficulty == 3 or difficulty == 4 or difficulty == 9 or difficulty == 12 or difficulty == 14 or difficulty == 205 then
+            -- Normal
+            difficulty = GetString(config.difficulties.normal)
+        elseif difficulty == 2 or difficulty == 5 or difficulty == 6 or difficulty == 11 or difficulty == 15 then
+            -- Heroic
+            difficulty = GetString(config.difficulties.heroic)
+        elseif difficulty == 16 or difficulty == 23 then
+            -- Mythic
+            difficulty = GetString(config.difficulties.mythic)
+        elseif difficulty == 7 or difficulty == 17 then
+            -- 	Looking For Raid
+            difficulty = GetString(config.difficulties.lookingForRaid)
+        elseif difficulty == 8 then
+            -- 	Mythic Keystone
+            difficulty = GetString(config.difficulties.mythicKeystone)
+        elseif difficulty == 24 then
+            -- Timewalking
+            difficulty = GetString(config.difficulties.timewalking)
+        elseif difficulty == 18 or difficulty == 19 or difficulty == 20 then
+            -- Event
+            difficulty = GetString(config.difficulties.event)
+        else
+            -- TODO: delves
+            groupSize = nil
+            difficulty = nil
+        end
+
+        if groupSize and difficulty then
+            Minimap.instanceDifficultyFrame.text:SetText(groupSize .. difficulty)
+            Minimap.instanceDifficultyFrame:Show()
+        else
+            Minimap.instanceDifficultyFrame:Hide()
+        end
+    else
+        Minimap.instanceDifficultyFrame:Hide()
+    end
+
+    AW.SetSizeToFitText(Minimap.instanceDifficultyFrame, Minimap.instanceDifficultyFrame.text)
+end
+
+local function CreateInstanceDifficulty()
+    local instanceDifficultyFrame = CreateFrame("Frame", "BFI_InstanceDifficultyFrame", Minimap)
+    Minimap.instanceDifficultyFrame = instanceDifficultyFrame
+    -- instanceDifficultyFrame:SetSize(30, 20)
+    -- instanceDifficultyFrame:SetPoint("TOPLEFT")
+    instanceDifficultyFrame.text = instanceDifficultyFrame:CreateFontString(nil, "OVERLAY")
+    instanceDifficultyFrame.text:SetPoint("CENTER")
+
+    local classcolor = "|c" .. RAID_CLASS_COLORS[UnitClassBase("player")].colorStr
+
+    -- NOTE: GuildInstanceDifficultyMixin.OnEnter
+    instanceDifficultyFrame:SetScript("OnEnter", GuildInstanceDifficultyMixin.OnEnter)
+    -- instanceDifficultyFrame:SetScript("OnEnter", function(self)
+    --     local _, instanceType, difficulty, _, maxPlayers, _, _, _, _, lfgID = GetInstanceInfo()
+    --     local isLFR = select(8, GetDifficultyInfo(difficulty))
+
+    --     if isLFR and lfgID then
+    --         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 3)
+    --         local name = GetLFGDungeonInfo(lfgID)
+    --         GameTooltip:SetText(RAID_FINDER, 1, 1, 1)
+    --         GameTooltip:AddLine(name)
+    --         GameTooltip:Show()
+    --     else
+    --         local guildName = GetGuildInfo("player")
+    --         local _, numGuildPresent, numGuildRequired, xpMultiplier = InGuildParty()
+    --         GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 3)
+    --         GameTooltip:SetText(GUILD_GROUP, 1, 1, 1)
+    --         if xpMultiplier < 1 then
+    --             GameTooltip:AddLine(string.format(GUILD_ACHIEVEMENTS_ELIGIBLE_MINXP, numGuildRequired, maxPlayers, guildName, xpMultiplier * 100), nil, nil, nil, true)
+    --         elseif xpMultiplier > 1 then
+    --             GameTooltip:AddLine(string.format(GUILD_ACHIEVEMENTS_ELIGIBLE_MAXXP, guildName, xpMultiplier * 100), nil, nil, nil, true)
+    --         else
+    --             if instanceType == "party" and maxPlayers == 5 then
+    --                 numGuildRequired = 4
+    --             end
+    --             GameTooltip:AddLine(string.format(GUILD_ACHIEVEMENTS_ELIGIBLE, numGuildRequired, maxPlayers, guildName), nil, nil, nil, true)
+    --         end
+    --         GameTooltip:Show()
+    --     end
+    -- end)
+
+    instanceDifficultyFrame:SetScript("OnLeave", function()
+        GameTooltip:Hide()
     end)
 end
 
@@ -384,6 +491,7 @@ local function UpdateMinimap(module, which)
         CreateAddonButtonHolder()
         CreateZoneText()
         CreateClockButton()
+        CreateInstanceDifficulty()
         AW.UpdateMoverSave(minimapContainer, config.position)
     end
 
@@ -408,11 +516,14 @@ local function UpdateMinimap(module, which)
         AW.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
         U.SetFont(Minimap.clockButton.text, unpack(config.clock.font))
         Minimap.clockButton.text:SetText("00:00")
-        UpdateClockSize()
+
+        C_Timer.After(0, function()
+            AW.SetSizeToFitText(Minimap.clockButton, Minimap.clockButton.text, 2)
+        end)
 
         -- flash
         local anchor = config.clock.position[1]
-        local flashTexture = Minimap.clockButton.flash.texture
+        local flashTexture = Minimap.clockButton.f lash.texture
         if anchor == "TOP" then
             flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("accent")))
         elseif strfind(anchor, "LEFT$") then
@@ -448,12 +559,27 @@ local function UpdateMinimap(module, which)
         M:RegisterEvent("ZONE_CHANGED", UpdateZoneText)
         UpdateZoneText()
         Minimap.zoneText:Show()
+        Minimap.zoneText:FadeOut()
     else
         M:UnregisterEvent("PLAYER_ENTERING_WORLD", UpdateZoneText)
         M:UnregisterEvent("ZONE_CHANGED_NEW_AREA", UpdateZoneText)
         M:UnregisterEvent("ZONE_CHANGED_INDOORS", UpdateZoneText)
         M:UnregisterEvent("ZONE_CHANGED", UpdateZoneText)
         Minimap.zoneText:Hide()
+    end
+
+    -- dungeon difficulty
+    if config.instanceDifficulty.enabled then
+        Minimap.instanceDifficultyFrame.config = config.instanceDifficulty
+        AW.LoadWidgetPosition(Minimap.instanceDifficultyFrame, config.instanceDifficulty.position)
+        U.SetFont(Minimap.instanceDifficultyFrame.text, unpack(config.instanceDifficulty.font))
+        M:RegisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty) -- UPDATE_INSTANCE_INFO INSTANCE_GROUP_SIZE_CHANGED included
+        M:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", UpdateInstanceDifficulty)
+        Minimap.instanceDifficultyFrame:Show()
+    else
+        M:UnregisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty) -- UPDATE_INSTANCE_INFO INSTANCE_GROUP_SIZE_CHANGED included
+        M:UnregisterEvent("PLAYER_DIFFICULTY_CHANGED", UpdateInstanceDifficulty)
+        Minimap.instanceDifficultyFrame:Hide()
     end
 
     -- minimap button holder

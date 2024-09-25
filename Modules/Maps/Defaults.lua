@@ -38,9 +38,9 @@ local defaults = {
         },
         zoneText = {
             enabled = true,
-            position = {"TOPLEFT", "TOPLEFT", 0, 0},
+            position = {"TOPLEFT", "TOPLEFT", 1, -1},
             length = 0.75,
-            font = {"BFI 1", 12, "outline", false},
+            font = {"BFI", 12, "outline", false},
         },
         addonButtonHolder = {
             enabled = true,
@@ -62,14 +62,25 @@ local defaults = {
         clock = {
             enabled = true,
             position = {"BOTTOM", "BOTTOM", 0, 0},
-            font = {"BFI 1", 12, "outline", false},
+            font = {"Expressway", 12, "outline", false},
             color = AW.GetColorTable("white"),
         },
-        dungeonDifficulty = {
+        instanceDifficulty = {
             enabled = true,
             position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
-            width = 50,
-            height = 50,
+            font = {"Expressway", 12, "outline", false},
+            normalColor = AW.GetColorTable("white"),
+            guildColor = AW.GetColorTable("guild"),
+            difficulties = {
+                normal = {text = "N", color = AW.GetColorTable("orange")},
+                heroic = {text = "H", color = AW.GetColorTable("orangered")},
+                mythic = {text = "M", color = AW.GetColorTable("firebrick")},
+                mythicKeystone = {text = "M+", color = AW.GetColorTable("firebrick")},
+                lookingForRaid = {text = "LFR", color = AW.GetColorTable("yellow")},
+                timewalking = {text = "TW", color = AW.GetColorTable("skyblue")},
+                event = {text = "E", color = AW.GetColorTable("classicrose")},
+                -- TODO: delves
+            }
         },
     },
 }

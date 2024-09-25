@@ -358,6 +358,16 @@ function AW.PixelPerfectPoint(region)
 end
 
 ---------------------------------------------------------------------
+-- update text container size
+---------------------------------------------------------------------
+function AW.SetSizeToFitText(frame, fontString, padding)
+    padding = padding or 0
+    local width = ceil(fontString:GetWidth() + padding)
+    local height = ceil(fontString:GetHeight() + padding)
+    frame:SetSize(width, height)
+end
+
+---------------------------------------------------------------------
 -- statusbar
 ---------------------------------------------------------------------
 function AW.SetStatusBarValue(statusBar, value)
