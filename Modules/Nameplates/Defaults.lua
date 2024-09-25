@@ -137,7 +137,7 @@ do
             },
             bgColor = AW.GetColorTable("background", 0),
             borderColor = AW.GetColorTable("border"),
-            texture = "BFI 1",
+            texture = "BFI",
             mouseoverHighlight = {
                 enabled = true,
                 color = AW.GetColorTable("white", 0.1)
@@ -171,7 +171,7 @@ do
             anchorTo = "healthBar",
             parent = "healthBar",
             length = 1,
-            font = {"BFI 1", 12, "none", true},
+            font = {"BFI", 12, "none", true},
             color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             showOtherServerSign = false,
         },
@@ -180,7 +180,7 @@ do
             position = {"CENTER", "CENTER", -5, 0},
             anchorTo = "healthBar",
             parent = "healthBar",
-            font = {"BFI 1", 11, "none", true},
+            font = {"BFI", 11, "none", true},
             color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             format = {
                 numeric = "current_short",
@@ -196,7 +196,7 @@ do
             position = {"RIGHT", "RIGHT", -5, 0},
             anchorTo = "healthBar",
             parent = "healthBar",
-            font = {"BFI 1", 11, "none", true},
+            font = {"BFI", 11, "none", true},
             color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             highLevelTexture = {
                 enabled = true,
@@ -212,7 +212,7 @@ do
             height = 13,
             bgColor = AW.GetColorTable("background", 0.75),
             borderColor = AW.GetColorTable("border"),
-            texture = "BFI 1",
+            texture = "BFI",
             fadeDuration = 1,
             enableInterruptibleCheck = true,
             icon = {
@@ -223,7 +223,7 @@ do
             },
             nameText = {
                 enabled = true,
-                font = {"BFI 1", 11, "none", true},
+                font = {"BFI", 11, "none", true},
                 position = {"LEFT", "LEFT", 3, 0},
                 color = AW.GetColorTable("white"),
                 length = 0.75,
@@ -231,7 +231,7 @@ do
             },
             durationText = {
                 enabled = true,
-                font = {"BFI 1", 11 , "none", true},
+                font = {"BFI", 11 , "none", true},
                 position = {"RIGHT", "RIGHT", -3, 0},
                 format = "%.1f",
                 color = AW.GetColorTable("white"),
@@ -306,7 +306,7 @@ do
             frameLevel = 2,
             durationText = {
                 enabled = true,
-                font = {"BFI 1", 12, "outline", false},
+                font = {"BFI", 12, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
                     AW.GetColorTable("white"), -- normal
@@ -316,7 +316,7 @@ do
             },
             stackText = {
                 enabled = true,
-                font = {"BFI 1", 12, "outline", false},
+                font = {"BFI", 12, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
                 color = AW.GetColorTable("white"),
             },
@@ -354,7 +354,7 @@ do
             frameLevel = 2,
             durationText = {
                 enabled = true,
-                font = {"BFI 1", 10, "outline", false},
+                font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
                     AW.GetColorTable("white"), -- normal
@@ -364,7 +364,7 @@ do
             },
             stackText = {
                 enabled = true,
-                font = {"BFI 1", 10, "outline", false},
+                font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
                 color = AW.GetColorTable("white"),
             },
@@ -402,7 +402,7 @@ do
             frameLevel = 2,
             durationText = {
                 enabled = true,
-                font = {"BFI 1", 13, "outline", false},
+                font = {"BFI", 13, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
                     AW.GetColorTable("white"), -- normal
@@ -412,7 +412,7 @@ do
             },
             stackText = {
                 enabled = true,
-                font = {"BFI 1", 13, "outline", false},
+                font = {"BFI", 13, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
                 color = AW.GetColorTable("white"),
             },
@@ -474,7 +474,7 @@ do
             anchorTo = "root",
             parent = "root",
             length = 0,
-            font = {"BFI 1", 13, "outline", false},
+            font = {"BFI", 13, "outline", false},
             color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             showOtherServerSign = true,
         },
@@ -518,7 +518,7 @@ do
             frameLevel = 2,
             durationText = {
                 enabled = true,
-                font = {"BFI 1", 10, "outline", false},
+                font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
                     AW.GetColorTable("white"), -- normal
@@ -528,7 +528,7 @@ do
             },
             stackText = {
                 enabled = true,
-                font = {"BFI 1", 10, "outline", false},
+                font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
                 color = AW.GetColorTable("white"),
             },
@@ -564,7 +564,7 @@ do
             frameLevel = 2,
             durationText = {
                 enabled = true,
-                font = {"BFI 1", 10, "outline", false},
+                font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
                     AW.GetColorTable("white"), -- normal
@@ -574,7 +574,7 @@ do
             },
             stackText = {
                 enabled = true,
-                font = {"BFI 1", 10, "outline", false},
+                font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
                 color = AW.GetColorTable("white"),
             },
@@ -612,7 +612,7 @@ do
             frameLevel = 2,
             durationText = {
                 enabled = true,
-                font = {"BFI 1", 10, "outline", false},
+                font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
                     AW.GetColorTable("white"), -- normal
@@ -622,7 +622,7 @@ do
             },
             stackText = {
                 enabled = true,
-                font = {"BFI 1", 10, "outline", false},
+                font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
                 color = AW.GetColorTable("white"),
             },

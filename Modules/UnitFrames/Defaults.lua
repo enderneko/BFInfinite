@@ -131,7 +131,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -180,7 +180,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = true,
             },
@@ -195,7 +195,7 @@ local defaults = {
                 lossColor = {type = "mana_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = false,
                 hideIfHasClassPower = true,
@@ -213,7 +213,7 @@ local defaults = {
                 lossColor = {type = "power_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
             },
             nameText = {
                 enabled = true,
@@ -221,7 +221,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.5,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -229,7 +229,7 @@ local defaults = {
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
@@ -245,7 +245,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -284,13 +284,13 @@ local defaults = {
                 height = 20,
                 bgColor = AW.GetColorTable("background", 0.5),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
                 enableInterruptibleCheck = false,
                 nameText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
@@ -298,7 +298,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
                     color = AW.GetColorTable("white"),
@@ -341,10 +341,10 @@ local defaults = {
                 height = 5,
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 text = {
                     enabled = false,
-                    font = {"BFI 1", 10, "none", true},
+                    font = {"BFI", 10, "none", true},
                     position = {"RIGHT", "RIGHT", -1, 0},
                     color = AW.GetColorTable("white"),
                     format = {
@@ -378,7 +378,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
             },
             levelText = {
@@ -386,7 +386,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 0, 0},
                 anchorTo = "leaderText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -394,7 +394,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             statusTimer = {
@@ -402,7 +402,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "targetCounter",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
                 showLabel = true,
@@ -480,7 +480,7 @@ local defaults = {
                 position = {"BOTTOM", "BOTTOM", 0, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 types = {
                     swing = {enabled = true, color = AW.GetColorTable("swing")},
                     damage = {enabled = true, color = AW.GetColorTable("damage")},
@@ -511,7 +511,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -521,7 +521,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -563,7 +563,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -573,7 +573,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -628,7 +628,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -677,7 +677,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = true,
             },
@@ -687,7 +687,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.5,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -695,7 +695,7 @@ local defaults = {
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
@@ -711,7 +711,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -750,13 +750,13 @@ local defaults = {
                 height = 20,
                 bgColor = AW.GetColorTable("background", 0.5),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
                 enableInterruptibleCheck = true,
                 nameText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
@@ -764,7 +764,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
                     color = AW.GetColorTable("white"),
@@ -811,7 +811,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
             },
             levelText = {
@@ -819,7 +819,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 0, 0},
                 anchorTo = "leaderText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -827,7 +827,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             rangeText = {
@@ -835,14 +835,14 @@ local defaults = {
                 position = {"BOTTOM", "BOTTOM", 0, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
             },
             statusTimer = {
                 enabled = true,
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "targetCounter",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
                 showLabel = true,
@@ -919,7 +919,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -929,7 +929,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -971,7 +971,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -981,7 +981,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -1043,7 +1043,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -1092,7 +1092,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = true,
             },
@@ -1102,7 +1102,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.9,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -1110,7 +1110,7 @@ local defaults = {
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
@@ -1126,7 +1126,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -1144,7 +1144,7 @@ local defaults = {
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 10, "none", true},
+                font = {"BFI", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -1152,7 +1152,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
@@ -1181,13 +1181,13 @@ local defaults = {
                 height = 22,
                 bgColor = AW.GetColorTable("background", 0.5),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
                 enableInterruptibleCheck = true,
                 nameText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
@@ -1195,7 +1195,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
                     color = AW.GetColorTable("white"),
@@ -1275,7 +1275,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -1285,7 +1285,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -1327,7 +1327,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -1337,7 +1337,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -1392,7 +1392,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -1441,7 +1441,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = true,
             },
@@ -1451,7 +1451,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.9,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -1459,7 +1459,7 @@ local defaults = {
                 position = {"RIGHT", "RIGHT", -3, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
@@ -1475,7 +1475,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -1493,7 +1493,7 @@ local defaults = {
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 10, "none", true},
+                font = {"BFI", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -1501,7 +1501,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             rangeText = {
@@ -1509,7 +1509,7 @@ local defaults = {
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
             },
             portrait = {
                 enabled = false,
@@ -1538,13 +1538,13 @@ local defaults = {
                 height = 23,
                 bgColor = AW.GetColorTable("background", 0.9),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
                 enableInterruptibleCheck = true,
                 nameText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
@@ -1552,7 +1552,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
                     color = AW.GetColorTable("white"),
@@ -1632,7 +1632,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -1642,7 +1642,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -1684,7 +1684,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -1694,7 +1694,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -1749,7 +1749,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -1798,7 +1798,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = true,
             },
@@ -1808,7 +1808,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.9,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -1816,7 +1816,7 @@ local defaults = {
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
@@ -1832,7 +1832,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -1850,7 +1850,7 @@ local defaults = {
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 10, "none", true},
+                font = {"BFI", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -1858,7 +1858,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
@@ -1887,13 +1887,13 @@ local defaults = {
                 height = 22,
                 bgColor = AW.GetColorTable("background", 0.5),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
                 enableInterruptibleCheck = true,
                 nameText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
@@ -1901,7 +1901,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
                     color = AW.GetColorTable("white"),
@@ -1981,7 +1981,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -1991,7 +1991,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -2033,7 +2033,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -2043,7 +2043,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -2098,7 +2098,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background", 0),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -2147,7 +2147,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = true,
             },
@@ -2157,7 +2157,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.9,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -2165,7 +2165,7 @@ local defaults = {
                 position = {"RIGHT", "RIGHT", -5, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
@@ -2181,7 +2181,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -2199,7 +2199,7 @@ local defaults = {
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 10, "none", true},
+                font = {"BFI", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -2207,7 +2207,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
@@ -2236,13 +2236,13 @@ local defaults = {
                 height = 27,
                 bgColor = AW.GetColorTable("background", 0.5),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 fadeDuration = 1,
                 showIcon = false,
                 enableInterruptibleCheck = false,
                 nameText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 3, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.7,
@@ -2250,7 +2250,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -3, 0},
                     format = "%.1f",
                     color = AW.GetColorTable("white"),
@@ -2330,7 +2330,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -2340,7 +2340,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -2382,7 +2382,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -2392,7 +2392,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -2447,7 +2447,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -2496,7 +2496,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = true,
             },
@@ -2506,7 +2506,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.9,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -2514,7 +2514,7 @@ local defaults = {
                 position = {"TOPRIGHT", "TOPRIGHT", -3, -4},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
@@ -2529,7 +2529,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -2547,7 +2547,7 @@ local defaults = {
                 position = {"LEFT", "LEFT", 5, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 10, "none", true},
+                font = {"BFI", 10, "none", true},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -2555,7 +2555,7 @@ local defaults = {
                 position = {"LEFT", "RIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
@@ -2585,13 +2585,13 @@ local defaults = {
                 height = 22,
                 bgColor = AW.GetColorTable("background", 0.5),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
                 enableInterruptibleCheck = true,
                 nameText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.75,
@@ -2599,7 +2599,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
                     color = AW.GetColorTable("white"),
@@ -2679,7 +2679,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -2689,7 +2689,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -2731,7 +2731,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -2741,7 +2741,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -2799,7 +2799,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background", 0),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -2848,7 +2848,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = false,
             },
@@ -2858,7 +2858,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.5,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -2866,7 +2866,7 @@ local defaults = {
                 position = {"RIGHT", "RIGHT", -3, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
@@ -2882,7 +2882,7 @@ local defaults = {
                 position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
@@ -2900,7 +2900,7 @@ local defaults = {
                 position = {"TOPLEFT", "TOPLEFT", 3, -0.5},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
             },
             levelText = {
@@ -2908,7 +2908,7 @@ local defaults = {
                 position = {"TOPLEFT", "TOPRIGHT", 0, 0},
                 anchorTo = "leaderText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -2916,7 +2916,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             statusTimer = {
@@ -2924,7 +2924,7 @@ local defaults = {
                 position = {"TOPRIGHT", "TOPRIGHT", 0, -1},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
                 showLabel = true,
@@ -2956,13 +2956,13 @@ local defaults = {
                 height = 4,
                 bgColor = AW.GetColorTable("background", 0.5),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 fadeDuration = 1,
                 showIcon = false,
                 enableInterruptibleCheck = false,
                 nameText = {
                     enabled = false,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 23, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.5,
@@ -2970,7 +2970,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = false,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -3, 0},
                     format = "%.1f",
                     color = AW.GetColorTable("white"),
@@ -3092,7 +3092,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = false,
-                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -3102,7 +3102,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -3144,7 +3144,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -3154,7 +3154,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -3211,7 +3211,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background", 0),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -3260,7 +3260,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = false,
             },
@@ -3270,7 +3270,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.75,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -3278,7 +3278,7 @@ local defaults = {
                 position = {"TOP", "BOTTOM", 0, -1},
                 anchorTo = "nameText",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
@@ -3302,7 +3302,7 @@ local defaults = {
                 position = {"BOTTOM", "BOTTOM", 0, 4},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 2", 9, "monochrome", true},
+                font = {"Visitor", 9, "monochrome", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 useEn = true,
                 showLabel = false,
@@ -3378,7 +3378,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = false,
-                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -3388,7 +3388,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -3430,7 +3430,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = false,
-                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -3440,7 +3440,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 2", 9, "monochrome_outline", false},
+                    font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -3494,7 +3494,7 @@ local defaults = {
                 lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
                 bgColor = AW.GetColorTable("background", 1),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
@@ -3543,7 +3543,7 @@ local defaults = {
                 lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 smoothing = false,
                 frequent = false,
             },
@@ -3553,7 +3553,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 length = 0.5,
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             healthText = {
@@ -3561,7 +3561,7 @@ local defaults = {
                 position = {"RIGHT", "RIGHT", -3, 0},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                font = {"BFI 1", 12, "none", true},
+                font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
@@ -3577,7 +3577,7 @@ local defaults = {
                 position = {"TOPRIGHT", "TOPRIGHT", -1, -0.5},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
                 frequent = false,
                 format = {
@@ -3595,7 +3595,7 @@ local defaults = {
                 position = {"TOPLEFT", "TOPLEFT", 3, -0.5},
                 anchorTo = "powerBar",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
@@ -3603,7 +3603,7 @@ local defaults = {
                 position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
                 anchorTo = "levelText",
                 parent = "powerBar",
-                font = {"BFI 2", 9, "monochrome_outline", false},
+                font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
             },
             portrait = {
@@ -3633,13 +3633,13 @@ local defaults = {
                 height = 20,
                 bgColor = AW.GetColorTable("background"),
                 borderColor = AW.GetColorTable("border"),
-                texture = "BFI 1",
+                texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
                 enableInterruptibleCheck = true,
                 nameText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 23, 0},
                     color = AW.GetColorTable("white"),
                     length = 0.5,
@@ -3647,7 +3647,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 12, "none", true},
+                    font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -3, 0},
                     format = "%.1f",
                     color = AW.GetColorTable("white"),
@@ -3713,7 +3713,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -3723,7 +3723,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },
@@ -3765,7 +3765,7 @@ local defaults = {
                 },
                 durationText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
                         AW.GetColorTable("white"), -- normal
@@ -3775,7 +3775,7 @@ local defaults = {
                 },
                 stackText = {
                     enabled = true,
-                    font = {"BFI 1", 10, "outline", false},
+                    font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
                     color = AW.GetColorTable("white"),
                 },

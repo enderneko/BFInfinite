@@ -48,5 +48,7 @@ local uf_colors = {
     swing = {1, 1, 0.1, 1},
     damage = {1, 0.1, 0.1, 1},
     heal = {0.1, 1, 0.1, 1},
+
+    guild = {0.251, 1, 0.251},
 }
 AW.AddColors(uf_colors)
