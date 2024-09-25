@@ -206,10 +206,10 @@ local IsSpellInRange = (C_Spell and C_Spell.IsSpellInRange) and C_Spell.IsSpellI
 local IsItemInRange = (C_Spell and C_Item.IsItemInRange) and C_Item.IsItemInRange or IsItemInRange
 local CheckInteractDistance = CheckInteractDistance
 local UnitIsDead = UnitIsDead
-local IsSpellKnown = IsSpellKnown
+local IsSpellKnownOrOverridesKnown = IsSpellKnownOrOverridesKnown
 
 local UnitInSamePhase
-if UnitPhaseReason then
+if BFI.vars.isRetail then
     UnitInSamePhase = function(unit)
         return not UnitPhaseReason(unit)
     end
@@ -220,23 +220,25 @@ end
 local playerClass = UnitClassBase("player")
 
 local friendSpells = {
-    ["DEATHKNIGHT"] = 61999,
+    -- ["DEATHKNIGHT"] = 47541,
     -- ["DEMONHUNTER"] = ,
-    ["DRUID"] = BFI.vars.isRetail and 8936 or 5185,
-    ["EVOKER"] = 361469,
+    ["DRUID"] = (BFI.vars.isWrath or BFI.vars.isVanilla) and 5185 or 8936, -- 治疗之触 / 愈合
+    -- FIXME: [361469 活化烈焰] 会被英雄天赋 [431443 时序烈焰] 替代，但它而且有问题
+    -- IsSpellInRange 始终返回 nil
+    ["EVOKER"] = 355913, -- 翡翠之花
     -- ["HUNTER"] = 136,
-    ["MAGE"] = 1459,
-    ["MONK"] = 116670,
-    ["PALADIN"] = BFI.vars.isRetail and 19750 or 635,
-    ["PRIEST"] = BFI.vars.isRetail and 2061 or 2050,
-    ["ROGUE"] = BFI.vars.isWrath and 57934,
-    ["SHAMAN"] = BFI.vars.isRetail and 8004 or 331,
-    ["WARLOCK"] = 20707,
-    ["WARRIOR"] = 3411,
+    ["MAGE"] = 1459, -- 奥术智慧 / 奥术光辉
+    ["MONK"] = 116670, -- 活血术
+    ["PALADIN"] = BFI.vars.isRetail and 19750 or 635, -- 圣光闪现 / 圣光术
+    ["PRIEST"] = (BFI.vars.isWrath or BFI.vars.isVanilla) and 2050 or 2061, -- 次级治疗术 / 快速治疗
+    -- ["ROGUE"] = BFI.vars.isWrath and 57934,
+    ["SHAMAN"] = BFI.vars.isRetail and 8004 or 331, -- 治疗之涌 / 治疗波
+    ["WARLOCK"] = 5697, -- 无尽呼吸
+    -- ["WARRIOR"] = 3411,
 }
 
 local deadSpells = {
-    ["EVOKER"] = 361227, -- resurrection range, need separately for evoker
+    ["EVOKER"] = 461526, -- resurrection range, need separately for evoker
 }
 
 local petSpells = {
@@ -244,19 +246,21 @@ local petSpells = {
 }
 
 local harmSpells = {
-    ["DEATHKNIGHT"] = 47541,
-    ["DEMONHUNTER"] = 185123,
-    ["DRUID"] = 5176,
-    ["EVOKER"] = 361469,
-    ["HUNTER"] = 75,
-    ["MAGE"] = BFI.vars.isRetail and 116 or 133,
-    ["MONK"] = 117952,
-    ["PALADIN"] = 20271,
-    ["PRIEST"] = BFI.vars.isRetail and 589 or 585,
-    ["ROGUE"] = 1752,
-    ["SHAMAN"] = BFI.vars.isRetail and 188196 or 403,
-    ["WARLOCK"] = 686,
-    ["WARRIOR"] = 355,
+    ["DEATHKNIGHT"] = 47541, -- 凋零缠绕
+    ["DEMONHUNTER"] = 185123, -- 投掷利刃
+    ["DRUID"] = 5176, -- 愤怒
+    -- FIXME: [361469 活化烈焰] 会被英雄天赋 [431443 时序烈焰] 替代，但它而且有问题
+    -- IsSpellInRange 始终返回 nil
+    ["EVOKER"] = 362969, -- 碧蓝打击
+    ["HUNTER"] = 75, -- 自动射击
+    ["MAGE"] = BFI.vars.isRetail and 116 or 133, -- 寒冰箭 / 火球术
+    ["MONK"] = 117952, -- 碎玉闪电
+    ["PALADIN"] = 20271, -- 审判
+    ["PRIEST"] = BFI.vars.isRetail and 589 or 585, -- 暗言术：痛 / 惩击
+    ["ROGUE"] = 1752, -- 影袭
+    ["SHAMAN"] = BFI.vars.isRetail and 188196 or 403, -- 闪电箭
+    ["WARLOCK"] = 234153, -- 吸取生命
+    ["WARRIOR"] = 355, -- 嘲讽
 }
 
 -- local friendItems = {
@@ -277,42 +281,19 @@ local harmSpells = {
 
 local harmItems = {
     ["DEATHKNIGHT"] = 28767, -- 40y
-    ["DEMONHUNTER"] = 28767,
-    ["DRUID"] = 28767,
+    ["DEMONHUNTER"] = 28767, -- 40y
+    ["DRUID"] = 28767, -- 40y
     ["EVOKER"] = 24268, -- 25y
-    ["HUNTER"] = 28767,
-    ["MAGE"] = 28767,
-    ["MONK"] = 28767,
+    ["HUNTER"] = 28767, -- 40y
+    ["MAGE"] = 28767, -- 40y
+    ["MONK"] = 28767, -- 40y
     ["PALADIN"] = 835, -- 30y
-    ["PRIEST"] = 28767,
-    ["ROGUE"] = 28767,
-    ["SHAMAN"] = 28767,
-    ["WARLOCK"] = 28767,
-    ["WARRIOR"] = 28767,
+    ["PRIEST"] = 28767, -- 40y
+    ["ROGUE"] = 28767, -- 40y
+    ["SHAMAN"] = 28767, -- 40y
+    ["WARLOCK"] = 28767, -- 40y
+    ["WARRIOR"] = 28767, -- 40y
 }
-
--- local FindSpellIndex
--- if C_SpellBook and C_SpellBook.FindSpellBookSlotForSpell then
---     FindSpellIndex = function(spellName)
---         if not spellName or spellName == "" then return end
---         return C_SpellBook.FindSpellBookSlotForSpell(spellName)
---     end
--- else
---     local function GetNumSpells()
---         local _, _, offset, numSpells = GetSpellTabInfo(GetNumSpellTabs())
---         return offset + numSpells
---     end
-
---     FindSpellIndex = function(spellName)
---         if not spellName or spellName == "" then return end
---         for i = 1, GetNumSpells() do
---             local spell = GetSpellBookItemName(i, BOOKTYPE_SPELL)
---             if spell == spellName then
---                 return i
---             end
---         end
---     end
--- end
 
 local UnitInSpellRange
 if C_Spell and C_Spell.IsSpellInRange then
@@ -325,24 +306,55 @@ else
     end
 end
 
-local rc = CreateFrame("Frame")
-rc:RegisterEvent("SPELLS_CHANGED")
-
 local spell_friend, spell_pet, spell_harm, spell_dead
-rc:SetScript("OnEvent", function()
-    if friendSpells[playerClass] and IsSpellKnown(friendSpells[playerClass]) then
-        spell_friend = U.GetSpellInfo(friendSpells[playerClass])
+BFI_RANGE_CHECK_FRIENDLY = {}
+BFI_RANGE_CHECK_HOSTILE = {}
+BFI_RANGE_CHECK_DEAD = {}
+BFI_RANGE_CHECK_PET = {}
+
+local function SPELLS_CHANGED()
+    spell_friend = BFI_RANGE_CHECK_FRIENDLY[playerClass] or friendSpells[playerClass]
+    spell_harm = BFI_RANGE_CHECK_HOSTILE[playerClass] or harmSpells[playerClass]
+    spell_dead = BFI_RANGE_CHECK_DEAD[playerClass] or deadSpells[playerClass]
+    spell_pet = BFI_RANGE_CHECK_PET[playerClass] or petSpells[playerClass]
+
+    if spell_friend and IsSpellKnownOrOverridesKnown(spell_friend) then
+        spell_friend = U.GetSpellInfo(spell_friend)
+    else
+        spell_friend = nil
     end
-    if petSpells[playerClass] and IsSpellKnown(petSpells[playerClass]) then
-        spell_pet = U.GetSpellInfo(petSpells[playerClass])
+    if spell_harm and IsSpellKnownOrOverridesKnown(spell_harm) then
+        spell_harm = U.GetSpellInfo(spell_harm)
+    else
+        spell_harm = nil
     end
-    if harmSpells[playerClass] and IsSpellKnown(harmSpells[playerClass]) then
-        spell_harm = U.GetSpellInfo(harmSpells[playerClass])
+    if spell_dead and IsSpellKnownOrOverridesKnown(spell_dead) then
+        spell_dead = U.GetSpellInfo(spell_dead)
+    else
+        spell_dead = nil
     end
-    if deadSpells[playerClass] and IsSpellKnown(deadSpells[playerClass]) then
-        spell_dead = U.GetSpellInfo(deadSpells[playerClass])
+    if spell_pet and IsSpellKnownOrOverridesKnown(spell_pet) then
+        spell_pet = U.GetSpellInfo(spell_pet)
+    else
+        spell_pet = nil
     end
-end)
+
+    -- BFI.Debug(
+    --     "[RANGE CHECK]",
+    --     "\nfriend:", spell_friend or "nil",
+    --     "\npet:", spell_pet or "nil",
+    --     "\nharm:", spell_harm or "nil",
+    --     "\ndead:", spell_dead or "nil"
+    -- )
+end
+
+local timer
+local function DELAYED_SPELLS_CHANGED()
+    if timer then timer:Cancel() end
+    timer = C_Timer.After(1, SPELLS_CHANGED)
+end
+
+U:RegisterEvent("SPELLS_CHANGED", DELAYED_SPELLS_CHANGED)
 
 function U.IsInRange(unit)
     if not UnitIsVisible(unit) then
@@ -351,6 +363,14 @@ function U.IsInRange(unit)
 
     if UnitIsUnit("player", unit) then
         return true
+
+    -- elseif not check and F:UnitInGroup(unit) then
+    --     -- NOTE: UnitInRange only works with group players/pets --! but not available for PLAYER PET when SOLO
+    --     local inRange, checked = UnitInRange(unit)
+    --     if not checked then
+    --         return F:IsInRange(unit, true)
+    --     end
+    --     return inRange
 
     else
         if UnitCanAssist("player", unit) then
