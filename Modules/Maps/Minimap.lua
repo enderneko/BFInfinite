@@ -180,6 +180,10 @@ local function CreateAddonButtonHolder()
     AW.SetPoint(frame, "BOTTOMLEFT", addonButtonHolder, "TOPLEFT", 0, 1)
     frame:Hide()
 
+    frame.texture = frame:CreateTexture(nil, "ARTWORK")
+    frame.texture:SetAllPoints()
+
+    -- scripts
     addonButtonHolder:SetScript("OnClick", function()
         if frame:IsShown() then
             frame:Hide()
@@ -420,8 +424,13 @@ local function UpdatePixels()
     AW.DefaultUpdatePixels(Minimap)
     AW.DefaultUpdatePixels(ExpansionButton)
     AW.DefaultUpdatePixels(MinimapCluster.Tracking)
-    -- TODO: addonButtonHolder
-    -- TODO: Minimap.clockButton
+    AW.DefaultUpdatePixels(addonButtonHolder)
+    AW.DefaultUpdatePixels(addonButtonHolder.frame)
+    for _, b in pairs(addonButtonHolder.buttons) do
+        AW.DefaultUpdatePixels(b)
+    end
+    AW.DefaultUpdatePixels(Minimap.clockButton)
+    AW.DefaultUpdatePixels(Minimap.instanceDifficultyFrame)
 end
 
 local function InitMinimap()
@@ -448,7 +457,7 @@ local function InitMinimap()
         Minimap.ZoomIn,
         Minimap.ZoomOut,
         Minimap.ZoomHitArea,
-        -- MinimapCluster,
+        MinimapCluster,
         MinimapCluster.Tracking.Background,
         -- MinimapCluster.BorderTop,
         -- MinimapCluster.IndicatorFrame,
@@ -523,7 +532,7 @@ local function UpdateMinimap(module, which)
 
         -- flash
         local anchor = config.clock.position[1]
-        local flashTexture = Minimap.clockButton.f lash.texture
+        local flashTexture = Minimap.clockButton.flash.texture
         if anchor == "TOP" then
             flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("accent")))
         elseif strfind(anchor, "LEFT$") then
@@ -601,6 +610,7 @@ local function UpdateMinimap(module, which)
         addonButtonHolder.buttonAnchor = p
         AW.ClearPoints(addonButtonHolder.frame)
         AW.SetPoint(addonButtonHolder.frame, p, addonButtonHolder, rp, x, y)
+        addonButtonHolder.frame.texture:SetColorTexture(AW.UnpackColor(config.addonButtonHolder.bgColor))
 
         UpdateAddonButtons()
     else

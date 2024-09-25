@@ -51,6 +51,7 @@ local defaults = {
             orientation = "left_to_right",
             spacing = 3,
             anchor = "TOPLEFT",
+            bgColor = AW.GetColorTable("black", 0.27),
             fadeOut = true,
         },
         calendar = {
