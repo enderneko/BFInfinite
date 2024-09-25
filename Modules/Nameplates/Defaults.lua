@@ -109,9 +109,11 @@ local defaults = {
     -- TODO:
     customs = {},
     -- TODO:
-    performanceModeUnits = {
+    optimizedUnits = {
         tapDenied = true,
-        customs = {},
+        customs = {
+
+        },
     }
 }
 
@@ -659,6 +661,10 @@ do
     -- hostile
     defaults.hostile_npc = U.Copy(nameplateDefaults, hostile, hostile_npc)
     defaults.hostile_player = U.Copy(nameplateDefaults, hostile)
+
+    -- update hostile_player
+    defaults.hostile_player.buffs.enabled = false
+    defaults.hostile_player.buffs.glowDispellableByMe = false
 
     -- friendly
     defaults.friendly_npc = U.Copy(nameplateDefaults, friendly)

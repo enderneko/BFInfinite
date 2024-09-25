@@ -63,9 +63,11 @@ local function UnitButton_UpdateBaseStates(self)
     if self.states.inVehicle then
         if unit == "player" then
             self.displayedUnit = "vehicle"
-        else
+        elseif strfind(unit, "%d$") then
             local prefix, id = strmatch(unit, "([^%d]+)([%d]+)")
             self.displayedUnit = prefix.."pet"..id
+        else
+            self.displayedUnit = prefix.."pet"
         end
     else
         self.displayedUnit = self.unit

@@ -28,9 +28,31 @@ function NP.CreateIndicators(np)
     end
 end
 
-function NP.SetupIndicators(np, config)
-    for name in pairs(builders) do
-        NP.LoadIndicatorConfig(np, name, config[name])
+local efficiencyModeIndicators = {
+    healthBar = true,
+    nameText = true,
+    targetIndicator = true,
+    healthText = false,
+    castBar = false,
+    rareIndicator = false,
+    raidIcon = false,
+    classIcon = false,
+    debuffs = false,
+    buffs = false,
+    crowdControls = false,
+    questIndicator = false,
+    targetIndicator = false,
+}
+
+function NP.SetupIndicators(np, config, useEfficiencyMode)
+    if useEfficiencyMode then
+        for name, enabled in pairs(efficiencyModeIndicators) do
+            NP.LoadIndicatorConfig(np, name, enabled and config[name])
+        end
+    else
+        for name in pairs(builders) do
+            NP.LoadIndicatorConfig(np, name, config[name])
+        end
     end
 end
 

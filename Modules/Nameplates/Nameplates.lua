@@ -429,6 +429,19 @@ local function Show(np)
     UpdateWidgetContainer(np)
     UpdateNameplateBase(np)
 
+    if strfind(np.type, "npc$") then
+        np.npcId = select(6, strsplit("-", np.guid))
+        np.npcId = tonumber(np.npcId)
+        if np.npcId == 220626 then
+            np.useEfficiencyMode = true
+        else
+            np.useEfficiencyMode = nil
+        end
+    else
+        np.npcId = nil
+        np.useEfficiencyMode = nil
+    end
+
     -- if guid ~= np.guid then
     --     np.guid = guid
     --     -- BFI.Debug("|cffff7700NP.UnitChanged:|r", np:GetName())
@@ -439,7 +452,7 @@ local function Show(np)
     if np.previousType ~= np.type then
         -- BFI.Debug("|cffffff00NP.UnitTypeChanged:|r", np:GetName(), np.previousType, "->", np.type)
         np.previousType = np.type
-        NP.SetupIndicators(np, NP.config[np.type])
+        NP.SetupIndicators(np, NP.config[np.type], np.useEfficiencyMode)
     end
 
     -- show
@@ -458,7 +471,7 @@ local function Hide(np)
     np:Hide()
     wipe(np.states)
     U.RemoveElementsByKeys(np,
-        "unit", "guid", "elapsed",
+        "unit", "guid", "npcId", "elapsed",
         "widgetsOnly", "isGameObject"
     )
 
