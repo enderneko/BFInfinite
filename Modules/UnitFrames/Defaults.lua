@@ -144,7 +144,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -154,7 +154,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -641,7 +641,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -651,7 +651,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -1056,7 +1056,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -1066,7 +1066,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -1405,7 +1405,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -1415,7 +1415,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -1762,7 +1762,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -1772,7 +1772,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -2111,7 +2111,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -2121,7 +2121,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -2460,7 +2460,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -2470,7 +2470,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -2812,7 +2812,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -2822,7 +2822,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -3224,7 +3224,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = false,
                 },
@@ -3234,7 +3234,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -3507,7 +3507,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -3517,7 +3517,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Shield"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe"), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {

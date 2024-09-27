@@ -563,12 +563,12 @@ function UF.CreateHealthBar(parent, name)
     healPrediction:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
 
     -- shield
-    local shield = bar:CreateTexture(name.."Shield", "ARTWORK", nil, 2)
+    local shield = bar:CreateTexture(name.."Stripe", "ARTWORK", nil, 2)
     bar.shield = shield
     shield:Hide()
     shield:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
     shield:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
-    shield:SetTexture(AW.GetTexture("Shield"), "REPEAT", "REPEAT")
+    shield:SetTexture(AW.GetTexture("Stripe"), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
 
@@ -604,7 +604,7 @@ function UF.CreateHealthBar(parent, name)
     healAbsorb:Hide()
     healAbsorb:SetPoint("TOPRIGHT", bar.fg)
     healAbsorb:SetPoint("BOTTOMRIGHT", bar.fg)
-    healAbsorb:SetTexture(AW.GetTexture("Shield"), "REPEAT", "REPEAT")
+    healAbsorb:SetTexture(AW.GetTexture("Stripe"), "REPEAT", "REPEAT")
     healAbsorb:SetHorizTile(true)
     healAbsorb:SetVertTile(true)
 

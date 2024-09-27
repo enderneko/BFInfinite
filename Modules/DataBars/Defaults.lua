@@ -27,6 +27,17 @@ local defaults = {
         incompleteQuests = {enabled = false, color = AW.GetColorTable("exp_incomplete")},
         rested = {enabled = true, color = AW.GetColorTable("exp_rested")},
     },
+    reputationBar = {
+        enabled = true,
+        position = {"BOTTOM", 166, 1},
+        width = 330,
+        height = 5,
+        colors = {
+            border = AW.GetColorTable("border"),
+            background = AW.GetColorTable("background"),
+            normal = AW.GetColorTable("exp_normal_start"),
+        },
+    },
 }
 
 BFI.RegisterCallback("UpdateConfigs", "DataBars", function(t)

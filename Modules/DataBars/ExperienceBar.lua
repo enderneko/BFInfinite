@@ -6,7 +6,7 @@ local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
 
-local IsXPUserDisabled = IsXPUserDisabled -- TODO:
+local IsXPUserDisabled = IsXPUserDisabled
 local UnitXP = UnitXP
 local UnitXPMax = UnitXPMax
 local UnitLevel = UnitLevel
@@ -109,13 +109,18 @@ end
 -- update xp
 ---------------------------------------------------------------------
 local function UpdateXP(self)
-    local disabled = IsXPUserDisabled()
     local maxLevel = GetMaxLevelForLatestExpansion() --? GetMaxPlayerLevel()
     self.playerLevel = UnitLevel("player")
 
     if self.hideAtMaxLevel and self.playerLevel >= maxLevel then
         self:Hide()
         return
+    end
+
+    if IsXPUserDisabled() then
+        self.disabledTexture:Show()
+    else
+        self.disabledTexture:Hide()
     end
 
     self.currentXP = UnitXP("player")
@@ -131,15 +136,15 @@ local function UpdateXP(self)
 
     -- complete
     if self.completeEnabled then
-        -- print("completeTex:", U.Clamp(self.completeXP, 0.001, self.remainingXP))
-        self.completeTex:SetWidth(U.Clamp(self.completeXP, 0.001, self.remainingXP) / self.maxXP * width)
+        -- print("completeTexture:", U.Clamp(self.completeXP, 0.001, self.remainingXP))
+        self.completeTexture:SetWidth(U.Clamp(self.completeXP, 0.001, self.remainingXP) / self.maxXP * width)
         self.remainingXP = self.remainingXP - self.completeXP
     end
 
     -- incomplete
     if self.incompleteEnabled then
-        -- print("incompleteTex:", U.Clamp(self.incompleteXP, 0.001, self.remainingXP))
-        self.incompleteTex:SetWidth(U.Clamp(self.incompleteXP, 0.001, self.remainingXP) / self.maxXP * width)
+        -- print("incompleteTexture:", U.Clamp(self.incompleteXP, 0.001, self.remainingXP))
+        self.incompleteTexture:SetWidth(U.Clamp(self.incompleteXP, 0.001, self.remainingXP) / self.maxXP * width)
         self.remainingXP = self.remainingXP - self.incompleteXP
     end
 
@@ -150,9 +155,11 @@ local function UpdateXP(self)
     end
 
     -- text
-    self.leftText:SetText(FormatText(self.leftFormat))
-    self.centerText:SetText(FormatText(self.centerFormat))
-    self.rightText:SetText(FormatText(self.rightFormat))
+    if self.textEnabled then
+        self.leftText:SetText(FormatText(self.leftFormat))
+        self.centerText:SetText(FormatText(self.centerFormat))
+        self.rightText:SetText(FormatText(self.rightFormat))
+    end
 end
 
 ---------------------------------------------------------------------
@@ -165,13 +172,22 @@ local function CreateExperienceBar()
     AW.CreateMover(experienceBar, L["Data Bars"], L["Experience Bar"])
     AW.AddToPixelUpdater(experienceBar)
 
+    -- disabled
+    local disabledTexture = experienceBar:CreateTexture(nil, "OVERLAY")
+    experienceBar.disabledTexture = disabledTexture
+    disabledTexture:SetAllPoints(experienceBar.bg)
+    disabledTexture:SetTexture(AW.GetTexture("Stripe"), "REPEAT", "REPEAT")
+    disabledTexture:SetHorizTile(true)
+    disabledTexture:SetVertTile(true)
+    disabledTexture:SetVertexColor(AW.GetColorRGB("disabled", 0.75))
+
     -- complete
-    local completeTex = experienceBar:CreateTexture(nil, "ARTWORK")
-    experienceBar.completeTex = completeTex
+    local completeTexture = experienceBar:CreateTexture(nil, "ARTWORK")
+    experienceBar.completeTexture = completeTexture
 
     -- incomplete
-    local incompleteTex = experienceBar:CreateTexture(nil, "ARTWORK")
-    experienceBar.incompleteTex = incompleteTex
+    local incompleteTexture = experienceBar:CreateTexture(nil, "ARTWORK")
+    experienceBar.incompleteTexture = incompleteTexture
 
     -- rested
     local restedTex = experienceBar:CreateTexture(nil, "ARTWORK")
@@ -263,27 +279,27 @@ local function UpdateXPerienceBar(module, which)
     -- complete
     experienceBar.completeEnabled = config.completeQuests.enabled
     if config.completeQuests.enabled then
-        experienceBar.completeTex:SetTexture(texture)
-        experienceBar.completeTex:SetVertexColor(AW.UnpackColor(config.completeQuests.color))
-        experienceBar.completeTex:SetPoint("TOPLEFT", anchorTo, "TOPRIGHT")
-        experienceBar.completeTex:SetPoint("BOTTOMLEFT", anchorTo, "BOTTOMRIGHT")
-        experienceBar.completeTex:Show()
-        anchorTo = experienceBar.completeTex
+        experienceBar.completeTexture:SetTexture(texture)
+        experienceBar.completeTexture:SetVertexColor(AW.UnpackColor(config.completeQuests.color))
+        experienceBar.completeTexture:SetPoint("TOPLEFT", anchorTo, "TOPRIGHT")
+        experienceBar.completeTexture:SetPoint("BOTTOMLEFT", anchorTo, "BOTTOMRIGHT")
+        experienceBar.completeTexture:Show()
+        anchorTo = experienceBar.completeTexture
     else
-        experienceBar.completeTex:Hide()
+        experienceBar.completeTexture:Hide()
     end
 
     -- incomplete
     experienceBar.incompleteEnabled = config.incompleteQuests.enabled
     if config.incompleteQuests.enabled then
-        experienceBar.incompleteTex:SetTexture(texture)
-        experienceBar.incompleteTex:SetVertexColor(AW.UnpackColor(config.incompleteQuests.color))
-        experienceBar.incompleteTex:SetPoint("TOPLEFT", anchorTo, "TOPRIGHT")
-        experienceBar.incompleteTex:SetPoint("BOTTOMLEFT", anchorTo, "BOTTOMRIGHT")
-        experienceBar.incompleteTex:Show()
-        anchorTo = experienceBar.incompleteTex
+        experienceBar.incompleteTexture:SetTexture(texture)
+        experienceBar.incompleteTexture:SetVertexColor(AW.UnpackColor(config.incompleteQuests.color))
+        experienceBar.incompleteTexture:SetPoint("TOPLEFT", anchorTo, "TOPRIGHT")
+        experienceBar.incompleteTexture:SetPoint("BOTTOMLEFT", anchorTo, "BOTTOMRIGHT")
+        experienceBar.incompleteTexture:Show()
+        anchorTo = experienceBar.incompleteTexture
     else
-        experienceBar.incompleteTex:Hide()
+        experienceBar.incompleteTexture:Hide()
     end
 
     -- rested

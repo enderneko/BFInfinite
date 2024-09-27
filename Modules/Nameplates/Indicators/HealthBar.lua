@@ -487,12 +487,12 @@ function NP.CreateHealthBar(parent, name)
     BFI.AddEventHandler(bar)
 
     -- shield
-    local shield = bar:CreateTexture(name.."Shield", "ARTWORK", nil, 2)
+    local shield = bar:CreateTexture(name.."Stripe", "ARTWORK", nil, 2)
     bar.shield = shield
     shield:Hide()
     shield:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
     shield:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
-    shield:SetTexture(AW.GetTexture("Shield"), "REPEAT", "REPEAT")
+    shield:SetTexture(AW.GetTexture("Stripe"), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
 
