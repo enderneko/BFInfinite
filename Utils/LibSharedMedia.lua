@@ -9,6 +9,7 @@ local LSM = LibStub("LibSharedMedia-3.0", true)
 -- statusbar
 local DEFAULT_BAR_TEXTURE = AW.GetTexture("StatusBar")
 LSM:Register("statusbar", "BFI", DEFAULT_BAR_TEXTURE)
+LSM:Register("statusbar", "BFI Plain", AW.GetPlainTexture())
 
 -- font
 local DEFAULT_FONT = AW.GetFont("Noto_AP_SC")

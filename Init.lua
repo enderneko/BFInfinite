@@ -13,6 +13,7 @@ _G.BFI = BFI
 ---@field UnitFrames UnitFrames
 ---@field NamePlates NamePlates
 ---@field Maps Maps
+---@field DataBars DataBars
 ---@field UIWidgets UIWidgets
 ---@field DisableBlizzard DisableBlizzard
 ---@field Misc Misc
@@ -81,6 +82,9 @@ BFI.AddEventHandler(BFI.NamePlates)
 
 BFI.Maps = {}
 BFI.AddEventHandler(BFI.Maps)
+
+BFI.DataBars = {}
+BFI.AddEventHandler(BFI.DataBars)
 
 ---------------------------------------------------------------------
 -- hidden parent

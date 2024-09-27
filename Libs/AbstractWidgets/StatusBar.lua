@@ -102,6 +102,9 @@ local prototype = {
     SetColor = function(self, r, g, b, a)
         self.fg:SetVertexColor(r, g, b, a)
     end,
+    SetGradientColor = function(self, startColor, endColor)
+        self.fg:SetGradient("HORIZONTAL", CreateColor(AW.UnpackColor(startColor)), CreateColor(AW.UnpackColor(endColor)))
+    end,
     SetLossColor = function(self, r, g, b, a)
         self.loss:SetVertexColor(r, g, b, a)
     end,

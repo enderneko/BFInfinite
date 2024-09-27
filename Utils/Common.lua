@@ -49,6 +49,24 @@ function U.ApproxZero(n)
     return U.ApproxEqual(n, 0)
 end
 
+function U.Round(num, numDecimalPlaces)
+    if numDecimalPlaces and numDecimalPlaces >= 0 then
+        local mult = 10 ^ numDecimalPlaces
+        return floor(num * mult + 0.5) / mult
+    end
+    return floor(num + 0.5)
+end
+
+function U.Clamp(value, minValue, maxValue)
+    maxValue = max(minValue, maxValue) -- to ensure maxValue >= minValue
+    if value > maxValue then
+        return maxValue
+    elseif value < minValue then
+        return minValue
+    end
+    return value
+end
+
 ---------------------------------------------------------------------
 -- string
 ---------------------------------------------------------------------

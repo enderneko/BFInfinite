@@ -533,7 +533,7 @@ local function UpdateMinimap(module, which)
         -- flash
         local anchor = config.clock.position[1]
         local flashTexture = Minimap.clockButton.flash.texture
-        if anchor == "TOP" then
+        if strfind(anchor, "^TOP") then
             flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("accent")))
         elseif strfind(anchor, "LEFT$") then
             flashTexture:SetGradient("HORIZONTAL", CreateColor(AW.GetColorRGB("accent")), CreateColor(AW.GetColorRGB("none")))
