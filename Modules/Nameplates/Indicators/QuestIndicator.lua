@@ -85,7 +85,7 @@ end
 local timer
 local function DelayedUpdate()
     if timer then timer:Cancel() end
-    timer = C_Timer.After(1, UpdateQuests)
+    timer = C_Timer.NewTimer(1, UpdateQuests)
 end
 
 function NP.EnableQuestIndicator(enabled, _hideInInstance)

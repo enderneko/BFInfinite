@@ -47,10 +47,16 @@ local function UpdatePixels()
     AW.UpdatePixels()
 end
 
+local timer
+local function DelayedUpdatePixels()
+    if timer then timer:Cancel() end
+    timer = C_Timer.NewTimer(1, UpdatePixels)
+end
+
 -- hooksecurefunc(UIParent, "SetScale", UpdatePixels)
 AW.UIParent:RegisterEvent("DISPLAY_SIZE_CHANGED")
 AW.UIParent:RegisterEvent("UI_SCALE_CHANGED")
-AW.UIParent:SetScript("OnEvent", UpdatePixels)
+AW.UIParent:SetScript("OnEvent", DelayedUpdatePixels)
 
 function AW.SetIgnoreParentScale(ignore)
     AW.UIParent:SetIgnoreParentScale(ignore)

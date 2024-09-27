@@ -351,7 +351,7 @@ end
 local timer
 local function DELAYED_SPELLS_CHANGED()
     if timer then timer:Cancel() end
-    timer = C_Timer.After(1, SPELLS_CHANGED)
+    timer = C_Timer.NewTimer(1, SPELLS_CHANGED)
 end
 
 U:RegisterEvent("SPELLS_CHANGED", DELAYED_SPELLS_CHANGED)
