@@ -17,7 +17,7 @@ local defaults = {
             showOnHover = true,
             font = {"Visitor", 9, "monochrome_outline", false},
             leftFormat = "[level]",
-            centerFormat = "[current] + [complete] / [total]",
+            centerFormat = "[remaining]",
             rightFormat = "[percent]",
         },
         borderColor = AW.GetColorTable("border"),

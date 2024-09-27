@@ -218,20 +218,16 @@ local function CreateExperienceBar()
 
     -- script
     experienceBar:SetScript("OnShow", function()
-        -- QUEST_LOG_UPDATE
-        -- UNIT_QUEST_LOG_CHANGED
-        -- PLAYER_XP_UPDATE
-        -- PLAYER_LEVEL_UP
-        -- UPDATE_EXHAUSTION
-        -- UPDATE_EXPANSION_LEVEL
-        -- MAX_EXPANSION_LEVEL_UPDATED
-        -- TIME_PLAYED_MSG
-        -- ENABLE_XP_GAIN
-        -- DISABLE_XP_GAIN
-
         experienceBar:RegisterEvent("PLAYER_ENTERING_WORLD", UpdateXP)
         experienceBar:RegisterEvent("UPDATE_EXPANSION_LEVEL", UpdateXP)
         experienceBar:RegisterEvent("MAX_EXPANSION_LEVEL_UPDATED", UpdateXP)
+        experienceBar:RegisterEvent("QUEST_LOG_UPDATE", UpdateXP)
+        experienceBar:RegisterEvent("UNIT_QUEST_LOG_CHANGED", UpdateXP)
+        experienceBar:RegisterEvent("PLAYER_XP_UPDATE", UpdateXP)
+        experienceBar:RegisterEvent("PLAYER_LEVEL_UP", UpdateXP)
+        experienceBar:RegisterEvent("UPDATE_EXHAUSTION", UpdateXP)
+        experienceBar:RegisterEvent("ENABLE_XP_GAIN", UpdateXP)
+        experienceBar:RegisterEvent("DISABLE_XP_GAIN", UpdateXP)
     end)
 
     experienceBar:SetScript("OnHide", function()
