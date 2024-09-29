@@ -64,6 +64,7 @@ local function CreateParty()
 
     for i = 1, 5 do
         header[i]._updateOnGroupUpdate = true
+        header[i].enableUnitButtonMapping = true
         UF.AddToConfigMode("party", header[i])
         UF.CreateIndicators(header[i], indicators)
     end

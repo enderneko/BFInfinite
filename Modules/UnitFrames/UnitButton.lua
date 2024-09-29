@@ -350,7 +350,7 @@ local function UnitButton_OnHide(self)
         if not self.skipDataCache then BFI.vars.names[self.__unitName] = nil end
         self.__unitName = nil
     end
-    if self.enableUnitButtonMapping then
+    if self.unit and self.enableUnitButtonMapping then
         BFI.vars.units[self.unit] = nil
     end
     self.__displayedGuid = nil
@@ -372,7 +372,7 @@ local function UnitButton_OnAttributeChanged(self, name, value)
                 if not self.skipDataCache then BFI.vars.names[self.__unitName] = nil end
                 self.__unitName = nil
             end
-            if self.enableUnitButtonMapping then
+            if self.unit and self.enableUnitButtonMapping then
                 BFI.vars.units[self.unit] = nil
             end
             wipe(self.states)
@@ -445,7 +445,11 @@ end
 ---------------------------------------------------------------------
 -- onload
 ---------------------------------------------------------------------
+BFI.vars.unitButtons = {}
+
 function BFIUnitButton_OnLoad(self)
+    BFI.vars.unitButtons[self:GetName()] = self
+
     -- tables
     self.states = {}
     self.indicators = {}
@@ -471,9 +475,19 @@ function BFIUnitButton_OnLoad(self)
     self:SetScript("OnLeave", UnitButton_OnLeave)
     self:SetScript("OnUpdate", UnitButton_OnUpdate)
     self:SetScript("OnEvent", UnitButton_OnEvent)
-    BFI.RegisterCallback("EnterInstance", self:GetName(), UnitButton_UpdateAll)
-    BFI.RegisterCallback("LeaveInstance", self:GetName(), UnitButton_UpdateAll)
 
     -- pixel perfect
     AW.AddToPixelUpdater(self, UnitButton_UpdatePixels)
 end
+
+---------------------------------------------------------------------
+-- resfresh all when enter/leave instance
+---------------------------------------------------------------------
+local function UpdateAllUnitButtons()
+    print("UpdateAllUnitButtons")
+    for _, b in pairs(BFI.vars.unitButtons) do
+        UnitButton_UpdateAll(b)
+    end
+end
+BFI.RegisterCallback("EnterInstance", "BFI_UnitFrames", UpdateAllUnitButtons)
+BFI.RegisterCallback("LeaveInstance", "BFI_UnitFrames", UpdateAllUnitButtons)

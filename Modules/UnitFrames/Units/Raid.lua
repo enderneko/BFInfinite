@@ -68,6 +68,7 @@ local function CreateRaid()
 
     for i = 1, 40 do
         header[i]._updateOnGroupUpdate = true
+        header[i].enableUnitButtonMapping = true
         UF.AddToConfigMode("raid", header[i])
         UF.CreateIndicators(header[i], indicators)
     end
