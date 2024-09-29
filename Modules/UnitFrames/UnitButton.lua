@@ -67,7 +67,7 @@ local function UnitButton_UpdateBaseStates(self)
             local prefix, id = strmatch(unit, "([^%d]+)([%d]+)")
             self.displayedUnit = prefix.."pet"..id
         else
-            self.displayedUnit = prefix.."pet"
+            self.displayedUnit = unit.."pet"
         end
     else
         self.displayedUnit = self.unit
@@ -471,6 +471,8 @@ function BFIUnitButton_OnLoad(self)
     self:SetScript("OnLeave", UnitButton_OnLeave)
     self:SetScript("OnUpdate", UnitButton_OnUpdate)
     self:SetScript("OnEvent", UnitButton_OnEvent)
+    BFI.RegisterCallback("EnterInstance", self:GetName(), UnitButton_UpdateAll)
+    BFI.RegisterCallback("LeaveInstance", self:GetName(), UnitButton_UpdateAll)
 
     -- pixel perfect
     AW.AddToPixelUpdater(self, UnitButton_UpdatePixels)
