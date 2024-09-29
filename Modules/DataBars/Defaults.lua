@@ -12,6 +12,7 @@ local defaults = {
         width = 330,
         height = 5,
         texture = "BFI Plain",
+        hideAtMaxLevel = true,
         texts = {
             enabled = true,
             showOnHover = true,

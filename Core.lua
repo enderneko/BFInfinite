@@ -6,7 +6,7 @@ local U = BFI.utils
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
-eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventFrame:RegisterEvent("UPDATE_INSTANCE_INFO")
 
 eventFrame:SetScript("OnEvent", function(self, event, ...)
     self[event](self, ...)
@@ -54,7 +54,7 @@ end
 local inInstance
 local IsInInstance = IsInInstance
 -- local GetInstanceInfo = GetInstanceInfo
-function eventFrame:PLAYER_ENTERING_WORLD()
+function eventFrame:UPDATE_INSTANCE_INFO()
     local isIn, iType = IsInInstance()
     BFI.vars.inInstance = isIn
     if isIn then

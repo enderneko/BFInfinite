@@ -20,47 +20,7 @@ local GetXPExhaustion = GetXPExhaustion
 local BreakUpLargeNumbers = BreakUpLargeNumbers
 
 local experienceBar
-local UpdateXP, UpdateQuestXP, UpdateText
-
----------------------------------------------------------------------
--- quest xp
----------------------------------------------------------------------
-function UpdateQuestXP(self)
-    self.completeXP, self.incompleteXP = 0, 0
-    local questID, rewardXP
-    for i = 1, GetNumQuestLogEntries() do
-        questID = GetQuestIDForLogIndex(i)
-        if questID then
-            rewardXP = GetQuestLogRewardXP(questID)
-
-            if rewardXP then
-                if IsQuestComplete(questID) or ReadyForTurnIn(questID) then
-                    self.completeXP = self.completeXP + rewardXP
-                else
-                    self.incompleteXP = self.incompleteXP + rewardXP
-                end
-            end
-        end
-    end
-
-    local width = self:GetBarWidth()
-
-    -- complete
-    if self.completeEnabled then
-        -- print("completeTexture:", U.Clamp(self.completeXP, 0.001, self.remainingXP))
-        self.completeTexture:SetWidth(U.Clamp(self.completeXP, 0.001, self.remainingXP) / self.maxXP * width)
-        self.remainingXP = self.remainingXP - self.completeXP
-    end
-
-    -- incomplete
-    if self.incompleteEnabled then
-        -- print("incompleteTexture:", U.Clamp(self.incompleteXP, 0.001, self.remainingXP))
-        self.incompleteTexture:SetWidth(U.Clamp(self.incompleteXP, 0.001, self.remainingXP) / self.maxXP * width)
-        self.remainingXP = self.remainingXP - self.incompleteXP
-    end
-
-    UpdateText(self)
-end
+local UpdateXP, UpdateQuestXP
 
 ---------------------------------------------------------------------
 -- text
@@ -85,7 +45,7 @@ local formatter = {
         return BreakUpLargeNumbers(experienceBar.incompleteXP)
     end,
     level = function()
-        return experienceBar.playerLevel
+        return UnitLevel("player")
     end
 }
 
@@ -123,7 +83,34 @@ local function UpdateTextVisibility(showOnHover)
     end
 end
 
-function UpdateText(self)
+---------------------------------------------------------------------
+-- UpdateBarAndText
+---------------------------------------------------------------------
+local function UpdateBarAndText(self)
+    local width = self:GetBarWidth()
+
+    local remainingXP = self.maxXP - self.currentXP
+
+    -- complete
+    if self.completeEnabled then
+        -- print("completeTexture:", U.Clamp(self.completeXP, 0.001, remainingXP))
+        self.completeTexture:SetWidth(U.Clamp(self.completeXP, 0.001, remainingXP) / self.maxXP * width)
+        remainingXP = remainingXP - self.completeXP
+    end
+
+    -- incomplete
+    if self.incompleteEnabled then
+        -- print("incompleteTexture:", U.Clamp(self.incompleteXP, 0.001, remainingXP))
+        self.incompleteTexture:SetWidth(U.Clamp(self.incompleteXP, 0.001, remainingXP) / self.maxXP * width)
+        remainingXP = remainingXP - self.incompleteXP
+    end
+
+    -- rested
+    if self.restedEnabled then
+        -- print("restedTex:", U.Clamp(self.restedXP, 0.001, remainingXP))
+        self.restedTex:SetWidth(U.Clamp(self.restedXP, 0.001, remainingXP) / self.maxXP * width)
+    end
+
     -- text
     if self.textEnabled then
         self.leftText:SetText(FormatText(self.leftFormat))
@@ -133,13 +120,35 @@ function UpdateText(self)
 end
 
 ---------------------------------------------------------------------
+-- quest xp
+---------------------------------------------------------------------
+function UpdateQuestXP(self)
+    self.completeXP, self.incompleteXP = 0, 0
+    local questID, rewardXP
+    for i = 1, GetNumQuestLogEntries() do
+        questID = GetQuestIDForLogIndex(i)
+        if questID then
+            rewardXP = GetQuestLogRewardXP(questID)
+
+            if rewardXP then
+                if IsQuestComplete(questID) or ReadyForTurnIn(questID) then
+                    self.completeXP = self.completeXP + rewardXP
+                else
+                    self.incompleteXP = self.incompleteXP + rewardXP
+                end
+            end
+        end
+    end
+
+    UpdateBarAndText(self)
+end
+
+---------------------------------------------------------------------
 -- update xp
 ---------------------------------------------------------------------
 function UpdateXP(self)
-    local maxLevel = GetMaxLevelForLatestExpansion() --? GetMaxPlayerLevel()
-    self.playerLevel = UnitLevel("player")
-
-    if self.hideAtMaxLevel and self.playerLevel >= maxLevel then
+    -- level check
+    if self.hideAtMaxLevel and U.IsMaxLevel() then
         self:Hide()
         return
     end
@@ -152,7 +161,6 @@ function UpdateXP(self)
 
     self.currentXP = UnitXP("player")
     self.maxXP = UnitXPMax("player")
-    self.remainingXP = self.maxXP - self.currentXP
 
     self:SetMinMaxValues(0, self.maxXP)
     self:SetBarValue(self.currentXP)
@@ -160,13 +168,7 @@ function UpdateXP(self)
     local width = self:GetBarWidth()
     self.restedXP = GetXPExhaustion() or 0
 
-    -- rested
-    if self.restedEnabled then
-        -- print("restedTex:", U.Clamp(self.restedXP, 0.001, self.remainingXP))
-        self.restedTex:SetWidth(U.Clamp(self.restedXP, 0.001, self.remainingXP) / self.maxXP * width)
-    end
-
-    UpdateText(self)
+    UpdateBarAndText(self)
 end
 
 ---------------------------------------------------------------------
@@ -176,6 +178,7 @@ local function CreateExperienceBar()
     experienceBar = AW.CreateSimpleBar(AW.UIParent, "BFI_ExperienceBar")
     experienceBar.loss:Hide()
     experienceBar:Hide()
+
     AW.CreateMover(experienceBar, L["Data Bars"], L["Experience Bar"])
     AW.AddToPixelUpdater(experienceBar)
 
@@ -225,7 +228,6 @@ local function CreateExperienceBar()
 
     -- script
     experienceBar:SetScript("OnShow", function()
-        experienceBar:RegisterEvent("PLAYER_ENTERING_WORLD", UpdateXP)
         experienceBar:RegisterEvent("UPDATE_EXPANSION_LEVEL", UpdateXP)
         experienceBar:RegisterEvent("MAX_EXPANSION_LEVEL_UPDATED", UpdateXP)
         experienceBar:RegisterEvent("PLAYER_XP_UPDATE", UpdateXP)
@@ -240,12 +242,18 @@ local function CreateExperienceBar()
     experienceBar:SetScript("OnHide", function()
         experienceBar:UnregisterAllEvents()
     end)
+
+    -- init
+    experienceBar.currentXP = 0
+    experienceBar.maxXP = 1
+    experienceBar.completeXP = 0
+    experienceBar.incompleteXP = 0
+    experienceBar.restedXP = 0
 end
 
 local function UpdateAll(self)
     UpdateXP(self)
     UpdateQuestXP(self)
-    UpdateText(self)
 end
 
 ---------------------------------------------------------------------
@@ -339,7 +347,7 @@ local function UpdateXPerienceBar(module, which)
 
     experienceBar.hideAtMaxLevel = config.hideAtMaxLevel
 
-    UpdateAll(experienceBar)
     experienceBar:Show()
+    UpdateAll(experienceBar)
 end
 BFI.RegisterCallback("UpdateModules", "DB_ExperienceBar", UpdateXPerienceBar)

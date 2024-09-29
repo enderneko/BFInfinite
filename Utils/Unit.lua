@@ -93,6 +93,12 @@ function U.IsVehicle(guid)
     return strfind(guid, "^Vehicle")
 end
 
+function U.IsMaxLevel()
+    local maxLevel = GetMaxLevelForLatestExpansion() --? GetMaxPlayerLevel()
+    local playerLevel = UnitLevel("player")
+    return playerLevel >= maxLevel
+end
+
 ---------------------------------------------------------------------
 -- name
 ---------------------------------------------------------------------
