@@ -580,7 +580,7 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
 
-    local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID, isEmpowered, numEmpowerStages = UnitCastingInfo(unit)
+    local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo(unit)
     self.castType = "cast"
 
     if not name then
