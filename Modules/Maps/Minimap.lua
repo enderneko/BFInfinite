@@ -370,6 +370,15 @@ local function UpdateInstanceDifficulty(_, event, arg)
     AW.SetSizeToFitText(Minimap.instanceDifficultyFrame, Minimap.instanceDifficultyFrame.text)
 end
 
+local function UpdateGuild()
+    if IsInGuild() then
+        RequestGuildPartyState()
+    else
+        Minimap.instanceDifficultyFrame.isGuildGroup = false
+        UpdateInstanceDifficulty()
+    end
+end
+
 local function CreateInstanceDifficulty()
     local instanceDifficultyFrame = CreateFrame("Frame", "BFI_InstanceDifficultyFrame", Minimap)
     Minimap.instanceDifficultyFrame = instanceDifficultyFrame
@@ -381,35 +390,51 @@ local function CreateInstanceDifficulty()
     local classcolor = "|c" .. RAID_CLASS_COLORS[UnitClassBase("player")].colorStr
 
     -- NOTE: GuildInstanceDifficultyMixin.OnEnter
-    instanceDifficultyFrame:SetScript("OnEnter", GuildInstanceDifficultyMixin.OnEnter)
-    -- instanceDifficultyFrame:SetScript("OnEnter", function(self)
-    --     local _, instanceType, difficulty, _, maxPlayers, _, _, _, _, lfgID = GetInstanceInfo()
-    --     local isLFR = select(8, GetDifficultyInfo(difficulty))
+    -- instanceDifficultyFrame:SetScript("OnEnter", GuildInstanceDifficultyMixin.OnEnter)
+    instanceDifficultyFrame:SetScript("OnEnter", function(self)
+        local instanceName, instanceType, difficulty, _, maxPlayers, _, _, _, instanceGroupSize, lfgID = GetInstanceInfo()
+        if instanceType ~= "party" and instanceType ~= "raid" then return end
 
-    --     if isLFR and lfgID then
-    --         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 3)
-    --         local name = GetLFGDungeonInfo(lfgID)
-    --         GameTooltip:SetText(RAID_FINDER, 1, 1, 1)
-    --         GameTooltip:AddLine(name)
-    --         GameTooltip:Show()
-    --     else
-    --         local guildName = GetGuildInfo("player")
-    --         local _, numGuildPresent, numGuildRequired, xpMultiplier = InGuildParty()
-    --         GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 3)
-    --         GameTooltip:SetText(GUILD_GROUP, 1, 1, 1)
-    --         if xpMultiplier < 1 then
-    --             GameTooltip:AddLine(string.format(GUILD_ACHIEVEMENTS_ELIGIBLE_MINXP, numGuildRequired, maxPlayers, guildName, xpMultiplier * 100), nil, nil, nil, true)
-    --         elseif xpMultiplier > 1 then
-    --             GameTooltip:AddLine(string.format(GUILD_ACHIEVEMENTS_ELIGIBLE_MAXXP, guildName, xpMultiplier * 100), nil, nil, nil, true)
-    --         else
-    --             if instanceType == "party" and maxPlayers == 5 then
-    --                 numGuildRequired = 4
-    --             end
-    --             GameTooltip:AddLine(string.format(GUILD_ACHIEVEMENTS_ELIGIBLE, numGuildRequired, maxPlayers, guildName), nil, nil, nil, true)
-    --         end
-    --         GameTooltip:Show()
-    --     end
-    -- end)
+        local difficultyName = DifficultyUtil.GetDifficultyName(difficulty)
+        if not difficultyName then return end
+
+        local isLFR = select(8, GetDifficultyInfo(difficulty))
+
+        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 3)
+
+        if isLFR and lfgID then
+            local name = GetLFGDungeonInfo(lfgID)
+            GameTooltip_SetTitle(GameTooltip, RAID_FINDER)
+            GameTooltip_AddNormalLine(GameTooltip, name)
+            -- GameTooltip_AddNormalLine(GameTooltip, DUNGEON_DIFFICULTY_BANNER_TOOLTIP_PLAYER_COUNT:format(instanceGroupSize, maxPlayers))
+
+        else
+            GameTooltip_SetTitle(GameTooltip, DUNGEON_DIFFICULTY_BANNER_TOOLTIP:format(difficultyName))
+            GameTooltip_AddNormalLine(GameTooltip, instanceName)
+            -- GameTooltip_AddNormalLine(GameTooltip, DUNGEON_DIFFICULTY_BANNER_TOOLTIP_PLAYER_COUNT:format(instanceGroupSize, maxPlayers))
+
+            if self.isGuildGroup then
+                local guildName = GetGuildInfo("player")
+                local _, numGuildPresent, numGuildRequired, xpMultiplier = InGuildParty()
+
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                GameTooltip_AddColoredLine(GameTooltip, GUILD_GROUP, GREEN_FONT_COLOR)
+
+                if xpMultiplier < 1 then
+                    GameTooltip_AddNormalLine(GameTooltip, GUILD_ACHIEVEMENTS_ELIGIBLE_MINXP:format(numGuildRequired, instanceGroupSize, guildName, xpMultiplier * 100), true)
+                elseif xpMultiplier > 1 then
+                    GameTooltip_AddNormalLine(GameTooltip, GUILD_ACHIEVEMENTS_ELIGIBLE_MAXXP:format(guildName, xpMultiplier * 100), true)
+                else
+                    if instanceType == "party" and maxPlayers == 5 then
+                        numGuildRequired = 4
+                    end
+                    GameTooltip_AddNormalLine(GameTooltip, GUILD_ACHIEVEMENTS_ELIGIBLE:format(numGuildRequired, instanceGroupSize, guildName), true)
+                end
+            end
+        end
+
+        GameTooltip:Show()
+    end)
 
     instanceDifficultyFrame:SetScript("OnLeave", function()
         GameTooltip:Hide()
@@ -582,12 +607,18 @@ local function UpdateMinimap(module, which)
         Minimap.instanceDifficultyFrame.config = config.instanceDifficulty
         AW.LoadWidgetPosition(Minimap.instanceDifficultyFrame, config.instanceDifficulty.position)
         U.SetFont(Minimap.instanceDifficultyFrame.text, unpack(config.instanceDifficulty.font))
-        M:RegisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty) -- UPDATE_INSTANCE_INFO INSTANCE_GROUP_SIZE_CHANGED included
+        M:RegisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty)
         M:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", UpdateInstanceDifficulty)
+        M:RegisterEvent("INSTANCE_GROUP_SIZE_CHANGED", UpdateInstanceDifficulty)
+        M:RegisterEvent("UPDATE_INSTANCE_INFO", UpdateInstanceDifficulty)
+        M:RegisterEvent("PLAYER_GUILD_UPDATE", UpdateGuild)
         Minimap.instanceDifficultyFrame:Show()
     else
-        M:UnregisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty) -- UPDATE_INSTANCE_INFO INSTANCE_GROUP_SIZE_CHANGED included
+        M:UnregisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty)
         M:UnregisterEvent("PLAYER_DIFFICULTY_CHANGED", UpdateInstanceDifficulty)
+        M:UnregisterEvent("INSTANCE_GROUP_SIZE_CHANGED", UpdateInstanceDifficulty)
+        M:UnregisterEvent("UPDATE_INSTANCE_INFO", UpdateInstanceDifficulty)
+        M:UnregisterEvent("PLAYER_GUILD_UPDATE", UpdateGuild)
         Minimap.instanceDifficultyFrame:Hide()
     end
 
