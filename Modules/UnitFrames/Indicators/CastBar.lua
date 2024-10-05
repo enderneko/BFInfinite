@@ -253,7 +253,12 @@ local function ResetPips(self)
 end
 
 local function UpdateEmpowerPips(self, numStages)
-    if not numStages then return end
+    if not numStages then
+        for _, pip in pairs(self.pips) do
+            pip:Hide()
+        end
+        return
+    end
 
     local width = self.bar:GetWidth()
     local totalDuration = 0
@@ -580,7 +585,7 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
 
-    local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo(unit)
+    local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID, isEmpowered, numEmpowerStages = UnitCastingInfo(unit)
     self.castType = "cast"
 
     if not name then
