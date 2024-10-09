@@ -44,8 +44,8 @@ local efficiencyModeIndicators = {
     targetIndicator = false,
 }
 
-function NP.SetupIndicators(np, config, useEfficiencyMode)
-    if useEfficiencyMode then
+function NP.SetupIndicators(np, config, mode)
+    if mode == "efficiency" then
         for name, enabled in pairs(efficiencyModeIndicators) do
             NP.LoadIndicatorConfig(np, name, enabled and config[name])
         end

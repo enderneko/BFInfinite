@@ -8,8 +8,11 @@ local DB = BFI.DisableBlizzard
 ---------------------------------------------------------------------
 -- vars
 ---------------------------------------------------------------------
-NP.created = {}
 local SERVER_NAME = GetNormalizedRealmName()
+
+NP.created = {}
+NP.optimizedUnits = {}
+NP.cachedNPCs = {}
 
 ---------------------------------------------------------------------
 -- functions
@@ -429,17 +432,19 @@ local function Show(np)
     UpdateWidgetContainer(np)
     UpdateNameplateBase(np)
 
-    if strfind(np.type, "npc$") then
+    if np.guid and strfind(np.type, "npc$") then
         np.npcId = select(6, strsplit("-", np.guid))
         np.npcId = tonumber(np.npcId)
-        if np.npcId == 220626 then
-            np.useEfficiencyMode = true
+        if NP.optimizedUnits[np.npcId] then
+            np.mode = "efficiency"
         else
-            np.useEfficiencyMode = nil
+            np.mode = "normal"
         end
+        -- cache for user custom
+        NP.cachedNPCs[np.npcId] = np.states.name
     else
         np.npcId = nil
-        np.useEfficiencyMode = nil
+        np.mode = "normal"
     end
 
     -- if guid ~= np.guid then
@@ -449,10 +454,11 @@ local function Show(np)
     -- end
 
     -- load indicator config
-    if np.previousType ~= np.type then
+    if np.previousType ~= np.type or np.previousMode ~= np.mode then
         -- BFI.Debug("|cffffff00NP.UnitTypeChanged:|r", np:GetName(), np.previousType, "->", np.type)
         np.previousType = np.type
-        NP.SetupIndicators(np, NP.config[np.type], np.useEfficiencyMode)
+        np.previousMode = np.mode
+        NP.SetupIndicators(np, NP.config[np.type], np.mode)
     end
 
     -- show
@@ -612,7 +618,7 @@ local function UpdateNameplates(module, which)
     SetNamePlateEnemySize(config.hostileClickableAreaWidth, config.hostileClickableAreaHeight)
 
     -- alphas
-    alphas = NP.config.alphas
+    alphas = config.alphas
     -- occluded_alpha = 0.6 * alphas.occluded.value
     occluded_alpha = alphas.occluded.value + 0.05
     wipe(alpha_funcs)
@@ -623,12 +629,19 @@ local function UpdateNameplates(module, which)
     end
 
     -- scales
-    scales = NP.config.scales
+    scales = config.scales
     wipe(scale_funcs)
     for _, k in pairs(scale_order) do
         if scales[k].enabled then
             tinsert(scale_funcs, scale_funcs_default[k])
         end
+    end
+
+    -- optimized units
+    wipe(NP.optimizedUnits)
+    for _, npc in pairs(config.optimizedUnits.custom) do
+        local id, name = strsplit(":", npc)
+        NP.optimizedUnits[tonumber(id)] = name
     end
 
     -- indicators

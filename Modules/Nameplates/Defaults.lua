@@ -107,12 +107,15 @@ local defaults = {
         -- modify some cvars
     },
     -- TODO:
-    customs = {},
-    -- TODO:
+    custom = {},
+    -- efficiency mode
     optimizedUnits = {
         tapDenied = true,
-        customs = {
-
+        custom = {
+            "216205:Ravenous Spawn (贪婪之裔)",
+            "227300:Bile-Soaked Spawn (浸透胆汁的子嗣)",
+            "220626:Blood Parasite (鲜血寄生虫)",
+            "219746:Silken Tomb (流丝之墓)",
         },
     }
 }
