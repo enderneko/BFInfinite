@@ -202,8 +202,8 @@ local function UpdatePetBar(module, which)
     AB.ReArrange(petBar, config.size, config.spacing, config.buttonsPerLine, config.num, config.anchor, config.orientation)
     AW.LoadPosition(petBar, config.position)
 
-    petBar:SetFrameStrata(BFI.vars.currentConfigTable.actionBars.general.frameStrata)
-    petBar:SetFrameLevel(BFI.vars.currentConfigTable.actionBars.general.frameLevel)
+    petBar:SetFrameStrata(AB.config.general.frameStrata)
+    petBar:SetFrameLevel(AB.config.general.frameLevel)
 
     petBar.alpha = config.alpha
     petBar:SetAlpha(config.alpha)

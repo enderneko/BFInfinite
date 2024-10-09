@@ -173,8 +173,8 @@ local function UpdateStanceBar(module, which)
     AB.ReArrange(stanceBar, config.size, config.spacing, config.buttonsPerLine, config.num, config.anchor, config.orientation)
     AW.LoadPosition(stanceBar, config.position)
 
-    stanceBar:SetFrameStrata(BFI.vars.currentConfigTable.actionBars.general.frameStrata)
-    stanceBar:SetFrameLevel(BFI.vars.currentConfigTable.actionBars.general.frameLevel)
+    stanceBar:SetFrameStrata(AB.config.general.frameStrata)
+    stanceBar:SetFrameLevel(AB.config.general.frameLevel)
 
     stanceBar.alpha = config.alpha
     stanceBar:SetAlpha(config.alpha)

@@ -48,7 +48,6 @@ local defaults = {
             equipped = false,
         },
         glow = {
-            -- style = "pixel",
             style = "proc",
             color = nil,
             duration = 1,
@@ -59,6 +58,11 @@ local defaults = {
             mouseover = {GetCVarBool("enableMouseoverCast"), Settings.GetValue("MOUSEOVERCAST")}, -- checkmouseovercast, Settings.GetValue("MOUSEOVERCAST")
             -- focus = {false, "ALT"}, -- FIXME: invalid
         },
+    },
+    vehicleExitButton = {
+        enabled = true,
+        position =  {"BOTTOM", 88, 117},
+        size = 33,
     },
 }
 
