@@ -54,7 +54,7 @@ local function DelayedUpdatePixels()
 end
 
 -- hooksecurefunc(UIParent, "SetScale", UpdatePixels)
-AW.UIParent:RegisterEvent("DISPLAY_SIZE_CHANGED")
+-- AW.UIParent:RegisterEvent("DISPLAY_SIZE_CHANGED")
 AW.UIParent:RegisterEvent("UI_SCALE_CHANGED")
 AW.UIParent:SetScript("OnEvent", DelayedUpdatePixels)
 
