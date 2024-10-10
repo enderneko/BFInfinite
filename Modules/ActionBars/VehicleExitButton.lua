@@ -36,11 +36,17 @@ local function CreateButton()
     vehicleExitButton.content:SetScript("OnHide", nil)
 
     hooksecurefunc(vehicleExitButton.content, "Update", function()
-        AW.SetOnePixelInside(vehicleExitButton.content, vehicleExitButton)
         if CanExitVehicle() then
             vehicleExitButton:Show()
         else
             vehicleExitButton:Hide()
+        end
+    end)
+
+    hooksecurefunc(vehicleExitButton.content, "SetPoint", function(_, _, anchorTo)
+        if anchorTo ~= vehicleExitButton then
+            vehicleExitButton.content:SetParent(vehicleExitButton)
+            AW.SetOnePixelInside(vehicleExitButton.content, vehicleExitButton)
         end
     end)
 
