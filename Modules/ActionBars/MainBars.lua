@@ -10,6 +10,7 @@ local LAB = BFI.libs.LAB
 local RegisterStateDriver = RegisterStateDriver
 local UnregisterStateDriver = UnregisterStateDriver
 local SetModifiedClick = SetModifiedClick
+local SetOverrideBindingClick = SetOverrideBindingClick
 
 local BAR_MAPPINGS = {
     bar1 = 1,
@@ -120,7 +121,7 @@ local function CreateBar(name, id)
             end
         end
 
-        -- self:SetAttribute("state", newstate)
+        self:SetAttribute("state", newstate)
         control:ChildUpdate("state", newstate)
     ]])
 

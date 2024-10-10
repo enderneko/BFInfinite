@@ -86,25 +86,22 @@ do
             },
             text = {
                 hotkey = {
-                    font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
+                    font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE", shadow = false},
                     color = {1, 1, 1},
                     position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0},
                     justifyH = "RIGHT",
-                    shadow = false,
                 },
                 count = {
-                    font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
+                    font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE", shadow = false},
                     color = {1, 1, 1},
                     position = {anchor = "BOTTOMRIGHT", relAnchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 1},
                     justifyH = "RIGHT",
-                    shadow = false,
                 },
                 macro = {
-                    font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE"},
+                    font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE", shadow = false},
                     color = {1, 1, 1},
                     position = {anchor = "BOTTOMLEFT", relAnchor = "BOTTOMLEFT", offsetX = -2, offsetY = 0},
                     justifyH = "CENTER",
-                    shadow = false,
                 },
             },
         },
