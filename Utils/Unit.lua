@@ -379,7 +379,7 @@ function U.IsInRange(unit)
     --     return inRange
 
     else
-        if UnitCanAssist("player", unit) then
+        if UnitCanAssist("player", unit) or UnitCanCooperate("player", unit) then
             if not (UnitIsConnected(unit) and UnitInSamePhase(unit)) then
                 return false
             end
