@@ -24,7 +24,7 @@ local dispelNodeIDs = {
     -- EVOKER ---------------
         -- 1467 - Devastation
         [1467] = {["Curse"] = 93294, ["Disease"] = 93294, ["Poison"] = {93306, 93294}, ["Bleed"] = 93294},
-        -- 1468	- Preservation
+        -- 1468 - Preservation
         [1468] = {["Curse"] = 93294, ["Disease"] = 93294, ["Magic"] = true, ["Poison"] = true, ["Bleed"] = 93294},
         -- 1473 - Augmentation
         [1473] = {["Curse"] = 93294, ["Disease"] = 93294, ["Poison"] = {93306, 93294}, ["Bleed"] = 93294},

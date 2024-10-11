@@ -144,7 +144,7 @@ local function UpdateStanceBar(module, which)
     -- events
     AB:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceButtons)
     AB:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateStanceButtonStatus)
-	AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtonStatus)
+    AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtonStatus)
     AB:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 

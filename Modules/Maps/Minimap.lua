@@ -340,10 +340,10 @@ local function UpdateInstanceDifficulty(_, event, arg)
             -- Mythic
             difficulty = GetString(config.difficulties.mythic)
         elseif difficulty == 7 or difficulty == 17 then
-            -- 	Looking For Raid
+            -- Looking For Raid
             difficulty = GetString(config.difficulties.lookingForRaid)
         elseif difficulty == 8 then
-            -- 	Mythic Keystone
+            -- Mythic Keystone
             difficulty = GetString(config.difficulties.mythicKeystone)
         elseif difficulty == 24 then
             -- Timewalking

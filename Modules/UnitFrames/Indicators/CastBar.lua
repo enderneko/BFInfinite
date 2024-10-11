@@ -488,8 +488,8 @@ local function CastUpdate(self, event, unitId, castGUID, castSpellID)
     if not name then return end
 
     if self.castType == "empower" then
-		endTime = endTime + GetUnitEmpowerHoldAtMaxTime(unit)
-	end
+        endTime = endTime + GetUnitEmpowerHoldAtMaxTime(unit)
+    end
 
     startTime = startTime / 1000
     endTime = endTime / 1000
@@ -560,17 +560,17 @@ local function OnUpdate(self, elapsed)
         self.bar:SetBarValue(self.current)
 
         if self.castType == "empower" then
-			for i = self.curStage + 1, self.numStages do
-				if self.stageBounds[i] then
-					if self.current > self.stageBounds[i] then
-						self.curStage = i
+            for i = self.curStage + 1, self.numStages do
+                if self.stageBounds[i] then
+                    if self.current > self.stageBounds[i] then
+                        self.curStage = i
                         FlashPip(self, self.curStage)
-					else
-						break
-					end
-				end
-			end
-		end
+                    else
+                        break
+                    end
+                end
+            end
+        end
 
         if self.enableInterruptibleCheck and self.checkInterruptCD and self.requireInterruptUsable and not self.notInterruptible then
             self.elapsed = (self.elapsed or 0) + elapsed

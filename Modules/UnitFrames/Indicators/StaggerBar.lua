@@ -26,12 +26,12 @@ local function UpdateStagger(self, event, unitId)
 
     local p = stagger / staggerMax
     if p >= 0.6 then
-		self:SetColor(AW.GetColorRGB("STAGGER_RED"))
+        self:SetColor(AW.GetColorRGB("STAGGER_RED"))
     elseif p >= 0.3 then
         self:SetColor(AW.GetColorRGB("STAGGER_YELLOW"))
     else
         self:SetColor(AW.GetColorRGB("STAGGER_GREEN"))
-	end
+    end
 
     if self.textEnabled then
         self.text:SetFormattedText("%s%s%s",
