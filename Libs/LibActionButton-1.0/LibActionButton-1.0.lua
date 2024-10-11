@@ -28,6 +28,9 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ]]
+
+--! Some extra features are forked from ElvUI and Blizzard
+
 local MAJOR_VERSION = "LibActionButton-1.0-BFI"
 local MINOR_VERSION = 117
 
@@ -46,7 +49,9 @@ local WoWBCC = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 local WoWWrath = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
 local WoWCata = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
 
+local ATTACK_BUTTON_FLASH_TIME = ATTACK_BUTTON_FLASH_TIME
 local GetSpellName = C_Spell.GetSpellName
+local EnableActionRangeCheck = C_ActionBar.EnableActionRangeCheck
 
 -- Enable custom flyouts for WoW Retail
 local UseCustomFlyout = WoWRetail
@@ -63,6 +68,10 @@ lib.buttonRegistry = lib.buttonRegistry or {}
 lib.activeButtons = lib.activeButtons or {}
 lib.actionButtons = lib.actionButtons or {}
 lib.nonActionButtons = lib.nonActionButtons or {}
+
+-- usable state for retail using slot
+lib.buttonToSlot = lib.buttonToSlot or {}
+lib.slotButtons = lib.slotButtons or {}
 
 lib.ChargeCooldowns = lib.ChargeCooldowns or {}
 lib.NumChargeCooldowns = lib.NumChargeCooldowns or 0
@@ -110,6 +119,7 @@ local ButtonRegistry, ActiveButtons, ActionButtons, NonActionButtons = lib.butto
 local Update, UpdateButtonState, UpdateUsable, UpdateCount, UpdateCooldown, UpdateTooltip, UpdateNewAction, UpdateSpellHighlight, ClearNewActionHighlight
 local StartFlash, StopFlash, UpdateFlash, UpdateHotkeys, UpdateRangeTimer, UpdateOverlayGlow
 local UpdateFlyout, ShowGrid, HideGrid, UpdateGrid, SetupSecureSnippets, WrapOnClick
+local UpdateRange
 local ShowButtonGlow, HideButtonGlow
 local EndChargeCooldown
 
@@ -671,6 +681,48 @@ function Generic:ToggleOnDownForPickup(pre)
     elseif _LABActionButtonUseKeyDown then
         SetCVar("ActionButtonUseKeyDown", "1")
         _LABActionButtonUseKeyDown = nil
+    end
+end
+
+-----------------------------------------------------------
+--- retail range event
+--- Interface/AddOns/Blizzard_ActionBar/Mainline/ActionButton.lua#L354
+
+local function RegisterRange(button, slot)
+    if not lib.slotButtons[slot] then
+        lib.slotButtons[slot] = {}
+    end
+    lib.slotButtons[slot][button] = true
+    lib.buttonToSlot[button] = slot
+    EnableActionRangeCheck(slot, true)
+end
+
+local function UnregisterRange(button, slot)
+    if not lib.slotButtons[slot] or not lib.slotButtons[slot][button] then
+        return
+    end
+    lib.slotButtons[slot][button] = nil
+    EnableActionRangeCheck(slot, false)
+end
+
+local function SetupRange(button)
+    if button._state_type == "action" then
+        local action = button._state_action
+        if action then
+            local slot = lib.buttonToSlot[button]
+            if not slot then
+                RegisterRange(button, action)
+            elseif slot ~= action then
+                RegisterRange(button, action)
+                UnregisterRange(button, slot)
+            end
+        end
+    else
+        local slot = lib.buttonToSlot[button]
+        if slot then
+            lib.buttonToSlot[button] = nil
+            UnregisterRange(button, slot)
+        end
     end
 end
 
@@ -1282,6 +1334,18 @@ function Generic:PostClick(button, down)
     end
 end
 
+function Generic:OnUpdate(elapsed)
+    if self.flashing then
+        self.flashTime = (self.flashTime or 0) - elapsed
+
+        if self.flashTime <= 0 then
+            self.Flash:SetShown(not self.Flash:IsShown())
+
+            self.flashTime = self.flashTime + ATTACK_BUTTON_FLASH_TIME
+        end
+    end
+end
+
 -----------------------------------------------------------
 --- configuration
 
@@ -1351,7 +1415,7 @@ function Generic:UpdateConfig(config)
     UpdateTextElements(self)
     UpdateHotkeys(self)
     UpdateGrid(self)
-    Update(self)
+    Update(self, "config")
 
     if WoWRetail then
         if self.config.targetReticle then
@@ -1461,6 +1525,7 @@ function InitializeEventHandler()
 
     if WoWRetail then
         lib.eventFrame:RegisterEvent("SPELLS_CHANGED")
+        lib.eventFrame:RegisterEvent("ACTION_RANGE_CHECK_UPDATE")
     end
 
     if UseCustomFlyout then
@@ -1469,7 +1534,7 @@ function InitializeEventHandler()
     end
 
     lib.eventFrame:Show()
-    lib.eventFrame:SetScript("OnUpdate", OnUpdate)
+    -- lib.eventFrame:SetScript("OnUpdate", OnUpdate)
 
     if UseCustomFlyout and IsLoggedIn() then
         DiscoverFlyoutSpells()
@@ -1535,6 +1600,13 @@ function OnEvent(frame, event, arg1, ...)
     elseif event == "SPELL_UPDATE_USABLE" then
         for button in next, NonActionButtons do
             UpdateUsable(button)
+        end
+    elseif event == "ACTION_RANGE_CHECK_UPDATE" then
+        local buttons = lib.slotButtons[arg1]
+        if buttons then
+            for button in next, buttons do
+                UpdateRange(button, nil, ...) -- inRange, checksRange
+            end
         end
     elseif event == "PLAYER_MOUNT_DISPLAY_CHANGED" then
         for button in next, ActiveButtons do
@@ -1655,59 +1727,59 @@ function OnEvent(frame, event, arg1, ...)
     end
 end
 
-local flashTime = 0
-local rangeTimer = -1
-function OnUpdate(_, elapsed)
-    flashTime = flashTime - elapsed
-    rangeTimer = rangeTimer - elapsed
-    -- Run the loop only when there is something to update
-    if rangeTimer <= 0 or flashTime <= 0 then
-        for button in next, ActiveButtons do
-            -- Flashing
-            if button.flashing and flashTime <= 0 then
-                if button.Flash:IsShown() then
-                    button.Flash:Hide()
-                else
-                    button.Flash:Show()
-                end
-            end
+-- local flashTime = 0
+-- local rangeTimer = -1
+-- function OnUpdate(_, elapsed)
+--     flashTime = flashTime - elapsed
+--     rangeTimer = rangeTimer - elapsed
+--     -- Run the loop only when there is something to update
+--     if rangeTimer <= 0 or flashTime <= 0 then
+--         for button in next, ActiveButtons do
+--             -- Flashing
+--             if button.flashing and flashTime <= 0 then
+--                 if button.Flash:IsShown() then
+--                     button.Flash:Hide()
+--                 else
+--                     button.Flash:Show()
+--                 end
+--             end
 
-            -- Range
-            if rangeTimer <= 0 then
-                local inRange = button:IsInRange()
-                local oldRange = button.outOfRange
-                button.outOfRange = (inRange == false)
-                if oldRange ~= button.outOfRange then
-                    if button.config.outOfRangeColoring == "button" then
-                        UpdateUsable(button)
-                    elseif button.config.outOfRangeColoring == "hotkey" then
-                        local hotkey = button.HotKey
-                        if hotkey:GetText() == RANGE_INDICATOR then
-                            if inRange == false then
-                                hotkey:Show()
-                            else
-                                hotkey:Hide()
-                            end
-                        end
-                        if inRange == false then
-                            hotkey:SetVertexColor(unpack(button.config.colors.range))
-                        else
-                            hotkey:SetVertexColor(unpack(button.config.text.hotkey.color))
-                        end
-                    end
-                end
-            end
-        end
+--             -- Range
+--             if rangeTimer <= 0 then
+--                 local inRange = button:IsInRange()
+--                 local oldRange = button.outOfRange
+--                 button.outOfRange = (inRange == false)
+--                 if oldRange ~= button.outOfRange then
+--                     if button.config.outOfRangeColoring == "button" then
+--                         UpdateUsable(button)
+--                     elseif button.config.outOfRangeColoring == "hotkey" then
+--                         local hotkey = button.HotKey
+--                         if hotkey:GetText() == RANGE_INDICATOR then
+--                             if inRange == false then
+--                                 hotkey:Show()
+--                             else
+--                                 hotkey:Hide()
+--                             end
+--                         end
+--                         if inRange == false then
+--                             hotkey:SetVertexColor(unpack(button.config.colors.range))
+--                         else
+--                             hotkey:SetVertexColor(unpack(button.config.text.hotkey.color))
+--                         end
+--                     end
+--                 end
+--             end
+--         end
 
-        -- Update values
-        if flashTime <= 0 then
-            flashTime = flashTime + ATTACK_BUTTON_FLASH_TIME
-        end
-        if rangeTimer <= 0 then
-            rangeTimer = TOOLTIP_UPDATE_TIME
-        end
-    end
-end
+--         -- Update values
+--         if flashTime <= 0 then
+--             flashTime = flashTime + ATTACK_BUTTON_FLASH_TIME
+--         end
+--         if rangeTimer <= 0 then
+--             rangeTimer = TOOLTIP_UPDATE_TIME
+--         end
+--     end
+-- end
 
 local gridCounter = 0
 function ShowGrid()
@@ -1739,6 +1811,33 @@ function UpdateGrid(self)
         self:SetAlpha(1.0)
     elseif gridCounter == 0 and self:IsShown() and not self:HasAction() then
         self:SetAlpha(0.0)
+    end
+end
+
+function UpdateRange(button, force, inRange, checksRange) -- (ElvUI) Sezz
+    local oldRange = button.outOfRange
+    button.outOfRange = ((inRange == nil or checksRange == nil) and button:IsInRange() == false) or (checksRange and not inRange)
+
+    if force or (oldRange ~= button.outOfRange) then
+        if button.config.outOfRangeColoring == "button" then
+            UpdateUsable(button)
+        elseif button.config.outOfRangeColoring == "hotkey" then
+            local hotkey = button.HotKey
+            if hotkey:GetText() == RANGE_INDICATOR then
+                if inRange == false then
+                    hotkey:Show()
+                else
+                    hotkey:Hide()
+                end
+            end
+            if inRange == false then
+                hotkey:SetVertexColor(unpack(button.config.colors.range))
+            else
+                hotkey:SetVertexColor(unpack(button.config.text.hotkey.color))
+            end
+        end
+
+        -- lib.callbacks:Fire("OnUpdateRange", button)
     end
 end
 
@@ -1894,9 +1993,11 @@ function Update(self, which)
     self.icon:SetDesaturated(false)
 
     if texture then
+        self:SetScript("OnUpdate", Generic.OnUpdate)
         self.icon:SetTexture(texture)
         self.icon:Show()
-        self.rangeTimer = - 1
+        -- self.rangeTimer = - 1
+
         if WoWRetail then
             if not self.MasqueSkinned then
                 self.SlotBackground:Hide()
@@ -1928,14 +2029,18 @@ function Update(self, which)
             end
         end
     else
+        self:SetScript("OnUpdate", nil)
         self.icon:Hide()
         self.cooldown:Hide()
-        self.rangeTimer = nil
+
+        -- self.rangeTimer = nil
+
         if self.HotKey:GetText() == RANGE_INDICATOR then
             self.HotKey:Hide()
         else
             self.HotKey:SetVertexColor(unpack(self.config.text.hotkey.color))
         end
+
         if WoWRetail then
             if not self.MasqueSkinned then
                 self.SlotBackground:Show()
@@ -1970,6 +2075,9 @@ function Update(self, which)
     end
 
     self:UpdateLocal()
+
+    SetupRange(self)
+    UpdateRange(self, which == "config")
 
     UpdateCount(self)
 
@@ -2204,15 +2312,26 @@ function UpdateCooldown(self)
 end
 
 function StartFlash(self)
+    local prevFlash = self.flashing
+
     self.flashing = true
-    flashTime = 0
-    UpdateButtonState(self)
+    -- flashTime = 0
+
+    if prevFlash ~= self.flashing then
+        UpdateButtonState(self)
+    end
 end
 
 function StopFlash(self)
+    local prevFlash = self.flashing
+
     self.flashing = false
+    self.flashTime = nil
+
     self.Flash:Hide()
-    UpdateButtonState(self)
+    if prevFlash ~= self.flashing then
+        UpdateButtonState(self)
+    end
 end
 
 function UpdateFlash(self)
