@@ -1989,8 +1989,8 @@ function Update(self, which)
     local texture = self:GetTexture()
 
     -- Zone ability button handling
-    self.zoneAbilityDisabled = false
-    self.icon:SetDesaturated(false)
+    -- self.zoneAbilityDisabled = false
+    -- self.icon:SetDesaturated(false)
 
     if texture then
         self:SetScript("OnUpdate", Generic.OnUpdate)
