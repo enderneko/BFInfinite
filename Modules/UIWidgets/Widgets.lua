@@ -44,5 +44,7 @@ local function UpdateWidgets(module, which)
         init = true
         InitWidget(_G.UIWidgetPowerBarContainerFrame, L["Power Bar Widget"], "CENTER", 150, 30, config.powerBarWidget)
     end
+
+    _G.UIWidgetPowerBarContainerFrame._container:SetShown(config.powerBarWidget.enabled)
 end
 BFI.RegisterCallback("UpdateModules", "UI_Widgets", UpdateWidgets)
