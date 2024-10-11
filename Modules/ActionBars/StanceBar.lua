@@ -53,7 +53,7 @@ local function UPDATE_SHAPESHIFT_COOLDOWN()
         local start, duration, active = GetShapeshiftFormCooldown(i)
         if (active and active ~= 0) and start > 0 and duration > 0 then
             cooldown:SetCooldown(start, duration)
-            cooldown:SetDrawBling(cooldown:GetEffectiveAlpha() > 0)
+            -- cooldown:SetDrawBling(false)
         else
             cooldown:Clear()
         end

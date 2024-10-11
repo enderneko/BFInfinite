@@ -1487,7 +1487,7 @@ function InitializeEventHandler()
     lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_STATE")
     lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_USABLE")
     lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
-    lib.eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+    -- lib.eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
     lib.eventFrame:RegisterEvent("TRADE_SKILL_SHOW")
     lib.eventFrame:RegisterEvent("TRADE_SKILL_CLOSE")
 
@@ -1587,8 +1587,6 @@ function OnEvent(frame, event, arg1, ...)
         HideGrid()
     elseif event == "UPDATE_BINDINGS" or event == "GAME_PAD_ACTIVE_CHANGED" then
         ForAllButtons(UpdateHotkeys, nil, event)
-    elseif event == "PLAYER_TARGET_CHANGED" then
-        UpdateRangeTimer()
     elseif (event == "ACTIONBAR_UPDATE_STATE") or
         ((event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE") and (arg1 == "player")) or
         ((event == "COMPANION_UPDATE") and (arg1 == "MOUNT")) then
@@ -2201,7 +2199,7 @@ local function StartChargeCooldown(parent, chargeStart, chargeDuration, chargeMo
             cooldown = CreateFrame("Cooldown", "LAB10ChargeCooldown"..lib.NumChargeCooldowns, parent, "CooldownFrameTemplate")
             cooldown:SetScript("OnCooldownDone", EndChargeCooldown)
             cooldown:SetHideCountdownNumbers(true)
-            cooldown:SetDrawBling(false)
+            -- cooldown:SetDrawBling(false)
             cooldown:SetDrawSwipe(false)
         end
         cooldown:SetParent(parent)
@@ -2229,6 +2227,7 @@ end
 local function OnCooldownDone(self)
     self:SetScript("OnCooldownDone", nil)
     UpdateCooldown(self:GetParent())
+    -- lib.callbacks:Fire("OnCooldownDone", self:GetParent(), self)
 end
 
 function UpdateCooldown(self)
@@ -2264,7 +2263,7 @@ function UpdateCooldown(self)
         charges, maxCharges, chargeStart, chargeDuration, chargeModRate = self:GetCharges()
     end
 
-    self.cooldown:SetDrawBling(self.cooldown:GetEffectiveAlpha() > 0.5)
+    -- self.cooldown:SetDrawBling(self.cooldown:GetEffectiveAlpha() > 0.5)
 
     local hasLocCooldown = locStart and locDuration and locStart > 0 and locDuration > 0
     local hasCooldown = enable and enable ~= 0 and start and duration and start > 0 and duration > 0
@@ -2587,9 +2586,9 @@ else
 end
 Generic.UpdateFlyout = UpdateFlyout
 
-function UpdateRangeTimer()
-    rangeTimer = -1
-end
+-- function UpdateRangeTimer(self)
+--     self.rangeTimer = -1
+-- end
 
 -----------------------------------------------------------
 --- WoW API mapping
