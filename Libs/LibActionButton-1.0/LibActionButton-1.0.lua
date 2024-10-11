@@ -630,7 +630,7 @@ function Generic:OnButtonEvent(event, key, down, spellID, castComplete)
     elseif event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_FAILED" then
         self:StopSpellCastAnim(ActionButtonCastType.Cast)
         self:StopTargettingReticleAnim()
-    elseif event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_CHANNEL_STOP" then
+    elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
         self:PlaySpellInterruptedAnim(spellID)
     elseif event == "UNIT_SPELLCAST_EMPOWER_STOP" then
         if castComplete then
@@ -644,6 +644,8 @@ function Generic:OnButtonEvent(event, key, down, spellID, castComplete)
         self:PlaySpellCastAnim(ActionButtonCastType.Empowered, spellID)
     elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
         self:PlaySpellCastAnim(ActionButtonCastType.Channel, spellID)
+    elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" then
+        self:StopSpellCastAnim(ActionButtonCastType.Channel)
     elseif event == "GLOBAL_MOUSE_UP" then
         self:UnregisterEvent(event)
         UpdateFlyout(self)
@@ -1374,7 +1376,7 @@ function Generic:UpdateConfig(config)
         if self.config.interruptDisplay or self.config.spellCastAnim then
             self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
             self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
-            -- self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
+            self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
         end
 
         if self.config.spellCastAnim then
