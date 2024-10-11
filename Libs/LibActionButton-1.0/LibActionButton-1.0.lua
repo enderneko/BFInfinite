@@ -227,6 +227,9 @@ function lib:CreateButton(id, name, header, config)
         button:RegisterForClicks("AnyUp")
     end
 
+    button.cooldown:SetFrameStrata(button:GetFrameStrata())
+	button.cooldown:SetFrameLevel(button:GetFrameLevel() + 1)
+
     -- Frame Scripts
     button:SetScript("OnEnter", Generic.OnEnter)
     button:SetScript("OnLeave", Generic.OnLeave)
@@ -529,7 +532,7 @@ function Generic:PlaySpellInterruptedAnim(spellID)
     end
 end
 
-function Generic:ClearInterruptDisplay()
+function Generic:StopSpellInterruptAnim()
     if self.InterruptDisplay:IsShown() then
         self.InterruptDisplay:Hide()
     end
@@ -537,13 +540,13 @@ end
 
 function Generic:PlayTargettingReticleAnim(spellID)
     if (self.abilityID == spellID) and not self.TargetReticleAnimFrame:IsShown() then
-        self:ClearInterruptDisplay()
+        self:StopSpellInterruptAnim()
         self.TargetReticleAnimFrame.HighlightAnim:Play()
         self.TargetReticleAnimFrame:Show()
     end
 end
 
-function Generic:ClearReticle()
+function Generic:StopTargettingReticleAnim()
     if self.TargetReticleAnimFrame:IsShown() then
         self.TargetReticleAnimFrame:Hide()
     end
@@ -560,8 +563,8 @@ function Generic:PlaySpellCastAnim(actionButtonCastType, spellID)
 
     self.cooldown:SetSwipeColor(0, 0, 0, 0)
     self.hideCooldownFrame = true
-    self:ClearInterruptDisplay()
-    self:ClearReticle()
+    self:StopSpellInterruptAnim()
+    self:StopTargettingReticleAnim()
     self.actionButtonCastType = actionButtonCastType
 
     local startTime, endTime
@@ -570,6 +573,9 @@ function Generic:PlaySpellCastAnim(actionButtonCastType, spellID)
     local isEmpoweredCast = actionButtonCastType == ActionButtonCastType.Empowered
     if (isChannelCast or isEmpoweredCast) then
         _, _, _, startTime, endTime = UnitChannelInfo("player")
+        if isEmpoweredCast then
+            endTime = endTime + GetUnitEmpowerHoldAtMaxTime("player")
+        end
     else
         _, _, _, startTime, endTime = UnitCastingInfo("player")
     end
@@ -605,7 +611,7 @@ function Generic:StopSpellCastAnim(actionButtonCastType)
 end
 ---------------------------------------------------------------------
 
--- update click handling ~Simpy
+-- update click handling
 local function UpdateRegisterClicks(self, down)
     if self.isFlyoutButton then -- the bar button
         self:RegisterForClicks("AnyUp")
@@ -616,33 +622,33 @@ local function UpdateRegisterClicks(self, down)
     end
 end
 
-function Generic:OnButtonEvent(event, ...)
+function Generic:OnButtonEvent(event, key, down, spellID, castComplete)
     if event == "UNIT_SPELLCAST_RETICLE_TARGET" then
-        self:PlayTargettingReticleAnim(select(3, ...))
-    elseif event == "UNIT_SPELLCAST_RETICLE_CLEAR" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_FAILED" then
-        if self.abilityID == select(3, ...) then
-            self:ClearReticle()
-        end
+        self:PlayTargettingReticleAnim(spellID)
+    elseif event == "UNIT_SPELLCAST_RETICLE_CLEAR" or event == "UNIT_SPELLCAST_SENT" or event == "UNIT_SPELLCAST_FAILED" then
+        self:StopTargettingReticleAnim()
+    elseif event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_FAILED" then
+        self:StopSpellCastAnim(ActionButtonCastType.Cast)
+        self:StopTargettingReticleAnim()
     elseif event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_CHANNEL_STOP" then
-        self:PlaySpellInterruptedAnim(select(3, ...))
+        self:PlaySpellInterruptedAnim(spellID)
     elseif event == "UNIT_SPELLCAST_EMPOWER_STOP" then
-        local spellID, castComplete = select(4, ...)
-        if not castComplete then
+        if castComplete then
+            self:StopSpellCastAnim(ActionButtonCastType.Empowered)
+        else
             self:PlaySpellInterruptedAnim(spellID)
         end
     elseif event == "UNIT_SPELLCAST_START" then
-        self:PlaySpellCastAnim(ActionButtonCastType.Cast, select(3, ...))
+        self:PlaySpellCastAnim(ActionButtonCastType.Cast, spellID)
     elseif event == "UNIT_SPELLCAST_EMPOWER_START" then
-        self:PlaySpellCastAnim(ActionButtonCastType.Empowered, select(3, ...))
+        self:PlaySpellCastAnim(ActionButtonCastType.Empowered, spellID)
     elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
-        self:PlaySpellCastAnim(ActionButtonCastType.Channel, select(3, ...))
+        self:PlaySpellCastAnim(ActionButtonCastType.Channel, spellID)
     elseif event == "GLOBAL_MOUSE_UP" then
-        self:SetButtonState("NORMAL")
         self:UnregisterEvent(event)
         UpdateFlyout(self)
     elseif self.config.clickOnDown and GetCVarBool("lockActionBars") then -- non-retail only, retail uses ToggleOnDownForPickup method
         if event == "MODIFIER_STATE_CHANGED" then
-            local key, down = ...
             if GetModifiedClick("PICKUPACTION") == strsub(key, 2) then
                 UpdateRegisterClicks(self, down == 1)
             end
@@ -657,15 +663,11 @@ end
 
 local _LABActionButtonUseKeyDown
 function Generic:ToggleOnDownForPickup(pre)
-    if pre then
-        if GetCVarBool("ActionButtonUseKeyDown") or _LABActionButtonUseKeyDown then
-            SetCVar("ActionButtonUseKeyDown", false)
-            _LABActionButtonUseKeyDown = true
-        else
-            _LABActionButtonUseKeyDown = false
-        end
-    elseif not pre and _LABActionButtonUseKeyDown then
-        SetCVar("ActionButtonUseKeyDown", true)
+    if pre and GetCVarBool("ActionButtonUseKeyDown") then
+        SetCVar("ActionButtonUseKeyDown", "0")
+        _LABActionButtonUseKeyDown = true
+    elseif _LABActionButtonUseKeyDown then
+        SetCVar("ActionButtonUseKeyDown", "1")
         _LABActionButtonUseKeyDown = nil
     end
 end
@@ -1455,9 +1457,12 @@ function InitializeEventHandler()
     lib.eventFrame:RegisterEvent("LOSS_OF_CONTROL_ADDED")
     lib.eventFrame:RegisterEvent("LOSS_OF_CONTROL_UPDATE")
 
+    if WoWRetail then
+        lib.eventFrame:RegisterEvent("SPELLS_CHANGED")
+    end
+
     if UseCustomFlyout then
         lib.eventFrame:RegisterEvent("PLAYER_LOGIN")
-        lib.eventFrame:RegisterEvent("SPELLS_CHANGED")
         lib.eventFrame:RegisterEvent("SPELL_FLYOUT_UPDATE")
     end
 
@@ -1585,7 +1590,7 @@ function OnEvent(frame, event, arg1, ...)
         end
     elseif event == "STOP_AUTOREPEAT_SPELL" then
         for button in next, ActiveButtons do
-            if button.flashing == 1 and not button:IsAttack() then
+            if button.flashing and not button:IsAttack() then
                 StopFlash(button)
             end
         end
@@ -1630,7 +1635,7 @@ function OnEvent(frame, event, arg1, ...)
             end
         end
     elseif event == "SPELL_UPDATE_CHARGES" then
-        ForAllButtons(UpdateCount, true)
+        ForAllButtons(UpdateCount, true, event)
     elseif event == "UPDATE_SUMMONPETS_ACTION" then
         for button in next, ActiveButtons do
             if button._state_type == "action" then
@@ -1644,7 +1649,7 @@ function OnEvent(frame, event, arg1, ...)
             end
         end
     elseif event == "SPELL_UPDATE_ICON" then
-        ForAllButtons(Update, true)
+        ForAllButtons(Update, true, event)
     end
 end
 
@@ -1657,7 +1662,7 @@ function OnUpdate(_, elapsed)
     if rangeTimer <= 0 or flashTime <= 0 then
         for button in next, ActiveButtons do
             -- Flashing
-            if button.flashing == 1 and flashTime <= 0 then
+            if button.flashing and flashTime <= 0 then
                 if button.Flash:IsShown() then
                     button.Flash:Hide()
                 else
@@ -2086,19 +2091,20 @@ local function StartChargeCooldown(parent, chargeStart, chargeDuration, chargeMo
             cooldown = CreateFrame("Cooldown", "LAB10ChargeCooldown"..lib.NumChargeCooldowns, parent, "CooldownFrameTemplate")
             cooldown:SetScript("OnCooldownDone", EndChargeCooldown)
             cooldown:SetHideCountdownNumbers(true)
+            cooldown:SetDrawBling(false)
             cooldown:SetDrawSwipe(false)
         end
         cooldown:SetParent(parent)
         cooldown:SetAllPoints(parent)
-        cooldown:SetFrameStrata("TOOLTIP")
+        cooldown:SetFrameStrata(parent:GetFrameStrata())
+		cooldown:SetFrameLevel(parent:GetFrameLevel() + 1)
         cooldown:Show()
         parent.chargeCooldown = cooldown
         cooldown.parent = parent
     end
 
     -- set cooldown
-    parent.chargeCooldown:SetDrawBling(parent.chargeCooldown:GetEffectiveAlpha() > 0.5)
-    CooldownFrame_Set(parent.chargeCooldown, chargeStart, chargeDuration, true, true, chargeModRate)
+    parent.chargeCooldown:SetCooldown(chargeStart, chargeDuration, chargeModRate)
 
     -- update charge cooldown skin when masque is used
     if Masque and Masque.UpdateCharge then
@@ -2151,14 +2157,12 @@ function UpdateCooldown(self)
     self.cooldown:SetDrawBling(self.cooldown:GetEffectiveAlpha() > 0.5)
 
     local hasLocCooldown = locStart and locDuration and locStart > 0 and locDuration > 0
-    local hasCooldown = enable and start and duration and start > 0 and duration > 0
+    local hasCooldown = enable and enable ~= 0 and start and duration and start > 0 and duration > 0
 
     if self.config.desaturateOnCooldown then
-        if hasCooldown then
-            self.icon:SetDesaturated(duration > 1.5)
-        else
-            self.icon:SetDesaturated(false)
-        end
+        self.icon:SetDesaturated(hasCooldown and duration > 1.5)
+    else
+        self.icon:SetDesaturated(false)
     end
 
     if hasLocCooldown and ((not hasCooldown) or ((locStart + locDuration) > (start + duration))) then
@@ -2168,7 +2172,10 @@ function UpdateCooldown(self)
             self.cooldown:SetHideCountdownNumbers(true)
             self.cooldown.currentCooldownType = COOLDOWN_TYPE_LOSS_OF_CONTROL
         end
-        CooldownFrame_Set(self.cooldown, locStart, locDuration, true, true, modRate)
+
+        self.cooldown:SetScript("OnCooldownDone", OnCooldownDone)
+        self.cooldown:SetCooldown(locStart, locDuration, modRate)
+
         if self.chargeCooldown then
             EndChargeCooldown(self.chargeCooldown)
         end
@@ -2179,8 +2186,11 @@ function UpdateCooldown(self)
             self.cooldown:SetHideCountdownNumbers(false)
             self.cooldown.currentCooldownType = COOLDOWN_TYPE_NORMAL
         end
-        if hasLocCooldown then
+        if hasCooldown then
             self.cooldown:SetScript("OnCooldownDone", OnCooldownDone)
+            self.cooldown:SetCooldown(start, duration, modRate)
+        else
+            self.cooldown:Clear()
         end
 
         if charges and maxCharges and maxCharges > 1 and charges < maxCharges then
@@ -2188,18 +2198,17 @@ function UpdateCooldown(self)
         elseif self.chargeCooldown then
             EndChargeCooldown(self.chargeCooldown)
         end
-        CooldownFrame_Set(self.cooldown, start, duration, enable, false, modRate)
     end
 end
 
 function StartFlash(self)
-    self.flashing = 1
+    self.flashing = true
     flashTime = 0
     UpdateButtonState(self)
 end
 
 function StopFlash(self)
-    self.flashing = 0
+    self.flashing = false
     self.Flash:Hide()
     UpdateButtonState(self)
 end
@@ -2365,7 +2374,6 @@ if ActionButton_UpdateFlyout then
             -- based on ActionButton_UpdateFlyout in ActionButton.lua
             local actionType = GetActionInfo(self._state_action)
             if actionType == "flyout" then
-
                 local isFlyoutShown = SpellFlyout and SpellFlyout:IsShown() and SpellFlyout:GetParent() == self
                 local arrowDistance = isFlyoutShown and 1 or 4
 
@@ -2557,19 +2565,19 @@ if not WoWRetail then
     Action.GetLossOfControlCooldown = function(self) return 0,0 end
 end
 
-local GetSpellTexture = C_Spell and C_Spell.GetSpellTexture or GetSpellTexture
-local GetSpellCastCount = C_Spell and C_Spell.GetSpellCastCount or GetSpellCount
+local GetSpellTexture = C_Spell.GetSpellTexture or GetSpellTexture
+local GetSpellCastCount = C_Spell.GetSpellCastCount or GetSpellCount
 local IsAttackSpell = C_SpellBook and C_SpellBook.IsAutoAttackSpellBookItem or IsAttackSpell
-local IsCurrentSpell = C_Spell and C_Spell.IsCurrentSpell or IsCurrentSpell
-local IsAutoRepeatSpell = C_Spell and C_Spell.IsAutoRepeatSpell or IsAutoRepeatSpell
-local IsSpellUsable = C_Spell and C_Spell.IsSpellUsable or IsUsableSpell
-local IsConsumableSpell = C_Spell and C_Spell.IsConsumableSpell or IsConsumableSpell
-local IsSpellInRange = C_Spell and C_Spell.IsSpellInRange or IsSpellInRange
-local GetSpellLossOfControlCooldown = C_Spell and C_Spell.GetSpellLossOfControlCooldown or GetSpellLossOfControlCooldown
+local IsCurrentSpell = C_Spell.IsCurrentSpell or IsCurrentSpell
+local IsAutoRepeatSpell = C_Spell.IsAutoRepeatSpell or IsAutoRepeatSpell
+local IsSpellUsable = C_Spell.IsSpellUsable or IsUsableSpell
+local IsConsumableSpell = C_Spell.IsConsumableSpell or IsConsumableSpell
+local IsSpellInRange = C_Spell.IsSpellInRange or IsSpellInRange
+local GetSpellLossOfControlCooldown = C_Spell.GetSpellLossOfControlCooldown or GetSpellLossOfControlCooldown
 
 -- unwrapped functions that return tables now
-local GetSpellCharges = (C_Spell and C_Spell.GetSpellCharges) and function(spell) local c = C_Spell.GetSpellCharges(spell) if c then return c.currentCharges, c.maxCharges, c.cooldownStartTime, c.cooldownDuration end end or GetSpellCharges
-local GetSpellCooldown = (C_Spell and C_Spell.GetSpellCooldown) and function(spell) local c = C_Spell.GetSpellCooldown(spell) if c then return c.startTime, c.duration, c.isEnabled, c.modRate end end or GetSpellCooldown
+local GetSpellCharges = C_Spell.GetSpellCharges and function(spell) local c = C_Spell.GetSpellCharges(spell) if c then return c.currentCharges, c.maxCharges, c.cooldownStartTime, c.cooldownDuration end end or GetSpellCharges
+local GetSpellCooldown = C_Spell.GetSpellCooldown and function(spell) local c = C_Spell.GetSpellCooldown(spell) if c then return c.startTime, c.duration, c.isEnabled, c.modRate end end or GetSpellCooldown
 
 local BOOKTYPE_SPELL = Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player or "spell"
 -----------------------------------------------------------

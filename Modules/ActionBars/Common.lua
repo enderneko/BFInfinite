@@ -298,7 +298,7 @@ function AB.CreateButton(parent, id, name)
         end)
 
         b.SpellCastAnimFrame:SetScript("OnHide", function()
-            b:ClearReticle()
+            b:StopTargettingReticleAnim()
             b.cooldown:SetSwipeColor(0, 0, 0, 1)
             b:UpdateCooldown()
         end)
