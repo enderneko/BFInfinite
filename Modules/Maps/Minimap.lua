@@ -547,12 +547,11 @@ local function UpdateMinimap(module, which)
     -- clock
     if config.clock.enabled then
         Minimap.clockButton:Show()
-        AW.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
         U.SetFont(Minimap.clockButton.text, unpack(config.clock.font))
         Minimap.clockButton.text:SetText("00:00")
-
         C_Timer.After(0, function()
             AW.SetSizeToFitText(Minimap.clockButton, Minimap.clockButton.text, 2)
+            AW.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
         end)
 
         -- flash
