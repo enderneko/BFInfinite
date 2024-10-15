@@ -6,4 +6,5 @@
     <Script file="StanceBar.lua"/>
     <Script file="PetBar.lua"/>
     <Script file="VehicleExitButton.lua"/>
+    <Script file="ExtraAbilitityButtons.lua"/>
 </Ui>

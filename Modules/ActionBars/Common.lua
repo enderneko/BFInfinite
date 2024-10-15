@@ -71,7 +71,7 @@ end
 function AB.StylizeButton(b)
     b.MasqueSkinned = true
 
-    local icon = b.icon
+    local icon = b.icon or b.Icon
     local hotkey = b.HotKey
     local autoCast = b.AutoCastOverlay
     local flash = b.Flash
@@ -142,6 +142,23 @@ function AB.StylizeButton(b)
     -- backdrop -------------------------------------------------------------- --
     Mixin(b, BackdropTemplateMixin)
     AW.StylizeFrame(b)
+end
+
+---------------------------------------------------------------------
+-- update text
+---------------------------------------------------------------------
+function AB.ApplyTextConfig(fs, config)
+    fs:SetFont(config.font.font, config.font.size, config.font.flags)
+    if config.font.shadow then
+        fs:SetShadowOffset(1, -1)
+        fs:SetShadowColor(0, 0, 0, 1)
+    else
+        fs:SetShadowOffset(0, 0)
+        fs:SetShadowColor(0, 0, 0, 0)
+    end
+    fs:SetJustifyH(config.justifyH)
+    fs:SetPoint(config.position.anchor, fs:GetParent(), config.position.relAnchor, config.position.offsetX, config.position.offsetY)
+    fs:SetTextColor(AW.UnpackColor(config.color))
 end
 
 ---------------------------------------------------------------------

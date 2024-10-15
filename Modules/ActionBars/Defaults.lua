@@ -64,6 +64,25 @@ local defaults = {
         position =  {"BOTTOM", 88, 117},
         size = 33,
     },
+    extraAbilityButtons = {
+        enabled = true,
+        zoneAbility = {
+            position =  {"BOTTOM", 0, 120},
+            scale = 0.63,
+            hideTexture = false,
+        },
+        extraAction = {
+            position =  {"BOTTOM", 0, 160},
+            scale = 0.75,
+            hideTexture = false,
+            hotkey = {
+                font = {font = AW.GetFont("Noto_AP_SC"), size = 10, flags = "OUTLINE", shadow = false},
+                color = {1, 1, 1},
+                position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0},
+                justifyH = "RIGHT",
+            },
+        },
+    },
 }
 
 do
