@@ -124,6 +124,9 @@ end
 ---------------------------------------------------------------------
 function UpdateQuestXP(self)
     self.completeXP, self.incompleteXP = 0, 0
+
+    if U.IsMaxLevel() then return end
+
     local questID, rewardXP
     for i = 1, GetNumQuestLogEntries() do
         questID = GetQuestIDForLogIndex(i)
