@@ -484,7 +484,6 @@ end
 -- resfresh all when enter/leave instance
 ---------------------------------------------------------------------
 local function UpdateAllUnitButtons()
-    print("UpdateAllUnitButtons")
     for _, b in pairs(BFI.vars.unitButtons) do
         UnitButton_UpdateAll(b)
     end
