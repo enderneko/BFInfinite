@@ -45,6 +45,7 @@ local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
 local IsInRaid = IsInRaid
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local UnitClassBase = U.UnitClassBase
+local IsDelveInProgress = C_PartyInfo.IsDelveInProgress
 
 ---------------------------------------------------------------------
 -- states
@@ -222,9 +223,13 @@ local function UnitButton_OnEvent(self, event, unit, arg)
 
     else
         if event == "GROUP_ROSTER_UPDATE" then
-            -- self._updateRequired = true
-            self.__updateElapsed = 0.25
-            self.__tickCount = 2
+            -- FIXME:
+            if IsDelveInProgress() then
+                self.__tickCount = 2
+                self.__updateElapsed = 0.25
+            else
+                self._updateRequired = true
+            end
 
         elseif event == "PLAYER_TARGET_CHANGED" then
             if UnitExists(self.unit) then
