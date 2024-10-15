@@ -367,8 +367,8 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function HealthBar_Enable(self)
-    self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield, UpdateHealPrediction)
-    self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield, UpdateHealPrediction)
+    self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield, UpdateHealAbsorb, UpdateHealPrediction)
+    self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield, UpdateHealAbsorb, UpdateHealPrediction)
     self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
     self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
     self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", UpdateHealAbsorb)
