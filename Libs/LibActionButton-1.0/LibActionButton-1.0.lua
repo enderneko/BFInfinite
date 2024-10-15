@@ -658,6 +658,7 @@ function Generic:OnButtonEvent(event, key, down, spellID, castComplete)
         self:StopSpellCastAnim(ActionButtonCastType.Channel)
     elseif event == "GLOBAL_MOUSE_UP" then
         self:UnregisterEvent(event)
+        self.pushedTexture:Hide()
         UpdateFlyout(self)
     elseif self.config.clickOnDown and GetCVarBool("lockActionBars") then -- non-retail only, retail uses ToggleOnDownForPickup method
         if event == "MODIFIER_STATE_CHANGED" then
@@ -1485,7 +1486,7 @@ function InitializeEventHandler()
     lib.eventFrame:RegisterEvent("PLAYER_MOUNT_DISPLAY_CHANGED")
 
     lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_STATE")
-    lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_USABLE")
+    -- lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_USABLE")
     lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
     -- lib.eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
     lib.eventFrame:RegisterEvent("TRADE_SKILL_SHOW")
@@ -1526,6 +1527,7 @@ function InitializeEventHandler()
     if WoWRetail then
         lib.eventFrame:RegisterEvent("SPELLS_CHANGED")
         lib.eventFrame:RegisterEvent("ACTION_RANGE_CHECK_UPDATE")
+        lib.eventFrame:RegisterEvent("ACTION_USABLE_CHANGED")
     end
 
     if UseCustomFlyout then
@@ -1591,20 +1593,29 @@ function OnEvent(frame, event, arg1, ...)
         ((event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE") and (arg1 == "player")) or
         ((event == "COMPANION_UPDATE") and (arg1 == "MOUNT")) then
         ForAllButtons(UpdateButtonState, true)
-    elseif event == "ACTIONBAR_UPDATE_USABLE" then
-        for button in next, ActionButtons do
-            UpdateUsable(button)
-        end
-    elseif event == "SPELL_UPDATE_USABLE" then
-        for button in next, NonActionButtons do
-            UpdateUsable(button)
-        end
     elseif event == "ACTION_RANGE_CHECK_UPDATE" then
         local buttons = lib.slotButtons[arg1]
         if buttons then
             for button in next, buttons do
                 UpdateRange(button, nil, ...) -- inRange, checksRange
             end
+        end
+    elseif event == "ACTION_USABLE_CHANGED" then
+        for _, change in ipairs(arg1) do
+            local buttons = change.slot and lib.slotButtons[change.slot]
+            if buttons then
+                for button in next, buttons do
+                    UpdateUsable(button, change.usable, change.noMana)
+                end
+            end
+        end
+    -- elseif event == "ACTIONBAR_UPDATE_USABLE" then
+    --     for button in next, ActionButtons do
+    --         UpdateUsable(button)
+    --     end
+    elseif event == "SPELL_UPDATE_USABLE" then
+        for button in next, NonActionButtons do
+            UpdateUsable(button)
         end
     elseif event == "PLAYER_MOUNT_DISPLAY_CHANGED" then
         for button in next, ActiveButtons do
@@ -1956,22 +1967,16 @@ function Update(self, which)
     end
 
     -- Add a green border if button is an equipped item
-    if self:IsEquipped() and not self.config.hideElements.equipped then
-        if self.SetBackdropBorderColor then
+    if self.SetBackdropBorderColor then
+        if self:IsEquipped() and not self.config.hideElements.equipped then
             self:SetBackdropBorderColor(unpack(self.config.colors.equipped))
-        end
-    elseif not self:IsConsumableOrStackable() then
-        if self:GetActionText() then
-            if self.SetBackdropBorderColor then
+        elseif not self:IsConsumableOrStackable() then
+            if self:GetActionText() then
                 self:SetBackdropBorderColor(unpack(self.config.colors.macro))
-            end
-        else
-            if self.SetBackdropBorderColor then
+            else
                 self:SetBackdropBorderColor(0, 0, 0, 1)
             end
-        end
-    else
-        if self.SetBackdropBorderColor then
+        else
             self:SetBackdropBorderColor(0, 0, 0, 1)
         end
     end
@@ -2124,19 +2129,22 @@ function UpdateButtonState(self)
         self:SetChecked(true)
     else
         self:SetChecked(false)
+
     end
     lib.callbacks:Fire("OnButtonState", self)
 end
 
-function UpdateUsable(self)
+function UpdateUsable(self, isUsable, notEnoughMana)
     -- TODO: make the colors configurable
     -- TODO: allow disabling of the whole recoloring
     if self.config.outOfRangeColoring == "button" and self.outOfRange then
         self.icon:SetVertexColor(unpack(self.config.colors.range))
     else
-        local isUsable, notEnoughMana = self:IsUsable()
+        if isUsable == nil or notEnoughMana == nil then
+            isUsable, notEnoughMana = self:IsUsable()
+        end
         if isUsable then
-            self.icon:SetVertexColor(1.0, 1.0, 1.0)
+            self.icon:SetVertexColor(1, 1, 1)
             --self.NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
         elseif notEnoughMana then
             self.icon:SetVertexColor(unpack(self.config.colors.mana))
@@ -2687,7 +2695,7 @@ end
 
 local GetSpellTexture = C_Spell.GetSpellTexture or GetSpellTexture
 local GetSpellCastCount = C_Spell.GetSpellCastCount or GetSpellCount
-local IsAttackSpell = C_SpellBook and C_SpellBook.IsAutoAttackSpellBookItem or IsAttackSpell
+local IsAttackSpell = C_SpellBook.IsAutoAttackSpellBookItem or IsAttackSpell
 local IsCurrentSpell = C_Spell.IsCurrentSpell or IsCurrentSpell
 local IsAutoRepeatSpell = C_Spell.IsAutoRepeatSpell or IsAutoRepeatSpell
 local IsSpellUsable = C_Spell.IsSpellUsable or IsUsableSpell
