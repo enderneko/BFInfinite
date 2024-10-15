@@ -78,6 +78,7 @@ function AB.StylizeButton(b)
     local border = b.Border
     local normal = b.NormalTexture
     local normal2 = b:GetNormalTexture()
+    local cooldown = b.cooldown or b.Cooldown
 
     -- hide and remove ------------------------------------------------------- --
     if normal then normal:SetTexture() normal:Hide() normal:SetAlpha(0) end
@@ -89,7 +90,9 @@ function AB.StylizeButton(b)
     if b.IconMask then b.IconMask:Hide() end
 
     -- hotkey ---------------------------------------------------------------- --
-    hotkey:SetDrawLayer("OVERLAY")
+    if hotkey then
+        hotkey:SetDrawLayer("OVERLAY")
+    end
 
     -- icon ------------------------------------------------------------------ --
     icon:SetDrawLayer("ARTWORK", -1)
@@ -97,25 +100,34 @@ function AB.StylizeButton(b)
     AW.SetOnePixelInside(icon, b)
 
     -- cooldown -------------------------------------------------------------- --
-    AW.SetOnePixelInside(b.cooldown, b)
-    b.cooldown:SetDrawEdge(false)
+    if cooldown then
+        AW.SetOnePixelInside(cooldown, b)
+        cooldown:SetDrawEdge(false)
+    end
 
     -- checked texture ------------------------------------------------------- --
-    b.checkedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.25))
-    AW.SetOnePixelInside(b.checkedTexture, b)
-    b.checkedTexture:SetBlendMode("ADD")
-    b:SetCheckedTexture(b.checkedTexture)
+    if b.SetCheckedTexture then
+        b.checkedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.25))
+        AW.SetOnePixelInside(b.checkedTexture, b)
+        b.checkedTexture:SetBlendMode("ADD")
+        b:SetCheckedTexture(b.checkedTexture)
+    end
 
     -- pushed texture -------------------------------------------------------- --
-    b.pushedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("yellow", 0.25))
-    AW.SetOnePixelInside(b.pushedTexture, b)
-    b.pushedTexture:SetBlendMode("ADD")
-    b:SetPushedTexture(b.pushedTexture)
+    if b.SetPushedTexture then
+        b.pushedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("yellow", 0.25))
+        AW.SetOnePixelInside(b.pushedTexture, b)
+        b.pushedTexture:SetBlendMode("ADD")
+        b:SetPushedTexture(b.pushedTexture)
+    end
 
     -- mouseover highlight --------------------------------------------------- --
-    b.mouseOverHighlight = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.25), "HIGHLIGHT")
-    AW.SetOnePixelInside(b.mouseOverHighlight, b)
-    b.mouseOverHighlight:SetBlendMode("ADD")
+    if b.SetHighlightTexture then
+        b.mouseoverHighlight = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.25), "HIGHLIGHT")
+        AW.SetOnePixelInside(b.mouseoverHighlight, b)
+        b.mouseoverHighlight:SetBlendMode("ADD")
+        b:SetHighlightTexture(b.mouseoverHighlight)
+    end
 
     -- SpellHighlightTexture ------------------------------------------------- --
     if b.SpellHighlightTexture then

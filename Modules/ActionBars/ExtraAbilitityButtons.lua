@@ -61,16 +61,8 @@ function ZoneAbility_UpdateAbility()
             spellButton.skinnedByBFI = true
 
             spellButton.holder = zoneAbilityHolder
+            AB.StylizeButton(spellButton)
             AW.AddToPixelUpdater(spellButton)
-            AW.SetDefaultBackdrop(spellButton)
-            spellButton:SetBackdropColor(AW.GetColorRGB("background"))
-            spellButton:SetBackdropBorderColor(AW.GetColorRGB("border"))
-
-            spellButton.NormalTexture:SetAlpha(0) -- border
-
-            spellButton.Icon:SetDrawLayer("ARTWORK", -1)
-            spellButton.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-            AW.SetOnePixelInside(spellButton.Icon, spellButton)
         end
     end
 end
