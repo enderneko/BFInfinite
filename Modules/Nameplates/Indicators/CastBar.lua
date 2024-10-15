@@ -352,6 +352,8 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
         self.notInterruptible = notInterruptible
         CastInterruptible(self)
     else
+        self.checkInterruptCD = nil
+        self.notInterruptible = nil
         -- restore to normal
         self.bar:SetColor(AW.UnpackColor(self.normalColor))
         self.bar.uninterruptible:Hide()
