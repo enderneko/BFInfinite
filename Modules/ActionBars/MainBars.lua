@@ -310,6 +310,9 @@ local function UpdateMainBars(module, which, barName)
         return
     end
 
+    -- AutoPushSpellToActionBar
+    SetCVar("AutoPushSpellToActionBar", AB.config.general.disableAutoAddSpells and 0 or 1)
+
     if not init then
         init = true
 

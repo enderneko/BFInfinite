@@ -10,6 +10,7 @@ local defaults = {
         frameLevel = 1,
         frameStrata = "LOW",
         flyoutSize = 32,
+        disableAutoAddSpells = true,
     },
     barConfig = {
         bar1 = {enabled = true, position = {"BOTTOM", 0, 8}},
