@@ -16,7 +16,7 @@ local defaults = {
         texts = {
             enabled = true,
             showOnHover = true,
-            font = {"Visitor", 9, "monochrome_outline", false},
+            font = {"BFI", 10, "outline", false},
             leftFormat = "[level]",
             centerFormat = "[remaining]",
             rightFormat = "[percent]",
@@ -33,11 +33,18 @@ local defaults = {
         position = {"BOTTOM", 166, 1},
         width = 330,
         height = 5,
-        colors = {
-            border = AW.GetColorTable("border"),
-            background = AW.GetColorTable("background"),
-            normal = AW.GetColorTable("exp_normal_start"),
+        texture = "BFI Plain",
+        hideBelowMaxLevel = false,
+        texts = {
+            enabled = true,
+            showOnHover = true,
+            font = {"BFI", 10, "outline", false},
+            leftFormat = "[name]",
+            centerFormat = "[current] / [total]",
+            rightFormat = "[standing]",
         },
+        borderColor = AW.GetColorTable("border"),
+        bgColor = AW.GetColorTable("background"),
     },
 }
 

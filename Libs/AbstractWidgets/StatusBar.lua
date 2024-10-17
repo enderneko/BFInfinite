@@ -78,8 +78,10 @@ end
 local Clamp = Clamp
 
 local function UpdateValue(self)
-    if self.value == self.min or self.max == 0 then
+    if self.value == self.min then
         self.fg:SetWidth(0.001)
+    elseif self.max == self.min then
+        self.fg:SetWidth(self:GetBarWidth())
     else
         self.value = Clamp(self.value, self.min, self.max)
         local p = (self.value - self.min) / (self.max - self.min)
