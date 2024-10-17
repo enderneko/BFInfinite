@@ -81,7 +81,7 @@ local defaults = {
                 timewalking = {text = "TW", color = AW.GetColorTable("skyblue")},
                 event = {text = "E", color = AW.GetColorTable("classicrose")},
                 -- TODO: delves
-            }
+            },
         },
     },
 }

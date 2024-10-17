@@ -17,8 +17,12 @@ local defaults = {
     },
     powerBarWidget = {
         enabled = true,
-        scale = 0.8,
         position = {"TOP", 0, -70},
+        scale = 0.8,
+    },
+    queueStatus = {
+        position = {"BOTTOM", -469, 152},
+        scale = 0.7,
     },
 }
 

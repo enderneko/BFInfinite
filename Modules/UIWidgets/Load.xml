@@ -3,4 +3,5 @@
     <Script file="Defaults.lua"/>
     <Script file="Widgets.lua"/>
     <Script file="MicroMenu.lua"/>
+    <Script file="QueueStatusButton.lua"/>
 </Ui>
