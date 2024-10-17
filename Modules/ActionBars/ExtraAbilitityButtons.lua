@@ -56,6 +56,9 @@ end
 
 function ZoneAbility_UpdateAbility()
     ZoneAbilityFrame.Style:SetAlpha(zoneAbilityHolder.hideTexture and 0 or 1)
+    -- ZoneAbilityFrame.Style:ClearAllPoints()
+    -- ZoneAbilityFrame.Style:SetPoint("CENTER", -1, 1)
+
     for spellButton in ZoneAbilityFrame.SpellButtonContainer:EnumerateActive() do
         if spellButton and not spellButton.skinnedByBFI then
             spellButton.skinnedByBFI = true
@@ -112,9 +115,9 @@ function ExtraAction_UpdateAbility(_, frame)
         AB.StylizeButton(button)
         button.style:SetDrawLayer("BACKGROUND", -7)
         button.style:SetAlpha(extraActionHolder.hideTexture and 0 or 1)
-        button.style:ClearAllPoints()
         button.style:SetScale(extraActionHolder.scale)
-        button.style:SetPoint("CENTER", -2, 1)
+        -- button.style:ClearAllPoints()
+        -- button.style:SetPoint("CENTER", -2, 1)
 
         button:ClearAllPoints()
         button:SetAllPoints()
@@ -147,6 +150,8 @@ local function UpdateButton(module, which)
     ExtraAbilityContainer.OnUpdate = nil
     ExtraAbilityContainer.IsLayoutFrame = nil
 
+    local size = AW.ConvertPixels(52)
+
     -- zone ability -----------------------------------------------------
     if not zoneAbilityHolder then
         CreateZoneAbilityHolder()
@@ -158,7 +163,7 @@ local function UpdateButton(module, which)
     zoneAbilityHolder:SetFrameLevel(AB.config.general.frameLevel)
 
     zoneAbilityHolder.scale = zoneAbilityConfig.scale
-    AW.SetSize(zoneAbilityHolder, 52 * zoneAbilityConfig.scale, 52 * zoneAbilityConfig.scale) -- default size of ZoneAbilityFrame.SpellButtonContainer
+    AW.SetSize(zoneAbilityHolder, size * zoneAbilityConfig.scale, size * zoneAbilityConfig.scale) -- default size of ZoneAbilityFrame.SpellButtonContainer
 
     zoneAbilityHolder.hideTexture = zoneAbilityConfig.hideTexture
     ZoneAbilityFrame.Style:SetAlpha(zoneAbilityConfig.hideTexture and 0 or 1)
@@ -177,9 +182,7 @@ local function UpdateButton(module, which)
     extraActionHolder.font = extraActionConfig.hotkey
 
     extraActionHolder.scale = extraActionConfig.scale
-    -- ExtraActionBarFrame:SetScale(extraActionConfig.scale)
-    local w, h = ExtraActionBarFrame.button:GetSize()
-    extraActionHolder:SetSize(w * extraActionConfig.scale, h * extraActionConfig.scale)
+    extraActionHolder:SetSize(size * extraActionConfig.scale, size * extraActionConfig.scale)
 
     extraActionHolder.hideTexture = extraActionConfig.hideTexture
     for button in pairs(extraButtons) do

@@ -33,8 +33,12 @@ function AW.GetNearestPixelSize(uiUnitSize, layoutScale, minPixels)
     return numPixels * uiUnitFactor / layoutScale
 end
 
-function AW.ConvertPixels(desiredPixels, layoutScale)
-    return AW.GetNearestPixelSize(desiredPixels, layoutScale)
+-- function AW.ConvertPixels(desiredPixels, layoutScale)
+--     return AW.GetNearestPixelSize(desiredPixels, layoutScale)
+-- end
+
+function AW.ConvertPixels(desiredPixels)
+    return AW.GetNearestPixelSize(desiredPixels, AW.UIParent:GetEffectiveScale())
 end
 
 function AW.ConvertPixelsForRegion(desiredPixels, region)

@@ -68,9 +68,9 @@ local defaults = {
     extraAbilityButtons = {
         enabled = true,
         zoneAbility = {
-            position =  {"BOTTOM", 0, 120},
+            position =  {"BOTTOM", -351, 155},
             scale = 0.63,
-            hideTexture = false,
+            hideTexture = true,
         },
         extraAction = {
             position =  {"BOTTOM", 0, 160},
