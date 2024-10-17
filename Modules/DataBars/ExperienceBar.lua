@@ -150,6 +150,7 @@ end
 -- update xp
 ---------------------------------------------------------------------
 function UpdateXP(self)
+    -- print(self.hideAtMaxLevel, U.IsMaxLevel(), GetMaxLevelForLatestExpansion(), UnitLevel("player"), IsLevelAtEffectiveMaxLevel(UnitLevel("player")))
     -- level check
     if self.hideAtMaxLevel and U.IsMaxLevel() then
         self:Hide()
@@ -172,6 +173,11 @@ function UpdateXP(self)
     self.restedXP = GetXPExhaustion() or 0
 
     UpdateBarAndText(self)
+end
+
+local function UpdateAll(self)
+    UpdateXP(self)
+    UpdateQuestXP(self)
 end
 
 ---------------------------------------------------------------------
@@ -231,8 +237,9 @@ local function CreateExperienceBar()
 
     -- script
     experienceBar:SetScript("OnShow", function()
-        experienceBar:RegisterEvent("UPDATE_EXPANSION_LEVEL", UpdateXP)
-        experienceBar:RegisterEvent("MAX_EXPANSION_LEVEL_UPDATED", UpdateXP)
+        -- experienceBar:RegisterEvent("SHOW_SUBSCRIPTION_INTERSTITIAL", UpdateAll)
+        experienceBar:RegisterEvent("UPDATE_EXPANSION_LEVEL", UpdateAll)
+        experienceBar:RegisterEvent("MAX_EXPANSION_LEVEL_UPDATED", UpdateAll)
         experienceBar:RegisterEvent("PLAYER_XP_UPDATE", UpdateXP)
         experienceBar:RegisterEvent("PLAYER_LEVEL_UP", UpdateXP)
         experienceBar:RegisterEvent("UPDATE_EXHAUSTION", UpdateXP)
@@ -254,11 +261,6 @@ local function CreateExperienceBar()
     experienceBar.restedXP = 0
 end
 
-local function UpdateAll(self)
-    UpdateXP(self)
-    UpdateQuestXP(self)
-end
-
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
@@ -277,6 +279,9 @@ local function UpdateXPerienceBar(module, which)
     if not experienceBar then
         CreateExperienceBar()
     end
+
+    -- mover
+    AW.UpdateMoverSave(experienceBar, config.position)
 
     AW.LoadPosition(experienceBar, config.position)
     AW.SetSize(experienceBar, config.width, config.height)

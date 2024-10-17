@@ -72,6 +72,7 @@ end
 ---------------------------------------------------------------------
 local UnitIsPlayer = UnitIsPlayer
 local UnitInPartyIsAI = UnitInPartyIsAI
+local IsLevelAtEffectiveMaxLevel = IsLevelAtEffectiveMaxLevel
 
 function U.UnitIsPlayer(unit)
     return UnitIsPlayer(unit) or UnitInPartyIsAI(unit)
@@ -94,9 +95,11 @@ function U.IsVehicle(guid)
 end
 
 function U.IsMaxLevel()
-    local maxLevel = GetMaxLevelForLatestExpansion() --? GetMaxPlayerLevel()
+    -- local maxLevel = GetMaxLevelForLatestExpansion() --? GetMaxPlayerLevel()
     local playerLevel = UnitLevel("player")
-    return playerLevel >= maxLevel
+    local isMaxLevel =  IsLevelAtEffectiveMaxLevel(playerLevel)
+    -- local isTrialMaxLevel =  (IsRestrictedAccount() or IsTrialAccount() or IsVeteranTrialAccount()) and (playerLevel == 20)
+    return isMaxLevel -- or isTrialMaxLevel
 end
 
 ---------------------------------------------------------------------
