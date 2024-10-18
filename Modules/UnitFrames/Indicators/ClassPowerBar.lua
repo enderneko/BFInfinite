@@ -13,6 +13,19 @@ local PlayerVehicleHasComboPoints = PlayerVehicleHasComboPoints
 local UnitPowerType = UnitPowerType
 local UnitPowerMax = UnitPowerMax
 local UnitPower = UnitPower
+local UnitPowerDisplayMod = UnitPowerDisplayMod
+
+local SPEC_MAGE_ARCANE = _G.SPEC_MAGE_ARCANE -- 1
+local SPEC_MONK_WINDWALKER = _G.SPEC_MONK_WINDWALKER -- 3
+local SPEC_WARLOCK_DESTRUCTION = _G.SPEC_WARLOCK_DESTRUCTION -- 3
+
+local POWER_TYPE_ENERGY = Enum.PowerType.Energy -- 3
+local POWER_TYPE_COMBO_POINTS = Enum.PowerType.ComboPoints -- 4
+local POWER_TYPE_SOUL_SHARDS = Enum.PowerType.SoulShards -- 7
+local POWER_TYPE_HOLY_POWER = Enum.PowerType.HolyPower -- 9
+local POWER_TYPE_CHI = Enum.PowerType.Chi -- 12
+local POWER_TYPE_ARCANE_CHARGES = Enum.PowerType.ArcaneCharges -- 16
+local POWER_TYPE_ESSENCE = Enum.PowerType.Essence -- 19
 
 ---------------------------------------------------------------------
 -- ShouldShowClassPower
@@ -22,7 +35,7 @@ local should_show_class_power = {
         return true
     end,
     DRUID = function()
-        return UnitPowerType("player") == Enum.PowerType.Energy
+        return UnitPowerType("player") == POWER_TYPE_ENERGY
     end,
     WARLOCK = function()
         return true
@@ -31,10 +44,10 @@ local should_show_class_power = {
         return true
     end,
     MONK = function()
-        return GetSpecialization() == 3 -- Windwalker
+        return GetSpecialization() == SPEC_MONK_WINDWALKER -- Windwalker
     end,
     MAGE = function()
-        return GetSpecialization() == 1 -- Arcane
+        return GetSpecialization() == SPEC_MAGE_ARCANE -- Arcane
     end,
     EVOKER = function()
         return true
@@ -61,25 +74,29 @@ end
 local class_power_info = {
     -- class = {powerIndex, powerType, valueOfEachBar}
     ROGUE = function()
-        return 4, "COMBO_POINTS", 1
+        return POWER_TYPE_COMBO_POINTS, "COMBO_POINTS"
     end,
     DRUID = function()
-        return 4, "COMBO_POINTS", 1
+        return POWER_TYPE_COMBO_POINTS, "COMBO_POINTS"
     end,
     WARLOCK = function()
-        return 7, "SOUL_SHARDS", 10
+        if GetSpecialization() == SPEC_WARLOCK_DESTRUCTION then
+            return POWER_TYPE_SOUL_SHARDS, "SOUL_SHARDS", UnitPowerDisplayMod(POWER_TYPE_SOUL_SHARDS)
+        else
+            return POWER_TYPE_SOUL_SHARDS, "SOUL_SHARDS"
+        end
     end,
     PALADIN = function()
-        return 9, "HOLY_POWER", 1
+        return POWER_TYPE_HOLY_POWER, "HOLY_POWER"
     end,
     MONK = function()
-        return 12, "CHI", 1
+        return POWER_TYPE_CHI, "CHI"
     end,
     MAGE = function()
-        return 16, "ARCANE_CHARGES", 1
+        return POWER_TYPE_ARCANE_CHARGES, "ARCANE_CHARGES"
     end,
     EVOKER = function()
-        return 19, "ESSENCE", 1
+        return POWER_TYPE_ESSENCE, "ESSENCE"
     end,
 }
 
@@ -197,7 +214,7 @@ local function SetupBars(self)
 end
 
 local function SetBarValues(self)
-    local value = self.power / self.powerMod
+    local value = self.power
 
     for i = 1, self.numPowerBars do
         if value >= 1 then
@@ -226,7 +243,11 @@ local function UpdatePower(self, event, unitId, powerType)
     if unitId and unitId ~= self.unit then return end
     if powerType and powerType ~= self.powerType then return end
 
-    self.power = UnitPower(self.unit, self.powerIndex, true)
+    if self.powerMod then
+        self.power = UnitPower(self.unit, self.powerIndex, true) / self.powerMod
+    else
+        self.power = UnitPower(self.unit, self.powerIndex)
+    end
     SetBarValues(self)
 end
 
@@ -240,9 +261,10 @@ local function Check(self, event, unitId)
         self.unit = "vehicle"
         self.powerIndex = 4
         self.powerType = "COMBO_POINTS"
+        self.powerMod = nil
     else
         self.unit = "player"
-        self.powerIndex, self.powerType = UF.GetClassPowerInfo()
+        self.powerIndex, self.powerType, self.powerMod = UF.GetClassPowerInfo()
     end
     self.powerMax = UnitPowerMax(self.unit, self.powerIndex)
 

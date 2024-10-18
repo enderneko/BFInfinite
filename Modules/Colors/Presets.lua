@@ -55,7 +55,7 @@ local uf_colors = {
     exp_normal_end = {0.78, 0.38, 1, 1},
     exp_complete = {1, 0.59, 0, 1},
     exp_incomplete = {1, 0.82, 0.31, 1},
-    exp_rested = {0.31, 0.56, 1, 0.6},
+    exp_rested = {0.31, 0.56, 1, 0.35},
 
     honor = {1, 0.3, 0.14, 1},
 }
