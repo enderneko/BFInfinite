@@ -35,6 +35,13 @@ local formatter = {
     total = function()
         return BreakUpLargeNumbers(reputationBar.max)
     end,
+    progress = function()
+        if reputationBar.max == 0 then
+            return ""
+        else
+            return format("%s / %s", BreakUpLargeNumbers(reputationBar.current), BreakUpLargeNumbers(reputationBar.max))
+        end
+    end,
     standing = function()
         return reputationBar.standing
     end,

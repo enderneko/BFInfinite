@@ -40,7 +40,7 @@ local defaults = {
             showOnHover = true,
             font = {"BFI", 10, "outline", false},
             leftFormat = "[name]",
-            centerFormat = "[current] / [total]",
+            centerFormat = "[progress]",
             rightFormat = "[standing]",
         },
         borderColor = AW.GetColorTable("border"),
