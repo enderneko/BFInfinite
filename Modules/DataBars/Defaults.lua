@@ -46,6 +46,25 @@ local defaults = {
         borderColor = AW.GetColorTable("border"),
         bgColor = AW.GetColorTable("background"),
     },
+    honorBar = {
+        enabled = true,
+        position = {"BOTTOM", -166, 1},
+        width = 330,
+        height = 5,
+        texture = "BFI Plain",
+        hideBelowMaxLevel = true,
+        texts = {
+            enabled = true,
+            showOnHover = true,
+            font = {"BFI", 10, "outline", false},
+            leftFormat = "[level]",
+            centerFormat = "",
+            rightFormat = "[progress]",
+        },
+        borderColor = AW.GetColorTable("border"),
+        bgColor = AW.GetColorTable("background"),
+        color = AW.GetColorTable("honor"),
+    },
 }
 
 BFI.RegisterCallback("UpdateConfigs", "DataBars", function(t)

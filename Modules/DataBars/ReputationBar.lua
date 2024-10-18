@@ -173,10 +173,12 @@ end
 local function UpdateRepVisibility(self)
     -- level check
     if self.hideBelowMaxLevel and not U.IsMaxLevel() then
+        self:RegisterEvent("PLAYER_LEVEL_UP", UpdateRepVisibility)
         self:UnregisterEvent("UPDATE_FACTION")
         self:Hide()
     else
         self:RegisterEvent("UPDATE_FACTION", UpdateRep)
+        self:UnregisterEvent("PLAYER_LEVEL_UP")
         UpdateRep(self)
         self:Show()
     end
@@ -223,11 +225,12 @@ end
 local init
 local function UpdateReputationBar(module, which)
     if module and module ~= "DataBars" then return end
-    if which and which ~= "reputationBar" then return end
+    if which and which ~= "reputation" then return end
 
     local config = DB.config.reputationBar
     if not config.enabled then
         if reputationBar then
+            reputationBar.enabled = false
             reputationBar:UnregisterAllEvents()
             reputationBar:Hide()
         end
@@ -237,8 +240,8 @@ local function UpdateReputationBar(module, which)
     if not reputationBar then
         CreateReputationBar()
     end
+    reputationBar.enabled = true
 
-    reputationBar:RegisterEvent("PLAYER_LEVEL_UP", UpdateRepVisibility)
     reputationBar:RegisterEvent("UPDATE_FACTION", UpdateRep)
 
     AW.UpdateMoverSave(reputationBar, config.position)
@@ -264,9 +267,6 @@ local function UpdateReputationBar(module, which)
     end
 
     reputationBar.hideBelowMaxLevel = config.hideBelowMaxLevel
-
     UpdateRepVisibility(reputationBar)
-    UpdateRep(reputationBar)
-    reputationBar:Show()
 end
 BFI.RegisterCallback("UpdateModules", "DB_ReputationBar", UpdateReputationBar)

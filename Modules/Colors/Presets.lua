@@ -56,5 +56,7 @@ local uf_colors = {
     exp_complete = {1, 0.59, 0, 1},
     exp_incomplete = {1, 0.82, 0.31, 1},
     exp_rested = {0.31, 0.56, 1, 0.6},
+
+    honor = {1, 0.3, 0.14, 1},
 }
 AW.AddColors(uf_colors)

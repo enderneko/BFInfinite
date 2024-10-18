@@ -271,6 +271,7 @@ local function UpdateXPerienceBar(module, which)
     local config = DB.config.experienceBar
     if not config.enabled then
         if experienceBar then
+            experienceBar.enabled = false
             experienceBar:Hide()
         end
         return
@@ -279,6 +280,7 @@ local function UpdateXPerienceBar(module, which)
     if not experienceBar then
         CreateExperienceBar()
     end
+    experienceBar.enabled = true
 
     -- mover
     AW.UpdateMoverSave(experienceBar, config.position)
