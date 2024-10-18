@@ -115,12 +115,14 @@ function ExtraAction_UpdateAbility(_, frame)
         AB.StylizeButton(button)
         button.style:SetDrawLayer("BACKGROUND", -7)
         button.style:SetAlpha(extraActionHolder.hideTexture and 0 or 1)
-        button.style:SetScale(extraActionHolder.scale)
+        -- button.style:SetScale(extraActionHolder.scale)
         -- button.style:ClearAllPoints()
         -- button.style:SetPoint("CENTER", -2, 1)
 
-        button:ClearAllPoints()
-        button:SetAllPoints()
+        -- invalid
+        -- button:ClearAllPoints()
+        -- button:SetAllPoints()
+
         AB.ApplyTextConfig(button.HotKey, extraActionHolder.font)
         button.HotKey:SetText(AB.GetHotkey(GetBindingKey(button.commandName)))
 
@@ -183,6 +185,7 @@ local function UpdateButton(module, which)
 
     extraActionHolder.scale = extraActionConfig.scale
     extraActionHolder:SetSize(size * extraActionConfig.scale, size * extraActionConfig.scale)
+    ExtraActionBarFrame:SetScale(extraActionConfig.scale)
 
     extraActionHolder.hideTexture = extraActionConfig.hideTexture
     for button in pairs(extraButtons) do
