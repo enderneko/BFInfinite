@@ -12,7 +12,7 @@ local GetBindingKey = GetBindingKey
 ---------------------------------------------------------------------
 local ZoneAbilityFrame = _G.ZoneAbilityFrame
 local zoneAbilityHolder
-local ZoneAbility_Reparent, ZoneAbility_UpdateScale, ZoneAbility_UpdateAbility
+local ZoneAbility_UpdateParent, ZoneAbility_UpdateScale, ZoneAbility_UpdateAbility
 
 local function CreateZoneAbilityHolder()
     zoneAbilityHolder = CreateFrame("Frame", "BIF_ZoneAbilityHolder", AW.UIParent)
@@ -33,16 +33,16 @@ local function CreateZoneAbilityHolder()
     hooksecurefunc(ZoneAbilityFrame, "SetParent", function(_, parent)
         if parent ~= zoneAbilityHolder then
             if InCombatLockdown() then
-                AB:RegisterEvent("PLAYER_REGEN_ENABLED", ZoneAbility_Reparent)
+                AB:RegisterEvent("PLAYER_REGEN_ENABLED", ZoneAbility_UpdateParent)
             else
-                ZoneAbility_Reparent()
+                ZoneAbility_UpdateParent()
             end
         end
     end)
 end
 
-function ZoneAbility_Reparent()
-    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", ZoneAbility_Reparent)
+function ZoneAbility_UpdateParent()
+    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", ZoneAbility_UpdateParent)
     ZoneAbilityFrame:SetParent(zoneAbilityHolder)
 end
 
@@ -76,7 +76,7 @@ end
 local extraActionHolder
 local ExtraActionBarFrame = _G.ExtraActionBarFrame
 local ExtraAbilityContainer = _G.ExtraAbilityContainer
-local ExtraAction_Reparent, ExtraAction_UpdateAbility
+local ExtraAction_UpdateParent, ExtraAction_UpdateAbility
 local extraButtons = {}
 
 local function CreateExtraActionHolder()
@@ -92,17 +92,17 @@ local function CreateExtraActionHolder()
 
     hooksecurefunc(ExtraActionBarFrame, "SetParent", function(_, parent)
         if parent ~= extraActionHolder then
-            if InCombatLockdown() then
-                AB:RegisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_Reparent)
-            else
-                ExtraAction_Reparent()
-            end
+            -- if InCombatLockdown() then
+            --     AB:RegisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_UpdateParent)
+            -- else
+                ExtraAction_UpdateParent()
+            -- end
         end
     end)
 end
 
-function ExtraAction_Reparent()
-    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_Reparent)
+function ExtraAction_UpdateParent()
+    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_UpdateParent)
     ExtraActionBarFrame:SetParent(extraActionHolder)
 end
 
