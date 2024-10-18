@@ -486,7 +486,7 @@ local function CreateColorGrid(color)
         color = color[1]
     end
 
-    local r, g, b, a = AW.GetColorRGB(color)
+    local r, g, b, a = AW.GetColorRGB(color, 1)
     grid:SetBackdropBorderColor(AW.GetColorRGB("black"))
     grid:SetBackdropColor(r, g, b, a)
 
