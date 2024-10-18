@@ -241,8 +241,11 @@ end
 ---------------------------------------------------------------------
 -- clock
 ---------------------------------------------------------------------
-local function UpdateClockTime()
-    Minimap.clockButton.text:SetText(GameTime_GetTime(false))
+local function UpdateClockTime(self, elapsed)
+    self.elapsed = (self.elapsed or 0) + elapsed
+    if self.elapsed >= 0.1 then
+        self.text:SetText(GameTime_GetTime(false))
+    end
 end
 
 local function CreateClockButton()
@@ -298,10 +301,9 @@ local function CreateClockButton()
 
     -- OnUpdate
     clockButton:SetScript("OnUpdate", function(self, elapsed)
-        self.elapsed = (self.elapsed or 0) + elapsed
-        if self.elapsed >= 0.1 then
-            UpdateClockTime()
-        end
+        self.text:SetText("00:00")
+        AW.SetSizeToFitText(self, self.text, 2)
+        clockButton:SetScript("OnUpdate", UpdateClockTime)
     end)
 end
 
@@ -546,13 +548,9 @@ local function UpdateMinimap(module, which)
 
     -- clock
     if config.clock.enabled then
-        Minimap.clockButton:Show()
         U.SetFont(Minimap.clockButton.text, unpack(config.clock.font))
-        Minimap.clockButton.text:SetText("00:00")
-        C_Timer.After(0, function()
-            AW.SetSizeToFitText(Minimap.clockButton, Minimap.clockButton.text, 2)
-            AW.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
-        end)
+        AW.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
+        Minimap.clockButton:Show()
 
         -- flash
         local anchor = config.clock.position[1]
