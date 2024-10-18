@@ -2,7 +2,7 @@
 -- File: EventHandler.lua
 -- Author: enderneko (enderneko-dev@outlook.com)
 -- Created : 2024-03-14 11:46 +08:00
--- Modified: 2024-09-06 20:48 +08:00
+-- Modified: 2024-10-18 11:14 +08:00
 ---------------------------------------------------------------------
 
 local _, addon = ...
@@ -35,6 +35,21 @@ local function RegisterEvent(self, event, ...)
     end
 
     _RegisterEvent(self, event)
+end
+
+local function RegisterUnitEvent(self, event, unit, ...)
+    if not self.events[event] then self.events[event] = {} end
+
+    for i = 1, select("#", ...) do
+        local fn = select(i, ...)
+        self.events[event][fn] = true
+    end
+
+    if type(unit) == "table" then
+        _RegisterUnitEvent(self, event, unpack(unit))
+    else
+        _RegisterUnitEvent(self, event, unit)
+    end
 end
 
 local function UnregisterEvent(self, event, ...)
@@ -85,7 +100,11 @@ local function RegisterUnitEvent_Embeded(self, event, unit, ...)
         self.eventHandler.events[event][fn] = true
     end
 
-    _RegisterUnitEvent(self.eventHandler, event, unit)
+    if type(unit) == "table" then
+        _RegisterUnitEvent(self.eventHandler, event, unpack(unit))
+    else
+        _RegisterUnitEvent(self.eventHandler, event, unit)
+    end
 end
 
 local function UnregisterEvent_Embeded(self, event, ...)
@@ -127,6 +146,22 @@ local function RegisterEvent_Shared(self, event, ...)
     end
 
     _RegisterEvent(sharedEventHandler, event)
+end
+
+local function RegisterUnitEvent_Shared(self, event, unit, ...)
+    if not sharedEventHandler.events[event] then sharedEventHandler.events[event] = {} end
+    if not sharedEventHandler.events[event][self] then sharedEventHandler.events[event][self] = {} end
+
+    for i = 1, select("#", ...) do
+        local fn = select(i, ...)
+        sharedEventHandler.events[event][self][fn] = true
+    end
+
+    if type(unit) == "table" then
+        _RegisterUnitEvent(sharedEventHandler, event, unpack(unit))
+    else
+        _RegisterUnitEvent(sharedEventHandler, event, unit)
+    end
 end
 
 local function UnregisterEvent_Shared(self, event, ...)
@@ -200,6 +235,7 @@ function addon.AddEventHandler(obj)
     elseif obj:GetObjectType() == "FontString" or obj:GetObjectType() == "Texture" then
         -- use shared
         obj.RegisterEvent = RegisterEvent_Shared
+        obj.RegisterUnitEvent = RegisterUnitEvent_Shared
         obj.UnregisterEvent = UnregisterEvent_Shared
         obj.UnregisterAllEvents = UnregisterAllEvents_Shared
 
@@ -207,6 +243,7 @@ function addon.AddEventHandler(obj)
         -- use self
         obj.events = {}
         obj.RegisterEvent = RegisterEvent
+        obj.RegisterUnitEvent = RegisterUnitEvent
         obj.UnregisterEvent = UnregisterEvent
         obj.UnregisterAllEvents = UnregisterAllEvents
 
