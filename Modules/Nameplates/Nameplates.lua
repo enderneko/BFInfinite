@@ -435,13 +435,17 @@ local function Show(np)
     if np.guid and strfind(np.type, "npc$") then
         np.npcId = select(6, strsplit("-", np.guid))
         np.npcId = tonumber(np.npcId)
-        if NP.optimizedUnits[np.npcId] then
-            np.mode = "efficiency"
+        if np.npcId then
+            if NP.optimizedUnits[np.npcId] then
+                np.mode = "efficiency"
+            else
+                np.mode = "normal"
+            end
+            -- cache for user custom
+            NP.cachedNPCs[np.npcId] = np.states.name
         else
             np.mode = "normal"
         end
-        -- cache for user custom
-        NP.cachedNPCs[np.npcId] = np.states.name
     else
         np.npcId = nil
         np.mode = "normal"
