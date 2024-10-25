@@ -9,13 +9,13 @@ local AW = _G.AbstractWidgets
 -- hide frame
 ---------------------------------------------------------------------
 function U.Hide(region)
+    if not region then return end
     if region.UnregisterAllEvents then
         region:UnregisterAllEvents()
         region:SetParent(BFI.hiddenParent)
     else
         region.Show = region.Hide
     end
-
     region:Hide()
 end
 

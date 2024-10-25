@@ -9,7 +9,9 @@
     <Script file="LibCustomGlow-1.0\LibCustomGlow-1.0.lua"/>
     <Script file="LibRangeCheck-3.0\LibRangeCheck-3.0.lua"/>
     <Script file="LibActionButton-1.0\LibActionButton-1.0.lua"/>
+    <Script file="LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
     <Include file="LibKeyBound-1.0\lib.xml"/>
+    <Include file="LibDBIcon-1.0\lib.xml"/>
     <Include file="TaintLess\TaintLess.xml"/>
     <Include file="LibSharedMedia-3.0\lib.xml"/>
 </Ui>

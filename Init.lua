@@ -16,6 +16,7 @@ BFI.name = "BigFootInfinite"
 ---@field NamePlates NamePlates
 ---@field Maps Maps
 ---@field DataBars DataBars
+---@field Chat Chat
 ---@field UIWidgets UIWidgets
 ---@field DisableBlizzard DisableBlizzard
 ---@field Misc Misc
@@ -91,6 +92,9 @@ BFI.AddEventHandler(BFI.Maps)
 
 BFI.DataBars = {}
 BFI.AddEventHandler(BFI.DataBars)
+
+BFI.Chat = {}
+BFI.AddEventHandler(BFI.Chat)
 
 ---------------------------------------------------------------------
 -- hidden parent

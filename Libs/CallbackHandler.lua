@@ -2,10 +2,11 @@
 -- File: CallbackHandler.lua
 -- Author: enderneko (enderneko-dev@outlook.com)
 -- Created : 2024-03-04 17:24 +08:00
--- Modified: 2024-07-15 16:15 +08:00
+-- Modified: 2024-10-25 14:23 +08:00
 ---------------------------------------------------------------------
 
-local _, addon = ...
+---@class BFI
+local addon = select(2, ...)
 
 local callbacks = {
     -- invoke priority
