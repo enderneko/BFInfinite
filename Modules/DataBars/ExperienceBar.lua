@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
@@ -195,7 +196,7 @@ local function CreateExperienceBar()
     local disabledTexture = experienceBar:CreateTexture(nil, "OVERLAY")
     experienceBar.disabledTexture = disabledTexture
     disabledTexture:SetAllPoints(experienceBar.bg)
-    disabledTexture:SetTexture(AW.GetTexture("Stripe"), "REPEAT", "REPEAT")
+    disabledTexture:SetTexture(AW.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     disabledTexture:SetHorizTile(true)
     disabledTexture:SetVertTile(true)
     disabledTexture:SetVertexColor(AW.GetColorRGB("disabled", 0.75))

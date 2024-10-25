@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -38,7 +39,7 @@ end
 ---------------------------------------------------------------------
 -- level
 ---------------------------------------------------------------------
-local highLevelTexture = "|T"..AW.GetTexture("HighLevelTexture")..":%d|t"
+local highLevelTexture = "|T"..AW.GetTexture("HighLevelTexture", BFI.name)..":%d|t"
 local function UpdateLevel(self, event, unitId)
     local unit = self.root.unit
     if type(unitId) == "string" and unit ~= unitId then return end

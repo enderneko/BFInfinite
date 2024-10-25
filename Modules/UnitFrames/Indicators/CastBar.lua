@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local UF = BFI.UnitFrames
 local M = BFI.Misc
 
@@ -334,7 +335,7 @@ local function UpdateInterrupt(self)
         local shortName = U.ToShortName(sourceName)
         AW.SetText(self.nameText, shortName, self.nameTextLength)
         local class = M.GetPlayerClass(sourceName)
-        self.nameText:SetText(AW.GetIconString("Warning", true) .. AW.WrapTextInColor(self.nameText:GetText(), class))
+        self.nameText:SetText(AW.GetIconString("Warning") .. AW.WrapTextInColor(self.nameText:GetText(), class))
     end
 end
 
@@ -1025,7 +1026,7 @@ function UF.CreateCastBar(parent, name)
     local uninterruptible = bar:CreateTexture(nil, "ARTWORK", nil, 4)
     bar.uninterruptible = uninterruptible
     uninterruptible:SetAllPoints()
-    uninterruptible:SetTexture(AW.GetTexture("Uninterruptible1"), "REPEAT", "REPEAT")
+    uninterruptible:SetTexture(AW.GetTexture("Uninterruptible1", BFI.name), "REPEAT", "REPEAT")
     uninterruptible:SetHorizTile(true)
     uninterruptible:SetVertTile(true)
     uninterruptible:Hide()
@@ -1041,11 +1042,11 @@ function UF.CreateCastBar(parent, name)
     AW.SetFrameLevel(overlay, 2, frame)
 
     -- name
-    local nameText = overlay:CreateFontString(nil, "OVERLAY", AW.GetFontName("normal"))
+    local nameText = overlay:CreateFontString(nil, "OVERLAY", "AW_FONT_NORMAL")
     frame.nameText = nameText
 
     -- duration
-    local durationText = overlay:CreateFontString(nil, "OVERLAY", AW.GetFontName("normal"))
+    local durationText = overlay:CreateFontString(nil, "OVERLAY", "AW_FONT_NORMAL")
     frame.durationText = durationText
 
     -- functions

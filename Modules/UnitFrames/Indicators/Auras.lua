@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local S = BFI.Shared
 local UF = BFI.UnitFrames
 
@@ -677,7 +678,7 @@ local function ConfigMode_RefreshAuras(self)
     local icon = self.auraFilter == "HELPFUL" and 135953 or 136071
     if self.isBlock then
         for i = 1, self.numSlots do
-            self.slots[i]:SetCooldown(GetTime(), 15, i, icon, nil, nil, nil, AW.GetColorRGB("accent"))
+            self.slots[i]:SetCooldown(GetTime(), 15, i, icon, nil, nil, nil, AW.GetColorRGB("BFI"))
             self.slots[i]:EnableMouse(false)
         end
     else

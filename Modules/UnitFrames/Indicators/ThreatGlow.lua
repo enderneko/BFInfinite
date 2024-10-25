@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -47,7 +48,7 @@ end
 local function ThreatGlow_LoadConfig(self, config)
     -- AW.SetFrameLevel(self, config.frameLevel, self.root)
     AW.SetOutside(self, self.root, config.size)
-    AW.SetBackdrop(self, {edgeFile=AW.GetTexture("StaticGlow", true), edgeSize=config.size})
+    AW.SetBackdrop(self, {edgeFile=AW.GetTexture("StaticGlow"), edgeSize=config.size})
     self.alpha = config.alpha
 end
 

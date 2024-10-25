@@ -1,13 +1,14 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local UF = BFI.UnitFrames
 
 local READY_CHECK_STATUS = {
-    waiting = AW.GetIcon("ReadyCheck_Waiting", true),
-    ready = AW.GetIcon("ReadyCheck_Ready", true),
-    notready = AW.GetIcon("ReadyCheck_NotReady", true),
+    waiting = AW.GetIcon("ReadyCheck_Waiting"),
+    ready = AW.GetIcon("ReadyCheck_Ready"),
+    notready = AW.GetIcon("ReadyCheck_NotReady"),
 }
 
 ---------------------------------------------------------------------

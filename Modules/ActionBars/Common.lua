@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 ---@class ActionBars
 local AB = BFI.ActionBars
 local U = BFI.utils
@@ -292,10 +293,10 @@ function AB.CreateButton(parent, id, name)
     if b.TargetReticleAnimFrame then
         AW.SetOnePixelInside(b.TargetReticleAnimFrame, b)
         b.TargetReticleAnimFrame.Base:SetAllPoints()
-        b.TargetReticleAnimFrame.Base:SetTexture(AW.GetTexture("TargetReticleBase"))
+        b.TargetReticleAnimFrame.Base:SetTexture(AW.GetTexture("TargetReticleBase", BFI.name))
         b.TargetReticleAnimFrame.Highlight:SetAllPoints()
         b.TargetReticleAnimFrame.Mask:SetAllPoints()
-        b.TargetReticleAnimFrame.Mask:SetTexture(AW.GetTexture("TargetReticleMask"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+        b.TargetReticleAnimFrame.Mask:SetTexture(AW.GetTexture("TargetReticleMask", BFI.name), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     end
 
     -- InterruptDisplay ------------------------------------------------------ --
@@ -303,10 +304,10 @@ function AB.CreateButton(parent, id, name)
         AW.SetOnePixelInside(b.InterruptDisplay, b)
         b.InterruptDisplay.Base:SetAllPoints()
         b.InterruptDisplay.Base.Base:SetAllPoints()
-        b.InterruptDisplay.Base.Base:SetTexture(AW.GetTexture("InterruptDisplayBase"))
+        b.InterruptDisplay.Base.Base:SetTexture(AW.GetTexture("InterruptDisplayBase", BFI.name))
         b.InterruptDisplay.Highlight:SetAllPoints()
         b.InterruptDisplay.Highlight.Mask:SetAllPoints()
-        b.InterruptDisplay.Highlight.Mask:SetTexture(AW.GetTexture("InterruptDisplayMask"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+        b.InterruptDisplay.Highlight.Mask:SetTexture(AW.GetTexture("InterruptDisplayMask", BFI.name), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
         -- b.InterruptDisplay.Highlight.HighlightTexture:SetAllPoints()
         -- b.InterruptDisplay.Highlight.Mask:SetAllPoints()
     end

@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local U = BFI.utils
 local UF = BFI.UnitFrames
 
@@ -144,7 +145,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -154,7 +155,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -641,7 +642,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -651,7 +652,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -1056,7 +1057,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -1066,7 +1067,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -1405,7 +1406,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -1415,7 +1416,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -1762,7 +1763,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -1772,7 +1773,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -2111,7 +2112,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -2121,7 +2122,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -2460,7 +2461,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -2470,7 +2471,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -2812,7 +2813,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -2822,7 +2823,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -3224,7 +3225,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = false,
                 },
@@ -3234,7 +3235,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -3507,7 +3508,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -3517,7 +3518,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe"), -- no customization now
+                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
                     color = AW.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {

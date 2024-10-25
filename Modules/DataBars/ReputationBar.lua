@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars

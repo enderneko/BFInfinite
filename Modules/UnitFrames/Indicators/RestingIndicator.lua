@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -62,7 +63,7 @@ function UF.CreateRestingIndicator(parent, name)
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
     icon:SetAllPoints()
-    icon:SetTexture(AW.GetTexture("Resting"), nil, nil, "TRILINEAR")
+    icon:SetTexture(AW.GetTexture("Resting", BFI.name), nil, nil, "TRILINEAR")
     icon:SetParentKey("Flipbook")
     icon:SetVertexColor(1, 0.84, 0.1)
 

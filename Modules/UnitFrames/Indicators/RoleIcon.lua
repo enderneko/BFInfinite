@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local S = BFI.Shared
 local UF = BFI.UnitFrames
 
@@ -42,7 +43,7 @@ local function RoleIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
-    self.text:SetFont(AW.GetFont("glyphs"), config.width, "OUTLINE")
+    self.text:SetFont(AW.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
     self.hideDamager = config.hideDamager
 end
 

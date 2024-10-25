@@ -2,7 +2,8 @@
 local BFI = select(2, ...)
 local L = BFI.L
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -246,7 +247,7 @@ end
 -- create
 ---------------------------------------------------------------------
 function NP.CreateHealthText(parent, name)
-    local text = parent:CreateFontString(name, "OVERLAY", AW.GetFontName("normal"))
+    local text = parent:CreateFontString(name, "OVERLAY", "AW_FONT_NORMAL")
     text.root = parent
     text:Hide()
 

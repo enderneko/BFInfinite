@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local C = BFI.Colors
 local S = BFI.Shared
 local LCG = BFI.libs.LCG
@@ -148,7 +149,7 @@ end
 local function Aura_CreateGlow(self)
     self.glow = CreateFrame("Frame", nil, self, "BackdropTemplate")
     self.glow:SetAllPoints()
-    self.glow:SetBackdrop({edgeFile = AW.GetTexture("CalloutGlow", true), edgeSize = 7})
+    self.glow:SetBackdrop({edgeFile = AW.GetTexture("CalloutGlow"), edgeSize = 7})
     self.glow:SetBorderBlendMode("ADD")
     self.glow:SetFrameLevel(self:GetFrameLevel())
     AW.SetOutside(self.glow, self, 4)

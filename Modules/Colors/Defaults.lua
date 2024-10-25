@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local U = BFI.utils
 local C = BFI.Colors
 

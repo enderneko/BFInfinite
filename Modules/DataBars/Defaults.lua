@@ -2,7 +2,8 @@
 local BFI = select(2, ...)
 ---@class DataBars
 local DB = BFI.DataBars
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local U = BFI.utils
 
 local defaults = {

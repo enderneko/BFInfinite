@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local U = BFI.utils
 local AB = BFI.ActionBars
 
@@ -185,7 +186,7 @@ local customExitButton = {
     func = function(button)
         VehicleExit()
     end,
-    texture = AW.GetTexture("Exit"),
+    texture = AW.GetTexture("Exit", BFI.name),
     tooltip = LEAVE_VEHICLE,
 }
 
@@ -317,7 +318,7 @@ local function UpdateMainBars(module, which, barName)
         init = true
 
         -- binding frame --------------------------------------------------------------------------
-        _G.BINDING_HEADER_BFI = AW.WrapTextInColor(BFI.name, "accent")
+        _G.BINDING_HEADER_BFI = AW.WrapTextInColor(BFI.name, "BFI")
 
         -- bar9
         local text = L["Action Bar"].." 9 "..L["Button"].." %d"

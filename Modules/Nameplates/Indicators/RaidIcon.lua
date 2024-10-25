@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local S = BFI.Shared
 local NP = BFI.NamePlates
 
@@ -47,7 +48,7 @@ local function RaidIcon_LoadConfig(self, config)
     AW.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AW.SetSize(self, config.width, config.height)
-    self.text:SetFont(AW.GetFont("glyphs"), config.width, "OUTLINE")
+    self.text:SetFont(AW.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
 
     if config.style == "text" then
         self.text:Show()

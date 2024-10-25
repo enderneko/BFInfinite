@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -222,7 +223,7 @@ function NP.CreateQuestIndicator(parent, name)
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
-    icon:SetTexture(AW.GetTexture("Quest"))
+    icon:SetTexture(AW.GetTexture("Quest", BFI.name))
     icon:SetAllPoints()
 
     -- functions

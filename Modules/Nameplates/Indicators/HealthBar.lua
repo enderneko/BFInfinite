@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local C = BFI.Colors
 local NP = BFI.NamePlates
 
@@ -428,7 +429,7 @@ local function ThreatGlow_Setup(self, config)
         return
     end
     AW.SetOutside(self.threat, self, config.size)
-    self.threat:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow", true), edgeSize=AW.ConvertPixelsForRegion(config.size, self)})
+    self.threat:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow"), edgeSize=AW.ConvertPixelsForRegion(config.size, self)})
 end
 
 local function HealthBar_UpdatePixels(self)
@@ -492,7 +493,7 @@ function NP.CreateHealthBar(parent, name)
     shield:Hide()
     shield:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
     shield:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
-    shield:SetTexture(AW.GetTexture("Stripe"), "REPEAT", "REPEAT")
+    shield:SetTexture(AW.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
 
@@ -500,7 +501,7 @@ function NP.CreateHealthBar(parent, name)
     local overshieldGlow = bar:CreateTexture(name.."OvershieldGlow", "ARTWORK", nil, 3)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
-    overshieldGlow:SetTexture(AW.GetTexture("Overshield"))
+    overshieldGlow:SetTexture(AW.GetTexture("Overshield", BFI.name))
     AW.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss)
     AW.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss)
     AW.SetWidth(overshieldGlow, 4)
@@ -509,7 +510,7 @@ function NP.CreateHealthBar(parent, name)
     local overshieldGlowR = bar:CreateTexture(name.."OvershieldGlowR", "ARTWORK", nil, 3)
     bar.overshieldGlowR = overshieldGlowR
     overshieldGlowR:Hide()
-    overshieldGlowR:SetTexture(AW.GetTexture("OvershieldR"))
+    overshieldGlowR:SetTexture(AW.GetTexture("OvershieldR", BFI.name))
     AW.SetPoint(overshieldGlowR, "TOPLEFT", shield, "TOPLEFT", -4, 0)
     AW.SetPoint(overshieldGlowR, "BOTTOMLEFT", shield, "BOTTOMLEFT", -4, 0)
     AW.SetWidth(overshieldGlowR, 8)
@@ -517,7 +518,7 @@ function NP.CreateHealthBar(parent, name)
     local fullOvershieldGlowR = bar:CreateTexture(name.."FullOvershieldGlowR", "ARTWORK", nil, 3)
     bar.fullOvershieldGlowR = fullOvershieldGlowR
     fullOvershieldGlowR:Hide()
-    fullOvershieldGlowR:SetTexture(AW.GetTexture("Overabsorb"))
+    fullOvershieldGlowR:SetTexture(AW.GetTexture("Overabsorb", BFI.name))
     AW.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg)
     AW.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg)
     AW.SetWidth(fullOvershieldGlowR, 4)
@@ -532,7 +533,7 @@ function NP.CreateHealthBar(parent, name)
     local threshold = bar:CreateTexture(name.."Threshold", "ARTWORK", nil, 7)
     bar.threshold = threshold
     threshold:Hide()
-    threshold:SetTexture(AW.GetTexture("Spark"))
+    threshold:SetTexture(AW.GetTexture("Spark", BFI.name))
 
     -- threatGlow
     local threat = CreateFrame("Frame", name.."ThreatGlow", bar, "BackdropTemplate")

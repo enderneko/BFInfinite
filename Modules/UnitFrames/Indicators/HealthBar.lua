@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local C = BFI.Colors
 local UF = BFI.UnitFrames
 
@@ -568,7 +569,7 @@ function UF.CreateHealthBar(parent, name)
     shield:Hide()
     shield:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
     shield:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
-    shield:SetTexture(AW.GetTexture("Stripe"), "REPEAT", "REPEAT")
+    shield:SetTexture(AW.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
 
@@ -576,7 +577,7 @@ function UF.CreateHealthBar(parent, name)
     local overshieldGlow = bar:CreateTexture(name.."OvershieldGlow", "ARTWORK", nil, 3)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
-    overshieldGlow:SetTexture(AW.GetTexture("Overshield"))
+    overshieldGlow:SetTexture(AW.GetTexture("Overshield", BFI.name))
     AW.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss)
     AW.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss)
     AW.SetWidth(overshieldGlow, 4)
@@ -585,7 +586,7 @@ function UF.CreateHealthBar(parent, name)
     local overshieldGlowR = bar:CreateTexture(name.."OvershieldGlowR", "ARTWORK", nil, 3)
     bar.overshieldGlowR = overshieldGlowR
     overshieldGlowR:Hide()
-    overshieldGlowR:SetTexture(AW.GetTexture("OvershieldR"))
+    overshieldGlowR:SetTexture(AW.GetTexture("OvershieldR", BFI.name))
     AW.SetPoint(overshieldGlowR, "TOP", shield, "TOPLEFT")
     AW.SetPoint(overshieldGlowR, "BOTTOM", shield, "BOTTOMLEFT")
     AW.SetWidth(overshieldGlowR, 6)
@@ -593,7 +594,7 @@ function UF.CreateHealthBar(parent, name)
     local fullOvershieldGlowR = bar:CreateTexture(name.."FullOvershieldGlowR", "ARTWORK", nil, 3)
     bar.fullOvershieldGlowR = fullOvershieldGlowR
     fullOvershieldGlowR:Hide()
-    fullOvershieldGlowR:SetTexture(AW.GetTexture("Overabsorb"))
+    fullOvershieldGlowR:SetTexture(AW.GetTexture("Overabsorb", BFI.name))
     AW.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg)
     AW.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg)
     AW.SetWidth(fullOvershieldGlowR, 4)
@@ -604,7 +605,7 @@ function UF.CreateHealthBar(parent, name)
     healAbsorb:Hide()
     healAbsorb:SetPoint("TOPRIGHT", bar.fg)
     healAbsorb:SetPoint("BOTTOMRIGHT", bar.fg)
-    healAbsorb:SetTexture(AW.GetTexture("Stripe"), "REPEAT", "REPEAT")
+    healAbsorb:SetTexture(AW.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     healAbsorb:SetHorizTile(true)
     healAbsorb:SetVertTile(true)
 
@@ -612,7 +613,7 @@ function UF.CreateHealthBar(parent, name)
     local overabsorbGlow = bar:CreateTexture(name.."OverabsorbGlow", "ARTWORK", nil, 5)
     bar.overabsorbGlow = overabsorbGlow
     overabsorbGlow:Hide()
-    overabsorbGlow:SetTexture(AW.GetTexture("Overabsorb"))
+    overabsorbGlow:SetTexture(AW.GetTexture("Overabsorb", BFI.name))
     AW.SetPoint(overabsorbGlow, "TOPLEFT", bar.fg)
     AW.SetPoint(overabsorbGlow, "BOTTOMLEFT", bar.fg)
     AW.SetWidth(overabsorbGlow, 4)

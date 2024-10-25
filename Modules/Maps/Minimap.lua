@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 ---@class Maps
 local M = BFI.Maps
 
@@ -165,9 +166,9 @@ local function CreateAddonButtonHolder()
     lib:RegisterCallback("LibDBIcon_IconCreated", UpdateAddonButtons)
 
     -- button
-    addonButtonHolder = AW.CreateButton(Minimap, "", "accent-hover", 20, 20)
+    addonButtonHolder = AW.CreateButton(Minimap, "", "BFI_hover", 20, 20)
     -- addonButtonHolder:Hide()
-    addonButtonHolder:SetTexture(AW.GetIcon("Menu"), {20, 20}, {"CENTER", 0, 0}, nil, true)
+    addonButtonHolder:SetTexture(AW.GetIcon("Menu", BFI.name), {20, 20}, {"CENTER", 0, 0}, nil, true)
     AW.RemoveFromPixelUpdater(addonButtonHolder)
     AW.CreateFadeInOutAnimation(addonButtonHolder, 0.25, true)
 
@@ -556,13 +557,13 @@ local function UpdateMinimap(module, which)
         local anchor = config.clock.position[1]
         local flashTexture = Minimap.clockButton.flash.texture
         if strfind(anchor, "^TOP") then
-            flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("accent")))
+            flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("BFI")))
         elseif strfind(anchor, "LEFT$") then
-            flashTexture:SetGradient("HORIZONTAL", CreateColor(AW.GetColorRGB("accent")), CreateColor(AW.GetColorRGB("none")))
+            flashTexture:SetGradient("HORIZONTAL", CreateColor(AW.GetColorRGB("BFI")), CreateColor(AW.GetColorRGB("none")))
         elseif strfind(anchor, "RIGHT$") then
-            flashTexture:SetGradient("HORIZONTAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("accent")))
+            flashTexture:SetGradient("HORIZONTAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("BFI")))
         else -- BOTTOM / CENTER
-            flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("accent")), CreateColor(AW.GetColorRGB("none")))
+            flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("BFI")), CreateColor(AW.GetColorRGB("none")))
         end
     else
         Minimap.clockButton:Hide()

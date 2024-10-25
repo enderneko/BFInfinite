@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -58,7 +59,7 @@ function NP.CreateRareIndicator(parent, name)
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
-    icon:SetTexture(AW.GetTexture("Rare"))
+    icon:SetTexture(AW.GetTexture("Rare", BFI.name))
     icon:SetAllPoints()
 
     -- functions

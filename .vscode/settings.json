@@ -3,6 +3,7 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "Lua.workspace.library": [
+        "C:\\Dev\\AddOns\\AbstractWidgets",
         "~\\.vscode\\extensions\\ketho.wow-api-0.17.6\\Annotations"
     ],
     "Lua.diagnostics.globals": [

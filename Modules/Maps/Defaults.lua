@@ -3,7 +3,8 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class Maps
 local M = BFI.Maps
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 
 local defaults = {
     minimap = {

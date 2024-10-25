@@ -2,21 +2,22 @@
 local BFI = select(2, ...)
 ---@class Utils
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 
 local LSM = LibStub("LibSharedMedia-3.0", true)
 
 -- statusbar
-local DEFAULT_BAR_TEXTURE = AW.GetTexture("StatusBar")
+local DEFAULT_BAR_TEXTURE = AW.GetTexture("StatusBar", BFI.name)
 LSM:Register("statusbar", "BFI", DEFAULT_BAR_TEXTURE)
 LSM:Register("statusbar", "BFI Plain", AW.GetPlainTexture())
 
 -- font
-local DEFAULT_FONT = AW.GetFont("Noto_AP_SC")
+local DEFAULT_FONT = AW.GetFont("Noto_AP_SC", BFI.name)
 LSM:Register("font", "BFI", DEFAULT_FONT, 255)
-LSM:Register("font", "Visitor", AW.GetFont("visitor"), 255)
-LSM:Register("font", "Emblem", AW.GetFont("Emblem"), 255)
-LSM:Register("font", "Expressway", AW.GetFont("Expressway"), 255)
+LSM:Register("font", "Visitor", AW.GetFont("visitor", BFI.name), 255)
+LSM:Register("font", "Emblem", AW.GetFont("Emblem", BFI.name), 255)
+LSM:Register("font", "Expressway", AW.GetFont("Expressway", BFI.name), 255)
 
 function U.GetBarTexture(name)
     if LSM:IsValid("statusbar", name) then

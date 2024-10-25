@@ -2,7 +2,8 @@
 local BFI = select(2, ...)
 ---@class Utils
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 
 ---------------------------------------------------------------------
 -- hide frame

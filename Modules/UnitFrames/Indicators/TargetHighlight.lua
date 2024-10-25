@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -98,12 +99,12 @@ function UF.CreateTargetHighlight(parent, name)
     -- mask
     local mask = highlight:CreateMaskTexture()
     highlight.mask = mask
-    mask:SetTexture(AW.GetTexture("Empty", true), "CLAMPTOWHITE","CLAMPTOWHITE")
+    mask:SetTexture(AW.GetTexture("Empty"), "CLAMPTOWHITE","CLAMPTOWHITE")
 
     -- texture
     local tex = highlight:CreateTexture(nil, "BORDER")
     highlight.tex = tex
-    tex:SetTexture(AW.GetTexture("White", true))
+    tex:SetTexture(AW.GetTexture("White"))
     tex:AddMaskTexture(mask)
 
     -- events

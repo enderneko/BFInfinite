@@ -1,7 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local AW = BFI.AW
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -65,7 +66,7 @@ function NP.CreateClassIcon(parent, name)
     -- iconBG
     local iconBG = frame:CreateTexture(nil, "BORDER")
     frame.iconBG = iconBG
-    iconBG:SetTexture(AW.GetTexture("Circle", true), nil, nil, "TRILINEAR")
+    iconBG:SetTexture(AW.GetTexture("Circle"), nil, nil, "TRILINEAR")
     iconBG:SetVertexColor(AW.GetColorRGB("black"))
     iconBG:SetAllPoints()
 
@@ -77,7 +78,7 @@ function NP.CreateClassIcon(parent, name)
 
     -- mask
     local mask = frame:CreateMaskTexture()
-    mask:SetTexture(AW.GetTexture("Circle", true), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    mask:SetTexture(AW.GetTexture("Circle"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     mask:SetAllPoints(icon)
     icon:AddMaskTexture(mask)
 

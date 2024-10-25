@@ -3,8 +3,10 @@ local BFI = select(2, ...)
 _G.BigFootInfinite = BFI
 _G.BFI = BFI
 
+BFI.prefix = "BFI"
+BFI.name = "BigFootInfinite"
+
 ---@class BFI
----@field AW AbstractWidgets
 ---@field L table
 ---@field utils Utils
 ---@field vars table
@@ -19,16 +21,20 @@ _G.BFI = BFI
 ---@field Misc Misc
 
 ---------------------------------------------------------------------
+-- AbstractWidgets
+---------------------------------------------------------------------
+---@class AbstractWidgets
+local AW = _G.AbstractWidgets
+AW.RegisterAddonForAccentColor(BFI.name)
+AW.SetAccentColor("accent", "BFI")
+AW.AddButtonColor("BFI", AW.GetColorTable("BFI", 0.3), AW.GetColorTable("BFI", 0.6))
+AW.AddButtonColor("BFI_hover", {0.127, 0.127, 0.127, 1}, AW.GetColorTable("BFI", 0.6))
+
+---------------------------------------------------------------------
 -- global
 ---------------------------------------------------------------------
 BFI_DEFAULT = "BFI ".._G.DEFAULT
 -- BFI_PATH = [[Interface/AddOns/BigFootInfinite]]
-
----------------------------------------------------------------------
--- prefix
----------------------------------------------------------------------
-BFI.prefix = "BFI"
-BFI.name = "BigFootInfinite"
 
 ---------------------------------------------------------------------
 -- tables
