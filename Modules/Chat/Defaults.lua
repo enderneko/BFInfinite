@@ -9,6 +9,11 @@ local defaults = {
     position = {"BOTTOMLEFT", 20, 20},
     width = 400,
     height = 200,
+    font = {"BFI", 13, "none", true},
+    tabFont = {"BFI", 13, "none", true},
+    fading = true,
+    fadeTime = 60,
+    maxLines = 100,
 }
 
 BFI.RegisterCallback("UpdateConfigs", "Chat", function(t)

@@ -6,6 +6,15 @@ local C = BFI.Chat
 local AW = _G.AbstractWidgets
 local U = BFI.utils
 
+-- Interface/AddOns/Blizzard_ChatFrameBase/Mainline/FloatingChatFrame.lua#L385
+C.CHAT_FONT_HEIGHTS = {8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
+
+local CHAT_TAB_TEXTURES = {
+    "",
+    "Active",
+    "Highlight"
+}
+
 ---------------------------------------------------------------------
 -- container
 ---------------------------------------------------------------------
@@ -23,6 +32,60 @@ local CHAT_FRAMES = _G.CHAT_FRAMES
 local DEFAULT_CHAT_FRAME = _G.DEFAULT_CHAT_FRAME
 local CHAT_FRAME_TEXTURES = _G.CHAT_FRAME_TEXTURES
 local EditModeManagerFrame = _G.EditModeManagerFrame
+local ChatFrame2 = _G.ChatFrame2
+
+-- ignore FCF_FadeInChatFrame/FCF_FadeOutChatFrame
+-- make it a fixed alpha
+local function FixTabAlpha(tab, _, skip)
+    if skip then return end
+    local owner = tab.owner
+    local selected = _G.GeneralDockManager.selected
+    tab:SetAlpha((not owner.isDocked or owner == selected) and 1 or 0.6, true)
+end
+
+local function SetupChat()
+    for _, name in pairs(CHAT_FRAMES) do
+        local frame = _G[name]
+
+        local id = frame:GetID() -- 2:combatlog, 3:voice
+        if not frame.tab then
+            frame.tab = _G[format("ChatFrame%sTab", id)]
+            frame.tab.owner = frame
+            hooksecurefunc(frame.tab, "SetAlpha", FixTabAlpha)
+        end
+
+        -- texture
+        for _, tex in pairs(CHAT_FRAME_TEXTURES) do
+            local f = _G[name .. tex]
+            U.Hide(f)
+        end
+        U.Hide(frame.ScrollBar)
+
+        -- tab
+        local tab = frame.tab
+        U.SetFont(tab.Text, unpack(C.config.tabFont))
+        if not tab.underline then
+            tab.underline = AW.CreateSeparator(tab, 1, 1, BFI.name)
+            tab.underline:SetPoint("TOP", tab.Text, "BOTTOM", 0, -2)
+        end
+
+        for _, prefix in pairs(CHAT_TAB_TEXTURES) do
+            local left = tab[prefix .. "Left"]
+            local middle = tab[prefix .. "Middle"]
+            local right = tab[prefix .. "Right"]
+
+            if left then left:SetTexture() end
+            if middle then middle:SetTexture() end
+            if right then right:SetTexture() end
+        end
+
+        -- misc
+        frame:SetMaxLines(C.config.maxLines)
+        frame:SetTimeVisible(C.config.fadeTime)
+        frame:SetFading(C.config.fading)
+        U.SetFont(frame, unpack(C.config.font))
+    end
+end
 
 local function SetupDefaultChatFrame()
     local name = DEFAULT_CHAT_FRAME:GetName()
@@ -49,13 +112,6 @@ local function SetupDefaultChatFrame()
         end
     end)
 
-    -- texture
-    for _, tex in pairs(CHAT_FRAME_TEXTURES) do
-        local f = _G[name .. tex]
-        U.Hide(f)
-    end
-    U.Hide(DEFAULT_CHAT_FRAME.ScrollBar)
-
     -- editmode
     U.DisableEditMode(DEFAULT_CHAT_FRAME)
     -- hooksecurefunc(EditModeManagerFrame, "UpdateLayoutInfo", function()
@@ -65,17 +121,68 @@ local function SetupDefaultChatFrame()
     -- end)
 end
 
-local function SetupChat()
-    for _, name in pairs(CHAT_FRAMES) do
-        local frame = _G[name]
+---------------------------------------------------------------------
+-- hooks
+---------------------------------------------------------------------
+local function UpdateTabName(frame, name)
+    frame.tab.underline:SetWidth(frame.tab.Text:GetStringWidth() + 4)
+end
 
-        -- hook
-        -- local id = frame:GetID()
-        -- if id ~= 2 and id ~= 3 then
-        -- end
+local function UpdateAllTabNames()
+    C_Timer.After(1, function()
+        for _, name in pairs(CHAT_FRAMES) do
+            local tab = _G[name].tab
+            tab.underline:SetWidth(tab.Text:GetStringWidth() + 4)
+        end
+    end)
+end
 
-        -- DEFAULT_CHAT_FRAME:
+local function UpdateTabColor(tab, selected)
+    if not tab.underline then return end
+    if selected then
+        tab.Text:SetTextColor(AW.GetAccentColorRGB())
+        tab.underline:Show()
+    else
+        tab.Text:SetTextColor(1, 1, 1)
+        tab.underline:Hide()
     end
+end
+
+local function UpdateChatFont(dropdown, ...)
+    -- TODO: necessary?
+    print(...)
+end
+
+local function UpdateCombatLog()
+    if not C.config.enabled then return end
+
+    _G.CombatLogQuickButtonFrame_Custom:SetPoint("BOTTOMRIGHT", ChatFrame2, "TOPRIGHT", 0, 3)
+
+    -- font
+    for i in ipairs(_G.Blizzard_CombatLog_Filters.filters) do
+        local b = _G["CombatLogQuickButtonFrameButton" .. i]
+        if b then
+            local fs = b:GetFontString()
+            if fs then
+                fs:SetFont(AW.GetFont("Noto_AP_SC", BFI.name), 13, "")
+            end
+        end
+    end
+
+    -- progress bar
+    local bar = _G.CombatLogQuickButtonFrame_CustomProgressBar
+    bar:SetStatusBarTexture(U.GetBarTexture("BFI"))
+    bar:SetAlpha(0.75)
+    AW.SetOnePixelInside(bar, _G.CombatLogQuickButtonFrame_Custom)
+end
+BFI.RegisterCallbackForAddon("Blizzard_CombatLog", UpdateCombatLog)
+
+local function InitHooks()
+    hooksecurefunc("FCF_SetWindowName", UpdateTabName)
+    hooksecurefunc("FCFTab_UpdateColors", UpdateTabColor)
+    -- hooksecurefunc("FCF_SetChatWindowFontSize", UpdateChatFont)
+    hooksecurefunc("Blizzard_CombatLog_Update_QuickButtons", UpdateCombatLog)
+    hooksecurefunc("Blizzard_CombatLog_QuickButtonFrame_OnLoad", UpdateCombatLog)
 end
 
 ---------------------------------------------------------------------
@@ -88,14 +195,24 @@ local function UpdateChat(module)
     if chatContainer then
         chatContainer.enabled = config.enabled -- for mover
     end
-    if not config.enabled then return end
+    if not config.enabled then
+        C:UnregisterAllEvents()
+        return
+    end
+
+    -- override CHAT_FONT_HEIGHTS
+    _G.CHAT_FONT_HEIGHTS = C.CHAT_FONT_HEIGHTS
 
     if not chatContainer then
         CreateChatContainer()
         SetupDefaultChatFrame()
+        InitHooks()
     end
 
     SetupChat()
+    C:RegisterEvent("UPDATE_CHAT_WINDOWS", SetupChat)
+    C:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", SetupChat)
+    C:RegisterEvent("FIRST_FRAME_RENDERED", UpdateAllTabNames)
 
     AW.UpdateMoverSave(chatContainer, config.position)
     AW.LoadPosition(chatContainer, config.position)
