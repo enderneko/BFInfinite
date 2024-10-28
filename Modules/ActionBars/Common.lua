@@ -12,12 +12,16 @@ local LAB = BFI.libs.LAB
 -- hotkey
 ---------------------------------------------------------------------
 function AB.GetHotkey(key)
-    key = key:gsub("ALT%-", "A")
-    key = key:gsub("CTRL%-", "C")
-    key = key:gsub("SHIFT%-", "S")
-    key = key:gsub("BUTTON", "B")
-    key = key:gsub("MOUSEWHEELUP", "WU")
-    key = key:gsub("MOUSEWHEELDOWN", "WD")
+    if key ~= _G.RANGE_INDICATOR then
+        key = key:gsub("ALT%-", "A")
+        key = key:gsub("CTRL%-", "C")
+        key = key:gsub("SHIFT%-", "S")
+        key = key:gsub("META%-", "M")
+        key = key:gsub("BUTTON", "B")
+        key = key:gsub("MOUSEWHEELUP", "WU")
+        key = key:gsub("MOUSEWHEELDOWN", "WD")
+        key = key:gsub("NUMPAD", "N")
+    end
     return key
 end
 
@@ -72,19 +76,29 @@ end
 function AB.StylizeButton(b)
     b.MasqueSkinned = true
 
-    local icon = b.icon or b.Icon
-    local hotkey = b.HotKey
-    local autoCast = b.AutoCastOverlay
-    local flash = b.Flash
-    local border = b.Border
-    local normal = b.NormalTexture
+    local name = b:GetName()
+
+    local icon = b.icon or b.Icon or _G[name .. "Icon"]
+    local hotkey = b.HotKey or _G[name .. "HotKey"]
+    local autoCast = b.AutoCastOverlay or _G[name .. "Shine"]
+    local flash = b.Flash or _G[name .. "Flash"]
+    local border = b.Border or _G[name .. "Border"]
+    local normal = b.NormalTexture or _G[name .. "NormalTexture"]
     local normal2 = b:GetNormalTexture()
     local cooldown = b.cooldown or b.Cooldown
 
     -- hide and remove ------------------------------------------------------- --
-    if normal then normal:SetTexture() normal:Hide() normal:SetAlpha(0) end
-    if normal2 then normal2:SetTexture() normal2:Hide() normal2:SetAlpha(0) end
-    if border then U.Hide(border) end
+    if normal then
+        normal:SetTexture()
+        normal:Hide()
+        normal:SetAlpha(0)
+    end
+    if normal2 then
+        normal2:SetTexture()
+        normal2:Hide()
+        normal2:SetAlpha(0)
+    end
+    U.Hide(border)
     if b.NewActionTexture then b.NewActionTexture:SetAlpha(0) end
     if b.HighlightTexture then b.HighlightTexture:SetAlpha(0) end
     if b.SlotBackground then b.SlotBackground:Hide() end
@@ -209,12 +223,12 @@ function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientati
         end
 
         if strfind(anchor, "LEFT$") then
-            rp = rp.."RIGHT"
-            rp_new_line = rp_new_line.."LEFT"
+            rp = rp .. "RIGHT"
+            rp_new_line = rp_new_line .. "LEFT"
             x = spacing
         elseif strfind(anchor, "RIGHT$") then
-            rp = rp.."LEFT"
-            rp_new_line = rp_new_line.."RIGHT"
+            rp = rp .. "LEFT"
+            rp_new_line = rp_new_line .. "RIGHT"
             x = -spacing
         end
 
@@ -232,12 +246,12 @@ function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientati
         end
 
         if strfind(anchor, "LEFT$") then
-            rp = rp.."LEFT"
-            rp_new_line = rp_new_line.."RIGHT"
+            rp = rp .. "LEFT"
+            rp_new_line = rp_new_line .. "RIGHT"
             x_new_line = spacing
         elseif strfind(anchor, "RIGHT$") then
-            rp = rp.."RIGHT"
-            rp_new_line = rp_new_line.."LEFT"
+            rp = rp .. "RIGHT"
+            rp_new_line = rp_new_line .. "LEFT"
             x_new_line = -spacing
         end
 
@@ -260,9 +274,9 @@ function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientati
             AW.SetPoint(b, p)
         else
             if (i - 1) % buttonsPerLine == 0 then
-                AW.SetPoint(b, p, bar.buttons[i-buttonsPerLine], rp_new_line, x_new_line, y_new_line)
+                AW.SetPoint(b, p, bar.buttons[i - buttonsPerLine], rp_new_line, x_new_line, y_new_line)
             else
-                AW.SetPoint(b, p, bar.buttons[i-1], rp, x, y)
+                AW.SetPoint(b, p, bar.buttons[i - 1], rp, x, y)
             end
         end
     end
@@ -343,7 +357,7 @@ end
 -- stance button
 ---------------------------------------------------------------------
 function AB.CreateStanceButton(parent, id)
-    local b = CreateFrame("CheckButton", "BFI_StanceBarButton"..id, parent, "StanceButtonTemplate")
+    local b = CreateFrame("CheckButton", "BFI_StanceBarButton" .. id, parent, "StanceButtonTemplate")
 
     b:SetID(id)
     AB.StylizeButton(b)
@@ -367,7 +381,7 @@ end
 -- pet button
 ---------------------------------------------------------------------
 function AB.CreatePetButton(parent, id)
-    local b = CreateFrame("CheckButton", "BFI_PetBarButton"..id, parent, "PetActionButtonTemplate")
+    local b = CreateFrame("CheckButton", "BFI_PetBarButton" .. id, parent, "PetActionButtonTemplate")
 
     b:SetID(id)
     AB.StylizeButton(b)
@@ -376,9 +390,9 @@ function AB.CreatePetButton(parent, id)
     b:HookScript("OnEnter", AB.ActionBar_OnEnter)
     b:HookScript("OnLeave", AB.ActionBar_OnLeave)
 
-    b.hotkey = AW.CreateFontString(b)
-    b.hotkey:SetShadowColor(0, 0, 0, 0)
-    b.hotkey:SetShadowOffset(0, 0)
+    -- b.hotkey = AW.CreateFontString(b)
+    -- b.hotkey:SetShadowColor(0, 0, 0, 0)
+    -- b.hotkey:SetShadowOffset(0, 0)
 
     AW.AddToPixelUpdater(b)
 

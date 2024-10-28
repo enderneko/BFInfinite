@@ -2,9 +2,9 @@
 local BFI = select(2, ...)
 local L = BFI.L
 local U = BFI.utils
+local AB = BFI.ActionBars
 ---@class AbstractWidgets
 local AW = _G.AbstractWidgets
-local AB = BFI.ActionBars
 
 ---------------------------------------------------------------------
 -- create bar
@@ -36,12 +36,16 @@ local function AssignBindings()
 
     for i, b in ipairs(petBar.buttons) do
         for _, key in next, {GetBindingKey("BONUSACTIONBUTTON"..i)} do
-            b.hotkey:SetText(AB.GetHotkey(key))
+            b.HotKey:SetText(AB.GetHotkey(key))
             if key ~= "" then
                 SetOverrideBindingClick(petBar, false, key, b:GetName())
             end
         end
     end
+end
+
+local function DelayedAssignBindings()
+    C_Timer.After(0, AssignBindings)
 end
 
 ---------------------------------------------------------------------
@@ -153,13 +157,12 @@ local function UpdatePetBar(module, which)
         AB:UnregisterEvent("SPELLS_CHANGED")
         AB:UnregisterEvent("PET_BAR_UPDATE")
         AB:UnregisterEvent("PET_BAR_UPDATE_COOLDOWN")
-        AB:UnregisterEvent("UPDATE_BINDINGS", AssignBindings)
+        -- AB:UnregisterEvent("UPDATE_BINDINGS", AssignBindings)
         return
     end
 
     if not petBar then
         CreatePetBar()
-        AssignBindings()
     end
 
     -- mover
@@ -176,7 +179,9 @@ local function UpdatePetBar(module, which)
     AB:RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
     AB:RegisterUnitEvent("UNIT_AURA", "pet", UpdatePetButtons)
     AB:RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
-    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+    -- AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+
+    hooksecurefunc("PetBattleFrame_UpdateAbilityButtonHotKeys", DelayedAssignBindings)
 
     for i = 1, 10 do
         local b
@@ -188,14 +193,14 @@ local function UpdatePetBar(module, which)
         end
 
         if config.buttonConfig.hideElements.hotkey then
-            b.hotkey:Hide()
+            b.HotKey:Hide()
         else
             local t = config.buttonConfig.text.hotkey
-            b.hotkey:SetFont(t.font.font, t.font.size, t.font.flags)
-            b.hotkey:SetTextColor(unpack(t.color))
-            AW.ClearPoints(b.hotkey)
-            AW.SetPoint(b.hotkey, t.position.anchor, t.position.offsetX, t.position.offsetY)
-            b.hotkey:Show()
+            b.HotKey:SetFont(t.font.font, t.font.size, t.font.flags)
+            b.HotKey:SetTextColor(unpack(t.color))
+            AW.ClearPoints(b.HotKey)
+            AW.SetPoint(b.HotKey, t.position.anchor, t.position.offsetX, t.position.offsetY)
+            b.HotKey:Show()
         end
     end
 
@@ -220,27 +225,6 @@ local function UpdatePetBar(module, which)
 
     -- update buttons
     UpdatePetButtons()
+    AssignBindings()
 end
 BFI.RegisterCallback("UpdateModules", "AB_PetBar", UpdatePetBar)
-
----------------------------------------------------------------------
--- init
----------------------------------------------------------------------
--- local function InitPetBar()
---     CreatePetBar()
---     UpdatePetBar()
---     AssignBindings()
-
---     -- events
---     AB:RegisterEvent("PET_BAR_UPDATE", UpdatePetButtons)
---     AB:RegisterEvent("UNIT_PET", UpdatePetButtons)
---     AB:RegisterEvent("UNIT_FLAGS", UpdatePetButtons)
---     AB:RegisterEvent("PLAYER_CONTROL_GAINED", UpdatePetButtons)
---     AB:RegisterEvent("PLAYER_CONTROL_LOST", UpdatePetButtons)
---     AB:RegisterEvent("PLAYER_ENTERING_WORLD", UpdatePetButtons)
---     AB:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED", UpdatePetButtons)
---     AB:RegisterEvent("SPELLS_CHANGED", UpdatePetButtons)
---     AB:RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
---     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
--- end
--- BFI.RegisterCallback("InitModules", "AB_PetBar", InitPetBar)
