@@ -1,10 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
+local M = BFI.Maps
 ---@class AbstractWidgets
 local AW = _G.AbstractWidgets
----@class Maps
-local M = BFI.Maps
 
 local MinimapCluster = _G.MinimapCluster
 local Minimap = _G.Minimap
@@ -249,6 +248,14 @@ local function UpdateClockTime(self, elapsed)
     end
 end
 
+local function UpdateClockSize()
+    C_Timer.After(1, function()
+        Minimap.clockButton.text:SetText("00:00")
+        Minimap.clockButton:Show()
+        AW.SetSizeToFitText(Minimap.clockButton, Minimap.clockButton.text, 2)
+    end)
+end
+
 local function CreateClockButton()
     local clockButton = CreateFrame("Button", "BFI_MinimapClock", Minimap)
     Minimap.clockButton = clockButton
@@ -301,11 +308,7 @@ local function CreateClockButton()
     end)
 
     -- OnUpdate
-    clockButton:SetScript("OnUpdate", function(self, elapsed)
-        self.text:SetText("00:00")
-        AW.SetSizeToFitText(self, self.text, 2)
-        clockButton:SetScript("OnUpdate", UpdateClockTime)
-    end)
+    clockButton:SetScript("OnUpdate", UpdateClockTime)
 end
 
 ---------------------------------------------------------------------
@@ -551,7 +554,6 @@ local function UpdateMinimap(module, which)
     if config.clock.enabled then
         U.SetFont(Minimap.clockButton.text, unpack(config.clock.font))
         AW.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
-        Minimap.clockButton:Show()
 
         -- flash
         local anchor = config.clock.position[1]
@@ -565,8 +567,12 @@ local function UpdateMinimap(module, which)
         else -- BOTTOM / CENTER
             flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("BFI")), CreateColor(AW.GetColorRGB("none")))
         end
+
+        -- size
+        M:RegisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
     else
         Minimap.clockButton:Hide()
+        M:UnregisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
     end
 
     -- mail frame

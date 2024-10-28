@@ -76,7 +76,7 @@ end
 function AB.StylizeButton(b)
     b.MasqueSkinned = true
 
-    local name = b:GetName()
+    local name = b:GetName() or "NoName"
 
     local icon = b.icon or b.Icon or _G[name .. "Icon"]
     local hotkey = b.HotKey or _G[name .. "HotKey"]
