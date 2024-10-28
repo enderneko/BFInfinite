@@ -57,7 +57,7 @@ local function HandleFlyoutButton(b)
     end
 
     if not InCombatLockdown() then
-        AW.SetSize(b, AB.config.general.flyoutSize) -- TODO: use bar button size instead
+        AW.SetSize(b, AB.config.general.flyoutSize, AB.config.general.flyoutSize)
     end
 
     b.MasqueSkinned = true -- skip LAB styling
