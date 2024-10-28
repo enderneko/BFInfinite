@@ -88,7 +88,12 @@ end
 local function UpdateRep(self)
     local data = GetWatchedFactionData()
     if not data then
-        self:Hide()
+        -- self:Hide()
+        self:SetMinMaxValues(0, 1)
+        self:SetBarValue(0)
+        self.leftText:SetText("")
+        self.centerText:SetText("")
+        self.rightText:SetText("")
         return
     end
     self:Show()
@@ -180,8 +185,8 @@ local function UpdateRepVisibility(self)
     else
         self:RegisterEvent("UPDATE_FACTION", UpdateRep)
         self:UnregisterEvent("PLAYER_LEVEL_UP")
-        UpdateRep(self)
         self:Show()
+        UpdateRep(self)
     end
 end
 
