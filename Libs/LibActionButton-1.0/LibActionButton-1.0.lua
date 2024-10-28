@@ -542,9 +542,11 @@ function Generic:PlaySpellInterruptedAnim(spellID)
     end
 end
 
-function Generic:StopSpellInterruptAnim()
-    if self.InterruptDisplay:IsShown() then
-        self.InterruptDisplay:Hide()
+function Generic:StopSpellInterruptAnim(spellID)
+    if self.abilityID == spellID then
+        if self.InterruptDisplay:IsShown() then
+            self.InterruptDisplay:Hide()
+        end
     end
 end
 
@@ -556,9 +558,11 @@ function Generic:PlayTargettingReticleAnim(spellID)
     end
 end
 
-function Generic:StopTargettingReticleAnim()
-    if self.TargetReticleAnimFrame:IsShown() then
-        self.TargetReticleAnimFrame:Hide()
+function Generic:StopTargettingReticleAnim(spellID)
+    if self.abilityID == spellID then
+        if self.TargetReticleAnimFrame:IsShown() then
+            self.TargetReticleAnimFrame:Hide()
+        end
     end
 end
 
@@ -613,7 +617,8 @@ function Generic:PlaySpellCastAnim(actionButtonCastType, spellID)
     self.SpellCastAnimFrame:Show()
 end
 
-function Generic:StopSpellCastAnim(actionButtonCastType)
+function Generic:StopSpellCastAnim(actionButtonCastType, spellID)
+    if self.abilityID ~= spellID then return end
     if self.actionButtonCastType == actionButtonCastType then
         self.SpellCastAnimFrame:Hide()
         self.actionButtonCastType = nil
@@ -635,16 +640,18 @@ end
 function Generic:OnButtonEvent(event, key, down, spellID, castComplete)
     if event == "UNIT_SPELLCAST_RETICLE_TARGET" then
         self:PlayTargettingReticleAnim(spellID)
-    elseif event == "UNIT_SPELLCAST_RETICLE_CLEAR" or event == "UNIT_SPELLCAST_SENT" or event == "UNIT_SPELLCAST_FAILED" then
-        self:StopTargettingReticleAnim()
+    elseif event == "UNIT_SPELLCAST_RETICLE_CLEAR" or event == "UNIT_SPELLCAST_FAILED" then
+        self:StopTargettingReticleAnim(spellID)
+    elseif event == "UNIT_SPELLCAST_SENT" then
+        self:StopTargettingReticleAnim(castComplete) -- 4th arg is spellID
     elseif event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_FAILED" then
-        self:StopSpellCastAnim(ActionButtonCastType.Cast)
-        self:StopTargettingReticleAnim()
+        self:StopSpellCastAnim(ActionButtonCastType.Cast, spellID)
+        self:StopTargettingReticleAnim(spellID)
     elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
         self:PlaySpellInterruptedAnim(spellID)
     elseif event == "UNIT_SPELLCAST_EMPOWER_STOP" then
         if castComplete then
-            self:StopSpellCastAnim(ActionButtonCastType.Empowered)
+            self:StopSpellCastAnim(ActionButtonCastType.Empowered, spellID)
         else
             self:PlaySpellInterruptedAnim(spellID)
         end
@@ -655,7 +662,7 @@ function Generic:OnButtonEvent(event, key, down, spellID, castComplete)
     elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
         self:PlaySpellCastAnim(ActionButtonCastType.Channel, spellID)
     elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" then
-        self:StopSpellCastAnim(ActionButtonCastType.Channel)
+        self:StopSpellCastAnim(ActionButtonCastType.Channel, spellID)
     elseif event == "GLOBAL_MOUSE_UP" then
         self:UnregisterEvent(event)
         self.pushedTexture:Hide()
@@ -1420,12 +1427,14 @@ function Generic:UpdateConfig(config)
 
     if WoWRetail then
         if self.config.targetReticle then
+            self:RegisterEvent("UNIT_SPELLCAST_SENT")
             self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
             self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
             self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
             self:RegisterUnitEvent("UNIT_SPELLCAST_RETICLE_TARGET", "player")
             self:RegisterUnitEvent("UNIT_SPELLCAST_RETICLE_CLEAR", "player")
         else
+            self:UnregisterEvent("UNIT_SPELLCAST_SENT")
             self:UnregisterEvent("UNIT_SPELLCAST_STOP")
             self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
             self:UnregisterEvent("UNIT_SPELLCAST_FAILED")
@@ -2100,7 +2109,7 @@ function Update(self, which)
 
     -- this could've been a spec change, need to call OnStateChanged for action buttons, if present
     if not InCombatLockdown() and self._state_type == "action" then
-        if which == "PLAYER_ENTERING_WORLD" then --! (ElvUI) zone in dragon mount on Evokers can bug
+        if which == "PLAYER_ENTERING_WORLD" then --! (from ElvUI) zone in dragon mount on Evokers can bug
             self.header:SetFrameRef("updateButton", self)
             self.header:Execute(([[
                 local frame = self:GetFrameRef("updateButton")

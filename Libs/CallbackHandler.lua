@@ -2,7 +2,7 @@
 -- File: CallbackHandler.lua
 -- Author: enderneko (enderneko-dev@outlook.com)
 -- Created : 2024-03-04 17:24 +08:00
--- Modified: 2024-10-25 14:23 +08:00
+-- Modified: 2024-10-25 18:28 +08:00
 ---------------------------------------------------------------------
 
 ---@class BFI
@@ -43,4 +43,24 @@ function addon.Fire(eventName, ...)
             end
         end
     end
+end
+
+---------------------------------------------------------------------
+-- addon loaded
+---------------------------------------------------------------------
+local addonCallbacks = {}
+
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("ADDON_LOADED")
+frame:SetScript("OnEvent", function(self, event, addon)
+    if addonCallbacks[addon] then
+        for _, fn in pairs(addonCallbacks[addon]) do
+            fn(addon)
+        end
+    end
+end)
+
+function addon.RegisterCallbackForAddon(addon, func)
+    if not addonCallbacks[addon] then addonCallbacks[addon] = {} end
+    tinsert(addonCallbacks[addon], func)
 end
