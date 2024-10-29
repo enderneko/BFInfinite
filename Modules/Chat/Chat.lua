@@ -64,6 +64,8 @@ local function SetupChat()
         -- tab
         local tab = frame.tab
         U.SetFont(tab.Text, unpack(C.config.tabFont))
+        tab:SetPushedTextOffset(0, -1)
+
         if not tab.underline then
             tab.underline = AW.CreateSeparator(tab, 1, 1, BFI.name)
             tab.underline:SetPoint("TOP", tab.Text, "BOTTOM", 0, -2)
@@ -88,51 +90,31 @@ local function SetupChat()
 end
 
 local function SetupDefaultChatFrame()
-    local name = DEFAULT_CHAT_FRAME:GetName()
-    DEFAULT_CHAT_FRAME:SetClampRectInsets(0, 0, 0, 0)
-
-    -- parent
-    DEFAULT_CHAT_FRAME:SetParent(chatContainer)
-    hooksecurefunc(DEFAULT_CHAT_FRAME, "SetParent", function(self, parent)
-        if parent ~= chatContainer then
-            DEFAULT_CHAT_FRAME:SetParent(chatContainer)
-        end
-    end)
-
-    -- point
-    local function Repoint()
+    local function Update()
+        DEFAULT_CHAT_FRAME:SetClampRectInsets(0, 0, 0, 0)
+        DEFAULT_CHAT_FRAME:SetParent(chatContainer)
         AW.ClearPoints(DEFAULT_CHAT_FRAME)
-        AW.SetPoint(DEFAULT_CHAT_FRAME, "TOPLEFT", chatContainer, 3, -27)
+        AW.SetPoint(DEFAULT_CHAT_FRAME, "TOPLEFT", chatContainer, 3, -30)
         AW.SetPoint(DEFAULT_CHAT_FRAME, "BOTTOMRIGHT", chatContainer, -3, 3)
     end
-    Repoint()
-    hooksecurefunc(DEFAULT_CHAT_FRAME, "SetPoint", function(self, _, relativeTo)
-        if relativeTo ~= chatContainer then
-            Repoint()
-        end
-    end)
+    Update()
 
     -- editmode
     U.DisableEditMode(DEFAULT_CHAT_FRAME)
-    -- hooksecurefunc(EditModeManagerFrame, "UpdateLayoutInfo", function()
-    --     AW.ClearPoints(DEFAULT_CHAT_FRAME)
-    --     AW.SetPoint(DEFAULT_CHAT_FRAME, "TOPLEFT", chatContainer, 1, -27)
-    --     AW.SetPoint(DEFAULT_CHAT_FRAME, "BOTTOMRIGHT", chatContainer, -1, 1)
-    -- end)
+    hooksecurefunc(EditModeManagerFrame, "UpdateLayoutInfo", Update)
 end
 
 ---------------------------------------------------------------------
 -- hooks
 ---------------------------------------------------------------------
-local function UpdateTabName(frame, name)
-    frame.tab.underline:SetWidth(frame.tab.Text:GetStringWidth() + 4)
+local function UpdateTabUnderline(frame)
+    frame.tab.underline:SetWidth(frame.tab.Text:GetStringWidth() + 2)
 end
 
-local function UpdateAllTabNames()
+local function UpdateAllTabUnderlines()
     C_Timer.After(1, function()
         for _, name in pairs(CHAT_FRAMES) do
-            local tab = _G[name].tab
-            tab.underline:SetWidth(tab.Text:GetStringWidth() + 4)
+            UpdateTabUnderline(_G[name])
         end
     end)
 end
@@ -178,7 +160,7 @@ end
 BFI.RegisterCallbackForAddon("Blizzard_CombatLog", UpdateCombatLog)
 
 local function InitHooks()
-    hooksecurefunc("FCF_SetWindowName", UpdateTabName)
+    hooksecurefunc("FCF_SetWindowName", UpdateTabUnderline)
     hooksecurefunc("FCFTab_UpdateColors", UpdateTabColor)
     -- hooksecurefunc("FCF_SetChatWindowFontSize", UpdateChatFont)
     hooksecurefunc("Blizzard_CombatLog_Update_QuickButtons", UpdateCombatLog)
@@ -212,7 +194,7 @@ local function UpdateChat(module)
     SetupChat()
     C:RegisterEvent("UPDATE_CHAT_WINDOWS", SetupChat)
     C:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", SetupChat)
-    C:RegisterEvent("FIRST_FRAME_RENDERED", UpdateAllTabNames)
+    C:RegisterEvent("FIRST_FRAME_RENDERED", UpdateAllTabUnderlines)
 
     AW.UpdateMoverSave(chatContainer, config.position)
     AW.LoadPosition(chatContainer, config.position)
