@@ -51,24 +51,27 @@ local function SetupChat()
         if not frame.tab then
             frame.tab = _G[format("ChatFrame%sTab", id)]
             frame.tab.owner = frame
+            FixTabAlpha(frame.tab)
             hooksecurefunc(frame.tab, "SetAlpha", FixTabAlpha)
         end
 
         -- texture
         for _, tex in pairs(CHAT_FRAME_TEXTURES) do
             local f = _G[name .. tex]
-            U.Hide(f)
+            f:Hide()
         end
         U.Hide(frame.ScrollBar)
 
         -- tab
         local tab = frame.tab
         U.SetFont(tab.Text, unpack(C.config.tabFont))
+        tab.Text:SetTextColor(AW.GetAccentColorRGB())
         tab:SetPushedTextOffset(0, -1)
 
         if not tab.underline then
             tab.underline = AW.CreateSeparator(tab, 1, 1, BFI.name)
             tab.underline:SetPoint("TOP", tab.Text, "BOTTOM", 0, -2)
+            tab.underline:Hide()
         end
 
         for _, prefix in pairs(CHAT_TAB_TEXTURES) do
@@ -79,6 +82,13 @@ local function SetupChat()
             if left then left:SetTexture() end
             if middle then middle:SetTexture() end
             if right then right:SetTexture() end
+        end
+
+        -- docked
+        if frame.isDocked then
+            frame.Background:Hide()
+        else
+            frame.Background:Show()
         end
 
         -- misc
@@ -94,13 +104,14 @@ local function SetupDefaultChatFrame()
         DEFAULT_CHAT_FRAME:SetClampRectInsets(0, 0, 0, 0)
         DEFAULT_CHAT_FRAME:SetParent(chatContainer)
         AW.ClearPoints(DEFAULT_CHAT_FRAME)
-        AW.SetPoint(DEFAULT_CHAT_FRAME, "TOPLEFT", chatContainer, 3, -30)
+        AW.SetPoint(DEFAULT_CHAT_FRAME, "TOPLEFT", chatContainer, 3, -27)
         AW.SetPoint(DEFAULT_CHAT_FRAME, "BOTTOMRIGHT", chatContainer, -3, 3)
     end
     Update()
 
     -- editmode
     U.DisableEditMode(DEFAULT_CHAT_FRAME)
+    U.Hide(DEFAULT_CHAT_FRAME.EditModeResizeButton)
     hooksecurefunc(EditModeManagerFrame, "UpdateLayoutInfo", Update)
 end
 
@@ -130,9 +141,19 @@ local function UpdateTabColor(tab, selected)
     end
 end
 
-local function UpdateChatFont(dropdown, ...)
-    -- TODO: necessary?
-    print(...)
+-- local function UpdateChatFont(dropdown, ...)
+--     -- TODO: necessary?
+--     print(...)
+-- end
+
+local function UpdateFrameDocked(frame, isDocked)
+    if not isDocked then
+        frame.tab.Text:SetTextColor(AW.GetAccentColorRGB())
+        frame.tab.underline:Hide()
+        frame.Background:Show()
+    else
+        frame.Background:Hide()
+    end
 end
 
 local function UpdateCombatLog()
@@ -163,6 +184,8 @@ local function InitHooks()
     hooksecurefunc("FCF_SetWindowName", UpdateTabUnderline)
     hooksecurefunc("FCFTab_UpdateColors", UpdateTabColor)
     -- hooksecurefunc("FCF_SetChatWindowFontSize", UpdateChatFont)
+    hooksecurefunc("FCF_DockFrame", UpdateFrameDocked)
+    hooksecurefunc("FCF_UnDockFrame", UpdateFrameDocked)
     hooksecurefunc("Blizzard_CombatLog_Update_QuickButtons", UpdateCombatLog)
     hooksecurefunc("Blizzard_CombatLog_QuickButtonFrame_OnLoad", UpdateCombatLog)
 end
