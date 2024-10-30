@@ -20,6 +20,8 @@ L["Pet Bar"] = "宠物动作条"
 L["Power Bar Widget"] = "能量条组件"
 L["UI Widgets"] = "界面小组件"
 L["Micro Menu"] = "微型主菜单"
+L["Queue Status"] = "队列状态"
+L["Zone Ability"] = "区域技能"
 
 ---------------------------------------------------------------------
 -- data bars
