@@ -12,7 +12,7 @@ local defaults = {
     font = {"BFI", 13, "none", true},
     tabFont = {"BFI", 13, "none", true},
     fading = true,
-    fadeTime = 60,
+    fadeTime = 120,
     maxLines = 100,
 }
 
