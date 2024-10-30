@@ -18,7 +18,7 @@ local function CreateStanceBar()
 
     AB.bars[stanceBar.name] = stanceBar
 
-    AF.CreateMover(stanceBar, L["Action Bars"], L["Stance Bar"])
+    AF.CreateMover(stanceBar, "BFI: " .. L["Action Bars"], L["Stance Bar"])
 
     stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)

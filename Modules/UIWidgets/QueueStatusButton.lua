@@ -17,7 +17,7 @@ local UpdateQueueStatusPoint, UpdateQueueStatusParent, UpdateQueueStatusScale
 
 local function CreateQueueStatusHolder()
     queueStatusHolder = CreateFrame("Frame", "BFI_QueueStatusHolder", AF.UIParent)
-    AF.CreateMover(queueStatusHolder, L["UI Widgets"], L["Queue Status"])
+    AF.CreateMover(queueStatusHolder, "BFI: " .. L["UI Widgets"], L["Queue Status"])
 
     queueStatusHolder:SetFrameLevel(10)
     QueueStatusButton:SetParent(queueStatusHolder)

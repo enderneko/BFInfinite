@@ -67,7 +67,7 @@ local function CreateButton()
         vehicleExitButton.content:SetHighlightTexture(highlight, "ADD")
     end)
 
-    AF.CreateMover(vehicleExitButton, L["Action Bars"], vehicleExitButton.content.systemNameString)
+    AF.CreateMover(vehicleExitButton, "BFI: " .. L["Action Bars"], vehicleExitButton.content.systemNameString)
 end
 
 ---------------------------------------------------------------------

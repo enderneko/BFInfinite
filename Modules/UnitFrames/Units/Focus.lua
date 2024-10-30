@@ -37,7 +37,7 @@ local function CreateFocus()
     focus.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
-    AF.CreateMover(focus, L["Unit Frames"], L["Focus"])
+    AF.CreateMover(focus, "BFI: " .. L["Unit Frames"], L["Focus"])
 
     -- config mode
     UF.AddToConfigMode("focus", focus)

@@ -43,7 +43,7 @@ local function CreateBoss()
     boss.driverValue = "[@boss1,exists] show;hide"
 
     -- mover
-    AF.CreateMover(boss, L["Unit Frames"], _G.BOSS)
+    AF.CreateMover(boss, "BFI: " .. L["Unit Frames"], _G.BOSS)
 
     -- pixel perfect
     AF.AddToPixelUpdater(boss)

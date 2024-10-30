@@ -34,7 +34,7 @@ local function CreatePet()
     pet:SetAttribute("unit", "pet")
 
     -- mover
-    AF.CreateMover(pet, L["Unit Frames"], _G.PET)
+    AF.CreateMover(pet, "BFI: " .. L["Unit Frames"], _G.PET)
 
     -- config mode
     UF.AddToConfigMode("pet", pet)

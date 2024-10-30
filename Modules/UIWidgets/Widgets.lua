@@ -17,7 +17,7 @@ local function InitWidget(frame, name, anchor, width, height, config)
     frame._container = CreateFrame("Frame", nil, AF.UIParent)
     AF.SetSize(frame._container, width, height)
 
-    AF.CreateMover(frame._container, L["UI Widgets"], name, config.position)
+    AF.CreateMover(frame._container, "BFI: " .. L["UI Widgets"], name, config.position)
     AF.LoadPosition(frame._container, config.position)
 
     -- frame

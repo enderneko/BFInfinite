@@ -18,7 +18,7 @@ local function CreatePetBar()
 
     AB.bars[petBar.name] = petBar
 
-    AF.CreateMover(petBar, L["Action Bars"], L["Pet Bar"])
+    AF.CreateMover(petBar, "BFI: " .. L["Action Bars"], L["Pet Bar"])
 
     petBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     petBar:SetScript("OnLeave", AB.ActionBar_OnLeave)

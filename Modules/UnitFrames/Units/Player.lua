@@ -46,7 +46,7 @@ local function CreatePlayer()
     player:SetAttribute("unit", "player")
 
     -- mover
-    AF.CreateMover(player, L["Unit Frames"], _G.PLAYER)
+    AF.CreateMover(player, "BFI: " .. L["Unit Frames"], _G.PLAYER)
 
     -- config mode
     UF.AddToConfigMode("player", player)

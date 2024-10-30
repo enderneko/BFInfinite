@@ -112,7 +112,7 @@ local function CreateHonorBar()
     honorBar.loss:Hide()
     honorBar:Hide()
 
-    AF.CreateMover(honorBar, L["Data Bars"], L["Honor Bar"])
+    AF.CreateMover(honorBar, "BFI: " .. L["Data Bars"], L["Honor Bar"])
     AF.AddToPixelUpdater(honorBar)
 
     -- text frame

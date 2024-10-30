@@ -189,7 +189,7 @@ local function CreateExperienceBar()
     experienceBar.loss:Hide()
     experienceBar:Hide()
 
-    AF.CreateMover(experienceBar, L["Data Bars"], L["Experience Bar"])
+    AF.CreateMover(experienceBar, "BFI: " .. L["Data Bars"], L["Experience Bar"])
     AF.AddToPixelUpdater(experienceBar)
 
     -- disabled
