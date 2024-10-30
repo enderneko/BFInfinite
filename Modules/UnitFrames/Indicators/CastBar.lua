@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 local M = BFI.Misc
 
@@ -146,8 +146,8 @@ end
 local function CreateTick(self, i)
     local tick = self.bar:CreateTexture(nil, "ARTWORK", nil, 2)
     self.ticks[i] = tick
-    AW.SetWidth(tick, self.ticksConfig.width)
-    tick:SetColorTexture(AW.UnpackColor(self.ticksConfig.color))
+    AF.SetWidth(tick, self.ticksConfig.width)
+    tick:SetColorTexture(AF.UnpackColor(self.ticksConfig.color))
     return tick
 end
 
@@ -221,24 +221,24 @@ local function FlashPip(self, stage)
     -- print("flash", stage)
     -- print(stage, self.pips[stage]:GetAlpha())
     self.pips[stage].texture:SetAlpha(PIP_HIT_ALPHA)
-    AW.FrameFadeOut(self.pips[stage].texture, PIP_FADE_TIME, PIP_HIT_ALPHA, PIP_FADED_ALPHA)
+    AF.FrameFadeOut(self.pips[stage].texture, PIP_FADE_TIME, PIP_HIT_ALPHA, PIP_FADED_ALPHA)
 end
 
 local function CreatePip(self, stage)
     local pip = CreateFrame("Frame", nil, self.bar)
-    AW.SetFrameLevel(pip, 0, self.bar)
+    AF.SetFrameLevel(pip, 0, self.bar)
 
     pip.texture = pip:CreateTexture(nil, "ARTWORK", nil, -2)
     pip.texture:SetAllPoints()
     pip.texture:SetTexture(self.texture)
-    pip.texture:SetVertexColor(AW.GetColorRGB(map[stage], PIP_START_ALPHA))
+    pip.texture:SetVertexColor(AF.GetColorRGB(map[stage], PIP_START_ALPHA))
 
     pip.bound = pip:CreateTexture(nil, "ARTWORK", nil, 1)
-    pip.bound:SetColorTexture(AW.GetColorRGB("black"))
+    pip.bound:SetColorTexture(AF.GetColorRGB("black"))
     pip.bound:SetPoint("LEFT", pip)
     pip.bound:SetPoint("TOP", pip)
     pip.bound:SetPoint("BOTTOM", pip)
-    AW.SetWidth(pip.bound, 1)
+    AF.SetWidth(pip.bound, 1)
 
     self.pips[stage] = pip
 
@@ -305,20 +305,20 @@ local function CastInterruptible(self, event, unit)
     end
 
     if self.notInterruptible then
-        self.bar:SetColor(AW.UnpackColor(self.uninterruptibleColor))
+        self.bar:SetColor(AF.UnpackColor(self.uninterruptibleColor))
         self.bar.uninterruptible:Show()
-        self:SetBackdropBorderColor(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
-        self.gap:SetColorTexture(AW.UnpackColor(self.uninterruptibleTextureColor, 1))
+        self:SetBackdropBorderColor(AF.UnpackColor(self.uninterruptibleTextureColor, 1))
+        self.gap:SetColorTexture(AF.UnpackColor(self.uninterruptibleTextureColor, 1))
     elseif self.checkInterruptCD and (not self.requireInterruptUsable or U.InterruptUsable()) then -- interruptible
-        self.bar:SetColor(AW.UnpackColor(self.interruptibleColor))
+        self.bar:SetColor(AF.UnpackColor(self.interruptibleColor))
         self.bar.uninterruptible:Hide()
-        self:SetBackdropBorderColor(AW.UnpackColor(self.interruptibleColor, 1))
-        self.gap:SetVertexColor(AW.UnpackColor(self.interruptibleColor, 1))
+        self:SetBackdropBorderColor(AF.UnpackColor(self.interruptibleColor, 1))
+        self.gap:SetVertexColor(AF.UnpackColor(self.interruptibleColor, 1))
     else
-        self.bar:SetColor(AW.UnpackColor(self.normalColor))
+        self.bar:SetColor(AF.UnpackColor(self.normalColor))
         self.bar.uninterruptible:Hide()
-        self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))
-        self.gap:SetColorTexture(AW.UnpackColor(self.borderColor))
+        self:SetBackdropBorderColor(AF.UnpackColor(self.borderColor))
+        self.gap:SetColorTexture(AF.UnpackColor(self.borderColor))
     end
 end
 
@@ -333,9 +333,9 @@ local function UpdateInterrupt(self)
 
     if destGUID == self.root.states.guid then
         local shortName = U.ToShortName(sourceName)
-        AW.SetText(self.nameText, shortName, self.nameTextLength)
+        AF.SetText(self.nameText, shortName, self.nameTextLength)
         local class = M.GetPlayerClass(sourceName)
-        self.nameText:SetText(AW.GetIconString("Warning") .. AW.WrapTextInColor(self.nameText:GetText(), class))
+        self.nameText:SetText(AF.GetIconString("Warning") .. AF.WrapTextInColor(self.nameText:GetText(), class))
     end
 end
 
@@ -418,9 +418,9 @@ end
 ---------------------------------------------------------------------
 local function ShowOverlay(self, failed)
     if failed then
-        self.status:SetVertexColor(AW.UnpackColor(self.failedColor))
+        self.status:SetVertexColor(AF.UnpackColor(self.failedColor))
     else
-        self.status:SetVertexColor(AW.UnpackColor(self.succeededColor))
+        self.status:SetVertexColor(AF.UnpackColor(self.succeededColor))
     end
     self.bar:Hide()
     self.status:Show()
@@ -633,10 +633,10 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
         self.checkInterruptCD = nil
         self.notInterruptible = nil
         -- restore to normal
-        self.bar:SetColor(AW.UnpackColor(self.normalColor))
+        self.bar:SetColor(AF.UnpackColor(self.normalColor))
         self.bar.uninterruptible:Hide()
-        self:SetBackdropBorderColor(AW.UnpackColor(self.borderColor))
-        self.gap:SetColorTexture(AW.UnpackColor(self.borderColor))
+        self:SetBackdropBorderColor(AF.UnpackColor(self.borderColor))
+        self.gap:SetColorTexture(AF.UnpackColor(self.borderColor))
     end
 
     -- empower
@@ -652,7 +652,7 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
         self.durationText:Show()
     end
     if self.showName then
-        AW.SetText(self.nameText, name, self.nameTextLength)
+        AF.SetText(self.nameText, name, self.nameTextLength)
     end
     self.status:Hide()
     self.icon:SetTexture(texture or 134400)
@@ -740,7 +740,7 @@ end
 
 -- local function CastBar_SetPipsColor(self, color)
 --     for i, pip in pairs(self.pips) do
---         pip.texture:SetVertexColor(AW.GetColorRGB(map[i], PIP_START_ALPHA))
+--         pip.texture:SetVertexColor(AF.GetColorRGB(map[i], PIP_START_ALPHA))
 --     end
 -- end
 
@@ -757,8 +757,8 @@ end
 local function CastBar_SetupNameText(self, config, showIcon)
     self.nameText:SetShown(config.enabled)
     U.SetFont(self.nameText, config.font)
-    AW.LoadTextPosition(self.nameText, config.position, showIcon and self.icon)
-    self.nameText:SetTextColor(AW.UnpackColor(config.color))
+    AF.LoadTextPosition(self.nameText, config.position, showIcon and self.icon)
+    self.nameText:SetTextColor(AF.UnpackColor(config.color))
     self.nameTextLength = config.length
     self.showName = config.enabled
     self.showInterruptSource = config.showInterruptSource
@@ -767,8 +767,8 @@ end
 local function CastBar_SetupDurationText(self, config)
     self.durationText:SetShown(config.enabled)
     U.SetFont(self.durationText, config.font)
-    AW.LoadTextPosition(self.durationText, config.position)
-    self.durationText:SetTextColor(AW.UnpackColor(config.color))
+    AF.LoadTextPosition(self.durationText, config.position)
+    self.durationText:SetTextColor(AF.UnpackColor(config.color))
     self.durationFormat = config.format
     self.delayedDurationFormat = "|cffff0000%s%.2f|r "..config.format
     self.showDelay = config.showDelay
@@ -777,13 +777,13 @@ end
 
 local function CastBar_SetupIcon(self, show)
     if show then
-        AW.SetPoint(self.bar, "TOPLEFT", self.gap, "TOPRIGHT")
-        AW.SetPoint(self.status, "TOPLEFT", self.gap, "TOPRIGHT")
+        AF.SetPoint(self.bar, "TOPLEFT", self.gap, "TOPRIGHT")
+        AF.SetPoint(self.status, "TOPLEFT", self.gap, "TOPRIGHT")
         self.icon:Show()
         self.gap:Show()
     else
-        AW.SetPoint(self.bar, "TOPLEFT", 1, -1)
-        AW.SetPoint(self.status, "TOPLEFT", 1, -1)
+        AF.SetPoint(self.bar, "TOPLEFT", 1, -1)
+        AF.SetPoint(self.status, "TOPLEFT", 1, -1)
         self.icon:Hide()
         self.gap:Hide()
     end
@@ -807,13 +807,13 @@ local function CastBar_SetupSpark(self, config)
         self.spark:SetHeight(config.height)
     end
 
-    AW.SetWidth(self.spark, config.width)
+    AF.SetWidth(self.spark, config.width)
     if config.texture == "plain" then
-        self.spark:SetTexture(AW.GetPlainTexture())
+        self.spark:SetTexture(AF.GetPlainTexture())
     else
         -- TODO:
     end
-    self.spark:SetVertexColor(AW.UnpackColor(config.color))
+    self.spark:SetVertexColor(AF.UnpackColor(config.color))
 end
 
 local function CastBar_UpdateTicks(self, config)
@@ -830,8 +830,8 @@ local function CastBar_UpdateTicks(self, config)
     if not self.ticks then self.ticks = {} end
 
     for _, tick in pairs(self.ticks) do
-        AW.SetWidth(tick, config.width)
-        tick:SetColorTexture(AW.UnpackColor(config.color))
+        AF.SetWidth(tick, config.width)
+        tick:SetColorTexture(AF.UnpackColor(config.color))
     end
 end
 
@@ -847,24 +847,24 @@ local function CastBar_UpdateLatency(self, config)
     if not self.latency then
         self.latency = self.bar:CreateTexture(nil, "ARTWORK", nil, -1)
     end
-    self.latency:SetColorTexture(AW.UnpackColor(config.color))
+    self.latency:SetColorTexture(AF.UnpackColor(config.color))
 end
 
 local function CastBar_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
-    AW.ReBorder(self)
-    AW.ReSize(self.gap)
-    AW.ReSize(self.spark)
-    AW.RePoint(self.bar)
-    AW.RePoint(self.status)
-    AW.RePoint(self.icon)
-    AW.RePoint(self.nameText)
-    AW.RePoint(self.durationText)
+    AF.ReSize(self)
+    AF.RePoint(self)
+    AF.ReBorder(self)
+    AF.ReSize(self.gap)
+    AF.ReSize(self.spark)
+    AF.RePoint(self.bar)
+    AF.RePoint(self.status)
+    AF.RePoint(self.icon)
+    AF.RePoint(self.nameText)
+    AF.RePoint(self.durationText)
 
     if self.ticks then
         for _, tick in pairs(self.ticks) do
-            AW.ReSize(tick)
+            AF.ReSize(tick)
         end
     end
 end
@@ -874,21 +874,21 @@ end
 ---------------------------------------------------------------------
 local function CastBar_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AW.SetSize(self, config.width, config.height)
-    AW.SetWidth(self.icon, config.height-2)
+    AF.SetSize(self, config.width, config.height)
+    AF.SetWidth(self.icon, config.height-2)
 
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
 
     CastBar_SetTexture(self, config.texture)
 
-    self:SetBackdropColor(AW.UnpackColor(config.bgColor))
-    self:SetBackdropBorderColor(AW.UnpackColor(config.borderColor))
-    self.gap:SetColorTexture(AW.UnpackColor(config.borderColor))
+    self:SetBackdropColor(AF.UnpackColor(config.bgColor))
+    self:SetBackdropBorderColor(AF.UnpackColor(config.borderColor))
+    self.gap:SetColorTexture(AF.UnpackColor(config.borderColor))
 
-    self.bar:SetColor(AW.UnpackColor(config.colors.normal))
-    self.bar.uninterruptible:SetVertexColor(AW.UnpackColor(config.colors.uninterruptibleTexture))
+    self.bar:SetColor(AF.UnpackColor(config.colors.normal))
+    self.bar.uninterruptible:SetVertexColor(AF.UnpackColor(config.colors.uninterruptibleTexture))
 
-    AW.SetFadeInOutAnimationDuration(self, config.fadeDuration)
+    AF.SetFadeInOutAnimationDuration(self, config.fadeDuration)
 
     CastBar_SetupNameText(self, config.nameText, config.showIcon)
     CastBar_SetupDurationText(self, config.durationText)
@@ -976,7 +976,7 @@ end
 function UF.CreateCastBar(parent, name)
     -- frame
     local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
-    AW.SetDefaultBackdrop(frame)
+    AF.SetDefaultBackdrop(frame)
     frame:Hide()
 
     frame.root = parent
@@ -987,35 +987,35 @@ function UF.CreateCastBar(parent, name)
     BFI.AddEventHandler(frame)
 
     -- fade out
-    AW.CreateFadeInOutAnimation(frame, 0.5)
+    AF.CreateFadeInOutAnimation(frame, 0.5)
     frame.fadeOut.alpha:SetSmoothing("IN")
 
     -- cast status texture
     local status = frame:CreateTexture(nil, "OVERLAY")
     frame.status = status
-    AW.SetOnePixelInside(status, frame)
+    AF.SetOnePixelInside(status, frame)
     status:Hide()
 
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
     icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-    AW.SetPoint(icon, "TOPLEFT", 1, -1)
-    AW.SetPoint(icon, "BOTTOMLEFT", 1, 1)
+    AF.SetPoint(icon, "TOPLEFT", 1, -1)
+    AF.SetPoint(icon, "BOTTOMLEFT", 1, 1)
 
     -- gap
     local gap = frame:CreateTexture(nil, "BORDER")
     frame.gap = gap
     gap:SetPoint("TOPLEFT", icon, "TOPRIGHT")
     gap:SetPoint("BOTTOMLEFT", icon, "BOTTOMRIGHT")
-    AW.SetWidth(gap, 1)
+    AF.SetWidth(gap, 1)
 
     -- bar
-    local bar = AW.CreateSimpleBar(frame, nil, true)
+    local bar = AF.CreateSimpleBar(frame, nil, true)
     frame.bar = bar
-    AW.SetOnePixelInside(bar, frame)
+    AF.SetOnePixelInside(bar, frame)
     bar.fg:SetDrawLayer("ARTWORK", 0)
-    AW.SetFrameLevel(bar, 1, frame)
+    AF.SetFrameLevel(bar, 1, frame)
 
     -- spark
     local spark = bar:CreateTexture(nil, "ARTWORK", nil, 3)
@@ -1026,7 +1026,7 @@ function UF.CreateCastBar(parent, name)
     local uninterruptible = bar:CreateTexture(nil, "ARTWORK", nil, 4)
     bar.uninterruptible = uninterruptible
     uninterruptible:SetAllPoints()
-    uninterruptible:SetTexture(AW.GetTexture("Uninterruptible1", BFI.name), "REPEAT", "REPEAT")
+    uninterruptible:SetTexture(AF.GetTexture("Uninterruptible1", BFI.name), "REPEAT", "REPEAT")
     uninterruptible:SetHorizTile(true)
     uninterruptible:SetVertTile(true)
     uninterruptible:Hide()
@@ -1039,14 +1039,14 @@ function UF.CreateCastBar(parent, name)
     local overlay = CreateFrame("Frame", nil, frame)
     frame.overlay = overlay
     overlay:SetAllPoints()
-    AW.SetFrameLevel(overlay, 2, frame)
+    AF.SetFrameLevel(overlay, 2, frame)
 
     -- name
-    local nameText = overlay:CreateFontString(nil, "OVERLAY", "AW_FONT_NORMAL")
+    local nameText = overlay:CreateFontString(nil, "OVERLAY", "AF_FONT_NORMAL")
     frame.nameText = nameText
 
     -- duration
-    local durationText = overlay:CreateFontString(nil, "OVERLAY", "AW_FONT_NORMAL")
+    local durationText = overlay:CreateFontString(nil, "OVERLAY", "AF_FONT_NORMAL")
     frame.durationText = durationText
 
     -- functions
@@ -1058,7 +1058,7 @@ function UF.CreateCastBar(parent, name)
     frame.LoadConfig = CastBar_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(frame, CastBar_UpdatePixels)
+    AF.AddToPixelUpdater(frame, CastBar_UpdatePixels)
 
     return frame
 end

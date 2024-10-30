@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 local targettarget
@@ -38,13 +38,13 @@ local function CreateTargetTarget()
     targettarget.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
-    AW.CreateMover(targettarget, L["Unit Frames"], L["Target Target"])
+    AF.CreateMover(targettarget, L["Unit Frames"], L["Target Target"])
 
     -- config mode
     UF.AddToConfigMode("targettarget", targettarget)
 
     -- pixel perfect
-    -- AW.AddToPixelUpdater(targettarget)
+    -- AF.AddToPixelUpdater(targettarget)
 
     -- indicators
     UF.CreateIndicators(targettarget, indicators)

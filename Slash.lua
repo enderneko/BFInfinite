@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 SLASH_BFI1 = "/bfi"
 function SlashCmdList.BFI(msg, editbox)
@@ -10,7 +10,7 @@ function SlashCmdList.BFI(msg, editbox)
     rest = strlower(rest or "")
 
     if command == "mover" then
-        AW.ToggleMovers()
+        AF.ToggleMovers()
     elseif command == "reset" then
         BFIConfig = nil
         ReloadUI()

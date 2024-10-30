@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 ---@class UIWidgets
 local UI = BFI.UIWidgets
 
@@ -36,10 +36,10 @@ end
 ---------------------------------------------------------------------
 local microMenu
 local function CreateMicroMenu()
-    microMenu = CreateFrame("Frame", "BFIUI_MicroMenu", AW.UIParent)
-    AW.AddToPixelUpdater(microMenu)
+    microMenu = CreateFrame("Frame", "BFIUI_MicroMenu", AF.UIParent)
+    AF.AddToPixelUpdater(microMenu)
 
-    microMenu.visibility = CreateFrame("Frame", nil, AW.UIParent, "SecureHandlerStateTemplate")
+    microMenu.visibility = CreateFrame("Frame", nil, AF.UIParent, "SecureHandlerStateTemplate")
     microMenu.visibility:SetScript("OnShow", function()
         microMenu:Show()
     end)
@@ -49,11 +49,11 @@ local function CreateMicroMenu()
 
     -- OnEnter/OnLeave
     microMenu.onEnter = function()
-        AW.FrameFadeIn(microMenu, 0.25)
+        AF.FrameFadeIn(microMenu, 0.25)
     end
 
     microMenu.onLeave = function()
-        AW.FrameFadeOut(microMenu, 0.25, nil, microMenu.alpha)
+        AF.FrameFadeOut(microMenu, 0.25, nil, microMenu.alpha)
     end
 
     microMenu:SetScript("OnEnter", microMenu.onEnter)
@@ -67,7 +67,7 @@ local function CreateMicroMenu()
             _G[b]:SetParent(microMenu)
             _G[b]:HookScript("OnEnter", microMenu.onEnter)
             _G[b]:HookScript("OnLeave", microMenu.onLeave)
-            AW.AddToPixelUpdater(_G[b])
+            AF.AddToPixelUpdater(_G[b])
         end
     end
 
@@ -75,7 +75,7 @@ local function CreateMicroMenu()
     hooksecurefunc(_G.MicroMenu, "UpdateHelpTicketButtonAnchor", UpdateHelpTicketButtonAnchor)
 
     -- mover
-    AW.CreateMover(microMenu, L["UI Widgets"], L["Micro Menu"])
+    AF.CreateMover(microMenu, L["UI Widgets"], L["Micro Menu"])
 end
 
 ---------------------------------------------------------------------
@@ -83,28 +83,28 @@ end
 ---------------------------------------------------------------------
 local function UpdateButton(b)
     -- highlight
-    b:SetHighlightTexture(AW.GetPlainTexture())
+    b:SetHighlightTexture(AF.GetPlainTexture())
     local highlight = b:GetHighlightTexture()
-    AW.SetOnePixelInside(highlight, b)
+    AF.SetOnePixelInside(highlight, b)
     highlight:SetVertexColor(1, 1, 1, 0.2)
 
     -- normal
     local normal = b:GetNormalTexture()
-    AW.SetOnePixelInside(normal, b)
+    AF.SetOnePixelInside(normal, b)
     normal:SetTexCoord(unpack(microMenu.buttonTexCoord))
 
     -- pushed
     local pushed = b:GetPushedTexture()
-    AW.SetOnePixelInside(pushed, b)
+    AF.SetOnePixelInside(pushed, b)
     pushed:SetTexCoord(unpack(microMenu.buttonTexCoord))
 
     -- disabled
     local disabled = b:GetDisabledTexture()
-    AW.SetOnePixelInside(disabled, b)
+    AF.SetOnePixelInside(disabled, b)
     disabled:SetTexCoord(unpack(microMenu.buttonTexCoord))
 
     -- FlashBorder
-    -- AW.SetOnePixelInside(b.FlashBorder, b)
+    -- AF.SetOnePixelInside(b.FlashBorder, b)
     -- b.FlashBorder:SetColorTexture(1, 1, 1, 0)
 
     -- guild emblem
@@ -120,21 +120,21 @@ local function UpdateButton(b)
 end
 
 local function UpdatePortrait(b)
-    AW.SetOnePixelInside(b.Portrait, b)
+    AF.SetOnePixelInside(b.Portrait, b)
     b.Portrait:SetTexCoord(unpack(microMenu.portraitTexCoord))
 
     -- highlight
-    b:SetHighlightTexture(AW.GetPlainTexture())
+    b:SetHighlightTexture(AF.GetPlainTexture())
     local highlight = b:GetHighlightTexture()
-    AW.SetOnePixelInside(highlight, b)
+    AF.SetOnePixelInside(highlight, b)
     highlight:SetAlpha(0.2)
 
     -- pushed
-    b:SetPushedTexture(AW.GetPlainTexture())
+    b:SetPushedTexture(AF.GetPlainTexture())
     local pushed = b:GetPushedTexture()
     pushed:SetAlpha(0.2)
     pushed:SetDrawLayer("OVERLAY", 1)
-    AW.SetOnePixelInside(pushed, b)
+    AF.SetOnePixelInside(pushed, b)
 
     -- hide unused
     b.PushedBackground:SetTexture()
@@ -168,19 +168,19 @@ local function UpdateMicroMenu(module, which)
     microMenu:SetAlpha(config.alpha)
 
     -- texCoord
-    microMenu.buttonTexCoord = AW.CalcTexCoordPreCrop(config.width, config.height, 16 / 20.5, 0.17)
-    microMenu.portraitTexCoord = AW.CalcTexCoordPreCrop(config.width, config.height, 1, 0.1)
-    microMenu.guildEmblemScale = AW.CalcScale(32, 40, config.width, config.height, 0.17)
+    microMenu.buttonTexCoord = AF.CalcTexCoordPreCrop(config.width, config.height, 16 / 20.5, 0.17)
+    microMenu.portraitTexCoord = AF.CalcTexCoordPreCrop(config.width, config.height, 1, 0.1)
+    microMenu.guildEmblemScale = AF.CalcScale(32, 40, config.width, config.height, 0.17)
 
     -- menu size
-    AW.SetGridSize(microMenu, config.width, config.height, config.spacing, config.spacing, config.buttonsPerRow, ceil(11 / config.buttonsPerRow))
+    AF.SetGridSize(microMenu, config.width, config.height, config.spacing, config.spacing, config.buttonsPerRow, ceil(11 / config.buttonsPerRow))
 
     -- buttons
     for i, b in pairs(microMenu.buttons) do
-        AW.SetSize(b, config.width, config.height)
+        AF.SetSize(b, config.width, config.height)
 
         -- style
-        AW.StylizeFrame(b)
+        AF.StylizeFrame(b)
         if b:GetName() == "CharacterMicroButton" then
             hooksecurefunc(b, "SetPushed", UpdatePortrait)
             hooksecurefunc(b, "SetNormal", UpdatePortrait)
@@ -192,14 +192,14 @@ local function UpdateMicroMenu(module, which)
         end
 
         -- arrangement
-        AW.ClearPoints(b)
+        AF.ClearPoints(b)
         if i == 1 then
-            AW.SetPoint(b, "TOPLEFT")
+            AF.SetPoint(b, "TOPLEFT")
         else
             if i % config.buttonsPerRow == 1 then
-                AW.SetPoint(b, "TOPLEFT", microMenu.buttons[i - config.buttonsPerRow], "BOTTOMLEFT", 0, -config.spacing)
+                AF.SetPoint(b, "TOPLEFT", microMenu.buttons[i - config.buttonsPerRow], "BOTTOMLEFT", 0, -config.spacing)
             else
-                AW.SetPoint(b, "TOPLEFT", microMenu.buttons[i - 1], "TOPRIGHT", config.spacing, 0)
+                AF.SetPoint(b, "TOPLEFT", microMenu.buttons[i - 1], "TOPRIGHT", config.spacing, 0)
             end
         end
     end
@@ -217,9 +217,9 @@ local function UpdateMicroMenu(module, which)
     end
 
     -- mover
-    AW.UpdateMoverSave(microMenu, config.position)
+    AF.UpdateMoverSave(microMenu, config.position)
 
     -- position
-    AW.LoadPosition(microMenu, config.position)
+    AF.LoadPosition(microMenu, config.position)
 end
 BFI.RegisterCallback("UpdateModules", "UI_MicroMenu", UpdateMicroMenu)

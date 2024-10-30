@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local C = BFI.Colors
 local NP = BFI.NamePlates
 
@@ -37,37 +37,37 @@ local function GetHealthColor(self, unit)
     local marker = GetRaidTargetIndex(unit)
 
     if marker and marker <= 8 and self.colorByMarker then
-        r, g, b = AW.GetColorRGB("marker_" .. marker)
+        r, g, b = AF.GetColorRGB("marker_" .. marker)
 
     elseif not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
-        r, g, b = AW.GetColorRGB("TAP_DENIED")
+        r, g, b = AF.GetColorRGB("TAP_DENIED")
 
     elseif self.threatSituation and self.colorByThreat then
-        r, g, b = AW.GetColorRGB("threat_" .. self.threatSituation)
+        r, g, b = AF.GetColorRGB("threat_" .. self.threatSituation)
 
     elseif U.UnitIsPlayer(unit) then
         local class = UnitClassBase(unit)
         if not UnitIsConnected(unit) then
-            r, g, b = AW.GetColorRGB("OFFLINE")
-            lossR, lossG, lossB = AW.GetColorRGB("OFFLINE")
+            r, g, b = AF.GetColorRGB("OFFLINE")
+            lossR, lossG, lossB = AF.GetColorRGB("OFFLINE")
         else
             -- bar
             if self.colorByClass then
-                r, g, b = AW.GetClassColor(class)
+                r, g, b = AF.GetClassColor(class)
             else
-                r, g, b = AW.GetReactionColor(unit)
+                r, g, b = AF.GetReactionColor(unit)
             end
         end
 
     else
-        r, g, b = AW.GetReactionColor(unit)
+        r, g, b = AF.GetReactionColor(unit)
     end
 
     if not lossR then
         if self.lossColor.useDarkerForground then
             lossR, lossG, lossB = r * 0.2, g * 0.2, b * 0.2
         else
-            lossR, lossG, lossB = AW.UnpackColor(self.lossColor.rgb)
+            lossR, lossG, lossB = AF.UnpackColor(self.lossColor.rgb)
         end
     end
 
@@ -166,7 +166,7 @@ local function UpdateThreat(self, event, unitId)
         end
 
         if self.threatGlowEnabled then
-            self.threat:SetBackdropBorderColor(AW.GetColorRGB("threat_" .. status))
+            self.threat:SetBackdropBorderColor(AF.GetColorRGB("threat_" .. status))
             self.threat:Show()
         else
             self.threat:Hide()
@@ -207,7 +207,7 @@ local function UpdateHealthStates(self)
                 matched = true
                 self.threshold:Show()
                 self.threshold:SetPoint("CENTER", self.bg, "LEFT", self:GetBarWidth() * t.value, 0)
-                self.threshold:SetVertexColor(AW.UnpackColor(t.color))
+                self.threshold:SetVertexColor(AF.UnpackColor(t.color))
                 break
             end
         end
@@ -401,7 +401,7 @@ local function OvershieldGlow_SetColor(self, color)
 end
 
 local function MouseoverHighlight_Setup(self, config)
-    self.mouseoverHighlight:SetColorTexture(AW.UnpackColor(config.color))
+    self.mouseoverHighlight:SetColorTexture(AF.UnpackColor(config.color))
     if config.enabled then
         self:SetScript("OnUpdate", UpdateMouseover)
     else
@@ -420,7 +420,7 @@ local function Thresholds_Setup(self, config)
         self.threshold:Hide()
         return
     end
-    AW.SetSize(self.threshold, config.width, config.height)
+    AF.SetSize(self.threshold, config.width, config.height)
 end
 
 local function ThreatGlow_Setup(self, config)
@@ -428,29 +428,29 @@ local function ThreatGlow_Setup(self, config)
         self.threat:Hide()
         return
     end
-    AW.SetOutside(self.threat, self, config.size)
-    self.threat:SetBackdrop({edgeFile=AW.GetTexture("StaticGlow"), edgeSize=AW.ConvertPixelsForRegion(config.size, self)})
+    AF.SetOutside(self.threat, self, config.size)
+    self.threat:SetBackdrop({edgeFile=AF.GetTexture("StaticGlow"), edgeSize=AF.ConvertPixelsForRegion(config.size, self)})
 end
 
 local function HealthBar_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
-    AW.ReBorder(self)
-    AW.ReSize(self.fg)
-    AW.RePoint(self.fg)
-    AW.RePoint(self.loss)
-    AW.ReSize(self.overshieldGlow)
-    AW.ReSize(self.overshieldGlowR)
-    AW.RePoint(self.overshieldGlowR)
+    AF.ReSize(self)
+    AF.RePoint(self)
+    AF.ReBorder(self)
+    AF.ReSize(self.fg)
+    AF.RePoint(self.fg)
+    AF.RePoint(self.loss)
+    AF.ReSize(self.overshieldGlow)
+    AF.ReSize(self.overshieldGlowR)
+    AF.RePoint(self.overshieldGlowR)
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
 local function HealthBar_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AW.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.width, config.height)
 
     HealthBar_SetTexture(self, U.GetBarTexture(config.texture))
     self:SetBackgroundColor(unpack(config.bgColor))
@@ -480,7 +480,7 @@ end
 ---------------------------------------------------------------------
 function NP.CreateHealthBar(parent, name)
     -- bar
-    local bar = AW.CreateSimpleBar(parent, name)
+    local bar = AF.CreateSimpleBar(parent, name)
     bar.root = parent
     bar:Hide()
 
@@ -493,7 +493,7 @@ function NP.CreateHealthBar(parent, name)
     shield:Hide()
     shield:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
     shield:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
-    shield:SetTexture(AW.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
+    shield:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
 
@@ -501,27 +501,27 @@ function NP.CreateHealthBar(parent, name)
     local overshieldGlow = bar:CreateTexture(name.."OvershieldGlow", "ARTWORK", nil, 3)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
-    overshieldGlow:SetTexture(AW.GetTexture("Overshield", BFI.name))
-    AW.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss)
-    AW.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss)
-    AW.SetWidth(overshieldGlow, 4)
+    overshieldGlow:SetTexture(AF.GetTexture("Overshield", BFI.name))
+    AF.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss)
+    AF.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss)
+    AF.SetWidth(overshieldGlow, 4)
 
     -- overshieldR
     local overshieldGlowR = bar:CreateTexture(name.."OvershieldGlowR", "ARTWORK", nil, 3)
     bar.overshieldGlowR = overshieldGlowR
     overshieldGlowR:Hide()
-    overshieldGlowR:SetTexture(AW.GetTexture("OvershieldR", BFI.name))
-    AW.SetPoint(overshieldGlowR, "TOPLEFT", shield, "TOPLEFT", -4, 0)
-    AW.SetPoint(overshieldGlowR, "BOTTOMLEFT", shield, "BOTTOMLEFT", -4, 0)
-    AW.SetWidth(overshieldGlowR, 8)
+    overshieldGlowR:SetTexture(AF.GetTexture("OvershieldR", BFI.name))
+    AF.SetPoint(overshieldGlowR, "TOPLEFT", shield, "TOPLEFT", -4, 0)
+    AF.SetPoint(overshieldGlowR, "BOTTOMLEFT", shield, "BOTTOMLEFT", -4, 0)
+    AF.SetWidth(overshieldGlowR, 8)
 
     local fullOvershieldGlowR = bar:CreateTexture(name.."FullOvershieldGlowR", "ARTWORK", nil, 3)
     bar.fullOvershieldGlowR = fullOvershieldGlowR
     fullOvershieldGlowR:Hide()
-    fullOvershieldGlowR:SetTexture(AW.GetTexture("Overabsorb", BFI.name))
-    AW.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg)
-    AW.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg)
-    AW.SetWidth(fullOvershieldGlowR, 4)
+    fullOvershieldGlowR:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
+    AF.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg)
+    AF.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg)
+    AF.SetWidth(fullOvershieldGlowR, 4)
 
     -- mouseover highlight
     local mouseoverHighlight = bar:CreateTexture(name.."MouseoverHighlight", "ARTWORK", nil, 5)
@@ -533,7 +533,7 @@ function NP.CreateHealthBar(parent, name)
     local threshold = bar:CreateTexture(name.."Threshold", "ARTWORK", nil, 7)
     bar.threshold = threshold
     threshold:Hide()
-    threshold:SetTexture(AW.GetTexture("Spark", BFI.name))
+    threshold:SetTexture(AF.GetTexture("Spark", BFI.name))
 
     -- threatGlow
     local threat = CreateFrame("Frame", name.."ThreatGlow", bar, "BackdropTemplate")
@@ -546,7 +546,7 @@ function NP.CreateHealthBar(parent, name)
     bar.LoadConfig = HealthBar_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(bar, HealthBar_UpdatePixels)
+    AF.AddToPixelUpdater(bar, HealthBar_UpdatePixels)
 
     return bar
 end

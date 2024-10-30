@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 ---@class ActionBars
 local AB = BFI.ActionBars
 local U = BFI.utils
@@ -112,63 +112,63 @@ function AB.StylizeButton(b)
     -- icon ------------------------------------------------------------------ --
     icon:SetDrawLayer("ARTWORK", -1)
     icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-    AW.SetOnePixelInside(icon, b)
+    AF.SetOnePixelInside(icon, b)
 
     -- cooldown -------------------------------------------------------------- --
     if cooldown then
-        AW.SetOnePixelInside(cooldown, b)
+        AF.SetOnePixelInside(cooldown, b)
         cooldown:SetDrawEdge(false)
     end
 
     -- checked texture ------------------------------------------------------- --
     if b.SetCheckedTexture then
-        b.checkedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.25))
-        AW.SetOnePixelInside(b.checkedTexture, b)
+        b.checkedTexture = AF.CreateTexture(b, nil, AF.GetColorTable("white", 0.25))
+        AF.SetOnePixelInside(b.checkedTexture, b)
         b.checkedTexture:SetBlendMode("ADD")
         b:SetCheckedTexture(b.checkedTexture)
     end
 
     -- pushed texture -------------------------------------------------------- --
     if b.SetPushedTexture then
-        b.pushedTexture = AW.CreateTexture(b, nil, AW.GetColorTable("yellow", 0.25))
-        AW.SetOnePixelInside(b.pushedTexture, b)
+        b.pushedTexture = AF.CreateTexture(b, nil, AF.GetColorTable("yellow", 0.25))
+        AF.SetOnePixelInside(b.pushedTexture, b)
         b.pushedTexture:SetBlendMode("ADD")
         b:SetPushedTexture(b.pushedTexture)
     end
 
     -- mouseover highlight --------------------------------------------------- --
     if b.SetHighlightTexture then
-        b.mouseoverHighlight = AW.CreateTexture(b, nil, AW.GetColorTable("white", 0.25), "HIGHLIGHT")
-        AW.SetOnePixelInside(b.mouseoverHighlight, b)
+        b.mouseoverHighlight = AF.CreateTexture(b, nil, AF.GetColorTable("white", 0.25), "HIGHLIGHT")
+        AF.SetOnePixelInside(b.mouseoverHighlight, b)
         b.mouseoverHighlight:SetBlendMode("ADD")
         b:SetHighlightTexture(b.mouseoverHighlight)
     end
 
     -- SpellHighlightTexture ------------------------------------------------- --
     if b.SpellHighlightTexture then
-        b.SpellHighlightTexture:SetColorTexture(AW.GetColorRGB("yellow", 0.4))
-        AW.SetOnePixelInside(b.SpellHighlightTexture, b)
+        b.SpellHighlightTexture:SetColorTexture(AF.GetColorRGB("yellow", 0.4))
+        AF.SetOnePixelInside(b.SpellHighlightTexture, b)
     end
 
     -- AutoCastShine --------------------------------------------------------- --
     if autoCast then
         autoCast:SetAllPoints(b)
         autoCast.Shine:ClearAllPoints()
-        AW.SetOutside(autoCast.Shine, b, 5)
+        AF.SetOutside(autoCast.Shine, b, 5)
         autoCast.Mask:ClearAllPoints()
-        AW.SetInside(autoCast.Mask, b, 1)
+        AF.SetInside(autoCast.Mask, b, 1)
     end
 
     -- Flash ----------------------------------------------------------------- --
     if flash then
-        flash:SetColorTexture(AW.GetColorRGB("red", 0.25))
-        AW.SetOnePixelInside(flash, b)
+        flash:SetColorTexture(AF.GetColorRGB("red", 0.25))
+        AF.SetOnePixelInside(flash, b)
         flash:SetDrawLayer("ARTWORK", 1)
     end
 
     -- backdrop -------------------------------------------------------------- --
     Mixin(b, BackdropTemplateMixin)
-    AW.StylizeFrame(b)
+    AF.StylizeFrame(b)
 end
 
 ---------------------------------------------------------------------
@@ -185,7 +185,7 @@ function AB.ApplyTextConfig(fs, config)
     end
     fs:SetJustifyH(config.justifyH)
     fs:SetPoint(config.position.anchor, fs:GetParent(), config.position.relAnchor, config.position.offsetX, config.position.offsetY)
-    fs:SetTextColor(AW.UnpackColor(config.color))
+    fs:SetTextColor(AF.UnpackColor(config.color))
 end
 
 ---------------------------------------------------------------------
@@ -193,12 +193,12 @@ end
 ---------------------------------------------------------------------
 function AB.ActionBar_OnEnter(bar)
     bar = bar.header and bar.header or bar
-    AW.FrameFadeIn(bar, 0.25)
+    AF.FrameFadeIn(bar, 0.25)
 end
 
 function AB.ActionBar_OnLeave(bar)
     bar = bar.header and bar.header or bar
-    AW.FrameFadeOut(bar, 0.25, nil, bar.alpha)
+    AF.FrameFadeOut(bar, 0.25, nil, bar.alpha)
 end
 
 ---------------------------------------------------------------------
@@ -267,16 +267,16 @@ function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientati
         b:SetAttribute("statehidden", nil)
 
         -- size
-        AW.SetSize(b, size, size)
+        AF.SetSize(b, size, size)
 
         -- point
         if i == 1 then
-            AW.SetPoint(b, p)
+            AF.SetPoint(b, p)
         else
             if (i - 1) % buttonsPerLine == 0 then
-                AW.SetPoint(b, p, bar.buttons[i - buttonsPerLine], rp_new_line, x_new_line, y_new_line)
+                AF.SetPoint(b, p, bar.buttons[i - buttonsPerLine], rp_new_line, x_new_line, y_new_line)
             else
-                AW.SetPoint(b, p, bar.buttons[i - 1], rp, x, y)
+                AF.SetPoint(b, p, bar.buttons[i - 1], rp, x, y)
             end
         end
     end
@@ -289,9 +289,9 @@ function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientati
 
     -- update bar ------------------------------------------------------------ --
     if orientation == "horizontal" then
-        AW.SetGridSize(bar, size, size, spacing, spacing, min(buttonsPerLine, num), ceil(num / buttonsPerLine))
+        AF.SetGridSize(bar, size, size, spacing, spacing, min(buttonsPerLine, num), ceil(num / buttonsPerLine))
     else
-        AW.SetGridSize(bar, size, size, spacing, spacing, ceil(num / buttonsPerLine), min(buttonsPerLine, num))
+        AF.SetGridSize(bar, size, size, spacing, spacing, ceil(num / buttonsPerLine), min(buttonsPerLine, num))
     end
 end
 
@@ -305,34 +305,34 @@ function AB.CreateButton(parent, id, name)
 
     -- TargetReticleAnimFrame ------------------------------------------------ --
     if b.TargetReticleAnimFrame then
-        AW.SetOnePixelInside(b.TargetReticleAnimFrame, b)
+        AF.SetOnePixelInside(b.TargetReticleAnimFrame, b)
         b.TargetReticleAnimFrame.Base:SetAllPoints()
-        b.TargetReticleAnimFrame.Base:SetTexture(AW.GetTexture("TargetReticleBase", BFI.name))
+        b.TargetReticleAnimFrame.Base:SetTexture(AF.GetTexture("TargetReticleBase", BFI.name))
         b.TargetReticleAnimFrame.Highlight:SetAllPoints()
         b.TargetReticleAnimFrame.Mask:SetAllPoints()
-        b.TargetReticleAnimFrame.Mask:SetTexture(AW.GetTexture("TargetReticleMask", BFI.name), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+        b.TargetReticleAnimFrame.Mask:SetTexture(AF.GetTexture("TargetReticleMask", BFI.name), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     end
 
     -- InterruptDisplay ------------------------------------------------------ --
     if b.InterruptDisplay then
-        AW.SetOnePixelInside(b.InterruptDisplay, b)
+        AF.SetOnePixelInside(b.InterruptDisplay, b)
         b.InterruptDisplay.Base:SetAllPoints()
         b.InterruptDisplay.Base.Base:SetAllPoints()
-        b.InterruptDisplay.Base.Base:SetTexture(AW.GetTexture("InterruptDisplayBase", BFI.name))
+        b.InterruptDisplay.Base.Base:SetTexture(AF.GetTexture("InterruptDisplayBase", BFI.name))
         b.InterruptDisplay.Highlight:SetAllPoints()
         b.InterruptDisplay.Highlight.Mask:SetAllPoints()
-        b.InterruptDisplay.Highlight.Mask:SetTexture(AW.GetTexture("InterruptDisplayMask", BFI.name), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+        b.InterruptDisplay.Highlight.Mask:SetTexture(AF.GetTexture("InterruptDisplayMask", BFI.name), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
         -- b.InterruptDisplay.Highlight.HighlightTexture:SetAllPoints()
         -- b.InterruptDisplay.Highlight.Mask:SetAllPoints()
     end
 
     -- SpellCastAnimFrame ---------------------------------------------------- --
     if b.SpellCastAnimFrame then
-        AW.SetOnePixelInside(b.SpellCastAnimFrame, b)
+        AF.SetOnePixelInside(b.SpellCastAnimFrame, b)
 
         b.SpellCastAnimFrame.Fill:SetAllPoints()
         b.SpellCastAnimFrame.Fill.FillMask:SetAllPoints()
-        b.SpellCastAnimFrame.Fill.FillMask:SetTexture(AW.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+        b.SpellCastAnimFrame.Fill.FillMask:SetTexture(AF.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
         b.SpellCastAnimFrame.Fill.InnerGlowTexture:ClearAllPoints()
         b.SpellCastAnimFrame.Fill.InnerGlowTexture:Hide()
 
@@ -348,7 +348,7 @@ function AB.CreateButton(parent, id, name)
         end)
     end
 
-    AW.AddToPixelUpdater(b)
+    AF.AddToPixelUpdater(b)
 
     return b
 end
@@ -368,11 +368,11 @@ function AB.CreateStanceButton(parent, id)
 
     b.checkedTexture:SetBlendMode("BLEND")
 
-    b.hotkey = AW.CreateFontString(b)
+    b.hotkey = AF.CreateFontString(b)
     b.hotkey:SetShadowColor(0, 0, 0, 0)
     b.hotkey:SetShadowOffset(0, 0)
 
-    AW.AddToPixelUpdater(b)
+    AF.AddToPixelUpdater(b)
 
     return b
 end
@@ -390,11 +390,11 @@ function AB.CreatePetButton(parent, id)
     b:HookScript("OnEnter", AB.ActionBar_OnEnter)
     b:HookScript("OnLeave", AB.ActionBar_OnLeave)
 
-    -- b.hotkey = AW.CreateFontString(b)
+    -- b.hotkey = AF.CreateFontString(b)
     -- b.hotkey:SetShadowColor(0, 0, 0, 0)
     -- b.hotkey:SetShadowOffset(0, 0)
 
-    AW.AddToPixelUpdater(b)
+    AF.AddToPixelUpdater(b)
 
     return b
 end

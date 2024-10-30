@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -46,9 +46,9 @@ local function UpdateColor(self, event, unitId)
     elseif self.color.type == "class_color" then
         local class = UnitClassBase(unit)
         if U.UnitIsPlayer(unit) then
-            r, g, b = AW.GetClassColor(class)
+            r, g, b = AF.GetClassColor(class)
         else
-            r, g, b = AW.GetReactionColor(unit)
+            r, g, b = AF.GetReactionColor(unit)
         end
     else
         r, g, b = unpack(self.color.rgb)

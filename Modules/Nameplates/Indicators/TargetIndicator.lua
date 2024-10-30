@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -17,12 +17,12 @@ local function UpdateTarget(self)
     local unit = self.root.unit
 
     if UnitIsUnit(unit, "focus") then
-        self.icon:SetTexture(AW.GetTexture(self.focusTexture))
-        self.icon:SetVertexColor(AW.UnpackColor(self.focusColor))
+        self.icon:SetTexture(AF.GetTexture(self.focusTexture))
+        self.icon:SetVertexColor(AF.UnpackColor(self.focusColor))
         self:Show()
     elseif UnitIsUnit(unit, "target") then
-        self.icon:SetTexture(AW.GetTexture(self.targetTexture))
-        self.icon:SetVertexColor(AW.UnpackColor(self.targetColor))
+        self.icon:SetTexture(AF.GetTexture(self.targetTexture))
+        self.icon:SetVertexColor(AF.UnpackColor(self.targetColor))
         self:Show()
     else
         self:Hide()
@@ -49,8 +49,8 @@ end
 -- load
 ---------------------------------------------------------------------
 local function TargetIndicator_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
-    AW.SetSize(self, config.width, config.height)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetSize(self, config.width, config.height)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
     self.targetTexture = config.target.texture

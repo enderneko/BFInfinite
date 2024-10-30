@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 local AB = BFI.ActionBars
 
@@ -78,7 +78,7 @@ local defaults = {
             scale = 0.8,
             hideTexture = false,
             hotkey = {
-                font = {font = AW.GetFont("Noto_AP_SC", BFI.name), size = 12, flags = "OUTLINE", shadow = false},
+                font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 12, flags = "OUTLINE", shadow = false},
                 color = {1, 1, 1},
                 position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0},
                 justifyH = "RIGHT",
@@ -107,19 +107,19 @@ do
             },
             text = {
                 hotkey = {
-                    font = {font = AW.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE", shadow = false},
+                    font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE", shadow = false},
                     color = {1, 1, 1},
                     position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0},
                     justifyH = "RIGHT",
                 },
                 count = {
-                    font = {font = AW.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE", shadow = false},
+                    font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE", shadow = false},
                     color = {1, 1, 1},
                     position = {anchor = "BOTTOMRIGHT", relAnchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 1},
                     justifyH = "RIGHT",
                 },
                 macro = {
-                    font = {font = AW.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE", shadow = false},
+                    font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE", shadow = false},
                     color = {1, 1, 1},
                     position = {anchor = "BOTTOMLEFT", relAnchor = "BOTTOMLEFT", offsetX = -2, offsetY = 0},
                     justifyH = "CENTER",
@@ -180,7 +180,7 @@ do
                 },
                 text = {
                     hotkey = {
-                        font = {font = AW.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE"},
+                        font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE"},
                         color = {1, 1, 1},
                         position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
                     },

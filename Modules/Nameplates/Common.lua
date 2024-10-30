@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 ---@class NamePlates
 local NP = BFI.NamePlates
 
@@ -120,9 +120,9 @@ end
 
 local function LoadPosition(self, position, anchorTo)
     if self:GetObjectType() == "FontString" then
-        AW.LoadTextPosition(self, position, anchorTo)
+        AF.LoadTextPosition(self, position, anchorTo)
     else
-        AW.LoadWidgetPosition(self, position, anchorTo)
+        AF.LoadWidgetPosition(self, position, anchorTo)
     end
 end
 

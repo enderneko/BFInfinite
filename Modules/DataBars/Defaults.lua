@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 ---@class DataBars
 local DB = BFI.DataBars
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 
 local defaults = {
@@ -22,12 +22,12 @@ local defaults = {
             centerFormat = "[remaining]",
             rightFormat = "[percent]",
         },
-        borderColor = AW.GetColorTable("border"),
-        bgColor = AW.GetColorTable("background"),
-        normalColor = {useGradient = true, startColor = AW.GetColorTable("exp_normal_start"), endColor = AW.GetColorTable("exp_normal_end")},
-        completeQuests = {enabled = true, color = AW.GetColorTable("exp_complete")},
-        incompleteQuests = {enabled = false, color = AW.GetColorTable("exp_incomplete")},
-        rested = {enabled = true, color = AW.GetColorTable("exp_rested")},
+        borderColor = AF.GetColorTable("border"),
+        bgColor = AF.GetColorTable("background"),
+        normalColor = {useGradient = true, startColor = AF.GetColorTable("exp_normal_start"), endColor = AF.GetColorTable("exp_normal_end")},
+        completeQuests = {enabled = true, color = AF.GetColorTable("exp_complete")},
+        incompleteQuests = {enabled = false, color = AF.GetColorTable("exp_incomplete")},
+        rested = {enabled = true, color = AF.GetColorTable("exp_rested")},
     },
     reputationBar = {
         enabled = true,
@@ -44,8 +44,8 @@ local defaults = {
             centerFormat = "[progress]",
             rightFormat = "[standing]",
         },
-        borderColor = AW.GetColorTable("border"),
-        bgColor = AW.GetColorTable("background"),
+        borderColor = AF.GetColorTable("border"),
+        bgColor = AF.GetColorTable("background"),
     },
     honorBar = {
         enabled = true,
@@ -62,9 +62,9 @@ local defaults = {
             centerFormat = "",
             rightFormat = "[progress]",
         },
-        borderColor = AW.GetColorTable("border"),
-        bgColor = AW.GetColorTable("background"),
-        color = AW.GetColorTable("honor"),
+        borderColor = AF.GetColorTable("border"),
+        bgColor = AF.GetColorTable("background"),
+        color = AF.GetColorTable("honor"),
     },
 }
 

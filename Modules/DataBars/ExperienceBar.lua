@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
@@ -185,21 +185,21 @@ end
 -- create
 ---------------------------------------------------------------------
 local function CreateExperienceBar()
-    experienceBar = AW.CreateSimpleBar(AW.UIParent, "BFI_ExperienceBar")
+    experienceBar = AF.CreateSimpleBar(AF.UIParent, "BFI_ExperienceBar")
     experienceBar.loss:Hide()
     experienceBar:Hide()
 
-    AW.CreateMover(experienceBar, L["Data Bars"], L["Experience Bar"])
-    AW.AddToPixelUpdater(experienceBar)
+    AF.CreateMover(experienceBar, L["Data Bars"], L["Experience Bar"])
+    AF.AddToPixelUpdater(experienceBar)
 
     -- disabled
     local disabledTexture = experienceBar:CreateTexture(nil, "OVERLAY")
     experienceBar.disabledTexture = disabledTexture
     disabledTexture:SetAllPoints(experienceBar.bg)
-    disabledTexture:SetTexture(AW.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
+    disabledTexture:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     disabledTexture:SetHorizTile(true)
     disabledTexture:SetVertTile(true)
-    disabledTexture:SetVertexColor(AW.GetColorRGB("disabled", 0.75))
+    disabledTexture:SetVertexColor(AF.GetColorRGB("disabled", 0.75))
 
     -- complete
     local completeTexture = experienceBar:CreateTexture(nil, "ARTWORK")
@@ -221,17 +221,17 @@ local function CreateExperienceBar()
     -- left text
     local leftText = textFrame:CreateFontString(nil, "OVERLAY")
     experienceBar.leftText = leftText
-    AW.LoadTextPosition(leftText, {"LEFT", "LEFT", 5, 0})
+    AF.LoadTextPosition(leftText, {"LEFT", "LEFT", 5, 0})
 
     -- center text
     local centerText = textFrame:CreateFontString(nil, "OVERLAY")
     experienceBar.centerText = centerText
-    AW.LoadTextPosition(centerText, {"CENTER", "CENTER", 0, 0})
+    AF.LoadTextPosition(centerText, {"CENTER", "CENTER", 0, 0})
 
     -- right text
     local rightText = textFrame:CreateFontString(nil, "OVERLAY")
     experienceBar.rightText = rightText
-    AW.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
+    AF.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
 
     -- events
     BFI.AddEventHandler(experienceBar)
@@ -284,13 +284,13 @@ local function UpdateXPerienceBar(module, which)
     experienceBar.enabled = true
 
     -- mover
-    AW.UpdateMoverSave(experienceBar, config.position)
+    AF.UpdateMoverSave(experienceBar, config.position)
 
-    AW.LoadPosition(experienceBar, config.position)
-    AW.SetSize(experienceBar, config.width, config.height)
+    AF.LoadPosition(experienceBar, config.position)
+    AF.SetSize(experienceBar, config.width, config.height)
 
-    experienceBar:SetBorderColor(AW.UnpackColor(config.borderColor))
-    experienceBar:SetBackgroundColor(AW.UnpackColor(config.bgColor))
+    experienceBar:SetBorderColor(AF.UnpackColor(config.borderColor))
+    experienceBar:SetBackgroundColor(AF.UnpackColor(config.bgColor))
 
     local texture = U.GetBarTexture(config.texture)
 
@@ -299,7 +299,7 @@ local function UpdateXPerienceBar(module, which)
     if config.normalColor.useGradient then
         experienceBar:SetGradientColor(config.normalColor.startColor, config.normalColor.endColor)
     else
-        experienceBar:SetColor(AW.UnpackColor(config.normalColor.startColor))
+        experienceBar:SetColor(AF.UnpackColor(config.normalColor.startColor))
     end
 
     local anchorTo = experienceBar.fg
@@ -308,7 +308,7 @@ local function UpdateXPerienceBar(module, which)
     experienceBar.completeEnabled = config.completeQuests.enabled
     if config.completeQuests.enabled then
         experienceBar.completeTexture:SetTexture(texture)
-        experienceBar.completeTexture:SetVertexColor(AW.UnpackColor(config.completeQuests.color))
+        experienceBar.completeTexture:SetVertexColor(AF.UnpackColor(config.completeQuests.color))
         experienceBar.completeTexture:SetPoint("TOPLEFT", anchorTo, "TOPRIGHT")
         experienceBar.completeTexture:SetPoint("BOTTOMLEFT", anchorTo, "BOTTOMRIGHT")
         experienceBar.completeTexture:Show()
@@ -321,7 +321,7 @@ local function UpdateXPerienceBar(module, which)
     experienceBar.incompleteEnabled = config.incompleteQuests.enabled
     if config.incompleteQuests.enabled then
         experienceBar.incompleteTexture:SetTexture(texture)
-        experienceBar.incompleteTexture:SetVertexColor(AW.UnpackColor(config.incompleteQuests.color))
+        experienceBar.incompleteTexture:SetVertexColor(AF.UnpackColor(config.incompleteQuests.color))
         experienceBar.incompleteTexture:SetPoint("TOPLEFT", anchorTo, "TOPRIGHT")
         experienceBar.incompleteTexture:SetPoint("BOTTOMLEFT", anchorTo, "BOTTOMRIGHT")
         experienceBar.incompleteTexture:Show()
@@ -334,7 +334,7 @@ local function UpdateXPerienceBar(module, which)
     experienceBar.restedEnabled = config.rested.enabled
     if config.rested.enabled then
         experienceBar.restedTex:SetTexture(texture)
-        experienceBar.restedTex:SetVertexColor(AW.UnpackColor(config.rested.color))
+        experienceBar.restedTex:SetVertexColor(AF.UnpackColor(config.rested.color))
         experienceBar.restedTex:SetPoint("TOPLEFT", anchorTo, "TOPRIGHT")
         experienceBar.restedTex:SetPoint("BOTTOMLEFT", anchorTo, "BOTTOMRIGHT")
         experienceBar.restedTex:Show()

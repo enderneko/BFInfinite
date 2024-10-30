@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 --! NOTE: only available for PLAYER
@@ -27,11 +27,11 @@ local function UpdateStagger(self, event, unitId)
 
     local p = stagger / staggerMax
     if p >= 0.6 then
-        self:SetColor(AW.GetColorRGB("STAGGER_RED"))
+        self:SetColor(AF.GetColorRGB("STAGGER_RED"))
     elseif p >= 0.3 then
-        self:SetColor(AW.GetColorRGB("STAGGER_YELLOW"))
+        self:SetColor(AF.GetColorRGB("STAGGER_YELLOW"))
     else
-        self:SetColor(AW.GetColorRGB("STAGGER_GREEN"))
+        self:SetColor(AF.GetColorRGB("STAGGER_GREEN"))
     end
 
     if self.textEnabled then
@@ -172,7 +172,7 @@ end
 local function StaggerBar_SetupText(self, config)
     U.SetFont(self.text, config.font)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    self.text:SetTextColor(AW.UnpackColor(config.color))
+    self.text:SetTextColor(AF.UnpackColor(config.color))
     StaggerText_SetFormat(self, config.format)
 end
 
@@ -180,9 +180,9 @@ end
 -- load
 ---------------------------------------------------------------------
 local function StaggerBar_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AW.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.width, config.height)
 
     self:SetTexture(U.GetBarTexture(config.texture))
     self:SetBackgroundColor(unpack(config.bgColor))
@@ -226,7 +226,7 @@ end
 ---------------------------------------------------------------------
 function UF.CreateStaggerBar(parent, name)
     -- bar
-    local bar = AW.CreateSimpleBar(parent, name)
+    local bar = AF.CreateSimpleBar(parent, name)
     bar.root = parent
     bar:Hide()
 
@@ -246,7 +246,7 @@ function UF.CreateStaggerBar(parent, name)
     bar.LoadConfig = StaggerBar_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(bar)
+    AF.AddToPixelUpdater(bar)
 
     return bar
 end

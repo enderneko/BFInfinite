@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local S = BFI.Shared
 local UF = BFI.UnitFrames
 
@@ -21,9 +21,9 @@ local function RoleIcon_Update(self)
     if role == "NONE" or (self.hideDamager and role == "DAMAGER") then
         self:Hide()
     else
-        -- self.icon:SetTexture(AW.GetTexture(role))
+        -- self.icon:SetTexture(AF.GetTexture(role))
         self.text:SetText(S.RoleGlyphs[role].char)
-        self.text:SetTextColor(AW.UnpackColor(S.RoleGlyphs[role].color))
+        self.text:SetTextColor(AF.UnpackColor(S.RoleGlyphs[role].color))
         self:Show()
     end
 end
@@ -40,10 +40,10 @@ end
 -- load
 ---------------------------------------------------------------------
 local function RoleIcon_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AW.SetSize(self, config.width, config.height)
-    self.text:SetFont(AW.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
+    AF.SetSize(self, config.width, config.height)
+    self.text:SetFont(AF.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
     self.hideDamager = config.hideDamager
 end
 
@@ -58,7 +58,7 @@ local function RoleIcon_EnableConfigMode(self)
     self:Show()
 
     self.text:SetText(S.RoleGlyphs.HEALER.char)
-    self.text:SetTextColor(AW.UnpackColor(S.RoleGlyphs.HEALER.color))
+    self.text:SetTextColor(AF.UnpackColor(S.RoleGlyphs.HEALER.color))
 end
 
 local function RoleIcon_DisableConfigMode(self)

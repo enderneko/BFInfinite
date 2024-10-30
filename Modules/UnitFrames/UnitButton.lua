@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 local UF = BFI.UnitFrames
 
@@ -147,9 +147,9 @@ local function UnitButton_UpdateInRange(self, ir)
     self.states.inRange = inRange
     if self.states.inRange ~= self.states.wasInRange then
         if inRange then
-            AW.FrameFadeIn(self, 0.25, self:GetAlpha(), 1)
+            AF.FrameFadeIn(self, 0.25, self:GetAlpha(), 1)
         else
-            AW.FrameFadeOut(self, 0.25, self:GetAlpha(), self.oorAlpha or 1)
+            AF.FrameFadeOut(self, 0.25, self:GetAlpha(), self.oorAlpha or 1)
         end
     end
     self.states.wasInRange = inRange
@@ -431,9 +431,9 @@ end
 -- update pixels
 ---------------------------------------------------------------------
 local function UnitButton_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
-    AW.ReBorder(self)
+    AF.ReSize(self)
+    AF.RePoint(self)
+    AF.ReBorder(self)
 end
 
 ---------------------------------------------------------------------
@@ -470,7 +470,7 @@ function BFIUnitButton_OnLoad(self)
 
     -- overlay
     -- self.overlay = CreateFrame("Frame", self:GetName(), self)
-    -- AW.SetFrameLevel(self.overlay, 60, self)
+    -- AF.SetFrameLevel(self.overlay, 60, self)
     -- self:SetAllPoints()
 
     -- events
@@ -483,7 +483,7 @@ function BFIUnitButton_OnLoad(self)
     self:SetScript("OnEvent", UnitButton_OnEvent)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(self, UnitButton_UpdatePixels)
+    AF.AddToPixelUpdater(self, UnitButton_UpdatePixels)
 end
 
 ---------------------------------------------------------------------

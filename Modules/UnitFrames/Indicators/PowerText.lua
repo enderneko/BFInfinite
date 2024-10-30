@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -60,9 +60,9 @@ local function UpdateColor(self, event, unitId)
     local r, g, b
     if self.color.type == "class_color" then
         if U.UnitIsPlayer(unit) then
-            r, g, b = AW.GetClassColor(class)
+            r, g, b = AF.GetClassColor(class)
         else
-            r, g, b = AW.GetReactionColor(unit)
+            r, g, b = AF.GetReactionColor(unit)
         end
     else
         r, g, b = unpack(self.color.rgb)
@@ -213,7 +213,7 @@ end
 -- create
 ---------------------------------------------------------------------
 function UF.CreatePowerText(parent, name)
-    local text = parent:CreateFontString(name, "OVERLAY", "AW_FONT_NORMAL")
+    local text = parent:CreateFontString(name, "OVERLAY", "AF_FONT_NORMAL")
     text.root = parent
     text:Hide()
 

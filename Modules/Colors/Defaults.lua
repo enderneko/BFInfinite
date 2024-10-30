@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 local C = BFI.Colors
 
@@ -35,10 +35,10 @@ local defaults = {
     },
 
     unit = {
-        FRIENDLY = AW.GetColorTable("FRIENDLY"),
-        HOSTILE = AW.GetColorTable("HOSTILE"),
-        NEUTRAL = AW.GetColorTable("NEUTRAL"),
-        OFFLINE = AW.GetColorTable("UNKNOWN"),
+        FRIENDLY = AF.GetColorTable("FRIENDLY"),
+        HOSTILE = AF.GetColorTable("HOSTILE"),
+        NEUTRAL = AF.GetColorTable("NEUTRAL"),
+        OFFLINE = AF.GetColorTable("UNKNOWN"),
         CHARMED = {0.5, 0, 1},
         TAP_DENIED = {0.5, 0.5, 0.5},
     },
@@ -53,7 +53,7 @@ BFI.RegisterCallback("UpdateConfigs", "Colors", function(t)
         t["colors"] = U.Copy(defaults)
     end
     for _, st in pairs(t["colors"]) do
-        AW.AddColors(st)
+        AF.AddColors(st)
     end
 end, 1)
 
@@ -65,7 +65,7 @@ function C.ResetDefaults(which)
     end
 
     for _, t in pairs(BFI.vars.currentConfigTable["colors"]) do
-        AW.AddColors(t)
+        AF.AddColors(t)
     end
 
     -- TODO: fire
@@ -76,22 +76,22 @@ end
 ---------------------------------------------------------------------
 function C.GetAuraTypeColor(auraType)
     if auraType == "Curse" then
-        return AW.GetColorRGB("debuff_curse")
+        return AF.GetColorRGB("debuff_curse")
     elseif auraType == "Disease" then
-        return AW.GetColorRGB("debuff_disease")
+        return AF.GetColorRGB("debuff_disease")
     elseif auraType == "Magic" then
-        return AW.GetColorRGB("debuff_magic")
+        return AF.GetColorRGB("debuff_magic")
     elseif auraType == "Poison" then
-        return AW.GetColorRGB("debuff_disease")
+        return AF.GetColorRGB("debuff_disease")
     elseif auraType == "Bleed" then
-        return AW.GetColorRGB("debuff_bleed")
+        return AF.GetColorRGB("debuff_bleed")
     elseif auraType == "None" then
-        return AW.GetColorRGB("debuff_none")
+        return AF.GetColorRGB("debuff_none")
     elseif auraType == "castByMe" then
-        return AW.GetColorRGB("aura_castbyme")
+        return AF.GetColorRGB("aura_castbyme")
     elseif auraType == "dispellable" then
-        return AW.GetColorRGB("aura_dispellable")
+        return AF.GetColorRGB("aura_dispellable")
     else
-        return AW.GetColorRGB("black")
+        return AF.GetColorRGB("black")
     end
 end

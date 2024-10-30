@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 local raid
@@ -75,16 +75,20 @@ local function CreateRaid()
     end
 
     -- mover
-    AW.CreateMover(raid, L["Unit Frames"], _G.RAID)
+    AF.CreateMover(raid, L["Unit Frames"], _G.RAID)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(raid)
+    AF.AddToPixelUpdater(raid)
 end
 
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
 local function UpdateRaid(module, which)
+    if C_AddOns.IsAddOnLoaded("Cell") then
+        return
+    end
+
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "raid" then return end
 
@@ -113,19 +117,19 @@ local function UpdateRaid(module, which)
     local header = raid.header
 
     -- mover
-    AW.UpdateMoverSave(raid, config.general.position)
+    AF.UpdateMoverSave(raid, config.general.position)
 
     -- position
-    AW.LoadPosition(raid, config.general.position)
+    AF.LoadPosition(raid, config.general.position)
 
     -- container size
     if strfind(config.general.orientation, "^[top|bottom]") then
-        AW.SetGridSize(raid, config.general.width, config.general.height,
+        AF.SetGridSize(raid, config.general.width, config.general.height,
             config.general.spacingH, config.general.spacingV,
             config.general.maxColumns, config.general.unitsPerColumn
         )
     else
-        AW.SetGridSize(raid, config.general.width, config.general.height,
+        AF.SetGridSize(raid, config.general.width, config.general.height,
             config.general.spacingH, config.general.spacingV,
             config.general.unitsPerColumn, config.general.maxColumns
         )
@@ -137,19 +141,19 @@ local function UpdateRaid(module, which)
         button:ClearAllPoints()
 
         -- size
-        AW.SetSize(button, config.general.width, config.general.height)
+        AF.SetSize(button, config.general.width, config.general.height)
         -- out of range alpha
         button.oorAlpha = config.general.oorAlpha
         -- tooltip
         UF.SetupTooltip(button, config.general.tooltip)
         -- color
-        AW.StylizeFrame(button, config.general.bgColor, config.general.borderColor)
+        AF.StylizeFrame(button, config.general.bgColor, config.general.borderColor)
         -- indicators
         UF.SetupIndicators(button, indicators, config)
     end
 
     -- header
-    local p, rp, x, y, cs, hp, cp = AW.GetAnchorPoints_GroupHeader(config.general.orientation, config.general.spacingH, config.general.spacingV)
+    local p, rp, x, y, cs, hp, cp = AF.GetAnchorPoints_GroupHeader(config.general.orientation, config.general.spacingH, config.general.spacingV)
     header:SetSize(config.general.width, config.general.height)
     header:ClearAllPoints()
     header:SetPoint(p, raid)
@@ -158,8 +162,8 @@ local function UpdateRaid(module, which)
     header:SetAttribute("columnSpacing", cs)
     header:SetAttribute("xOffset", x)
     header:SetAttribute("yOffset", y)
-    header:SetAttribute("buttonWidth", AW.ConvertPixelsForRegion(config.general.width, raid))
-    header:SetAttribute("buttonHeight", AW.ConvertPixelsForRegion(config.general.height, raid))
+    header:SetAttribute("buttonWidth", AF.ConvertPixelsForRegion(config.general.width, raid))
+    header:SetAttribute("buttonHeight", AF.ConvertPixelsForRegion(config.general.height, raid))
     header:SetAttribute("maxColumns", config.general.maxColumns)
     header:SetAttribute("unitsPerColumn", config.general.unitsPerColumn)
     header:Show()

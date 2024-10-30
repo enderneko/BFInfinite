@@ -3,8 +3,8 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class Maps
 local M = BFI.Maps
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local defaults = {
     minimap = {
@@ -52,7 +52,7 @@ local defaults = {
             orientation = "left_to_right",
             spacing = 3,
             anchor = "TOPLEFT",
-            bgColor = AW.GetColorTable("black", 0.27),
+            bgColor = AF.GetColorTable("black", 0.27),
             fadeOut = true,
         },
         calendar = {
@@ -65,22 +65,22 @@ local defaults = {
             enabled = true,
             position = {"BOTTOM", "BOTTOM", 0, 0},
             font = {"Expressway", 12, "outline", false},
-            color = AW.GetColorTable("white"),
+            color = AF.GetColorTable("white"),
         },
         instanceDifficulty = {
             enabled = true,
             position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
             font = {"Expressway", 12, "outline", false},
-            normalColor = AW.GetColorTable("white"),
-            guildColor = AW.GetColorTable("guild"),
+            normalColor = AF.GetColorTable("white"),
+            guildColor = AF.GetColorTable("guild"),
             difficulties = {
-                normal = {text = "N", color = AW.GetColorTable("orange")},
-                heroic = {text = "H", color = AW.GetColorTable("orangered")},
-                mythic = {text = "M", color = AW.GetColorTable("firebrick")},
-                mythicKeystone = {text = "M+", color = AW.GetColorTable("firebrick")},
-                lookingForRaid = {text = "LFR", color = AW.GetColorTable("yellow")},
-                timewalking = {text = "TW", color = AW.GetColorTable("skyblue")},
-                event = {text = "E", color = AW.GetColorTable("classicrose")},
+                normal = {text = "N", color = AF.GetColorTable("orange")},
+                heroic = {text = "H", color = AF.GetColorTable("orangered")},
+                mythic = {text = "M", color = AF.GetColorTable("firebrick")},
+                mythicKeystone = {text = "M+", color = AF.GetColorTable("firebrick")},
+                lookingForRaid = {text = "LFR", color = AF.GetColorTable("yellow")},
+                timewalking = {text = "TW", color = AF.GetColorTable("skyblue")},
+                event = {text = "E", color = AF.GetColorTable("classicrose")},
                 -- TODO: delves
             },
         },

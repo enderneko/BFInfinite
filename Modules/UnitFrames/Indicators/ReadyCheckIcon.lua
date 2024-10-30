@@ -1,14 +1,14 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 local READY_CHECK_STATUS = {
-    waiting = AW.GetIcon("ReadyCheck_Waiting"),
-    ready = AW.GetIcon("ReadyCheck_Ready"),
-    notready = AW.GetIcon("ReadyCheck_NotReady"),
+    waiting = AF.GetIcon("ReadyCheck_Waiting"),
+    ready = AF.GetIcon("ReadyCheck_Ready"),
+    notready = AF.GetIcon("ReadyCheck_NotReady"),
 }
 
 ---------------------------------------------------------------------
@@ -54,9 +54,9 @@ end
 -- load
 ---------------------------------------------------------------------
 local function ReadyCheckIcon_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AW.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.width, config.height)
 end
 
 ---------------------------------------------------------------------

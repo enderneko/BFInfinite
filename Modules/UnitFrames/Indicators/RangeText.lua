@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 local LRC = BFI.libs.LRC
 
@@ -16,17 +16,17 @@ local UnitIsUnit = UnitIsUnit
 ---------------------------------------------------------------------
 local function UpdateColor(self, maxRange)
     if not maxRange then
-        self:SetTextColor(AW.GetColorRGB("range_out"))
+        self:SetTextColor(AF.GetColorRGB("range_out"))
     elseif maxRange <= 5 then
-        self:SetTextColor(AW.GetColorRGB("range_5"))
+        self:SetTextColor(AF.GetColorRGB("range_5"))
     elseif maxRange <= 20 then
-        self:SetTextColor(AW.GetColorRGB("range_20"))
+        self:SetTextColor(AF.GetColorRGB("range_20"))
     elseif maxRange <= 30 then
-        self:SetTextColor(AW.GetColorRGB("range_30"))
+        self:SetTextColor(AF.GetColorRGB("range_30"))
     elseif maxRange <= 40 then
-        self:SetTextColor(AW.GetColorRGB("range_40"))
+        self:SetTextColor(AF.GetColorRGB("range_40"))
     else
-        self:SetTextColor(AW.GetColorRGB("range_out"))
+        self:SetTextColor(AF.GetColorRGB("range_out"))
     end
 end
 

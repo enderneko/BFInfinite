@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 local FormatNumber = U.FormatNumber
@@ -19,7 +19,7 @@ local function CLEU(self)
     if not CLEU_EVENTS[event] then return end
     if destGUID ~= BFI.vars.playerGUID then return end
 
-    self:SetTextColor(AW.UnpackColor(CLEU_EVENT_COLORS[event]))
+    self:SetTextColor(AF.UnpackColor(CLEU_EVENT_COLORS[event]))
     if event == "SWING_DAMAGE" then
         self:SetFormattedText("%s%s", self.GetNumeric(swing_amount), swing_heal_critical and "!" or "")
     elseif strfind(event, "^SPELL_.*HEAL$") then
@@ -105,7 +105,7 @@ local function IncDmgHealText_EnableConfigMode(self)
     self:UnregisterAllEvents()
     self:Show()
 
-    self:SetTextColor(AW.UnpackColor(CLEU_EVENT_COLORS["SPELL_DAMAGE"]))
+    self:SetTextColor(AF.UnpackColor(CLEU_EVENT_COLORS["SPELL_DAMAGE"]))
     self:SetFormattedText("%s!", self.GetNumeric(1234567))
 end
 
@@ -123,7 +123,7 @@ function UF.CreateIncDmgHealText(parent, name)
     text:Hide()
 
     -- fade
-    AW.CreateContinualFadeInOutAnimation(text)
+    AF.CreateContinualFadeInOutAnimation(text)
 
     -- events
     BFI.AddEventHandler(text)

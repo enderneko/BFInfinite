@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 local L = BFI.L
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local AB = BFI.ActionBars
 
 ---------------------------------------------------------------------
@@ -11,19 +11,19 @@ local AB = BFI.ActionBars
 ---------------------------------------------------------------------
 local stanceBar
 local function CreateStanceBar()
-    stanceBar = CreateFrame("Frame", "BFIAB_StanceBar", AW.UIParent, "SecureHandlerStateTemplate")
+    stanceBar = CreateFrame("Frame", "BFIAB_StanceBar", AF.UIParent, "SecureHandlerStateTemplate")
 
     stanceBar.name = "stancebar"
     stanceBar.buttons = {}
 
     AB.bars[stanceBar.name] = stanceBar
 
-    AW.CreateMover(stanceBar, L["Action Bars"], L["Stance Bar"])
+    AF.CreateMover(stanceBar, L["Action Bars"], L["Stance Bar"])
 
     stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 
-    AW.AddToPixelUpdater(stanceBar)
+    AF.AddToPixelUpdater(stanceBar)
 end
 
 ---------------------------------------------------------------------
@@ -70,19 +70,19 @@ local function UpdateStanceButtonStatus()
         if i <= num then
             local icon, active, castable, spellID = GetShapeshiftFormInfo(i)
             b.icon:SetTexture(icon)
-            b.icon:SetVertexColor(AW.GetColorRGB(castable and "white" or "disabled"))
+            b.icon:SetVertexColor(AF.GetColorRGB(castable and "white" or "disabled"))
 
             -- ElvUI
             -- b.icon:SetTexture(C_Spell.GetSpellTexture(spellID))
             -- b:SetChecked(GetShapeshiftForm() ~= 0) -- not checked if no stance
             -- if active then
             --     if num == 1 then
-            --         b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.25))
+            --         b.checkedTexture:SetColorTexture(AF.GetColorRGB("white", 0.25))
             --     else
-            --         b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0))
+            --         b.checkedTexture:SetColorTexture(AF.GetColorRGB("black", 0))
             --     end
             -- else
-            --     b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0.6))
+            --     b.checkedTexture:SetColorTexture(AF.GetColorRGB("black", 0.6))
             -- end
         end
     end
@@ -140,7 +140,7 @@ local function UpdateStanceBar(module, which)
     end
 
     -- mover
-    AW.UpdateMoverSave(stanceBar, config.position)
+    AF.UpdateMoverSave(stanceBar, config.position)
 
     -- events
     AB:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", UpdateStanceButtons)
@@ -164,15 +164,15 @@ local function UpdateStanceBar(module, which)
             local t = config.buttonConfig.text.hotkey
             b.hotkey:SetFont(t.font.font, t.font.size, t.font.flags)
             b.hotkey:SetTextColor(unpack(t.color))
-            AW.ClearPoints(b.hotkey)
-            AW.SetPoint(b.hotkey, t.position.anchor, t.position.offsetX, t.position.offsetY)
+            AF.ClearPoints(b.hotkey)
+            AF.SetPoint(b.hotkey, t.position.anchor, t.position.offsetX, t.position.offsetY)
             b.hotkey:Show()
         end
     end
 
     -- load config
     AB.ReArrange(stanceBar, config.size, config.spacing, config.buttonsPerLine, config.num, config.anchor, config.orientation)
-    AW.LoadPosition(stanceBar, config.position)
+    AF.LoadPosition(stanceBar, config.position)
 
     stanceBar:SetFrameStrata(AB.config.general.frameStrata)
     stanceBar:SetFrameLevel(AB.config.general.frameLevel)

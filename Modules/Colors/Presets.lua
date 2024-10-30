@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- colors preset for modules, no persistence requirement
@@ -11,7 +11,7 @@ local uf_colors = {
     uf_loss = {0.6, 0, 0}, -- unitframe background
     uf_power = {0.7, 0.7, 0.7}, -- unitframe background
 
-    target_highlight = AW.GetColorTable("BFI", 0.6),
+    target_highlight = AF.GetColorTable("BFI", 0.6),
     mouseover_highlight = {1, 1, 1, 0.6},
 
     cast_normal = {0.4, 0.4, 0.4, 0.9},
@@ -60,4 +60,4 @@ local uf_colors = {
 
     honor = {1, 0.3, 0.14, 1},
 }
-AW.AddColors(uf_colors)
+AF.AddColors(uf_colors)

@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 local NP = BFI.NamePlates
 
@@ -140,30 +140,30 @@ do
             lossColor = {
                 useDarkerForground = false,
                 alpha = 0.6,
-                rgb = AW.GetColorTable("black")
+                rgb = AF.GetColorTable("black")
             },
-            bgColor = AW.GetColorTable("background", 0),
-            borderColor = AW.GetColorTable("border"),
+            bgColor = AF.GetColorTable("background", 0),
+            borderColor = AF.GetColorTable("border"),
             texture = "BFI",
             mouseoverHighlight = {
                 enabled = true,
-                color = AW.GetColorTable("white", 0.1)
+                color = AF.GetColorTable("white", 0.1)
             },
             shield = {
                 enabled = true,
-                color = AW.GetColorTable("shield", 0.6),
+                color = AF.GetColorTable("shield", 0.6),
                 reverseFill = true,
             },
             overshieldGlow = {
                 enabled = true,
-                color = AW.GetColorTable("shield"),
+                color = AF.GetColorTable("shield"),
             },
             thresholds = {
                 enabled = false,
                 width = 7,
                 height = 25,
                 values = { --! must be descending sorted
-                    {value = 0.3, color = AW.GetColorTable("gold")},
+                    {value = 0.3, color = AF.GetColorTable("gold")},
                 },
             },
             threatGlow = {
@@ -179,7 +179,7 @@ do
             parent = "healthBar",
             length = 1,
             font = {"BFI", 12, "none", true},
-            color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             showOtherServerSign = false,
         },
         healthText = {
@@ -188,7 +188,7 @@ do
             anchorTo = "healthBar",
             parent = "healthBar",
             font = {"BFI", 11, "none", true},
-            color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             format = {
                 numeric = "current_short",
                 percent = "current",
@@ -204,7 +204,7 @@ do
             anchorTo = "healthBar",
             parent = "healthBar",
             font = {"BFI", 11, "none", true},
-            color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+            color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             highLevelTexture = {
                 enabled = true,
                 size = 16,
@@ -217,8 +217,8 @@ do
             frameLevel = 3,
             width = 120,
             height = 13,
-            bgColor = AW.GetColorTable("background", 0.75),
-            borderColor = AW.GetColorTable("border"),
+            bgColor = AF.GetColorTable("background", 0.75),
+            borderColor = AF.GetColorTable("border"),
             texture = "BFI",
             fadeDuration = 1,
             enableInterruptibleCheck = true,
@@ -232,7 +232,7 @@ do
                 enabled = true,
                 font = {"BFI", 11, "none", true},
                 position = {"LEFT", "LEFT", 3, 0},
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
                 length = 0.75,
                 showInterruptSource = true,
             },
@@ -241,25 +241,25 @@ do
                 font = {"BFI", 11 , "none", true},
                 position = {"RIGHT", "RIGHT", -3, 0},
                 format = "%.1f",
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
             spark = {
                 enabled = true,
                 texture = "plain",
-                color = AW.GetColorTable("cast_spark"),
+                color = AF.GetColorTable("cast_spark"),
                 width = 1,
                 height = 0,
             },
             colors = {
-                normal = AW.GetColorTable("cast_normal"),
-                failed = AW.GetColorTable("cast_failed"),
-                succeeded = AW.GetColorTable("cast_succeeded"),
+                normal = AF.GetColorTable("cast_normal"),
+                failed = AF.GetColorTable("cast_failed"),
+                succeeded = AF.GetColorTable("cast_succeeded"),
                 interruptible = {
                     requireInterruptUsable = true,
-                    value = AW.GetColorTable("cast_interruptible"),
+                    value = AF.GetColorTable("cast_interruptible"),
                 },
-                uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
             },
         },
         raidIcon = {
@@ -291,11 +291,11 @@ do
             height = 40,
             target = {
                 texture = "Arrow1_Red",
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
             focus = {
                 texture = "Arrow1_Blue",
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
         },
         buffs = {
@@ -316,16 +316,16 @@ do
                 font = {"BFI", 12, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
-                    AW.GetColorTable("white"), -- normal
-                    {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                    {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    AF.GetColorTable("white"), -- normal
+                    {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                    {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
             },
             stackText = {
                 enabled = true,
                 font = {"BFI", 12, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
             filters = {
                 castByMe = false,
@@ -364,16 +364,16 @@ do
                 font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
-                    AW.GetColorTable("white"), -- normal
-                    {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                    {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    AF.GetColorTable("white"), -- normal
+                    {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                    {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
             },
             stackText = {
                 enabled = true,
                 font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
             filters = {
                 castByMe = true,
@@ -412,16 +412,16 @@ do
                 font = {"BFI", 13, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
-                    AW.GetColorTable("white"), -- normal
-                    {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                    {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    AF.GetColorTable("white"), -- normal
+                    {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                    {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
             },
             stackText = {
                 enabled = true,
                 font = {"BFI", 13, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
             crowdControlTypes = {
                 [1] = true,
@@ -459,7 +459,7 @@ do
             position = {"RIGHT", "TOPRIGHT", 0, 0},
             anchorTo = "healthBar",
             frameLevel = 2,
-            color = AW.GetColorTable("white"),
+            color = AF.GetColorTable("white"),
             width = 16,
             height = 16,
         },
@@ -482,7 +482,7 @@ do
             parent = "root",
             length = 0,
             font = {"BFI", 13, "outline", false},
-            color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+            color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             showOtherServerSign = true,
         },
         raidIcon = {
@@ -503,11 +503,11 @@ do
             height = 40,
             target = {
                 texture = "Arrow1_Green",
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
             focus = {
                 texture = "none",
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
         },
         buffs = {
@@ -528,16 +528,16 @@ do
                 font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
-                    AW.GetColorTable("white"), -- normal
-                    {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                    {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    AF.GetColorTable("white"), -- normal
+                    {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                    {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
             },
             stackText = {
                 enabled = true,
                 font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
             filters = {
                 castByMe = true,
@@ -574,16 +574,16 @@ do
                 font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
-                    AW.GetColorTable("white"), -- normal
-                    {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                    {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    AF.GetColorTable("white"), -- normal
+                    {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                    {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
             },
             stackText = {
                 enabled = true,
                 font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
             filters = {
                 castByMe = false,
@@ -622,16 +622,16 @@ do
                 font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "TOPRIGHT", 0, -2},
                 color = {
-                    AW.GetColorTable("white"), -- normal
-                    {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                    {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                    AF.GetColorTable("white"), -- normal
+                    {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                    {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
             },
             stackText = {
                 enabled = true,
                 font = {"BFI", 10, "outline", false},
                 position = {"RIGHT", "BOTTOMRIGHT", 0, 2},
-                color = AW.GetColorTable("white"),
+                color = AF.GetColorTable("white"),
             },
             crowdControlTypes = {
                 [1] = true,
@@ -701,11 +701,11 @@ end
 --     },
 --     color = {
 --         enabled = false,
---         value = AW.GetColorTable("white"),
+--         value = AF.GetColorTable("white"),
 --     },
 --     glow = {
 --         enabled = false,
---         color = AW.GetColorTable("yellow"),
+--         color = AF.GetColorTable("yellow"),
 --     },
 --     texture = {
 --         enabled = false,

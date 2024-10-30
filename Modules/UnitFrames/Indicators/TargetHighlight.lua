@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -44,43 +44,43 @@ end
 local function TargetHighlight_LoadConfig(self, config)
     self.enabled = config.enabled and config.size ~= 0
 
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
 
     if config.size ~= 0 then
-        -- AW.ClearPoints(self)
+        -- AF.ClearPoints(self)
 
         -- -- update point
         -- if config.size < 0 then
-        --     AW.SetPoint(self, "TOPLEFT")
-        --     AW.SetPoint(self, "BOTTOMRIGHT")
+        --     AF.SetPoint(self, "TOPLEFT")
+        --     AF.SetPoint(self, "BOTTOMRIGHT")
         -- else
-        --     AW.SetPoint(self, "TOPLEFT", -config.size, config.size)
-        --     AW.SetPoint(self, "BOTTOMRIGHT", config.size, -config.size)
+        --     AF.SetPoint(self, "TOPLEFT", -config.size, config.size)
+        --     AF.SetPoint(self, "BOTTOMRIGHT", config.size, -config.size)
         -- end
 
         -- -- update thickness
-        -- AW.SetDefaultBackdrop_NoBackground(self, abs(config.size))
+        -- AF.SetDefaultBackdrop_NoBackground(self, abs(config.size))
 
         -- -- update color
-        -- self:SetBackdropBorderColor(AW.UnpackColor(config.color))
+        -- self:SetBackdropBorderColor(AF.UnpackColor(config.color))
 
         -- update thichness
         local thickness = abs(config.size)
-        AW.ClearPoints(self.mask)
-        AW.ClearPoints(self.tex)
+        AF.ClearPoints(self.mask)
+        AF.ClearPoints(self.tex)
 
         if config.size < 0 then
-            AW.SetPoint(self.mask, "TOPLEFT", thickness, -thickness)
-            AW.SetPoint(self.mask, "BOTTOMRIGHT", -thickness, thickness)
+            AF.SetPoint(self.mask, "TOPLEFT", thickness, -thickness)
+            AF.SetPoint(self.mask, "BOTTOMRIGHT", -thickness, thickness)
             self.tex:SetAllPoints()
         else
-            AW.SetPoint(self.tex, "TOPLEFT", -thickness, thickness)
-            AW.SetPoint(self.tex, "BOTTOMRIGHT", thickness, -thickness)
+            AF.SetPoint(self.tex, "TOPLEFT", -thickness, thickness)
+            AF.SetPoint(self.tex, "BOTTOMRIGHT", thickness, -thickness)
             self.mask:SetAllPoints()
         end
 
         -- update color
-        self.tex:SetVertexColor(AW.UnpackColor(config.color))
+        self.tex:SetVertexColor(AF.UnpackColor(config.color))
     else
         self:Hide()
     end
@@ -99,12 +99,12 @@ function UF.CreateTargetHighlight(parent, name)
     -- mask
     local mask = highlight:CreateMaskTexture()
     highlight.mask = mask
-    mask:SetTexture(AW.GetTexture("Empty"), "CLAMPTOWHITE","CLAMPTOWHITE")
+    mask:SetTexture(AF.GetTexture("Empty"), "CLAMPTOWHITE","CLAMPTOWHITE")
 
     -- texture
     local tex = highlight:CreateTexture(nil, "BORDER")
     highlight.tex = tex
-    tex:SetTexture(AW.GetTexture("White"))
+    tex:SetTexture(AF.GetTexture("White"))
     tex:AddMaskTexture(mask)
 
     -- events
@@ -116,7 +116,7 @@ function UF.CreateTargetHighlight(parent, name)
     highlight.LoadConfig = TargetHighlight_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(highlight)
+    AF.AddToPixelUpdater(highlight)
 
     return highlight
 end

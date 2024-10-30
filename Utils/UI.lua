@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 ---@class Utils
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- hide frame
@@ -23,7 +23,7 @@ end
 -- remove texture
 ---------------------------------------------------------------------
 function U.RemoveTexture(texture)
-    texture:SetTexture(AW.GetEmptyTexture())
+    texture:SetTexture(AF.GetEmptyTexture())
     texture:SetAtlas("")
 end
 

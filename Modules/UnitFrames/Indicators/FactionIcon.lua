@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local S = BFI.Shared
 local UF = BFI.UnitFrames
 
@@ -19,9 +19,9 @@ local function FactionIcon_Update(self)
     local faction = UnitFactionGroup(unit)
 
     if faction == "Horde" or faction == "Alliance" then
-        self.icon:SetTexture(AW.GetTexture(faction))
+        self.icon:SetTexture(AF.GetTexture(faction))
         self.text:SetText(S.FactionGlyphs[faction].char)
-        self.text:SetTextColor(AW.UnpackColor(S.FactionGlyphs[faction].color))
+        self.text:SetTextColor(AF.UnpackColor(S.FactionGlyphs[faction].color))
         self:Show()
     else
         self:Hide()
@@ -40,10 +40,10 @@ end
 -- load
 ---------------------------------------------------------------------
 local function FactionIcon_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AW.SetSize(self, config.width, config.height)
-    self.text:SetFont(AW.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
+    AF.SetSize(self, config.width, config.height)
+    self.text:SetFont(AF.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
 
     if config.style == "text" then
         self.text:Show()

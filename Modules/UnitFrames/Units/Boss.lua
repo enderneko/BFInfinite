@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 local boss
@@ -28,7 +28,7 @@ local indicators = {
 ---------------------------------------------------------------------
 local function CreateBoss()
     local name = "BFI_Boss"
-    boss = CreateFrame("Frame", name, AW.UIParent, "SecureFrameTemplate")
+    boss = CreateFrame("Frame", name, AF.UIParent, "SecureFrameTemplate")
     UF.AddToConfigMode("boss.container", boss)
 
     for i = 1, 8 do
@@ -43,10 +43,10 @@ local function CreateBoss()
     boss.driverValue = "[@boss1,exists] show;hide"
 
     -- mover
-    AW.CreateMover(boss, L["Unit Frames"], _G.BOSS)
+    AF.CreateMover(boss, L["Unit Frames"], _G.BOSS)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(boss)
+    AF.AddToPixelUpdater(boss)
 end
 
 ---------------------------------------------------------------------

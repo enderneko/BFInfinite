@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 --@debug@
 local debugMode = true
@@ -20,14 +20,14 @@ end
 
 --@debug@
 BFI.RegisterCallback("UpdateConfigs", "Debug", function(tbl, name, ...)
-    print(AW.WrapTextInColor("UpdateConfigs:", "sand"), name, ...)
+    print(AF.WrapTextInColor("UpdateConfigs:", "sand"), name, ...)
 end, 1)
 
 -- BFI.RegisterCallback("InitModules", "Debug", function(name, ...)
---     print(AW.WrapTextInColor("InitModules:", "orange"), name, ...)
+--     print(AF.WrapTextInColor("InitModules:", "orange"), name, ...)
 -- end)
 
 BFI.RegisterCallback("UpdateModules", "Debug", function(name, ...)
-    print(AW.WrapTextInColor("UpdateModules:", "orange"), name, ...)
+    print(AF.WrapTextInColor("UpdateModules:", "orange"), name, ...)
 end, 1)
 --@end-debug@

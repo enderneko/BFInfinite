@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 local NP = BFI.NamePlates
 local DB = BFI.DisableBlizzard
@@ -388,7 +388,7 @@ local function OnNameplateUpdate(np, elapsed)
 
             -- scale
             if scales.animatedScaling then
-                AW.FrameZoomTo(np, 0.1, GetScale(np))
+                AF.FrameZoomTo(np, 0.1, GetScale(np))
             else
                 np:SetScale(GetScale(np))
             end
@@ -538,7 +538,7 @@ local function UpdatePixels(self)
 end
 
 local function CreateNameplate(self, event, nameplate)
-    local np = CreateFrame("Frame", "BFI_" .. nameplate:GetName(), AW.UIParent)
+    local np = CreateFrame("Frame", "BFI_" .. nameplate:GetName(), AF.UIParent)
     np:Hide()
     np:SetFrameStrata("BACKGROUND")
     np:SetAllPoints(nameplate)
@@ -564,7 +564,7 @@ local function CreateNameplate(self, event, nameplate)
     np.clickableArea:SetShown(NP.showClickableArea)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(np, UpdatePixels)
+    AF.AddToPixelUpdater(np, UpdatePixels)
 end
 
 ---------------------------------------------------------------------

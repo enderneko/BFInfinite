@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local C = BFI.Colors
 local S = BFI.Shared
 local LCG = BFI.libs.LCG
@@ -11,7 +11,7 @@ local LCG = BFI.libs.LCG
 -- recalc texcoords
 ---------------------------------------------------------------------
 local function ReCalcTexCoord(self, width, height)
-    self.icon:SetTexCoord(unpack(AW.CalcTexCoordPreCrop(width, height, 1, 0.12)))
+    self.icon:SetTexCoord(unpack(AF.CalcTexCoordPreCrop(width, height, 1, 0.12)))
 end
 
 ---------------------------------------------------------------------
@@ -55,17 +55,17 @@ local function CreateCooldown_Vertical(self, hasIcon)
     cooldown.ShowCooldown = VerticalCooldown_ShowCooldown
     cooldown:SetScript("OnUpdate", VerticalCooldown_OnUpdate)
 
-    AW.SetPoint(cooldown, "TOPLEFT", self.icon)
-    AW.SetPoint(cooldown, "BOTTOMRIGHT", self.icon, "BOTTOMRIGHT", 0, 1)
+    AF.SetPoint(cooldown, "TOPLEFT", self.icon)
+    AF.SetPoint(cooldown, "BOTTOMRIGHT", self.icon, "BOTTOMRIGHT", 0, 1)
     cooldown:SetOrientation("VERTICAL")
     cooldown:SetReverseFill(true)
-    cooldown:SetStatusBarTexture(AW.GetPlainTexture())
+    cooldown:SetStatusBarTexture(AF.GetPlainTexture())
 
     local texture = cooldown:GetStatusBarTexture()
 
     local spark = cooldown:CreateTexture(nil, "BORDER")
     cooldown.spark = spark
-    AW.SetHeight(spark, 1)
+    AF.SetHeight(spark, 1)
     spark:SetBlendMode("ADD")
     spark:SetPoint("TOPLEFT", texture, "BOTTOMLEFT")
     spark:SetPoint("TOPRIGHT", texture, "BOTTOMRIGHT")
@@ -74,7 +74,7 @@ local function CreateCooldown_Vertical(self, hasIcon)
         texture:SetAlpha(0)
 
     local mask = cooldown:CreateMaskTexture()
-    mask:SetTexture(AW.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    mask:SetTexture(AF.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     mask:SetPoint("TOPLEFT")
     mask:SetPoint("BOTTOMRIGHT", texture)
 
@@ -104,7 +104,7 @@ local function CreateCooldown_Clock(self, drawEdge)
     cooldown:SetDrawEdge(drawEdge)
 
     -- NOTE: shit, why this EDGE not work, but xml does?
-    -- cooldown:SetSwipeTexture(AW.GetPlainTexture())
+    -- cooldown:SetSwipeTexture(AF.GetPlainTexture())
     -- cooldown:SetSwipeColor(0, 0, 0, 0.8)
     -- cooldown:SetEdgeTexture([[Interface\Cooldown\UI-HUD-ActionBar-SecondaryCooldown]], 1, 1, 0, 1)
 
@@ -149,11 +149,11 @@ end
 local function Aura_CreateGlow(self)
     self.glow = CreateFrame("Frame", nil, self, "BackdropTemplate")
     self.glow:SetAllPoints()
-    self.glow:SetBackdrop({edgeFile = AW.GetTexture("CalloutGlow"), edgeSize = 7})
+    self.glow:SetBackdrop({edgeFile = AF.GetTexture("CalloutGlow"), edgeSize = 7})
     self.glow:SetBorderBlendMode("ADD")
     self.glow:SetFrameLevel(self:GetFrameLevel())
-    AW.SetOutside(self.glow, self, 4)
-    AW.CreateBlinkAnimation(self.glow, 0.5)
+    AF.SetOutside(self.glow, self, 4)
+    AF.CreateBlinkAnimation(self.glow, 0.5)
 end
 
 ---------------------------------------------------------------------
@@ -169,11 +169,11 @@ local function UpdateDuration(self, elapsed)
         self._elapsed = 0
         -- color
         if self.durationColor[3][1] and self._remain < self.durationColor[3][2] then
-            self.duration:SetTextColor(AW.UnpackColor(self.durationColor[3][3]))
+            self.duration:SetTextColor(AF.UnpackColor(self.durationColor[3][3]))
         elseif self.durationColor[2][1] and self._remain < (self.durationColor[2][2] * self._duration) then
-            self.duration:SetTextColor(AW.UnpackColor(self.durationColor[2][3]))
+            self.duration:SetTextColor(AF.UnpackColor(self.durationColor[2][3]))
         else
-            self.duration:SetTextColor(AW.UnpackColor(self.durationColor[1]))
+            self.duration:SetTextColor(AF.UnpackColor(self.durationColor[1]))
         end
     end
 
@@ -288,14 +288,14 @@ end
 ---------------------------------------------------------------------
 local function Aura_SetupStackText(self, config)
     self.stack:SetShown(config.enabled)
-    AW.LoadWidgetPosition(self.stack, config.position, self)
+    AF.LoadWidgetPosition(self.stack, config.position, self)
     U.SetFont(self.stack, unpack(config.font))
     self.stack:SetTextColor(unpack(config.color))
 end
 
 local function Aura_SetupDurationText(self, config)
     self.duration:SetShown(config.enabled)
-    AW.LoadWidgetPosition(self.duration, config.position, self)
+    AF.LoadWidgetPosition(self.duration, config.position, self)
     U.SetFont(self.duration, unpack(config.font))
     self.durationColor = config.color
 end
@@ -305,12 +305,12 @@ local function Aura_OnHide(self)
 end
 
 local function Aura_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
-    AW.ReBorder(self)
-    AW.RePoint(self.icon)
+    AF.ReSize(self)
+    AF.RePoint(self)
+    AF.ReBorder(self)
+    AF.RePoint(self.icon)
     if self.cooldown then
-        AW.RePoint(self.cooldown)
+        AF.RePoint(self.cooldown)
     end
 end
 
@@ -321,15 +321,15 @@ function S.CreateAura(parent)
     local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     frame:Hide()
 
-    AW.SetDefaultBackdrop(frame)
-    frame:SetBackdropColor(AW.GetColorRGB("black"))
+    AF.SetDefaultBackdrop(frame)
+    frame:SetBackdropColor(AF.GetColorRGB("black"))
 
     frame:SetScript("OnHide", Aura_OnHide)
 
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
-    AW.SetOnePixelInside(icon, frame)
+    AF.SetOnePixelInside(icon, frame)
     icon:SetTexCoord(0.12, 0.88, 0.12, 0.88)
     frame:SetScript("OnSizeChanged", ReCalcTexCoord)
 
@@ -350,7 +350,7 @@ function S.CreateAura(parent)
     frame.EnableTooltip = Aura_EnableTooltip
 
     -- pixels
-    -- AW.AddToPixelUpdater(frame, Aura_UpdatePixels)
+    -- AF.AddToPixelUpdater(frame, Aura_UpdatePixels)
     frame.UpdatePixels = Aura_UpdatePixels
 
     return frame

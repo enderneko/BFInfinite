@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 local UF = BFI.UnitFrames
 
@@ -107,8 +107,8 @@ local defaults = {
     player = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -218, 250},
             width = 225,
             height = 49,
@@ -128,39 +128,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 225,
                 height = 31,
-                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
                 overshieldGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = true,
@@ -177,10 +177,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 225,
                 height = 17,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = true,
@@ -192,10 +192,10 @@ local defaults = {
                 frameLevel = 1,
                 width = 177,
                 height = 5,
-                color = {type = "mana_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "mana_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "mana_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "mana_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = false,
@@ -210,10 +210,10 @@ local defaults = {
                 width = 177,
                 height = 5,
                 spacing = 1,
-                color = {type = "power_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "power_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "power_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "power_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
             },
             nameText = {
@@ -223,7 +223,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.5,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = true,
@@ -231,7 +231,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -247,7 +247,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current_short",
@@ -267,8 +267,8 @@ local defaults = {
                 frameLevel = 5,
                 width = 207,
                 height = 20,
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 model = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
@@ -283,8 +283,8 @@ local defaults = {
                 frameLevel = 15,
                 width = 207,
                 height = 20,
-                bgColor = AW.GetColorTable("background", 0.5),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 0.5),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
@@ -293,7 +293,7 @@ local defaults = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     length = 0.75,
                     showInterruptSource = true,
                 },
@@ -302,35 +302,35 @@ local defaults = {
                     font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     showDelay = false,
                 },
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AW.GetColorTable("cast_spark"),
+                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
                 colors = {
-                    normal = AW.GetColorTable("cast_normal"),
-                    failed = AW.GetColorTable("cast_failed"),
-                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    normal = AF.GetColorTable("cast_normal"),
+                    failed = AF.GetColorTable("cast_failed"),
+                    succeeded = AF.GetColorTable("cast_succeeded"),
                     interruptible = {
                         requireInterruptUsable = true,
-                        value = AW.GetColorTable("cast_interruptible"),
+                        value = AF.GetColorTable("cast_interruptible"),
                     },
-                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
                 ticks = {
                     enabled = true,
-                    color = AW.GetColorTable("cast_tick"),
+                    color = AF.GetColorTable("cast_tick"),
                     width = 2,
                 },
                 latency = {
                     enabled = true,
-                    color = AW.GetColorTable("cast_latency"),
+                    color = AF.GetColorTable("cast_latency"),
                 },
             },
             staggerBar = {
@@ -340,14 +340,14 @@ local defaults = {
                 frameLevel = 5,
                 width = 177,
                 height = 5,
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 text = {
                     enabled = false,
                     font = {"BFI", 10, "none", true},
                     position = {"RIGHT", "RIGHT", -1, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     format = {
                         numeric = "current",
                         percent = "none",
@@ -380,7 +380,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("red")}, -- class/custom
             },
             levelText = {
                 enabled = true,
@@ -388,7 +388,7 @@ local defaults = {
                 anchorTo = "leaderText",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
                 enabled = true,
@@ -396,7 +396,7 @@ local defaults = {
                 anchorTo = "levelText",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             statusTimer = {
                 enabled = true,
@@ -404,7 +404,7 @@ local defaults = {
                 anchorTo = "targetCounter",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
                 showLabel = true,
             },
@@ -463,13 +463,13 @@ local defaults = {
                 enabled = false,
                 frameLevel = 4,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = false,
                 frameLevel = 5,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             threatGlow = {
                 enabled = true,
@@ -483,9 +483,9 @@ local defaults = {
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
                 types = {
-                    swing = {enabled = true, color = AW.GetColorTable("swing")},
-                    damage = {enabled = true, color = AW.GetColorTable("damage")},
-                    heal = {enabled = true, color = AW.GetColorTable("heal")},
+                    swing = {enabled = true, color = AF.GetColorTable("swing")},
+                    damage = {enabled = true, color = AF.GetColorTable("damage")},
+                    heal = {enabled = true, color = AF.GetColorTable("heal")},
                 },
                 format = {
                     numeric = "current_short",
@@ -515,16 +515,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -567,16 +567,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -604,8 +604,8 @@ local defaults = {
     target = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 218, 250},
             width = 225,
             height = 49,
@@ -625,39 +625,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 225,
                 height = 31,
-                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
                 overshieldGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -674,10 +674,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 225,
                 height = 17,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = true,
@@ -689,7 +689,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.5,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = true,
@@ -697,7 +697,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -713,7 +713,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current_short",
@@ -733,8 +733,8 @@ local defaults = {
                 frameLevel = 5,
                 width = 207,
                 height = 20,
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 model = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
@@ -749,8 +749,8 @@ local defaults = {
                 frameLevel = 15,
                 width = 207,
                 height = 20,
-                bgColor = AW.GetColorTable("background", 0.5),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 0.5),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
@@ -759,7 +759,7 @@ local defaults = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     length = 0.75,
                     showInterruptSource = true,
                 },
@@ -768,26 +768,26 @@ local defaults = {
                     font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     showDelay = false,
                 },
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AW.GetColorTable("cast_spark"),
+                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
                 colors = {
-                    normal = AW.GetColorTable("cast_normal"),
-                    failed = AW.GetColorTable("cast_failed"),
-                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    normal = AF.GetColorTable("cast_normal"),
+                    failed = AF.GetColorTable("cast_failed"),
+                    succeeded = AF.GetColorTable("cast_succeeded"),
                     interruptible = {
                         requireInterruptUsable = true,
-                        value = AW.GetColorTable("cast_interruptible"),
+                        value = AF.GetColorTable("cast_interruptible"),
                     },
-                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             combatIcon = {
@@ -813,7 +813,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("red")}, -- class/custom
             },
             levelText = {
                 enabled = true,
@@ -821,7 +821,7 @@ local defaults = {
                 anchorTo = "leaderText",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
                 enabled = true,
@@ -829,7 +829,7 @@ local defaults = {
                 anchorTo = "levelText",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             rangeText = {
                 enabled = true,
@@ -844,7 +844,7 @@ local defaults = {
                 anchorTo = "targetCounter",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
                 showLabel = true,
             },
@@ -887,13 +887,13 @@ local defaults = {
                 enabled = false,
                 frameLevel = 4,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = false,
                 frameLevel = 5,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             threatGlow = {
                 enabled = true,
@@ -923,16 +923,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -975,16 +975,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -1019,8 +1019,8 @@ local defaults = {
     targettarget = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 52, 250},
             width = 97,
             height = 22,
@@ -1040,39 +1040,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 97,
                 height = 19,
-                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
                 overshieldGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -1089,10 +1089,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 97,
                 height = 4,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = true,
@@ -1104,7 +1104,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.9,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = false,
@@ -1112,7 +1112,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -1128,7 +1128,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -1146,7 +1146,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 10, "none", true},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
                 enabled = false,
@@ -1154,7 +1154,7 @@ local defaults = {
                 anchorTo = "levelText",
                 parent = "healthBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             portrait = {
                 enabled = false,
@@ -1164,8 +1164,8 @@ local defaults = {
                 frameLevel = 1,
                 width = 97,
                 height = 19,
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 model = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
@@ -1180,8 +1180,8 @@ local defaults = {
                 frameLevel = 15,
                 width = 97,
                 height = 22,
-                bgColor = AW.GetColorTable("background", 0.5),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 0.5),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
@@ -1190,7 +1190,7 @@ local defaults = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     length = 0.75,
                     showInterruptSource = true,
                 },
@@ -1199,26 +1199,26 @@ local defaults = {
                     font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     showDelay = false,
                 },
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AW.GetColorTable("cast_spark"),
+                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
                 colors = {
-                    normal = AW.GetColorTable("cast_normal"),
-                    failed = AW.GetColorTable("cast_failed"),
-                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    normal = AF.GetColorTable("cast_normal"),
+                    failed = AF.GetColorTable("cast_failed"),
+                    succeeded = AF.GetColorTable("cast_succeeded"),
                     interruptible = {
                         requireInterruptUsable = true,
-                        value = AW.GetColorTable("cast_interruptible"),
+                        value = AF.GetColorTable("cast_interruptible"),
                     },
-                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -1243,13 +1243,13 @@ local defaults = {
                 enabled = false,
                 frameLevel = 4,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = false,
                 frameLevel = 5,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             threatGlow = {
                 enabled = true,
@@ -1279,16 +1279,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -1331,16 +1331,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -1368,8 +1368,8 @@ local defaults = {
     focus = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 0, 276},
             width = 200,
             height = 23,
@@ -1389,39 +1389,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 200,
                 height = 20,
-                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
                 overshieldGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -1438,10 +1438,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 200,
                 height = 4,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = true,
@@ -1453,7 +1453,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.9,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = false,
@@ -1461,7 +1461,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
                     percent = "current_absorbs_sum",
@@ -1477,7 +1477,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -1495,7 +1495,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 10, "none", true},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
                 enabled = false,
@@ -1503,7 +1503,7 @@ local defaults = {
                 anchorTo = "levelText",
                 parent = "healthBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             rangeText = {
                 enabled = true,
@@ -1521,8 +1521,8 @@ local defaults = {
                 frameLevel = 1,
                 width = 200,
                 height = 19,
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 model = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
@@ -1537,8 +1537,8 @@ local defaults = {
                 frameLevel = 15,
                 width = 200,
                 height = 23,
-                bgColor = AW.GetColorTable("background", 0.9),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 0.9),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
@@ -1547,7 +1547,7 @@ local defaults = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     length = 0.75,
                     showInterruptSource = true,
                 },
@@ -1556,26 +1556,26 @@ local defaults = {
                     font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     showDelay = false,
                 },
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AW.GetColorTable("cast_spark"),
+                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
                 colors = {
-                    normal = AW.GetColorTable("cast_normal"),
-                    failed = AW.GetColorTable("cast_failed"),
-                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    normal = AF.GetColorTable("cast_normal"),
+                    failed = AF.GetColorTable("cast_failed"),
+                    succeeded = AF.GetColorTable("cast_succeeded"),
                     interruptible = {
                         requireInterruptUsable = true,
-                        value = AW.GetColorTable("cast_interruptible"),
+                        value = AF.GetColorTable("cast_interruptible"),
                     },
-                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -1600,13 +1600,13 @@ local defaults = {
                 enabled = false,
                 frameLevel = 4,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = false,
                 frameLevel = 5,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             threatGlow = {
                 enabled = true,
@@ -1636,16 +1636,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -1688,16 +1688,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -1725,8 +1725,8 @@ local defaults = {
     focustarget = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -52, 250},
             width = 97,
             height = 22,
@@ -1746,39 +1746,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 97,
                 height = 19,
-                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
                 overshieldGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -1795,10 +1795,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 97,
                 height = 4,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = true,
@@ -1810,7 +1810,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.9,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = false,
@@ -1818,7 +1818,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -1834,7 +1834,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -1852,7 +1852,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 10, "none", true},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
                 enabled = false,
@@ -1860,7 +1860,7 @@ local defaults = {
                 anchorTo = "levelText",
                 parent = "healthBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             portrait = {
                 enabled = false,
@@ -1870,8 +1870,8 @@ local defaults = {
                 frameLevel = 1,
                 width = 97,
                 height = 19,
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 model = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
@@ -1886,8 +1886,8 @@ local defaults = {
                 frameLevel = 15,
                 width = 97,
                 height = 22,
-                bgColor = AW.GetColorTable("background", 0.5),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 0.5),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
@@ -1896,7 +1896,7 @@ local defaults = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     length = 0.75,
                     showInterruptSource = true,
                 },
@@ -1905,26 +1905,26 @@ local defaults = {
                     font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     showDelay = false,
                 },
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AW.GetColorTable("cast_spark"),
+                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
                 colors = {
-                    normal = AW.GetColorTable("cast_normal"),
-                    failed = AW.GetColorTable("cast_failed"),
-                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    normal = AF.GetColorTable("cast_normal"),
+                    failed = AF.GetColorTable("cast_failed"),
+                    succeeded = AF.GetColorTable("cast_succeeded"),
                     interruptible = {
                         requireInterruptUsable = true,
-                        value = AW.GetColorTable("cast_interruptible"),
+                        value = AF.GetColorTable("cast_interruptible"),
                     },
-                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -1949,13 +1949,13 @@ local defaults = {
                 enabled = false,
                 frameLevel = 4,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = false,
                 frameLevel = 5,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             threatGlow = {
                 enabled = true,
@@ -1985,16 +1985,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -2037,16 +2037,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -2074,8 +2074,8 @@ local defaults = {
     pet = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -375, 268},
             width = 77,
             height = 31,
@@ -2095,39 +2095,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 77,
                 height = 27,
-                color = {type = "custom_color", alpha = 0.6, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background", 0),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 0.6, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background", 0),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
                 overshieldGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -2144,10 +2144,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 77,
                 height = 5,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = true,
@@ -2159,7 +2159,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.9,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = false,
@@ -2167,7 +2167,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
                     percent = "current_absorbs_sum_decimal",
@@ -2183,7 +2183,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -2201,7 +2201,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 10, "none", true},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
                 enabled = false,
@@ -2209,7 +2209,7 @@ local defaults = {
                 anchorTo = "levelText",
                 parent = "healthBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             portrait = {
                 enabled = true,
@@ -2219,8 +2219,8 @@ local defaults = {
                 frameLevel = 1,
                 width = 77,
                 height = 27,
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 model = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
@@ -2235,8 +2235,8 @@ local defaults = {
                 frameLevel = 15,
                 width = 77,
                 height = 27,
-                bgColor = AW.GetColorTable("background", 0.5),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 0.5),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 fadeDuration = 1,
                 showIcon = false,
@@ -2245,7 +2245,7 @@ local defaults = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 3, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     length = 0.7,
                     showInterruptSource = true,
                 },
@@ -2254,26 +2254,26 @@ local defaults = {
                     font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -3, 0},
                     format = "%.1f",
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     showDelay = false,
                 },
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AW.GetColorTable("cast_spark"),
+                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
                 colors = {
-                    normal = AW.GetColorTable("cast_normal"),
-                    failed = AW.GetColorTable("cast_failed"),
-                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    normal = AF.GetColorTable("cast_normal"),
+                    failed = AF.GetColorTable("cast_failed"),
+                    succeeded = AF.GetColorTable("cast_succeeded"),
                     interruptible = {
                         requireInterruptUsable = true,
-                        value = AW.GetColorTable("cast_interruptible"),
+                        value = AF.GetColorTable("cast_interruptible"),
                     },
-                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             combatIcon = {
@@ -2298,13 +2298,13 @@ local defaults = {
                 enabled = false,
                 frameLevel = 4,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = false,
                 frameLevel = 5,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             threatGlow = {
                 enabled = true,
@@ -2334,16 +2334,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -2386,16 +2386,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -2423,8 +2423,8 @@ local defaults = {
     pettarget = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -375, 250},
             width = 77,
             height = 17,
@@ -2444,39 +2444,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 77,
                 height = 17,
-                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
                 overshieldGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = false,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -2493,10 +2493,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 77,
                 height = 4,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = true,
@@ -2508,7 +2508,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.9,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = false,
@@ -2516,7 +2516,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "current_absorbs_short",
                     percent = "current_absorbs_sum_decimal",
@@ -2531,7 +2531,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current",
@@ -2549,7 +2549,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 10, "none", true},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
                 enabled = false,
@@ -2557,7 +2557,7 @@ local defaults = {
                 anchorTo = "levelText",
                 parent = "healthBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             portrait = {
                 enabled = false,
@@ -2568,8 +2568,8 @@ local defaults = {
                 frameLevel = 1,
                 width = 77,
                 height = 19,
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 model = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
@@ -2584,8 +2584,8 @@ local defaults = {
                 frameLevel = 15,
                 width = 77,
                 height = 22,
-                bgColor = AW.GetColorTable("background", 0.5),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 0.5),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
@@ -2594,7 +2594,7 @@ local defaults = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 25, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     length = 0.75,
                     showInterruptSource = true,
                 },
@@ -2603,26 +2603,26 @@ local defaults = {
                     font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -5, 0},
                     format = "%.1f",
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     showDelay = false,
                 },
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AW.GetColorTable("cast_spark"),
+                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
                 colors = {
-                    normal = AW.GetColorTable("cast_normal"),
-                    failed = AW.GetColorTable("cast_failed"),
-                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    normal = AF.GetColorTable("cast_normal"),
+                    failed = AF.GetColorTable("cast_failed"),
+                    succeeded = AF.GetColorTable("cast_succeeded"),
                     interruptible = {
                         requireInterruptUsable = true,
-                        value = AW.GetColorTable("cast_interruptible"),
+                        value = AF.GetColorTable("cast_interruptible"),
                     },
-                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -2647,13 +2647,13 @@ local defaults = {
                 enabled = false,
                 frameLevel = 4,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = false,
                 frameLevel = 5,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             threatGlow = {
                 enabled = false,
@@ -2683,16 +2683,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -2735,16 +2735,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -2772,8 +2772,8 @@ local defaults = {
     party = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -550, 300},
             orientation = "bottom_to_top",
             showPlayer = false,
@@ -2796,39 +2796,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 129,
                 height = 20,
-                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
                 overshieldGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = true,
@@ -2845,10 +2845,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 129,
                 height = 4,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = false,
@@ -2860,7 +2860,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.7,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = true,
@@ -2868,7 +2868,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
                     percent = "current_absorbs_sum_decimal",
@@ -2884,7 +2884,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
                 frequent = true,
                 format = {
                     numeric = "current_short",
@@ -2902,7 +2902,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("red")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("red")}, -- class/custom
             },
             levelText = {
                 enabled = true,
@@ -2910,7 +2910,7 @@ local defaults = {
                 anchorTo = "leaderText",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
                 enabled = false,
@@ -2918,7 +2918,7 @@ local defaults = {
                 anchorTo = "levelText",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             statusTimer = {
                 enabled = true,
@@ -2926,7 +2926,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
                 showLabel = true,
             },
@@ -2938,8 +2938,8 @@ local defaults = {
                 frameLevel = 1,
                 width = 129,
                 height = 20,
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 model = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
@@ -2955,8 +2955,8 @@ local defaults = {
                 frameLevel = 5,
                 width = 129,
                 height = 4,
-                bgColor = AW.GetColorTable("background", 0.5),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 0.5),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 fadeDuration = 1,
                 showIcon = false,
@@ -2965,7 +2965,7 @@ local defaults = {
                     enabled = false,
                     font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 23, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     length = 0.5,
                     showInterruptSource = true,
                 },
@@ -2974,26 +2974,26 @@ local defaults = {
                     font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -3, 0},
                     format = "%.1f",
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     showDelay = false,
                 },
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AW.GetColorTable("cast_spark"),
+                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
                 colors = {
-                    normal = AW.GetColorTable("cast_normal"),
-                    failed = AW.GetColorTable("cast_failed"),
-                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    normal = AF.GetColorTable("cast_normal"),
+                    failed = AF.GetColorTable("cast_failed"),
+                    succeeded = AF.GetColorTable("cast_succeeded"),
                     interruptible = {
                         requireInterruptUsable = true,
-                        value = AW.GetColorTable("cast_interruptible"),
+                        value = AF.GetColorTable("cast_interruptible"),
                     },
-                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             combatIcon = {
@@ -3060,13 +3060,13 @@ local defaults = {
                 enabled = true,
                 frameLevel = 1,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = true,
                 frameLevel = 2,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             threatGlow = {
                 enabled = true,
@@ -3096,16 +3096,16 @@ local defaults = {
                     font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -3148,16 +3148,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -3182,8 +3182,8 @@ local defaults = {
     raid = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOMRIGHT", -5, 250},
             orientation = "top_to_bottom_then_right",
             spacingV = 3,
@@ -3208,39 +3208,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 65,
                 height = 40,
-                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background", 0),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background", 0),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = false,
                 },
                 overshieldGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = true,
@@ -3257,10 +3257,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 49,
                 height = 5,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = false,
@@ -3272,7 +3272,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.75,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = false,
@@ -3280,7 +3280,7 @@ local defaults = {
                 anchorTo = "nameText",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
                     percent = "current",
@@ -3304,7 +3304,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"Visitor", 9, "monochrome", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
                 showLabel = false,
             },
@@ -3346,13 +3346,13 @@ local defaults = {
                 enabled = true,
                 frameLevel = 4,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = true,
                 frameLevel = 5,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             threatGlow = {
                 enabled = true,
@@ -3382,16 +3382,16 @@ local defaults = {
                     font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -3434,16 +3434,16 @@ local defaults = {
                     font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -3468,8 +3468,8 @@ local defaults = {
     boss = {
         enabled = true,
         general = {
-            bgColor = AW.GetColorTable("none"),
-            borderColor = AW.GetColorTable("none"),
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 406, 345},
             orientation = "bottom_to_top",
             spacing = 12,
@@ -3491,39 +3491,39 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 129,
                 height = 20,
-                color = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf")},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AW.GetColorTable("uf_loss")},
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf")},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss")},
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 mouseoverHighlight = {
                     enabled = false,
-                    color = AW.GetColorTable("white", 0.05)
+                    color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
                     enabled = true,
                     useCustomColor = true,
-                    color = AW.GetColorTable("heal_prediction"),
+                    color = AF.GetColorTable("heal_prediction"),
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("shield", 0.4),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
                 overshieldGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("shield", 0.9),
+                    color = AF.GetColorTable("shield", 0.9),
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AW.GetTexture("Stripe", BFI.name), -- no customization now
-                    color = AW.GetColorTable("absorb", 0.7),
+                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
                     enabled = true,
-                    color = AW.GetColorTable("absorb"),
+                    color = AF.GetColorTable("absorb"),
                 },
                 dispelHighlight = {
                     enabled = true,
@@ -3540,10 +3540,10 @@ local defaults = {
                 -- orientation = "HORIZONTAL",
                 width = 129,
                 height = 4,
-                color = {type = "class_color", alpha = 1, rgb = AW.GetColorTable("uf_power")},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AW.GetColorTable("uf")},
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 smoothing = false,
                 frequent = false,
@@ -3555,7 +3555,7 @@ local defaults = {
                 parent = "healthBar",
                 length = 0.5,
                 font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             healthText = {
                 enabled = true,
@@ -3563,7 +3563,7 @@ local defaults = {
                 anchorTo = "healthBar",
                 parent = "healthBar",
                 font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
                     percent = "current_absorbs_sum_decimal",
@@ -3579,7 +3579,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/power/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
                 frequent = false,
                 format = {
                     numeric = "current_short",
@@ -3597,7 +3597,7 @@ local defaults = {
                 anchorTo = "powerBar",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "level_color", rgb = AW.GetColorTable("white")}, -- level/class/custom
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
             },
             targetCounter = {
                 enabled = true,
@@ -3605,7 +3605,7 @@ local defaults = {
                 anchorTo = "levelText",
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AW.GetColorTable("white")}, -- class/custom
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             portrait = {
                 enabled = false,
@@ -3615,8 +3615,8 @@ local defaults = {
                 frameLevel = 1,
                 width = 129,
                 height = 20,
-                bgColor = AW.GetColorTable("background", 1),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
                 model = {
                     xOffset = 0, -- [-100, 100]
                     yOffset = 0, -- [-100, 100]
@@ -3632,8 +3632,8 @@ local defaults = {
                 frameLevel = 5,
                 width = 129,
                 height = 20,
-                bgColor = AW.GetColorTable("background"),
-                borderColor = AW.GetColorTable("border"),
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
                 fadeDuration = 1,
                 showIcon = true,
@@ -3642,7 +3642,7 @@ local defaults = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
                     position = {"LEFT", "LEFT", 23, 0},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     length = 0.5,
                     showInterruptSource = true,
                 },
@@ -3651,26 +3651,26 @@ local defaults = {
                     font = {"BFI", 12, "none", true},
                     position = {"RIGHT", "RIGHT", -3, 0},
                     format = "%.1f",
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                     showDelay = false,
                 },
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AW.GetColorTable("cast_spark"),
+                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
                 colors = {
-                    normal = AW.GetColorTable("cast_normal"),
-                    failed = AW.GetColorTable("cast_failed"),
-                    succeeded = AW.GetColorTable("cast_succeeded"),
+                    normal = AF.GetColorTable("cast_normal"),
+                    failed = AF.GetColorTable("cast_failed"),
+                    succeeded = AF.GetColorTable("cast_succeeded"),
                     interruptible = {
                         requireInterruptUsable = true,
-                        value = AW.GetColorTable("cast_interruptible"),
+                        value = AF.GetColorTable("cast_interruptible"),
                     },
-                    uninterruptible = AW.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AW.GetColorTable("cast_uninterruptible_texture"),
+                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
+                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -3686,13 +3686,13 @@ local defaults = {
                 enabled = true,
                 frameLevel = 1,
                 size = 1,
-                color = AW.GetColorTable("target_highlight"),
+                color = AF.GetColorTable("target_highlight"),
             },
             mouseoverHighlight = {
                 enabled = true,
                 frameLevel = 2,
                 size = 1,
-                color = AW.GetColorTable("mouseover_highlight"),
+                color = AF.GetColorTable("mouseover_highlight"),
             },
             buffs = {
                 enabled = true,
@@ -3717,16 +3717,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,
@@ -3769,16 +3769,16 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 0},
                     color = {
-                        AW.GetColorTable("white"), -- normal
-                        {false, 0.5, AW.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AW.GetColorTable("aura_seconds")}, -- less than 5sec
+                        AF.GetColorTable("white"), -- normal
+                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
+                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
                 },
                 stackText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
                     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AW.GetColorTable("white"),
+                    color = AF.GetColorTable("white"),
                 },
                 filters = {
                     castByMe = true,

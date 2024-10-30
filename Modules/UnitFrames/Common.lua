@@ -1,17 +1,17 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 ---@class UnitFrames
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
 -- unit frame parent
 ---------------------------------------------------------------------
-UF.Parent = CreateFrame("Frame", "BFIUnitFrameParent", AW.UIParent, "SecureHandlerStateTemplate")
+UF.Parent = CreateFrame("Frame", "BFIUnitFrameParent", AF.UIParent, "SecureHandlerStateTemplate")
 UF.Parent:SetFrameStrata("LOW")
-UF.Parent:SetAllPoints(AW.UIParent)
+UF.Parent:SetAllPoints(AF.UIParent)
 RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
 
 -- hide during minigame
@@ -181,9 +181,9 @@ end
 
 local function LoadPosition(self, position, anchorTo)
     if self:GetObjectType() == "FontString" then
-        AW.LoadTextPosition(self, position, anchorTo)
+        AF.LoadTextPosition(self, position, anchorTo)
     else
-        AW.LoadWidgetPosition(self, position, anchorTo)
+        AF.LoadWidgetPosition(self, position, anchorTo)
     end
 end
 
@@ -216,7 +216,7 @@ end
 ---------------------------------------------------------------------
 function UF.SetupUnitFrame(frame, config, indicators)
     -- mover
-    AW.UpdateMoverSave(frame, config.general.position)
+    AF.UpdateMoverSave(frame, config.general.position)
 
     -- strata & level
     -- frame:SetFrameStrata(config.general.frameStrata)
@@ -226,14 +226,14 @@ function UF.SetupUnitFrame(frame, config, indicators)
     UF.SetupTooltip(frame, config.general.tooltip)
 
     -- size & position
-    AW.SetSize(frame, config.general.width, config.general.height)
-    AW.LoadPosition(frame, config.general.position)
+    AF.SetSize(frame, config.general.width, config.general.height)
+    AF.LoadPosition(frame, config.general.position)
 
     -- out of range alpha
     frame.oorAlpha = config.general.oorAlpha
 
     -- color
-    AW.StylizeFrame(frame, config.general.bgColor, config.general.borderColor)
+    AF.StylizeFrame(frame, config.general.bgColor, config.general.borderColor)
 
     -- indicators
     UF.SetupIndicators(frame, indicators, config)
@@ -244,41 +244,41 @@ end
 ---------------------------------------------------------------------
 function UF.SetupUnitGroup(group, config, indicators)
     -- mover
-    AW.UpdateMoverSave(group, config.general.position)
+    AF.UpdateMoverSave(group, config.general.position)
 
     -- position
-    AW.LoadPosition(group, config.general.position)
+    AF.LoadPosition(group, config.general.position)
 
     -- container size
     if config.general.orientation == "top_to_bottom" or config.general.orientation == "bottom_to_top" then
-        AW.SetWidth(group, config.general.width)
-        AW.SetListHeight(group, #group, config.general.height, config.general.spacing)
+        AF.SetWidth(group, config.general.width)
+        AF.SetListHeight(group, #group, config.general.height, config.general.spacing)
     else
-        AW.SetHeight(group, config.general.height)
-        AW.SetListWidth(group, #group, config.general.width, config.general.spacing)
+        AF.SetHeight(group, config.general.height)
+        AF.SetListWidth(group, #group, config.general.width, config.general.spacing)
     end
 
     -- arrangement & size
-    local p, rp, _, x, y = AW.GetAnchorPoints_Simple("BOTTOMLEFT", config.general.orientation, config.general.spacing)
+    local p, rp, _, x, y = AF.GetAnchorPoints_Simple("BOTTOMLEFT", config.general.orientation, config.general.spacing)
 
     local last
     for _, b in ipairs(group) do
         -- size
-        AW.SetSize(b, config.general.width, config.general.height)
+        AF.SetSize(b, config.general.width, config.general.height)
         -- out of range alpha
         b.oorAlpha = config.general.oorAlpha
         -- tooltip
         UF.SetupTooltip(b, config.general.tooltip)
         -- color
-        AW.StylizeFrame(b, config.general.bgColor, config.general.borderColor)
+        AF.StylizeFrame(b, config.general.bgColor, config.general.borderColor)
         -- indicators
         UF.SetupIndicators(b, indicators, config)
         -- position
-        AW.ClearPoints(b)
+        AF.ClearPoints(b)
         if last then
-            AW.SetPoint(b, p, last, rp, x, y)
+            AF.SetPoint(b, p, last, rp, x, y)
         else
-            AW.SetPoint(b, p)
+            AF.SetPoint(b, p)
         end
         last = b
     end

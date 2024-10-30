@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 ---@class UIWidgets
 local UI = BFI.UIWidgets
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 
 local defaults = {
@@ -20,6 +20,11 @@ local defaults = {
         enabled = true,
         position = {"TOP", 0, -70},
         scale = 0.8,
+    },
+    altPowerBar = {
+        enabled = true,
+        position = {"BOTTOM", 0, 200},
+        scale = 1,
     },
     queueStatus = {
         position = {"BOTTOM", -469, 152},

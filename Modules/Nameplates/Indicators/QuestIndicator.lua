@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -207,8 +207,8 @@ end
 -- load
 ---------------------------------------------------------------------
 local function QuestIndicator_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
-    AW.SetSize(self, config.width, config.height)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetSize(self, config.width, config.height)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
 end
 
@@ -223,7 +223,7 @@ function NP.CreateQuestIndicator(parent, name)
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
-    icon:SetTexture(AW.GetTexture("Quest", BFI.name))
+    icon:SetTexture(AF.GetTexture("Quest", BFI.name))
     icon:SetAllPoints()
 
     -- functions

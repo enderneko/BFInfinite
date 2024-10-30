@@ -22,14 +22,14 @@ BFI.name = "BigFootInfinite"
 ---@field Misc Misc
 
 ---------------------------------------------------------------------
--- AbstractWidgets
+-- AbstractFramework
 ---------------------------------------------------------------------
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
-AW.RegisterAddonForAccentColor(BFI.name)
-AW.SetAccentColor("accent", "BFI")
-AW.AddButtonColor("BFI", AW.GetColorTable("BFI", 0.3), AW.GetColorTable("BFI", 0.6))
-AW.AddButtonColor("BFI_hover", {0.127, 0.127, 0.127, 1}, AW.GetColorTable("BFI", 0.6))
+---@class AbstractFramework
+local AF = _G.AbstractFramework
+AF.RegisterAddonForAccentColor(BFI.name)
+AF.SetAccentColor("accent", "BFI")
+AF.AddButtonColor("BFI", AF.GetColorTable("BFI", 0.3), AF.GetColorTable("BFI", 0.6))
+AF.AddButtonColor("BFI_hover", {0.127, 0.127, 0.127, 1}, AF.GetColorTable("BFI", 0.6))
 
 ---------------------------------------------------------------------
 -- global

@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 ---@class UIWidgets
 local UI = BFI.UIWidgets
 
@@ -16,8 +16,8 @@ local QueueStatusButtonIcon = _G.QueueStatusButtonIcon
 local UpdateQueueStatusPoint, UpdateQueueStatusParent, UpdateQueueStatusScale
 
 local function CreateQueueStatusHolder()
-    queueStatusHolder = CreateFrame("Frame", "BFI_QueueStatusHolder", AW.UIParent)
-    AW.CreateMover(queueStatusHolder, L["UI Widgets"], L["Queue Status"])
+    queueStatusHolder = CreateFrame("Frame", "BFI_QueueStatusHolder", AF.UIParent)
+    AF.CreateMover(queueStatusHolder, L["UI Widgets"], L["Queue Status"])
 
     queueStatusHolder:SetFrameLevel(10)
     QueueStatusButton:SetParent(queueStatusHolder)
@@ -46,7 +46,7 @@ function UpdateQueueStatusScale(self, scale)
     if scale ~= queueStatusHolder.scale then
         self:SetScale(queueStatusHolder.scale)
         local w, h = self:GetSize()
-        queueStatusHolder:SetSize(AW.ConvertPixels(w) * queueStatusHolder.scale, AW.ConvertPixels(h) * queueStatusHolder.scale)
+        queueStatusHolder:SetSize(AF.ConvertPixels(w) * queueStatusHolder.scale, AF.ConvertPixels(h) * queueStatusHolder.scale)
     end
 end
 
@@ -64,8 +64,8 @@ local function UpdateQueueStatus(module, which)
         CreateQueueStatusHolder()
     end
 
-    AW.UpdateMoverSave(queueStatusHolder, config.position)
-    AW.LoadPosition(queueStatusHolder, config.position)
+    AF.UpdateMoverSave(queueStatusHolder, config.position)
+    AF.LoadPosition(queueStatusHolder, config.position)
 
     queueStatusHolder.scale = config.scale
     QueueStatusButton:SetScale(0.001)

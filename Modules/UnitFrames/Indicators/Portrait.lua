@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -61,12 +61,12 @@ local function UpdatePortrait3D(self, unit)
 end
 
 local function UpdatePortrait2D(self, unit)
-    self.texture:SetTexCoord(unpack(AW.CalcTexCoordPreCrop(self:GetWidth(), self:GetHeight(), 1, 0.12)))
+    self.texture:SetTexCoord(unpack(AF.CalcTexCoordPreCrop(self:GetWidth(), self:GetHeight(), 1, 0.12)))
     SetPortraitTexture(self.texture, unit)
 end
 
 local function UpdatePortraitClassIcon(self, unit)
-    self.texture:SetTexCoord(unpack(AW.CalcTexCoordPreCrop(self:GetWidth(), self:GetHeight(), 1, 0.12)))
+    self.texture:SetTexCoord(unpack(AF.CalcTexCoordPreCrop(self:GetWidth(), self:GetHeight(), 1, 0.12)))
     local class = UnitClassBase(unit)
     if class then
         self.texture:SetAtlas("classicon-"..class)
@@ -124,17 +124,17 @@ end
 -- base
 ---------------------------------------------------------------------
 local function Portrait_LoadConfig(self, config)
-    AW.SetSize(self, config.width, config.height)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetSize(self, config.width, config.height)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
 
     -- cutaway (not ideal)
     -- if config.anchorTo == "healthBar" then
-    --     AW.ClearPoints(self)
+    --     AF.ClearPoints(self)
     --     if config.style == "3d" and config.cutaway then
     --         self.cutaway = true
     --         self.healthBar = self.root.indicators.healthBar
-    --         AW.SetPoint(self, "TOPLEFT")
-    --         AW.SetPoint(self, "BOTTOMRIGHT", self.healthBar.fg)
+    --         AF.SetPoint(self, "TOPLEFT")
+    --         AF.SetPoint(self, "BOTTOMRIGHT", self.healthBar.fg)
     --         self:SetBackdropColor(0, 0, 0, 0)
     --         self:SetBackdropBorderColor(0, 0, 0, 0)
     --     else
@@ -153,7 +153,7 @@ local function Portrait_LoadConfig(self, config)
     -- end
 
     if config.anchorTo == "healthBar" then
-        AW.ClearPoints(self)
+        AF.ClearPoints(self)
         self:SetAllPoints(self.root.indicators.healthBar)
     else
         UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
@@ -176,11 +176,11 @@ local function Portrait_LoadConfig(self, config)
 end
 
 local function Portrait_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
-    AW.ReBorder(self)
-    AW.RePoint(self.model)
-    AW.RePoint(self.texture)
+    AF.ReSize(self)
+    AF.RePoint(self)
+    AF.ReBorder(self)
+    AF.RePoint(self.model)
+    AF.RePoint(self.texture)
     if self:IsVisible() and self.style == "3d" then
         UpdatePortrait(self)
     end
@@ -210,7 +210,7 @@ function UF.CreatePortrait(parent, name)
     local portrait = CreateFrame("Frame", name, parent, "BackdropTemplate")
     portrait.root = parent
     portrait:Hide()
-    AW.SetDefaultBackdrop(portrait)
+    AF.SetDefaultBackdrop(portrait)
 
     hooksecurefunc(parent, "SetAlpha", UpdatePortrait3DAlpha)
 
@@ -223,13 +223,13 @@ function UF.CreatePortrait(parent, name)
     -- NOTE: LIKE A SHIT!
     portrait.model:SetPoint("TOPLEFT", 1, -0.5)
     portrait.model:SetPoint("BOTTOMRIGHT", -1.5, 2)
-    -- AW.SetOnePixelInside(portrait.model, portrait)
-    -- AW.SetPoint(portrait.model, "TOPLEFT", portrait, 1, -1)
-    -- AW.SetPoint(portrait.model, "BOTTOMRIGHT", portrait, -1, 2)
+    -- AF.SetOnePixelInside(portrait.model, portrait)
+    -- AF.SetPoint(portrait.model, "TOPLEFT", portrait, 1, -1)
+    -- AF.SetPoint(portrait.model, "BOTTOMRIGHT", portrait, -1, 2)
 
     -- 2d
     portrait.texture = portrait:CreateTexture(nil, "ARTWORK")
-    AW.SetOnePixelInside(portrait.texture, portrait)
+    AF.SetOnePixelInside(portrait.texture, portrait)
 
     -- functions
     portrait.Enable = Portrait_Enable
@@ -239,7 +239,7 @@ function UF.CreatePortrait(parent, name)
     portrait.LoadConfig = Portrait_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(portrait, Portrait_UpdatePixels)
+    AF.AddToPixelUpdater(portrait, Portrait_UpdatePixels)
 
     return portrait
 end

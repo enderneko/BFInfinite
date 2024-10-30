@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
@@ -194,12 +194,12 @@ end
 -- create
 ---------------------------------------------------------------------
 local function CreateReputationBar()
-    reputationBar = AW.CreateSimpleBar(AW.UIParent, "BFI_ReputationBar")
+    reputationBar = AF.CreateSimpleBar(AF.UIParent, "BFI_ReputationBar")
     reputationBar.loss:Hide()
     reputationBar:Hide()
 
-    AW.CreateMover(reputationBar, L["Data Bars"], L["Reputation Bar"])
-    AW.AddToPixelUpdater(reputationBar)
+    AF.CreateMover(reputationBar, L["Data Bars"], L["Reputation Bar"])
+    AF.AddToPixelUpdater(reputationBar)
 
     -- text frame
     local textFrame = CreateFrame("Frame", nil, reputationBar)
@@ -209,17 +209,17 @@ local function CreateReputationBar()
     -- left text
     local leftText = textFrame:CreateFontString(nil, "OVERLAY")
     reputationBar.leftText = leftText
-    AW.LoadTextPosition(leftText, {"LEFT", "LEFT", 5, 0})
+    AF.LoadTextPosition(leftText, {"LEFT", "LEFT", 5, 0})
 
     -- right text
     local centerText = textFrame:CreateFontString(nil, "OVERLAY")
     reputationBar.centerText = centerText
-    AW.LoadTextPosition(centerText, {"CENTER", "CENTER", 0, 0})
+    AF.LoadTextPosition(centerText, {"CENTER", "CENTER", 0, 0})
 
     -- right text
     local rightText = textFrame:CreateFontString(nil, "OVERLAY")
     reputationBar.rightText = rightText
-    AW.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
+    AF.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
 
     -- events
     BFI.AddEventHandler(reputationBar)
@@ -250,12 +250,12 @@ local function UpdateReputationBar(module, which)
 
     reputationBar:RegisterEvent("UPDATE_FACTION", UpdateRep)
 
-    AW.UpdateMoverSave(reputationBar, config.position)
-    AW.LoadPosition(reputationBar, config.position)
-    AW.SetSize(reputationBar, config.width, config.height)
+    AF.UpdateMoverSave(reputationBar, config.position)
+    AF.LoadPosition(reputationBar, config.position)
+    AF.SetSize(reputationBar, config.width, config.height)
 
-    reputationBar:SetBorderColor(AW.UnpackColor(config.borderColor))
-    reputationBar:SetBackgroundColor(AW.UnpackColor(config.bgColor))
+    reputationBar:SetBorderColor(AF.UnpackColor(config.borderColor))
+    reputationBar:SetBackgroundColor(AF.UnpackColor(config.bgColor))
     reputationBar:SetTexture(U.GetBarTexture(config.texture))
 
     -- text

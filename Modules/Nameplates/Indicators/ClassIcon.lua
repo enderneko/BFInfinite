@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -41,18 +41,18 @@ end
 -- base
 ---------------------------------------------------------------------
 local function ClassIcon_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
-    AW.RePoint(self.icon)
+    AF.ReSize(self)
+    AF.RePoint(self)
+    AF.RePoint(self.icon)
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
 local function ClassIcon_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AW.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.width, config.height)
 end
 
 ---------------------------------------------------------------------
@@ -66,19 +66,19 @@ function NP.CreateClassIcon(parent, name)
     -- iconBG
     local iconBG = frame:CreateTexture(nil, "BORDER")
     frame.iconBG = iconBG
-    iconBG:SetTexture(AW.GetTexture("Circle"), nil, nil, "TRILINEAR")
-    iconBG:SetVertexColor(AW.GetColorRGB("black"))
+    iconBG:SetTexture(AF.GetTexture("Circle"), nil, nil, "TRILINEAR")
+    iconBG:SetVertexColor(AF.GetColorRGB("black"))
     iconBG:SetAllPoints()
 
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
-    AW.SetPoint(icon, "TOPLEFT", iconBG, 1, -1)
-    AW.SetPoint(icon, "BOTTOMRIGHT", iconBG, -1, 1)
+    AF.SetPoint(icon, "TOPLEFT", iconBG, 1, -1)
+    AF.SetPoint(icon, "BOTTOMRIGHT", iconBG, -1, 1)
 
     -- mask
     local mask = frame:CreateMaskTexture()
-    mask:SetTexture(AW.GetTexture("Circle"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    mask:SetTexture(AF.GetTexture("Circle"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     mask:SetAllPoints(icon)
     icon:AddMaskTexture(mask)
 
@@ -88,7 +88,7 @@ function NP.CreateClassIcon(parent, name)
     frame.LoadConfig = ClassIcon_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(frame, ClassIcon_UpdatePixels)
+    AF.AddToPixelUpdater(frame, ClassIcon_UpdatePixels)
 
     return frame
 end

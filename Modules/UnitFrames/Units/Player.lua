@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 local player
@@ -46,13 +46,13 @@ local function CreatePlayer()
     player:SetAttribute("unit", "player")
 
     -- mover
-    AW.CreateMover(player, L["Unit Frames"], _G.PLAYER)
+    AF.CreateMover(player, L["Unit Frames"], _G.PLAYER)
 
     -- config mode
     UF.AddToConfigMode("player", player)
 
     -- pixel perfect
-    -- AW.AddToPixelUpdater(player)
+    -- AF.AddToPixelUpdater(player)
 
     -- indicators
     player.hasCastBarTicks = true

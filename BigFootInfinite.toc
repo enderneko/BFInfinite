@@ -4,7 +4,7 @@
 ## X-Flavor: Mainline
 ## SavedVariables: BFIConfig, BFIPlayer
 ## SavedVariablesPerCharacter: BFIGuild
-## Dependencies: AbstractWidgets
+## Dependencies: AbstractFramework
 # AddonCompartmentFunc: BigFootInfinite_OnAddonCompartmentClick
 # IconTexture: Interface\icon.tga
 

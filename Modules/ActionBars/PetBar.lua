@@ -3,27 +3,27 @@ local BFI = select(2, ...)
 local L = BFI.L
 local U = BFI.utils
 local AB = BFI.ActionBars
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- create bar
 ---------------------------------------------------------------------
 local petBar
 local function CreatePetBar()
-    petBar = CreateFrame("Frame", "BFIAB_PetBar", AW.UIParent, "SecureHandlerStateTemplate")
+    petBar = CreateFrame("Frame", "BFIAB_PetBar", AF.UIParent, "SecureHandlerStateTemplate")
 
     petBar.name = "petbar"
     petBar.buttons = {}
 
     AB.bars[petBar.name] = petBar
 
-    AW.CreateMover(petBar, L["Action Bars"], L["Pet Bar"])
+    AF.CreateMover(petBar, L["Action Bars"], L["Pet Bar"])
 
     petBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     petBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 
-    AW.AddToPixelUpdater(petBar)
+    AF.AddToPixelUpdater(petBar)
 end
 
 ---------------------------------------------------------------------
@@ -99,13 +99,13 @@ local function UpdatePetButtons(event, unit)
             b.checkedTexture:SetBlendMode("BLEND")
 
             if isActive then
-                b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0))
+                b.checkedTexture:SetColorTexture(AF.GetColorRGB("black", 0))
             else
-                b.checkedTexture:SetColorTexture(AW.GetColorRGB("black", 0.6))
+                b.checkedTexture:SetColorTexture(AF.GetColorRGB("black", 0.6))
             end
         else
             b.checkedTexture:SetBlendMode("ADD")
-            b.checkedTexture:SetColorTexture(AW.GetColorRGB("white", 0.25))
+            b.checkedTexture:SetColorTexture(AF.GetColorRGB("white", 0.25))
 
             if isActive then
                 b:SetChecked(true)
@@ -166,7 +166,7 @@ local function UpdatePetBar(module, which)
     end
 
     -- mover
-    AW.UpdateMoverSave(petBar, config.position)
+    AF.UpdateMoverSave(petBar, config.position)
 
     -- events
     AB:RegisterEvent("UNIT_PET", UpdatePetButtons)
@@ -198,15 +198,15 @@ local function UpdatePetBar(module, which)
             local t = config.buttonConfig.text.hotkey
             b.HotKey:SetFont(t.font.font, t.font.size, t.font.flags)
             b.HotKey:SetTextColor(unpack(t.color))
-            AW.ClearPoints(b.HotKey)
-            AW.SetPoint(b.HotKey, t.position.anchor, t.position.offsetX, t.position.offsetY)
+            AF.ClearPoints(b.HotKey)
+            AF.SetPoint(b.HotKey, t.position.anchor, t.position.offsetX, t.position.offsetY)
             b.HotKey:Show()
         end
     end
 
     -- load config
     AB.ReArrange(petBar, config.size, config.spacing, config.buttonsPerLine, config.num, config.anchor, config.orientation)
-    AW.LoadPosition(petBar, config.position)
+    AF.LoadPosition(petBar, config.position)
 
     petBar:SetFrameStrata(AB.config.general.frameStrata)
     petBar:SetFrameLevel(AB.config.general.frameLevel)

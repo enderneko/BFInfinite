@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local S = BFI.Shared
 local UF = BFI.UnitFrames
 
@@ -164,7 +164,7 @@ local function ShowAura(self, auraData)
         local aura = self.slots[self.mainShown]
         aura.auraInstanceID = auraData.auraInstanceID -- tooltips
         if self.isBlock then
-            aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData), nil, nil, AW.GetColorRGB(auraData.spellId))
+            aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData), nil, nil, AF.GetColorRGB(auraData.spellId))
         else
             aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData))
         end
@@ -179,10 +179,10 @@ local function UpdateSize(self)
         Auras_UpdateSize(self, self.mainShown)
         Auras_UpdateSize(self.subFrame, self.subShown)
         if self.mainShown == 0 then
-            AW.ClearPoints(self.subFrame)
+            AF.ClearPoints(self.subFrame)
             self.subFrame:SetPoint(self.anchor)
         else
-            AW.LoadWidgetPosition(self.subFrame, self.subFramePosition, self)
+            AF.LoadWidgetPosition(self.subFrame, self.subFramePosition, self)
         end
     else
         Auras_UpdateSize(self, self.numAuras)
@@ -369,9 +369,9 @@ Auras_UpdateSize = function(self, numAuras)
     numAuras = min(numAuras, self.numPerLine)
 
     if self.isHorizontal then
-        AW.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, numAuras, lines)
+        AF.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, numAuras, lines)
     else
-        AW.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, lines, numAuras)
+        AF.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, lines, numAuras)
     end
 end
 
@@ -380,7 +380,7 @@ local function Auras_SetSize(self, width, height)
     self.height = height
 
     for i = 1, self.numSlots do
-        AW.SetSize(self.slots[i], width, height)
+        AF.SetSize(self.slots[i], width, height)
     end
 end
 
@@ -464,13 +464,13 @@ local function Auras_SetOrientation(self, orientation)
     end
 
     for i = 1, self.numSlots do
-        AW.ClearPoints(self.slots[i])
+        AF.ClearPoints(self.slots[i])
         if i == 1 then
-            AW.SetPoint(self.slots[i], point1)
+            AF.SetPoint(self.slots[i], point1)
         elseif i % self.numPerLine == 1 then
-            AW.SetPoint(self.slots[i], point1, self.slots[i-self.numPerLine], newLinePoint2, newLineX, newLineY)
+            AF.SetPoint(self.slots[i], point1, self.slots[i-self.numPerLine], newLinePoint2, newLineX, newLineY)
         else
-            AW.SetPoint(self.slots[i], point1, self.slots[i-1], point2, x, y)
+            AF.SetPoint(self.slots[i], point1, self.slots[i-1], point2, x, y)
         end
     end
 end
@@ -559,7 +559,7 @@ local function Auras_UpdateSubFramePosition(self, orientation)
     end
 
     self.subFramePosition = {point1, newLinePoint2, newLineX, newLineY}
-    AW.SetPoint(self.subFrame, point1, self, newLinePoint2, newLineX, newLineY)
+    AF.SetPoint(self.subFrame, point1, self, newLinePoint2, newLineX, newLineY)
 end
 
 local function Auras_OnHide(self)
@@ -576,7 +576,7 @@ end
 
 local function Auras_LoadConfig(self, config)
     -- texplore(config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
     self.anchor = config.position[1]
@@ -657,14 +657,14 @@ local function Auras_LoadConfig(self, config)
 end
 
 local function Auras_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
+    AF.ReSize(self)
+    AF.RePoint(self)
     for _, slot in pairs(self.slots) do
         slot:UpdatePixels()
     end
     if self.subFrame then
-        AW.ReSize(self.subFrame)
-        AW.RePoint(self.subFrame)
+        AF.ReSize(self.subFrame)
+        AF.RePoint(self.subFrame)
         for _, slot in pairs(self.subFrame.slots) do
             slot:UpdatePixels()
         end
@@ -678,7 +678,7 @@ local function ConfigMode_RefreshAuras(self)
     local icon = self.auraFilter == "HELPFUL" and 135953 or 136071
     if self.isBlock then
         for i = 1, self.numSlots do
-            self.slots[i]:SetCooldown(GetTime(), 15, i, icon, nil, nil, nil, AW.GetColorRGB("BFI"))
+            self.slots[i]:SetCooldown(GetTime(), 15, i, icon, nil, nil, nil, AF.GetColorRGB("BFI"))
             self.slots[i]:EnableMouse(false)
         end
     else
@@ -764,7 +764,7 @@ function UF.CreateAuras(parent, name, auraFilter, hasSubFrame)
     frame.LoadConfig = Auras_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(frame, Auras_UpdatePixels)
+    AF.AddToPixelUpdater(frame, Auras_UpdatePixels)
 
     return frame
 end

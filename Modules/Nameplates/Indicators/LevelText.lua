@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -22,13 +22,13 @@ local function UpdateColor(self, event, unitId)
 
     local r, g, b
     if self.color.type == "level_color" then
-        r, g, b = AW.ExtractColor(GetCreatureDifficultyColor(UnitEffectiveLevel(unit)))
+        r, g, b = AF.ExtractColor(GetCreatureDifficultyColor(UnitEffectiveLevel(unit)))
     elseif self.color.type == "class_color" then
         local class = UnitClassBase(unit)
         if U.UnitIsPlayer(unit) then
-            r, g, b = AW.GetClassColor(class)
+            r, g, b = AF.GetClassColor(class)
         else
-            r, g, b = AW.GetReactionColor(unit)
+            r, g, b = AF.GetReactionColor(unit)
         end
     else
         r, g, b = unpack(self.color.rgb)
@@ -39,7 +39,7 @@ end
 ---------------------------------------------------------------------
 -- level
 ---------------------------------------------------------------------
-local highLevelTexture = "|T"..AW.GetTexture("HighLevelTexture", BFI.name)..":%d|t"
+local highLevelTexture = "|T"..AF.GetTexture("HighLevelTexture", BFI.name)..":%d|t"
 local function UpdateLevel(self, event, unitId)
     local unit = self.root.unit
     if type(unitId) == "string" and unit ~= unitId then return end

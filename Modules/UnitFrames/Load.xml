@@ -35,6 +35,7 @@
     <!-- common -->
     <Script file="Common.lua"/>
     <Script file="ConfigMode.lua"/>
+    <Script file="Options.lua"/>
     <!-- units -->
     <Script file="Units\Player.lua"/>
     <Script file="Units\Target.lua"/>

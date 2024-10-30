@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 local focustarget
@@ -37,13 +37,13 @@ local function CreateFocusTarget()
     focustarget.skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
-    AW.CreateMover(focustarget, L["Unit Frames"], L["Focus Target"])
+    AF.CreateMover(focustarget, L["Unit Frames"], L["Focus Target"])
 
     -- config mode
     UF.AddToConfigMode("focustarget", focustarget)
 
     -- pixel perfect
-    -- AW.AddToPixelUpdater(focustarget)
+    -- AF.AddToPixelUpdater(focustarget)
 
     -- indicators
     UF.CreateIndicators(focustarget, indicators)

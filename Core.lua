@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 
 local eventFrame = CreateFrame("Frame")
@@ -37,7 +37,7 @@ function eventFrame:ADDON_LOADED(arg)
                 ["scale"] = 1,
             }
         end
-        AW.SetScale(BFIConfig["appearance"]["scale"])
+        AF.SetScale(BFIConfig["appearance"]["scale"])
 
         -- init configs
         BFI.Fire("UpdateConfigs", BFIConfig["default"], "default")

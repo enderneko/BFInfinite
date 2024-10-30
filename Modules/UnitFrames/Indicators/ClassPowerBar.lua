@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 --! NOTE: only available for PLAYER
@@ -112,9 +112,9 @@ end
 ---------------------------------------------------------------------
 local function GetClassColor(type, class)
     if type == "class_color" then
-        return AW.GetClassColor(class)
+        return AF.GetClassColor(class)
     elseif type == "class_color_dark" then
-        return AW.GetClassColor(class, nil, 0.2)
+        return AF.GetClassColor(class, nil, 0.2)
     end
 end
 
@@ -123,9 +123,9 @@ end
 ---------------------------------------------------------------------
 local function GetPowerColor(self, type)
     if type == "power_color" then
-        return AW.GetColorRGB(self.powerType)
+        return AF.GetColorRGB(self.powerType)
     elseif type == "power_color_dark" then
-        return AW.GetColorRGB(self.powerType, nil, 0.2)
+        return AF.GetColorRGB(self.powerType, nil, 0.2)
     end
 end
 
@@ -180,15 +180,15 @@ end
 local function SetupBars(self)
     self.numPowerBars = self.powerMax
 
-    local width = (AW.ConvertPixelsForRegion(self._width, self) - AW.ConvertPixelsForRegion(self.config.spacing, self) * (self.numPowerBars - 1)) / self.numPowerBars
+    local width = (AF.ConvertPixelsForRegion(self._width, self) - AF.ConvertPixelsForRegion(self.config.spacing, self) * (self.numPowerBars - 1)) / self.numPowerBars
 
     -- create
     for i = 1, self.numPowerBars do
-        local bar = self.bars[i] or AW.CreateSimpleBar(self)
+        local bar = self.bars[i] or AF.CreateSimpleBar(self)
         self.bars[i] = bar
 
         bar:SetWidth(width)
-        AW.SetHeight(bar, self.config.height)
+        AF.SetHeight(bar, self.config.height)
 
         bar:SetTexture(U.GetBarTexture(self.config.texture))
         bar:SetBackgroundColor(unpack(self.config.bgColor))
@@ -197,9 +197,9 @@ local function SetupBars(self)
         bar:SetBarMinMaxValues(0, 1)
 
         if i == 1 then
-            AW.SetPoint(bar, "TOPLEFT")
+            AF.SetPoint(bar, "TOPLEFT")
         else
-            AW.SetPoint(bar, "TOPLEFT", self.bars[i-1], "TOPRIGHT", self.config.spacing, 0)
+            AF.SetPoint(bar, "TOPLEFT", self.bars[i-1], "TOPRIGHT", self.config.spacing, 0)
         end
 
         self.bars[i]:Show()
@@ -334,7 +334,7 @@ local function ClassPowerBar_UpdatePixels(self)
     if not self._enabled then return end
 
     C_Timer.After(1, function()
-        local width = (AW.ConvertPixelsForRegion(self._width, self) - AW.ConvertPixelsForRegion(self.config.spacing, self) * (self.numPowerBars - 1)) / self.numPowerBars
+        local width = (AF.ConvertPixelsForRegion(self._width, self) - AF.ConvertPixelsForRegion(self.config.spacing, self) * (self.numPowerBars - 1)) / self.numPowerBars
         for _, bar in pairs(self.bars) do
             bar:UpdatePixels()
             bar:SetWidth(width)
@@ -346,9 +346,9 @@ end
 -- load
 ---------------------------------------------------------------------
 local function ClassPowerBar_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AW.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.width, config.height)
 
     self.config = config
 
@@ -369,6 +369,7 @@ local function ClassPowerBar_EnableConfigMode(self)
 
     class = "PALADIN"
     self.power = 3
+    self.powerType = "HOLY_POWER"
     self.powerMax = 5
     self.powerMod = 1
 
@@ -405,7 +406,7 @@ function UF.CreateClassPowerBar(parent, name)
     frame.LoadConfig = ClassPowerBar_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(frame, ClassPowerBar_UpdatePixels)
+    AF.AddToPixelUpdater(frame, ClassPowerBar_UpdatePixels)
 
     return frame
 end

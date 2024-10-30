@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 ---@class UIWidgets
 local UI = BFI.UIWidgets
 
@@ -14,11 +14,11 @@ local function SetPoint(self, _, anchorTo)
 end
 
 local function InitWidget(frame, name, anchor, width, height, config)
-    frame._container = CreateFrame("Frame", nil, AW.UIParent)
-    AW.SetSize(frame._container, width, height)
+    frame._container = CreateFrame("Frame", nil, AF.UIParent)
+    AF.SetSize(frame._container, width, height)
 
-    AW.CreateMover(frame._container, L["UI Widgets"], name, config.position)
-    AW.LoadPosition(frame._container, config.position)
+    AF.CreateMover(frame._container, L["UI Widgets"], name, config.position)
+    AF.LoadPosition(frame._container, config.position)
 
     -- frame
     frame:SetScale(config.scale)
@@ -28,7 +28,7 @@ local function InitWidget(frame, name, anchor, width, height, config)
     hooksecurefunc(frame, "SetPoint", SetPoint)
 
     -- pixel perfect
-    -- AW.AddToPixelUpdater(frame._container)
+    -- AF.AddToPixelUpdater(frame._container)
 end
 
 ---------------------------------------------------------------------

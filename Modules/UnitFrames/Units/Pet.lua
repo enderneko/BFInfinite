@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 local pet
@@ -34,13 +34,13 @@ local function CreatePet()
     pet:SetAttribute("unit", "pet")
 
     -- mover
-    AW.CreateMover(pet, L["Unit Frames"], _G.PET)
+    AF.CreateMover(pet, L["Unit Frames"], _G.PET)
 
     -- config mode
     UF.AddToConfigMode("pet", pet)
 
     -- pixel perfect
-    -- AW.AddToPixelUpdater(pet)
+    -- AF.AddToPixelUpdater(pet)
 
     -- indicators
     UF.CreateIndicators(pet, indicators)

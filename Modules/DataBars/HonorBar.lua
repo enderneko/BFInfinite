@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
@@ -108,12 +108,12 @@ end
 -- create
 ---------------------------------------------------------------------
 local function CreateHonorBar()
-    honorBar = AW.CreateSimpleBar(AW.UIParent, "BFI_HonorBar")
+    honorBar = AF.CreateSimpleBar(AF.UIParent, "BFI_HonorBar")
     honorBar.loss:Hide()
     honorBar:Hide()
 
-    AW.CreateMover(honorBar, L["Data Bars"], L["Honor Bar"])
-    AW.AddToPixelUpdater(honorBar)
+    AF.CreateMover(honorBar, L["Data Bars"], L["Honor Bar"])
+    AF.AddToPixelUpdater(honorBar)
 
     -- text frame
     local textFrame = CreateFrame("Frame", nil, honorBar)
@@ -123,17 +123,17 @@ local function CreateHonorBar()
     -- left text
     local leftText = textFrame:CreateFontString(nil, "OVERLAY")
     honorBar.leftText = leftText
-    AW.LoadTextPosition(leftText, {"LEFT", "LEFT", 5, 0})
+    AF.LoadTextPosition(leftText, {"LEFT", "LEFT", 5, 0})
 
     -- right text
     local centerText = textFrame:CreateFontString(nil, "OVERLAY")
     honorBar.centerText = centerText
-    AW.LoadTextPosition(centerText, {"CENTER", "CENTER", 0, 0})
+    AF.LoadTextPosition(centerText, {"CENTER", "CENTER", 0, 0})
 
     -- right text
     local rightText = textFrame:CreateFontString(nil, "OVERLAY")
     honorBar.rightText = rightText
-    AW.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
+    AF.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
 
     -- events
     BFI.AddEventHandler(honorBar)
@@ -165,13 +165,13 @@ local function UpdateHonorBar(module, which)
     honorBar:RegisterEvent("HONOR_XP_UPDATE", UpdateHonor)
     -- honorBar:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", "player", UpdateHonor)
 
-    AW.UpdateMoverSave(honorBar, config.position)
-    AW.LoadPosition(honorBar, config.position)
-    AW.SetSize(honorBar, config.width, config.height)
+    AF.UpdateMoverSave(honorBar, config.position)
+    AF.LoadPosition(honorBar, config.position)
+    AF.SetSize(honorBar, config.width, config.height)
 
-    honorBar:SetColor(AW.UnpackColor(config.color))
-    honorBar:SetBorderColor(AW.UnpackColor(config.borderColor))
-    honorBar:SetBackgroundColor(AW.UnpackColor(config.bgColor))
+    honorBar:SetColor(AF.UnpackColor(config.color))
+    honorBar:SetBorderColor(AF.UnpackColor(config.borderColor))
+    honorBar:SetBackgroundColor(AF.UnpackColor(config.bgColor))
     honorBar:SetTexture(U.GetBarTexture(config.texture))
 
     -- text

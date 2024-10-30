@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local S = BFI.Shared
 local NP = BFI.NamePlates
 
@@ -326,11 +326,11 @@ function Auras_UpdateSiblings(self)
         return
     end
     for sibling in pairs(self.siblings) do
-        AW.ClearPoints(sibling)
+        AF.ClearPoints(sibling)
         if self.numAuras == 0 then
-            AW.SetPoint(sibling, sibling.position[1], self, sibling.position[2])
+            AF.SetPoint(sibling, sibling.position[1], self, sibling.position[2])
         else
-            AW.SetPoint(sibling, sibling.position[1], self, sibling.position[2], sibling.position[3], sibling.position[4])
+            AF.SetPoint(sibling, sibling.position[1], self, sibling.position[2], sibling.position[3], sibling.position[4])
         end
     end
 end
@@ -351,9 +351,9 @@ function Auras_UpdateSize(self, numAuras)
     numAuras = min(numAuras, self.numPerLine)
 
     if self.isHorizontal then
-        AW.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, numAuras, lines)
+        AF.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, numAuras, lines)
     else
-        AW.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, lines, numAuras)
+        AF.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, lines, numAuras)
     end
 
     Auras_UpdateSiblings(self)
@@ -364,7 +364,7 @@ local function Auras_SetSize(self, width, height)
     self.height = height
 
     for i = 1, self.numSlots do
-        AW.SetSize(self.slots[i], width, height)
+        AF.SetSize(self.slots[i], width, height)
     end
 end
 
@@ -448,13 +448,13 @@ local function Auras_SetOrientation(self, orientation)
     end
 
     for i = 1, self.numSlots do
-        AW.ClearPoints(self.slots[i])
+        AF.ClearPoints(self.slots[i])
         if i == 1 then
-            AW.SetPoint(self.slots[i], point1)
+            AF.SetPoint(self.slots[i], point1)
         elseif i % self.numPerLine == 1 then
-            AW.SetPoint(self.slots[i], point1, self.slots[i-self.numPerLine], newLinePoint2, newLineX, newLineY)
+            AF.SetPoint(self.slots[i], point1, self.slots[i-self.numPerLine], newLinePoint2, newLineX, newLineY)
         else
-            AW.SetPoint(self.slots[i], point1, self.slots[i-1], point2, x, y)
+            AF.SetPoint(self.slots[i], point1, self.slots[i-1], point2, x, y)
         end
     end
 end
@@ -496,7 +496,7 @@ local function Auras_OnHide(self)
 end
 
 local function Auras_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
     self.position = config.position -- for sibling update
@@ -566,8 +566,8 @@ local function Auras_LoadConfig(self, config)
 end
 
 local function Auras_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
+    AF.ReSize(self)
+    AF.RePoint(self)
     for _, slot in pairs(self.slots) do
         slot:UpdatePixels()
     end
@@ -609,7 +609,7 @@ local function CreateAuras(parent, name, auraFilter)
     frame.UpdateSiblings = Auras_UpdateSiblings
 
     -- pixel perfect
-    AW.AddToPixelUpdater(frame, Auras_UpdatePixels)
+    AF.AddToPixelUpdater(frame, Auras_UpdatePixels)
 
     return frame
 end

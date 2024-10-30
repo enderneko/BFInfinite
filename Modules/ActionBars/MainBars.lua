@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 local AB = BFI.ActionBars
 
@@ -57,7 +57,7 @@ local function HandleFlyoutButton(b)
     end
 
     if not InCombatLockdown() then
-        AW.SetSize(b, AB.config.general.flyoutSize, AB.config.general.flyoutSize)
+        AF.SetSize(b, AB.config.general.flyoutSize, AB.config.general.flyoutSize)
     end
 
     b.MasqueSkinned = true -- skip LAB styling
@@ -95,7 +95,7 @@ local function CreateBar(name, id)
         moverName = L["Class Bar"].." "..index
     end
 
-    local bar = CreateFrame("Frame", global, AW.UIParent, "SecureHandlerStateTemplate")
+    local bar = CreateFrame("Frame", global, AF.UIParent, "SecureHandlerStateTemplate")
 
     bar.id = id
     bar.name = name
@@ -104,7 +104,7 @@ local function CreateBar(name, id)
     AB.bars[name] = bar
 
     -- mover ----------------------------------------------------------------- --
-    AW.CreateMover(bar, L["Action Bars"], moverName)
+    AF.CreateMover(bar, L["Action Bars"], moverName)
 
     -- page ------------------------------------------------------------------ --
     bar:SetAttribute("_onstate-page", [[
@@ -144,7 +144,7 @@ local function CreateBar(name, id)
     bar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 
     -- update pixels --------------------------------------------------------- --
-    AW.AddToPixelUpdater(bar)
+    AF.AddToPixelUpdater(bar)
 
     return bar
 end
@@ -186,7 +186,7 @@ local customExitButton = {
     func = function(button)
         VehicleExit()
     end,
-    texture = AW.GetTexture("Exit", BFI.name),
+    texture = AF.GetTexture("Exit", BFI.name),
     tooltip = LEAVE_VEHICLE,
 }
 
@@ -271,11 +271,11 @@ local function UpdateBar(bar, general, shared, specific)
     RegisterStateDriver(bar, "visibility", specific.visibility)
 
     -- mover
-    AW.UpdateMoverSave(bar, specific.position)
+    AF.UpdateMoverSave(bar, specific.position)
 
     -- bar
     AB.ReArrange(bar, specific.size, specific.spacing, specific.buttonsPerLine, specific.num, specific.anchor, specific.orientation)
-    AW.LoadPosition(bar, specific.position)
+    AF.LoadPosition(bar, specific.position)
 
     bar:SetFrameStrata(general.frameStrata)
     bar:SetFrameLevel(general.frameLevel)
@@ -318,7 +318,7 @@ local function UpdateMainBars(module, which, barName)
         init = true
 
         -- binding frame --------------------------------------------------------------------------
-        _G.BINDING_HEADER_BFI = AW.WrapTextInColor(BFI.name, "BFI")
+        _G.BINDING_HEADER_BFI = AF.WrapTextInColor(BFI.name, "BFI")
 
         -- bar9
         local text = L["Action Bar"].." 9 "..L["Button"].." %d"

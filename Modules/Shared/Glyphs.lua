@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local C = BFI.Colors
 local S = BFI.Shared
 
@@ -10,14 +10,14 @@ local S = BFI.Shared
 -- https://onlinetools.com/unicode/convert-code-points-to-unicode
 
 S.FactionGlyphs = {
-    Horde = {char = "\238\128\128", color = AW.GetColorTable("Horde")},
-    Alliance = {char = "\238\128\129", color = AW.GetColorTable("Alliance")},
+    Horde = {char = "\238\128\128", color = AF.GetColorTable("Horde")},
+    Alliance = {char = "\238\128\129", color = AF.GetColorTable("Alliance")},
 }
 
 S.RoleGlyphs  = {
-    TANK = {char = "\238\128\130", color = AW.GetColorTable("TANK")},
-    HEALER = {char = "\238\128\131", color = AW.GetColorTable("HEALER")},
-    DAMAGER = {char = "\238\128\132", color = AW.GetColorTable("DAMAGER")},
+    TANK = {char = "\238\128\130", color = AF.GetColorTable("TANK")},
+    HEALER = {char = "\238\128\131", color = AF.GetColorTable("HEALER")},
+    DAMAGER = {char = "\238\128\132", color = AF.GetColorTable("DAMAGER")},
 }
 
 S.LeaderGlyphs = {

@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local M = BFI.Maps
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local MinimapCluster = _G.MinimapCluster
 local Minimap = _G.Minimap
@@ -34,9 +34,9 @@ local function UpdateExpansionButton()
 
     ExpansionButton:SetParent(Minimap)
 
-    AW.ClearPoints(ExpansionButton)
-    AW.LoadWidgetPosition(ExpansionButton, config.position, minimapContainer)
-    AW.SetSize(ExpansionButton, config.width, config.height)
+    AF.ClearPoints(ExpansionButton)
+    AF.LoadWidgetPosition(ExpansionButton, config.position, minimapContainer)
+    AF.SetSize(ExpansionButton, config.width, config.height)
 end
 
 ---------------------------------------------------------------------
@@ -51,9 +51,9 @@ local function UpdateMinimapWidgets(widget, config)
     widget:SetParent(Minimap)
     widget:Show()
 
-    AW.ClearPoints(widget)
-    AW.LoadWidgetPosition(widget, config.position, minimapContainer)
-    AW.SetSize(widget, config.width, config.height)
+    AF.ClearPoints(widget)
+    AF.LoadWidgetPosition(widget, config.position, minimapContainer)
+    AF.SetSize(widget, config.width, config.height)
 end
 
 ---------------------------------------------------------------------
@@ -118,8 +118,8 @@ local function UpdateAddonButtons()
                 child:SetScript("OnDragStop", nil)
                 child:SetParent(addonButtonHolder.frame)
                 child:RegisterForDrag()
-                AW.SetOnePixelInside(child.icon, child)
-                AW.StylizeFrame(child)
+                AF.SetOnePixelInside(child.icon, child)
+                AF.StylizeFrame(child)
 
                 -- re-arrange when show/hide
                 child:HookScript("OnShow", UpdateAddonButtons)
@@ -137,22 +137,22 @@ local function UpdateAddonButtons()
     end
 
     -- re-arrange
-    local p, rp, np, x, y, nx, ny = AW.GetAnchorPoints_Simple(addonButtonHolder.buttonAnchor, addonButtonHolder.config.orientation, addonButtonHolder.config.spacing)
+    local p, rp, np, x, y, nx, ny = AF.GetAnchorPoints_Simple(addonButtonHolder.buttonAnchor, addonButtonHolder.config.orientation, addonButtonHolder.config.spacing)
     for i, b in pairs(addonButtonHolder.shownButtons) do
-        AW.ClearPoints(b)
-        AW.SetSize(b, addonButtonHolder.config.width, addonButtonHolder.config.height)
+        AF.ClearPoints(b)
+        AF.SetSize(b, addonButtonHolder.config.width, addonButtonHolder.config.height)
 
         if i == 1 then
-            AW.SetPoint(b, p)
+            AF.SetPoint(b, p)
         elseif i % addonButtonHolder.config.numPerLine == 1 then
-            AW.SetPoint(b, p, addonButtonHolder.shownButtons[i - addonButtonHolder.config.numPerLine], np, nx, ny)
+            AF.SetPoint(b, p, addonButtonHolder.shownButtons[i - addonButtonHolder.config.numPerLine], np, nx, ny)
         else
-            AW.SetPoint(b, p, addonButtonHolder.shownButtons[i - 1], rp, x, y)
+            AF.SetPoint(b, p, addonButtonHolder.shownButtons[i - 1], rp, x, y)
         end
     end
 
     local num = #addonButtonHolder.shownButtons
-    AW.SetGridSize(addonButtonHolder.frame, addonButtonHolder.config.width, addonButtonHolder.config.height,
+    AF.SetGridSize(addonButtonHolder.frame, addonButtonHolder.config.width, addonButtonHolder.config.height,
         addonButtonHolder.config.spacing, addonButtonHolder.config.spacing,
         min(addonButtonHolder.config.numPerLine, num), ceil(num / addonButtonHolder.config.numPerLine)
     )
@@ -165,11 +165,11 @@ local function CreateAddonButtonHolder()
     lib:RegisterCallback("LibDBIcon_IconCreated", UpdateAddonButtons)
 
     -- button
-    addonButtonHolder = AW.CreateButton(Minimap, "", "BFI_hover", 20, 20)
+    addonButtonHolder = AF.CreateButton(Minimap, "", "BFI_hover", 20, 20)
     -- addonButtonHolder:Hide()
-    addonButtonHolder:SetTexture(AW.GetIcon("Menu", BFI.name), {20, 20}, {"CENTER", 0, 0}, nil, true)
-    AW.RemoveFromPixelUpdater(addonButtonHolder)
-    AW.CreateFadeInOutAnimation(addonButtonHolder, 0.25, true)
+    addonButtonHolder:SetTexture(AF.GetIcon("Menu", BFI.name), {20, 20}, {"CENTER", 0, 0}, nil, true)
+    AF.RemoveFromPixelUpdater(addonButtonHolder)
+    AF.CreateFadeInOutAnimation(addonButtonHolder, 0.25, true)
 
     addonButtonHolder.buttons = {}
     addonButtonHolder.shownButtons = {}
@@ -177,7 +177,7 @@ local function CreateAddonButtonHolder()
     -- container frame
     local frame = CreateFrame("Frame", nil, addonButtonHolder)
     addonButtonHolder.frame = frame
-    AW.SetPoint(frame, "BOTTOMLEFT", addonButtonHolder, "TOPLEFT", 0, 1)
+    AF.SetPoint(frame, "BOTTOMLEFT", addonButtonHolder, "TOPLEFT", 0, 1)
     frame:Hide()
 
     frame.texture = frame:CreateTexture(nil, "ARTWORK")
@@ -212,7 +212,7 @@ end
 -- zone text
 ---------------------------------------------------------------------
 local function UpdateZoneText()
-    AW.SetText(Minimap.zoneText, GetMinimapZoneText(), Minimap.zoneText.length)
+    AF.SetText(Minimap.zoneText, GetMinimapZoneText(), Minimap.zoneText.length)
     Minimap.zoneText:SetTextColor(MinimapZoneText:GetTextColor())
 end
 
@@ -220,7 +220,7 @@ local function CreateZoneText()
     -- zoneText
     Minimap.zoneText = Minimap:CreateFontString(nil, "OVERLAY")
     Minimap.zoneText:Hide()
-    AW.CreateFadeInOutAnimation(Minimap.zoneText, 0.25)
+    AF.CreateFadeInOutAnimation(Minimap.zoneText, 0.25)
 
     Minimap.onEnter = function()
         if Minimap.zoneText.enabled then
@@ -252,7 +252,7 @@ local function UpdateClockSize()
     C_Timer.After(1, function()
         Minimap.clockButton.text:SetText("00:00")
         Minimap.clockButton:Show()
-        AW.SetSizeToFitText(Minimap.clockButton, Minimap.clockButton.text, 2)
+        AF.SetSizeToFitText(Minimap.clockButton, Minimap.clockButton.text, 2)
     end)
 end
 
@@ -260,9 +260,9 @@ local function CreateClockButton()
     local clockButton = CreateFrame("Button", "BFI_MinimapClock", Minimap)
     Minimap.clockButton = clockButton
 
-    -- AW.SetDefaultBackdrop(clockButton)
-    -- clockButton:SetBackdropBorderColor(AW.GetColorRGB("border"))
-    -- clockButton:SetBackdropColor(AW.GetColorRGB("background"))
+    -- AF.SetDefaultBackdrop(clockButton)
+    -- clockButton:SetBackdropBorderColor(AF.GetColorRGB("border"))
+    -- clockButton:SetBackdropColor(AF.GetColorRGB("background"))
 
     -- alarm flash
     local flash = CreateFrame("Frame", nil, clockButton)
@@ -272,7 +272,7 @@ local function CreateClockButton()
     flash:SetFrameLevel(clockButton:GetFrameLevel())
 
     flash.texture = flash:CreateTexture(nil, "BORDER")
-    flash.texture:SetTexture(AW.GetPlainTexture())
+    flash.texture:SetTexture(AF.GetPlainTexture())
     flash.texture:SetAllPoints()
 
     -- hook alarm
@@ -319,7 +319,7 @@ local function GetString(arg1, arg2)
         arg2 = arg1.text
         arg1 = arg1.color
     end
-    return format("|c%s%s|r", AW.ConvertRGBToHEX(AW.UnpackColor(arg1)), arg2)
+    return format("|c%s%s|r", AF.ConvertRGBToHEX(AF.UnpackColor(arg1)), arg2)
 end
 
 local function UpdateInstanceDifficulty(_, event, arg)
@@ -373,7 +373,7 @@ local function UpdateInstanceDifficulty(_, event, arg)
         Minimap.instanceDifficultyFrame:Hide()
     end
 
-    AW.SetSizeToFitText(Minimap.instanceDifficultyFrame, Minimap.instanceDifficultyFrame.text)
+    AF.SetSizeToFitText(Minimap.instanceDifficultyFrame, Minimap.instanceDifficultyFrame.text)
 end
 
 local function UpdateGuild()
@@ -451,17 +451,17 @@ end
 -- init
 ---------------------------------------------------------------------
 local function UpdatePixels()
-    AW.DefaultUpdatePixels(minimapContainer)
-    AW.DefaultUpdatePixels(Minimap)
-    AW.DefaultUpdatePixels(ExpansionButton)
-    AW.DefaultUpdatePixels(MinimapCluster.Tracking)
-    AW.DefaultUpdatePixels(addonButtonHolder)
-    AW.DefaultUpdatePixels(addonButtonHolder.frame)
+    AF.DefaultUpdatePixels(minimapContainer)
+    AF.DefaultUpdatePixels(Minimap)
+    AF.DefaultUpdatePixels(ExpansionButton)
+    AF.DefaultUpdatePixels(MinimapCluster.Tracking)
+    AF.DefaultUpdatePixels(addonButtonHolder)
+    AF.DefaultUpdatePixels(addonButtonHolder.frame)
     for _, b in pairs(addonButtonHolder.buttons) do
-        AW.DefaultUpdatePixels(b)
+        AF.DefaultUpdatePixels(b)
     end
-    AW.DefaultUpdatePixels(Minimap.clockButton)
-    AW.DefaultUpdatePixels(Minimap.instanceDifficultyFrame)
+    AF.DefaultUpdatePixels(Minimap.clockButton)
+    AF.DefaultUpdatePixels(Minimap.instanceDifficultyFrame)
 end
 
 local function InitMinimap()
@@ -470,17 +470,17 @@ local function InitMinimap()
     MinimapCluster:EnableMouse(false)
 
     -- minimapContainer
-    minimapContainer = CreateFrame("Frame", "BFI_MinimapContainer", AW.UIParent, "BackdropTemplate")
-    AW.StylizeFrame(minimapContainer)
-    AW.CreateMover(minimapContainer, _G.OTHER, _G.HUD_EDIT_MODE_MINIMAP_LABEL)
-    AW.AddToPixelUpdater(minimapContainer, UpdatePixels)
+    minimapContainer = CreateFrame("Frame", "BFI_MinimapContainer", AF.UIParent, "BackdropTemplate")
+    AF.StylizeFrame(minimapContainer)
+    AF.CreateMover(minimapContainer, _G.OTHER, _G.HUD_EDIT_MODE_MINIMAP_LABEL)
+    AF.AddToPixelUpdater(minimapContainer, UpdatePixels)
 
     -- Minimap
     Minimap.Layout = BFI.dummy -- MinimapCluster.IndicatorFrame
-    Minimap:SetMaskTexture(AW.GetPlainTexture())
+    Minimap:SetMaskTexture(AF.GetPlainTexture())
     Minimap:SetParent(minimapContainer)
-    AW.SetPoint(Minimap, "TOPLEFT", 1, -1)
-    AW.SetPoint(Minimap, "BOTTOMRIGHT", -1, 1)
+    AF.SetPoint(Minimap, "TOPLEFT", 1, -1)
+    AF.SetPoint(Minimap, "BOTTOMRIGHT", -1, 1)
 
     -- Minimap frames
     local frames = {
@@ -532,13 +532,13 @@ local function UpdateMinimap(module, which)
         CreateZoneText()
         CreateClockButton()
         CreateInstanceDifficulty()
-        AW.UpdateMoverSave(minimapContainer, config.position)
+        AF.UpdateMoverSave(minimapContainer, config.position)
     end
 
     -- minimap
-    AW.ClearPoints(minimapContainer)
-    AW.LoadPosition(minimapContainer, config.position)
-    AW.SetSize(minimapContainer, config.width, config.height)
+    AF.ClearPoints(minimapContainer)
+    AF.LoadPosition(minimapContainer, config.position)
+    AF.SetSize(minimapContainer, config.width, config.height)
     Minimap:SetSize(Minimap:GetSize()) --! for ping
 
     -- expansion button
@@ -553,19 +553,19 @@ local function UpdateMinimap(module, which)
     -- clock
     if config.clock.enabled then
         U.SetFont(Minimap.clockButton.text, unpack(config.clock.font))
-        AW.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
+        AF.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
 
         -- flash
         local anchor = config.clock.position[1]
         local flashTexture = Minimap.clockButton.flash.texture
         if strfind(anchor, "^TOP") then
-            flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("BFI")))
+            flashTexture:SetGradient("VERTICAL", CreateColor(AF.GetColorRGB("none")), CreateColor(AF.GetColorRGB("BFI")))
         elseif strfind(anchor, "LEFT$") then
-            flashTexture:SetGradient("HORIZONTAL", CreateColor(AW.GetColorRGB("BFI")), CreateColor(AW.GetColorRGB("none")))
+            flashTexture:SetGradient("HORIZONTAL", CreateColor(AF.GetColorRGB("BFI")), CreateColor(AF.GetColorRGB("none")))
         elseif strfind(anchor, "RIGHT$") then
-            flashTexture:SetGradient("HORIZONTAL", CreateColor(AW.GetColorRGB("none")), CreateColor(AW.GetColorRGB("BFI")))
+            flashTexture:SetGradient("HORIZONTAL", CreateColor(AF.GetColorRGB("none")), CreateColor(AF.GetColorRGB("BFI")))
         else -- BOTTOM / CENTER
-            flashTexture:SetGradient("VERTICAL", CreateColor(AW.GetColorRGB("BFI")), CreateColor(AW.GetColorRGB("none")))
+            flashTexture:SetGradient("VERTICAL", CreateColor(AF.GetColorRGB("BFI")), CreateColor(AF.GetColorRGB("none")))
         end
 
         -- size
@@ -590,7 +590,7 @@ local function UpdateMinimap(module, which)
     if config.zoneText.enabled then
         Minimap.zoneText.length = config.zoneText.length
         U.SetFont(Minimap.zoneText, unpack(config.zoneText.font))
-        AW.LoadTextPosition(Minimap.zoneText, config.zoneText.position)
+        AF.LoadTextPosition(Minimap.zoneText, config.zoneText.position)
         M:RegisterEvent("PLAYER_ENTERING_WORLD", UpdateZoneText)
         M:RegisterEvent("ZONE_CHANGED_NEW_AREA", UpdateZoneText)
         M:RegisterEvent("ZONE_CHANGED_INDOORS", UpdateZoneText)
@@ -609,7 +609,7 @@ local function UpdateMinimap(module, which)
     -- dungeon difficulty
     if config.instanceDifficulty.enabled then
         Minimap.instanceDifficultyFrame.config = config.instanceDifficulty
-        AW.LoadWidgetPosition(Minimap.instanceDifficultyFrame, config.instanceDifficulty.position)
+        AF.LoadWidgetPosition(Minimap.instanceDifficultyFrame, config.instanceDifficulty.position)
         U.SetFont(Minimap.instanceDifficultyFrame.text, unpack(config.instanceDifficulty.font))
         M:RegisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty)
         M:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", UpdateInstanceDifficulty)
@@ -638,14 +638,14 @@ local function UpdateMinimap(module, which)
             addonButtonHolder:FadeIn()
         end
 
-        AW.LoadWidgetPosition(addonButtonHolder, config.addonButtonHolder.position, Minimap)
-        AW.SetSize(addonButtonHolder, config.addonButtonHolder.width, config.addonButtonHolder.height)
+        AF.LoadWidgetPosition(addonButtonHolder, config.addonButtonHolder.position, Minimap)
+        AF.SetSize(addonButtonHolder, config.addonButtonHolder.width, config.addonButtonHolder.height)
 
         local p, rp, x, y = GetPositionArgs_HolderFrame()
         addonButtonHolder.buttonAnchor = p
-        AW.ClearPoints(addonButtonHolder.frame)
-        AW.SetPoint(addonButtonHolder.frame, p, addonButtonHolder, rp, x, y)
-        addonButtonHolder.frame.texture:SetColorTexture(AW.UnpackColor(config.addonButtonHolder.bgColor))
+        AF.ClearPoints(addonButtonHolder.frame)
+        AF.SetPoint(addonButtonHolder.frame, p, addonButtonHolder, rp, x, y)
+        addonButtonHolder.frame.texture:SetColorTexture(AF.UnpackColor(config.addonButtonHolder.bgColor))
 
         UpdateAddonButtons()
     else

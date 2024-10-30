@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local U = BFI.utils
 local AB = BFI.ActionBars
 
@@ -16,8 +16,8 @@ local zoneAbilityHolder
 local ZoneAbility_UpdateParent, ZoneAbility_UpdateScale, ZoneAbility_UpdateAbility
 
 local function CreateZoneAbilityHolder()
-    zoneAbilityHolder = CreateFrame("Frame", "BIF_ZoneAbilityHolder", AW.UIParent)
-    AW.CreateMover(zoneAbilityHolder, L["Action Bars"], L["Zone Ability"])
+    zoneAbilityHolder = CreateFrame("Frame", "BIF_ZoneAbilityHolder", AF.UIParent)
+    AF.CreateMover(zoneAbilityHolder, L["Action Bars"], L["Zone Ability"])
 
     ZoneAbilityFrame:SetParent(zoneAbilityHolder)
     ZoneAbilityFrame:ClearAllPoints()
@@ -66,7 +66,7 @@ function ZoneAbility_UpdateAbility()
 
             spellButton.holder = zoneAbilityHolder
             AB.StylizeButton(spellButton)
-            AW.AddToPixelUpdater(spellButton)
+            AF.AddToPixelUpdater(spellButton)
         end
     end
 end
@@ -81,8 +81,8 @@ local ExtraAction_UpdateParent, ExtraAction_UpdateAbility
 local extraButtons = {}
 
 local function CreateExtraActionHolder()
-    extraActionHolder = CreateFrame("Frame", "BIF_ExtraActionHolder", AW.UIParent)
-    AW.CreateMover(extraActionHolder, L["Action Bars"], ExtraAbilityContainer.systemNameString)
+    extraActionHolder = CreateFrame("Frame", "BIF_ExtraActionHolder", AF.UIParent)
+    AF.CreateMover(extraActionHolder, L["Action Bars"], ExtraAbilityContainer.systemNameString)
 
     ExtraActionBarFrame:SetParent(extraActionHolder)
     ExtraActionBarFrame:ClearAllPoints()
@@ -127,7 +127,7 @@ function ExtraAction_UpdateAbility(_, frame)
         AB.ApplyTextConfig(button.HotKey, extraActionHolder.font)
         button.HotKey:SetText(AB.GetHotkey(GetBindingKey(button.commandName)))
 
-        AW.AddToPixelUpdater(button)
+        AF.AddToPixelUpdater(button)
     end
 end
 
@@ -153,20 +153,20 @@ local function UpdateButton(module, which)
     ExtraAbilityContainer.OnUpdate = nil
     ExtraAbilityContainer.IsLayoutFrame = nil
 
-    local size = AW.ConvertPixels(52)
+    local size = AF.ConvertPixels(52)
 
     -- zone ability -----------------------------------------------------
     if not zoneAbilityHolder then
         CreateZoneAbilityHolder()
     end
 
-    AW.UpdateMoverSave(zoneAbilityHolder, zoneAbilityConfig.position)
-    AW.LoadPosition(zoneAbilityHolder, zoneAbilityConfig.position)
+    AF.UpdateMoverSave(zoneAbilityHolder, zoneAbilityConfig.position)
+    AF.LoadPosition(zoneAbilityHolder, zoneAbilityConfig.position)
     zoneAbilityHolder:SetFrameStrata(AB.config.general.frameStrata)
     zoneAbilityHolder:SetFrameLevel(AB.config.general.frameLevel)
 
     zoneAbilityHolder.scale = zoneAbilityConfig.scale
-    AW.SetSize(zoneAbilityHolder, size * zoneAbilityConfig.scale, size * zoneAbilityConfig.scale) -- default size of ZoneAbilityFrame.SpellButtonContainer
+    AF.SetSize(zoneAbilityHolder, size * zoneAbilityConfig.scale, size * zoneAbilityConfig.scale) -- default size of ZoneAbilityFrame.SpellButtonContainer
 
     zoneAbilityHolder.hideTexture = zoneAbilityConfig.hideTexture
     ZoneAbilityFrame.Style:SetAlpha(zoneAbilityConfig.hideTexture and 0 or 1)
@@ -177,8 +177,8 @@ local function UpdateButton(module, which)
         CreateExtraActionHolder()
     end
 
-    AW.UpdateMoverSave(extraActionHolder, extraActionConfig.position)
-    AW.LoadPosition(extraActionHolder, extraActionConfig.position)
+    AF.UpdateMoverSave(extraActionHolder, extraActionConfig.position)
+    AF.LoadPosition(extraActionHolder, extraActionConfig.position)
     extraActionHolder:SetFrameStrata(AB.config.general.frameStrata)
     extraActionHolder:SetFrameLevel(AB.config.general.frameLevel)
 

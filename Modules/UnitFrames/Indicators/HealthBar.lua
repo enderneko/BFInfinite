@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local C = BFI.Colors
 local UF = BFI.UnitFrames
 
@@ -185,24 +185,24 @@ end
 local function GetClassColor(type, class, inVehicle)
     if type == "class_color" then
         if inVehicle then
-            return AW.GetColorRGB("FRIENDLY")
+            return AF.GetColorRGB("FRIENDLY")
         else
-            return AW.GetClassColor(class)
+            return AF.GetClassColor(class)
         end
     elseif type == "class_color_dark" then
         if inVehicle then
-            return AW.GetColorRGB("FRIENDLY", nil, 0.2)
+            return AF.GetColorRGB("FRIENDLY", nil, 0.2)
         else
-            return AW.GetClassColor(class, nil, 0.2)
+            return AF.GetClassColor(class, nil, 0.2)
         end
     end
 end
 
 local function GetReactionColor(type, unit)
     if type == "class_color" then
-        return AW.GetReactionColor(unit)
+        return AF.GetReactionColor(unit)
     elseif type == "class_color_dark" then
-        return AW.GetReactionColor(unit, nil, 0.2)
+        return AF.GetReactionColor(unit, nil, 0.2)
     end
 end
 
@@ -219,10 +219,10 @@ local function GetHealthColor(self, unit)
 
     if U.UnitIsPlayer(unit) then
         if not UnitIsConnected(unit) then
-            r, g, b = AW.GetColorRGB("OFFLINE")
-            lossR, lossG, lossB = AW.GetColorRGB("OFFLINE")
+            r, g, b = AF.GetColorRGB("OFFLINE")
+            lossR, lossG, lossB = AF.GetColorRGB("OFFLINE")
         elseif UnitIsCharmed(unit) then
-            r, g, b = AW.GetColorRGB("CHARMED")
+            r, g, b = AF.GetColorRGB("CHARMED")
             lossR, lossG, lossB = r*0.2, g*0.2, b*0.2
         else
             -- bar
@@ -242,7 +242,7 @@ local function GetHealthColor(self, unit)
     else
         -- bar
         if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
-            r, g, b = AW.GetColorRGB("TAP_DENIED")
+            r, g, b = AF.GetColorRGB("TAP_DENIED")
         elseif self.color.type == "custom_color" then
             r, g, b = unpack(self.color.rgb)
         else
@@ -432,7 +432,7 @@ local function DispelHighlight_Setup(self, config)
 end
 
 local function MouseoverHighlight_SetColor(self, color)
-    self.mouseoverHighlight:SetColorTexture(AW.UnpackColor(color))
+    self.mouseoverHighlight:SetColorTexture(AF.UnpackColor(color))
 end
 
 local function MouseoverHighlight_OnEnter(self)
@@ -453,24 +453,24 @@ local function HealthBar_SetTexture(self, texture)
 end
 
 local function HealthBar_UpdatePixels(self)
-    AW.ReSize(self)
-    AW.RePoint(self)
-    AW.ReBorder(self)
-    AW.ReSize(self.fg)
-    AW.RePoint(self.fg)
-    AW.RePoint(self.loss)
-    AW.ReSize(self.overshieldGlow)
-    AW.ReSize(self.overshieldGlowR)
-    AW.RePoint(self.overshieldGlowR)
+    AF.ReSize(self)
+    AF.RePoint(self)
+    AF.ReBorder(self)
+    AF.ReSize(self.fg)
+    AF.RePoint(self.fg)
+    AF.RePoint(self.loss)
+    AF.ReSize(self.overshieldGlow)
+    AF.ReSize(self.overshieldGlowR)
+    AF.RePoint(self.overshieldGlowR)
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
 local function HealthBar_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AW.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.width, config.height)
 
     HealthBar_SetTexture(self, U.GetBarTexture(config.texture))
     self:SetBackgroundColor(unpack(config.bgColor))
@@ -549,7 +549,7 @@ end
 -- TODO: gradient texture & mask
 function UF.CreateHealthBar(parent, name)
     -- bar
-    local bar = AW.CreateSimpleBar(parent, name)
+    local bar = AF.CreateSimpleBar(parent, name)
     bar.root = parent
     bar:Hide()
 
@@ -569,7 +569,7 @@ function UF.CreateHealthBar(parent, name)
     shield:Hide()
     shield:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
     shield:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
-    shield:SetTexture(AW.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
+    shield:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
 
@@ -577,27 +577,27 @@ function UF.CreateHealthBar(parent, name)
     local overshieldGlow = bar:CreateTexture(name.."OvershieldGlow", "ARTWORK", nil, 3)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
-    overshieldGlow:SetTexture(AW.GetTexture("Overshield", BFI.name))
-    AW.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss)
-    AW.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss)
-    AW.SetWidth(overshieldGlow, 4)
+    overshieldGlow:SetTexture(AF.GetTexture("Overshield", BFI.name))
+    AF.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss)
+    AF.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss)
+    AF.SetWidth(overshieldGlow, 4)
 
     -- overshieldR
     local overshieldGlowR = bar:CreateTexture(name.."OvershieldGlowR", "ARTWORK", nil, 3)
     bar.overshieldGlowR = overshieldGlowR
     overshieldGlowR:Hide()
-    overshieldGlowR:SetTexture(AW.GetTexture("OvershieldR", BFI.name))
-    AW.SetPoint(overshieldGlowR, "TOP", shield, "TOPLEFT")
-    AW.SetPoint(overshieldGlowR, "BOTTOM", shield, "BOTTOMLEFT")
-    AW.SetWidth(overshieldGlowR, 6)
+    overshieldGlowR:SetTexture(AF.GetTexture("OvershieldR", BFI.name))
+    AF.SetPoint(overshieldGlowR, "TOP", shield, "TOPLEFT")
+    AF.SetPoint(overshieldGlowR, "BOTTOM", shield, "BOTTOMLEFT")
+    AF.SetWidth(overshieldGlowR, 6)
 
     local fullOvershieldGlowR = bar:CreateTexture(name.."FullOvershieldGlowR", "ARTWORK", nil, 3)
     bar.fullOvershieldGlowR = fullOvershieldGlowR
     fullOvershieldGlowR:Hide()
-    fullOvershieldGlowR:SetTexture(AW.GetTexture("Overabsorb", BFI.name))
-    AW.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg)
-    AW.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg)
-    AW.SetWidth(fullOvershieldGlowR, 4)
+    fullOvershieldGlowR:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
+    AF.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg)
+    AF.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg)
+    AF.SetWidth(fullOvershieldGlowR, 4)
 
     -- healAbsorb
     local healAbsorb = bar:CreateTexture(name.."HealAbsorb", "ARTWORK", nil, 4)
@@ -605,7 +605,7 @@ function UF.CreateHealthBar(parent, name)
     healAbsorb:Hide()
     healAbsorb:SetPoint("TOPRIGHT", bar.fg)
     healAbsorb:SetPoint("BOTTOMRIGHT", bar.fg)
-    healAbsorb:SetTexture(AW.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
+    healAbsorb:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     healAbsorb:SetHorizTile(true)
     healAbsorb:SetVertTile(true)
 
@@ -613,14 +613,14 @@ function UF.CreateHealthBar(parent, name)
     local overabsorbGlow = bar:CreateTexture(name.."OverabsorbGlow", "ARTWORK", nil, 5)
     bar.overabsorbGlow = overabsorbGlow
     overabsorbGlow:Hide()
-    overabsorbGlow:SetTexture(AW.GetTexture("Overabsorb", BFI.name))
-    AW.SetPoint(overabsorbGlow, "TOPLEFT", bar.fg)
-    AW.SetPoint(overabsorbGlow, "BOTTOMLEFT", bar.fg)
-    AW.SetWidth(overabsorbGlow, 4)
+    overabsorbGlow:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
+    AF.SetPoint(overabsorbGlow, "TOPLEFT", bar.fg)
+    AF.SetPoint(overabsorbGlow, "BOTTOMLEFT", bar.fg)
+    AF.SetWidth(overabsorbGlow, 4)
 
     -- mouseover highlight
     local mouseoverHighlight = bar:CreateTexture(name.."MouseoverHighlight", "ARTWORK", nil, 7)
-    -- local mouseoverHighlight = AW.CreateGradientTexture(bar, "VERTICAL", nil, {1, 1, 1, 0.1}, nil, "ARTWORK", 7)
+    -- local mouseoverHighlight = AF.CreateGradientTexture(bar, "VERTICAL", nil, {1, 1, 1, 0.1}, nil, "ARTWORK", 7)
     bar.mouseoverHighlight = mouseoverHighlight
     mouseoverHighlight:SetAllPoints(bar.bg)
     mouseoverHighlight:Hide()
@@ -645,7 +645,7 @@ function UF.CreateHealthBar(parent, name)
     bar.LoadConfig = HealthBar_LoadConfig
 
     -- pixel perfect
-    AW.AddToPixelUpdater(bar, HealthBar_UpdatePixels)
+    AF.AddToPixelUpdater(bar, HealthBar_UpdatePixels)
 
     return bar
 end

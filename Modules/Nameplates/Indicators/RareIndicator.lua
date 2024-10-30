@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -42,10 +42,10 @@ end
 -- load
 ---------------------------------------------------------------------
 local function RareIndicator_LoadConfig(self, config)
-    AW.SetFrameLevel(self, config.frameLevel, self.root)
-    AW.SetSize(self, config.width, config.height)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
+    AF.SetSize(self, config.width, config.height)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    self.icon:SetVertexColor(AW.UnpackColor(config.color))
+    self.icon:SetVertexColor(AF.UnpackColor(config.color))
 end
 
 ---------------------------------------------------------------------
@@ -59,7 +59,7 @@ function NP.CreateRareIndicator(parent, name)
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon = icon
-    icon:SetTexture(AW.GetTexture("Rare", BFI.name))
+    icon:SetTexture(AF.GetTexture("Rare", BFI.name))
     icon:SetAllPoints()
 
     -- functions

@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractWidgets
-local AW = _G.AbstractWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 local party
@@ -71,10 +71,10 @@ local function CreateParty()
     end
 
     -- mover
-    AW.CreateMover(party, L["Unit Frames"], _G.PARTY)
+    AF.CreateMover(party, L["Unit Frames"], _G.PARTY)
 
     -- pixel perfect
-    AW.AddToPixelUpdater(party)
+    AF.AddToPixelUpdater(party)
 end
 
 ---------------------------------------------------------------------
@@ -114,18 +114,18 @@ local function UpdateParty(module, which)
     -- party:SetFrameLevel(config.general.frameLevel)
 
     -- mover
-    AW.UpdateMoverSave(party, config.general.position)
+    AF.UpdateMoverSave(party, config.general.position)
 
     -- position
-    AW.LoadPosition(party, config.general.position)
+    AF.LoadPosition(party, config.general.position)
 
     -- container size
     if config.general.orientation == "top_to_bottom" or config.general.orientation == "bottom_to_top" then
-        AW.SetWidth(party, config.general.width)
-        AW.SetListHeight(party, unitCount, config.general.height, config.general.spacing)
+        AF.SetWidth(party, config.general.width)
+        AF.SetListHeight(party, unitCount, config.general.height, config.general.spacing)
     else
-        AW.SetHeight(party, config.general.height)
-        AW.SetListWidth(party, unitCount, config.general.width, config.general.spacing)
+        AF.SetHeight(party, config.general.height)
+        AF.SetListWidth(party, unitCount, config.general.width, config.general.spacing)
     end
 
     -- buttons
@@ -134,26 +134,26 @@ local function UpdateParty(module, which)
         button:ClearAllPoints()
 
         -- size
-        AW.SetSize(button, config.general.width, config.general.height)
+        AF.SetSize(button, config.general.width, config.general.height)
         -- out of range alpha
         button.oorAlpha = config.general.oorAlpha
         -- tooltip
         UF.SetupTooltip(button, config.general.tooltip)
         -- color
-        AW.StylizeFrame(button, config.general.bgColor, config.general.borderColor)
+        AF.StylizeFrame(button, config.general.bgColor, config.general.borderColor)
         -- indicators
         UF.SetupIndicators(button, indicators, config)
     end
 
     -- header
-    local p, rp, _, x, y, _, _, hp = AW.GetAnchorPoints_Simple("BOTTOMLEFT", config.general.orientation, config.general.spacing)
+    local p, rp, _, x, y, _, _, hp = AF.GetAnchorPoints_Simple("BOTTOMLEFT", config.general.orientation, config.general.spacing)
     header:ClearAllPoints()
     header:SetPoint(p, party)
     header:SetAttribute("point", hp)
     header:SetAttribute("xOffset", x)
     header:SetAttribute("yOffset", y)
-    header:SetAttribute("buttonWidth", AW.ConvertPixelsForRegion(config.general.width, party))
-    header:SetAttribute("buttonHeight", AW.ConvertPixelsForRegion(config.general.height, party))
+    header:SetAttribute("buttonWidth", AF.ConvertPixelsForRegion(config.general.width, party))
+    header:SetAttribute("buttonHeight", AF.ConvertPixelsForRegion(config.general.height, party))
     header:SetAttribute("showPlayer", config.general.showPlayer)
     header:SetSize(config.general.width, config.general.height)
     header:SetAttribute("unitsPerColumn", 5)
