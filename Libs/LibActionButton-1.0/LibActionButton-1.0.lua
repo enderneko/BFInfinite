@@ -533,7 +533,7 @@ end
 ---------------------------------------------------------------------
 -- animations
 function Generic:PlaySpellInterruptedAnim(spellID)
-    self:StopSpellCastAnim(self.actionButtonCastType)
+    self:StopSpellCastAnim(self.actionButtonCastType, spellID)
     if self.abilityID == spellID then
         if self.InterruptDisplay:IsShown() then
             self.InterruptDisplay:Hide()
