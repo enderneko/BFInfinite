@@ -319,7 +319,7 @@ local function GetString(arg1, arg2)
         arg2 = arg1.text
         arg1 = arg1.color
     end
-    return "|cff" .. AW.ConvertRGBToHEX(AW.ConvertRGB_256(AW.UnpackColor(arg1))) .. arg2 .. "|r"
+    return format("|c%s%s|r", AW.ConvertRGBToHEX(AW.UnpackColor(arg1)), arg2)
 end
 
 local function UpdateInstanceDifficulty(_, event, arg)
