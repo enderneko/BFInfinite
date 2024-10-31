@@ -745,7 +745,7 @@ end
 -- end
 
 local function CastBar_SetTexture(self, texture)
-    texture = U.GetBarTexture(texture)
+    texture = AF.LSM_GetBarTexture(texture)
     self.texture = texture
     self.bar.fg:SetTexture(texture)
     self.status:SetTexture(texture)
@@ -756,7 +756,7 @@ end
 
 local function CastBar_SetupNameText(self, config, showIcon)
     self.nameText:SetShown(config.enabled)
-    U.SetFont(self.nameText, config.font)
+    AF.SetFont(self.nameText, config.font)
     AF.LoadTextPosition(self.nameText, config.position, showIcon and self.icon)
     self.nameText:SetTextColor(AF.UnpackColor(config.color))
     self.nameTextLength = config.length
@@ -766,7 +766,7 @@ end
 
 local function CastBar_SetupDurationText(self, config)
     self.durationText:SetShown(config.enabled)
-    U.SetFont(self.durationText, config.font)
+    AF.SetFont(self.durationText, config.font)
     AF.LoadTextPosition(self.durationText, config.position)
     self.durationText:SetTextColor(AF.UnpackColor(config.color))
     self.durationFormat = config.format

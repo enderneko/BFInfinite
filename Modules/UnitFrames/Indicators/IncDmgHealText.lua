@@ -81,7 +81,7 @@ local function UpdateEvents(config)
 end
 
 local function IncDmgHealText_LoadConfig(self, config)
-    U.SetFont(self, unpack(config.font))
+    AF.SetFont(self, unpack(config.font))
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
     UpdateEvents(config.types)
 

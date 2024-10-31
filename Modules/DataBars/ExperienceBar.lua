@@ -292,7 +292,7 @@ local function UpdateXPerienceBar(module, which)
     experienceBar:SetBorderColor(AF.UnpackColor(config.borderColor))
     experienceBar:SetBackgroundColor(AF.UnpackColor(config.bgColor))
 
-    local texture = U.GetBarTexture(config.texture)
+    local texture = AF.LSM_GetBarTexture(config.texture)
 
     -- main
     experienceBar:SetTexture(texture)
@@ -345,11 +345,11 @@ local function UpdateXPerienceBar(module, which)
     -- text
     experienceBar.textEnabled = config.texts.enabled
     if config.texts.enabled then
-        U.SetFont(experienceBar.leftText, unpack(config.texts.font))
+        AF.SetFont(experienceBar.leftText, unpack(config.texts.font))
         experienceBar.leftFormat = config.texts.leftFormat
-        U.SetFont(experienceBar.centerText, unpack(config.texts.font))
+        AF.SetFont(experienceBar.centerText, unpack(config.texts.font))
         experienceBar.centerFormat = config.texts.centerFormat
-        U.SetFont(experienceBar.rightText, unpack(config.texts.font))
+        AF.SetFont(experienceBar.rightText, unpack(config.texts.font))
         experienceBar.rightFormat = config.texts.rightFormat
         UpdateTextVisibility(config.texts.showOnHover)
     else

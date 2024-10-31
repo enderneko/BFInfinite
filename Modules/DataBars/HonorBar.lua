@@ -172,16 +172,16 @@ local function UpdateHonorBar(module, which)
     honorBar:SetColor(AF.UnpackColor(config.color))
     honorBar:SetBorderColor(AF.UnpackColor(config.borderColor))
     honorBar:SetBackgroundColor(AF.UnpackColor(config.bgColor))
-    honorBar:SetTexture(U.GetBarTexture(config.texture))
+    honorBar:SetTexture(AF.LSM_GetBarTexture(config.texture))
 
     -- text
     honorBar.textEnabled = config.texts.enabled
     if config.texts.enabled then
-        U.SetFont(honorBar.leftText, unpack(config.texts.font))
+        AF.SetFont(honorBar.leftText, unpack(config.texts.font))
         honorBar.leftFormat = config.texts.leftFormat
-        U.SetFont(honorBar.centerText, unpack(config.texts.font))
+        AF.SetFont(honorBar.centerText, unpack(config.texts.font))
         honorBar.centerFormat = config.texts.centerFormat
-        U.SetFont(honorBar.rightText, unpack(config.texts.font))
+        AF.SetFont(honorBar.rightText, unpack(config.texts.font))
         honorBar.rightFormat = config.texts.rightFormat
         UpdateTextVisibility(config.texts.showOnHover)
     else

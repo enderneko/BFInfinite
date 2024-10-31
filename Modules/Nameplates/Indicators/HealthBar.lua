@@ -452,7 +452,7 @@ local function HealthBar_LoadConfig(self, config)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
 
-    HealthBar_SetTexture(self, U.GetBarTexture(config.texture))
+    HealthBar_SetTexture(self, AF.LSM_GetBarTexture(config.texture))
     self:SetBackgroundColor(unpack(config.bgColor))
     self:SetBorderColor(unpack(config.borderColor))
 

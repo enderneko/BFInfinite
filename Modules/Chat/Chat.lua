@@ -185,7 +185,7 @@ local function SetupChat()
 
         -- tab
         local tab = frame.tab
-        U.SetFont(tab.Text, unpack(C.config.tabFont))
+        AF.SetFont(tab.Text, unpack(C.config.tabFont))
         tab.Text:SetTextColor(AF.GetAccentColorRGB())
         tab:SetPushedTextOffset(0, -1)
 
@@ -218,7 +218,7 @@ local function SetupChat()
         frame:SetMaxLines(C.config.maxLines)
         frame:SetTimeVisible(C.config.fadeTime)
         frame:SetFading(C.config.fading)
-        U.SetFont(frame, unpack(C.config.font))
+        AF.SetFont(frame, unpack(C.config.font))
     end
 end
 
@@ -306,7 +306,7 @@ local function UpdateCombatLog()
 
     -- progress bar
     local bar = _G.CombatLogQuickButtonFrame_CustomProgressBar
-    bar:SetStatusBarTexture(U.GetBarTexture("BFI"))
+    bar:SetStatusBarTexture(AF.LSM_GetBarTexture("BFI"))
     bar:SetAlpha(0.75)
     AF.SetOnePixelInside(bar, _G.CombatLogQuickButtonFrame_Custom)
 end
@@ -353,7 +353,7 @@ local function UpdateChat(module)
     C:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", SetupChat)
     C:RegisterEvent("FIRST_FRAME_RENDERED", UpdateAllTabUnderlines)
 
-    U.SetFont(chatCopyFrame.scroll.eb, unpack(C.config.font))
+    AF.SetFont(chatCopyFrame.scroll.eb, unpack(C.config.font))
 
     AF.UpdateMoverSave(chatContainer, config.position)
     AF.LoadPosition(chatContainer, config.position)

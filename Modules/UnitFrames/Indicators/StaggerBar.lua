@@ -170,7 +170,7 @@ local function StaggerText_SetFormat(self, format)
 end
 
 local function StaggerBar_SetupText(self, config)
-    U.SetFont(self.text, config.font)
+    AF.SetFont(self.text, config.font)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     self.text:SetTextColor(AF.UnpackColor(config.color))
     StaggerText_SetFormat(self, config.format)
@@ -184,7 +184,7 @@ local function StaggerBar_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
 
-    self:SetTexture(U.GetBarTexture(config.texture))
+    self:SetTexture(AF.LSM_GetBarTexture(config.texture))
     self:SetBackgroundColor(unpack(config.bgColor))
     self:SetBorderColor(unpack(config.borderColor))
 

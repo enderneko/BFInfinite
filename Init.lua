@@ -119,3 +119,10 @@ end
 AddLib("LAB", "LibActionButton-1.0-BFI")
 AddLib("LCG", "LibCustomGlow-1.0")
 AddLib("LRC", "LibRangeCheck-3.0")
+
+---------------------------------------------------------------------
+-- media
+---------------------------------------------------------------------
+AF.LSM:Register("statusbar", "BFI", AF.GetTexture("StatusBar", BFI.name))
+AF.LSM:Register("statusbar", "BFI Plain", AF.GetPlainTexture())
+AF.LSM:Register("font", "BFI", AF.GetFont("Noto_AP_SC", BFI.name), 255)

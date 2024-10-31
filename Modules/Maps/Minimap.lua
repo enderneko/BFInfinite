@@ -242,18 +242,15 @@ end
 -- clock
 ---------------------------------------------------------------------
 local function UpdateClockTime(self, elapsed)
-    self.elapsed = (self.elapsed or 0) + elapsed
+    self.elapsed = self.elapsed + elapsed
     if self.elapsed >= 0.1 then
+        self.elapsed = 0
         self.text:SetText(GameTime_GetTime(false))
     end
 end
 
 local function UpdateClockSize()
-    C_Timer.After(1, function()
-        Minimap.clockButton.text:SetText("00:00")
-        Minimap.clockButton:Show()
-        AF.SetSizeToFitText(Minimap.clockButton, Minimap.clockButton.text, 2)
-    end)
+    Minimap.clockButton:SetSize(AF.GetStringSize("00:00", unpack(M.config.minimap.clock.font)))
 end
 
 local function CreateClockButton()
@@ -308,6 +305,7 @@ local function CreateClockButton()
     end)
 
     -- OnUpdate
+    clockButton.elapsed = 0
     clockButton:SetScript("OnUpdate", UpdateClockTime)
 end
 
@@ -462,6 +460,7 @@ local function UpdatePixels()
     end
     AF.DefaultUpdatePixels(Minimap.clockButton)
     AF.DefaultUpdatePixels(Minimap.instanceDifficultyFrame)
+    UpdateClockSize()
 end
 
 local function InitMinimap()
@@ -552,7 +551,7 @@ local function UpdateMinimap(module, which)
 
     -- clock
     if config.clock.enabled then
-        U.SetFont(Minimap.clockButton.text, unpack(config.clock.font))
+        AF.SetFont(Minimap.clockButton.text, unpack(config.clock.font))
         AF.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
 
         -- flash
@@ -568,7 +567,7 @@ local function UpdateMinimap(module, which)
             flashTexture:SetGradient("VERTICAL", CreateColor(AF.GetColorRGB("BFI")), CreateColor(AF.GetColorRGB("none")))
         end
 
-        -- size
+        Minimap.clockButton:Show()
         M:RegisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
     else
         Minimap.clockButton:Hide()
@@ -589,7 +588,7 @@ local function UpdateMinimap(module, which)
     Minimap.zoneText.enabled = config.zoneText.enabled
     if config.zoneText.enabled then
         Minimap.zoneText.length = config.zoneText.length
-        U.SetFont(Minimap.zoneText, unpack(config.zoneText.font))
+        AF.SetFont(Minimap.zoneText, unpack(config.zoneText.font))
         AF.LoadTextPosition(Minimap.zoneText, config.zoneText.position)
         M:RegisterEvent("PLAYER_ENTERING_WORLD", UpdateZoneText)
         M:RegisterEvent("ZONE_CHANGED_NEW_AREA", UpdateZoneText)
@@ -610,7 +609,7 @@ local function UpdateMinimap(module, which)
     if config.instanceDifficulty.enabled then
         Minimap.instanceDifficultyFrame.config = config.instanceDifficulty
         AF.LoadWidgetPosition(Minimap.instanceDifficultyFrame, config.instanceDifficulty.position)
-        U.SetFont(Minimap.instanceDifficultyFrame.text, unpack(config.instanceDifficulty.font))
+        AF.SetFont(Minimap.instanceDifficultyFrame.text, unpack(config.instanceDifficulty.font))
         M:RegisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty)
         M:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", UpdateInstanceDifficulty)
         M:RegisterEvent("INSTANCE_GROUP_SIZE_CHANGED", UpdateInstanceDifficulty)

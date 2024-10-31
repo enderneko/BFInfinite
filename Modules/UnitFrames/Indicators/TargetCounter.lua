@@ -93,7 +93,7 @@ end
 -- load
 ---------------------------------------------------------------------
 local function TargetCounter_LoadConfig(self, config)
-    U.SetFont(self, unpack(config.font))
+    AF.SetFont(self, unpack(config.font))
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
 
     self.color = config.color

@@ -256,16 +256,16 @@ local function UpdateReputationBar(module, which)
 
     reputationBar:SetBorderColor(AF.UnpackColor(config.borderColor))
     reputationBar:SetBackgroundColor(AF.UnpackColor(config.bgColor))
-    reputationBar:SetTexture(U.GetBarTexture(config.texture))
+    reputationBar:SetTexture(AF.LSM_GetBarTexture(config.texture))
 
     -- text
     reputationBar.textEnabled = config.texts.enabled
     if config.texts.enabled then
-        U.SetFont(reputationBar.leftText, unpack(config.texts.font))
+        AF.SetFont(reputationBar.leftText, unpack(config.texts.font))
         reputationBar.leftFormat = config.texts.leftFormat
-        U.SetFont(reputationBar.centerText, unpack(config.texts.font))
+        AF.SetFont(reputationBar.centerText, unpack(config.texts.font))
         reputationBar.centerFormat = config.texts.centerFormat
-        U.SetFont(reputationBar.rightText, unpack(config.texts.font))
+        AF.SetFont(reputationBar.rightText, unpack(config.texts.font))
         reputationBar.rightFormat = config.texts.rightFormat
         UpdateTextVisibility(config.texts.showOnHover)
     else

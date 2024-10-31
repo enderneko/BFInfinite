@@ -190,7 +190,7 @@ local function SetupBars(self)
         bar:SetWidth(width)
         AF.SetHeight(bar, self.config.height)
 
-        bar:SetTexture(U.GetBarTexture(self.config.texture))
+        bar:SetTexture(AF.LSM_GetBarTexture(self.config.texture))
         bar:SetBackgroundColor(unpack(self.config.bgColor))
         bar:SetBorderColor(unpack(self.config.borderColor))
 

@@ -289,14 +289,14 @@ end
 local function Aura_SetupStackText(self, config)
     self.stack:SetShown(config.enabled)
     AF.LoadWidgetPosition(self.stack, config.position, self)
-    U.SetFont(self.stack, unpack(config.font))
+    AF.SetFont(self.stack, unpack(config.font))
     self.stack:SetTextColor(unpack(config.color))
 end
 
 local function Aura_SetupDurationText(self, config)
     self.duration:SetShown(config.enabled)
     AF.LoadWidgetPosition(self.duration, config.position, self)
-    U.SetFont(self.duration, unpack(config.font))
+    AF.SetFont(self.duration, unpack(config.font))
     self.durationColor = config.color
 end
 

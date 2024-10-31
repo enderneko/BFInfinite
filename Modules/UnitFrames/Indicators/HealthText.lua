@@ -252,7 +252,7 @@ end
 -- load
 ---------------------------------------------------------------------
 local function HealthText_LoadConfig(self, config)
-    U.SetFont(self, unpack(config.font))
+    AF.SetFont(self, unpack(config.font))
     HealthText_SetFormat(self, config.format)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
 

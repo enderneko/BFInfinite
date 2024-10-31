@@ -193,7 +193,7 @@ local function ExtraManaBar_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
 
-    self:SetTexture(U.GetBarTexture(config.texture))
+    self:SetTexture(AF.LSM_GetBarTexture(config.texture))
     self:SetBackgroundColor(unpack(config.bgColor))
     self:SetBorderColor(unpack(config.borderColor))
     self:SetSmoothing(config.smoothing)
