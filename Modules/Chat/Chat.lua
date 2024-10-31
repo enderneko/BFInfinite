@@ -31,11 +31,27 @@ end
 local lines = {}
 -- local debug = {}
 
+local GetAccountInfoByID = C_BattleNet.GetAccountInfoByID
+local function FixBNWhisper(text)
+    --! : and ：
+    -- 发送给 |HBNplayer:|Kp116|k:113:635:BN_WHISPER:|Kp116|k|h[|Kp116|k]|h：xxxxxx
+    if strfind(text, "k:%d+:%d+:BN_WHISPER:") then
+        local id = tonumber(strmatch(text, "k:(%d+):%d+:BN_WHISPER:"))
+        local info = GetAccountInfoByID(id)
+        if info and info.battleTag then
+            local tag = strsplit("#", info.battleTag)
+            return gsub(text, "|HBNplayer:.*:.*:.*:BN_WHISPER:.*|h", "[" .. tag .. "]")
+        end
+    end
+    return text
+end
+
 local function RaidIconRepl(index)
     index = index ~= "" and _G["RAID_TARGET_" .. index]
     return index and ("{" .. strlower(index) .. "}") or ""
 end
 
+-- forked from ElvUI
 local function TextureRepl(w, x, y)
     if x == "" then
         return (w ~= "" and w) or (y ~= "" and y) or ""
@@ -97,6 +113,7 @@ local function ShowChatCopyFrame(b)
         local text, r, g, b, chatTypeID, messageAccessID, lineID = frame:GetMessageInfo(i)
         r, g, b = r or 1, g or 1, b or 1
 
+        text = FixBNWhisper(text)
         text = RemoveIcons(text)
         text = FixColorES(text)
 
