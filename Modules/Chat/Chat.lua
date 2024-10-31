@@ -33,7 +33,7 @@ local lines = {}
 
 local GetAccountInfoByID = C_BattleNet.GetAccountInfoByID
 local function FixBNWhisper(text)
-    --! : and ：
+    --! be careful with ":" and "："
     -- 发送给 |HBNplayer:|Kp116|k:113:635:BN_WHISPER:|Kp116|k|h[|Kp116|k]|h：xxxxxx
     if strfind(text, "k:%d+:%d+:BN_WHISPER:") then
         local id = tonumber(strmatch(text, "k:(%d+):%d+:BN_WHISPER:"))
@@ -46,6 +46,7 @@ local function FixBNWhisper(text)
     return text
 end
 
+-- forked from ElvUI
 local function RaidIconRepl(index)
     index = index ~= "" and _G["RAID_TARGET_" .. index]
     return index and ("{" .. strlower(index) .. "}") or ""
@@ -58,6 +59,7 @@ local function TextureRepl(w, x, y)
     end
 end
 
+-- forked from ElvUI
 local function RemoveIcons(text)
     text = gsub(text, [[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_(%d+):0|t]], RaidIconRepl)
     text = gsub(text, "(%s?)(|?)|[TA].-|[ta](%s?)", TextureRepl)
@@ -315,9 +317,11 @@ local function UpdateCombatLog()
         local b = _G["CombatLogQuickButtonFrameButton" .. i]
         if b then
             local fs = b:GetFontString()
-            if fs then
-                fs:SetFont(AF.GetFont("Noto_AP_SC", BFI.name), 13, "")
+            if not fs then
+                b:SetText("")
+                fs = b:GetFontString()
             end
+            fs:SetFont(AF.GetFont("Noto_AP_SC", BFI.name), 13, "")
         end
     end
 
