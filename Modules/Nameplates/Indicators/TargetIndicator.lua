@@ -17,11 +17,11 @@ local function UpdateTarget(self)
     local unit = self.root.unit
 
     if UnitIsUnit(unit, "focus") then
-        self.icon:SetTexture(AF.GetTexture(self.focusTexture))
+        self.icon:SetTexture(AF.GetTexture(self.focusTexture, BFI.name))
         self.icon:SetVertexColor(AF.UnpackColor(self.focusColor))
         self:Show()
     elseif UnitIsUnit(unit, "target") then
-        self.icon:SetTexture(AF.GetTexture(self.targetTexture))
+        self.icon:SetTexture(AF.GetTexture(self.targetTexture, BFI.name))
         self.icon:SetVertexColor(AF.UnpackColor(self.targetColor))
         self:Show()
     else

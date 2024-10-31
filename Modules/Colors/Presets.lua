@@ -50,8 +50,6 @@ local uf_colors = {
     damage = {1, 0.1, 0.1, 1},
     heal = {0.1, 1, 0.1, 1},
 
-    guild = {0.251, 1, 0.251},
-
     exp_normal_start = {0.34, 0.39, 1, 1},
     exp_normal_end = {0.78, 0.38, 1, 1},
     exp_complete = {1, 0.59, 0, 1},
