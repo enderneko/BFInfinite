@@ -250,7 +250,8 @@ local function UpdateClockTime(self, elapsed)
 end
 
 local function UpdateClockSize()
-    Minimap.clockButton:SetSize(AF.GetStringSize("00:00", unpack(M.config.minimap.clock.font)))
+    local w, h = AF.GetStringSize("00:00", unpack(M.config.minimap.clock.font))
+    Minimap.clockButton:SetSize(w + 2, h + 2)
 end
 
 local function CreateClockButton()
@@ -569,6 +570,7 @@ local function UpdateMinimap(module, which)
 
         Minimap.clockButton:Show()
         M:RegisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
+        UpdateClockSize()
     else
         Minimap.clockButton:Hide()
         M:UnregisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
