@@ -7,6 +7,7 @@ local U = BFI.utils
 local defaults = {
     enabled = true,
     position = {"BOTTOMLEFT", 20, 20},
+    editBoxPosition = {"BOTTOMLEFT", "TOPLEFT", -3, 3},
     width = 400,
     height = 200,
     font = {"BFI", 13, "none", true},

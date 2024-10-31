@@ -175,10 +175,10 @@ end
 local function SetupChat()
     for _, name in pairs(CHAT_FRAMES) do
         local frame = _G[name]
+        -- local id = frame:GetID() -- 2:combatlog, 3:voice
 
-        local id = frame:GetID() -- 2:combatlog, 3:voice
         if not frame.tab then
-            frame.tab = _G[format("ChatFrame%sTab", id)]
+            frame.tab = _G[name .. "Tab"]
             frame.tab.owner = frame
             FixTabAlpha(frame.tab)
             hooksecurefunc(frame.tab, "SetAlpha", FixTabAlpha)
@@ -233,6 +233,20 @@ local function SetupChat()
             frame.Background:Show()
         end
 
+        -- editBox
+        if frame.editBox and not frame.editBox.skinned then
+            local editBox = frame.editBox
+            editBox.skinned = true
+            -- position
+            editBox:ClearAllPoints()
+            AF.SetHeight(editBox, 24)
+            AF.SetWidth(editBox, C.config.width)
+            AF.LoadWidgetPosition(editBox, C.config.editBoxPosition, frame)
+            -- style
+            U.ReSkinEditBox(editBox)
+
+        end
+
         -- misc
         frame:SetMaxLines(C.config.maxLines)
         frame:SetTimeVisible(C.config.fadeTime)
@@ -241,6 +255,9 @@ local function SetupChat()
     end
 end
 
+---------------------------------------------------------------------
+-- setup default
+---------------------------------------------------------------------
 local function SetupDefaultChatFrame()
     local function Update()
         DEFAULT_CHAT_FRAME:SetClampRectInsets(0, 0, 0, 0)
@@ -333,6 +350,32 @@ local function UpdateCombatLog()
 end
 BFI.RegisterCallbackForAddon("Blizzard_CombatLog", UpdateCombatLog)
 
+local ChatTypeInfo = _G.ChatTypeInfo
+local function UpdateEditBox(editbox)
+    local chatType = editbox:GetAttribute("chatType")
+    if not chatType then return end
+
+    local info = ChatTypeInfo[chatType]
+    local target = editbox:GetAttribute("channelTarget")
+    local id = target and GetChannelName(target)
+
+    if chatType == "CHANNEL" and id then
+        if id == 0 then
+            editbox:SetBackdropBorderColor(AF.GetColorRGB("border"))
+        else
+            info = ChatTypeInfo[chatType .. id]
+            editbox:SetBackdropBorderColor(AF.ExtractColor(info))
+        end
+    else
+        editbox:SetBackdropBorderColor(AF.ExtractColor(info))
+    end
+end
+
+local function UpdateEditBoxFont(editbox)
+    AF.SetFont(editbox, unpack(C.config.font))
+    AF.SetFont(editbox.header, unpack(C.config.font))
+end
+
 local function InitHooks()
     hooksecurefunc("FCF_SetWindowName", UpdateTabUnderline)
     hooksecurefunc("FCFTab_UpdateColors", UpdateTabColor)
@@ -342,6 +385,11 @@ local function InitHooks()
     hooksecurefunc("Blizzard_CombatLog_Update_QuickButtons", UpdateCombatLog)
     hooksecurefunc("Blizzard_CombatLog_QuickButtonFrame_OnLoad", UpdateCombatLog)
     hooksecurefunc("ChatFrame_OnUpdate", UpdateScrollToBottomButton)
+    hooksecurefunc("ChatEdit_UpdateHeader", UpdateEditBox)
+    hooksecurefunc("ChatEdit_ActivateChat", UpdateEditBoxFont)
+    -- hooksecurefunc("FCFDock_SelectWindow", function()
+    --     print("FCFDock_SelectWindow")
+    -- end)
 end
 
 ---------------------------------------------------------------------

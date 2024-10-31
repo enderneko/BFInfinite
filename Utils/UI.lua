@@ -34,3 +34,73 @@ function U.DisableEditMode(region)
     region.HighlightSystem = BFI.dummy
     region.ClearHighlight = BFI.dummy
 end
+
+---------------------------------------------------------------------
+-- skin
+---------------------------------------------------------------------
+local BLIZZARD_REGION_TEXTURES = {
+    "Left",
+    "FocusLeft",
+
+    "Right",
+    "FocusRight",
+
+    "Middle",
+    "Mid",
+    "FocusMid",
+
+    -- "LeftDisabled",
+    -- "MiddleDisabled",
+    -- "RightDisabled",
+    -- "BorderBottom",
+    -- "BorderBottomLeft",
+    -- "BorderBottomRight",
+    -- "BorderLeft",
+    -- "BorderRight",
+    -- "TopLeft",
+    -- "TopRight",
+    -- "BottomLeft",
+    -- "BottomRight",
+    -- "TopMiddle",
+    -- "MiddleLeft",
+    -- "MiddleRight",
+    -- "BottomMiddle",
+    -- "MiddleMiddle",
+    -- "TabSpacer",
+    -- "TabSpacer1",
+    -- "TabSpacer2",
+    -- "_RightSeparator",
+    -- "_LeftSeparator",
+    -- "Cover",
+    -- "Border",
+    -- "Background",
+    -- "TopTex",
+    -- "TopLeftTex",
+    -- "TopRightTex",
+    -- "LeftTex",
+    -- "BottomTex",
+    -- "BottomLeftTex",
+    -- "BottomRightTex",
+    -- "RightTex",
+    -- "MiddleTex",
+    -- "Center"
+}
+
+local function HideBlizzardTextures(frame)
+    local name = frame:GetName()
+    local tex
+    for _, r in pairs(BLIZZARD_REGION_TEXTURES) do
+        tex = name and _G[name .. r] or frame[r]
+        if tex then
+            tex:Hide()
+            tex:SetAlpha(0)
+        end
+    end
+end
+
+function U.ReSkinEditBox(frame)
+    HideBlizzardTextures(frame)
+    AF.SetDefaultBackdrop(frame)
+    frame:SetBackdropColor(AF.GetColorRGB("background"))
+    frame:SetBackdropBorderColor(AF.GetColorRGB("border"))
+end
