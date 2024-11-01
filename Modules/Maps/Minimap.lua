@@ -318,7 +318,7 @@ local function GetString(arg1, arg2)
         arg2 = arg1.text
         arg1 = arg1.color
     end
-    return format("|c%s%s|r", AF.ConvertRGBToHEX(AF.UnpackColor(arg1)), arg2)
+    return AF.WrapTextInColorRGB(arg2, AF.UnpackColor(arg1))
 end
 
 local function UpdateInstanceDifficulty(_, event, arg)
