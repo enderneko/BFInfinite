@@ -52,6 +52,19 @@ local function RaidIconRepl(index)
     return index and ("{" .. strlower(index) .. "}") or ""
 end
 
+local function CombatLogRaidIconRepl(index)
+    -- star - |Hicon:1:dest|h|h
+    -- circle - 2
+    -- diamond - 4
+    -- triangle - 8
+    -- moon - 16
+    -- square - 32
+    -- cross - 64
+    -- skull - |Hicon:128:source|h|h
+    index = log(tonumber(index)) / log(2) + 1
+    return "{" .. _G["RAID_TARGET_" .. index] .. "}"
+end
+
 -- forked from ElvUI
 local function TextureRepl(w, x, y)
     if x == "" then
@@ -59,10 +72,11 @@ local function TextureRepl(w, x, y)
     end
 end
 
--- forked from ElvUI
 local function RemoveIcons(text)
+    -- forked from ElvUI
     text = gsub(text, [[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_(%d+):0|t]], RaidIconRepl)
     text = gsub(text, "(%s?)(|?)|[TA].-|[ta](%s?)", TextureRepl)
+    text = gsub(text, [[|Hicon:(%d+):[^:]+|h|h]], CombatLogRaidIconRepl)
     return text
 end
 
@@ -235,6 +249,7 @@ local function SetupChat()
         if frame.editBox and not frame.editBox.skinned then
             local editBox = frame.editBox
             editBox.skinned = true
+            editBox:SetAltArrowKeyMode(false)
             -- position
             editBox:ClearAllPoints()
             AF.SetHeight(editBox, 24)
@@ -242,7 +257,6 @@ local function SetupChat()
             AF.LoadWidgetPosition(editBox, C.config.editBoxPosition, frame)
             -- style
             U.ReSkinEditBox(editBox)
-
         end
 
         -- misc
@@ -336,7 +350,7 @@ local function UpdateCombatLog()
                 b:SetText("")
                 fs = b:GetFontString()
             end
-            fs:SetFont(AF.GetFont("Noto_AP_SC", BFI.name), 13, "")
+            AF.SetFont(fs, unpack(C.config.font))
         end
     end
 
@@ -416,6 +430,7 @@ local function UpdateChat(module)
     end
 
     SetupChat()
+    UpdateCombatLog()
     C:RegisterEvent("UPDATE_CHAT_WINDOWS", SetupChat)
     C:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", SetupChat)
     C:RegisterEvent("FIRST_FRAME_RENDERED", UpdateAllTabUnderlines)
