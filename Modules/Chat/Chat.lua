@@ -79,13 +79,14 @@ local function FixColorES(text)
     return text
 end
 
+local chatCopyFrame
 local function UpdateText(eb, shouldUpdate)
     if shouldUpdate then
         eb:SetText(table.concat(lines, "\n"))
     end
+    chatCopyFrame.scroll:ScrollToBottom()
 end
 
-local chatCopyFrame
 local function CreateChatCopyFrame()
     chatCopyFrame = CreateFrame("Frame", "BFIChatCopyFrame", AF.UIParent)
     chatCopyFrame:Hide()
@@ -94,7 +95,7 @@ local function CreateChatCopyFrame()
     chatCopyFrame:SetScript("OnMouseWheel", BFI.dummy)
     tinsert(UISpecialFrames, "BFIChatCopyFrame")
 
-    chatCopyFrame.scroll = AF.CreateScrollEditBox(chatCopyFrame, nil, nil, 20, 20)
+    chatCopyFrame.scroll = AF.CreateScrollEditBox(chatCopyFrame, nil, nil, 20, 20, 5)
     chatCopyFrame.scroll:SetAllPoints()
     chatCopyFrame.scroll.eb:SetScript("OnEscapePressed", function()
         chatCopyFrame.scroll.eb:ClearFocus()
@@ -102,7 +103,6 @@ local function CreateChatCopyFrame()
     end)
 
     chatCopyFrame.scroll.eb:HookScript("OnTextChanged", UpdateText)
-    chatCopyFrame.scroll:HookScript("OnSizeChanged", chatCopyFrame.scroll.ScrollToBottom)
 end
 
 local function ShowChatCopyFrame(b)
@@ -125,9 +125,7 @@ local function ShowChatCopyFrame(b)
     -- texplore(debug)
 
     chatCopyFrame:Show()
-    C_Timer.After(0.05, function()
-        UpdateText(chatCopyFrame.scroll.eb, true)
-    end)
+    UpdateText(chatCopyFrame.scroll.eb, true)
 end
 
 local function HideChatCopyFrame()
