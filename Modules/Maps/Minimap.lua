@@ -321,6 +321,33 @@ local function GetString(arg1, arg2)
     return AF.WrapTextInColorRGB(arg2, AF.UnpackColor(arg1))
 end
 
+-- https://warcraft.wiki.gg/wiki/DifficultyID
+local DIFFICULTY_INFO = {
+    [1] = "normal", -- Normal, party
+    [2] = "heroic", -- Heroic, party
+    [3] = "normal", -- 10 Player, raid
+    [4] = "normal", -- 25 Player, raid
+    [5] = "heroic", -- 10 Player (Heroic), raid
+    [6] = "heroic", -- 25 Player (Heroic), raid
+    [7] = "lookingForRaid", -- Looking For Raid, raid
+    [8] = "mythicKeystone", -- Mythic Keystone, party
+    [9] = "normal", -- 40 Player, raid
+    [14] = "normal", -- Normal, raid
+    [15] = "heroic", -- Heroic, raid
+    [16] = "mythic", -- Mythic, raid
+    [17] = "lookingForRaid", -- Looking For Raid, raid
+    [18] = "event", -- Event, raid
+    [19] = "event", -- Event, party
+    [20] = "event", -- Event Scenario, scenario
+    [23] = "mythic", -- Mythic, party
+    [24] = "timewalking", -- Timewalking, party
+    [30] = "event", -- Event, scenario
+    [33] = "timewalking", -- Timewalking, raid
+    [151] = "timewalking", -- Looking For Raid, Timewalking, raid
+    [205] = "normal", -- ?
+    [208] = "delve",
+}
+
 local function UpdateInstanceDifficulty(_, event, arg)
     -- NOTE: IsInGuildGroup() seems not correct, InGuildParty() seems fine
     if event == "GUILD_PARTY_STATE_UPDATED" then
@@ -328,46 +355,62 @@ local function UpdateInstanceDifficulty(_, event, arg)
     end
 
     if IsInInstance() then
-        local _, _, difficulty, _, _, _, _, _, groupSize = GetInstanceInfo()
+        local _, instanceType, difficulty, _, _, _, _, _, groupSize = GetInstanceInfo()
 
         local config = Minimap.instanceDifficultyFrame.config
 
-        groupSize = GetString(Minimap.instanceDifficultyFrame.isGuildGroup and config.guildColor or config.normalColor, groupSize)
+        if difficulty and DIFFICULTY_INFO[difficulty] then
+            groupSize = GetString(Minimap.instanceDifficultyFrame.isGuildGroup and config.guildColor or config.normalColor, groupSize)
+            difficulty = GetString(config.types[DIFFICULTY_INFO[difficulty]])
 
-        -- https://warcraft.wiki.gg/wiki/DifficultyID
-        if difficulty == 1 or difficulty == 3 or difficulty == 4 or difficulty == 9 or difficulty == 12 or difficulty == 14 or difficulty == 205 then
-            -- Normal
-            difficulty = GetString(config.difficulties.normal)
-        elseif difficulty == 2 or difficulty == 5 or difficulty == 6 or difficulty == 11 or difficulty == 15 then
-            -- Heroic
-            difficulty = GetString(config.difficulties.heroic)
-        elseif difficulty == 16 or difficulty == 23 then
-            -- Mythic
-            difficulty = GetString(config.difficulties.mythic)
-        elseif difficulty == 7 or difficulty == 17 then
-            -- Looking For Raid
-            difficulty = GetString(config.difficulties.lookingForRaid)
-        elseif difficulty == 8 then
-            -- Mythic Keystone
-            difficulty = GetString(config.difficulties.mythicKeystone)
-        elseif difficulty == 24 then
-            -- Timewalking
-            difficulty = GetString(config.difficulties.timewalking)
-        elseif difficulty == 18 or difficulty == 19 or difficulty == 20 then
-            -- Event
-            difficulty = GetString(config.difficulties.event)
-        else
-            -- TODO: delves
-            groupSize = nil
-            difficulty = nil
-        end
-
-        if groupSize and difficulty then
             Minimap.instanceDifficultyFrame.text:SetText(groupSize .. difficulty)
             Minimap.instanceDifficultyFrame:Show()
+
+        elseif instanceType == "pvp" or instanceType == "arena" then
+            Minimap.instanceDifficultyFrame.text:SetText(GetString(config.types.pvp))
+            Minimap.instanceDifficultyFrame:Show()
+
+        elseif instanceType == "scenario" then
+            Minimap.instanceDifficultyFrame.text:SetText(GetString(config.types.scenario))
+            Minimap.instanceDifficultyFrame:Show()
+
         else
             Minimap.instanceDifficultyFrame:Hide()
         end
+
+        -- if difficulty == 1 or difficulty == 3 or difficulty == 4 or difficulty == 9 or difficulty == 12 or difficulty == 14 or difficulty == 205 then
+        --     -- Normal
+        --     difficulty = GetString(config.types.normal)
+        -- elseif difficulty == 2 or difficulty == 5 or difficulty == 6 or difficulty == 11 or difficulty == 15 then
+        --     -- Heroic
+        --     difficulty = GetString(config.types.heroic)
+        -- elseif difficulty == 16 or difficulty == 23 then
+        --     -- Mythic
+        --     difficulty = GetString(config.types.mythic)
+        -- elseif difficulty == 7 or difficulty == 17 then
+        --     -- Looking For Raid
+        --     difficulty = GetString(config.types.lookingForRaid)
+        -- elseif difficulty == 8 then
+        --     -- Mythic Keystone
+        --     difficulty = GetString(config.types.mythicKeystone)
+        -- elseif difficulty == 24 then
+        --     -- Timewalking
+        --     difficulty = GetString(config.types.timewalking)
+        -- elseif difficulty == 18 or difficulty == 19 or difficulty == 20 then
+        --     -- Event
+        --     difficulty = GetString(config.types.event)
+        -- else
+        --     -- TODO: delves
+        --     groupSize = nil
+        --     difficulty = nil
+        -- end
+
+        -- if groupSize and difficulty then
+        --     Minimap.instanceDifficultyFrame.text:SetText(groupSize .. difficulty)
+        --     Minimap.instanceDifficultyFrame:Show()
+        -- else
+        --     Minimap.instanceDifficultyFrame:Hide()
+        -- end
     else
         Minimap.instanceDifficultyFrame:Hide()
     end

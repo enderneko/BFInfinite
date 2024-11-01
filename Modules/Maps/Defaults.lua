@@ -73,15 +73,17 @@ local defaults = {
             font = {"Expressway", 12, "outline", false},
             normalColor = AF.GetColorTable("white"),
             guildColor = AF.GetColorTable("guild"),
-            difficulties = {
+            types = {
                 normal = {text = "N", color = AF.GetColorTable("orange")},
                 heroic = {text = "H", color = AF.GetColorTable("orangered")},
                 mythic = {text = "M", color = AF.GetColorTable("firebrick")},
                 mythicKeystone = {text = "M+", color = AF.GetColorTable("firebrick")},
                 lookingForRaid = {text = "LFR", color = AF.GetColorTable("yellow")},
                 timewalking = {text = "TW", color = AF.GetColorTable("skyblue")},
-                event = {text = "E", color = AF.GetColorTable("classicrose")},
-                -- TODO: delves
+                event = {text = "E", color = AF.GetColorTable("vividblue")},
+                scenario = {text = "SC", color = AF.GetColorTable("vividblue")},
+                pvp = {text = "PvP", color = AF.GetColorTable("lightred")},
+                delve = {text = "DV", color = AF.GetColorTable("gold")},
             },
         },
     },
