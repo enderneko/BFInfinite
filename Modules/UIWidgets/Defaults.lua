@@ -27,13 +27,20 @@ local defaults = {
         scale = 1,
     },
     vehicleSeats = {
-        enabled = true,
         position = {"BOTTOMLEFT", 381, 183},
         scale = 0.7,
     },
     queueStatus = {
         position = {"BOTTOM", -469, 152},
         scale = 0.7,
+    },
+    durability = {
+        position = {"BOTTOM", -244, 153},
+        scale = 0.7,
+    },
+    battlenetToast = {
+        position = {"BOTTOMLEFT", 1, 238},
+        scale = 1,
     },
     quickJoinToast = {
         enabled = true,

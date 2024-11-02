@@ -26,6 +26,7 @@ function eventFrame:ADDON_LOADED(arg)
             SetCVar("cameraDistanceMaxZoomFactor", 2.6)
             SetCVar("ActionButtonUseKeyDown", 1)
             SetCVar("chatMouseScroll", 1)
+            SetCVar("threatWarning", 0)
         end
 
         if type(BFIConfig["default"]) ~= "table" then

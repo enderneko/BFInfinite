@@ -1,0 +1,41 @@
+{
+  "lists": [
+    {
+      "id": "643431c7-e660-47b1-a44b-4e799b536d19",
+      "title": "BACKLOG",
+      "cards": [
+        {
+          "id": "428c53bf-8335-4957-8c74-1803e105c2ed",
+          "listId": "643431c7-e660-47b1-a44b-4e799b536d19",
+          "title": "bntoast style",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        }
+      ]
+    },
+    {
+      "id": "7915d51e-5603-44aa-aa3a-8dff734ea7c6",
+      "title": "TODO",
+      "cards": []
+    },
+    {
+      "id": "fc9baa7c-c3e7-49a4-8526-816c794e5ed9",
+      "title": "IN PROGRESS",
+      "cards": []
+    },
+    {
+      "id": "7b0c4654-92fe-4b4e-9566-15e8c706d9c9",
+      "title": "DONE",
+      "cards": []
+    }
+  ],
+  "archive": {
+    "lists": [],
+    "cards": []
+  },
+  "settings": {
+    "labels": []
+  }
+}

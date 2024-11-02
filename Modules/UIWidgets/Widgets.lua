@@ -45,9 +45,10 @@ local function UpdateWidgets(module, which)
         init = true
         InitWidget(_G.UIWidgetPowerBarContainerFrame, L["Power Bar Widget"], "CENTER", 150, 30, config.powerBarWidget)
         InitWidget(_G.VehicleSeatIndicator, _G.HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL, "CENTER", 128, 128, config.vehicleSeats)
+        InitWidget(_G.DurabilityFrame, L["Durability Frame"], "CENTER", 90, 75, config.durability)
+        InitWidget(_G.BNToastFrame, L["Battlenet Toast"], "CENTER", 250, 50, config.battlenetToast)
     end
 
     _G.UIWidgetPowerBarContainerFrame._container:SetShown(config.powerBarWidget.enabled)
-    _G.VehicleSeatIndicator:SetShown(config.vehicleSeats.enabled)
 end
 BFI.RegisterCallback("UpdateModules", "UI_Widgets", UpdateWidgets)
