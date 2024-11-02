@@ -9,7 +9,7 @@ local U = BFI.utils
 local defaults = {
     microMenu = {
         enabled = true,
-        position = {"BOTTOM", 333, 101},
+        position = {"BOTTOMLEFT", 1, 183},
         alpha = 0,
         width = 20,
         height = 25,
@@ -29,6 +29,11 @@ local defaults = {
     queueStatus = {
         position = {"BOTTOM", -469, 152},
         scale = 0.7,
+    },
+    quickJoinToast = {
+        enabled = true,
+        position = {"BOTTOMLEFT", 1, 212},
+        font = {"BFI", 12, "none", true},
     },
 }
 

@@ -4,4 +4,5 @@
     <Script file="Widgets.lua"/>
     <Script file="MicroMenu.lua"/>
     <Script file="QueueStatusButton.lua"/>
+    <Script file="QuickJoinToast.lua"/>
 </Ui>
