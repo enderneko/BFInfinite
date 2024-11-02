@@ -26,6 +26,11 @@ local defaults = {
         position = {"BOTTOM", 0, 200},
         scale = 1,
     },
+    vehicleSeats = {
+        enabled = true,
+        position = {"BOTTOMLEFT", 381, 183},
+        scale = 0.7,
+    },
     queueStatus = {
         position = {"BOTTOM", -469, 152},
         scale = 0.7,
