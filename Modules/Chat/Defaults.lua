@@ -6,10 +6,10 @@ local U = BFI.utils
 
 local defaults = {
     enabled = true,
-    position = {"BOTTOMLEFT", 20, 20},
+    position = {"BOTTOMLEFT", 1, 1},
     editBoxPosition = {"BOTTOMLEFT", "TOPLEFT", -3, 3},
-    width = 400,
-    height = 200,
+    width = 470,
+    height = 178,
     font = {"BFI", 13, "none", true},
     tabFont = {"BFI", 13, "none", true},
     fading = true,
