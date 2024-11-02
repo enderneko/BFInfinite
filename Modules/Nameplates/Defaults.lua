@@ -386,7 +386,12 @@ do
             blockers = {
                 crowdControlType = true,
             },
-            priorities = {},
+            priorities = {
+                [980] = 1,
+                [32390] = 2,
+                [316099] = 3,
+                [48181] = 4,
+            },
             blacklist = {},
             auraTypeColor = {
                 castByMe = false,
