@@ -25,6 +25,7 @@ function eventFrame:ADDON_LOADED(arg)
             SetCVar("screenshotQuality", 10)
             SetCVar("cameraDistanceMaxZoomFactor", 2.6)
             SetCVar("ActionButtonUseKeyDown", 1)
+            SetCVar("chatMouseScroll", 1)
         end
 
         if type(BFIConfig["default"]) ~= "table" then

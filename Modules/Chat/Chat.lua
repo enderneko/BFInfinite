@@ -400,6 +400,9 @@ local function SetupDefaultChatFrame()
     ChatFrameToggleVoiceMuteButton:RegisterStateUpdateEvent("VOICE_CHAT_SILENCED_CHANGED", UpdateVoiceMute)
     ChatFrameToggleVoiceMuteButton:RegisterStateUpdateEvent("VOICE_CHAT_LOGIN", UpdateVoiceMute)
     ChatFrameToggleVoiceMuteButton:RegisterStateUpdateEvent("VOICE_CHAT_LOGOUT", UpdateVoiceMute)
+
+    -- QuickJoinToastButton
+    QuickJoinToastButton:Hide()
 end
 
 ---------------------------------------------------------------------
