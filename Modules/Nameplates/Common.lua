@@ -33,8 +33,8 @@ local efficiencyModeIndicators = {
     healthBar = true,
     nameText = true,
     targetIndicator = true,
+    castBar = true,
     healthText = false,
-    castBar = false,
     rareIndicator = false,
     raidIcon = false,
     classIcon = false,
@@ -42,7 +42,6 @@ local efficiencyModeIndicators = {
     buffs = false,
     crowdControls = false,
     questIndicator = false,
-    targetIndicator = false,
 }
 
 function NP.SetupIndicators(np, config, mode)
