@@ -3794,7 +3794,12 @@ local defaults = {
                     dispellable = false,
                 },
                 mode = "blacklist",
-                priorities = {},
+                priorities = {
+                    [980] = 1,
+                    [32390] = 2,
+                    [316099] = 3,
+                    [48181] = 4,
+                },
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
