@@ -134,7 +134,7 @@ local function Portrait_LoadConfig(self, config)
     --         self.cutaway = true
     --         self.healthBar = self.root.indicators.healthBar
     --         AF.SetPoint(self, "TOPLEFT")
-    --         AF.SetPoint(self, "BOTTOMRIGHT", self.healthBar.fg)
+    --         AF.SetPoint(self, "BOTTOMRIGHT", self.healthBar.fg.mask)
     --         self:SetBackdropColor(0, 0, 0, 0)
     --         self:SetBackdropBorderColor(0, 0, 0, 0)
     --     else

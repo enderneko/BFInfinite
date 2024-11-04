@@ -123,9 +123,9 @@ end
 ---------------------------------------------------------------------
 local function GetPowerColor(self, type)
     if type == "power_color" then
-        return AF.GetColorRGB(self.powerType)
+        return AF.GetPowerColor(self.powerType, "player")
     elseif type == "power_color_dark" then
-        return AF.GetColorRGB(self.powerType, nil, 0.2)
+        return AF.GetPowerColor(self.powerType, "player", nil, 0.2)
     end
 end
 
@@ -136,13 +136,14 @@ local function GetClassPowerColor(self)
     if not (self.config.color and self.config.lossColor) then return end
 
     local r, g, b, a, lossR, lossG, lossB, lossA
+    local r2, g2, b2, lossR2, lossG2, lossB2
 
     a = self.config.color.alpha
     lossA = self.config.lossColor.alpha
 
     -- bar
     if strfind(self.config.color.type, "^power") then
-        r, g, b = GetPowerColor(self, self.config.color.type)
+        r, g, b, _, r2, g2, b2 = GetPowerColor(self, self.config.color.type)
     elseif strfind(self.config.color.type, "^class") then
         r, g, b = GetClassColor(self.config.color.type, class)
     else
@@ -151,14 +152,14 @@ local function GetClassPowerColor(self)
 
     -- loss
     if strfind(self.config.lossColor.type, "^power") then
-        lossR, lossG, lossB = GetPowerColor(self, self.config.lossColor.type)
+        lossR, lossG, lossB, _, lossR2, lossG2, lossB2 = GetPowerColor(self, self.config.lossColor.type)
     elseif strfind(self.config.lossColor.type, "^class") then
         lossR, lossG, lossB = GetClassColor(self.config.lossColor.type, class)
     else
         lossR, lossG, lossB = unpack(self.config.lossColor.rgb)
     end
 
-    return r, g, b, a, lossR, lossG, lossB, lossA
+    return r, g, b, a, lossR, lossG, lossB, lossA, r2, g2, b2, lossR2, lossG2, lossB2
 end
 
 ---------------------------------------------------------------------
@@ -167,10 +168,19 @@ end
 local function UpdatePowerColor(self, event, unitId)
     if unitId and unitId ~= self.unit then return end
 
-    local r, g, b, a, lossR, lossG, lossB, lossA = GetClassPowerColor(self)
-    for i = 1, self.numPowerBars do
-        self.bars[i]:SetColor(r, g, b, a)
-        self.bars[i]:SetLossColor(lossR, lossG, lossB, lossA)
+    local r, g, b, a, lossR, lossG, lossB, lossA, r2, g2, b2, lossR2, lossG2, lossB2 = GetClassPowerColor(self)
+    if r2 then
+        -- gradient
+        for i = 1, self.numPowerBars do
+            self.bars[i]:SetGradientColor(r, g, b, a, r2, g2, b2, a)
+            self.bars[i]:SetGradientLossColor(lossR, lossG, lossB, lossA, lossR2, lossG2, lossB2, lossA)
+        end
+    else
+        -- solid
+        for i = 1, self.numPowerBars do
+            self.bars[i]:SetColor(r, g, b, a)
+            self.bars[i]:SetLossColor(lossR, lossG, lossB, lossA)
+        end
     end
 end
 
@@ -186,6 +196,7 @@ local function SetupBars(self)
     for i = 1, self.numPowerBars do
         local bar = self.bars[i] or AF.CreateSimpleBar(self)
         self.bars[i] = bar
+        AF.RemoveFromPixelUpdater(bar)
 
         bar:SetWidth(width)
         AF.SetHeight(bar, self.config.height)
@@ -218,6 +229,7 @@ local function SetBarValues(self)
     local value = self.power
 
     for i = 1, self.numPowerBars do
+        self.bars[i]:SetScript("OnUpdate", nil)
         if value >= 1 then
             self.bars[i]:SetBarValue(1)
         elseif value >= 0 then
@@ -227,6 +239,15 @@ local function SetBarValues(self)
         end
         value = value - 1
     end
+end
+
+local function UpdatePowerRegen(self)
+    local index = self.power + 1
+    if index > self.powerMax then return end
+
+    self.bars[i]:SetScript("OnUpdate", function()
+
+    end)
 end
 
 ---------------------------------------------------------------------
@@ -250,6 +271,7 @@ local function UpdatePower(self, event, unitId, powerType)
         self.power = UnitPower(self.unit, self.powerIndex)
     end
     SetBarValues(self)
+    UpdatePowerRegen(self)
 end
 
 ---------------------------------------------------------------------
@@ -336,7 +358,7 @@ local function ClassPowerBar_UpdatePixels(self)
     C_Timer.After(1, function()
         local width = (AF.ConvertPixelsForRegion(self._width, self) - AF.ConvertPixelsForRegion(self.config.spacing, self) * (self.numPowerBars - 1)) / self.numPowerBars
         for _, bar in pairs(self.bars) do
-            bar:UpdatePixels()
+            bar:DefaultUpdatePixels()
             bar:SetWidth(width)
         end
     end)

@@ -214,7 +214,7 @@ local defaults = {
                 lossColor = {type = "power_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
                 bgColor = AF.GetColorTable("background"),
                 borderColor = AF.GetColorTable("border"),
-                texture = "BFI",
+                texture = "BFI Plain",
             },
             nameText = {
                 enabled = true,

@@ -74,7 +74,7 @@ local function CreateCooldown_Vertical(self, hasIcon)
         texture:SetAlpha(0)
 
     local mask = cooldown:CreateMaskTexture()
-    mask:SetTexture(AF.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    mask:SetTexture(AF.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE", "NEAREST")
     mask:SetPoint("TOPLEFT")
     mask:SetPoint("BOTTOMRIGHT", texture)
 

@@ -251,8 +251,5 @@ function UF.CreateExtraManaBar(parent, name)
     bar.DisableConfigMode = ExtraManaBar_DisableConfigMode
     bar.LoadConfig = ExtraManaBar_LoadConfig
 
-    -- pixel perfect
-    AF.AddToPixelUpdater(bar)
-
     return bar
 end

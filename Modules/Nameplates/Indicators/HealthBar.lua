@@ -264,8 +264,8 @@ local function UpdateShield(self, event, unitId)
             self.shield:SetPoint("BOTTOMRIGHT", self.bg)
         else
             self.shield:ClearAllPoints()
-            self.shield:SetPoint("TOPLEFT", self.fg, "TOPRIGHT")
-            self.shield:SetPoint("BOTTOMLEFT", self.fg, "BOTTOMRIGHT")
+            self.shield:SetPoint("TOPLEFT", self.fg.mask, "TOPRIGHT")
+            self.shield:SetPoint("BOTTOMLEFT", self.fg.mask, "BOTTOMRIGHT")
         end
 
         if overs then -- overshield
@@ -433,12 +433,7 @@ local function ThreatGlow_Setup(self, config)
 end
 
 local function HealthBar_UpdatePixels(self)
-    AF.ReSize(self)
-    AF.RePoint(self)
-    AF.ReBorder(self)
-    AF.ReSize(self.fg)
-    AF.RePoint(self.fg)
-    AF.RePoint(self.loss)
+    self:DefaultUpdatePixels()
     AF.ReSize(self.overshieldGlow)
     AF.ReSize(self.overshieldGlowR)
     AF.RePoint(self.overshieldGlowR)
@@ -491,8 +486,8 @@ function NP.CreateHealthBar(parent, name)
     local shield = bar:CreateTexture(name.."Stripe", "ARTWORK", nil, 2)
     bar.shield = shield
     shield:Hide()
-    shield:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
-    shield:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
+    shield:SetPoint("TOPLEFT", bar.fg.mask, "TOPRIGHT")
+    shield:SetPoint("BOTTOMLEFT", bar.fg.mask, "BOTTOMRIGHT")
     shield:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
@@ -502,8 +497,8 @@ function NP.CreateHealthBar(parent, name)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
     overshieldGlow:SetTexture(AF.GetTexture("Overshield", BFI.name))
-    AF.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss)
-    AF.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss)
+    AF.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss.mask)
+    AF.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss.mask)
     AF.SetWidth(overshieldGlow, 4)
 
     -- overshieldR
@@ -519,8 +514,8 @@ function NP.CreateHealthBar(parent, name)
     bar.fullOvershieldGlowR = fullOvershieldGlowR
     fullOvershieldGlowR:Hide()
     fullOvershieldGlowR:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
-    AF.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg)
-    AF.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg)
+    AF.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg.mask)
+    AF.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg.mask)
     AF.SetWidth(fullOvershieldGlowR, 4)
 
     -- mouseover highlight

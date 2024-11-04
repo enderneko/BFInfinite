@@ -245,8 +245,5 @@ function UF.CreateStaggerBar(parent, name)
     bar.DisableConfigMode = StaggerBar_DisableConfigMode
     bar.LoadConfig = StaggerBar_LoadConfig
 
-    -- pixel perfect
-    AF.AddToPixelUpdater(bar)
-
     return bar
 end

@@ -190,7 +190,6 @@ local function CreateExperienceBar()
     experienceBar:Hide()
 
     AF.CreateMover(experienceBar, "BFI: " .. L["Data Bars"], L["Experience Bar"])
-    AF.AddToPixelUpdater(experienceBar)
 
     -- disabled
     local disabledTexture = experienceBar:CreateTexture(nil, "OVERLAY")
@@ -302,7 +301,7 @@ local function UpdateXPerienceBar(module, which)
         experienceBar:SetColor(AF.UnpackColor(config.normalColor.startColor))
     end
 
-    local anchorTo = experienceBar.fg
+    local anchorTo = experienceBar.fg.mask
 
     -- complete
     experienceBar.completeEnabled = config.completeQuests.enabled

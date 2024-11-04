@@ -244,8 +244,5 @@ function UF.CreatePowerBar(parent, name)
     bar.DisableConfigMode = PowerBar_DisableConfigMode
     bar.LoadConfig = PowerBar_LoadConfig
 
-    -- pixel perfect
-    AF.AddToPixelUpdater(bar)
-
     return bar
 end

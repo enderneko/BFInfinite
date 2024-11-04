@@ -88,8 +88,8 @@ local function UpdateShield(self, event, unitId)
             self.shield:SetPoint("BOTTOMRIGHT", self.bg)
         else
             self.shield:ClearAllPoints()
-            self.shield:SetPoint("TOPLEFT", self.fg, "TOPRIGHT")
-            self.shield:SetPoint("BOTTOMLEFT", self.fg, "BOTTOMRIGHT")
+            self.shield:SetPoint("TOPLEFT", self.fg.mask, "TOPRIGHT")
+            self.shield:SetPoint("BOTTOMLEFT", self.fg.mask, "BOTTOMRIGHT")
         end
 
         if overs then -- overshield
@@ -453,12 +453,7 @@ local function HealthBar_SetTexture(self, texture)
 end
 
 local function HealthBar_UpdatePixels(self)
-    AF.ReSize(self)
-    AF.RePoint(self)
-    AF.ReBorder(self)
-    AF.ReSize(self.fg)
-    AF.RePoint(self.fg)
-    AF.RePoint(self.loss)
+    self:DefaultUpdatePixels()
     AF.ReSize(self.overshieldGlow)
     AF.ReSize(self.overshieldGlowR)
     AF.RePoint(self.overshieldGlowR)
@@ -560,15 +555,15 @@ function UF.CreateHealthBar(parent, name)
     local healPrediction = bar:CreateTexture(name.."HealPrediction", "ARTWORK", nil, 1)
     bar.healPrediction = healPrediction
     healPrediction:Hide()
-    healPrediction:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
-    healPrediction:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
+    healPrediction:SetPoint("TOPLEFT", bar.fg.mask, "TOPRIGHT")
+    healPrediction:SetPoint("BOTTOMLEFT", bar.fg.mask, "BOTTOMRIGHT")
 
     -- shield
     local shield = bar:CreateTexture(name.."Stripe", "ARTWORK", nil, 2)
     bar.shield = shield
     shield:Hide()
-    shield:SetPoint("TOPLEFT", bar.fg, "TOPRIGHT")
-    shield:SetPoint("BOTTOMLEFT", bar.fg, "BOTTOMRIGHT")
+    shield:SetPoint("TOPLEFT", bar.fg.mask, "TOPRIGHT")
+    shield:SetPoint("BOTTOMLEFT", bar.fg.mask, "BOTTOMRIGHT")
     shield:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
@@ -578,8 +573,8 @@ function UF.CreateHealthBar(parent, name)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
     overshieldGlow:SetTexture(AF.GetTexture("Overshield", BFI.name))
-    AF.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss)
-    AF.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss)
+    AF.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss.mask)
+    AF.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss.mask)
     AF.SetWidth(overshieldGlow, 4)
 
     -- overshieldR
@@ -595,16 +590,16 @@ function UF.CreateHealthBar(parent, name)
     bar.fullOvershieldGlowR = fullOvershieldGlowR
     fullOvershieldGlowR:Hide()
     fullOvershieldGlowR:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
-    AF.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg)
-    AF.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg)
+    AF.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg.mask)
+    AF.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg.mask)
     AF.SetWidth(fullOvershieldGlowR, 4)
 
     -- healAbsorb
     local healAbsorb = bar:CreateTexture(name.."HealAbsorb", "ARTWORK", nil, 4)
     bar.healAbsorb = healAbsorb
     healAbsorb:Hide()
-    healAbsorb:SetPoint("TOPRIGHT", bar.fg)
-    healAbsorb:SetPoint("BOTTOMRIGHT", bar.fg)
+    healAbsorb:SetPoint("TOPRIGHT", bar.fg.mask)
+    healAbsorb:SetPoint("BOTTOMRIGHT", bar.fg.mask)
     healAbsorb:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     healAbsorb:SetHorizTile(true)
     healAbsorb:SetVertTile(true)
@@ -614,8 +609,8 @@ function UF.CreateHealthBar(parent, name)
     bar.overabsorbGlow = overabsorbGlow
     overabsorbGlow:Hide()
     overabsorbGlow:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
-    AF.SetPoint(overabsorbGlow, "TOPLEFT", bar.fg)
-    AF.SetPoint(overabsorbGlow, "BOTTOMLEFT", bar.fg)
+    AF.SetPoint(overabsorbGlow, "TOPLEFT", bar.fg.mask)
+    AF.SetPoint(overabsorbGlow, "BOTTOMLEFT", bar.fg.mask)
     AF.SetWidth(overabsorbGlow, 4)
 
     -- mouseover highlight
@@ -631,7 +626,7 @@ function UF.CreateHealthBar(parent, name)
     -- dispel highlight
     local dispelHighlight = bar:CreateTexture(name.."DispelHighlight", "ARTWORK", nil, 1)
     bar.dispelHighlight = dispelHighlight
-    dispelHighlight:SetAllPoints(bar.fg)
+    dispelHighlight:SetAllPoints(bar.fg.mask)
     dispelHighlight:Hide()
 
     bar.dispelTypes = {}

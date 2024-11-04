@@ -199,7 +199,6 @@ local function CreateReputationBar()
     reputationBar:Hide()
 
     AF.CreateMover(reputationBar, "BFI: " .. L["Data Bars"], L["Reputation Bar"])
-    AF.AddToPixelUpdater(reputationBar)
 
     -- text frame
     local textFrame = CreateFrame("Frame", nil, reputationBar)

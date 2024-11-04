@@ -492,11 +492,11 @@ local function CastBar_SetupSpark(self, config)
     self.spark:Show()
 
     self.spark:ClearAllPoints()
-    self.spark:SetPoint("RIGHT", self.bar.fg)
+    self.spark:SetPoint("RIGHT", self.bar.fg.mask)
     if config.height == 0 then
         self.spark:SetPoint("TOP")
         self.spark:SetPoint("BOTTOM")
-        self.spark:SetPoint("RIGHT", self.bar.fg)
+        self.spark:SetPoint("RIGHT", self.bar.fg.mask)
     else
         self.spark:SetHeight(config.height)
     end
@@ -511,11 +511,9 @@ local function CastBar_SetupSpark(self, config)
 end
 
 local function CastBar_UpdatePixels(self)
-    AF.ReSize(self)
-    AF.RePoint(self)
-    AF.ReBorder(self)
+    AF.DefaultUpdatePixels(self)
     AF.ReSize(self.spark)
-    AF.RePoint(self.bar)
+    self.bar:DefaultUpdatePixels()
     AF.RePoint(self.status)
     AF.RePoint(self.icon)
     AF.RePoint(self.iconBG)

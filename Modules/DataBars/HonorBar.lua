@@ -113,7 +113,6 @@ local function CreateHonorBar()
     honorBar:Hide()
 
     AF.CreateMover(honorBar, "BFI: " .. L["Data Bars"], L["Honor Bar"])
-    AF.AddToPixelUpdater(honorBar)
 
     -- text frame
     local textFrame = CreateFrame("Frame", nil, honorBar)
