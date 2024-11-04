@@ -227,8 +227,8 @@ local function SetupChat()
         tab:SetPushedTextOffset(0, -1)
 
         if not tab.underline then
-            tab.underline = AF.CreateSeparator(tab, 1, 1, BFI.name)
-            tab.underline:SetPoint("TOP", tab.Text, "BOTTOM", 0, -2)
+            tab.underline = AF.CreateSeparator(tab, nil, 1, BFI.name)
+            AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -2)
             tab.underline:Hide()
             tab:HookScript("OnClick", HideChatCopyFrame)
         end
@@ -426,7 +426,7 @@ local function UpdateTabColor(tab, selected)
         tab.Text:SetTextColor(AF.GetAccentColorRGB())
         tab.underline:Show()
     else
-        tab.Text:SetTextColor(1, 1, 1)
+        tab.Text:SetTextColor(AF.GetColorRGB("white"))
         tab.underline:Hide()
     end
 end
