@@ -1486,6 +1486,7 @@ end
 function InitializeEventHandler()
     lib.eventFrame:SetScript("OnEvent", OnEvent)
     lib.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    lib.eventFrame:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
     lib.eventFrame:RegisterEvent("ACTIONBAR_SHOWGRID")
     lib.eventFrame:RegisterEvent("ACTIONBAR_HIDEGRID")
     lib.eventFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
@@ -1575,6 +1576,10 @@ function OnEvent(frame, event, arg1, ...)
             end
         end
     elseif event == "PLAYER_ENTERING_WORLD" or event == "UPDATE_VEHICLE_ACTIONBAR" then
+        ForAllButtons(Update, nil, event)
+    elseif event == "ACTIVE_PLAYER_SPECIALIZATION_CHANGED" then
+        -- print("LAB ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
+        -- ACTIVE_PLAYER_SPECIALIZATION_CHANGED fires on MANUALLY spec change
         ForAllButtons(Update, nil, event)
     elseif event == "UPDATE_SHAPESHIFT_FORM" then
         -- XXX: throttle these updates since Blizzard broke the event and its now extremely spammy in some clients
@@ -2109,7 +2114,7 @@ function Update(self, which)
 
     -- this could've been a spec change, need to call OnStateChanged for action buttons, if present
     if not InCombatLockdown() and self._state_type == "action" then
-        if which == "PLAYER_ENTERING_WORLD" then --! (from ElvUI) zone in dragon mount on Evokers can bug
+        if which == "PLAYER_ENTERING_WORLD" or which == "ACTIVE_PLAYER_SPECIALIZATION_CHANGED" then
             self.header:SetFrameRef("updateButton", self)
             self.header:Execute(([[
                 local frame = self:GetFrameRef("updateButton")
