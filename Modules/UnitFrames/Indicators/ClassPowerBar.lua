@@ -15,10 +15,15 @@ local UnitPowerType = UnitPowerType
 local UnitPowerMax = UnitPowerMax
 local UnitPower = UnitPower
 local UnitPowerDisplayMod = UnitPowerDisplayMod
+local GetPowerRegenForPowerType = GetPowerRegenForPowerType
+local GetRuneCooldown = GetRuneCooldown
 
 local SPEC_MAGE_ARCANE = _G.SPEC_MAGE_ARCANE -- 1
 local SPEC_MONK_WINDWALKER = _G.SPEC_MONK_WINDWALKER -- 3
 local SPEC_WARLOCK_DESTRUCTION = _G.SPEC_WARLOCK_DESTRUCTION -- 3
+local SPEC_DK_BLOOD = 1
+local SPEC_DK_FORST = 2
+local SPEC_DK_UNHOLY = 3
 
 local POWER_TYPE_ENERGY = Enum.PowerType.Energy -- 3
 local POWER_TYPE_COMBO_POINTS = Enum.PowerType.ComboPoints -- 4
@@ -27,30 +32,36 @@ local POWER_TYPE_HOLY_POWER = Enum.PowerType.HolyPower -- 9
 local POWER_TYPE_CHI = Enum.PowerType.Chi -- 12
 local POWER_TYPE_ARCANE_CHARGES = Enum.PowerType.ArcaneCharges -- 16
 local POWER_TYPE_ESSENCE = Enum.PowerType.Essence -- 19
+-- local POWER_TYPE_RUNE_BLOOD = Enum.PowerType.RuneBlood -- 20
+-- local POWER_TYPE_RUNE_FROST = Enum.PowerType.RuneFrost -- 21
+-- local POWER_TYPE_RUNE_UNHOLY = Enum.PowerType.RuneUnholy -- 22
 
 ---------------------------------------------------------------------
 -- ShouldShowClassPower
 ---------------------------------------------------------------------
 local should_show_class_power = {
-    ROGUE = function()
+    DEATHKNIGHT = function()
         return true
     end,
     DRUID = function()
         return UnitPowerType("player") == POWER_TYPE_ENERGY
     end,
-    WARLOCK = function()
+    EVOKER = function()
         return true
-    end,
-    PALADIN = function()
-        return true
-    end,
-    MONK = function()
-        return GetSpecialization() == SPEC_MONK_WINDWALKER -- Windwalker
     end,
     MAGE = function()
         return GetSpecialization() == SPEC_MAGE_ARCANE -- Arcane
     end,
-    EVOKER = function()
+    MONK = function()
+        return GetSpecialization() == SPEC_MONK_WINDWALKER -- Windwalker
+    end,
+    PALADIN = function()
+        return true
+    end,
+    ROGUE = function()
+        return true
+    end,
+    WARLOCK = function()
         return true
     end,
 }
@@ -73,11 +84,32 @@ end
 -- GetClassPowerInfo
 ---------------------------------------------------------------------
 local class_power_info = {
-    -- class = {powerIndex, powerType, valueOfEachBar}
-    ROGUE = function()
-        return POWER_TYPE_COMBO_POINTS, "COMBO_POINTS"
+    -- class = {powerIndex, powerType, valueOfEachBar, powerRegen}
+    DEATHKNIGHT = function()
+        if GetSpecialization() == SPEC_DK_BLOOD then
+            return nil, "RUNE_BLOOD"
+        elseif GetSpecialization() == SPEC_DK_FORST then
+            return nil, "RUNE_FORST"
+        elseif GetSpecialization() == SPEC_DK_UNHOLY then
+            return nil, "RUNE_UNHOLY"
+        end
     end,
     DRUID = function()
+        return POWER_TYPE_COMBO_POINTS, "COMBO_POINTS"
+    end,
+    EVOKER = function()
+        return POWER_TYPE_ESSENCE, "ESSENCE", nil, GetPowerRegenForPowerType(POWER_TYPE_ESSENCE)
+    end,
+    MAGE = function()
+        return POWER_TYPE_ARCANE_CHARGES, "ARCANE_CHARGES"
+    end,
+    MONK = function()
+        return POWER_TYPE_CHI, "CHI"
+    end,
+    PALADIN = function()
+        return POWER_TYPE_HOLY_POWER, "HOLY_POWER"
+    end,
+    ROGUE = function()
         return POWER_TYPE_COMBO_POINTS, "COMBO_POINTS"
     end,
     WARLOCK = function()
@@ -86,18 +118,6 @@ local class_power_info = {
         else
             return POWER_TYPE_SOUL_SHARDS, "SOUL_SHARDS"
         end
-    end,
-    PALADIN = function()
-        return POWER_TYPE_HOLY_POWER, "HOLY_POWER"
-    end,
-    MONK = function()
-        return POWER_TYPE_CHI, "CHI"
-    end,
-    MAGE = function()
-        return POWER_TYPE_ARCANE_CHARGES, "ARCANE_CHARGES"
-    end,
-    EVOKER = function()
-        return POWER_TYPE_ESSENCE, "ESSENCE"
     end,
 }
 
@@ -195,8 +215,11 @@ local function SetupBars(self)
     -- create
     for i = 1, self.numPowerBars do
         local bar = self.bars[i] or AF.CreateSimpleBar(self)
-        self.bars[i] = bar
         AF.RemoveFromPixelUpdater(bar)
+
+        self.bars[i] = bar
+        bar.parent = self
+        bar.index = i
 
         bar:SetWidth(width)
         AF.SetHeight(bar, self.config.height)
@@ -213,7 +236,15 @@ local function SetupBars(self)
             AF.SetPoint(bar, "TOPLEFT", self.bars[i-1], "TOPRIGHT", self.config.spacing, 0)
         end
 
-        self.bars[i]:Show()
+        -- cooldown text
+        bar.text = bar.text or bar:CreateFontString(nil, "OVERLAY")
+        bar.text:SetShown(self.config.cooldownText.enabled)
+        AF.LoadTextPosition(bar.text, self.config.cooldownText.position, bar)
+        AF.SetFont(bar.text, unpack(self.config.cooldownText.font))
+        bar.text:SetText("")
+
+        bar:Desaturate(false)
+        bar:Show()
     end
 
     -- hide unused
@@ -225,29 +256,70 @@ local function SetupBars(self)
     UpdatePowerColor(self)
 end
 
-local function SetBarValues(self)
+---------------------------------------------------------------------
+-- SetBarValues_Static
+---------------------------------------------------------------------
+local function SetBarValues_Static(self)
     local value = self.power
-
     for i = 1, self.numPowerBars do
-        self.bars[i]:SetScript("OnUpdate", nil)
         if value >= 1 then
             self.bars[i]:SetBarValue(1)
+            self.bars[i]:Desaturate(false)
         elseif value >= 0 then
             self.bars[i]:SetBarValue(value)
+            self.bars[i]:Desaturate(true)
         else
             self.bars[i]:SetBarValue(0)
+            self.bars[i]:Desaturate(false)
         end
         value = value - 1
     end
 end
 
-local function UpdatePowerRegen(self)
-    local index = self.power + 1
-    if index > self.powerMax then return end
+---------------------------------------------------------------------
+-- SetBarValues_Essence
+---------------------------------------------------------------------
+local function EssenceRegenOnUpdate(bar, elapsed)
+    -- bar
+    bar.regenValue = bar.regenValue + elapsed * bar.parent.powerRegen
+    bar:SetBarValue(bar.regenValue)
+    -- countdown
+    bar.remaining = (1 - bar.regenValue) / bar.parent.powerRegen
+    if bar.remaining > 1 then
+        bar.text:SetFormattedText("%d", bar.remaining)
+    elseif bar.remaining > 0 then
+        bar.text:SetFormattedText("%.1f", bar.remaining)
+    else
+        bar.text:SetText("")
+    end
+end
 
-    self.bars[i]:SetScript("OnUpdate", function()
-
-    end)
+local function SetBarValues_Essence(self)
+    for i = 1, self.numPowerBars do
+        if i == self.power + 1 then
+            if self.lastRegenBar and self.lastRegenBar.regenValue then
+                self.bars[i].regenValue = self.lastRegenBar.regenValue
+            else
+                self.bars[i].regenValue = 0
+            end
+            self.bars[i].text:SetText("")
+            self.bars[i]:SetScript("OnUpdate", EssenceRegenOnUpdate)
+            self.bars[i]:Desaturate(true)
+        elseif i <= self.power then
+            self.bars[i]:SetScript("OnUpdate", nil)
+            self.bars[i]:SetBarValue(1)
+            self.bars[i].regenValue = nil
+            self.bars[i].text:SetText("")
+            self.bars[i]:Desaturate(false)
+        else
+            self.bars[i]:SetScript("OnUpdate", nil)
+            self.bars[i]:SetBarValue(0)
+            self.bars[i].regenValue = nil
+            self.bars[i].text:SetText("")
+            self.bars[i]:Desaturate(false)
+        end
+    end
+    self.lastRegenBar = self.bars[self.power + 1]
 end
 
 ---------------------------------------------------------------------
@@ -270,8 +342,53 @@ local function UpdatePower(self, event, unitId, powerType)
     else
         self.power = UnitPower(self.unit, self.powerIndex)
     end
-    SetBarValues(self)
-    UpdatePowerRegen(self)
+
+    self:UpdateBars()
+end
+
+---------------------------------------------------------------------
+-- runes
+---------------------------------------------------------------------
+local function RuneSorter(a, b)
+    return a.start < b.start
+end
+
+local function RuneOnUpdate(bar, elapsed)
+    bar:SetBarValue(bar:GetValue() + elapsed)
+    -- countdown
+    if bar:GetRemainingValue() > 1 then
+        bar.text:SetFormattedText("%d", bar:GetRemainingValue())
+    elseif bar:GetRemainingValue() > 0 then
+        bar.text:SetFormattedText("%.1f", bar:GetRemainingValue())
+    else
+        bar.text:SetText("")
+    end
+end
+
+local function UpdateRune(self)
+    -- update
+    for i = 1, 6 do
+        self.runes[i].start, self.runes[i].duration = GetRuneCooldown(i)
+    end
+    -- sort
+    sort(self.runes, RuneSorter)
+    -- set
+    local bar
+    for i = 1, 6 do
+        if self.runes[i].start == 0 then
+            self.bars[i]:SetScript("OnUpdate", nil)
+            self.bars[i]:SetMinMaxValues(0, 1)
+            self.bars[i]:SetBarValue(1)
+            self.bars[i].text:SetText("")
+            self.bars[i]:Desaturate(false)
+        else
+            self.bars[i]:SetMinMaxValues(0, self.runes[i].duration)
+            self.bars[i]:SetBarValue(GetTime() - self.runes[i].start)
+            self.bars[i].text:SetText("")
+            self.bars[i]:SetScript("OnUpdate", RuneOnUpdate)
+            self.bars[i]:Desaturate(true)
+        end
+    end
 end
 
 ---------------------------------------------------------------------
@@ -289,12 +406,27 @@ local function Check(self, event, unitId)
         self.unit = "player"
         self.powerIndex, self.powerType, self.powerMod = UF.GetClassPowerInfo()
     end
-    self.powerMax = UnitPowerMax(self.unit, self.powerIndex)
+
+    if strfind(self.powerType, "^RUNE") then
+        self.powerMax = 6
+        if not self.runes then
+            self.runes = {}
+            for i = 1, 6 do
+                self.runes[i] = {
+                    start = 0,
+                    duration = 0,
+                }
+            end
+        end
+    else
+        self.powerMax = UnitPowerMax(self.unit, self.powerIndex)
+    end
 
     if not UF.ShouldShowClassPower() or self.powerMax == 0 then
         self:Hide()
         self:UnregisterEvent("UNIT_MAXPOWER")
-        self:UnregisterEvent("UNIT_POWER_UPDATE")
+        self:UnregisterEvent("UNIT_POWER_FREQUENT")
+        self:UnregisterEvent("RUNE_POWER_UPDATE")
         self._enabled = nil
         return
     end
@@ -302,14 +434,20 @@ local function Check(self, event, unitId)
     SetupBars(self)
 
     self._enabled = true
+    self:Show()
 
     -- register events
-    self:RegisterEvent("UNIT_MAXPOWER", UpdatePowerMax)
-    self:RegisterEvent("UNIT_POWER_UPDATE", UpdatePower)
-
-    -- update now
-    self:Show()
-    UpdatePower(self)
+    if strfind(self.powerType, "^RUNE") then
+        self:UnregisterEvent("UNIT_MAXPOWER")
+        self:UnregisterEvent("UNIT_POWER_FREQUENT")
+        self:RegisterEvent("RUNE_POWER_UPDATE", UpdateRune)
+        UpdateRune(self)
+    else
+        self:UnregisterEvent("RUNE_POWER_UPDATE")
+        self:RegisterUnitEvent("UNIT_MAXPOWER", "player", UpdatePowerMax)
+        self:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player", UpdatePower)
+        UpdatePower(self)
+    end
 end
 
 local function DelayedCheck(self)
@@ -324,11 +462,16 @@ end
 ---------------------------------------------------------------------
 local function ClassPowerBar_Enable(self)
     self.unit = "player"
-    self.powerIndex, self.powerType, self.powerMod = UF.GetClassPowerInfo()
+    self.powerIndex, self.powerType, self.powerMod, self.powerRegen = UF.GetClassPowerInfo()
+    if self.powerIndex == POWER_TYPE_ESSENCE then
+        self.UpdateBars = SetBarValues_Essence
+    else
+        self.UpdateBars = SetBarValues_Static
+    end
 
-    self:RegisterEvent("UNIT_DISPLAYPOWER", Check)
-    self:RegisterEvent("UNIT_ENTERED_VEHICLE", Check)
-    self:RegisterEvent("UNIT_EXITED_VEHICLE", Check)
+    self:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player", Check)
+    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player", Check)
+    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player", Check)
     self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", DelayedCheck)
     if class == "ROGUE" then
         -- 深邃诡计
@@ -343,9 +486,13 @@ end
 ---------------------------------------------------------------------
 local function ClassPowerBar_Update(self)
     if self._enabled then
-        UpdatePowerMax(self)
+        if strfind(self.powerType, "^RUNE") then
+            UpdateRune(self)
+        else
+            UpdatePowerMax(self)
+            UpdatePower(self)
+        end
         UpdatePowerColor(self)
-        UpdatePower(self)
     end
 end
 
@@ -396,7 +543,7 @@ local function ClassPowerBar_EnableConfigMode(self)
     self.powerMod = 1
 
     SetupBars(self)
-    SetBarValues(self)
+    self:UpdateBars()
 end
 
 local function ClassPowerBar_DisableConfigMode(self)

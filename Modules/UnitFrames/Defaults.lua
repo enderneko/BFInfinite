@@ -215,6 +215,11 @@ local defaults = {
                 bgColor = AF.GetColorTable("background"),
                 borderColor = AF.GetColorTable("border"),
                 texture = "BFI Plain",
+                cooldownText = {
+                    enabled = true,
+                    font = {"Visitor", 9, "monochrome_outline", false},
+                    position = {"TOPRIGHT", "TOPRIGHT", 0, -0.5},
+                },
             },
             nameText = {
                 enabled = true,
