@@ -11,6 +11,7 @@ BFI.name = "BigFootInfinite"
 ---@field utils Utils
 ---@field vars table
 ---@field libs table
+---@field Auras Auras
 ---@field ActionBars ActionBars
 ---@field UnitFrames UnitFrames
 ---@field NamePlates NamePlates
@@ -77,6 +78,9 @@ BFI.AddEventHandler(BFI.DisableBlizzard)
 
 BFI.UIWidgets = {}
 BFI.AddEventHandler(BFI.UIWidgets)
+
+BFI.Auras = {}
+BFI.AddEventHandler(BFI.Auras)
 
 BFI.ActionBars = {["bars"] = {}}
 BFI.AddEventHandler(BFI.ActionBars)
