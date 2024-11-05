@@ -11,7 +11,7 @@ local AB = BFI.ActionBars
 ---------------------------------------------------------------------
 local stanceBar
 local function CreateStanceBar()
-    stanceBar = CreateFrame("Frame", "BFIAB_StanceBar", AF.UIParent, "SecureHandlerStateTemplate")
+    stanceBar = CreateFrame("Frame", "BFI_StanceBar", AF.UIParent, "SecureHandlerStateTemplate")
 
     stanceBar.name = "stancebar"
     stanceBar.buttons = {}

@@ -117,6 +117,9 @@ local function CreateCooldown_Clock(self, drawEdge)
     cooldown.SetCooldown = nil
 end
 
+---------------------------------------------------------------------
+-- set cooldown style
+---------------------------------------------------------------------
 local function Aura_SetCooldownStyle(self, style)
     if self.style == style then return end
 

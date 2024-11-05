@@ -11,7 +11,7 @@ local AF = _G.AbstractFramework
 ---------------------------------------------------------------------
 local petBar
 local function CreatePetBar()
-    petBar = CreateFrame("Frame", "BFIAB_PetBar", AF.UIParent, "SecureHandlerStateTemplate")
+    petBar = CreateFrame("Frame", "BFI_PetBar", AF.UIParent, "SecureHandlerStateTemplate")
 
     petBar.name = "petbar"
     petBar.buttons = {}
