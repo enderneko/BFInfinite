@@ -326,7 +326,7 @@ end
 -- value
 ---------------------------------------------------------------------
 local function UpdatePowerMax(self, event, unitId, powerType)
-    if unitId and unitId ~= self.unit then return end
+    -- if unitId and unitId ~= self.unit then return end
     if powerType and powerType ~= self.powerType then return end
 
     self.powerMax = UnitPowerMax(self.unit, self.powerIndex)
@@ -334,7 +334,7 @@ local function UpdatePowerMax(self, event, unitId, powerType)
 end
 
 local function UpdatePower(self, event, unitId, powerType)
-    if unitId and unitId ~= self.unit then return end
+    -- if unitId and unitId ~= self.unit then return end
     if powerType and powerType ~= self.powerType then return end
 
     if self.powerMod then

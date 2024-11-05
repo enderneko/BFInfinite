@@ -208,7 +208,7 @@ local defaults = {
                 anchorTo = "root",
                 frameLevel = 5,
                 width = 177,
-                height = 5,
+                height = 6,
                 spacing = 1,
                 color = {type = "power_color", alpha = 1, rgb = AF.GetColorTable("uf_power")},
                 lossColor = {type = "power_color_dark", alpha = 1, rgb = AF.GetColorTable("uf")},
