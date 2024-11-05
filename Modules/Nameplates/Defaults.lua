@@ -108,18 +108,15 @@ local defaults = {
         -- modify some cvars
     },
     -- TODO:
-    custom = {},
+    customNpcColors = {},
     -- efficiency mode
     optimizedUnits = {
-        tapDenied = true, -- TODO:
-        custom = {
-            "216205:Ravenous Spawn (贪婪之裔)",
-            "227300:Bile-Soaked Spawn (浸透胆汁的子嗣)",
-            "220626:Blood Parasite (鲜血寄生虫)",
-            "219746:Silken Tomb (流丝之墓)",
-            "219739:Infested Spawn (被感染的子嗣)",
-            -- "225982:顺劈训练假人"
-        },
+        "216205:Ravenous Spawn (贪婪之裔)",
+        "227300:Bile-Soaked Spawn (浸透胆汁的子嗣)",
+        "220626:Blood Parasite (鲜血寄生虫)",
+        "219746:Silken Tomb (流丝之墓)",
+        "219739:Infested Spawn (被感染的子嗣)",
+        -- "225982:顺劈训练假人"
     }
 }
 

@@ -644,7 +644,7 @@ local function UpdateNameplates(module, which)
 
     -- optimized units
     wipe(NP.optimizedUnits)
-    for _, npc in pairs(config.optimizedUnits.custom) do
+    for _, npc in pairs(config.optimizedUnits) do
         local id, name = strsplit(":", npc)
         NP.optimizedUnits[tonumber(id)] = name
     end
