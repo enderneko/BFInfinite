@@ -369,9 +369,9 @@ Auras_UpdateSize = function(self, numAuras)
     numAuras = min(numAuras, self.numPerLine)
 
     if self.isHorizontal then
-        AF.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, numAuras, lines)
+        AF.SetGridSize(self, self.width, self.height, self.spacingX, self.spacingY, numAuras, lines)
     else
-        AF.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, lines, numAuras)
+        AF.SetGridSize(self, self.width, self.height, self.spacingX, self.spacingY, lines, numAuras)
     end
 end
 
@@ -400,15 +400,15 @@ local function Auras_SetOrientation(self, orientation)
             point2 = "BOTTOMRIGHT"
             newLinePoint2 = "TOPLEFT"
             y = 0
-            newLineY = self.spacingV
+            newLineY = self.spacingY
         else
             point1 = "TOPLEFT"
             point2 = "TOPRIGHT"
             newLinePoint2 = "BOTTOMLEFT"
             y = 0
-            newLineY = -self.spacingV
+            newLineY = -self.spacingY
         end
-        x = self.spacingH
+        x = self.spacingX
         newLineX = 0
 
     elseif orientation == "right_to_left" then
@@ -417,15 +417,15 @@ local function Auras_SetOrientation(self, orientation)
             point2 = "BOTTOMLEFT"
             newLinePoint2 = "TOPRIGHT"
             y = 0
-            newLineY = self.spacingV
+            newLineY = self.spacingY
         else
             point1 = "TOPRIGHT"
             point2 = "TOPLEFT"
             newLinePoint2 = "BOTTOMRIGHT"
             y = 0
-            newLineY = -self.spacingV
+            newLineY = -self.spacingY
         end
-        x = -self.spacingH
+        x = -self.spacingX
         newLineX = 0
 
     elseif orientation == "top_to_bottom" then
@@ -434,15 +434,15 @@ local function Auras_SetOrientation(self, orientation)
             point2 = "BOTTOMRIGHT"
             newLinePoint2 = "TOPLEFT"
             x = 0
-            newLineX = -self.spacingH
+            newLineX = -self.spacingX
         else
             point1 = "TOPLEFT"
             point2 = "BOTTOMLEFT"
             newLinePoint2 = "TOPRIGHT"
             x = 0
-            newLineX = self.spacingH
+            newLineX = self.spacingX
         end
-        y = -self.spacingV
+        y = -self.spacingY
         newLineY = 0
 
     elseif orientation == "bottom_to_top" then
@@ -451,15 +451,15 @@ local function Auras_SetOrientation(self, orientation)
             point2 = "TOPRIGHT"
             newLinePoint2 = "BOTTOMLEFT"
             x = 0
-            newLineX = -self.spacingH
+            newLineX = -self.spacingX
         else
             point1 = "BOTTOMLEFT"
             point2 = "TOPLEFT"
             newLinePoint2 = "BOTTOMRIGHT"
             x = 0
-            newLineX = self.spacingH
+            newLineX = self.spacingX
         end
-        y = self.spacingV
+        y = self.spacingY
         newLineY = 0
     end
 
@@ -513,11 +513,11 @@ local function Auras_UpdateSubFramePosition(self, orientation)
         if strfind(self.anchor, "^BOTTOM") then
             point1 = "BOTTOMLEFT"
             newLinePoint2 = "TOPLEFT"
-            newLineY = self.spacingV
+            newLineY = self.spacingY
         else
             point1 = "TOPLEFT"
             newLinePoint2 = "BOTTOMLEFT"
-            newLineY = -self.spacingV
+            newLineY = -self.spacingY
         end
         newLineX = 0
 
@@ -525,11 +525,11 @@ local function Auras_UpdateSubFramePosition(self, orientation)
         if strfind(self.anchor, "^BOTTOM") then
             point1 = "BOTTOMRIGHT"
             newLinePoint2 = "TOPRIGHT"
-            newLineY = self.spacingV
+            newLineY = self.spacingY
         else
             point1 = "TOPRIGHT"
             newLinePoint2 = "BOTTOMRIGHT"
-            newLineY = -self.spacingV
+            newLineY = -self.spacingY
         end
         newLineX = 0
 
@@ -537,11 +537,11 @@ local function Auras_UpdateSubFramePosition(self, orientation)
         if strfind(self.anchor, "RIGHT$") then
             point1 = "TOPRIGHT"
             newLinePoint2 = "TOPLEFT"
-            newLineX = -self.spacingH
+            newLineX = -self.spacingX
         else
             point1 = "TOPLEFT"
             newLinePoint2 = "TOPRIGHT"
-            newLineX = self.spacingH
+            newLineX = self.spacingX
         end
         newLineY = 0
 
@@ -549,11 +549,11 @@ local function Auras_UpdateSubFramePosition(self, orientation)
         if strfind(self.anchor, "RIGHT$") then
             point1 = "BOTTOMRIGHT"
             newLinePoint2 = "BOTTOMLEFT"
-            newLineX = -self.spacingH
+            newLineX = -self.spacingX
         else
             point1 = "BOTTOMLEFT"
             newLinePoint2 = "BOTTOMRIGHT"
-            newLineX = self.spacingH
+            newLineX = self.spacingX
         end
         newLineY = 0
     end
@@ -580,8 +580,8 @@ local function Auras_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
 
     self.anchor = config.position[1]
-    self.spacingH = config.spacingH
-    self.spacingV = config.spacingV
+    self.spacingX = config.spacingX
+    self.spacingY = config.spacingY
     self.isBlock = strfind(config.cooldownStyle, "^block")
     self.tooltipEnabled = config.tooltip.enabled
 
@@ -640,8 +640,8 @@ local function Auras_LoadConfig(self, config)
             self.subFrame:Show()
 
             self.subFrame.anchor = config.position[1]
-            self.subFrame.spacingH = config.spacingH
-            self.subFrame.spacingV = config.spacingV
+            self.subFrame.spacingX = config.spacingX
+            self.subFrame.spacingY = config.spacingY
 
             Auras_SetNumSlots(self.subFrame, config.numTotal)
             Auras_SetSize(self.subFrame, config.subFrame.width, config.subFrame.height)

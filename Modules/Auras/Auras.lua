@@ -100,13 +100,13 @@ maxWraps = [NUMBER] -- limit the number of rows or columns. If 0 or nil, the num
 
 local function GetAttributes(config)
     local point, x, y, wrapX, wrapY, minWidth, minHeight, _
-    point, _, _, x, y, wrapX, wrapY = AF.GetAnchorPoints_Complex(config.orientation, config.spacingH, config.spacingV)
+    point, _, _, x, y, wrapX, wrapY = AF.GetAnchorPoints_Complex(config.orientation, config.spacingX, config.spacingY)
 
     -- local width = config.width
     -- local height = AF.ConvertPixels(config.height)
 
-    -- local spacingH = AF.ConvertPixels(config.spacingH)
-    -- local spacingV = AF.ConvertPixels(config.spacingV)
+    -- local spacingX = AF.ConvertPixels(config.spacingX)
+    -- local spacingY = AF.ConvertPixels(config.spacingY)
 
 
     if config.orientation == "bottom_to_top_then_left" then
@@ -124,8 +124,8 @@ local function GetAttributes(config)
     elseif config.orientation == "right_to_left_then_bottom" then
         x = x - config.width
         wrapY = wrapY - config.height
-        minWidth = config.width * config.wrapAfter + config.spacingH * (config.wrapAfter - 1)
-        minHeight = config.height * config.maxWraps + config.spacingV * (config.maxWraps - 1)
+        minWidth = config.width * config.wrapAfter + config.spacingX * (config.wrapAfter - 1)
+        minHeight = config.height * config.maxWraps + config.spacingY * (config.maxWraps - 1)
     elseif config.orientation == "right_to_left_then_top" then
 
     end

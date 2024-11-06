@@ -351,9 +351,9 @@ function Auras_UpdateSize(self, numAuras)
     numAuras = min(numAuras, self.numPerLine)
 
     if self.isHorizontal then
-        AF.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, numAuras, lines)
+        AF.SetGridSize(self, self.width, self.height, self.spacingX, self.spacingY, numAuras, lines)
     else
-        AF.SetGridSize(self, self.width, self.height, self.spacingH, self.spacingV, lines, numAuras)
+        AF.SetGridSize(self, self.width, self.height, self.spacingX, self.spacingY, lines, numAuras)
     end
 
     Auras_UpdateSiblings(self)
@@ -384,15 +384,15 @@ local function Auras_SetOrientation(self, orientation)
             point2 = "BOTTOMRIGHT"
             newLinePoint2 = "TOPLEFT"
             y = 0
-            newLineY = self.spacingV
+            newLineY = self.spacingY
         else
             point1 = "TOPLEFT"
             point2 = "TOPRIGHT"
             newLinePoint2 = "BOTTOMLEFT"
             y = 0
-            newLineY = -self.spacingV
+            newLineY = -self.spacingY
         end
-        x = self.spacingH
+        x = self.spacingX
         newLineX = 0
 
     elseif orientation == "right_to_left" then
@@ -401,15 +401,15 @@ local function Auras_SetOrientation(self, orientation)
             point2 = "BOTTOMLEFT"
             newLinePoint2 = "TOPRIGHT"
             y = 0
-            newLineY = self.spacingV
+            newLineY = self.spacingY
         else
             point1 = "TOPRIGHT"
             point2 = "TOPLEFT"
             newLinePoint2 = "BOTTOMRIGHT"
             y = 0
-            newLineY = -self.spacingV
+            newLineY = -self.spacingY
         end
-        x = -self.spacingH
+        x = -self.spacingX
         newLineX = 0
 
     elseif orientation == "top_to_bottom" then
@@ -418,15 +418,15 @@ local function Auras_SetOrientation(self, orientation)
             point2 = "BOTTOMRIGHT"
             newLinePoint2 = "TOPLEFT"
             x = 0
-            newLineX = -self.spacingH
+            newLineX = -self.spacingX
         else
             point1 = "TOPLEFT"
             point2 = "BOTTOMLEFT"
             newLinePoint2 = "TOPRIGHT"
             x = 0
-            newLineX = self.spacingH
+            newLineX = self.spacingX
         end
-        y = -self.spacingV
+        y = -self.spacingY
         newLineY = 0
 
     elseif orientation == "bottom_to_top" then
@@ -435,15 +435,15 @@ local function Auras_SetOrientation(self, orientation)
             point2 = "TOPRIGHT"
             newLinePoint2 = "BOTTOMLEFT"
             x = 0
-            newLineX = -self.spacingH
+            newLineX = -self.spacingX
         else
             point1 = "BOTTOMLEFT"
             point2 = "TOPLEFT"
             newLinePoint2 = "BOTTOMRIGHT"
             x = 0
-            newLineX = self.spacingH
+            newLineX = self.spacingX
         end
-        y = self.spacingV
+        y = self.spacingY
         newLineY = 0
     end
 
@@ -501,8 +501,8 @@ local function Auras_LoadConfig(self, config)
 
     self.position = config.position -- for sibling update
     self.anchor = config.position[1]
-    self.spacingH = config.spacingH
-    self.spacingV = config.spacingV
+    self.spacingX = config.spacingX
+    self.spacingY = config.spacingY
     self.glowDispellableByMe = config.glowDispellableByMe
 
     Auras_SetNumSlots(self, config.numTotal)

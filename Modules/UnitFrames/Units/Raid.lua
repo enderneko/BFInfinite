@@ -125,12 +125,12 @@ local function UpdateRaid(module, which)
     -- container size
     if strfind(config.general.orientation, "^[top|bottom]") then
         AF.SetGridSize(raid, config.general.width, config.general.height,
-            config.general.spacingH, config.general.spacingV,
+            config.general.spacingX, config.general.spacingY,
             config.general.maxColumns, config.general.unitsPerColumn
         )
     else
         AF.SetGridSize(raid, config.general.width, config.general.height,
-            config.general.spacingH, config.general.spacingV,
+            config.general.spacingX, config.general.spacingY,
             config.general.unitsPerColumn, config.general.maxColumns
         )
     end
@@ -153,7 +153,7 @@ local function UpdateRaid(module, which)
     end
 
     -- header
-    local p, rp, x, y, cs, hp, cp = AF.GetAnchorPoints_GroupHeader(config.general.orientation, config.general.spacingH, config.general.spacingV)
+    local p, rp, x, y, cs, hp, cp = AF.GetAnchorPoints_GroupHeader(config.general.orientation, config.general.spacingX, config.general.spacingY)
     header:SetSize(config.general.width, config.general.height)
     header:ClearAllPoints()
     header:SetPoint(p, raid)
