@@ -286,7 +286,7 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function Auras_Enable(self)
-    self:RegisterEvent("UNIT_AURA", UpdateAuras)
+    self:RegisterUnitEvent("UNIT_AURA", self.root.unit, UpdateAuras)
 
     self:Show()
     self:Update()

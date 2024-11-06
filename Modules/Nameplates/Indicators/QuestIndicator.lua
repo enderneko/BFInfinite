@@ -92,7 +92,7 @@ end
 function NP.EnableQuestIndicator(enabled, _hideInInstance)
     if enabled then
         hideInInstance = _hideInInstance
-        NP:RegisterEvent("UNIT_QUEST_LOG_CHANGED", DelayedUpdate)
+        NP:RegisterUnitEvent("UNIT_QUEST_LOG_CHANGED", "player", DelayedUpdate)
         NP:RegisterEvent("QUEST_LOG_UPDATE", DelayedUpdate)
         if not hideInInstance and IsInInstance() then
             DelayedUpdate()

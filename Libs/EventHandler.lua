@@ -2,7 +2,7 @@
 -- File: EventHandler.lua
 -- Author: enderneko (enderneko-dev@outlook.com)
 -- Created : 2024-03-14 11:46 +08:00
--- Modified: 2024-10-18 11:14 +08:00
+-- Modified: 2024-11-06 18:39 +08:00
 ---------------------------------------------------------------------
 
 local _, addon = ...
@@ -78,6 +78,30 @@ local function UnregisterAllEvents(self)
     _UnregisterAllEvents(self)
 end
 
+local function CoroutineEventHandler(obj, event, ...)
+    -- print(obj:GetName(), event)
+    for fn in pairs(obj.events[event]) do
+        fn(obj, event, ...)
+    end
+end
+
+local function CoroutineProcessEvents()
+    while true do
+        -- print("CoroutineProcessEvents", coroutine.running())
+        CoroutineEventHandler(coroutine.yield())
+    end
+end
+
+local sharedCoroutine = coroutine.create(CoroutineProcessEvents)
+
+local function CoroutineOnEvent(obj, event, ...)
+    -- if not sharedCoroutine or coroutine.status(sharedCoroutine) == "dead" then
+    --     print("CREATE")
+    --     sharedCoroutine = coroutine.create(CoroutineProcessEvents)
+    -- end
+    coroutine.resume(sharedCoroutine, obj, event, ...)
+end
+
 ---------------------------------------------------------------------
 -- embeded
 ---------------------------------------------------------------------
@@ -134,89 +158,10 @@ local function UnregisterAllEvents_Embeded(self)
 end
 
 ---------------------------------------------------------------------
--- shared
----------------------------------------------------------------------
-local function RegisterEvent_Shared(self, event, ...)
-    if not sharedEventHandler.events[event] then sharedEventHandler.events[event] = {} end
-    if not sharedEventHandler.events[event][self] then sharedEventHandler.events[event][self] = {} end
-
-    for i = 1, select("#", ...) do
-        local fn = select(i, ...)
-        sharedEventHandler.events[event][self][fn] = true
-    end
-
-    _RegisterEvent(sharedEventHandler, event)
-end
-
-local function RegisterUnitEvent_Shared(self, event, unit, ...)
-    if not sharedEventHandler.events[event] then sharedEventHandler.events[event] = {} end
-    if not sharedEventHandler.events[event][self] then sharedEventHandler.events[event][self] = {} end
-
-    for i = 1, select("#", ...) do
-        local fn = select(i, ...)
-        sharedEventHandler.events[event][self][fn] = true
-    end
-
-    if type(unit) == "table" then
-        _RegisterUnitEvent(sharedEventHandler, event, unpack(unit))
-    else
-        _RegisterUnitEvent(sharedEventHandler, event, unit)
-    end
-end
-
-local function UnregisterEvent_Shared(self, event, ...)
-    if not (sharedEventHandler.events[event] and sharedEventHandler.events[event][self]) then return end
-
-    local t = sharedEventHandler.events[event][self]
-
-    if select("#", ...) == 0 then
-        sharedEventHandler.events[event][self] = nil
-    else
-        for i = 1, select("#", ...) do
-            local fn = select(i, ...)
-            sharedEventHandler.events[event][self][fn] = nil
-        end
-
-        -- check if isEmpty
-        if IsEmpty(sharedEventHandler.events[event][self]) then
-            sharedEventHandler.events[event][self] = nil
-        end
-    end
-
-    -- check if event registered by other objects
-    if IsEmpty(sharedEventHandler.events[event]) then
-        sharedEventHandler.events[event] = nil
-        _UnregisterEvent(sharedEventHandler, event)
-    end
-end
-
-local function UnregisterAllEvents_Shared(self)
-    for event, et in pairs(sharedEventHandler.events) do
-        if et[self] then
-            et[self] = nil
-            -- check if isEmpty
-            if IsEmpty(sharedEventHandler.events[event]) then
-                sharedEventHandler.events[event] = nil
-                _UnregisterEvent(sharedEventHandler, event)
-            end
-        end
-    end
-end
-
-sharedEventHandler.events = {}
-sharedEventHandler:SetScript("OnEvent", function(self, event, ...)
-    for obj, funcs in pairs(self.events[event]) do
-        for fn in pairs(funcs) do
-            fn(obj, event, ...)
-        end
-    end
-end)
-
----------------------------------------------------------------------
 -- add event handler
 ---------------------------------------------------------------------
 function addon.AddEventHandler(obj)
-    if not obj.GetObjectType then
+    if not obj.RegisterEvent then
         -- use embeded
         obj.RegisterEvent = RegisterEvent_Embeded
         obj.RegisterUnitEvent = RegisterUnitEvent_Embeded
@@ -228,17 +173,9 @@ function addon.AddEventHandler(obj)
 
         obj.eventHandler:SetScript("OnEvent", function(self, event, ...)
             for fn in pairs(self.events[event]) do
-                fn(self, event, ...)
+                fn(obj, event, ...)
             end
         end)
-
-    elseif obj:GetObjectType() == "FontString" or obj:GetObjectType() == "Texture" then
-        -- use shared
-        obj.RegisterEvent = RegisterEvent_Shared
-        obj.RegisterUnitEvent = RegisterUnitEvent_Shared
-        obj.UnregisterEvent = UnregisterEvent_Shared
-        obj.UnregisterAllEvents = UnregisterAllEvents_Shared
-
     else
         -- use self
         obj.events = {}
@@ -247,11 +184,13 @@ function addon.AddEventHandler(obj)
         obj.UnregisterEvent = UnregisterEvent
         obj.UnregisterAllEvents = UnregisterAllEvents
 
-        obj:SetScript("OnEvent", function(self, event, ...)
-            for fn in pairs(self.events[event]) do
-                fn(self, event, ...)
-            end
-        end)
+        -- obj:SetScript("OnEvent", function(self, event, ...)
+        --     for fn in pairs(self.events[event]) do
+        --         fn(self, event, ...)
+        --     end
+        -- end)
+
+        obj:SetScript("OnEvent", CoroutineOnEvent)
     end
 end
 

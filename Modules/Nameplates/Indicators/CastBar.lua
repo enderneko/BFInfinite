@@ -391,28 +391,28 @@ end
 ---------------------------------------------------------------------
 local function CastBar_Enable(self)
     -- start
-    self:RegisterEvent("UNIT_SPELLCAST_START", CastStart)
-    self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", CastStart)
-    self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START", CastStart)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_START", self.root.unit, CastStart)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", self.root.unit, CastStart)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", self.root.unit, CastStart)
 
     -- update
-    self:RegisterEvent("UNIT_SPELLCAST_DELAYED", CastUpdate)
-    self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", CastUpdate)
-    self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", CastUpdate)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", self.root.unit, CastUpdate)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", self.root.unit, CastUpdate)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", self.root.unit, CastUpdate)
 
     -- stop (succeeded)
-    self:RegisterEvent("UNIT_SPELLCAST_STOP", CastStop)
-    self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", CastStop)
-    self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP", CastStop)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", self.root.unit, CastStop)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", self.root.unit, CastStop)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", self.root.unit, CastStop)
 
     -- interrupted
-    self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", CastFail)
+    self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", self.root.unit, CastFail)
 
     -- interruptible
     if self.enableInterruptibleCheck then
-        self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE", CastInterruptible)
-        self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", CastInterruptible)
-        self:RegisterEvent("UNIT_FACTION", CastInterruptible)
+        self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", self.root.unit, CastInterruptible)
+        self:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", self.root.unit, CastInterruptible)
+        self:RegisterUnitEvent("UNIT_FACTION", self.root.unit, CastInterruptible)
     end
 
     -- interrupt source

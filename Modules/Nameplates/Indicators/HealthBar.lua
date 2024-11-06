@@ -345,11 +345,11 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function HealthBar_Enable(self)
-    self:RegisterEvent("UNIT_HEALTH", UpdateHealth, UpdateShield)
-    self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealthMax, UpdateHealth, UpdateShield)
-    self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateShield)
-    self:RegisterEvent("UNIT_FACTION", UpdateHealthColor)
-    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateHealthColor)
+    self:RegisterUnitEvent("UNIT_HEALTH", self.root.unit, UpdateHealth, UpdateShield)
+    self:RegisterUnitEvent("UNIT_MAXHEALTH", self.root.unit, UpdateHealthMax, UpdateHealth, UpdateShield)
+    self:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", self.root.unit, UpdateShield)
+    self:RegisterUnitEvent("UNIT_FACTION", self.root.unit, UpdateHealthColor)
+    self:RegisterUnitEvent("UNIT_NAME_UPDATE", self.root.unit, UpdateHealthColor)
 
     if self.colorByMarker then
         self:RegisterEvent("RAID_TARGET_UPDATE", UpdateHealthColor)
@@ -359,7 +359,7 @@ local function HealthBar_Enable(self)
 
     if self.threatGlowEnabled or self.colorByThreat then
         -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
-        self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
+        self:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
         BFI.RegisterCallback("EnterInstance", "NP_HealthBarThreat", WipeCache)
         BFI.RegisterCallback("LeaveInstance", "NP_HealthBarThreat", WipeCache)
     else
