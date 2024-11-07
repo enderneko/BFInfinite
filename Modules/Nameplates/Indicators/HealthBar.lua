@@ -359,7 +359,7 @@ local function HealthBar_Enable(self)
 
     if self.threatGlowEnabled or self.colorByThreat then
         -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
-        self:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
+        self:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", self.root.unit, UpdateThreat)
         BFI.RegisterCallback("EnterInstance", "NP_HealthBarThreat", WipeCache)
         BFI.RegisterCallback("LeaveInstance", "NP_HealthBarThreat", WipeCache)
     else
