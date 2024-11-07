@@ -325,9 +325,11 @@ end
 ---------------------------------------------------------------------
 -- interrupt source
 ---------------------------------------------------------------------
-local function UpdateInterrupt(self)
-    local _, subEvent, _, sourceGUID, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
-    if subEvent ~= "SPELL_INTERRUPT" then return end
+local function UpdateInterrupt(self, subEvent, ...)
+    -- local _, subEvent, _, sourceGUID, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
+    -- if subEvent ~= "SPELL_INTERRUPT" then return end
+
+    local _, sourceGUID, sourceName, _, _, destGUID = ...
 
     sourceName = M.GetPetOwner(sourceGUID) or sourceName
 
@@ -709,9 +711,9 @@ local function CastBar_Enable(self)
 
     -- interrupt source
     if self.showName and self.showInterruptSource then
-        self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", UpdateInterrupt)
+        self:RegisterCLEU("SPELL_INTERRUPT", UpdateInterrupt)
     else
-        self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+        self:UnregisterCLEU("SPELL_INTERRUPT")
     end
 
     self:Update()
