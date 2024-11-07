@@ -488,7 +488,6 @@ local defaults = {
                 parent = "powerBar",
                 font = {"Visitor", 9, "monochrome_outline", false},
                 types = {
-                    swing = {enabled = true, color = AF.GetColorTable("swing")},
                     damage = {enabled = true, color = AF.GetColorTable("damage")},
                     heal = {enabled = true, color = AF.GetColorTable("heal")},
                 },

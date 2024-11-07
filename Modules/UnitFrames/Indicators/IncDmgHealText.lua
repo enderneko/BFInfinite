@@ -1,34 +1,21 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
+local UF = BFI.UnitFrames
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local UF = BFI.UnitFrames
 
 local FormatNumber = U.FormatNumber
 
 ---------------------------------------------------------------------
--- cleu
+-- event
 ---------------------------------------------------------------------
-local CLEU_EVENTS = {}
-local CLEU_EVENT_COLORS = {}
+local EVENT_COLORS = {}
 
-local function CLEU(self)
-    local _, event, _, _, _, _, _, destGUID, _, _, _, swing_amount, env_amount, _, amount, _, _, swing_heal_critical, _, _, spell_critical = CombatLogGetCurrentEventInfo()
-
-    if not CLEU_EVENTS[event] then return end
-    if destGUID ~= BFI.vars.playerGUID then return end
-
-    self:SetTextColor(AF.UnpackColor(CLEU_EVENT_COLORS[event]))
-    if event == "SWING_DAMAGE" then
-        self:SetFormattedText("%s%s", self.GetNumeric(swing_amount), swing_heal_critical and "!" or "")
-    elseif strfind(event, "^SPELL_.*HEAL$") then
-        self:SetFormattedText("%s%s", self.GetNumeric(amount), swing_heal_critical and "!" or "")
-    elseif strfind(event, "^SPELL_.*DAMAGE$") then
-        self:SetFormattedText("%s%s", self.GetNumeric(amount), spell_critical and "!" or "")
-    else
-        self:SetText(self.GetNumeric(env_amount))
-    end
+local function UpdateText(self, _, unit, event, flag, amount, schoolMask)
+    -- event: HEAL, DODGE, BLOCK, WOUND, MISS, PARRY, RESIST, ...
+    self:SetTextColor(AF.UnpackColor(EVENT_COLORS[event == "HEAL" and "HEAL" or "DAMAGE"]))
+    self:SetFormattedText("%s%s", self.GetNumeric(amount), (flag == "CRITICAL" or flag == "CRUSHING") and "!" or "")
     self:FadeInOut()
 end
 
@@ -36,16 +23,15 @@ end
 -- update
 ---------------------------------------------------------------------
 local function IncDmgHealText_Update(self)
-    CLEU(self)
+    -- UpdateText(self)
 end
 
 ---------------------------------------------------------------------
 -- enable
 ---------------------------------------------------------------------
 local function IncDmgHealText_Enable(self)
-    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", CLEU)
-
-    self:Update()
+    self:RegisterUnitEvent("UNIT_COMBAT", "player", UpdateText)
+    -- self:Update()
 end
 
 ---------------------------------------------------------------------
@@ -65,19 +51,8 @@ local numeric = {
 -- load
 ---------------------------------------------------------------------
 local function UpdateEvents(config)
-    CLEU_EVENTS["SWING_DAMAGE"] = config.swing.enabled
-    CLEU_EVENTS["SPELL_DAMAGE"] = config.damage.enabled
-    CLEU_EVENTS["SPELL_PERIODIC_DAMAGE"] = config.damage.enabled
-    CLEU_EVENTS["ENVIRONMENTAL_DAMAGE"] = config.damage.enabled
-    CLEU_EVENTS["SPELL_HEAL"] = config.heal.enabled
-    CLEU_EVENTS["SPELL_PERIODIC_HEAL"] = config.heal.enabled
-
-    CLEU_EVENT_COLORS["SWING_DAMAGE"] = config.swing.color
-    CLEU_EVENT_COLORS["SPELL_DAMAGE"] = config.damage.color
-    CLEU_EVENT_COLORS["SPELL_PERIODIC_DAMAGE"] = config.damage.color
-    CLEU_EVENT_COLORS["ENVIRONMENTAL_DAMAGE"] = config.damage.color
-    CLEU_EVENT_COLORS["SPELL_HEAL"] = config.heal.color
-    CLEU_EVENT_COLORS["SPELL_PERIODIC_HEAL"] = config.heal.color
+    EVENT_COLORS["DAMAGE"] = config.damage.color
+    EVENT_COLORS["HEAL"] = config.heal.color
 end
 
 local function IncDmgHealText_LoadConfig(self, config)
@@ -105,7 +80,7 @@ local function IncDmgHealText_EnableConfigMode(self)
     self:UnregisterAllEvents()
     self:Show()
 
-    self:SetTextColor(AF.UnpackColor(CLEU_EVENT_COLORS["SPELL_DAMAGE"]))
+    self:SetTextColor(AF.UnpackColor(EVENT_COLORS["DAMAGE"]))
     self:SetFormattedText("%s!", self.GetNumeric(1234567))
 end
 
