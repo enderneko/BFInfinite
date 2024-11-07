@@ -306,8 +306,8 @@ do
             height = 23,
             spacingX = 3,
             spacingY = 6,
-            numPerLine = 5,
-            numTotal = 5,
+            numPerLine = 3,
+            numTotal = 3,
             frameLevel = 2,
             durationText = {
                 enabled = true,
