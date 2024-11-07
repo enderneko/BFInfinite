@@ -252,7 +252,7 @@ function NP.CreateHealthText(parent, name)
     text:Hide()
 
     -- events
-    BFI.AddEventHandler(text)
+    AF.AddEventHandler(text)
 
     -- functions
     text.Enable = HealthText_Enable

@@ -218,7 +218,7 @@ function UF.CreatePowerText(parent, name)
     text:Hide()
 
     -- events
-    BFI.AddEventHandler(text)
+    AF.AddEventHandler(text)
 
     -- functions
     text.Enable = PowerText_Enable

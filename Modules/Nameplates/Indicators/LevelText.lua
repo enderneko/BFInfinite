@@ -96,7 +96,7 @@ function NP.CreateLevelText(parent, name)
     text:Hide()
 
     -- events
-    BFI.AddEventHandler(text)
+    AF.AddEventHandler(text)
 
     -- functions
     text.Enable = LevelText_Enable

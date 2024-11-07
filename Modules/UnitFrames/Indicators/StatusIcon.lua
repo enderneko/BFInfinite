@@ -205,7 +205,7 @@ function UF.CreateStatusIcon(parent, name)
     icon:SetAllPoints()
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- functions
     frame.Enable = StatusIcon_Enable

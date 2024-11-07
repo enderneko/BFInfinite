@@ -98,7 +98,7 @@ function UF.CreateLeaderIcon(parent, name)
     text:SetPoint("CENTER")
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- functions
     frame.Enable = LeaderIcon_Enable

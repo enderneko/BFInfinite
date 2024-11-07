@@ -135,7 +135,7 @@ local function CreateHonorBar()
     AF.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
 
     -- events
-    BFI.AddEventHandler(honorBar)
+    AF.AddEventHandler(honorBar)
 end
 
 ---------------------------------------------------------------------

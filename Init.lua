@@ -47,7 +47,7 @@ BFI.vars = {} -- vars
 BFI.libs = {}
 
 BFI.utils = {} -- utils
-BFI.AddEventHandler(BFI.utils)
+AF.AddEventHandler(BFI.utils)
 
 ---------------------------------------------------------------------
 -- vars
@@ -65,40 +65,40 @@ BFI.vars.playerClass = UnitClassBase("player")
 -- modules
 ---------------------------------------------------------------------
 BFI.Colors = {}
-BFI.AddEventHandler(BFI.Colors)
+AF.AddEventHandler(BFI.Colors)
 
 BFI.Misc = {}
-BFI.AddEventHandler(BFI.Misc)
+AF.AddEventHandler(BFI.Misc)
 
 BFI.Shared = {}
-BFI.AddEventHandler(BFI.Shared)
+AF.AddEventHandler(BFI.Shared)
 
 BFI.DisableBlizzard = {}
-BFI.AddEventHandler(BFI.DisableBlizzard)
+AF.AddEventHandler(BFI.DisableBlizzard)
 
 BFI.UIWidgets = {}
-BFI.AddEventHandler(BFI.UIWidgets)
+AF.AddEventHandler(BFI.UIWidgets)
 
 BFI.Auras = {}
-BFI.AddEventHandler(BFI.Auras)
+AF.AddEventHandler(BFI.Auras)
 
 BFI.ActionBars = {["bars"] = {}}
-BFI.AddEventHandler(BFI.ActionBars)
+AF.AddEventHandler(BFI.ActionBars)
 
 BFI.UnitFrames = {}
-BFI.AddEventHandler(BFI.UnitFrames)
+AF.AddEventHandler(BFI.UnitFrames)
 
 BFI.NamePlates = {}
-BFI.AddEventHandler(BFI.NamePlates)
+AF.AddEventHandler(BFI.NamePlates)
 
 BFI.Maps = {}
-BFI.AddEventHandler(BFI.Maps)
+AF.AddEventHandler(BFI.Maps)
 
 BFI.DataBars = {}
-BFI.AddEventHandler(BFI.DataBars)
+AF.AddEventHandler(BFI.DataBars)
 
 BFI.Chat = {}
-BFI.AddEventHandler(BFI.Chat)
+AF.AddEventHandler(BFI.Chat)
 
 ---------------------------------------------------------------------
 -- hidden parent

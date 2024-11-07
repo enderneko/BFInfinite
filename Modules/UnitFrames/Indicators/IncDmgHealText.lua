@@ -101,7 +101,7 @@ function UF.CreateIncDmgHealText(parent, name)
     AF.CreateContinualFadeInOutAnimation(text)
 
     -- events
-    BFI.AddEventHandler(text)
+    AF.AddEventHandler(text)
 
     -- functions
     text.Enable = IncDmgHealText_Enable

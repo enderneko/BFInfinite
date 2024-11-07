@@ -97,7 +97,7 @@ function UF.CreateFactionIcon(parent, name)
     -- text:SetJustifyV("MIDDLE")
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- functions
     frame.Enable = FactionIcon_Enable

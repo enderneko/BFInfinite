@@ -585,7 +585,7 @@ local function CreateAuras(parent, name, auraFilter)
     frame.canHaveSibling = true
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- slots
     frame.slots = {}

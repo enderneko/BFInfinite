@@ -108,7 +108,7 @@ function UF.CreateCombatIcon(parent, name)
     text:SetTextColor(AF.UnpackColor(S.CombatGlyph.color))
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- functions
     frame.Enable = CombatIcon_Enable

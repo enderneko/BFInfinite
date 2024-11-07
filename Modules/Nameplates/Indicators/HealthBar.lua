@@ -480,7 +480,7 @@ function NP.CreateHealthBar(parent, name)
     bar:Hide()
 
     -- events
-    BFI.AddEventHandler(bar)
+    AF.AddEventHandler(bar)
 
     -- shield
     local shield = bar:CreateTexture(name.."Stripe", "ARTWORK", nil, 2)

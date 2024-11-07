@@ -85,7 +85,7 @@ function UF.CreateRoleIcon(parent, name)
     text:SetPoint("CENTER")
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- functions
     frame.Enable = RoleIcon_Enable

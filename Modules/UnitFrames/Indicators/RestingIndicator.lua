@@ -87,7 +87,7 @@ function UF.CreateRestingIndicator(parent, name)
     end)
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- functions
     frame.Enable = RestingIndicator_Enable

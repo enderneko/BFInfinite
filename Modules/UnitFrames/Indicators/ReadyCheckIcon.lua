@@ -93,7 +93,7 @@ function UF.CreateReadyCheckIcon(parent, name)
     icon:SetAllPoints()
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- functions
     frame.Enable = ReadyCheckIcon_Enable

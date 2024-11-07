@@ -215,7 +215,7 @@ function UF.CreatePortrait(parent, name)
     hooksecurefunc(parent, "SetAlpha", UpdatePortrait3DAlpha)
 
     -- events
-    BFI.AddEventHandler(portrait)
+    AF.AddEventHandler(portrait)
 
     -- 3d
     portrait.model = CreateFrame("PlayerModel", nil, portrait)

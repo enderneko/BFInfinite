@@ -549,7 +549,7 @@ function UF.CreateHealthBar(parent, name)
     bar:Hide()
 
     -- events
-    BFI.AddEventHandler(bar)
+    AF.AddEventHandler(bar)
 
     -- healPrediction
     local healPrediction = bar:CreateTexture(name.."HealPrediction", "ARTWORK", nil, 1)

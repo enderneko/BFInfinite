@@ -108,7 +108,7 @@ function UF.CreateTargetHighlight(parent, name)
     tex:AddMaskTexture(mask)
 
     -- events
-    BFI.AddEventHandler(highlight)
+    AF.AddEventHandler(highlight)
 
     -- functions
     highlight.Enable = TargetHighlight_Enable

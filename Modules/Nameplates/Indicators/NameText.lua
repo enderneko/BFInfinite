@@ -89,7 +89,7 @@ function NP.CreateNameText(parent, name)
     text:Hide()
 
     -- events
-    BFI.AddEventHandler(text)
+    AF.AddEventHandler(text)
 
     -- functions
     text.Enable = NameText_Enable

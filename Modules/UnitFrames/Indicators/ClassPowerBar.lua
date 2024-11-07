@@ -565,7 +565,7 @@ function UF.CreateClassPowerBar(parent, name)
     frame.bars = {}
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- functions
     frame.Update = ClassPowerBar_Update

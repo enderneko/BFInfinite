@@ -731,7 +731,7 @@ function UF.CreateAuras(parent, name, auraFilter, hasSubFrame)
     -- frame.overallFilter = sourceFilter
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- slots
     frame.slots = {}

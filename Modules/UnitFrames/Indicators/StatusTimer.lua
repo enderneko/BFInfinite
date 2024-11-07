@@ -208,7 +208,7 @@ function UF.CreateStatusTimer(parent, name)
     updater:SetScript("OnUpdate", StatusTimer_OnUpdate)
 
     -- events
-    BFI.AddEventHandler(text)
+    AF.AddEventHandler(text)
 
     -- functions
     text.Enable = StatusTimer_Enable

@@ -130,7 +130,7 @@ function UF.CreateRangeText(parent, name)
     updater:SetScript("OnUpdate", RangeText_OnUpdate)
 
     -- events
-    BFI.AddEventHandler(text)
+    AF.AddEventHandler(text)
 
     -- functions
     text.Enable = RangeText_Enable

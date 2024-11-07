@@ -242,7 +242,7 @@ function UF.CreateExtraManaBar(parent, name)
     bar.root = parent
 
     -- events
-    BFI.AddEventHandler(bar)
+    AF.AddEventHandler(bar)
 
     -- functions
     bar.Update = ExtraManaBar_Update

@@ -233,7 +233,7 @@ local function CreateExperienceBar()
     AF.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
 
     -- events
-    BFI.AddEventHandler(experienceBar)
+    AF.AddEventHandler(experienceBar)
 
     -- script
     experienceBar:SetScript("OnShow", function()

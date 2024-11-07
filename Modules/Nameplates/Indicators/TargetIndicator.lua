@@ -68,7 +68,7 @@ function NP.CreateTargetIndicator(parent, name)
     frame:Hide()
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- icon
     local icon = frame:CreateTexture(nil, "ARTWORK")

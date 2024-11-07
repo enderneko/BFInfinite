@@ -235,7 +235,7 @@ function UF.CreatePowerBar(parent, name)
     bar:Hide()
 
     -- events
-    BFI.AddEventHandler(bar)
+    AF.AddEventHandler(bar)
 
     -- functions
     bar.Update = PowerBar_Update

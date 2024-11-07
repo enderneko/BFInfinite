@@ -79,7 +79,7 @@ function UF.CreateThreatGlow(parent, name)
     glow:Hide()
 
     -- events
-    BFI.AddEventHandler(glow)
+    AF.AddEventHandler(glow)
 
     -- functions
     glow.Enable = ThreatGlow_Enable

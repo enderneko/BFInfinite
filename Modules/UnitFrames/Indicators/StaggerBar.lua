@@ -236,7 +236,7 @@ function UF.CreateStaggerBar(parent, name)
     bar.text = bar:CreateFontString(nil, "OVERLAY")
 
     -- events
-    BFI.AddEventHandler(bar)
+    AF.AddEventHandler(bar)
 
     -- functions
     bar.Update = StaggerBar_Update

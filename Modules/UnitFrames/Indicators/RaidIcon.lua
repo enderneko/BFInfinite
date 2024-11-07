@@ -102,7 +102,7 @@ function UF.CreateRaidIcon(parent, name)
     text:SetPoint("CENTER")
 
     -- events
-    BFI.AddEventHandler(frame)
+    AF.AddEventHandler(frame)
 
     -- functions
     frame.Enable = RaidIcon_Enable

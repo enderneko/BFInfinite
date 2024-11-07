@@ -96,7 +96,7 @@ function UF.CreateMouseoverHighlight(parent, name)
     tex:AddMaskTexture(mask)
 
     -- events
-    BFI.AddEventHandler(highlight)
+    AF.AddEventHandler(highlight)
 
     -- functions
     highlight.Enable = MouseoverHighlight_Enable

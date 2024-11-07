@@ -221,7 +221,7 @@ local function CreateReputationBar()
     AF.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
 
     -- events
-    BFI.AddEventHandler(reputationBar)
+    AF.AddEventHandler(reputationBar)
 end
 
 ---------------------------------------------------------------------

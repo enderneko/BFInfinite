@@ -125,7 +125,7 @@ function UF.CreateTargetCounter(parent, name)
     text:Hide()
 
     -- events
-    BFI.AddEventHandler(text)
+    AF.AddEventHandler(text)
 
     -- functions
     text.Enable = TargetCounter_Enable
