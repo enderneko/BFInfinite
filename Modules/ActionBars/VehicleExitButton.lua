@@ -8,66 +8,71 @@ local AB = BFI.ActionBars
 
 local CanExitVehicle = CanExitVehicle
 
-local vehicleExitButton
+local vehicleExitHolder
 
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 local function CreateButton()
-    vehicleExitButton = AF.CreateBorderedFrame(AF.UIParent, 20, 20)
-    vehicleExitButton:Hide()
-    AF.AddToPixelUpdater(vehicleExitButton, function()
-        AF.DefaultUpdatePixels(vehicleExitButton)
-        AF.SetOnePixelInside(vehicleExitButton.content, vehicleExitButton)
+    vehicleExitHolder = AF.CreateBorderedFrame(AF.UIParent, "BFI_VehicleExitHolder", 20, 20)
+    vehicleExitHolder:Hide()
+    AF.AddToPixelUpdater(vehicleExitHolder, function()
+        AF.DefaultUpdatePixels(vehicleExitHolder)
+        AF.SetOnePixelInside(vehicleExitHolder.button, vehicleExitHolder)
     end)
 
-    vehicleExitButton.content = _G.MainMenuBarVehicleLeaveButton
-    vehicleExitButton.content:SetParent(vehicleExitButton)
+    vehicleExitHolder.button = _G.MainMenuBarVehicleLeaveButton
+    vehicleExitHolder.button:SetParent(vehicleExitHolder)
 
-    vehicleExitButton.content:GetNormalTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
-    vehicleExitButton.content:GetPushedTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
+    vehicleExitHolder.button:GetNormalTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
+    vehicleExitHolder.button:GetPushedTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
 
-    local highlight = vehicleExitButton.content:GetHighlightTexture()
+
+    -- FIXME: Blizzard LockHighlight seems bugged in 11.0.5
+    vehicleExitHolder.button:GetHighlightTexture():SetAlpha(0)
+    local highlight = vehicleExitHolder.button:CreateTexture(nil, "HIGHLIGHT")
     highlight:SetAllPoints()
     highlight:SetBlendMode("ADD")
     highlight:SetColorTexture(AF.GetColorRGB("white", 0.25))
 
-    U.DisableEditMode(vehicleExitButton.content)
-    vehicleExitButton.content:SetScript("OnShow", nil)
-    vehicleExitButton.content:SetScript("OnHide", nil)
+    U.DisableEditMode(vehicleExitHolder.button)
+    vehicleExitHolder.button:SetScript("OnShow", nil)
+    vehicleExitHolder.button:SetScript("OnHide", nil)
 
-    hooksecurefunc(vehicleExitButton.content, "Update", function()
+    hooksecurefunc(vehicleExitHolder.button, "Update", function()
         if CanExitVehicle() then
-            vehicleExitButton:Show()
+            vehicleExitHolder:Show()
         else
-            vehicleExitButton:Hide()
+            vehicleExitHolder:Hide()
         end
     end)
 
-    hooksecurefunc(vehicleExitButton.content, "SetPoint", function(_, _, anchorTo)
-        if anchorTo ~= vehicleExitButton then
-            vehicleExitButton.content:SetParent(vehicleExitButton)
-            AF.SetOnePixelInside(vehicleExitButton.content, vehicleExitButton)
+    hooksecurefunc(vehicleExitHolder.button, "SetPoint", function(_, _, anchorTo)
+        if anchorTo ~= vehicleExitHolder then
+            vehicleExitHolder.button:SetParent(vehicleExitHolder)
+            AF.SetOnePixelInside(vehicleExitHolder.button, vehicleExitHolder)
         end
     end)
 
-    hooksecurefunc(vehicleExitButton.content, "SetHighlightTexture", function(self, texture)
-        if texture ~= highlight then
-            vehicleExitButton.content:SetHighlightTexture(highlight, "ADD")
-        end
-    end)
+    -- hooksecurefunc(vehicleExitHolder.button, "SetHighlightTexture", function(self, texture)
+    --     if texture ~= highlight then
+    --         vehicleExitHolder.button:SetHighlightTexture(highlight, "ADD")
+    --     end
+    -- end)
 
-    hooksecurefunc(vehicleExitButton.content, "LockHighlight", function(self, texture)
+    hooksecurefunc(vehicleExitHolder.button, "LockHighlight", function()
+        -- vehicleExitHolder.button:SetHighlightTexture(highlight, "ADD")
+        highlight:SetDrawLayer("OVERLAY")
         highlight:SetColorTexture(AF.GetColorRGB("yellow", 0.25))
-        vehicleExitButton.content:SetHighlightTexture(highlight, "ADD")
     end)
 
-    hooksecurefunc(vehicleExitButton.content, "UnlockHighlight", function(self, texture)
+    hooksecurefunc(vehicleExitHolder.button, "UnlockHighlight", function()
+        -- vehicleExitHolder.button:SetHighlightTexture(highlight, "ADD")
+        highlight:SetDrawLayer("HIGHLIGHT")
         highlight:SetColorTexture(AF.GetColorRGB("white", 0.25))
-        vehicleExitButton.content:SetHighlightTexture(highlight, "ADD")
     end)
 
-    AF.CreateMover(vehicleExitButton, "BFI: " .. L["Action Bars"], vehicleExitButton.content.systemNameString)
+    AF.CreateMover(vehicleExitHolder, "BFI: " .. L["Action Bars"], vehicleExitHolder.button.systemNameString)
 end
 
 ---------------------------------------------------------------------
@@ -84,17 +89,17 @@ local function UpdateButton(module, which)
         return
     end
 
-    if not vehicleExitButton then
+    if not vehicleExitHolder then
         CreateButton()
     end
 
     -- mover
-    AF.UpdateMoverSave(vehicleExitButton, config.position)
+    AF.UpdateMoverSave(vehicleExitHolder, config.position)
 
     -- load config
-    AF.LoadPosition(vehicleExitButton, config.position)
-    AF.SetSize(vehicleExitButton, config.size, config.size)
-    vehicleExitButton:SetFrameStrata(AB.config.general.frameStrata)
-    vehicleExitButton:SetFrameLevel(AB.config.general.frameLevel)
+    AF.LoadPosition(vehicleExitHolder, config.position)
+    AF.SetSize(vehicleExitHolder, config.size, config.size)
+    vehicleExitHolder:SetFrameStrata(AB.config.general.frameStrata)
+    vehicleExitHolder:SetFrameLevel(AB.config.general.frameLevel)
 end
 BFI.RegisterCallback("UpdateModules", "AB_VehicleExit", UpdateButton)

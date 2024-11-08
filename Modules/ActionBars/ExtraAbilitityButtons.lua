@@ -16,7 +16,7 @@ local zoneAbilityHolder
 local ZoneAbility_UpdateParent, ZoneAbility_UpdateScale, ZoneAbility_UpdateAbility
 
 local function CreateZoneAbilityHolder()
-    zoneAbilityHolder = CreateFrame("Frame", "BIF_ZoneAbilityHolder", AF.UIParent)
+    zoneAbilityHolder = CreateFrame("Frame", "BFI_ZoneAbilityHolder", AF.UIParent)
     AF.CreateMover(zoneAbilityHolder, "BFI: " .. L["Action Bars"], L["Zone Ability"])
 
     ZoneAbilityFrame:SetParent(zoneAbilityHolder)
@@ -81,7 +81,7 @@ local ExtraAction_UpdateParent, ExtraAction_UpdateAbility
 local extraButtons = {}
 
 local function CreateExtraActionHolder()
-    extraActionHolder = CreateFrame("Frame", "BIF_ExtraActionHolder", AF.UIParent)
+    extraActionHolder = CreateFrame("Frame", "BFI_ExtraActionHolder", AF.UIParent)
     AF.CreateMover(extraActionHolder, "BFI: " .. L["Action Bars"], ExtraAbilityContainer.systemNameString)
 
     ExtraActionBarFrame:SetParent(extraActionHolder)
