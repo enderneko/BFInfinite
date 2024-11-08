@@ -230,7 +230,7 @@ end
 ---------------------------------------------------------------------
 function UF.CreatePowerBar(parent, name)
     -- bar
-    local bar = AF.CreateSimpleBar(parent, name)
+    local bar = AF.CreateSimpleStatusBar(parent, name)
     bar.root = parent
     bar:Hide()
 

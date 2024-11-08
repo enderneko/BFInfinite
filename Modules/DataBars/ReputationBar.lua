@@ -194,7 +194,7 @@ end
 -- create
 ---------------------------------------------------------------------
 local function CreateReputationBar()
-    reputationBar = AF.CreateSimpleBar(AF.UIParent, "BFI_ReputationBar")
+    reputationBar = AF.CreateSimpleStatusBar(AF.UIParent, "BFI_ReputationBar")
     reputationBar.loss:Hide()
     reputationBar:Hide()
 

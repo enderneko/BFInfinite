@@ -603,7 +603,7 @@ function NP.CreateCastBar(parent, name)
     AF.SetPoint(icon, "BOTTOMRIGHT", iconBG, -1, 1)
 
     -- bar
-    local bar = AF.CreateSimpleBar(frame, nil, true)
+    local bar = AF.CreateSimpleStatusBar(frame, nil, true)
     frame.bar = bar
     AF.SetOnePixelInside(bar, frame)
     bar.fg:SetDrawLayer("ARTWORK", 0)

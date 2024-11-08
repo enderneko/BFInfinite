@@ -238,7 +238,7 @@ end
 ---------------------------------------------------------------------
 function UF.CreateExtraManaBar(parent, name)
     -- bar
-    local bar = AF.CreateSimpleBar(parent, name)
+    local bar = AF.CreateSimpleStatusBar(parent, name)
     bar.root = parent
 
     -- events

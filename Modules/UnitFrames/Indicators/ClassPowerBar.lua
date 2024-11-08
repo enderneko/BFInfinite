@@ -214,7 +214,7 @@ local function SetupBars(self)
 
     -- create
     for i = 1, self.numPowerBars do
-        local bar = self.bars[i] or AF.CreateSimpleBar(self)
+        local bar = self.bars[i] or AF.CreateSimpleStatusBar(self)
         AF.RemoveFromPixelUpdater(bar)
 
         self.bars[i] = bar

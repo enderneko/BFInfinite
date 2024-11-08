@@ -108,7 +108,7 @@ end
 -- create
 ---------------------------------------------------------------------
 local function CreateHonorBar()
-    honorBar = AF.CreateSimpleBar(AF.UIParent, "BFI_HonorBar")
+    honorBar = AF.CreateSimpleStatusBar(AF.UIParent, "BFI_HonorBar")
     honorBar.loss:Hide()
     honorBar:Hide()
 

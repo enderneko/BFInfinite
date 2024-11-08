@@ -185,7 +185,7 @@ end
 -- create
 ---------------------------------------------------------------------
 local function CreateExperienceBar()
-    experienceBar = AF.CreateSimpleBar(AF.UIParent, "BFI_ExperienceBar")
+    experienceBar = AF.CreateSimpleStatusBar(AF.UIParent, "BFI_ExperienceBar")
     experienceBar.loss:Hide()
     experienceBar:Hide()
 

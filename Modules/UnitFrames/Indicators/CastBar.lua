@@ -1011,7 +1011,7 @@ function UF.CreateCastBar(parent, name)
     AF.SetWidth(gap, 1)
 
     -- bar
-    local bar = AF.CreateSimpleBar(frame, nil, true)
+    local bar = AF.CreateSimpleStatusBar(frame, nil, true)
     frame.bar = bar
     AF.SetOnePixelInside(bar, frame)
     bar.fg:SetDrawLayer("ARTWORK", 0)
