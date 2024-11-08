@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 local C = BFI.Colors
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- shared colors
@@ -48,7 +48,7 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "Colors", function(t)
+AF.RegisterCallback("UpdateConfigs", "Colors", function(t)
     if not t["colors"] then
         t["colors"] = U.Copy(defaults)
     end

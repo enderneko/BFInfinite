@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
+local U = BFI.utils
 ---@class UIWidgets
 local UI = BFI.UIWidgets
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local U = BFI.utils
 
 local defaults = {
     microMenu = {
@@ -49,7 +49,7 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "UIWidgets", function(t)
+AF.RegisterCallback("UpdateConfigs", "UIWidgets", function(t)
     if not t["uiWidgets"] then
         t["uiWidgets"] = U.Copy(defaults)
     end

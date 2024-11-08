@@ -1,11 +1,11 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local GetWatchedFactionData = C_Reputation.GetWatchedFactionData
 local GetFriendshipReputation = C_GossipInfo.GetFriendshipReputation
@@ -274,4 +274,4 @@ local function UpdateReputationBar(module, which)
     reputationBar.hideBelowMaxLevel = config.hideBelowMaxLevel
     UpdateRepVisibility(reputationBar)
 end
-BFI.RegisterCallback("UpdateModules", "DB_ReputationBar", UpdateReputationBar)
+AF.RegisterCallback("UpdateModules", "DB_ReputationBar", UpdateReputationBar)

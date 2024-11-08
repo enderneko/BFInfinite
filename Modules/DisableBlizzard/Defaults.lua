@@ -3,6 +3,8 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class DisableBlizzard
 local DB = BFI.DisableBlizzard
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local defaults = {
     player = true,
@@ -18,7 +20,7 @@ local defaults = {
     -- auras = true,
 }
 
-BFI.RegisterCallback("UpdateConfigs", "DisableBlizzard", function(t)
+AF.RegisterCallback("UpdateConfigs", "DisableBlizzard", function(t)
     if not t["disableBlizzard"] then
         t["disableBlizzard"] = U.Copy(defaults)
     end

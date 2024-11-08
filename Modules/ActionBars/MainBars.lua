@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 local AB = BFI.ActionBars
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local LAB = BFI.libs.LAB
 
@@ -364,4 +364,4 @@ local function UpdateMainBars(module, which, barName)
         AssignBindings()
     end
 end
-BFI.RegisterCallback("UpdateModules", "AB_MainBars", UpdateMainBars)
+AF.RegisterCallback("UpdateModules", "AB_MainBars", UpdateMainBars)

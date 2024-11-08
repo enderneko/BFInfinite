@@ -485,7 +485,7 @@ local function UpdateCombatLog()
     bar:SetAlpha(0.75)
     AF.SetOnePixelInside(bar, _G.CombatLogQuickButtonFrame_Custom)
 end
-BFI.RegisterCallbackForAddon("Blizzard_CombatLog", UpdateCombatLog)
+AF.RegisterCallbackForAddon("Blizzard_CombatLog", UpdateCombatLog)
 
 local ChatTypeInfo = _G.ChatTypeInfo
 local function UpdateEditBox(editbox)
@@ -568,4 +568,4 @@ local function UpdateChat(module)
 
     -- TODO: button size
 end
-BFI.RegisterCallback("UpdateModules", "Chat", UpdateChat)
+AF.RegisterCallback("UpdateModules", "Chat", UpdateChat)

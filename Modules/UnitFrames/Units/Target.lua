@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
+local UF = BFI.UnitFrames
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local UF = BFI.UnitFrames
 
 local target
 local indicators = {
@@ -89,7 +89,7 @@ local function UpdateTarget(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(target)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Target", UpdateTarget)
+AF.RegisterCallback("UpdateModules", "UF_Target", UpdateTarget)
 
 ---------------------------------------------------------------------
 -- init
@@ -98,4 +98,4 @@ BFI.RegisterCallback("UpdateModules", "UF_Target", UpdateTarget)
 --     CreateTarget()
 --     UpdateTarget()
 -- end
--- BFI.RegisterCallback("InitModules", "UF_Target", InitTarget)
+-- AF.RegisterCallback("InitModules", "UF_Target", InitTarget)

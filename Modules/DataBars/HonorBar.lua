@@ -1,11 +1,11 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local honorBar
 local HONOR_LEVEL_LABEL = _G.HONOR_LEVEL_LABEL
@@ -190,4 +190,4 @@ local function UpdateHonorBar(module, which)
     honorBar.hideBelowMaxLevel = config.hideBelowMaxLevel
     UpdateHonorVisibility(honorBar)
 end
-BFI.RegisterCallback("UpdateModules", "DB_HonorBar", UpdateHonorBar)
+AF.RegisterCallback("UpdateModules", "DB_HonorBar", UpdateHonorBar)

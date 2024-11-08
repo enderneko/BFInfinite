@@ -1,8 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
+local U = BFI.utils
 ---@class UnitFrames
 local UF = BFI.UnitFrames
-local U = BFI.utils
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- config mode random functions
@@ -277,4 +279,4 @@ local function ToggleConfigMode(module, group)
         end
     end
 end
-BFI.RegisterCallback("ConfigMode", "UnitFrames", ToggleConfigMode)
+AF.RegisterCallback("ConfigMode", "UnitFrames", ToggleConfigMode)

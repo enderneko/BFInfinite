@@ -153,6 +153,6 @@ function NP.LoadIndicatorPosition(self, position, anchorTo, parent)
     if not success then
         -- Cannot anchor to itself
         -- Cannot anchor to a region dependent on it
-        BFI.Fire("IncorrectAnchor", self)
+        AF.Fire("IncorrectAnchor", self)
     end
 end

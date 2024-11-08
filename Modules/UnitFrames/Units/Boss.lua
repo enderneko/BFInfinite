@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
+local UF = BFI.UnitFrames
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local UF = BFI.UnitFrames
 
 local boss
 local indicators = {
@@ -80,4 +80,4 @@ local function UpdateBoss(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(boss, boss.driverKey, boss.driverValue)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Boss", UpdateBoss)
+AF.RegisterCallback("UpdateModules", "UF_Boss", UpdateBoss)

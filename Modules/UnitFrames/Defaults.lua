@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 local UF = BFI.UnitFrames
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local default_whitelist = {
     -- druid
@@ -3824,7 +3824,7 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "UnitFrames", function(t)
+AF.RegisterCallback("UpdateConfigs", "UnitFrames", function(t)
     if not t["unitFrames"] then
         t["unitFrames"] = U.Copy(defaults)
     end

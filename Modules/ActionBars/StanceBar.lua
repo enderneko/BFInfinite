@@ -2,9 +2,9 @@
 local BFI = select(2, ...)
 local L = BFI.L
 local U = BFI.utils
+local AB = BFI.ActionBars
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local AB = BFI.ActionBars
 
 ---------------------------------------------------------------------
 -- create bar
@@ -186,4 +186,4 @@ local function UpdateStanceBar(module, which)
     UpdateStanceButtons()
     AssignBindings()
 end
-BFI.RegisterCallback("UpdateModules", "AB_StanceBar", UpdateStanceBar)
+AF.RegisterCallback("UpdateModules", "AB_StanceBar", UpdateStanceBar)

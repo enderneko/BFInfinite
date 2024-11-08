@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
+local UF = BFI.UnitFrames
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local UF = BFI.UnitFrames
 
 local raid
 local indicators = {
@@ -175,4 +175,4 @@ local function UpdateRaid(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(raid, raid.driverKey, raid.driverValue)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Raid", UpdateRaid)
+AF.RegisterCallback("UpdateModules", "UF_Raid", UpdateRaid)

@@ -696,4 +696,4 @@ local function UpdateMinimap(module, which)
         addonButtonHolder:Hide()
     end
 end
-BFI.RegisterCallback("UpdateModules", "M_Minimap", UpdateMinimap)
+AF.RegisterCallback("UpdateModules", "M_Minimap", UpdateMinimap)

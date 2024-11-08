@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractFramework
-local AF = _G.AbstractFramework
 ---@class UIWidgets
 local UI = BFI.UIWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local queueStatusHolder
 local QueueStatusButton = _G.QueueStatusButton
@@ -70,4 +70,4 @@ local function UpdateQueueStatus(module, which)
     queueStatusHolder.scale = config.scale
     QueueStatusButton:SetScale(0.001)
 end
-BFI.RegisterCallback("UpdateModules", "UI_QueueStatus", UpdateQueueStatus)
+AF.RegisterCallback("UpdateModules", "UI_QueueStatus", UpdateQueueStatus)

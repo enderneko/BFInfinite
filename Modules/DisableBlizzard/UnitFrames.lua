@@ -2,6 +2,8 @@
 local BFI = select(2, ...)
 ---@class DisableBlizzard
 local DB = BFI.DisableBlizzard
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 -- forked from ElvUI
 local hookedFrames = {}
@@ -201,4 +203,4 @@ local function DisableBlizzard()
         hooksecurefunc("CompactUnitFrame_SetUnit", DisableBlizzard_SetUnit)
     end
 end
-BFI.RegisterCallback("DisableBlizzard", "UnitFrames", DisableBlizzard)
+AF.RegisterCallback("DisableBlizzard", "UnitFrames", DisableBlizzard)

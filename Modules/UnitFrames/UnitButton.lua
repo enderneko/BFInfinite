@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 local UF = BFI.UnitFrames
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local UnitGUID = UnitGUID
 local UnitName = UnitName
@@ -494,5 +494,5 @@ local function UpdateAllUnitButtons()
         UnitButton_UpdateAll(b)
     end
 end
-BFI.RegisterCallback("EnterInstance", "BFI_UnitFrames", UpdateAllUnitButtons)
-BFI.RegisterCallback("LeaveInstance", "BFI_UnitFrames", UpdateAllUnitButtons)
+AF.RegisterCallback("EnterInstance", "BFI_UnitFrames", UpdateAllUnitButtons)
+AF.RegisterCallback("LeaveInstance", "BFI_UnitFrames", UpdateAllUnitButtons)

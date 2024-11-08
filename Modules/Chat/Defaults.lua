@@ -3,6 +3,8 @@ local BFI = select(2, ...)
 ---@class Chat
 local C = BFI.Chat
 local U = BFI.utils
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local defaults = {
     enabled = true,
@@ -17,7 +19,7 @@ local defaults = {
     maxLines = 100,
 }
 
-BFI.RegisterCallback("UpdateConfigs", "Chat", function(t)
+AF.RegisterCallback("UpdateConfigs", "Chat", function(t)
     if not t["chat"] then
         t["chat"] = U.Copy(defaults)
     end

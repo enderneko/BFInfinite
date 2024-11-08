@@ -51,4 +51,4 @@ local function UpdateWidgets(module, which)
 
     _G.UIWidgetPowerBarContainerFrame._container:SetShown(config.powerBarWidget.enabled)
 end
-BFI.RegisterCallback("UpdateModules", "UI_Widgets", UpdateWidgets)
+AF.RegisterCallback("UpdateModules", "UI_Widgets", UpdateWidgets)

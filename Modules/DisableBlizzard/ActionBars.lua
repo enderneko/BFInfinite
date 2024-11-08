@@ -2,6 +2,8 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local DB = BFI.DisableBlizzard
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- forked from ElvUI
@@ -211,4 +213,4 @@ local function DisableBlizzard()
     --     end
     -- end
 end
-BFI.RegisterCallback("DisableBlizzard", "ActionBars", DisableBlizzard)
+AF.RegisterCallback("DisableBlizzard", "ActionBars", DisableBlizzard)

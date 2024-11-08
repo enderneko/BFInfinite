@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractFramework
-local AF = _G.AbstractFramework
 ---@class UIWidgets
 local UI = BFI.UIWidgets
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local MICRO_BUTTONS = {
     "CharacterMicroButton",
@@ -222,4 +222,4 @@ local function UpdateMicroMenu(module, which)
     -- position
     AF.LoadPosition(microMenu, config.position)
 end
-BFI.RegisterCallback("UpdateModules", "UI_MicroMenu", UpdateMicroMenu)
+AF.RegisterCallback("UpdateModules", "UI_MicroMenu", UpdateMicroMenu)

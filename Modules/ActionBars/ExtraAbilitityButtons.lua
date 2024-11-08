@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 local AB = BFI.ActionBars
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local GetBindingKey = GetBindingKey
 
@@ -194,4 +194,4 @@ local function UpdateButton(module, which)
         AB.ApplyTextConfig(button.HotKey, extraActionConfig.hotkey)
     end
 end
-BFI.RegisterCallback("UpdateModules", "AB_Extra", UpdateButton)
+AF.RegisterCallback("UpdateModules", "AB_Extra", UpdateButton)

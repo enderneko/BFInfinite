@@ -3,6 +3,8 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class Auras
 local A = BFI.Auras
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local defaults = {
     enabled = true,
@@ -25,7 +27,7 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "Auras", function(t)
+AF.RegisterCallback("UpdateConfigs", "Auras", function(t)
     if not t["auras"] then
         t["auras"] = U.Copy(defaults)
     end

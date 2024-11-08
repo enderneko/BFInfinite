@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
+local UF = BFI.UnitFrames
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local UF = BFI.UnitFrames
 
 local player
 local indicators = {
@@ -88,7 +88,7 @@ local function UpdatePlayer(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(player)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Player", UpdatePlayer)
+AF.RegisterCallback("UpdateModules", "UF_Player", UpdatePlayer)
 
 ---------------------------------------------------------------------
 -- init
@@ -97,4 +97,4 @@ BFI.RegisterCallback("UpdateModules", "UF_Player", UpdatePlayer)
 --     CreatePlayer()
 --     UpdatePlayer()
 -- end
--- BFI.RegisterCallback("InitModules", "UF_Player", InitPlayer)
+-- AF.RegisterCallback("InitModules", "UF_Player", InitPlayer)

@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 local AB = BFI.ActionBars
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local CanExitVehicle = CanExitVehicle
 
@@ -102,4 +102,4 @@ local function UpdateButton(module, which)
     vehicleExitHolder:SetFrameStrata(AB.config.general.frameStrata)
     vehicleExitHolder:SetFrameLevel(AB.config.general.frameLevel)
 end
-BFI.RegisterCallback("UpdateModules", "AB_VehicleExit", UpdateButton)
+AF.RegisterCallback("UpdateModules", "AB_VehicleExit", UpdateButton)

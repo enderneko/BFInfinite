@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
+local UF = BFI.UnitFrames
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local UF = BFI.UnitFrames
 
 local pet
 local indicators = {
@@ -74,4 +74,4 @@ local function UpdatePet(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(pet)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Pet", UpdatePet)
+AF.RegisterCallback("UpdateModules", "UF_Pet", UpdatePet)

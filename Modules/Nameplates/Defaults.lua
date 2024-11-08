@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 local NP = BFI.NamePlates
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- BFI default cvar values
@@ -719,7 +719,7 @@ end
 --     },
 -- }
 
-BFI.RegisterCallback("UpdateConfigs", "Nameplates", function(t)
+AF.RegisterCallback("UpdateConfigs", "Nameplates", function(t)
     if not t["nameplates"] then
         t["nameplates"] = U.Copy(defaults)
     end

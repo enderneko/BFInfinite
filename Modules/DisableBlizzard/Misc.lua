@@ -2,6 +2,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local DB = BFI.DisableBlizzard
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- update
@@ -25,4 +27,4 @@ local function DisableBlizzard()
         DB.DisableFrame(_G.PlayerCastingBarFrame)
     end
 end
-BFI.RegisterCallback("DisableBlizzard", "Misc", DisableBlizzard)
+AF.RegisterCallback("DisableBlizzard", "Misc", DisableBlizzard)

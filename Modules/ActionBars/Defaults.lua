@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 local AB = BFI.ActionBars
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local defaults = {
     general = {
@@ -194,7 +194,7 @@ do
     end
 end
 
-BFI.RegisterCallback("UpdateConfigs", "ActionBars", function(t)
+AF.RegisterCallback("UpdateConfigs", "ActionBars", function(t)
     if not t["actionBars"] then
         t["actionBars"] = U.Copy(defaults)
     end

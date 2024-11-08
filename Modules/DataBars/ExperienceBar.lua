@@ -1,11 +1,11 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local IsXPUserDisabled = IsXPUserDisabled
 local UnitXP = UnitXP
@@ -360,4 +360,4 @@ local function UpdateXPerienceBar(module, which)
     experienceBar:Show()
     UpdateAll(experienceBar)
 end
-BFI.RegisterCallback("UpdateModules", "DB_ExperienceBar", UpdateXPerienceBar)
+AF.RegisterCallback("UpdateModules", "DB_ExperienceBar", UpdateXPerienceBar)

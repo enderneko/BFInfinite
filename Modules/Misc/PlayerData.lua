@@ -3,6 +3,8 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class Misc
 local M = BFI.Misc
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 local UnitClassBase = U.UnitClassBase
 local UnitLevel = UnitLevel
@@ -68,7 +70,7 @@ local function CacheSelf()
     nameToClass[BFI.vars.playerNameFull] = BFI.vars.playerClass
     nameToClass[BFI.vars.playerNameShort] = BFI.vars.playerClass
 end
-BFI.RegisterCallback("PLAYER_LOGIN", "Misc_PlayerData", CacheSelf)
+AF.RegisterCallback("PLAYER_LOGIN", "Misc_PlayerData", CacheSelf)
 
 ---------------------------------------------------------------------
 -- UNIT_PET

@@ -1,9 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
+local UF = BFI.UnitFrames
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local UF = BFI.UnitFrames
 
 local party
 local indicators = {
@@ -166,4 +166,4 @@ local function UpdateParty(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(party, party.driverKey, party.driverValue)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Party", UpdateParty)
+AF.RegisterCallback("UpdateModules", "UF_Party", UpdateParty)

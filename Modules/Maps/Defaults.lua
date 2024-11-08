@@ -89,7 +89,7 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "Maps", function(t)
+AF.RegisterCallback("UpdateConfigs", "Maps", function(t)
     if not t["maps"] then
         t["maps"] = U.Copy(defaults)
     end

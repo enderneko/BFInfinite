@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractFramework
-local AF = _G.AbstractFramework
 local U = BFI.utils
 local NP = BFI.NamePlates
 local DB = BFI.DisableBlizzard
+---@class AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- vars
@@ -652,4 +652,4 @@ local function UpdateNameplates(module, which)
     -- indicators
     NP.EnableQuestIndicator(config.hostile_npc.questIndicator.enabled, config.hostile_npc.questIndicator.hideInInstance)
 end
-BFI.RegisterCallback("UpdateModules", "Nameplates", UpdateNameplates)
+AF.RegisterCallback("UpdateModules", "Nameplates", UpdateNameplates)
