@@ -1,10 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
+local UF = BFI.UnitFrames
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local C = BFI.Colors
-local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
 -- local functions
@@ -341,7 +340,7 @@ local function UpdateDispelHighlight(self, event, unitId)
     for _, type in pairs(dispel_order) do
         if self.dispelTypes[type] then
             if not self.dispelHighlightOnlyDispellable or U.CanDispel(type) then
-                self.dispelHighlight:SetVertexColor(C.GetAuraTypeColor(type))
+                self.dispelHighlight:SetVertexColor(AF.GetAuraTypeColor(type))
                 found = true
                 break
             end

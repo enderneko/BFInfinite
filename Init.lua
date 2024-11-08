@@ -11,6 +11,7 @@ BFI.name = "BigFootInfinite"
 ---@field utils Utils
 ---@field vars table
 ---@field libs table
+---@field Colors Colors
 ---@field Auras Auras
 ---@field ActionBars ActionBars
 ---@field UnitFrames UnitFrames
@@ -121,7 +122,6 @@ local function AddLib(name, major, silent)
 end
 
 AddLib("LAB", "LibActionButton-1.0-BFI")
-AddLib("LCG", "LibCustomGlow-1.0")
 AddLib("LRC", "LibRangeCheck-3.0")
 
 ---------------------------------------------------------------------

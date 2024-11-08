@@ -1,10 +1,9 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
+local NP = BFI.NamePlates
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local S = BFI.Shared
-local NP = BFI.NamePlates
 
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots
@@ -468,7 +467,7 @@ local function Auras_SetNumSlots(self, numSlots)
 
     for i = 1, numSlots do
         if not self.slots[i] then
-            self.slots[i] = S.CreateAura(self)
+            self.slots[i] = AF.CreateAura(self)
         end
     end
 

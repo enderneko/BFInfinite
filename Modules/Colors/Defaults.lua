@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
+---@class Colors
 local C = BFI.Colors
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
@@ -10,12 +11,12 @@ local AF = _G.AbstractFramework
 ---------------------------------------------------------------------
 local defaults = {
     auras = {
-        debuff_curse = {0.6, 0, 1},
-        debuff_disease = {0.6, 0.4, 0},
-        debuff_magic = {0.2, 0.6, 1},
-        debuff_poison = {0, 0.6, 0},
-        debuff_bleed = {1, 0.2, 0.6},
-        debuff_none = {0.8, 0, 0},
+        aura_curse = {0.6, 0, 1},
+        aura_disease = {0.6, 0.4, 0},
+        aura_magic = {0.2, 0.6, 1},
+        aura_poison = {0, 0.6, 0},
+        aura_bleed = {1, 0.2, 0.6},
+        aura_none = {0.8, 0, 0},
         aura_castbyme = {0, 0.8, 0},
         aura_dispellable = {1, 1, 0},
     },
@@ -52,6 +53,7 @@ BFI.RegisterCallback("UpdateConfigs", "Colors", function(t)
     if not t["colors"] then
         t["colors"] = U.Copy(defaults)
     end
+    -- add / overwrite colors
     for _, st in pairs(t["colors"]) do
         AF.AddColors(st)
     end
@@ -69,29 +71,4 @@ function C.ResetDefaults(which)
     end
 
     -- TODO: fire
-end
-
----------------------------------------------------------------------
--- GetAuraTypeColor
----------------------------------------------------------------------
-function C.GetAuraTypeColor(auraType)
-    if auraType == "Curse" then
-        return AF.GetColorRGB("debuff_curse")
-    elseif auraType == "Disease" then
-        return AF.GetColorRGB("debuff_disease")
-    elseif auraType == "Magic" then
-        return AF.GetColorRGB("debuff_magic")
-    elseif auraType == "Poison" then
-        return AF.GetColorRGB("debuff_disease")
-    elseif auraType == "Bleed" then
-        return AF.GetColorRGB("debuff_bleed")
-    elseif auraType == "None" then
-        return AF.GetColorRGB("debuff_none")
-    elseif auraType == "castByMe" then
-        return AF.GetColorRGB("aura_castbyme")
-    elseif auraType == "dispellable" then
-        return AF.GetColorRGB("aura_dispellable")
-    else
-        return AF.GetColorRGB("black")
-    end
 end
