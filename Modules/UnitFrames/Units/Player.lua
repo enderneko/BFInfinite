@@ -88,7 +88,7 @@ local function UpdatePlayer(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(player)
 end
-AF.RegisterCallback("UpdateModules", "UF_Player", UpdatePlayer)
+BFI.RegisterCallback("UpdateModules", "UF_Player", UpdatePlayer)
 
 ---------------------------------------------------------------------
 -- init
@@ -97,4 +97,4 @@ AF.RegisterCallback("UpdateModules", "UF_Player", UpdatePlayer)
 --     CreatePlayer()
 --     UpdatePlayer()
 -- end
--- AF.RegisterCallback("InitModules", "UF_Player", InitPlayer)
+-- BFI.RegisterCallback("InitModules", "UF_Player", InitPlayer)

@@ -190,4 +190,4 @@ local function UpdateHonorBar(module, which)
     honorBar.hideBelowMaxLevel = config.hideBelowMaxLevel
     UpdateHonorVisibility(honorBar)
 end
-AF.RegisterCallback("UpdateModules", "DB_HonorBar", UpdateHonorBar)
+BFI.RegisterCallback("UpdateModules", "DB_HonorBar", UpdateHonorBar)

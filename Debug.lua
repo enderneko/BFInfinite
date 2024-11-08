@@ -19,15 +19,15 @@ function BFI.Debug(arg, ...)
 end
 
 --@debug@
-AF.RegisterCallback("UpdateConfigs", "Debug", function(tbl, name, ...)
+BFI.RegisterCallback("UpdateConfigs", "Debug", function(tbl, name, ...)
     print(AF.WrapTextInColor("UpdateConfigs:", "sand"), name, ...)
 end, 1)
 
--- AF.RegisterCallback("InitModules", "Debug", function(name, ...)
+-- BFI.RegisterCallback("InitModules", "Debug", function(name, ...)
 --     print(AF.WrapTextInColor("InitModules:", "orange"), name, ...)
 -- end)
 
-AF.RegisterCallback("UpdateModules", "Debug", function(name, ...)
+BFI.RegisterCallback("UpdateModules", "Debug", function(name, ...)
     print(AF.WrapTextInColor("UpdateModules:", "orange"), name, ...)
 end, 1)
 --@end-debug@

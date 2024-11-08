@@ -20,7 +20,7 @@ local defaults = {
     -- auras = true,
 }
 
-AF.RegisterCallback("UpdateConfigs", "DisableBlizzard", function(t)
+BFI.RegisterCallback("UpdateConfigs", "DisableBlizzard", function(t)
     if not t["disableBlizzard"] then
         t["disableBlizzard"] = U.Copy(defaults)
     end

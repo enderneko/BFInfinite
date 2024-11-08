@@ -68,7 +68,7 @@ local defaults = {
     },
 }
 
-AF.RegisterCallback("UpdateConfigs", "DataBars", function(t)
+BFI.RegisterCallback("UpdateConfigs", "DataBars", function(t)
     if not t["dataBars"] then
         t["dataBars"] = U.Copy(defaults)
     end

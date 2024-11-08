@@ -568,4 +568,4 @@ local function UpdateChat(module)
 
     -- TODO: button size
 end
-AF.RegisterCallback("UpdateModules", "Chat", UpdateChat)
+BFI.RegisterCallback("UpdateModules", "Chat", UpdateChat)

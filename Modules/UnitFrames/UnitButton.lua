@@ -494,5 +494,5 @@ local function UpdateAllUnitButtons()
         UnitButton_UpdateAll(b)
     end
 end
-AF.RegisterCallback("EnterInstance", "BFI_UnitFrames", UpdateAllUnitButtons)
-AF.RegisterCallback("LeaveInstance", "BFI_UnitFrames", UpdateAllUnitButtons)
+BFI.RegisterCallback("EnterInstance", "BFI_UnitFrames", UpdateAllUnitButtons)
+BFI.RegisterCallback("LeaveInstance", "BFI_UnitFrames", UpdateAllUnitButtons)

@@ -42,7 +42,7 @@ function eventFrame:ADDON_LOADED(arg)
         AF.SetScale(BFIConfig["appearance"]["scale"])
 
         -- init configs
-        AF.Fire("UpdateConfigs", BFIConfig["default"], "default")
+        BFI.Fire("UpdateConfigs", BFIConfig["default"], "default")
 
         -- TODO:
         BFI.vars.currentConfig = "default"
@@ -57,9 +57,9 @@ function eventFrame:PLAYER_LOGIN()
     BFI.vars.playerRealm = GetNormalizedRealmName()
     BFI.vars.playerGUID = UnitGUID("player")
 
-    AF.Fire("PLAYER_LOGIN")
-    AF.Fire("UpdateModules")
-    AF.Fire("DisableBlizzard")
+    BFI.Fire("PLAYER_LOGIN")
+    BFI.Fire("UpdateModules")
+    BFI.Fire("DisableBlizzard")
 end
 
 local inInstance
@@ -70,20 +70,20 @@ function eventFrame:UPDATE_INSTANCE_INFO()
     BFI.vars.inInstance = isIn
     if isIn then
         inInstance = true
-        AF.Fire("EnterInstance", iType)
+        BFI.Fire("EnterInstance", iType)
 
         -- NOTE: delayed check mythic raid
         -- if iType == "raid" then
         --     C_Timer.After(0.5, function()
         --         local difficultyID, difficultyName = select(3, GetInstanceInfo()) --! can't get difficultyID, difficultyName immediately after entering an instance
         --         if difficultyID == 16 then -- mythic raid
-        --             AF.Fire("EnterInstance", iType, "mythic")
+        --             BFI.Fire("EnterInstance", iType, "mythic")
         --         end
         --     end)
         -- end
 
     elseif inInstance then -- leave instance
         inInstance = false
-        AF.Fire("LeaveInstance")
+        BFI.Fire("LeaveInstance")
     end
 end

@@ -364,4 +364,4 @@ local function UpdateMainBars(module, which, barName)
         AssignBindings()
     end
 end
-AF.RegisterCallback("UpdateModules", "AB_MainBars", UpdateMainBars)
+BFI.RegisterCallback("UpdateModules", "AB_MainBars", UpdateMainBars)

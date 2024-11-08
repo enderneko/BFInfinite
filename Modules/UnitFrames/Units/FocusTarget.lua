@@ -77,7 +77,7 @@ local function UpdateFocusTarget(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(focustarget)
 end
-AF.RegisterCallback("UpdateModules", "UF_FocusTarget", UpdateFocusTarget)
+BFI.RegisterCallback("UpdateModules", "UF_FocusTarget", UpdateFocusTarget)
 
 ---------------------------------------------------------------------
 -- init
@@ -86,4 +86,4 @@ AF.RegisterCallback("UpdateModules", "UF_FocusTarget", UpdateFocusTarget)
 --     CreateFocusTarget()
 --     UpdateFocusTarget()
 -- end
--- AF.RegisterCallback("InitModules", "UF_FocusTarget", InitFocusTarget)
+-- BFI.RegisterCallback("InitModules", "UF_FocusTarget", InitFocusTarget)

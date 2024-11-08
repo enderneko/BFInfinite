@@ -49,7 +49,7 @@ local defaults = {
     },
 }
 
-AF.RegisterCallback("UpdateConfigs", "UIWidgets", function(t)
+BFI.RegisterCallback("UpdateConfigs", "UIWidgets", function(t)
     if not t["uiWidgets"] then
         t["uiWidgets"] = U.Copy(defaults)
     end

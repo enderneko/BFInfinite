@@ -70,7 +70,7 @@ local function CacheSelf()
     nameToClass[BFI.vars.playerNameFull] = BFI.vars.playerClass
     nameToClass[BFI.vars.playerNameShort] = BFI.vars.playerClass
 end
-AF.RegisterCallback("PLAYER_LOGIN", "Misc_PlayerData", CacheSelf)
+BFI.RegisterCallback("PLAYER_LOGIN", "Misc_PlayerData", CacheSelf)
 
 ---------------------------------------------------------------------
 -- UNIT_PET

@@ -279,4 +279,4 @@ local function ToggleConfigMode(module, group)
         end
     end
 end
-AF.RegisterCallback("ConfigMode", "UnitFrames", ToggleConfigMode)
+BFI.RegisterCallback("ConfigMode", "UnitFrames", ToggleConfigMode)

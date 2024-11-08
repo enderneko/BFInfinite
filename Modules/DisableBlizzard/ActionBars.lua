@@ -213,4 +213,4 @@ local function DisableBlizzard()
     --     end
     -- end
 end
-AF.RegisterCallback("DisableBlizzard", "ActionBars", DisableBlizzard)
+BFI.RegisterCallback("DisableBlizzard", "ActionBars", DisableBlizzard)

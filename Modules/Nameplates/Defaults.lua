@@ -719,7 +719,7 @@ end
 --     },
 -- }
 
-AF.RegisterCallback("UpdateConfigs", "Nameplates", function(t)
+BFI.RegisterCallback("UpdateConfigs", "Nameplates", function(t)
     if not t["nameplates"] then
         t["nameplates"] = U.Copy(defaults)
     end

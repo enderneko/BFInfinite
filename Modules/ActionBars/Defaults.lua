@@ -194,7 +194,7 @@ do
     end
 end
 
-AF.RegisterCallback("UpdateConfigs", "ActionBars", function(t)
+BFI.RegisterCallback("UpdateConfigs", "ActionBars", function(t)
     if not t["actionBars"] then
         t["actionBars"] = U.Copy(defaults)
     end

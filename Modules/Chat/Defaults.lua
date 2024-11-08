@@ -19,7 +19,7 @@ local defaults = {
     maxLines = 100,
 }
 
-AF.RegisterCallback("UpdateConfigs", "Chat", function(t)
+BFI.RegisterCallback("UpdateConfigs", "Chat", function(t)
     if not t["chat"] then
         t["chat"] = U.Copy(defaults)
     end

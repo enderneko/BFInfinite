@@ -360,4 +360,4 @@ local function UpdateXPerienceBar(module, which)
     experienceBar:Show()
     UpdateAll(experienceBar)
 end
-AF.RegisterCallback("UpdateModules", "DB_ExperienceBar", UpdateXPerienceBar)
+BFI.RegisterCallback("UpdateModules", "DB_ExperienceBar", UpdateXPerienceBar)

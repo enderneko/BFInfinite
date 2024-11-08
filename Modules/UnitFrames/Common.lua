@@ -45,7 +45,7 @@ local function UpdateGeneral(module, which)
     if which and which ~= "general" then return end
     UF.Parent:SetFrameStrata(UF.config.general.frameStrata)
 end
-AF.RegisterCallback("UpdateModules", "UF_General", UpdateGeneral)
+BFI.RegisterCallback("UpdateModules", "UF_General", UpdateGeneral)
 
 ---------------------------------------------------------------------
 -- indicator
@@ -207,7 +207,7 @@ function UF.LoadIndicatorPosition(self, position, anchorTo, parent)
     if not success then
         -- Cannot anchor to itself
         -- Cannot anchor to a region dependent on it
-        AF.Fire("IncorrectAnchor", self)
+        BFI.Fire("IncorrectAnchor", self)
     end
 end
 

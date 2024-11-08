@@ -48,7 +48,7 @@ local defaults = {
     },
 }
 
-AF.RegisterCallback("UpdateConfigs", "Colors", function(t)
+BFI.RegisterCallback("UpdateConfigs", "Colors", function(t)
     if not t["colors"] then
         t["colors"] = U.Copy(defaults)
     end

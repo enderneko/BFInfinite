@@ -360,14 +360,14 @@ local function HealthBar_Enable(self)
     if self.threatGlowEnabled or self.colorByThreat then
         -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
         self:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", self.root.unit, UpdateThreat)
-        AF.RegisterCallback("EnterInstance", "NP_HealthBarThreat", WipeCache)
-        AF.RegisterCallback("LeaveInstance", "NP_HealthBarThreat", WipeCache)
+        BFI.RegisterCallback("EnterInstance", "NP_HealthBarThreat", WipeCache)
+        BFI.RegisterCallback("LeaveInstance", "NP_HealthBarThreat", WipeCache)
     else
         self.threatSituation = nil
         -- self:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE")
         self:UnregisterEvent("UNIT_THREAT_LIST_UPDATE")
-        AF.UnregisterCallback("EnterInstance", "NP_HealthBarThreat")
-        AF.UnregisterCallback("LeaveInstance", "NP_HealthBarThreat")
+        BFI.UnregisterCallback("EnterInstance", "NP_HealthBarThreat")
+        BFI.UnregisterCallback("LeaveInstance", "NP_HealthBarThreat")
     end
 
     self:Show()
