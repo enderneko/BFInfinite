@@ -407,7 +407,7 @@ local function Check(self, event, unitId)
         self.powerIndex, self.powerType, self.powerMod = UF.GetClassPowerInfo()
     end
 
-    if strfind(self.powerType, "^RUNE") then
+    if self.powerType and strfind(self.powerType, "^RUNE") then
         self.powerMax = 6
         if not self.runes then
             self.runes = {}
