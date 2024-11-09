@@ -204,7 +204,7 @@ end
 ---------------------------------------------------------------------
 local function PowerBar_EnableConfigMode(self)
     self.Enable = PowerBar_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

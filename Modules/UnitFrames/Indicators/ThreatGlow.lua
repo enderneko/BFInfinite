@@ -57,7 +57,7 @@ end
 ---------------------------------------------------------------------
 local function ThreatGlow_EnableConfigMode(self)
     self.Enable = ThreatGlow_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:SetBackdropBorderColor(1, 0, 0, self.alpha)

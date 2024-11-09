@@ -31,8 +31,8 @@ end
 -- disable edit mode
 ---------------------------------------------------------------------
 function U.DisableEditMode(region)
-    region.HighlightSystem = BFI.dummy
-    region.ClearHighlight = BFI.dummy
+    region.HighlightSystem = AF.noop
+    region.ClearHighlight = AF.noop
 end
 
 ---------------------------------------------------------------------

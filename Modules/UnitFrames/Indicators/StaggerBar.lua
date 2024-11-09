@@ -202,7 +202,7 @@ end
 ---------------------------------------------------------------------
 local function StaggerBar_EnableConfigMode(self)
     self.Enable = StaggerBar_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

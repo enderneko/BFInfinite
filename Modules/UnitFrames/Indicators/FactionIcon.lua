@@ -59,7 +59,7 @@ end
 ---------------------------------------------------------------------
 local function FactionIcon_EnableConfigMode(self)
     self.Enable = FactionIcon_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

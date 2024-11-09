@@ -17,7 +17,7 @@ end
 
 function U.FormatNumber_Asian(n)
     if abs(n) >= 100000000 then
-        return tonumber(format("%.3f", n/100000000)) .. symbol_1B
+        return tonumber(format("%.2f", n/100000000)) .. symbol_1B
     elseif abs(n) >= 10000 then
         return tonumber(format("%.2f", n/10000)) .. symbol_10K
     -- elseif abs(n) >= 1000 then
@@ -29,7 +29,7 @@ end
 
 function U.FormatNumber(n)
     if abs(n) >= 1000000000 then
-        return tonumber(format("%.3f", n/1000000000)) .. "B"
+        return tonumber(format("%.2f", n/1000000000)) .. "B"
     elseif abs(n) >= 1000000 then
         return tonumber(format("%.2f", n/1000000)) .. "M"
     elseif abs(n) >= 1000 then

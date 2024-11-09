@@ -104,7 +104,7 @@ end
 ---------------------------------------------------------------------
 local function TargetCounter_EnableConfigMode(self)
     self.Enable = TargetCounter_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:SetText(8)

@@ -150,25 +150,25 @@ local function DisableBlizzard()
     DB:RegisterEvent("PLAYER_REGEN_DISABLED", PLAYER_REGEN)
 
     local mixin = _G.EditModeManagerFrame.AccountSettings
-    if config.castBar then mixin.RefreshCastBar = BFI.dummy end
-    if config.auras then mixin.RefreshBuffsAndDebuffs = BFI.dummy end
-    if config.boss then mixin.RefreshBossFrames = BFI.dummy end
-    if config.arena then mixin.RefreshArenaFrames = BFI.dummy end
-    if config.raid then mixin.RefreshRaidFrames = BFI.dummy end
-    if config.party then mixin.RefreshPartyFrames = BFI.dummy end
+    if config.castBar then mixin.RefreshCastBar = AF.noop end
+    if config.auras then mixin.RefreshBuffsAndDebuffs = AF.noop end
+    if config.boss then mixin.RefreshBossFrames = AF.noop end
+    if config.arena then mixin.RefreshArenaFrames = AF.noop end
+    if config.raid then mixin.RefreshRaidFrames = AF.noop end
+    if config.party then mixin.RefreshPartyFrames = AF.noop end
     if config.target and config.focus then
-        mixin.RefreshTargetAndFocus = BFI.dummy
+        mixin.RefreshTargetAndFocus = AF.noop
     end
     if config.actionBars then
-        mixin.RefreshVehicleLeaveButton = BFI.dummy
-        mixin.RefreshActionBarShown = BFI.dummy
-        mixin.RefreshEncounterBar = BFI.dummy
-        mixin.RefreshStatusTrackingBar2 = BFI.dummy
+        mixin.RefreshVehicleLeaveButton = AF.noop
+        mixin.RefreshActionBarShown = AF.noop
+        mixin.RefreshEncounterBar = AF.noop
+        mixin.RefreshStatusTrackingBar2 = AF.noop
 
         for _, name in next, ignoreFrames do
             local frame = _G[name]
             if frame then
-                frame.OnEditModeEnter = BFI.dummy
+                frame.OnEditModeEnter = AF.noop
             end
         end
     end

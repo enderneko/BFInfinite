@@ -921,7 +921,7 @@ end
 ---------------------------------------------------------------------
 local function CastBar_EnableConfigMode(self)
     self.Enable = CastBar_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
 

@@ -190,7 +190,7 @@ end
 ---------------------------------------------------------------------
 local function PowerText_EnableConfigMode(self)
     self.Enable = PowerText_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

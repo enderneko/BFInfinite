@@ -175,7 +175,7 @@ end
 ---------------------------------------------------------------------
 local function StatusIcon_EnableConfigMode(self)
     self.Enable = StatusIcon_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

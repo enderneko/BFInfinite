@@ -75,7 +75,7 @@ end
 ---------------------------------------------------------------------
 local function IncDmgHealText_EnableConfigMode(self)
     self.Enable = IncDmgHealText_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

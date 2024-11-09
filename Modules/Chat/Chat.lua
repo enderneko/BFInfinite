@@ -118,7 +118,7 @@ local function CreateChatCopyFrame()
     chatCopyFrame:Hide()
     chatCopyFrame:SetFrameStrata("DIALOG")
     chatCopyFrame:EnableMouse(true)
-    chatCopyFrame:SetScript("OnMouseWheel", BFI.dummy)
+    chatCopyFrame:SetScript("OnMouseWheel", AF.noop)
     tinsert(UISpecialFrames, "BFIChatCopyFrame")
 
     chatCopyFrame.scroll = AF.CreateScrollEditBox(chatCopyFrame, nil, nil, 20, 20, 5)

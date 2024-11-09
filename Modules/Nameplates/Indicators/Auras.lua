@@ -69,7 +69,7 @@ end
 
 local function UpdateExtraData(self, auraData)
     auraData.start = auraData.expirationTime - auraData.duration
-    auraData.debuffType = U.GetDebuffType(auraData)
+    auraData.debuffType = AF.GetDebuffType(auraData)
     auraData.noDuration = auraData.duration == 0
 
     auraData.castByMe = IsCastByMe(auraData.sourceUnit)

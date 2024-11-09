@@ -38,8 +38,8 @@ local funcs = {"ClearAllPoints", "SetPoint", "SetScale", "SetShown"}
 local function SetDummy(f)
     if not f then return end
     for _, func in pairs(funcs) do
-        if f[func] ~= BFI.dummy then
-            frame[func] = BFI.dummy
+        if f[func] ~= AF.noop then
+            frame[func] = AF.noop
         end
     end
 end
@@ -84,7 +84,7 @@ local function DisableBlizzard()
             if not BFI.vars.isRetail then
                 SetDummy(frame)
             elseif name == "PetActionBar" then
-                frame.UpdateVisibility = BFI.dummy
+                frame.UpdateVisibility = AF.noop
             end
         end
     end

@@ -65,7 +65,7 @@ end
 ---------------------------------------------------------------------
 local function RaidIcon_EnableConfigMode(self)
     self.Enable = RaidIcon_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

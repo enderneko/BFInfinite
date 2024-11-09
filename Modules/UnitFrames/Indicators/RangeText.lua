@@ -100,7 +100,7 @@ end
 ---------------------------------------------------------------------
 local function RangeText_EnableConfigMode(self)
     self.Enable = RangeText_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:SetText("30-35")

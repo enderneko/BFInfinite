@@ -519,7 +519,7 @@ local function InitMinimap()
     AF.AddToPixelUpdater(minimapContainer, UpdatePixels)
 
     -- Minimap
-    Minimap.Layout = BFI.dummy -- MinimapCluster.IndicatorFrame
+    Minimap.Layout = AF.noop -- MinimapCluster.IndicatorFrame
     Minimap:SetMaskTexture(AF.GetPlainTexture())
     Minimap:SetParent(minimapContainer)
     AF.SetPoint(Minimap, "TOPLEFT", 1, -1)

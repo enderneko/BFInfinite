@@ -265,7 +265,7 @@ end
 ---------------------------------------------------------------------
 local function HealthText_EnableConfigMode(self)
     self.Enable = HealthText_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

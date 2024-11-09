@@ -191,7 +191,7 @@ end
 ---------------------------------------------------------------------
 local function Portrait_EnableConfigMode(self)
     self.Enable = Portrait_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

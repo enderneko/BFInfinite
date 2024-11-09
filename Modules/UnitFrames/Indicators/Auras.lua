@@ -92,7 +92,7 @@ local function UpdateExtraData(self, auraData)
     auraData.castByNPC = not auraData.isFromPlayerOrPlayerPet
     -- auraData.castByBoss = auraData.isBossAura
     -- auraData.castByUnknown = not auraData.sourceUnit
-    auraData.debuffType = U.GetDebuffType(auraData)
+    auraData.debuffType = AF.GetDebuffType(auraData)
     auraData.dispellable = IsDispellable(self, auraData)
     auraData.noDuration = auraData.duration == 0
     if self.whitelist then
@@ -691,7 +691,7 @@ end
 
 local function Auras_EnableConfigMode(self)
     self.Enable = Auras_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     if not self.configModeTicker then

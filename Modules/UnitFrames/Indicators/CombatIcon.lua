@@ -77,7 +77,7 @@ end
 ---------------------------------------------------------------------
 local function CombatIcon_EnableConfigMode(self)
     self.Enable = CombatIcon_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     if self.ticker then self.ticker:Cancel() end

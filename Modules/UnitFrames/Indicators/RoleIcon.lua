@@ -52,7 +52,7 @@ end
 ---------------------------------------------------------------------
 local function RoleIcon_EnableConfigMode(self)
     self.Enable = RoleIcon_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

@@ -210,7 +210,7 @@ end
 ---------------------------------------------------------------------
 local function ExtraManaBar_EnableConfigMode(self)
     self.Enable = ExtraManaBar_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

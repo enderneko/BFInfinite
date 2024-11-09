@@ -505,14 +505,14 @@ end
 local _UpdateHealthStates = UpdateHealthStates
 local function HealthBar_EnableConfigMode(self, isRepeatCall)
     self.Enable = HealthBar_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()
 
     UnitGetTotalAbsorbs = UF.CFG_UnitGetTotalAbsorbs
     UnitGetTotalHealAbsorbs = UF.CFG_UnitGetTotalHealAbsorbs
-    UpdateHealthStates = BFI.dummy
+    UpdateHealthStates = AF.noop
 
     self.health = UF.CFG_UnitHealth()
     self.healthMax = UF.CFG_UnitHealthMax()

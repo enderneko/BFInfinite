@@ -83,7 +83,7 @@ end
 ---------------------------------------------------------------------
 local function NameText_EnableConfigMode(self)
     self.Enable = NameText_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     UpdateName(self)

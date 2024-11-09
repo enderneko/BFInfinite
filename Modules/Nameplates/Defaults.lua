@@ -318,6 +318,7 @@ do
                     {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
                     {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
+                colorBy = "percent_seconds",
             },
             stackText = {
                 enabled = true,
@@ -366,6 +367,7 @@ do
                     {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
                     {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
+                colorBy = "percent_seconds",
             },
             stackText = {
                 enabled = true,
@@ -419,6 +421,7 @@ do
                     {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
                     {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
+                colorBy = "percent_seconds",
             },
             stackText = {
                 enabled = true,
@@ -535,6 +538,7 @@ do
                     {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
                     {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
+                colorBy = "percent_seconds",
             },
             stackText = {
                 enabled = true,
@@ -581,6 +585,7 @@ do
                     {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
                     {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
+                colorBy = "percent_seconds",
             },
             stackText = {
                 enabled = true,
@@ -629,6 +634,7 @@ do
                     {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
                     {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
                 },
+                colorBy = "percent_seconds",
             },
             stackText = {
                 enabled = true,

@@ -168,7 +168,7 @@ end
 ---------------------------------------------------------------------
 local function StatusTimer_EnableConfigMode(self)
     self.Enable = StatusTimer_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
 

@@ -64,7 +64,7 @@ end
 ---------------------------------------------------------------------
 local function ReadyCheckIcon_EnableConfigMode(self)
     self.Enable = ReadyCheckIcon_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self:Show()

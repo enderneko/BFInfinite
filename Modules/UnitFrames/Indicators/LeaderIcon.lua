@@ -67,7 +67,7 @@ end
 ---------------------------------------------------------------------
 local function LeaderIcon_EnableConfigMode(self)
     self.Enable = LeaderIcon_EnableConfigMode
-    self.Update = BFI.dummy
+    self.Update = AF.noop
 
     self:UnregisterAllEvents()
     self.text:SetText(S.LeaderGlyphs.leader.char)
