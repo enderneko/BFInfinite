@@ -517,7 +517,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -570,7 +570,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -927,7 +927,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -980,7 +980,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -1290,7 +1290,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -1343,7 +1343,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -1649,7 +1649,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -1702,7 +1702,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -2000,7 +2000,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -2053,7 +2053,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -2351,7 +2351,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -2404,7 +2404,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -2702,7 +2702,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -2755,7 +2755,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -3121,7 +3121,7 @@ local defaults = {
                 durationText = {
                     enabled = false,
                     font = {"Visitor", 9, "monochrome_outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -3174,7 +3174,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -3413,7 +3413,7 @@ local defaults = {
                 durationText = {
                     enabled = false,
                     font = {"Visitor", 9, "monochrome_outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -3466,7 +3466,7 @@ local defaults = {
                 durationText = {
                     enabled = false,
                     font = {"Visitor", 9, "monochrome_outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -3750,7 +3750,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
@@ -3803,7 +3803,7 @@ local defaults = {
                 durationText = {
                     enabled = true,
                     font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 0},
+                    position = {"TOP", "TOP", 1, 1},
                     color = {
                         AF.GetColorTable("white"), -- normal
                         {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
