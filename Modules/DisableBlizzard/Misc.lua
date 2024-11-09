@@ -26,5 +26,12 @@ local function DisableBlizzard()
     if config.castBar then
         DB.DisableFrame(_G.PlayerCastingBarFrame)
     end
+
+    -- auras
+    if config.auras then
+        DB.DisableFrame(_G.BuffFrame)
+        _G.BuffFrame.numHideableBuffs = 0
+        DB.DisableFrame(_G.DebuffFrame)
+    end
 end
 BFI.RegisterCallback("DisableBlizzard", "Misc", DisableBlizzard)

@@ -17,7 +17,7 @@ local defaults = {
     manager = true,
     castBar = true,
     actionBars = true,
-    -- auras = true,
+    auras = true,
 }
 
 BFI.RegisterCallback("UpdateConfigs", "DisableBlizzard", function(t)

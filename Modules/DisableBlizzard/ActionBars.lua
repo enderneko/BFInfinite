@@ -35,7 +35,7 @@ settingsHider:SetScript("OnEvent", function(frame, event)
 end)
 
 local funcs = {"ClearAllPoints", "SetPoint", "SetScale", "SetShown"}
-local function SetDummy(f)
+local function SetNoop(f)
     if not f then return end
     for _, func in pairs(funcs) do
         if f[func] ~= AF.noop then
@@ -82,7 +82,7 @@ local function DisableBlizzard()
             frame:UnregisterAllEvents()
 
             if not BFI.vars.isRetail then
-                SetDummy(frame)
+                SetNoop(frame)
             elseif name == "PetActionBar" then
                 frame.UpdateVisibility = AF.noop
             end
@@ -163,13 +163,13 @@ local function DisableBlizzard()
         --     end
         -- end)
     else
-        -- SetDummy(_G.MainMenuBarArtFrame)
-        -- SetDummy(_G.MainMenuBarArtFrameBackground)
+        -- SetNoop(_G.MainMenuBarArtFrame)
+        -- SetNoop(_G.MainMenuBarArtFrameBackground)
         -- _G.MainMenuBarArtFrame:UnregisterAllEvents()
 
         -- -- this would taint along with the same path as the SetNoopers: ValidateActionBarTransition
         -- _G.VerticalMultiBarsContainer:Size(10) -- dummy values so GetTop etc doesnt fail without replacing
-        -- SetDummy(_G.VerticalMultiBarsContainer)
+        -- SetNoop(_G.VerticalMultiBarsContainer)
 
         -- -- hide some interface options we dont use
         -- _G.InterfaceOptionsActionBarsPanelStackRightBars:SetScale(0.5)

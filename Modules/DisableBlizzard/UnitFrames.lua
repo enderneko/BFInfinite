@@ -85,12 +85,6 @@ function DB.DisableFrame(frame, doNotReparent)
     end
 end
 
-local function DisableBlizzard_InitializeForGroup(self)
-    if not self:IsForbidden() then
-        self:UnregisterAllEvents()
-    end
-end
-
 local allowedFuncs = {
     [_G.DefaultCompactUnitFrameSetup] = true,
     [_G.DefaultCompactNamePlateEnemyFrameSetup] = true,
@@ -98,27 +92,34 @@ local allowedFuncs = {
     [_G.DefaultCompactNamePlatePlayerFrameSetup] = true,
 }
 
-local setFrameUp = {}
-local setFrameUnit = {}
+local frame_SetUp = {}
+local frame_SetUnit = {}
 
-local function DisableBlizzard_SetUpFrame(self, func)
+local function DisableBlizzard_SetUpFrame(frame, func)
     if not allowedFuncs[func] then return end
-    if self.IsForbidden or self:IsForbidden() then return end
+    if frame.IsForbidden or frame:IsForbidden() then return end
 
-    local name = self:GetDebugName()
+    local name = frame:GetDebugName()
     if name then
-        for _, pattern in pairs(setFrameUp) do
+        for _, pattern in pairs(frame_SetUp) do
             if strmatch(name, pattern) then
-                setFrameUnit[self] = name
+                frame_SetUnit[frame] = name
             end
         end
     end
 end
 
-local function DisableBlizzard_SetUnit(self, token)
-    if setFrameUnit[self] and token then
-        self:SetScript("OnEvent", nil)
-        self:SetScript("OnUpdate", nil)
+local function DisableBlizzard_SetUnit(frame, unit)
+    if frame_SetUnit[frame] and unit then
+        -- CompactUnitFrame_UnregisterEvents(frame)
+        frame:SetScript("OnEvent", nil)
+        frame:SetScript("OnUpdate", nil)
+    end
+end
+
+local function DisableBlizzard_InitializeForGroup(frame)
+    if not frame:IsForbidden() then
+        frame:UnregisterAllEvents()
     end
 end
 
@@ -155,7 +156,7 @@ local function DisableBlizzard()
         UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")
 
         _G.CompactPartyFrame:UnregisterAllEvents()
-        setFrameUp[_G.CompactPartyFrame] = "^CompactPartyFrameMember%d+$"
+        frame_SetUp[_G.CompactPartyFrame] = "^CompactPartyFrameMember%d+$"
 
         hooksecurefunc(_G.CompactPartyFrame, "Show", _G.CompactPartyFrame.Hide)
         hooksecurefunc(_G.CompactPartyFrame, "SetShown", SetShown)
@@ -174,11 +175,15 @@ local function DisableBlizzard()
         UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")
 
         _G.CompactRaidFrameContainer:UnregisterAllEvents()
-        setFrameUp[_G.CompactRaidFrameContainer] = "^CompactRaidGroup%d+Member%d+$"
+        frame_SetUp[_G.CompactRaidFrameContainer] = "^CompactRaidGroup%d+Member%d+$"
 
         hooksecurefunc(_G.CompactRaidFrameContainer, "Show", _G.CompactRaidFrameContainer.Hide)
         hooksecurefunc(_G.CompactRaidFrameContainer, "SetShown", SetShown)
         hooksecurefunc("CompactRaidGroup_InitializeForGroup", DisableBlizzard_InitializeForGroup)
+
+        CompactRaidFrameManager_SetSetting("IsShown", "0")
+        _G.CompactRaidFrameManager:UnregisterAllEvents()
+        _G.CompactRaidFrameManager:SetParent(hiddenParent)
     end
 
     -- boss
@@ -190,17 +195,7 @@ local function DisableBlizzard()
     end
 
     ---------------------------------------------
-    local allDisabled = true
-    for _, disabled in pairs(config) do
-        if not disabled then
-            allDisabled = false
-            break
-        end
-    end
-
-    if allDisabled then
-        hooksecurefunc("CompactUnitFrame_SetUpFrame", DisableBlizzard_SetUpFrame)
-        hooksecurefunc("CompactUnitFrame_SetUnit", DisableBlizzard_SetUnit)
-    end
+    hooksecurefunc("CompactUnitFrame_SetUpFrame", DisableBlizzard_SetUpFrame)
+    hooksecurefunc("CompactUnitFrame_SetUnit", DisableBlizzard_SetUnit)
 end
 BFI.RegisterCallback("DisableBlizzard", "UnitFrames", DisableBlizzard)
