@@ -190,17 +190,27 @@ local function CreateCopyButton(frame)
     frame.BFICopyButton = b
 end
 
+local function GetTab(frame)
+    -- mainly for temporary window
+    if not frame.tab then
+        local tab = _G[format("ChatFrame%sTab", frame:GetID())]
+        frame.tab = tab
+        tab.owner = frame
+        FixTabAlpha(tab)
+        hooksecurefunc(tab, "SetAlpha", FixTabAlpha)
+
+        tab.underline = AF.CreateSeparator(tab, nil, 1, BFI.name)
+        AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -2)
+        tab.underline:Hide()
+        tab:HookScript("OnClick", HideChatCopyFrame)
+    end
+    return frame.tab
+end
+
 local function SetupChat()
     for _, name in pairs(CHAT_FRAMES) do
         local frame = _G[name]
         -- local id = frame:GetID() -- 2:combatlog, 3:voice
-
-        if not frame.tab then
-            frame.tab = _G[name .. "Tab"]
-            frame.tab.owner = frame
-            FixTabAlpha(frame.tab)
-            hooksecurefunc(frame.tab, "SetAlpha", FixTabAlpha)
-        end
 
         -- scorll to bottom
         U.Hide(frame.ScrollToBottomButton)
@@ -221,17 +231,12 @@ local function SetupChat()
         U.Hide(frame.ScrollBar)
 
         -- tab
-        local tab = frame.tab
+        local tab = GetTab(frame)
         AF.SetFont(tab.Text, unpack(C.config.tabFont))
-        tab.Text:SetTextColor(AF.GetAccentColorRGB())
+        tab.Text:ClearAllPoints()
+        tab.Text:SetPoint("CENTER", 0, -5)
+        tab.Text:SetJustifyH("CENTER")
         tab:SetPushedTextOffset(0, -1)
-
-        if not tab.underline then
-            tab.underline = AF.CreateSeparator(tab, nil, 1, BFI.name)
-            AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -2)
-            tab.underline:Hide()
-            tab:HookScript("OnClick", HideChatCopyFrame)
-        end
 
         for _, prefix in pairs(CHAT_TAB_TEXTURES) do
             local left = tab[prefix .. "Left"]
@@ -241,6 +246,13 @@ local function SetupChat()
             if left then left:SetTexture() end
             if middle then middle:SetTexture() end
             if right then right:SetTexture() end
+        end
+
+        -- conversationIcon
+        if tab.conversationIcon then
+            tab.conversationIcon:ClearAllPoints()
+            tab.conversationIcon:SetPoint("RIGHT", tab.Text, "LEFT", -1, 0)
+            -- tab.conversationIcon:SetDrawLayer("HIGHLIGHT")
         end
 
         -- background
@@ -408,8 +420,15 @@ end
 ---------------------------------------------------------------------
 -- hooks
 ---------------------------------------------------------------------
-local function UpdateTabUnderline(frame)
-    frame.tab.underline:SetWidth(frame.tab.Text:GetStringWidth() + 2)
+local function UpdateTabUnderline(frame, name)
+    local tab = GetTab(frame)
+    -- FIXME: WHY???
+    if frame.chatType == "PET_BATTLE_COMBAT_LOG" then
+        tab.Text:SetText(_G.PET_BATTLE_COMBAT_LOG)
+    end
+    C_Timer.After(0, function()
+        tab.underline:SetWidth(tab.Text:GetStringWidth() + 2)
+    end)
 end
 
 local function UpdateAllTabUnderlines()
@@ -421,6 +440,7 @@ local function UpdateAllTabUnderlines()
 end
 
 local function UpdateTabColor(tab, selected)
+    tab.selected = selected
     if not tab.underline then return end
     if selected then
         tab.Text:SetTextColor(AF.GetAccentColorRGB())
@@ -438,8 +458,9 @@ end
 
 local function UpdateFrameDocked(frame, isDocked)
     if not isDocked then
-        frame.tab.Text:SetTextColor(AF.GetAccentColorRGB())
-        frame.tab.underline:Hide()
+        local tab = GetTab(frame)
+        tab.Text:SetTextColor(AF.GetAccentColorRGB())
+        tab.underline:Hide()
         frame.Background:Show()
     else
         frame.Background:Hide()
@@ -524,6 +545,7 @@ local function InitHooks()
     hooksecurefunc("ChatFrame_OnUpdate", UpdateScrollToBottomButton)
     hooksecurefunc("ChatEdit_UpdateHeader", UpdateEditBox)
     hooksecurefunc("ChatEdit_ActivateChat", UpdateEditBoxFont)
+    hooksecurefunc("FCF_OpenTemporaryWindow", SetupChat) -- PET_BATTLE_COMBAT_LOG
     -- hooksecurefunc("FCFDock_SelectWindow", function()
     --     print("FCFDock_SelectWindow")
     -- end)

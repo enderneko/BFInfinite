@@ -12,7 +12,11 @@ local AF = _G.AbstractFramework
 UF.Parent = CreateFrame("Frame", "BFIUnitFrameParent", AF.UIParent, "SecureHandlerStateTemplate")
 UF.Parent:SetFrameStrata("LOW")
 UF.Parent:SetAllPoints(AF.UIParent)
-RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
+BFI.RegisterCallback("UpdateModules", "UF_Parent", function()
+    -- NOTE: in case of reload during pet battle
+    RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
+    BFI.UnregisterCallback("UpdateModules", "UF_Parent")
+end, 3)
 
 -- hide during minigame
 -- UF.Parent:RegisterEvent("CLIENT_SCENE_OPENED")
