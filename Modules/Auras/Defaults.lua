@@ -9,25 +9,69 @@ local AF = _G.AbstractFramework
 local defaults = {
     enabled = true,
     buffs = {
-        position = {"CENTER", 0, 0},
-        width = 30,
-        height = 30,
+        position = {"TOPRIGHT", -4, -4},
+        width = 26,
+        height = 26,
         orientation = "right_to_left_then_bottom",
-        spacingX = 5,
-        spacingY = 10,
-        sortMethod = "INDEX",
-        sortDirection = "+",
-        maxWraps = 2, -- rows
+        spacingX = 4,
+        spacingY = 6,
+        separateOwn = 0,
+        sortMethod = "TIME",
+        sortDirection = "-",
+        maxWraps = 1, -- rows
         wrapAfter = 20, -- buttons per row
+        stack = {
+            enabled = true,
+            position = {"TOPRIGHT", "TOPRIGHT", 0, 3},
+            font = {"Expressway", 11, "outline", false},
+            color = AF.GetColorTable("white"),
+        },
+        duration = {
+            enabled = true,
+            position = {"BOTTOM", "BOTTOM", 1, -3},
+            font = {"Expressway", 10, "outline", false},
+            color = {
+                AF.GetColorTable("white"),
+                AF.GetColorTable("aura_seconds"),
+            },
+            colorBy = "expiring",
+            showSecondsUnit = true,
+        },
+
     },
     debuffs = {
-        position = {"TOPRIGHT", -5, -5},
-        width = 25,
-        height = 25,
+        position = {"TOPRIGHT", -4, -40},
+        width = 26,
+        height = 26,
+        orientation = "right_to_left_then_bottom",
+        spacingX = 4,
+        spacingY = 6,
+        separateOwn = 0,
+        sortMethod = "TIME",
+        sortDirection = "-",
+        maxWraps = 1, -- rows
+        wrapAfter = 20, -- buttons per row
+        stack = {
+            enabled = true,
+            position = {"TOPRIGHT", "TOPRIGHT", 0, 3},
+            font = {"Expressway", 11, "outline", false},
+            color = AF.GetColorTable("white"),
+        },
+        duration = {
+            enabled = true,
+            position = {"BOTTOM", "BOTTOM", 1, -3},
+            font = {"Expressway", 10, "outline", false},
+            color = {
+                AF.GetColorTable("white"),
+                AF.GetColorTable("aura_seconds"),
+            },
+            colorBy = "expiring",
+            showSecondsUnit = true,
+        },
     },
 }
 
-AF.RegisterCallback("UpdateConfigs", "Auras", function(t)
+BFI.RegisterCallback("UpdateConfigs", "Auras", function(t)
     if not t["auras"] then
         t["auras"] = U.Copy(defaults)
     end

@@ -168,7 +168,8 @@ function AB.StylizeButton(b)
 
     -- backdrop -------------------------------------------------------------- --
     Mixin(b, BackdropTemplateMixin)
-    AF.StylizeFrame(b)
+    AF.SetDefaultBackdrop(b)
+    AF.ApplyDefaultBackdropColors(b)
 end
 
 ---------------------------------------------------------------------

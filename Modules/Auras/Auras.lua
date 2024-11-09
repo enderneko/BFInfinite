@@ -9,6 +9,8 @@ local AF = _G.AbstractFramework
 
 local GameTooltip = GameTooltip
 local GameTooltip_Hide = GameTooltip_Hide
+-- local UnpackAuraData = AuraUtil.UnpackAuraData
+local GetAuraDataByIndex = C_UnitAuras.GetAuraDataByIndex
 
 ---------------------------------------------------------------------
 -- header
@@ -25,6 +27,13 @@ local function CreateHeader(name, moverName, filter)
     header:SetAttribute("unit", "player")
     RegisterAttributeDriver(header, "unit", "[vehicleui] vehicle;player")
 
+    header:SetAttribute("initialConfigFunction", [[
+        local header = self:GetParent()
+        self:SetWidth(header:GetAttribute("buttonWidth") or 20)
+        self:SetHeight(header:GetAttribute("buttonHeight") or 20)
+        self:CallMethod("LoadConfig")
+    ]])
+
     AF.CreateMover(header, "BFI: " .. L["UI Widgets"], moverName)
     header:Show()
 
@@ -37,12 +46,19 @@ end
 local buffFrame, debuffFrame
 local function CreateAuraHeaders()
     buffFrame = CreateHeader("BFIBuffFrame", _G.HUD_EDIT_MODE_BUFF_FRAME_LABEL, "HELPFUL")
-    -- debuffFrame = CreateHeader("BFIDebuffFrame", _G.HUD_EDIT_MODE_DEBUFF_FRAME_LABEL, "HARMFUL")
+    debuffFrame = CreateHeader("BFIDebuffFrame", _G.HUD_EDIT_MODE_DEBUFF_FRAME_LABEL, "HARMFUL")
 end
 
 ---------------------------------------------------------------------
 -- create aura button
 ---------------------------------------------------------------------
+local function UpdateAura(button, index)
+    local auraData = GetAuraDataByIndex("player", index, button.filter)
+    if not auraData then return end
+
+    AF.SetAuraCooldown(button, auraData.expirationTime - auraData.duration, auraData.duration, auraData.applications, auraData.icon, AF.GetDebuffType(auraData))
+end
+
 local function Button_OnEnter(button)
     GameTooltip:SetOwner(button, "ANCHOR_BOTTOMLEFT", 0, -5)
     -- button.elapsed = 1
@@ -54,17 +70,63 @@ local function Button_OnEnter(button)
     end
 end
 
-function A.CreateAuraButton(button)
+local function Button_OnUpdate(button, elapsed)
+
+end
+
+local function Button_OnAttributeChanged(button, name, value)
+    -- print(name, value)
+    if name == "index" then
+        UpdateAura(button, value)
+    end
+end
+
+local function Button_LoadConfig(button)
+    local config = button.header.config
+    if not config then return end
+
+    AF.SetupAuraStackText(button, config.stack)
+    AF.SetupAuraDurationText(button, config.duration)
+end
+
+local function Button_UpdatePixels(button)
+    AF.ReBorder(button)
+    AF.RePoint(button.icon)
+end
+
+function A.InitAuraButton(button)
     button.header = button:GetParent()
     button.filter = button.header.filter
 
+    button.LoadConfig = Button_LoadConfig
+    AF.AddToPixelUpdater(button, Button_UpdatePixels)
+
+    --
+    button.SetDesaturated = AF.SetAuraDesaturated
+
+    -- icon
+    button.icon = button:CreateTexture(nil, "ARTWORK")
+    AF.SetOnePixelInside(button.icon, button)
+
+    -- stack
+    button.stack = button:CreateFontString(nil, "OVERLAY", "AF_FONT_SMALL")
+
+    -- duration
+    button.duration = button:CreateFontString(nil, "OVERLAY", "AF_FONT_SMALL")
+
+    -- style
     AF.SetDefaultBackdrop(button)
     AF.ApplyDefaultBackdropColors(button)
 
+    -- click
     button:RegisterForClicks("RightButtonUp", "RightButtonDown")
 
+    -- event
     button:SetScript("OnEnter", Button_OnEnter)
     button:SetScript("OnLeave", GameTooltip_Hide)
+    button:SetScript("OnAttributeChanged", Button_OnAttributeChanged)
+    button:SetScript("OnUpdate", Button_OnUpdate)
+    button:SetScript("OnSizeChanged", AF.ReCalcTexCoordForAura)
 end
 
 ---------------------------------------------------------------------
@@ -102,45 +164,42 @@ local function GetAttributes(config)
     local point, x, y, wrapX, wrapY, minWidth, minHeight, _
     point, _, _, x, y, wrapX, wrapY = AF.GetAnchorPoints_Complex(config.orientation, config.spacingX, config.spacingY)
 
-    -- local width = config.width
-    -- local height = AF.ConvertPixels(config.height)
-
-    -- local spacingX = AF.ConvertPixels(config.spacingX)
-    -- local spacingY = AF.ConvertPixels(config.spacingY)
-
+    minWidth = config.width * config.wrapAfter + config.spacingX * (config.wrapAfter - 1)
+    minHeight = config.height * config.maxWraps + config.spacingY * (config.maxWraps - 1)
 
     if config.orientation == "bottom_to_top_then_left" then
-
+        y = y + config.height
+        wrapX = wrapX - config.width
     elseif config.orientation == "bottom_to_top_then_right" then
-
+        y = y + config.height
+        wrapX = wrapX + config.width
     elseif config.orientation == "top_to_bottom_then_left" then
-
+        y = y - config.height
+        wrapX = wrapX - config.width
     elseif config.orientation == "top_to_bottom_then_right" then
-
+        y = y - config.height
+        wrapX = wrapX + config.width
     elseif config.orientation == "left_to_right_then_bottom" then
-
+        x = x + config.width
+        wrapY = wrapY - config.height
     elseif config.orientation == "left_to_right_then_top" then
-
+        x = x + config.width
+        wrapY = wrapY + config.height
     elseif config.orientation == "right_to_left_then_bottom" then
         x = x - config.width
         wrapY = wrapY - config.height
-        minWidth = config.width * config.wrapAfter + config.spacingX * (config.wrapAfter - 1)
-        minHeight = config.height * config.maxWraps + config.spacingY * (config.maxWraps - 1)
     elseif config.orientation == "right_to_left_then_top" then
-
+        x = x - config.width
+        wrapY = wrapY + config.height
     end
 
     return point, x, y, wrapX, wrapY, minWidth, minHeight
 end
 
 local function SetupHeader(header, config)
-    header:SetAttribute("initialConfigFunction", [[
-        local header = self:GetParent()
-        self:SetWidth(header:GetAttribute("buttonWidth"))
-        self:SetHeight(header:GetAttribute("buttonHeight"))
-    ]])
+    header.config = config
 
-    header:SetAttribute("separateOwn", 1)
+    header:SetAttribute("separateOwn", config.separateOwn)
     header:SetAttribute("sortMethod", config.sortMethod)
     header:SetAttribute("sortDirection", config.sortDirection)
     header:SetAttribute("maxWraps", config.maxWraps)
@@ -160,6 +219,7 @@ local function SetupHeader(header, config)
     header:SetAttribute("buttonHeight", config.height)
     for _, b in pairs({header:GetChildren()}) do
         b:SetSize(config.width, config.height)
+        b:LoadConfig()
     end
 end
 
@@ -173,10 +233,8 @@ local function UpdateAuras(module, which)
 
     if not config.enabled then
         -- A:UnregisterAllEvents()
-        if buffFrame then
+        if buffFrame and debuffFrame then
             buffFrame.enabled = false
-        end
-        if debuffFrame then
             debuffFrame.enabled = false
         end
         return
@@ -187,11 +245,12 @@ local function UpdateAuras(module, which)
     end
 
     buffFrame.enabled = true
-    -- debuffFrame.enabled = true
+    debuffFrame.enabled = true
 
     SetupHeader(buffFrame, config.buffs)
-    -- SetupHeader(debuffFrame)
+    SetupHeader(debuffFrame, config.debuffs)
 
     AF.LoadPosition(buffFrame, config.buffs.position)
+    AF.LoadPosition(debuffFrame, config.debuffs.position)
 end
-AF.RegisterCallback("UpdateModules", "Auras", UpdateAuras)
+BFI.RegisterCallback("UpdateModules", "Auras", UpdateAuras)
