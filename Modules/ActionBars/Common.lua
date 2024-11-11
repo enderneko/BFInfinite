@@ -12,7 +12,7 @@ local LAB = BFI.libs.LAB
 -- hotkey
 ---------------------------------------------------------------------
 function AB.GetHotkey(key)
-    if key ~= _G.RANGE_INDICATOR then
+    if key and key ~= _G.RANGE_INDICATOR then
         key = key:gsub("ALT%-", "A")
         key = key:gsub("CTRL%-", "C")
         key = key:gsub("SHIFT%-", "S")
