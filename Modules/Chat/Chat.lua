@@ -32,7 +32,7 @@ local CHAT_TAB_TEXTURES = {
 ---------------------------------------------------------------------
 local chatContainer
 local function CreateChatContainer()
-    chatContainer = AF.CreateBorderedFrame(AF.UIParent, "BFIChatContainer")
+    chatContainer = AF.CreateBorderedFrame(AF.UIParent, "BFI_ChatContainer")
     chatContainer:SetFrameStrata("LOW")
     AF.CreateMover(chatContainer, "BFI: " .. _G.OTHER, _G.HUD_EDIT_MODE_CHAT_FRAME_LABEL)
 end

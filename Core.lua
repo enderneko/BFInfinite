@@ -27,6 +27,8 @@ function eventFrame:ADDON_LOADED(arg)
             SetCVar("ActionButtonUseKeyDown", 1)
             SetCVar("chatMouseScroll", 1)
             SetCVar("threatWarning", 0)
+            SetCVar("statusText", 1)
+            SetCVar("statusTextDisplay", "NUMERIC") -- NONE,NUMERIC,PERCENT,BOTH
         end
 
         if type(BFIConfig["default"]) ~= "table" then

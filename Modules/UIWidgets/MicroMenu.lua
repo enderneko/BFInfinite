@@ -36,7 +36,7 @@ end
 ---------------------------------------------------------------------
 local microMenu
 local function CreateMicroMenu()
-    microMenu = CreateFrame("Frame", "BFIUI_MicroMenu", AF.UIParent)
+    microMenu = CreateFrame("Frame", "BFI_MicroMenu", AF.UIParent)
     AF.AddToPixelUpdater(microMenu)
 
     microMenu.visibility = CreateFrame("Frame", nil, AF.UIParent, "SecureHandlerStateTemplate")
