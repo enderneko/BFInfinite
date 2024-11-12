@@ -984,7 +984,7 @@ function UF.CreateCastBar(parent, name)
     frame:SetScript("OnUpdate", OnUpdate)
 
     -- events
-    AF.AddEventHandler(frame)
+    AF.AddEventHandler(frame, true)
 
     -- fade out
     AF.CreateFadeInOutAnimation(frame, 0.5)
