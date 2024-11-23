@@ -376,7 +376,7 @@ local function UpdateLatency(self, event, unit)
         self.changeTime = GetTime()
 
     elseif event == "UNIT_SPELLCAST_SENT" then
-        self.sendTime = self.changeTime
+        self.sendTime = self.changeTime or GetTime()
         self.changeTime = nil
 
     -- elseif event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_INTERRUPTED" then
