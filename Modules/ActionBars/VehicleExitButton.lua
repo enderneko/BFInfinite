@@ -23,6 +23,7 @@ local function CreateButton()
 
     vehicleExitHolder.button = _G.MainMenuBarVehicleLeaveButton
     vehicleExitHolder.button:SetParent(vehicleExitHolder)
+    AF.SetOnePixelInside(vehicleExitHolder.button, vehicleExitHolder)
 
     vehicleExitHolder.button:GetNormalTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
     vehicleExitHolder.button:GetPushedTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
