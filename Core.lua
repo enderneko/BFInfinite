@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
+local U = BFI.utils
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
-local U = BFI.utils
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("ADDON_LOADED")
@@ -24,6 +24,8 @@ function eventFrame:ADDON_LOADED(arg)
             SetCVar("fstack_preferParentKeys", 0)
             SetCVar("screenshotQuality", 10)
             SetCVar("cameraDistanceMaxZoomFactor", 2.6)
+            SetCVar("CameraReduceUnexpectedMovement", 1)
+            SetCVar("ResampleAlwaysSharpen", 1)
             SetCVar("ActionButtonUseKeyDown", 1)
             SetCVar("chatMouseScroll", 1)
             SetCVar("threatWarning", 0)

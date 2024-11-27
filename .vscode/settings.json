@@ -4,7 +4,7 @@
     "files.trimTrailingWhitespace": true,
     "Lua.workspace.library": [
         "${env:AF_HOME}",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.17.6\\Annotations"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.17.8\\Annotations"
     ],
     "Lua.diagnostics.globals": [
         "BFI"
