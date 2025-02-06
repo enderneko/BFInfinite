@@ -265,7 +265,7 @@ local defaults = {
                 hideIfEmpty = false,
             },
             portrait = {
-                enabled = true,
+                enabled = false,
                 style = "3d", -- 3d, 2d, class_icon
                 position = {"CENTER", "CENTER", 0, -5},
                 anchorTo = "root",
@@ -732,7 +732,7 @@ local defaults = {
                 hideIfEmpty = false,
             },
             portrait = {
-                enabled = true,
+                enabled = false,
                 style = "3d", -- 3d, 2d, class_icon
                 position = {"CENTER", "CENTER", 0, -5},
                 anchorTo = "root",
@@ -2231,7 +2231,7 @@ local defaults = {
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
             portrait = {
-                enabled = true,
+                enabled = false,
                 style = "3d", -- 3d, 2d, class_icon
                 position = {"TOPLEFT", "TOPLEFT", 0, 0},
                 anchorTo = "root",
