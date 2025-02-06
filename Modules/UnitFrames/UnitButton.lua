@@ -330,7 +330,7 @@ end
 -- onShow/Hide
 ---------------------------------------------------------------------
 local function UnitButton_OnShow(self)
-    -- print(GetTime(), "OnShow", self:GetName())
+    -- print(GetTime(), "OnShow", self:GetName(), self.displayedUnit)
     self._updateRequired = nil -- prevent UnitButton_UpdateAll twice. when convert party <-> raid, GROUP_ROSTER_UPDATE fired.
 
     UnitButton_RegisterEvents(self)
@@ -344,7 +344,7 @@ local function UnitButton_OnShow(self)
 end
 
 local function UnitButton_OnHide(self)
-    -- print(GetTime(), "OnHide", self:GetName())
+    -- print(GetTime(), "OnHide", self:GetName(), self.displayedUnit)
     UnitButton_UnregisterEvents(self)
     UF.OnButtonHide(self)
 
@@ -390,6 +390,7 @@ local function UnitButton_OnAttributeChanged(self, name, value)
         -- end
 
         if type(value) == "string" then
+            -- print(GetTime(), "UnitButton_OnAttributeChanged", self:GetName(), value)
             self.unit = value
             self.displayedUnit = value
 

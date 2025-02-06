@@ -324,6 +324,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function Auras_Update(self)
+    -- print("Auras_Update", self:GetName(), self.root.displayedUnit)
     UpdateFaction(self)
     UpdateAuras(self)
 end
@@ -332,6 +333,7 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function Auras_Enable(self)
+    -- print("Auras_Enable", self:GetName(), self.root.displayedUnit)
     self:RegisterEvent("UNIT_FACTION", UpdateFaction)
     self:RegisterEvent("UNIT_AURA", UpdateAuras)
 

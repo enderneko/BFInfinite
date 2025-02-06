@@ -579,7 +579,7 @@ function NP.CreateCastBar(parent, name)
     frame:SetScript("OnUpdate", OnUpdate)
 
     -- events
-    AF.AddEventHandler(frame, true)
+    AF.AddEventHandler(frame)
 
     -- fade out
     AF.CreateFadeInOutAnimation(frame, 0.5)

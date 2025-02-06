@@ -3,6 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class AbstractFramework
 local AF = _G.AbstractFramework
+---@class UnitFrames
 local UF = BFI.UnitFrames
 local M = BFI.Misc
 
@@ -984,7 +985,7 @@ function UF.CreateCastBar(parent, name)
     frame:SetScript("OnUpdate", OnUpdate)
 
     -- events
-    AF.AddEventHandler(frame, true)
+    AF.AddEventHandler(frame)
 
     -- fade out
     AF.CreateFadeInOutAnimation(frame, 0.5)
