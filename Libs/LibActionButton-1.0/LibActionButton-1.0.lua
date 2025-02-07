@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --! Some extra features are forked from ElvUI and Blizzard
 
 local MAJOR_VERSION = "LibActionButton-1.0-BFI"
-local MINOR_VERSION = 117
+local MINOR_VERSION = 119
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -40,8 +40,8 @@ if not lib then return end
 
 -- Lua functions
 local type, error, tostring, tonumber, assert, select = type, error, tostring, tonumber, assert, select
-local setmetatable, wipe, unpack, pairs, next = setmetatable, wipe, unpack, pairs, next
-local str_match, format, tinsert, tremove = string.match, format, tinsert, tremove
+local setmetatable, wipe, unpack, pairs, ipairs, next, pcall = setmetatable, wipe, unpack, pairs, ipairs, next, pcall
+local str_match, format, tinsert, tremove, strsub = string.match, format, tinsert, tremove, strsub
 
 local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
 local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
@@ -50,16 +50,36 @@ local WoWWrath = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
 local WoWCata = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
 
 local ATTACK_BUTTON_FLASH_TIME = ATTACK_BUTTON_FLASH_TIME
+local ATTACK_BUTTON_FLASH_TIME = ATTACK_BUTTON_FLASH_TIME
+local COOLDOWN_TYPE_LOSS_OF_CONTROL = COOLDOWN_TYPE_LOSS_OF_CONTROL
+local COOLDOWN_TYPE_NORMAL = COOLDOWN_TYPE_NORMAL
+local RANGE_INDICATOR = RANGE_INDICATOR
+
+local GameFontHighlightSmallOutline = GameFontHighlightSmallOutline
+local NumberFontNormalSmallGray = NumberFontNormalSmallGray
+local NumberFontNormal = NumberFontNormal
+
 local GetSpellName = C_Spell.GetSpellName
 local EnableActionRangeCheck = C_ActionBar.EnableActionRangeCheck
+local IsPressHoldReleaseSpell = C_Spell.IsPressHoldReleaseSpell
+local noop = function() end
 
 -- Enable custom flyouts for WoW Retail
-local UseCustomFlyout = WoWRetail
+local UseCustomFlyout = WoWRetail or FlyoutButtonMixin
 
 local KeyBound = LibStub("LibKeyBound-1.0", true)
 local CBH = LibStub("CallbackHandler-1.0")
 local LCG = LibStub("LibCustomGlow-1.0", true)
 local Masque = LibStub("Masque", true)
+
+local SetCVar = C_CVar.SetCVar
+local GetCVar = C_CVar.GetCVar
+local GetCVarBool = C_CVar.GetCVarBool
+
+local C_ActionBar = C_ActionBar
+local C_UnitAuras = C_UnitAuras
+local C_LevelLink = C_LevelLink
+local C_ToyBox = C_ToyBox
 
 lib.eventFrame = lib.eventFrame or CreateFrame("Frame")
 lib.eventFrame:UnregisterAllEvents()
@@ -101,6 +121,9 @@ local Item_MT = {__index = Item}
 local Macro = setmetatable({}, {__index = Generic})
 local Macro_MT = {__index = Macro}
 
+local Toy = setmetatable({}, {__index = Generic})
+local Toy_MT = {__index = Toy}
+
 local Custom = setmetatable({}, {__index = Generic})
 local Custom_MT = {__index = Custom}
 
@@ -111,6 +134,7 @@ local type_meta_map = {
     spell  = Spell_MT,
     item   = Item_MT,
     macro  = Macro_MT,
+    toy    = Toy_MT,
     custom = Custom_MT
 }
 
@@ -229,13 +253,16 @@ function lib:CreateButton(id, name, header, config)
         KeyBound = LibStub("LibKeyBound-1.0", true)
     end
 
-    local button = setmetatable(CreateFrame("CheckButton", name, header, "SecureActionButtonTemplate, ActionButtonTemplate"), Generic_MT)
+    local button = setmetatable(CreateFrame("CheckButton", name, header, "ActionButtonTemplate,SecureActionButtonTemplate"), Generic_MT)
     button:RegisterForDrag("LeftButton", "RightButton")
     if WoWRetail then
         button:RegisterForClicks("AnyDown", "AnyUp")
     else
         button:RegisterForClicks("AnyUp")
     end
+
+    button.popup = CreateFrame("Frame")
+    button.popup.AttachToButton = noop
 
     button.cooldown:SetFrameStrata(button:GetFrameStrata())
     button.cooldown:SetFrameLevel(button:GetFrameLevel() + 1)
@@ -277,6 +304,11 @@ function lib:CreateButton(id, name, header, config)
 
     button:SetAttribute("LABUseCustomFlyout", UseCustomFlyout)
 
+    if UseCustomFlyout then
+        button.GetPopupDirection = nil
+        button.IsPopupOpen = nil
+    end
+
     -- initialize events
     if InitializeEvents then
         InitializeEventHandler()
@@ -297,28 +329,30 @@ end
 function SetupSecureSnippets(button)
     button:SetAttribute("_custom", Custom.RunCustom)
 
-    button:SetAttribute("UpdateReleaseCasting", [[
-        local type, action = ...
+    if IsPressHoldReleaseSpell then
+        button:SetAttribute("UpdateReleaseCasting", [[
+            local type, action = ...
 
-        local spellID
-        if type == "action" then
-            local actionType, id, subType = GetActionInfo(action)
-            if actionType == "spell" then
-                spellID = id
-            elseif actionType == "macro" and subType == "spell" then
-                spellID = id
+            local spellID
+            if type == "action" then
+                local actionType, id, subType = GetActionInfo(action)
+                if actionType == "spell" then
+                    spellID = id
+                elseif actionType == "macro" and subType == "spell" then
+                    spellID = id
+                end
+            elseif type == "spell" then
+                spellID = action
             end
-        elseif type == "spell" then
-            spellID = action
-        end
 
-        if spellID and IsPressHoldReleaseSpell(spellID) then
-            self:SetAttribute("pressAndHoldAction", true)
-            self:SetAttribute("typerelease", "actionrelease")
-        elseif self:GetAttribute("typerelease") then
-            self:SetAttribute("typerelease", nil)
-        end
-    ]])
+            if spellID and IsPressHoldReleaseSpell(spellID) then
+                self:SetAttribute("pressAndHoldAction", true)
+                self:SetAttribute("typerelease", "actionrelease")
+            elseif self:GetAttribute("typerelease") then
+                self:SetAttribute("typerelease", nil)
+            end
+        ]])
+    end
 
     -- secure UpdateState(self, state)
     -- update the type and action of the button based on the state
@@ -1275,14 +1309,23 @@ function Generic:OnEnter()
         UpdateNewAction(self)
     end
 
+    if FlyoutButtonMixin then
+        FlyoutButtonMixin.OnEnter(self)
+    else
     UpdateFlyout(self)
+end
 end
 
 function Generic:OnLeave()
+    if FlyoutButtonMixin then
+        FlyoutButtonMixin.OnLeave(self)
+    else
     UpdateFlyout(self)
+    end
 
-    if GameTooltip:IsForbidden() then return end
-    GameTooltip:Hide()
+    if not GameTooltip:IsForbidden() then
+        GameTooltip:Hide()
+    end
 end
 
 -- Insecure drag handler to allow clicking on the button with an action on the cursor
@@ -2511,7 +2554,9 @@ if ActionButton_UpdateFlyout then
         if self.FlyoutBorder then
             self.FlyoutBorder:Hide()
         end
+        if self.FlyoutBorderShadow then
         self.FlyoutBorderShadow:Hide()
+        end
         if self._state_type == "action" then
             -- based on ActionButton_UpdateFlyout in ActionButton.lua
             local actionType = GetActionInfo(self._state_action)
@@ -2543,9 +2588,38 @@ if ActionButton_UpdateFlyout then
         end
         self.FlyoutArrow:Hide()
     end
+elseif FlyoutButtonMixin and UseCustomFlyout then
+    function Generic:GetPopupDirection()
+        return self:GetAttribute("flyoutDirection") or "UP"
+    end
+
+    function Generic:IsPopupOpen()
+        return (lib.flyoutHandler and lib.flyoutHandler:IsShown() and lib.flyoutHandler:GetParent() == self)
+    end
+
+    function UpdateFlyout(self, isButtonDownOverride)
+        self.BorderShadow:Hide()
+        self.Arrow:Hide()
+
+        if self._state_type == "action" then
+            -- based on ActionButton_UpdateFlyout in ActionButton.lua
+            local actionType = GetActionInfo(self._state_action)
+            if actionType == "flyout" then
+                self.Arrow:Show()
+                self:UpdateArrowTexture()
+                self:UpdateArrowRotation()
+                self:UpdateArrowPosition()
+                -- return here, otherwise flyout is hidden
+                return
+            end
+        end
+    end
 else
     function UpdateFlyout(self, isButtonDownOverride)
-        self.FlyoutBorderShadow:Hide()
+        if self.FlyoutBorderShadow then
+            self.FlyoutBorderShadow:Hide()
+        end
+
         if self._state_type == "action" then
             -- based on ActionButton_UpdateFlyout in ActionButton.lua
             local actionType = GetActionInfo(self._state_action)
@@ -2660,14 +2734,16 @@ Action.IsConsumableOrStackable = function(self) return IsConsumableAction(self._
 Action.IsUnitInRange           = function(self, unit) return IsActionInRange(self._state_action, unit) end
 Action.SetTooltip              = function(self) return GameTooltip:SetAction(self._state_action) end
 Action.GetSpellId              = function(self)
-    local actionType, id, subType = GetActionInfo(self._state_action)
-    if actionType == "spell" then
-        return id
-    elseif actionType == "macro" then
-        if subType == "spell" then
+    if self._state_type == "action" then
+        local actionType, id, subType = GetActionInfo(self._state_action)
+        if actionType == "spell" then
             return id
-        else
-            return (GetMacroSpell(id))
+        elseif actionType == "macro" then
+            if subType == "spell" then
+                return id
+            else
+                return (GetMacroSpell(id))
+            end
         end
     end
 end
@@ -2790,6 +2866,24 @@ Macro.IsUnitInRange           = function(self, unit) return nil end
 Macro.SetTooltip              = function(self) return nil end
 Macro.GetSpellId              = function(self) return nil end
 Macro.GetPassiveCooldownSpellID = function(self) return nil end
+
+-----------------------------------------------------------
+--- Toy Button
+Toy.HasAction               = function(self) return true end
+Toy.GetActionText           = function(self) return "" end
+Toy.GetTexture              = function(self) return select(3, C_ToyBox.GetToyInfo(self._state_action)) end
+Toy.GetCharges              = function(self) return nil end
+Toy.GetCount                = function(self) return 0 end
+Toy.GetCooldown             = function(self) return GetItemCooldown(self._state_action) end
+Toy.IsAttack                = function(self) return nil end
+Toy.IsEquipped              = function(self) return nil end
+Toy.IsCurrentlyActive       = function(self) return nil end
+Toy.IsAutoRepeat            = function(self) return nil end
+Toy.IsUsable                = function(self) return nil end
+Toy.IsConsumableOrStackable = function(self) return nil end
+Toy.IsUnitInRange           = function(self, unit) return nil end
+Toy.SetTooltip              = function(self) return GameTooltip:SetToyByItemID(self._state_action) end
+Toy.GetSpellId              = function(self) return nil end
 
 -----------------------------------------------------------
 --- Custom Button
