@@ -120,7 +120,7 @@ local function UpdateMana(self, event, unitId, powerType)
     self.mana = UnitPower("player", 0)
     self:SetBarValue(self.mana)
 
-    if self.hideIfFull and self.mana == self.manaMax then
+    if self.hideIfFull and self.mana / self.manaMax >= 0.99 then
         self:Hide()
     else
         self:Show()

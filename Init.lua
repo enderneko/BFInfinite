@@ -26,12 +26,10 @@ BFI.name = "BigFootInfinite"
 ---------------------------------------------------------------------
 -- AbstractFramework
 ---------------------------------------------------------------------
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
-AF.RegisterAddonForAccentColor(BFI.name)
-AF.SetAccentColor("accent", "BFI")
-AF.AddButtonColor("BFI", AF.GetColorTable("BFI", 0.3), AF.GetColorTable("BFI", 0.6))
-AF.AddButtonColor("BFI_hover", {0.127, 0.127, 0.127, 1}, AF.GetColorTable("BFI", 0.6))
+AF.RegisterAddon(BFI.name, "BFI")
+AF.SetAccentColor("accent", nil, nil, "BFI")
 
 ---------------------------------------------------------------------
 -- global

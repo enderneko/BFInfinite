@@ -226,7 +226,7 @@ local defaults = {
                 position = {"TOPLEFT", "TOPLEFT", 3, -3},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                length = 0.5,
+                length = 0.6,
                 font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
@@ -340,11 +340,11 @@ local defaults = {
             },
             staggerBar = {
                 enabled = true,
-                position = {"TOP", "BOTTOM", 0, 1},
+                position = {"TOP", "BOTTOM", 0, -1},
                 anchorTo = "root",
                 frameLevel = 5,
-                width = 177,
-                height = 5,
+                width = 175,
+                height = 6,
                 bgColor = AF.GetColorTable("background"),
                 borderColor = AF.GetColorTable("border"),
                 texture = "BFI",
@@ -693,7 +693,7 @@ local defaults = {
                 position = {"TOPLEFT", "TOPLEFT", 3, -3},
                 anchorTo = "healthBar",
                 parent = "healthBar",
-                length = 0.5,
+                length = 0.6,
                 font = {"BFI", 12, "none", true},
                 color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
             },
@@ -1532,7 +1532,6 @@ local defaults = {
                 style = "3d", -- 3d, 2d, class_icon
                 position = {"TOPLEFT", "TOPLEFT", 0, 0},
                 anchorTo = "root",
-                -- anchorTo = "root",
                 frameLevel = 1,
                 width = 200,
                 height = 19,
@@ -2585,7 +2584,6 @@ local defaults = {
                 style = "3d", -- 3d, 2d, class_icon
                 position = {"TOPLEFT", "TOPLEFT", 0, 0},
                 anchorTo = "root",
-                -- anchorTo = "root",
                 frameLevel = 1,
                 width = 75,
                 height = 19,

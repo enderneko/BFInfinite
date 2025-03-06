@@ -66,6 +66,17 @@ local defaults = {
         bgColor = AF.GetColorTable("background"),
         color = AF.GetColorTable("honor"),
     },
+    threats = {
+        enabled = true,
+        position = {"BOTTOM", 0, 500},
+        width = 150,
+        height = 20,
+        num = 3,
+        spacing = -1,
+        texture = "BFI Plain",
+        borderColor = AF.GetColorTable("border"),
+        bgColor = AF.GetColorTable("background"),
+    },
 }
 
 BFI.RegisterCallback("UpdateConfigs", "DataBars", function(t)

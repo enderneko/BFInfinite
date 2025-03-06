@@ -485,7 +485,7 @@ local function Auras_SetNumSlots(self, numSlots)
 
     for i = 1, numSlots do
         if not self.slots[i] then
-            self.slots[i] = AF.CreateAura(self)
+            self.slots[i] = AF.CreateAura(self, true)
         end
     end
 
