@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class Colors
 local C = BFI.Colors
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------

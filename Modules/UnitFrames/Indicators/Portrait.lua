@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
@@ -210,7 +210,7 @@ function UF.CreatePortrait(parent, name)
     local portrait = CreateFrame("Frame", name, parent, "BackdropTemplate")
     portrait.root = parent
     portrait:Hide()
-    AF.SetDefaultBackdrop(portrait)
+    AF.ApplyDefaultBackdrop(portrait)
 
     hooksecurefunc(parent, "SetAlpha", UpdatePortrait3DAlpha)
 

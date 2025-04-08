@@ -4,7 +4,7 @@ local L = BFI.L
 local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------

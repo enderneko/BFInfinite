@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
@@ -44,7 +44,7 @@ local function MouseoverHighlight_LoadConfig(self, config)
         -- end
 
         -- -- update thickness
-        -- AF.SetDefaultBackdrop_NoBackground(self, abs(config.size))
+        -- AF.ApplyDefaultBackdrop_NoBackground(self, abs(config.size))
 
         -- -- update color
         -- self:SetBackdropBorderColor(AF.UnpackColor(config.color))

@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local UI = BFI.UIWidgets
 local L = BFI.L
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local quickJoinToastHolder

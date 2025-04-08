@@ -1,4 +1,4 @@
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------

@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local M = BFI.Maps
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local MinimapCluster = _G.MinimapCluster
@@ -119,7 +119,7 @@ local function UpdateAddonButtons()
                 child:SetParent(addonButtonHolder.frame)
                 child:RegisterForDrag()
                 AF.SetOnePixelInside(child.icon, child)
-                AF.StylizeFrame(child)
+                AF.ApplyDefaultBackdropWithColors(child)
 
                 -- re-arrange when show/hide
                 child:HookScript("OnShow", UpdateAddonButtons)
@@ -167,7 +167,7 @@ local function CreateAddonButtonHolder()
     -- button
     addonButtonHolder = AF.CreateButton(Minimap, "", "BFI_hover", 20, 20)
     -- addonButtonHolder:Hide()
-    addonButtonHolder:SetTexture(AF.GetIcon("Menu", BFI.name), {20, 20}, {"CENTER", 0, 0}, nil, true)
+    addonButtonHolder:SetTexture(AF.GetIcon("Menu", BFI.name), {20, 20})
     AF.RemoveFromPixelUpdater(addonButtonHolder)
     AF.CreateFadeInOutAnimation(addonButtonHolder, 0.25, true)
 
@@ -258,7 +258,7 @@ local function CreateClockButton()
     local clockButton = CreateFrame("Button", "BFI_MinimapClock", Minimap)
     Minimap.clockButton = clockButton
 
-    -- AF.SetDefaultBackdrop(clockButton)
+    -- AF.ApplyDefaultBackdrop(clockButton)
     -- clockButton:SetBackdropBorderColor(AF.GetColorRGB("border"))
     -- clockButton:SetBackdropColor(AF.GetColorRGB("background"))
 
@@ -514,7 +514,7 @@ local function InitMinimap()
 
     -- minimapContainer
     minimapContainer = CreateFrame("Frame", "BFI_MinimapContainer", AF.UIParent, "BackdropTemplate")
-    AF.StylizeFrame(minimapContainer)
+    AF.ApplyDefaultBackdropWithColors(minimapContainer)
     AF.CreateMover(minimapContainer, "BFI: " .. _G.OTHER, _G.HUD_EDIT_MODE_MINIMAP_LABEL)
     AF.AddToPixelUpdater(minimapContainer, UpdatePixels)
 

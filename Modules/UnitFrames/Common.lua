@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class UnitFrames
 local UF = BFI.UnitFrames
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
@@ -237,7 +237,7 @@ function UF.SetupUnitFrame(frame, config, indicators)
     frame.oorAlpha = config.general.oorAlpha
 
     -- color
-    AF.StylizeFrame(frame, config.general.bgColor, config.general.borderColor)
+    AF.ApplyDefaultBackdropWithColors(frame, config.general.bgColor, config.general.borderColor)
 
     -- indicators
     UF.SetupIndicators(frame, indicators, config)
@@ -274,7 +274,7 @@ function UF.SetupUnitGroup(group, config, indicators)
         -- tooltip
         UF.SetupTooltip(b, config.general.tooltip)
         -- color
-        AF.StylizeFrame(b, config.general.bgColor, config.general.borderColor)
+        AF.ApplyDefaultBackdropWithColors(b, config.general.bgColor, config.general.borderColor)
         -- indicators
         UF.SetupIndicators(b, indicators, config)
         -- position

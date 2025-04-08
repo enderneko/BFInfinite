@@ -4,7 +4,7 @@ local U = BFI.utils
 local L = BFI.L
 ---@class Auras
 local A = BFI.Auras
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local GameTooltip = GameTooltip
@@ -115,7 +115,7 @@ function A.InitAuraButton(button)
     button.duration = button:CreateFontString(nil, "OVERLAY", "AF_FONT_SMALL")
 
     -- style
-    AF.SetDefaultBackdrop(button)
+    AF.ApplyDefaultBackdrop(button)
     AF.ApplyDefaultBackdropColors(button)
 
     -- click

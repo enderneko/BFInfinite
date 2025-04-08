@@ -29,7 +29,7 @@ BFI.name = "BFInfinite"
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 AF.RegisterAddon(BFI.name, "BFI")
-AF.SetAccentColor("accent", nil, nil, "BFI")
+AF.SetAccentColor("accent")
 
 ---------------------------------------------------------------------
 -- global
@@ -120,6 +120,6 @@ AddLib("LRC", "LibRangeCheck-3.0")
 ---------------------------------------------------------------------
 -- media
 ---------------------------------------------------------------------
-AF.LSM:Register("statusbar", "BFI", AF.GetTexture("StatusBar", BFI.name))
-AF.LSM:Register("statusbar", "BFI Plain", AF.GetPlainTexture())
-AF.LSM:Register("font", "BFI", AF.GetFont("Noto_AP_SC", BFI.name), 255)
+AF.Libs.LSM:Register("statusbar", "BFI", AF.GetTexture("StatusBar", BFI.name))
+AF.Libs.LSM:Register("statusbar", "BFI Plain", AF.GetPlainTexture())
+AF.Libs.LSM:Register("font", "BFI", AF.GetFont("Noto_AP_SC", BFI.name), 255)

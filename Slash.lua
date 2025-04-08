@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 SLASH_BFI1 = "/bfi"

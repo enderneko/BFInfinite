@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local L = BFI.L
 ---@class UIWidgets
 local UI = BFI.UIWidgets
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local MICRO_BUTTONS = {
@@ -180,7 +180,7 @@ local function UpdateMicroMenu(module, which)
         AF.SetSize(b, config.width, config.height)
 
         -- style
-        AF.StylizeFrame(b)
+        AF.ApplyDefaultBackdropWithColors(b)
         if b:GetName() == "CharacterMicroButton" then
             hooksecurefunc(b, "SetPushed", UpdatePortrait)
             hooksecurefunc(b, "SetNormal", UpdatePortrait)

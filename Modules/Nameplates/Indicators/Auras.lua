@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local NP = BFI.NamePlates
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot

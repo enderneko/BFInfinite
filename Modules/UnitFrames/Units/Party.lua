@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local L = BFI.L
 local UF = BFI.UnitFrames
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local party
@@ -140,7 +140,7 @@ local function UpdateParty(module, which)
         -- tooltip
         UF.SetupTooltip(button, config.general.tooltip)
         -- color
-        AF.StylizeFrame(button, config.general.bgColor, config.general.borderColor)
+        AF.ApplyDefaultBackdropWithColors(button, config.general.bgColor, config.general.borderColor)
         -- indicators
         UF.SetupIndicators(button, indicators, config)
     end

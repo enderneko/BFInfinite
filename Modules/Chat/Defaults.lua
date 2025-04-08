@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 ---@class Chat
 local C = BFI.Chat
 local U = BFI.utils
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local defaults = {

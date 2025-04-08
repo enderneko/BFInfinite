@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 ---@class ActionBars
 local AB = BFI.ActionBars
@@ -28,7 +28,7 @@ end
 ---------------------------------------------------------------------
 -- glow
 ---------------------------------------------------------------------
-local LCG = AF.LCG
+local LCG = AF.Libs.LCG
 local hiders = {}
 local proc = {xOffset = 3, yOffset = 3}
 
@@ -168,7 +168,7 @@ function AB.StylizeButton(b)
 
     -- backdrop -------------------------------------------------------------- --
     Mixin(b, BackdropTemplateMixin)
-    AF.SetDefaultBackdrop(b)
+    AF.ApplyDefaultBackdrop(b)
     AF.ApplyDefaultBackdropColors(b)
 end
 

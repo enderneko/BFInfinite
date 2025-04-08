@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 ---@class DisableBlizzard
 local DB = BFI.DisableBlizzard
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 -- forked from ElvUI

@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local L = BFI.L
 local UI = BFI.UIWidgets
 local U = BFI.utils
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local function SetPoint(self, _, anchorTo)

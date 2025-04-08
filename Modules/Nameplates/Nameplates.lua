@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 local NP = BFI.NamePlates
 local DB = BFI.DisableBlizzard
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------

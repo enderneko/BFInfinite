@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 local LRC = BFI.libs.LRC

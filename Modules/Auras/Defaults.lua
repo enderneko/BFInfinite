@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 ---@class Auras
 local A = BFI.Auras
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local defaults = {

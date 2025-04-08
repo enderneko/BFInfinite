@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local U = BFI.utils
 local C = BFI.Colors
 local NP = BFI.NamePlates
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------

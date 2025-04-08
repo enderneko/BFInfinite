@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 ---@class Utils
 local U = BFI.utils
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
@@ -100,7 +100,7 @@ end
 
 function U.ReSkinEditBox(frame)
     HideBlizzardTextures(frame)
-    AF.SetDefaultBackdrop(frame)
+    AF.ApplyDefaultBackdrop(frame)
     frame:SetBackdropColor(AF.GetColorRGB("background"))
     frame:SetBackdropBorderColor(AF.GetColorRGB("border"))
 end

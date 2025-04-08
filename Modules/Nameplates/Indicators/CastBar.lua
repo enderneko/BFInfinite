@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
----@class AbstractFramework
+---@type AbstractFramework
 local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
 local M = BFI.Misc
@@ -571,7 +571,7 @@ end
 function NP.CreateCastBar(parent, name)
     -- frame
     local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
-    AF.SetDefaultBackdrop(frame)
+    AF.ApplyDefaultBackdrop(frame)
     frame:Hide()
 
     frame.root = parent
