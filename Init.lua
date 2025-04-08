@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
-_G.BigFootInfinite = BFI
+_G.BFInfinite = BFI
 _G.BFI = BFI
 
 BFI.prefix = "BFI"
-BFI.name = "BigFootInfinite"
+BFI.name = "BFInfinite"
 
 ---@class BFI
 ---@field L table
@@ -35,7 +35,7 @@ AF.SetAccentColor("accent", nil, nil, "BFI")
 -- global
 ---------------------------------------------------------------------
 BFI_DEFAULT = "BFI ".._G.DEFAULT
--- BFI_PATH = [[Interface/AddOns/BigFootInfinite]]
+-- BFI_PATH = [[Interface/AddOns/BFInfinite]]
 
 ---------------------------------------------------------------------
 -- tables
