@@ -66,7 +66,7 @@ function NP.CreateClassIcon(parent, name)
     -- iconBG
     local iconBG = frame:CreateTexture(nil, "BORDER")
     frame.iconBG = iconBG
-    iconBG:SetTexture(AF.GetTexture("Circle"), nil, nil, "TRILINEAR")
+    iconBG:SetTexture(AF.GetTexture("Circle1"), nil, nil, "TRILINEAR")
     iconBG:SetVertexColor(AF.GetColorRGB("black"))
     iconBG:SetAllPoints()
 
@@ -78,7 +78,7 @@ function NP.CreateClassIcon(parent, name)
 
     -- mask
     local mask = frame:CreateMaskTexture()
-    mask:SetTexture(AF.GetTexture("Circle"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    mask:SetTexture(AF.GetTexture("Circle1"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     mask:SetAllPoints(icon)
     icon:AddMaskTexture(mask)
 

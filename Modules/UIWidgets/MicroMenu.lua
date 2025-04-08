@@ -168,8 +168,8 @@ local function UpdateMicroMenu(module, which)
     microMenu:SetAlpha(config.alpha)
 
     -- texCoord
-    microMenu.buttonTexCoord = AF.CalcTexCoordPreCrop(config.width, config.height, 16 / 20.5, 0.17)
-    microMenu.portraitTexCoord = AF.CalcTexCoordPreCrop(config.width, config.height, 1, 0.1)
+    microMenu.buttonTexCoord = AF.CalcTexCoordPreCrop(0.17, config.width / config.height, 16 / 20.5)
+    microMenu.portraitTexCoord = AF.CalcTexCoordPreCrop(0.1, config.width / config.height)
     microMenu.guildEmblemScale = AF.CalcScale(32, 40, config.width, config.height, 0.17)
 
     -- menu size

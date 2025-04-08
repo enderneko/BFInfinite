@@ -128,7 +128,7 @@ local function UpdateInterrupt(self, subEvent, ...)
         local shortName = U.ToShortName(sourceName)
         AF.SetText(self.nameText, shortName, self.nameTextLength)
         local class = M.GetPlayerClass(sourceName)
-        self.nameText:SetText(AF.GetIconString("Warning") .. AF.WrapTextInColor(self.nameText:GetText(), class))
+        self.nameText:SetText(AF.GetIconString("Exclamation4") .. AF.WrapTextInColor(self.nameText:GetText(), class))
     end
 end
 
@@ -477,7 +477,7 @@ local function CastBar_SetupIcon(self, config)
     NP.LoadIndicatorPosition(self.iconBG, config.position)
     AF.SetSize(self.iconBG, config.width, config.height)
 
-    self.icon:SetTexCoord(unpack(AF.CalcTexCoordPreCrop(config.width, config.height, 1, 0.12)))
+    self.icon:SetTexCoord(AF.Unpack8(AF.CalcTexCoordPreCrop(0.12, config.width / config.height)))
     self.iconBG:SetVertexColor(AF.UnpackColor(self.borderColor))
 
     self.icon:Show()
