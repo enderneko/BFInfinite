@@ -604,6 +604,8 @@ local function UpdateChat(module)
     AF.UpdateMoverSave(chatContainer, config.position)
     AF.LoadPosition(chatContainer, config.position)
     AF.SetSize(chatContainer, config.width, config.height)
+    chatContainer:SetBackdropColor(AF.UnpackColor(config.bgColor))
+    chatContainer:SetBackdropBorderColor(AF.UnpackColor(config.borderColor))
 
     -- TODO: button size
 end

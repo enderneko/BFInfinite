@@ -17,6 +17,8 @@ local defaults = {
     fading = true,
     fadeTime = 120,
     maxLines = 100,
+    bgColor = AF.GetColorTable("background"),
+    borderColor = AF.GetColorTable("border"),
 }
 
 BFI.RegisterCallback("UpdateConfigs", "Chat", function(t)
