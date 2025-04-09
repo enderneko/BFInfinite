@@ -78,7 +78,7 @@ local function DisableBlizzard()
 
         local frame = _G[name]
         if frame then
-            frame:SetParent(BFI.hiddenParent)
+            frame:SetParent(AF.hiddenParent)
             frame:UnregisterAllEvents()
 
             if not BFI.vars.isRetail then

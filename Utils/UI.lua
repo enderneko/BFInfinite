@@ -12,7 +12,7 @@ function U.Hide(region)
     if not region then return end
     if region.UnregisterAllEvents then
         region:UnregisterAllEvents()
-        region:SetParent(BFI.hiddenParent)
+        region:SetParent(AF.hiddenParent)
     else
         region.Show = region.Hide
     end

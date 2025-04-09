@@ -9,8 +9,8 @@ local AF = _G.AbstractFramework
 local hookedFrames = {}
 
 local function Reparent(self, parent)
-    if parent ~= BFI.hiddenParent then
-        self:SetParent(BFI.hiddenParent)
+    if parent ~= AF.hiddenParent then
+        self:SetParent(AF.hiddenParent)
     end
 end
 
@@ -27,7 +27,7 @@ function DB.DisableFrame(frame, doNotReparent)
     pcall(frame.Hide, frame)
 
     if not doNotReparent then
-        frame:SetParent(BFI.hiddenParent)
+        frame:SetParent(AF.hiddenParent)
         if not hookedFrames[frame] then
             hookedFrames[frame] = true
             hooksecurefunc(frame, "SetParent", Reparent)

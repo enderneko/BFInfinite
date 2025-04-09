@@ -100,14 +100,6 @@ BFI.Chat = {}
 AF.AddEventHandler(BFI.Chat)
 
 ---------------------------------------------------------------------
--- hidden parent
----------------------------------------------------------------------
-BFI.hiddenParent = CreateFrame("Frame", nil, UIParent)
-BFI.hiddenParent:SetPoint("BOTTOMLEFT")
-BFI.hiddenParent:SetSize(1, 1)
-BFI.hiddenParent:Hide()
-
----------------------------------------------------------------------
 -- libs
 ---------------------------------------------------------------------
 local function AddLib(name, major, silent)
