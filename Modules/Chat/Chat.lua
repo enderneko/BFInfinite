@@ -226,6 +226,14 @@ local function UpdateFrameDocked(frame, isDocked)
         tab.Text:SetTextColor(AF.GetAccentColorRGB())
         frame.Background:Show()
         tab.underline:Hide()
+
+        if frame:GetID() == 2 then
+            AF.ClearPoints(frame.Background)
+            AF.SetPoint(frame.Background, "TOPLEFT", frame, -3, 30)
+            AF.SetPoint(frame.Background, "BOTTOMRIGHT", frame, 3, -3)
+        else
+            AF.SetOutside(frame.Background, frame, 3)
+        end
     else
         frame.Background:Hide()
     end
@@ -448,6 +456,7 @@ local function UpdateTabUnderline(frame, name)
     if frame.chatType == "PET_BATTLE_COMBAT_LOG" then
         tab.Text:SetText(_G.PET_BATTLE_COMBAT_LOG)
     end
+    -- tab.Text:SetText(frame.name)
 
     C_Timer.After(0, function()
         tab.underline:SetWidth(tab.Text:GetStringWidth() + 2)
