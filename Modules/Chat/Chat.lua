@@ -182,12 +182,25 @@ local function CreateScrollToBottomButton(frame)
 end
 
 local function CreateCopyButton(frame)
-    local b = AF.CreateIconButton(frame, AF.GetIcon("Copy", BFI.name), 18, 18, 3, AF.GetColorTable("white", 0.5))
+    if frame.BFICopyButton then return end
+
+    local b = AF.CreateIconButton(frame, AF.GetIcon("Copy", BFI.name), 18, 18, 1, AF.GetColorTable("white", 0.5))
+    frame.BFICopyButton = b
     b:Hide()
     b:SetPoint("TOPRIGHT")
     b:SetScript("OnClick", ShowChatCopyFrame)
+end
 
-    frame.BFICopyButton = b
+local function CreateMinimizeButton(frame)
+    if frame.BFIMinimizeButton then return end
+
+    local b = AF.CreateIconButton(frame, AF.GetIcon("Minimize"), 18, 18, 0, AF.GetColorTable("white", 0.5))
+    frame.BFIMinimizeButton = b
+    b:Hide()
+    AF.SetPoint(b, "TOPRIGHT", -20, 0)
+    b:SetScript("OnClick", function()
+        FCF_DockFrame(frame)
+    end)
 end
 
 local function GetTab(frame)
@@ -207,6 +220,17 @@ local function GetTab(frame)
     return frame.tab
 end
 
+local function UpdateFrameDocked(frame, isDocked)
+    if not isDocked then
+        local tab = GetTab(frame)
+        tab.Text:SetTextColor(AF.GetAccentColorRGB())
+        frame.Background:Show()
+        tab.underline:Hide()
+    else
+        frame.Background:Hide()
+    end
+end
+
 local function SetupChat()
     for _, name in pairs(CHAT_FRAMES) do
         local frame = _G[name]
@@ -219,9 +243,10 @@ local function SetupChat()
         end
 
         -- copy
-        if not frame.BFICopyButton then
-            CreateCopyButton(frame)
-        end
+        CreateCopyButton(frame)
+
+        -- minimize
+        CreateMinimizeButton(frame)
 
         -- texture
         for _, tex in pairs(CHAT_FRAME_TEXTURES) do
@@ -257,11 +282,7 @@ local function SetupChat()
 
         -- background
         AF.SetOutside(frame.Background, frame, 3)
-        if frame.isDocked then
-            frame.Background:Hide()
-        else
-            frame.Background:Show()
-        end
+        UpdateFrameDocked(frame, frame.isDocked)
 
         -- editBox
         if frame.editBox and not frame.editBox.skinned then
@@ -279,7 +300,8 @@ local function SetupChat()
 
         -- ButtonFrame
         if frame.buttonFrame then
-            -- frame.buttonFrame:Hide()
+            frame.buttonFrame:SetParent(AF.hiddenParent)
+            frame.buttonFrame:Hide()
         end
 
         -- misc
@@ -426,6 +448,7 @@ local function UpdateTabUnderline(frame, name)
     if frame.chatType == "PET_BATTLE_COMBAT_LOG" then
         tab.Text:SetText(_G.PET_BATTLE_COMBAT_LOG)
     end
+
     C_Timer.After(0, function()
         tab.underline:SetWidth(tab.Text:GetStringWidth() + 2)
     end)
@@ -441,13 +464,15 @@ end
 
 local function UpdateTabColor(tab, selected)
     tab.selected = selected
-    if not tab.underline then return end
+
     if selected then
         tab.Text:SetTextColor(AF.GetAccentColorRGB())
-        tab.underline:Show()
     else
         tab.Text:SetTextColor(AF.GetColorRGB("white"))
-        tab.underline:Hide()
+    end
+
+    if tab.underline then
+        tab.underline:SetShown(selected)
     end
 end
 
@@ -456,23 +481,15 @@ end
 --     print(...)
 -- end
 
-local function UpdateFrameDocked(frame, isDocked)
-    if not isDocked then
-        local tab = GetTab(frame)
-        tab.Text:SetTextColor(AF.GetAccentColorRGB())
-        tab.underline:Hide()
-        frame.Background:Show()
-    else
-        frame.Background:Hide()
-    end
-end
-
 local function UpdateScrollToBottomButton(frame, elapsed)
     frame.__elapsed = (frame.__elapsed or 0) + elapsed
     if frame.__elapsed >= 0.2 then
         frame.__elapsed = 0
+
         frame.BFIScrollToBottomButton:SetShown(not frame:AtBottom())
         frame.BFICopyButton:SetShown(frame:IsMouseOver())
+        frame.BFIMinimizeButton:SetShown(not frame.isDocked and frame:IsMouseOver())
+
         if frame == DEFAULT_CHAT_FRAME then
             ChatFrameMenuButton:SetShown(frame:IsMouseOver() or ChatFrameMenuButton.menu)
             ChatFrameChannelButton:SetShown(frame:IsMouseOver())
