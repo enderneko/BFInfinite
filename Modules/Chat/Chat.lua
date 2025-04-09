@@ -198,8 +198,9 @@ local function CreateMinimizeButton(frame)
     frame.BFIMinimizeButton = b
     b:Hide()
     AF.SetPoint(b, "TOPRIGHT", -20, 0)
-    b:SetScript("OnClick", function()
+    b:SetOnClick(function()
         FCF_DockFrame(frame)
+        frame.Background:Hide()
     end)
 end
 
