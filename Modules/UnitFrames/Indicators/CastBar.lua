@@ -338,7 +338,7 @@ local function UpdateInterrupt(self, subEvent, ...)
         local shortName = U.ToShortName(sourceName)
         AF.SetText(self.nameText, shortName, self.nameTextLength)
         local class = M.GetPlayerClass(sourceName)
-        self.nameText:SetText(AF.GetIconString("Exclamation4") .. AF.WrapTextInColor(self.nameText:GetText(), class))
+        self.nameText:SetText(AF.GetIconString("Exclamation_Rhombic") .. AF.WrapTextInColor(self.nameText:GetText(), class))
     end
 end
 
