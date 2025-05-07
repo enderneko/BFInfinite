@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --! Some extra features are forked from ElvUI and Blizzard
 
 local MAJOR_VERSION = "LibActionButton-1.0-BFI"
-local MINOR_VERSION = 119
+local MINOR_VERSION = 124
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -67,6 +67,8 @@ local noop = function() end
 -- Enable custom flyouts for WoW Retail
 local UseCustomFlyout = WoWRetail or FlyoutButtonMixin
 
+---@type AbstractFramework
+local AF = _G.AbstractFramework
 local KeyBound = LibStub("LibKeyBound-1.0", true)
 local CBH = LibStub("CallbackHandler-1.0")
 local LCG = LibStub("LibCustomGlow-1.0", true)
@@ -261,8 +263,8 @@ function lib:CreateButton(id, name, header, config)
         button:RegisterForClicks("AnyUp")
     end
 
-    button.popup = CreateFrame("Frame")
-    button.popup.AttachToButton = noop
+    -- button.popup = CreateFrame("Frame")
+    -- button.popup.AttachToButton = noop
 
     button.cooldown:SetFrameStrata(button:GetFrameStrata())
     button.cooldown:SetFrameLevel(button:GetFrameLevel() + 1)
@@ -304,6 +306,7 @@ function lib:CreateButton(id, name, header, config)
 
     button:SetAttribute("LABUseCustomFlyout", UseCustomFlyout)
 
+    -- nil out inherited functions from the flyout mixin, we override these in a metatable
     if UseCustomFlyout then
         button.GetPopupDirection = nil
         button.IsPopupOpen = nil
@@ -535,8 +538,12 @@ function WrapOnClick(button, unwrapheader)
             -- if this is a pickup click, disable on-down casting
             -- it should get re-enabled in the post handler, or the OnDragStart handler, whichever occurs
             if button ~= "Keybind" and ((self:GetAttribute("unlockedpreventdrag") and not self:GetAttribute("buttonlock")) or IsModifiedClick("PICKUPACTION")) and not self:GetAttribute("LABdisableDragNDrop") then
-                self:CallMethod("ToggleOnDownForPickup", true)
-                self:SetAttribute("LABToggledOnDown", true)
+                local useOnkeyDown = self:GetAttribute("useOnKeyDown")
+                if useOnkeyDown ~= false then
+                    self:SetAttribute("LABToggledOnDown", true)
+                    self:SetAttribute("LABToggledOnDownBackup", useOnkeyDown)
+                    self:SetAttribute("useOnKeyDown", false)
+                end
             end
             return (button == "Keybind") and "LeftButton" or nil, format("%s|%s", tostring(type), tostring(action))
         end
@@ -545,6 +552,10 @@ function WrapOnClick(button, unwrapheader)
         local flyoutHandler = owner:GetFrameRef("flyoutHandler")
         if flyoutHandler and (not down or self:GetParent() ~= flyoutHandler) then
             flyoutHandler:Hide()
+            -- NOTE: won't work, why?
+            -- local parent = flyoutHandler:GetParent()
+            -- print("HIDE", parent:GetName())
+            -- parent:CallMethod("UpdateFlyout")
         end
 
         if button == "Keybind" then
@@ -558,8 +569,9 @@ function WrapOnClick(button, unwrapheader)
 
         -- re-enable ondown casting if needed
         if self:GetAttribute("LABToggledOnDown") then
+            self:SetAttribute("useOnKeyDown", self:GetAttribute("LABToggledOnDownBackup"))
             self:SetAttribute("LABToggledOnDown", nil)
-            self:CallMethod("ToggleOnDownForPickup", false)
+            self:SetAttribute("LABToggledOnDownBackup", nil)
         end
     ]])
 end
@@ -586,7 +598,7 @@ end
 
 function Generic:PlayTargettingReticleAnim(spellID)
     if (self.abilityID == spellID) and not self.TargetReticleAnimFrame:IsShown() then
-        self:StopSpellInterruptAnim()
+        self:StopSpellInterruptAnim(spellID)
         self.TargetReticleAnimFrame.HighlightAnim:Play()
         self.TargetReticleAnimFrame:Show()
     end
@@ -611,8 +623,8 @@ function Generic:PlaySpellCastAnim(actionButtonCastType, spellID)
 
     self.cooldown:SetSwipeColor(0, 0, 0, 0)
     self.hideCooldownFrame = true
-    self:StopSpellInterruptAnim()
-    self:StopTargettingReticleAnim()
+    self:StopSpellInterruptAnim(spellID)
+    self:StopTargettingReticleAnim(spellID)
     self.actionButtonCastType = actionButtonCastType
 
     local startTime, endTime
@@ -700,18 +712,20 @@ function Generic:OnButtonEvent(event, key, down, spellID, castComplete)
     elseif event == "GLOBAL_MOUSE_UP" then
         self:UnregisterEvent(event)
         self.pushedTexture:Hide()
-        UpdateFlyout(self)
-    elseif self.config.clickOnDown and GetCVarBool("lockActionBars") then -- non-retail only, retail uses ToggleOnDownForPickup method
-        if event == "MODIFIER_STATE_CHANGED" then
-            if GetModifiedClick("PICKUPACTION") == strsub(key, 2) then
-                UpdateRegisterClicks(self, down == 1)
-            end
-        elseif event == "OnEnter" then
-            local action = GetModifiedClick("PICKUPACTION")
-            UpdateRegisterClicks(self, action == "SHIFT" and IsShiftKeyDown() or action == "ALT" and IsAltKeyDown() or action == "CTRL" and IsControlKeyDown())
-        elseif event == "OnLeave" then
-            UpdateRegisterClicks(self)
+        if lib.flyoutHandler and lib.flyoutHandler:GetParent() then
+            UpdateFlyout(lib.flyoutHandler:GetParent())
         end
+    -- elseif self.config.clickOnDown and GetCVarBool("lockActionBars") then -- non-retail only, retail uses ToggleOnDownForPickup method
+    --     if event == "MODIFIER_STATE_CHANGED" then
+    --         if GetModifiedClick("PICKUPACTION") == strsub(key, 2) then
+    --             UpdateRegisterClicks(self, down == 1)
+    --         end
+    --     elseif event == "OnEnter" then
+    --         local action = GetModifiedClick("PICKUPACTION")
+    --         UpdateRegisterClicks(self, action == "SHIFT" and IsShiftKeyDown() or action == "ALT" and IsAltKeyDown() or action == "CTRL" and IsControlKeyDown())
+    --     elseif event == "OnLeave" then
+    --         UpdateRegisterClicks(self)
+    --     end
     end
 end
 
@@ -823,7 +837,7 @@ function Generic:SetStateFromHandlerInsecure(state, kind, action)
         if tonumber(action) then
             action = format("item:%s", action)
         else
-            local itemString = str_match(action, "^|c%x+|H(item[%d:]+)|h%[")
+            local itemString = str_match(action, "^|c[^|]+|H(item[%d:]+)|h%[")
             if itemString then
                 action = itemString
             end
@@ -1122,7 +1136,7 @@ if UseCustomFlyout then
 
     function GetFlyoutHandler()
         if not lib.flyoutHandler then
-            lib.flyoutHandler = CreateFrame("Frame", "BFIFlyoutHandlerFrame", UIParent, "SecureHandlerBaseTemplate")
+            lib.flyoutHandler = CreateFrame("Frame", "BFIFlyoutHandlerFrame", _G.AFParent, "SecureHandlerBaseTemplate")
             -- lib.flyoutHandler.Background = CreateFrame("Frame", nil, lib.flyoutHandler)
             -- lib.flyoutHandler.Background:SetAllPoints()
             -- lib.flyoutHandler.Background.End = lib.flyoutHandler.Background:CreateTexture(nil, "BACKGROUND")
@@ -1312,15 +1326,15 @@ function Generic:OnEnter()
     if FlyoutButtonMixin then
         FlyoutButtonMixin.OnEnter(self)
     else
-    UpdateFlyout(self)
-end
+        UpdateFlyout(self)
+    end
 end
 
 function Generic:OnLeave()
     if FlyoutButtonMixin then
         FlyoutButtonMixin.OnLeave(self)
     else
-    UpdateFlyout(self)
+        UpdateFlyout(self)
     end
 
     if not GameTooltip:IsForbidden() then
@@ -1793,60 +1807,6 @@ function OnEvent(frame, event, arg1, ...)
     end
 end
 
--- local flashTime = 0
--- local rangeTimer = -1
--- function OnUpdate(_, elapsed)
---     flashTime = flashTime - elapsed
---     rangeTimer = rangeTimer - elapsed
---     -- Run the loop only when there is something to update
---     if rangeTimer <= 0 or flashTime <= 0 then
---         for button in next, ActiveButtons do
---             -- Flashing
---             if button.flashing and flashTime <= 0 then
---                 if button.Flash:IsShown() then
---                     button.Flash:Hide()
---                 else
---                     button.Flash:Show()
---                 end
---             end
-
---             -- Range
---             if rangeTimer <= 0 then
---                 local inRange = button:IsInRange()
---                 local oldRange = button.outOfRange
---                 button.outOfRange = (inRange == false)
---                 if oldRange ~= button.outOfRange then
---                     if button.config.outOfRangeColoring == "button" then
---                         UpdateUsable(button)
---                     elseif button.config.outOfRangeColoring == "hotkey" then
---                         local hotkey = button.HotKey
---                         if hotkey:GetText() == RANGE_INDICATOR then
---                             if inRange == false then
---                                 hotkey:Show()
---                             else
---                                 hotkey:Hide()
---                             end
---                         end
---                         if inRange == false then
---                             hotkey:SetVertexColor(unpack(button.config.colors.range))
---                         else
---                             hotkey:SetVertexColor(unpack(button.config.text.hotkey.color))
---                         end
---                     end
---                 end
---             end
---         end
-
---         -- Update values
---         if flashTime <= 0 then
---             flashTime = flashTime + ATTACK_BUTTON_FLASH_TIME
---         end
---         if rangeTimer <= 0 then
---             rangeTimer = TOOLTIP_UPDATE_TIME
---         end
---     end
--- end
-
 local gridCounter = 0
 function ShowGrid()
     gridCounter = gridCounter + 1
@@ -2028,7 +1988,7 @@ function Update(self, which)
         if self:IsEquipped() and not self.config.hideElements.equipped then
             self:SetBackdropBorderColor(unpack(self.config.colors.equipped))
         elseif not self:IsConsumableOrStackable() then
-            if self:GetActionText() then
+            if self:GetActionText() and self:GetActionText() ~= "" then
                 self:SetBackdropBorderColor(unpack(self.config.colors.macro))
             else
                 self:SetBackdropBorderColor(0, 0, 0, 1)
@@ -2056,7 +2016,6 @@ function Update(self, which)
         self:SetScript("OnUpdate", Generic.OnUpdate)
         self.icon:SetTexture(texture)
         self.icon:Show()
-        -- self.rangeTimer = - 1
 
         if WoWRetail then
             if not self.MasqueSkinned then
@@ -2092,8 +2051,6 @@ function Update(self, which)
         self:SetScript("OnUpdate", nil)
         self.icon:Hide()
         self.cooldown:Hide()
-
-        -- self.rangeTimer = nil
 
         if self.HotKey:GetText() == RANGE_INDICATOR then
             self.HotKey:Hide()
@@ -2250,7 +2207,7 @@ end
 
 function EndChargeCooldown(self)
     self:Hide()
-    self:SetParent(UIParent)
+    self:SetParent(_G.AFParent)
     self.parent.chargeCooldown = nil
     self.parent = nil
     tinsert(lib.ChargeCooldowns, self)
@@ -2379,7 +2336,6 @@ function StartFlash(self)
     local prevFlash = self.flashing
 
     self.flashing = true
-    -- flashTime = 0
 
     if prevFlash ~= self.flashing then
         UpdateButtonState(self)
@@ -2552,10 +2508,10 @@ if ActionButton_UpdateFlyout then
     function UpdateFlyout(self)
         -- disabled FlyoutBorder/BorderShadow, those are not handled by LBF and look terrible
         if self.FlyoutBorder then
-            self.FlyoutBorder:Hide()
+            self.FlyoutBorder:SetAlpha(0)
         end
         if self.FlyoutBorderShadow then
-        self.FlyoutBorderShadow:Hide()
+            self.FlyoutBorderShadow:Hide()
         end
         if self._state_type == "action" then
             -- based on ActionButton_UpdateFlyout in ActionButton.lua
@@ -2598,7 +2554,7 @@ elseif FlyoutButtonMixin and UseCustomFlyout then
     end
 
     function UpdateFlyout(self, isButtonDownOverride)
-        self.BorderShadow:Hide()
+        self.BorderShadow:SetAlpha(0)
         self.Arrow:Hide()
 
         if self._state_type == "action" then
@@ -2617,7 +2573,7 @@ elseif FlyoutButtonMixin and UseCustomFlyout then
 else
     function UpdateFlyout(self, isButtonDownOverride)
         if self.FlyoutBorderShadow then
-            self.FlyoutBorderShadow:Hide()
+            self.FlyoutBorderShadow:SetAlpha(0)
         end
 
         if self._state_type == "action" then
@@ -2681,10 +2637,6 @@ else
     end
 end
 Generic.UpdateFlyout = UpdateFlyout
-
--- function UpdateRangeTimer(self)
---     self.rangeTimer = -1
--- end
 
 -----------------------------------------------------------
 --- WoW API mapping
