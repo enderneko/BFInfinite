@@ -4,30 +4,20 @@ local BFI = select(2, ...)
 local AF = _G.AbstractFramework
 
 --@debug@
-local debugMode = true
+BFI.debugMode = true
 --@end-debug@
 
 function BFI.Debug(arg, ...)
-    if not debugMode then return end
-    if type(arg) == "string" or type(arg) == "number" then
-        print(arg, ...)
-    elseif type(arg) == "function" then
-        arg(...)
-    elseif arg == nil then
-        return true
-    end
+    if not BFI.debugMode then return end
+    AF.Debug(arg, ...)
 end
 
 --@debug@
-BFI.RegisterCallback("UpdateConfigs", "Debug", function(tbl, name, ...)
-    print(AF.WrapTextInColor("UpdateConfigs:", "sand"), name, ...)
-end, 1)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, tbl, name, ...)
+    BFI.Debug(AF.WrapTextInColor("BFI_UpdateConfigs:", "sand"), name, ...)
+end, "high")
 
--- BFI.RegisterCallback("InitModules", "Debug", function(name, ...)
---     print(AF.WrapTextInColor("InitModules:", "orange"), name, ...)
--- end)
-
-BFI.RegisterCallback("UpdateModules", "Debug", function(name, ...)
-    print(AF.WrapTextInColor("UpdateModules:", "orange"), name, ...)
-end, 1)
+AF.RegisterCallback("BFI_UpdateModules", function(_, name, ...)
+    BFI.Debug(AF.WrapTextInColor("BFI_UpdateModules:", "orange"), name, ...)
+end, "high")
 --@end-debug@

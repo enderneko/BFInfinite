@@ -1,12 +1,11 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@class Misc
 local M = BFI.Misc
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 local UnitLevel = UnitLevel
 local GetNumGuildMembers = GetNumGuildMembers
 local GetGuildRosterInfo = GetGuildRosterInfo
@@ -59,26 +58,27 @@ M:RegisterEvent("ADDON_LOADED", InitCache)
 ---------------------------------------------------------------------
 -- PLAYER_LOGIN
 ---------------------------------------------------------------------
-local function CacheSelf()
-    if not BFIPlayer[BFI.vars.playerNameFull] then
-        BFIPlayer[BFI.vars.playerNameFull] = {}
+local function CacheSelf(_, isLogin)
+    if not isLogin then return end
+    if not BFIPlayer[AF.player.fullName] then
+        BFIPlayer[AF.player.fullName] = {}
     end
-    BFIPlayer[BFI.vars.playerNameFull]["class"] = BFI.vars.playerClass
-    BFIPlayer[BFI.vars.playerNameFull]["level"] = UnitLevel("player")
+    BFIPlayer[AF.player.fullName]["class"] = AF.player.class
+    BFIPlayer[AF.player.fullName]["level"] = UnitLevel("player")
 
     -- cache
-    nameToClass[BFI.vars.playerNameFull] = BFI.vars.playerClass
-    nameToClass[BFI.vars.playerNameShort] = BFI.vars.playerClass
+    nameToClass[AF.player.fullName] = AF.player.class
+    nameToClass[AF.player.name] = AF.player.class
 end
-BFI.RegisterCallback("PLAYER_LOGIN", "Misc_PlayerData", CacheSelf)
+AF.RegisterCallback("AF_PLAYER_DATA_UPDATE", CacheSelf)
 
 ---------------------------------------------------------------------
 -- UNIT_PET
 ---------------------------------------------------------------------
 local function CachePet(_, event, unit)
-    if U.UnitInGroup(unit, true) then
-        local owner = U.UnitFullName(unit)
-        local pet = UnitGUID(U.GetPetUnit(unit) or "")
+    if AF.UnitInGroup(unit, true) then
+        local owner = AF.UnitFullName(unit)
+        local pet = UnitGUID(AF.GetPetUnit(unit) or "")
         if owner and pet then
             petToOwner[pet] = owner
         end
@@ -116,8 +116,8 @@ function CacheGroup(_, event)
         return
     end
 
-    for unit in U.GroupMembersIterator() do
-        local name = U.UnitFullName(unit)
+    for unit in AF.GroupPlayersIterator() do
+        local name = AF.UnitFullName(unit)
         if name then
             local class = UnitClassBase(unit)
             nameToClass[name] = class
@@ -150,7 +150,7 @@ function CacheGuild(_, event)
         local guild = GetGuildInfo("player")
 
         local skipReporting
-        if BFIGuild.name ~= guild or U.IsEmpty(BFIGuild.members) then
+        if BFIGuild.name ~= guild or AF.IsEmpty(BFIGuild.members) then
             wipe(BFIGuild.members)
             skipReporting = true
         end
@@ -158,12 +158,12 @@ function CacheGuild(_, event)
         BFIGuild.name = guild
 
         local newMember = {}
-        local leftGuild = U.Copy(BFIGuild.members)
+        local leftGuild = AF.Copy(BFIGuild.members)
 
         for i = 1, GetNumGuildMembers() do
             local name, _, _, level, _, _, _, _, _, _, classFile = GetGuildRosterInfo(i)
             nameToClass[name] = classFile
-            nameToClass[U.ToShortName(name)] = classFile
+            nameToClass[AF.ToShortName(name)] = classFile
 
             if not BFIGuild["members"][name] then
                 tinsert(newMember, {name = name, level = level, class = classFile})
@@ -218,17 +218,17 @@ function CacheFriends(_, event)
             local name = info.name
             if name and name ~= "" then
                 if not strfind(name, "-") then
-                    name = name .. "-" .. BFI.vars.playerRealm
+                    name = name .. "-" .. AF.player.normalizedRealm
                 end
 
                 -- BFIPlayer
                 if not BFIPlayer[name] then BFIPlayer[name] = {} end
-                BFIPlayer[name]["class"] = U.GetClassFileName(info.className)
+                BFIPlayer[name]["class"] = AF.GetClassFile(info.className)
                 BFIPlayer[name]["level"] = info.level
 
                 -- cache
                 nameToClass[name] = BFIPlayer[name]["class"]
-                nameToClass[U.ToShortName(name)] = BFIPlayer[name]["class"]
+                nameToClass[AF.ToShortName(name)] = BFIPlayer[name]["class"]
             end
         end
     end

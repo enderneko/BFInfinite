@@ -2,7 +2,6 @@
 local BFI = select(2, ...)
 ---@class Chat
 local C = BFI.Chat
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -21,13 +20,13 @@ local defaults = {
     borderColor = AF.GetColorTable("border"),
 }
 
-BFI.RegisterCallback("UpdateConfigs", "Chat", function(t)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
     if not t["chat"] then
-        t["chat"] = U.Copy(defaults)
+        t["chat"] = AF.Copy(defaults)
     end
     C.config = t["chat"]
 end)
 
 function C.GetDefaults()
-    return U.Copy(defaults)
+    return AF.Copy(defaults)
 end

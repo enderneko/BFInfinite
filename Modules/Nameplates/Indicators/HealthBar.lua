@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local C = BFI.Colors
 local NP = BFI.NamePlates
 ---@type AbstractFramework
@@ -24,7 +23,7 @@ local UnitIsUnit = UnitIsUnit
 local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
 local UnitPlayerOrPetInParty = UnitPlayerOrPetInParty
 local UnitPlayerOrPetInRaid = UnitPlayerOrPetInRaid
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitIsTapDenied = UnitIsTapDenied
 
@@ -45,7 +44,7 @@ local function GetHealthColor(self, unit)
     elseif self.threatSituation and self.colorByThreat then
         r, g, b = AF.GetColorRGB("threat_" .. self.threatSituation)
 
-    elseif U.UnitIsPlayer(unit) then
+    elseif AF.UnitIsPlayer(unit) then
         local class = UnitClassBase(unit)
         if not UnitIsConnected(unit) then
             r, g, b = AF.GetColorRGB("OFFLINE")
@@ -134,7 +133,7 @@ local function UpdateThreat(self, event, unitId)
     local unit = self.root.unit
     if unitId and unitId ~= unit then return end
 
-    if U.UnitIsPlayer(unit) then
+    if AF.UnitIsPlayer(unit) then
         self.threatSituation = nil
         self.threat:Hide()
         return
@@ -360,14 +359,12 @@ local function HealthBar_Enable(self)
     if self.threatGlowEnabled or self.colorByThreat then
         -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
         self:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", self.root.unit, UpdateThreat)
-        BFI.RegisterCallback("EnterInstance", "NP_HealthBarThreat", WipeCache)
-        BFI.RegisterCallback("LeaveInstance", "NP_HealthBarThreat", WipeCache)
+        AF.RegisterCallback("AF_INSTANCE_CHANGE", WipeCache)
     else
         self.threatSituation = nil
         -- self:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE")
         self:UnregisterEvent("UNIT_THREAT_LIST_UPDATE")
-        BFI.UnregisterCallback("EnterInstance", "NP_HealthBarThreat")
-        BFI.UnregisterCallback("LeaveInstance", "NP_HealthBarThreat")
+        AF.UnregisterCallback("AF_INSTANCE_CHANGE", WipeCache)
     end
 
     self:Show()

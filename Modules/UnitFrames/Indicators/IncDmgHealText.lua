@@ -1,11 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local UF = BFI.UnitFrames
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
-local FormatNumber = U.FormatNumber
+local FormatNumber = AF.FormatNumber
 
 ---------------------------------------------------------------------
 -- event
@@ -61,10 +60,10 @@ local function IncDmgHealText_LoadConfig(self, config)
     UpdateEvents(config.types)
 
     self.GetNumeric = numeric[config.format.numeric]
-    if config.format.useAsianUnits and BFI.vars.isAsian then
-        FormatNumber = U.FormatNumber_Asian
+    if config.format.useAsianUnits and AF.isAsian then
+        FormatNumber = AF.FormatNumber_Asian
     else
-        FormatNumber = U.FormatNumber
+        FormatNumber = AF.FormatNumber
     end
 
     self.color = config.color

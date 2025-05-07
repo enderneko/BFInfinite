@@ -79,7 +79,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateButton(module, which)
+local function UpdateButton(_, module, which)
     if module and module ~= "ActionBars" then return end
     if which and which ~= "vehicle" then return end
 
@@ -103,4 +103,4 @@ local function UpdateButton(module, which)
     vehicleExitHolder:SetFrameStrata(AB.config.general.frameStrata)
     vehicleExitHolder:SetFrameLevel(AB.config.general.frameLevel)
 end
-BFI.RegisterCallback("UpdateModules", "AB_VehicleExit", UpdateButton)
+AF.RegisterCallback("BFI_UpdateModules", UpdateButton)

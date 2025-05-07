@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
@@ -13,8 +12,8 @@ local gsub = string.gsub
 local format = string.format
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
-local UnitClassBase = U.UnitClassBase
-local FormatNumber = U.FormatNumber
+local UnitClassBase = UnitClassBase
+local FormatNumber = AF.FormatNumber
 
 ---------------------------------------------------------------------
 -- value
@@ -59,7 +58,7 @@ local function UpdateColor(self, event, unitId)
     -- color
     local r, g, b
     if self.color.type == "class_color" then
-        if U.UnitIsPlayer(unit) then
+        if AF.UnitIsPlayer(unit) then
             r, g, b = AF.GetClassColor(class)
         else
             r, g, b = AF.GetReactionColor(unit)
@@ -164,10 +163,10 @@ local function PowerText_SetFormat(self, format)
         self.delimiter = format.delimiter
     end
 
-    if format.useAsianUnits and BFI.vars.isAsian then
-        FormatNumber = U.FormatNumber_Asian
+    if format.useAsianUnits and AF.isAsian then
+        FormatNumber = AF.FormatNumber_Asian
     else
-        FormatNumber = U.FormatNumber
+        FormatNumber = AF.FormatNumber
     end
 end
 

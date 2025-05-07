@@ -1,21 +1,13 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
-local eventFrame = CreateFrame("Frame")
-eventFrame:RegisterEvent("ADDON_LOADED")
-eventFrame:RegisterEvent("PLAYER_LOGIN")
-eventFrame:RegisterEvent("UPDATE_INSTANCE_INFO")
+local eventHandler = AF.CreateSimpleEventHandler("ADDON_LOADED")
 
-eventFrame:SetScript("OnEvent", function(self, event, ...)
-    self[event](self, ...)
-end)
-
-function eventFrame:ADDON_LOADED(arg)
+function eventHandler:ADDON_LOADED(arg)
     if arg == BFI.name then
-        eventFrame:UnregisterEvent("ADDON_LOADED")
+        eventHandler:UnregisterEvent("ADDON_LOADED")
 
         if type(BFIConfig) ~= "table" then
             BFIConfig = {}
@@ -46,7 +38,7 @@ function eventFrame:ADDON_LOADED(arg)
         AF.SetScale(BFIConfig["appearance"]["scale"])
 
         -- init configs
-        BFI.Fire("UpdateConfigs", BFIConfig["default"], "default")
+        AF.Fire("BFI_UpdateConfigs", BFIConfig["default"], "default")
 
         -- TODO:
         BFI.vars.currentConfig = "default"
@@ -54,40 +46,9 @@ function eventFrame:ADDON_LOADED(arg)
     end
 end
 
-function eventFrame:PLAYER_LOGIN()
-    BFI.vars.playerNameFull = U.UnitFullName("player")
-    BFI.vars.playerNameShort = GetUnitName("player")
-    BFI.vars.playerSpecID = GetSpecialization()
-    BFI.vars.playerRealm = GetNormalizedRealmName()
-    BFI.vars.playerGUID = UnitGUID("player")
-
-    BFI.Fire("PLAYER_LOGIN")
-    BFI.Fire("UpdateModules")
-    BFI.Fire("DisableBlizzard")
-end
-
-local inInstance
-local IsInInstance = IsInInstance
--- local GetInstanceInfo = GetInstanceInfo
-function eventFrame:UPDATE_INSTANCE_INFO()
-    local isIn, iType = IsInInstance()
-    BFI.vars.inInstance = isIn
-    if isIn then
-        inInstance = true
-        BFI.Fire("EnterInstance", iType)
-
-        -- NOTE: delayed check mythic raid
-        -- if iType == "raid" then
-        --     C_Timer.After(0.5, function()
-        --         local difficultyID, difficultyName = select(3, GetInstanceInfo()) --! can't get difficultyID, difficultyName immediately after entering an instance
-        --         if difficultyID == 16 then -- mythic raid
-        --             BFI.Fire("EnterInstance", iType, "mythic")
-        --         end
-        --     end)
-        -- end
-
-    elseif inInstance then -- leave instance
-        inInstance = false
-        BFI.Fire("LeaveInstance")
+AF.RegisterCallback("AF_PLAYER_DATA_UPDATE", function(_, isLogin)
+    if isLogin then
+        AF.Fire("BFI_DisableBlizzard")
     end
-end
+    AF.Fire("BFI_UpdateModules")
+end)

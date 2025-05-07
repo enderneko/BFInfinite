@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local AB = BFI.ActionBars
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -129,7 +128,7 @@ do
     }
 
     for bar, t in pairs(defaults.barConfig) do
-        U.Merge(t, barDefaults)
+        AF.Merge(t, barDefaults)
 
         -- visibility
         if bar == "bar1" then
@@ -145,9 +144,9 @@ do
             t.paging = {
                 DRUID = "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 10; [bonusbar:3] 9; [bonusbar:4] 10; 1",
                 EVOKER = "[bonusbar:1] 7; 1",
-                PRIEST = "[bonusbar:1] 7;"..(BFI.vars.isVanilla and " [possessbar] 16;" or "").." 1",
-                ROGUE = "[bonusbar:1] 7;"..(BFI.vars.isCata and " [bonusbar:2] 8;" or "").." 1",
-                WARLOCK = BFI.vars.isCata and "[form:1] 7; 1" or "1",
+                PRIEST = "[bonusbar:1] 7;"..(AF.isVanilla and " [possessbar] 16;" or "").." 1",
+                ROGUE = "[bonusbar:1] 7;"..(AF.isCata and " [bonusbar:2] 8;" or "").." 1",
+                WARLOCK = AF.isCata and "[form:1] 7; 1" or "1",
                 WARRIOR = "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9; 1",
             }
         else
@@ -194,13 +193,13 @@ do
     end
 end
 
-BFI.RegisterCallback("UpdateConfigs", "ActionBars", function(t)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
     if not t["actionBars"] then
-        t["actionBars"] = U.Copy(defaults)
+        t["actionBars"] = AF.Copy(defaults)
     end
     AB.config = t["actionBars"]
 end)
 
 function AB.GetDefaults()
-    return U.Copy(defaults)
+    return AF.Copy(defaults)
 end

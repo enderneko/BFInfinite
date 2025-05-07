@@ -1,7 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
 ---@type AbstractFramework
@@ -26,7 +25,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateThreats(module, which)
+local function UpdateThreats(_, module, which)
     if module and module ~= "DataBars" then return end
     if which and which ~= "threats" then return end
 
@@ -49,4 +48,4 @@ local function UpdateThreats(module, which)
     AF.LoadPosition(threatFrame, config.position)
     AF.SetSize(threatFrame, config.width, config.height)
 end
-BFI.RegisterCallback("UpdateModules", "DataBars", UpdateThreats)
+AF.RegisterCallback("BFI_UpdateModules", UpdateThreats)

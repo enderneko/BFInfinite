@@ -19,12 +19,12 @@ local blizzard = {
     "MicroButtonAndBagsBar",
     "OverrideActionBar",
     "MainMenuBar",
-    BFI.vars.isRetail and "StanceBar" or "StanceBarFrame",
-    BFI.vars.isRetail and "PetActionBar" or "PetActionBarFrame",
-    BFI.vars.isRetail and "PossessActionBar" or "PossessBarFrame",
+    AF.isRetail and "StanceBar" or "StanceBarFrame",
+    AF.isRetail and "PetActionBar" or "PetActionBarFrame",
+    AF.isRetail and "PossessActionBar" or "PossessBarFrame",
 }
 
--- if BFI.vars.isCata then -- Wrath TotemBar needs to be handled by us
+-- if AF.isCata then -- Wrath TotemBar needs to be handled by us
 --     _G.UIPARENT_MANAGED_FRAME_POSITIONS.MultiCastActionBarFrame = nil
 -- end
 
@@ -72,7 +72,7 @@ local function DisableBlizzard()
     if not DB.config.actionBars then return end
 
     for _, name in pairs(blizzard) do
-        -- if not BFI.vars.isRetail then
+        -- if not AF.isRetail then
         --     _G.UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil
         -- end
 
@@ -81,7 +81,7 @@ local function DisableBlizzard()
             frame:SetParent(AF.hiddenParent)
             frame:UnregisterAllEvents()
 
-            if not BFI.vars.isRetail then
+            if not AF.isRetail then
                 SetNoop(frame)
             elseif name == "PetActionBar" then
                 frame.UpdateVisibility = AF.noop
@@ -89,7 +89,7 @@ local function DisableBlizzard()
         end
     end
 
-    -- if not BFI.vars.isRetail then
+    -- if not AF.isRetail then
     --     FixSpellBookTaint()
     -- end
 
@@ -102,7 +102,7 @@ local function DisableBlizzard()
     _G.ActionBarButtonEventsFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED") -- needed to let the ExtraActionButton show and Totems to swap
     _G.ActionBarButtonEventsFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN") -- needed for cooldowns of them both
 
-    if BFI.vars.isRetail then
+    if AF.isRetail then
         U.Hide(_G.StatusTrackingBarManager)
         _G.ActionBarController:RegisterEvent("SETTINGS_LOADED") -- this is needed for page controller to spawn properly
         _G.ActionBarController:RegisterEvent("UPDATE_EXTRA_ACTIONBAR") -- this is needed to let the ExtraActionBar show
@@ -194,7 +194,7 @@ local function DisableBlizzard()
         -- end
     end
 
-    -- if BFI.vars.isCata and BFI.vars.playerClass ~= "SHAMAN" then
+    -- if AF.isCata and AF.player.class ~= "SHAMAN" then
     --     for i = 1, 12 do
     --         local button = _G["MultiCastActionButton"..i]
     --         button:Hide()
@@ -203,7 +203,7 @@ local function DisableBlizzard()
     --     end
     -- end
 
-    -- if BFI.vars.isCata then
+    -- if AF.isCata then
     --     if _G.PlayerTalentFrame then
     --         _G.PlayerTalentFrame:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     --     else
@@ -213,4 +213,4 @@ local function DisableBlizzard()
     --     end
     -- end
 end
-BFI.RegisterCallback("DisableBlizzard", "ActionBars", DisableBlizzard)
+AF.RegisterCallback("BFI_DisableBlizzard", DisableBlizzard)

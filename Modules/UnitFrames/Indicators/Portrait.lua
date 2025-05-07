@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
@@ -10,7 +9,7 @@ local UF = BFI.UnitFrames
 ---------------------------------------------------------------------
 local UnitIsConnected = UnitIsConnected
 local UnitIsVisible = UnitIsVisible
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 
 local function UpdatePortrait3DAlpha(parent, alpha)
     local portrait = parent.indicators.portrait

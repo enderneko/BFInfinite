@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
@@ -16,13 +15,13 @@ local GetRelativeDifficultyColor = GetRelativeDifficultyColor
 local GetCreatureDifficultyColor = GetCreatureDifficultyColor
 local QuestDifficultyColors = QuestDifficultyColors
 local GetPetTeamAverageLevel = C_PetJournal and C_PetJournal.GetPetTeamAverageLevel
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- color
 ---------------------------------------------------------------------
 local function GetLevelColor(unit)
-    if BFI.vars.isRetail and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then
+    if AF.isRetail and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then
         local teamLevel = GetPetTeamAverageLevel()
         local level = UnitBattlePetLevel(unit)
         if teamLevel ~= level then
@@ -45,7 +44,7 @@ local function UpdateColor(self, event, unitId)
         r, g, b = GetLevelColor(unit)
     elseif self.color.type == "class_color" then
         local class = UnitClassBase(unit)
-        if U.UnitIsPlayer(unit) then
+        if AF.UnitIsPlayer(unit) then
             r, g, b = AF.GetClassColor(class)
         else
             r, g, b = AF.GetReactionColor(unit)

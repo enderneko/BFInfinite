@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
 ---@type AbstractFramework
@@ -79,13 +78,13 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "DataBars", function(t)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
     if not t["dataBars"] then
-        t["dataBars"] = U.Copy(defaults)
+        t["dataBars"] = AF.Copy(defaults)
     end
     DB.config = t["dataBars"]
 end)
 
 function DB.GetDefaults()
-    return U.Copy(defaults)
+    return AF.Copy(defaults)
 end

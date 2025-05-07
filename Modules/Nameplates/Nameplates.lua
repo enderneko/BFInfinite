@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local NP = BFI.NamePlates
 local DB = BFI.DisableBlizzard
 ---@type AbstractFramework
@@ -481,7 +480,7 @@ local function Hide(np)
     UpdateWidgetContainer(np, true)
     np:Hide()
     wipe(np.states)
-    U.RemoveElementsByKeys(np,
+    AF.RemoveElementsByKeys(np,
         "unit", "guid", "npcId", "elapsed",
         "widgetsOnly", "isGameObject"
     )
@@ -591,7 +590,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateNameplates(module, which)
+local function UpdateNameplates(_, module, which)
     if module and module ~= "Nameplates" then return end
     -- if which and which ~= "focus" then return end
 
@@ -652,4 +651,4 @@ local function UpdateNameplates(module, which)
     -- indicators
     NP.EnableQuestIndicator(config.hostile_npc.questIndicator.enabled, config.hostile_npc.questIndicator.hideInInstance)
 end
-BFI.RegisterCallback("UpdateModules", "Nameplates", UpdateNameplates)
+AF.RegisterCallback("BFI_UpdateModules", UpdateNameplates)

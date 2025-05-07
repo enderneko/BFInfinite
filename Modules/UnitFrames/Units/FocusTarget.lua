@@ -52,7 +52,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateFocusTarget(module, which)
+local function UpdateFocusTarget(_, module, which)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "focustarget" then return end
 
@@ -77,13 +77,4 @@ local function UpdateFocusTarget(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(focustarget)
 end
-BFI.RegisterCallback("UpdateModules", "UF_FocusTarget", UpdateFocusTarget)
-
----------------------------------------------------------------------
--- init
----------------------------------------------------------------------
--- local function InitFocusTarget()
---     CreateFocusTarget()
---     UpdateFocusTarget()
--- end
--- BFI.RegisterCallback("InitModules", "UF_FocusTarget", InitFocusTarget)
+AF.RegisterCallback("BFI_UpdateModules", UpdateFocusTarget)

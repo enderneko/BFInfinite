@@ -134,7 +134,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateButton(module, which)
+local function UpdateButton(_, module, which)
     if module and module ~= "ActionBars" then return end
     if which and which ~= "extra" then return end
 
@@ -194,4 +194,4 @@ local function UpdateButton(module, which)
         AB.ApplyTextConfig(button.HotKey, extraActionConfig.hotkey)
     end
 end
-BFI.RegisterCallback("UpdateModules", "AB_Extra", UpdateButton)
+AF.RegisterCallback("BFI_UpdateModules", UpdateButton)

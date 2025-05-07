@@ -1,12 +1,11 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 --! NOTE: only available for PLAYER
-local class = BFI.vars.playerClass
+local class = AF.player.class
 
 local GetSpecialization = GetSpecialization
 local UnitHasVehicleUI = UnitHasVehicleUI
@@ -550,7 +549,7 @@ local function ClassPowerBar_DisableConfigMode(self)
     self.Enable = ClassPowerBar_Enable
     self.Update = ClassPowerBar_Update
 
-    class = BFI.vars.playerClass
+    class = AF.player.class
 end
 
 ---------------------------------------------------------------------

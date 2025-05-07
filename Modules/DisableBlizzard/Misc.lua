@@ -34,4 +34,4 @@ local function DisableBlizzard()
         DB.DisableFrame(_G.DebuffFrame)
     end
 end
-BFI.RegisterCallback("DisableBlizzard", "Misc", DisableBlizzard)
+AF.RegisterCallback("BFI_DisableBlizzard", DisableBlizzard)

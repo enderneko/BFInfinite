@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@class Maps
 local M = BFI.Maps
 ---@type AbstractFramework
@@ -89,13 +88,13 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "Maps", function(t)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
     if not t["maps"] then
-        t["maps"] = U.Copy(defaults)
+        t["maps"] = AF.Copy(defaults)
     end
     M.config = t["maps"]
 end)
 
 function M.GetDefaults()
-    return U.Copy(defaults)
+    return AF.Copy(defaults)
 end

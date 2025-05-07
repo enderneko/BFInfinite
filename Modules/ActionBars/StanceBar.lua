@@ -1,7 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
 local AB = BFI.ActionBars
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -119,7 +118,7 @@ end
 ---------------------------------------------------------------------
 -- update bar
 ---------------------------------------------------------------------
-local function UpdateStanceBar(module, which)
+local function UpdateStanceBar(_, module, which)
     if module and module ~= "ActionBars" then return end
     if which and which ~= "stance" then return end
 
@@ -186,4 +185,4 @@ local function UpdateStanceBar(module, which)
     UpdateStanceButtons()
     AssignBindings()
 end
-BFI.RegisterCallback("UpdateModules", "AB_StanceBar", UpdateStanceBar)
+AF.RegisterCallback("BFI_UpdateModules", UpdateStanceBar)

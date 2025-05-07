@@ -49,18 +49,6 @@ BFI.utils = {} -- utils
 AF.AddEventHandler(BFI.utils)
 
 ---------------------------------------------------------------------
--- vars
----------------------------------------------------------------------
-BFI.vars.isAsian = LOCALE_zhCN or LOCALE_zhTW or LOCALE_koKR
-
-BFI.vars.isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-BFI.vars.isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
-BFI.vars.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
-BFI.vars.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-
-BFI.vars.playerClass = UnitClassBase("player")
-
----------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
 BFI.Colors = {}

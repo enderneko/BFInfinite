@@ -23,7 +23,7 @@ local formatter = {
         return altPowerBar.max
     end,
     percent = function()
-        return U.Round(altPowerBar.current / altPowerBar.max * 100, 0) .. "%"
+        return AF.Round(altPowerBar.current / altPowerBar.max * 100) .. "%"
     end,
     name = function()
         return altPowerBar.name
@@ -101,7 +101,7 @@ end
 ---------------------------------------------------------------------
 -- update config
 ---------------------------------------------------------------------
-local function UpdateAltPowerBar(module, which)
+local function UpdateAltPowerBar(_, module, which)
     if module and module ~= "UIWidgets" then return end
     if which and which ~= "altpower" then return end
 
@@ -144,4 +144,4 @@ local function UpdateAltPowerBar(module, which)
     AF.LoadPosition(altPowerBarHolder, config.position)
     AF.SetSize(altPowerBarHolder, config.width, config.height)
 end
-BFI.RegisterCallback("UpdateModules", "UI_AltPowerBar", UpdateAltPowerBar)
+AF.RegisterCallback("BFI_UpdateModules", UpdateAltPowerBar)

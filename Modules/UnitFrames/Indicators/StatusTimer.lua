@@ -1,7 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
@@ -10,8 +9,8 @@ local UF = BFI.UnitFrames
 -- local functions
 ---------------------------------------------------------------------
 local UnitGUID = UnitGUID
-local UnitIsPlayer = U.UnitIsPlayer
-local UnitClassBase = U.UnitClassBase
+local UnitIsPlayer = AF.UnitIsPlayer
+local UnitClassBase = UnitClassBase
 local UnitIsConnected = UnitIsConnected
 local UnitIsAFK = UnitIsAFK
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
@@ -187,8 +186,8 @@ local function StatusTimer_DisableConfigMode(self)
     self.Update = StatusTimer_Update
 
     UnitGUID = UF.UnitGUID
-    UnitIsPlayer = U.UnitIsPlayer
-    UnitClassBase = U.UnitClassBase
+    UnitIsPlayer = AF.UnitIsPlayer
+    UnitClassBase = UnitClassBase
 end
 
 ---------------------------------------------------------------------

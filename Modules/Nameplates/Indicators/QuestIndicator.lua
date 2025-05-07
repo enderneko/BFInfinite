@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
@@ -73,7 +72,7 @@ local function UpdateQuests(_, event, unit)
                 end
             end
 
-            if U.IsEmpty(quests[info.title]) then
+            if AF.IsEmpty(quests[info.title]) then
                 quests[info.title] = nil
             end
         end

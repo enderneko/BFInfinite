@@ -151,7 +151,7 @@ end
 ---------------------------------------------------------------------
 -- update bar
 ---------------------------------------------------------------------
-local function UpdateMicroMenu(module, which)
+local function UpdateMicroMenu(_, module, which)
     if module and module ~= "UIWidgets" then return end
     if which and which ~= "menu" then return end
 
@@ -222,4 +222,4 @@ local function UpdateMicroMenu(module, which)
     -- position
     AF.LoadPosition(microMenu, config.position)
 end
-BFI.RegisterCallback("UpdateModules", "UI_MicroMenu", UpdateMicroMenu)
+AF.RegisterCallback("BFI_UpdateModules", UpdateMicroMenu)

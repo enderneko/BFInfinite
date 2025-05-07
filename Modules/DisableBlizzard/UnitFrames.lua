@@ -198,4 +198,4 @@ local function DisableBlizzard()
     hooksecurefunc("CompactUnitFrame_SetUpFrame", DisableBlizzard_SetUpFrame)
     hooksecurefunc("CompactUnitFrame_SetUnit", DisableBlizzard_SetUnit)
 end
-BFI.RegisterCallback("DisableBlizzard", "UnitFrames", DisableBlizzard)
+AF.RegisterCallback("BFI_DisableBlizzard", DisableBlizzard)

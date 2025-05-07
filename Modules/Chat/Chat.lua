@@ -581,7 +581,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateChat(module)
+local function UpdateChat(_, module)
     if module and module ~= "Chat" then return end
 
     local config = C.config
@@ -619,4 +619,4 @@ local function UpdateChat(module)
 
     -- TODO: button size
 end
-BFI.RegisterCallback("UpdateModules", "Chat", UpdateChat)
+AF.RegisterCallback("BFI_UpdateModules", UpdateChat)

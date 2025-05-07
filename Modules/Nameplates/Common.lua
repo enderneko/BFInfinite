@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 ---@class NamePlates
@@ -24,7 +23,7 @@ local builders = {
 
 function NP.CreateIndicators(np)
     for name, builder in pairs(builders) do
-        np.indicators[name] = builder(np, np:GetName()..U.UpperFirst(name))
+        np.indicators[name] = builder(np, np:GetName()..AF.UpperFirst(name))
         np.indicators[name].indicatorName = name
     end
 end
@@ -153,6 +152,6 @@ function NP.LoadIndicatorPosition(self, position, anchorTo, parent)
     if not success then
         -- Cannot anchor to itself
         -- Cannot anchor to a region dependent on it
-        BFI.Fire("IncorrectAnchor", self)
+        AF.Fire("BFI_IncorrectAnchor", self)
     end
 end

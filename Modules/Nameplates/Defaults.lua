@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local NP = BFI.NamePlates
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -121,7 +120,7 @@ local defaults = {
 }
 
 do
-    defaults.cvars = U.Copy(NP.GetCVarDefaults())
+    defaults.cvars = AF.Copy(NP.GetCVarDefaults())
 
     local nameplateDefaults = {
         healthBar = {
@@ -673,16 +672,16 @@ do
     }
 
     -- hostile
-    defaults.hostile_npc = U.Copy(nameplateDefaults, hostile, hostile_npc)
-    defaults.hostile_player = U.Copy(nameplateDefaults, hostile)
+    defaults.hostile_npc = AF.Copy(nameplateDefaults, hostile, hostile_npc)
+    defaults.hostile_player = AF.Copy(nameplateDefaults, hostile)
 
     -- update hostile_player
     defaults.hostile_player.buffs.enabled = false
     defaults.hostile_player.buffs.glowDispellableByMe = false
 
     -- friendly
-    defaults.friendly_npc = U.Copy(nameplateDefaults, friendly)
-    defaults.friendly_player = U.Copy(nameplateDefaults, friendly)
+    defaults.friendly_npc = AF.Copy(nameplateDefaults, friendly)
+    defaults.friendly_player = AF.Copy(nameplateDefaults, friendly)
 
     local friendly_enabled = {
         nameText = true,
@@ -725,17 +724,17 @@ end
 --     },
 -- }
 
-BFI.RegisterCallback("UpdateConfigs", "Nameplates", function(t)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
     if not t["nameplates"] then
-        t["nameplates"] = U.Copy(defaults)
+        t["nameplates"] = AF.Copy(defaults)
     end
     NP.config = t["nameplates"]
 end)
 
 function NP.GetDefaults()
-    return U.Copy(defaults)
+    return AF.Copy(defaults)
 end
 
 function NP.GetNameplateDefaults()
-    return U.Copy(nameplateDefaults)
+    return AF.Copy(nameplateDefaults)
 end

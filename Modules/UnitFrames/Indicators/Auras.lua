@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local UF = BFI.UnitFrames
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -74,7 +73,7 @@ local function IsDispellable(self, auraData)
     end
 
     if auraData.isHarmful and UnitIsFriend("player", self.root.unit) and not self.canAttack then
-        return U.CanDispel(auraData.debuffType)
+        return AF.CanDispel(auraData.debuffType)
     end
 end
 
@@ -595,7 +594,7 @@ local function Auras_LoadConfig(self, config)
 
     if config.mode == "whitelist" then
         -- use whitelist
-        self.whitelist = U.ConvertSpellTable(config.whitelist)
+        self.whitelist = AF.TransposeSpellTable(config.whitelist)
         -- comparator
         self.Comparator = SortAuras_Whitelist
         -- basic filter
@@ -604,7 +603,7 @@ local function Auras_LoadConfig(self, config)
         -- priorities
         self.priorities = config.priorities
         -- blacklist
-        self.blacklist = U.ConvertSpellTable(config.blacklist)
+        self.blacklist = AF.TransposeSpellTable(config.blacklist)
         -- comparator
         self.Comparator = SortAuras
         -- basic filter

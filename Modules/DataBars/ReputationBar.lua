@@ -1,7 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
 ---@type AbstractFramework
@@ -17,7 +16,7 @@ local HasMaximumRenown = C_MajorFactions.HasMaximumRenown
 
 local reputationBar
 
-local FACTION_COLORS = U.Copy(_G.FACTION_BAR_COLORS)
+local FACTION_COLORS = AF.Copy(_G.FACTION_BAR_COLORS)
 -- paragon
 FACTION_COLORS[9] = {r = 0, g = 1, b = 0.53}
 -- renown
@@ -178,7 +177,7 @@ end
 
 local function UpdateRepVisibility(self)
     -- level check
-    if self.hideBelowMaxLevel and not U.IsMaxLevel() then
+    if self.hideBelowMaxLevel and not AF.IsMaxLevel() then
         self:RegisterEvent("PLAYER_LEVEL_UP", UpdateRepVisibility)
         self:UnregisterEvent("UPDATE_FACTION")
         self:Hide()
@@ -228,7 +227,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local init
-local function UpdateReputationBar(module, which)
+local function UpdateReputationBar(_, module, which)
     if module and module ~= "DataBars" then return end
     if which and which ~= "reputation" then return end
 
@@ -274,4 +273,4 @@ local function UpdateReputationBar(module, which)
     reputationBar.hideBelowMaxLevel = config.hideBelowMaxLevel
     UpdateRepVisibility(reputationBar)
 end
-BFI.RegisterCallback("UpdateModules", "DB_ReputationBar", UpdateReputationBar)
+AF.RegisterCallback("BFI_UpdateModules", UpdateReputationBar)

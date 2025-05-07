@@ -49,7 +49,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdatePet(module, which)
+local function UpdatePet(_, module, which)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "pet" then return end
 
@@ -74,4 +74,4 @@ local function UpdatePet(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(pet)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Pet", UpdatePet)
+AF.RegisterCallback("BFI_UpdateModules", UpdatePet)

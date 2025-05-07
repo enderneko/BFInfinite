@@ -35,7 +35,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local init
-local function UpdateWidgets(module, which)
+local function UpdateWidgets(_, module, which)
     if module and module ~= "UIWidgets" then return end
     if which and which ~= "widgets" then return end
 
@@ -51,4 +51,4 @@ local function UpdateWidgets(module, which)
 
     _G.UIWidgetPowerBarContainerFrame._container:SetShown(config.powerBarWidget.enabled)
 end
-BFI.RegisterCallback("UpdateModules", "UI_Widgets", UpdateWidgets)
+AF.RegisterCallback("BFI_UpdateModules", UpdateWidgets)

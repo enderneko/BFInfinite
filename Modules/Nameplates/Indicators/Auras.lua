@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local NP = BFI.NamePlates
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -52,7 +51,7 @@ local function IsDispellable(self, auraData)
     end
 
     if auraData.isHarmful and UnitIsFriend("player", self.root.unit) and not UnitCanAttack("player", self.root.unit) then
-        return U.CanDispel(auraData.debuffType)
+        return AF.CanDispel(auraData.debuffType)
     end
 end
 
@@ -80,7 +79,7 @@ local function UpdateExtraData(self, auraData)
 
     auraData.dispellable = IsDispellable(self, auraData)
     auraData.canBeDispelled = CanBeDispelled(self, auraData)
-    auraData.crowdControlType = U.GetCrowdControlType(auraData)
+    auraData.crowdControlType = AF.GetCrowdControlType(auraData)
     if self.priorities then
         auraData.priority = self.priorities[auraData.spellId] or 999
     end
@@ -518,7 +517,7 @@ local function Auras_LoadConfig(self, config)
 
     -- blacklist
     if config.blacklist then
-        self.blacklist = U.ConvertSpellTable(config.blacklist)
+        self.blacklist = AF.TransposeSpellTable(config.blacklist)
     end
 
     -- blockers

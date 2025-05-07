@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@class UIWidgets
 local UI = BFI.UIWidgets
 ---@type AbstractFramework
@@ -62,13 +61,13 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "UIWidgets", function(t)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
     if not t["uiWidgets"] then
-        t["uiWidgets"] = U.Copy(defaults)
+        t["uiWidgets"] = AF.Copy(defaults)
     end
     UI.config = t["uiWidgets"]
 end)
 
 function UI.GetDefaults()
-    return U.Copy(defaults)
+    return AF.Copy(defaults)
 end

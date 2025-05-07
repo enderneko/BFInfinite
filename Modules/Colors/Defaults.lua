@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@class Colors
 local C = BFI.Colors
 ---@type AbstractFramework
@@ -49,21 +48,21 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "Colors", function(t)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
     if not t["colors"] then
-        t["colors"] = U.Copy(defaults)
+        t["colors"] = AF.Copy(defaults)
     end
     -- add / overwrite colors
     for _, st in pairs(t["colors"]) do
         AF.AddColors(st)
     end
-end, 1)
+end, "high")
 
 function C.ResetDefaults(which)
     if not which then
-        BFI.vars.currentConfigTable["colors"] = U.Copy(defaults)
+        BFI.vars.currentConfigTable["colors"] = AF.Copy(defaults)
     else
-        BFI.vars.currentConfigTable["colors"][which] = U.Copy(defaults[which])
+        BFI.vars.currentConfigTable["colors"][which] = AF.Copy(defaults[which])
     end
 
     for _, t in pairs(BFI.vars.currentConfigTable["colors"]) do

@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@class DisableBlizzard
 local DB = BFI.DisableBlizzard
 ---@type AbstractFramework
@@ -20,13 +19,13 @@ local defaults = {
     auras = true,
 }
 
-BFI.RegisterCallback("UpdateConfigs", "DisableBlizzard", function(t)
-    if not t["disableBlizzard"] then
-        t["disableBlizzard"] = U.Copy(defaults)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
+    if not t["BFI_DisableBlizzard"] then
+        t["BFI_DisableBlizzard"] = AF.Copy(defaults)
     end
-    DB.config = t["disableBlizzard"]
+    DB.config = t["BFI_DisableBlizzard"]
 end)
 
 function DB.GetDefaults()
-    return U.Copy(defaults)
+    return AF.Copy(defaults)
 end

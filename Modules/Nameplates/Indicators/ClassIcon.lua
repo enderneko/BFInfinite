@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
@@ -8,7 +7,7 @@ local NP = BFI.NamePlates
 ---------------------------------------------------------------------
 -- functions
 ---------------------------------------------------------------------
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 local UnitIsPlayer = UnitIsPlayer
 
 ---------------------------------------------------------------------

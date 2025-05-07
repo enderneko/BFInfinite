@@ -60,7 +60,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateTarget(module, which)
+local function UpdateTarget(_, module, which)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "target" then return end
 
@@ -89,13 +89,4 @@ local function UpdateTarget(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(target)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Target", UpdateTarget)
-
----------------------------------------------------------------------
--- init
----------------------------------------------------------------------
--- local function InitTarget()
---     CreateTarget()
---     UpdateTarget()
--- end
--- BFI.RegisterCallback("InitModules", "UF_Target", InitTarget)
+AF.RegisterCallback("BFI_UpdateModules", UpdateTarget)

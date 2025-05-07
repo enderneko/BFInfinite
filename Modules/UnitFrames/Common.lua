@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@class UnitFrames
 local UF = BFI.UnitFrames
 ---@type AbstractFramework
@@ -12,11 +11,11 @@ local AF = _G.AbstractFramework
 UF.Parent = CreateFrame("Frame", "BFIUnitFrameParent", AF.UIParent, "SecureHandlerStateTemplate")
 UF.Parent:SetFrameStrata("LOW")
 UF.Parent:SetAllPoints(AF.UIParent)
-BFI.RegisterCallback("UpdateModules", "UF_Parent", function()
+AF.RegisterCallback("BFI_UpdateModules", function()
     -- NOTE: in case of reload during pet battle
     RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
-    BFI.UnregisterCallback("UpdateModules", "UF_Parent")
-end, 3)
+    AF.UnregisterCallback("BFI_UpdateModules", "UF_Parent")
+end, "low", "UF_Parent")
 
 -- hide during minigame
 -- UF.Parent:RegisterEvent("CLIENT_SCENE_OPENED")
@@ -44,12 +43,12 @@ end, 3)
 -- end)
 
 
-local function UpdateGeneral(module, which)
+local function UpdateGeneral(_, module, which)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "general" then return end
     UF.Parent:SetFrameStrata(UF.config.general.frameStrata)
 end
-BFI.RegisterCallback("UpdateModules", "UF_General", UpdateGeneral)
+AF.RegisterCallback("BFI_UpdateModules", UpdateGeneral)
 
 ---------------------------------------------------------------------
 -- indicator
@@ -89,10 +88,10 @@ function UF.CreateIndicators(frame, indicators)
     for _, v in pairs(indicators) do
         if type(v) == "table" then
             local builder, name = v[1], v[2]
-            frame.indicators[name] = builders[builder](frame, frame:GetName().."_"..U.UpperFirst(name), select(3, unpack(v)))
+            frame.indicators[name] = builders[builder](frame, frame:GetName().."_"..AF.UpperFirst(name), select(3, unpack(v)))
             frame.indicators[name].indicatorName = name
         else -- string:name
-            frame.indicators[v] = builders[v](frame, frame:GetName().."_"..U.UpperFirst(v))
+            frame.indicators[v] = builders[v](frame, frame:GetName().."_"..AF.UpperFirst(v))
             frame.indicators[v].indicatorName = v
         end
     end
@@ -211,7 +210,7 @@ function UF.LoadIndicatorPosition(self, position, anchorTo, parent)
     if not success then
         -- Cannot anchor to itself
         -- Cannot anchor to a region dependent on it
-        BFI.Fire("IncorrectAnchor", self)
+        AF.Fire("BFI_IncorrectAnchor", self)
     end
 end
 

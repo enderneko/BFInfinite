@@ -1,12 +1,11 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 --! NOTE: only available for PLAYER
-local class = BFI.vars.playerClass
+local class = AF.player.class
 
 ---------------------------------------------------------------------
 -- local functions

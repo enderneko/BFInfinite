@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@class UnitFrames
 local UF = BFI.UnitFrames
 ---@type AbstractFramework
@@ -30,12 +29,12 @@ function UF.CFG_UnitGetTotalHealAbsorbs()
 end
 
 function UF.CFG_UnitClassBase()
-    return BFI.vars.playerClass
+    return AF.player.class
 end
 
 -- UF.UnitName = UnitName
 -- function UF.CFG_UnitName(unit)
---     return U.UpperFirst(unit)
+--     return AF.UpperFirst(unit)
 -- end
 
 UF.UnitHasVehicleUI = UnitHasVehicleUI
@@ -254,7 +253,7 @@ local function DisableConfigMode()
     end
 end
 
-local function ToggleConfigMode(module, group)
+local function ToggleConfigMode(_, module, group)
     if InCombatLockdown() then return end
     if module and module ~= "UnitFrames" then return end
 
@@ -279,4 +278,4 @@ local function ToggleConfigMode(module, group)
         end
     end
 end
-BFI.RegisterCallback("ConfigMode", "UnitFrames", ToggleConfigMode)
+AF.RegisterCallback("BFI_ConfigMode", ToggleConfigMode)

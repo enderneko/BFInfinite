@@ -1,12 +1,11 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
 
 --! NOTE: only available for PLAYER
-local class = BFI.vars.playerClass
+local class = AF.player.class
 
 ---------------------------------------------------------------------
 -- local functions
@@ -14,7 +13,7 @@ local class = BFI.vars.playerClass
 local UnitStagger = UnitStagger
 local UnitHealthMax = UnitHealthMax
 local UnitHasVehicleUI = UnitHasVehicleUI
-local FormatNumber = U.FormatNumber
+local FormatNumber = AF.FormatNumber
 
 ---------------------------------------------------------------------
 -- value
@@ -162,10 +161,10 @@ local function StaggerText_SetFormat(self, format)
         self.delimiter = format.delimiter
     end
 
-    if format.useAsianUnits and BFI.vars.isAsian then
-        FormatNumber = U.FormatNumber_Asian
+    if format.useAsianUnits and AF.isAsian then
+        FormatNumber = AF.FormatNumber_Asian
     else
-        FormatNumber = U.FormatNumber
+        FormatNumber = AF.FormatNumber
     end
 end
 

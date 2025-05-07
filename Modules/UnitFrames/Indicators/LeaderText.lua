@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
@@ -11,7 +10,7 @@ local UF = BFI.UnitFrames
 local IsInRaid = IsInRaid
 local UnitIsGroupLeader = UnitIsGroupLeader
 local UnitIsGroupAssistant = UnitIsGroupAssistant
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- color
@@ -21,7 +20,7 @@ local function UpdateColor(self)
 
     local r, g, b
     if self.color.type == "class_color" then
-        if U.UnitIsPlayer(unit) then
+        if AF.UnitIsPlayer(unit) then
             local class = UnitClassBase(unit)
             r, g, b = AF.GetClassColor(class)
         else

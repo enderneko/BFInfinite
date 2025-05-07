@@ -1,7 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
 ---@type AbstractFramework
@@ -34,7 +33,7 @@ local formatter = {
         return BreakUpLargeNumbers(experienceBar.maxXP)
     end,
     percent = function()
-        return U.Round(experienceBar.currentXP / experienceBar.maxXP * 100, 1) .. "%"
+        return AF.RoundToDecimal(experienceBar.currentXP / experienceBar.maxXP * 100, 1) .. "%"
     end,
     remaining = function()
         return BreakUpLargeNumbers(experienceBar.maxXP - experienceBar.currentXP)
@@ -94,22 +93,22 @@ local function UpdateBarAndText(self)
 
     -- complete
     if self.completeEnabled then
-        -- print("completeTexture:", U.Clamp(self.completeXP, 0.001, remainingXP))
-        self.completeTexture:SetWidth(U.Clamp(self.completeXP, 0.001, remainingXP) / self.maxXP * width)
+        -- print("completeTexture:", AF.Clamp(self.completeXP, 0.001, remainingXP))
+        self.completeTexture:SetWidth(AF.Clamp(self.completeXP, 0.001, remainingXP) / self.maxXP * width)
         remainingXP = remainingXP - self.completeXP
     end
 
     -- incomplete
     if self.incompleteEnabled then
-        -- print("incompleteTexture:", U.Clamp(self.incompleteXP, 0.001, remainingXP))
-        self.incompleteTexture:SetWidth(U.Clamp(self.incompleteXP, 0.001, remainingXP) / self.maxXP * width)
+        -- print("incompleteTexture:", AF.Clamp(self.incompleteXP, 0.001, remainingXP))
+        self.incompleteTexture:SetWidth(AF.Clamp(self.incompleteXP, 0.001, remainingXP) / self.maxXP * width)
         remainingXP = remainingXP - self.incompleteXP
     end
 
     -- rested
     if self.restedEnabled then
-        -- print("restedTex:", U.Clamp(self.restedXP, 0.001, remainingXP))
-        self.restedTex:SetWidth(U.Clamp(self.restedXP, 0.001, remainingXP) / self.maxXP * width)
+        -- print("restedTex:", AF.Clamp(self.restedXP, 0.001, remainingXP))
+        self.restedTex:SetWidth(AF.Clamp(self.restedXP, 0.001, remainingXP) / self.maxXP * width)
     end
 
     -- text
@@ -126,7 +125,7 @@ end
 function UpdateQuestXP(self)
     self.completeXP, self.incompleteXP = 0, 0
 
-    if U.IsMaxLevel() then return end
+    if AF.IsMaxLevel() then return end
 
     local questID, rewardXP
     for i = 1, GetNumQuestLogEntries() do
@@ -151,9 +150,9 @@ end
 -- update xp
 ---------------------------------------------------------------------
 function UpdateXP(self)
-    -- print(self.hideAtMaxLevel, U.IsMaxLevel(), GetMaxLevelForLatestExpansion(), UnitLevel("player"), IsLevelAtEffectiveMaxLevel(UnitLevel("player")))
+    -- print(self.hideAtMaxLevel, AF.IsMaxLevel(), GetMaxLevelForLatestExpansion(), UnitLevel("player"), IsLevelAtEffectiveMaxLevel(UnitLevel("player")))
     -- level check
-    if self.hideAtMaxLevel and U.IsMaxLevel() then
+    if self.hideAtMaxLevel and AF.IsMaxLevel() then
         self:Hide()
         return
     end
@@ -264,7 +263,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateXPerienceBar(module, which)
+local function UpdateXPerienceBar(_, module, which)
     if module and module ~= "DataBars" then return end
     if which and which ~= "experience" then return end
 
@@ -360,4 +359,4 @@ local function UpdateXPerienceBar(module, which)
     experienceBar:Show()
     UpdateAll(experienceBar)
 end
-BFI.RegisterCallback("UpdateModules", "DB_ExperienceBar", UpdateXPerienceBar)
+AF.RegisterCallback("BFI_UpdateModules", UpdateXPerienceBar)

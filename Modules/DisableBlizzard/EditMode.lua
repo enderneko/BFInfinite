@@ -173,4 +173,4 @@ local function DisableBlizzard()
         end
     end
 end
-BFI.RegisterCallback("DisableBlizzard", "EditMode", DisableBlizzard)
+AF.RegisterCallback("BFI_DisableBlizzard", DisableBlizzard)

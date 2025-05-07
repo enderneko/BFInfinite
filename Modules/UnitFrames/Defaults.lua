@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local UF = BFI.UnitFrames
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -3436,7 +3435,7 @@ local defaults = {
                 mode = "whitelist",
                 priorities = {},
                 blacklist = {},
-                whitelist = U.Copy(default_whitelist),
+                whitelist = AF.Copy(default_whitelist),
                 auraTypeColor = {
                     castByMe = false,
                     dispellable = nil,
@@ -3488,7 +3487,7 @@ local defaults = {
                 },
                 mode = "blacklist",
                 priorities = {},
-                blacklist = U.Copy(default_blacklist),
+                blacklist = AF.Copy(default_blacklist),
                 whitelist = {},
                 auraTypeColor = {
                     castByMe = false,
@@ -3842,13 +3841,13 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "UnitFrames", function(t)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
     if not t["unitFrames"] then
-        t["unitFrames"] = U.Copy(defaults)
+        t["unitFrames"] = AF.Copy(defaults)
     end
     UF.config = t["unitFrames"]
 end)
 
 function UF.GetDefaults()
-    return U.Copy(defaults)
+    return AF.Copy(defaults)
 end

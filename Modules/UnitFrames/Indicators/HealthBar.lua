@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local UF = BFI.UnitFrames
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -13,7 +12,7 @@ local UnitIsCharmed = UnitIsCharmed
 local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitGetIncomingHeals = UnitGetIncomingHeals
 local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
@@ -216,7 +215,7 @@ local function GetHealthColor(self, unit)
     a = self.color.alpha
     lossA = self.lossColor.alpha
 
-    if U.UnitIsPlayer(unit) then
+    if AF.UnitIsPlayer(unit) then
         if not UnitIsConnected(unit) then
             r, g, b = AF.GetColorRGB("OFFLINE")
             lossR, lossG, lossB = AF.GetColorRGB("OFFLINE")
@@ -339,7 +338,7 @@ local function UpdateDispelHighlight(self, event, unitId)
 
     for _, type in pairs(dispel_order) do
         if self.dispelTypes[type] then
-            if not self.dispelHighlightOnlyDispellable or U.CanDispel(type) then
+            if not self.dispelHighlightOnlyDispellable or AF.CanDispel(type) then
                 self.dispelHighlight:SetVertexColor(AF.GetAuraTypeColor(type))
                 found = true
                 break

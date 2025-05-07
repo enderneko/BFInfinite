@@ -1,7 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
 local AB = BFI.ActionBars
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -228,7 +227,7 @@ local function UpdateButton(bar, shared, specific)
         b:SetState(0, "action", (bar.id - 1) * NUM_ACTIONBAR_BUTTONS + i)
 
         if i == NUM_ACTIONBAR_BUTTONS then
-            if BFI.vars.isRetail then
+            if AF.isRetail then
                 b:SetState(GetVehicleBarIndex(), "custom", customExitButton) -- 16
                 b:SetState(GetTempShapeshiftBarIndex(), "custom", customExitButton) -- 17
                 b:SetState(GetOverrideBarIndex(), "custom", customExitButton) -- 18
@@ -286,9 +285,9 @@ local function UpdateBar(bar, general, shared, specific)
     -- paging
     local page
     if bar.id == 1 then
-        page = BAR1_PAGING_DEFAULT.." "..(specific.paging[BFI.vars.playerClass] or "1")
+        page = BAR1_PAGING_DEFAULT.." "..(specific.paging[AF.player.class] or "1")
     else
-        page = specific.paging[BFI.vars.playerClass] or bar.id
+        page = specific.paging[AF.player.class] or bar.id
     end
     RegisterStateDriver(bar, "page", page)
 
@@ -297,14 +296,14 @@ local function UpdateBar(bar, general, shared, specific)
 end
 
 local init
-local function UpdateMainBars(module, which, barName)
+local function UpdateMainBars(_, module, which, barName)
     if module and module ~= "ActionBars" then return end
     if which and which ~= "main" then return end
 
     if not AB.config.general.enabled then
         LAB.UnregisterCallback(AB, "OnFlyoutSpells")
         AB:UnregisterEvent("UPDATE_BINDINGS", AssignBindings)
-        if BFI.vars.isRetail then
+        if AF.isRetail then
             AB:UnregisterEvent("PET_BATTLE_CLOSE", AssignBindings)
             AB:UnregisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
         end
@@ -344,7 +343,7 @@ local function UpdateMainBars(module, which, barName)
         -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
 
         AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
-        if BFI.vars.isRetail then
+        if AF.isRetail then
             AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
             AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
         end
@@ -358,10 +357,10 @@ local function UpdateMainBars(module, which, barName)
         end
     end
 
-    if BFI.vars.isRetail and C_PetBattles.IsInBattle() then
+    if AF.isRetail and C_PetBattles.IsInBattle() then
         RemoveBindings()
     else
         AssignBindings()
     end
 end
-BFI.RegisterCallback("UpdateModules", "AB_MainBars", UpdateMainBars)
+AF.RegisterCallback("BFI_UpdateModules", UpdateMainBars)

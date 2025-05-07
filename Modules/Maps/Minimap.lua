@@ -556,7 +556,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local init
-local function UpdateMinimap(module, which)
+local function UpdateMinimap(_, module, which)
     if module and module ~= "Maps" then return end
     if which and which ~= "minimap" then return end
 
@@ -696,4 +696,4 @@ local function UpdateMinimap(module, which)
         addonButtonHolder:Hide()
     end
 end
-BFI.RegisterCallback("UpdateModules", "M_Minimap", UpdateMinimap)
+AF.RegisterCallback("BFI_UpdateModules", UpdateMinimap)

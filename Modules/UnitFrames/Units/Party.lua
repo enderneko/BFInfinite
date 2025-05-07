@@ -80,7 +80,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateParty(module, which)
+local function UpdateParty(_, module, which)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "party" then return end
 
@@ -166,4 +166,4 @@ local function UpdateParty(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(party, party.driverKey, party.driverValue)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Party", UpdateParty)
+AF.RegisterCallback("BFI_UpdateModules", UpdateParty)

@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local UF = BFI.UnitFrames
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -45,7 +44,7 @@ local UnitPhaseReason = UnitPhaseReason
 local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
 local IsInRaid = IsInRaid
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 local IsDelveInProgress = C_PartyInfo.IsDelveInProgress
 
 ---------------------------------------------------------------------
@@ -56,7 +55,7 @@ local function UnitButton_UpdateBaseStates(self)
     if not unit then return end
 
     self.states.name = UnitName(unit)
-    self.states.fullName = U.UnitFullName(unit)
+    self.states.fullName = AF.UnitFullName(unit)
     self.states.class = UnitClassBase(unit)
     self.states.guid = UnitGUID(unit)
     self.states.isPlayer = UnitIsPlayer(unit)
@@ -142,7 +141,7 @@ local function UnitButton_UpdateInRange(self, ir)
     local unit = self.displayedUnit
     if not unit then return end
 
-    local inRange = U.IsInRange(unit)
+    local inRange = AF.IsInRange(unit)
 
     self.states.inRange = inRange
     if self.states.inRange ~= self.states.wasInRange then
@@ -495,5 +494,4 @@ local function UpdateAllUnitButtons()
         UnitButton_UpdateAll(b)
     end
 end
-BFI.RegisterCallback("EnterInstance", "BFI_UnitFrames", UpdateAllUnitButtons)
-BFI.RegisterCallback("LeaveInstance", "BFI_UnitFrames", UpdateAllUnitButtons)
+AF.RegisterCallback("AF_INSTANCE_CHANGE", UpdateAllUnitButtons)

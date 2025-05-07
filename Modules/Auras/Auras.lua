@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 local L = BFI.L
 ---@class Auras
 local A = BFI.Auras
@@ -226,7 +225,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateAuras(module, which)
+local function UpdateAuras(_, module, which)
     if module and module ~= "Auras" then return end
 
     local config = A.config
@@ -253,4 +252,4 @@ local function UpdateAuras(module, which)
     AF.LoadPosition(buffFrame, config.buffs.position)
     AF.LoadPosition(debuffFrame, config.debuffs.position)
 end
-BFI.RegisterCallback("UpdateModules", "Auras", UpdateAuras)
+AF.RegisterCallback("BFI_UpdateModules", UpdateAuras)

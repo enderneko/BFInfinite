@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 ---@class UnitFrames
@@ -21,7 +20,7 @@ local UnitCanAttack = UnitCanAttack
 ---------------------------------------------------------------------
 local channeledSpellTicks
 
-if BFI.vars.isRetail then
+if AF.isRetail then
     channeledSpellTicks = {
         -- druid
         [740] = 4, -- 宁静
@@ -76,7 +75,7 @@ end
 do
     local temp = {}
     for id, ticks in pairs(channeledSpellTicks) do
-        local name = U.GetSpellInfo(id)
+        local name = AF.GetSpellInfo(id)
         if name then
             temp[name] = ticks
         else
@@ -89,7 +88,7 @@ end
 ---------------------------------------------------------------------
 -- Penance
 ---------------------------------------------------------------------
-if BFI.vars.playerClass == "PRIEST" then
+if AF.player.class == "PRIEST" then
     local eventFrame = CreateFrame("Frame")
     eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
     eventFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
@@ -138,7 +137,7 @@ if BFI.vars.playerClass == "PRIEST" then
         return baseTicks + bonusTicks
     end
 
-    channeledSpellTicks[U.GetSpellInfo(47540)] = GetPenanceTicks
+    channeledSpellTicks[AF.GetSpellInfo(47540)] = GetPenanceTicks
 end
 
 ---------------------------------------------------------------------
@@ -310,7 +309,7 @@ local function CastInterruptible(self, event, unit)
         self.bar.uninterruptible:Show()
         self:SetBackdropBorderColor(AF.UnpackColor(self.uninterruptibleTextureColor, 1))
         self.gap:SetColorTexture(AF.UnpackColor(self.uninterruptibleTextureColor, 1))
-    elseif self.checkInterruptCD and (not self.requireInterruptUsable or U.InterruptUsable()) then -- interruptible
+    elseif self.checkInterruptCD and (not self.requireInterruptUsable or AF.InterruptUsable()) then -- interruptible
         self.bar:SetColor(AF.UnpackColor(self.interruptibleColor))
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AF.UnpackColor(self.interruptibleColor, 1))
@@ -335,7 +334,7 @@ local function UpdateInterrupt(self, subEvent, ...)
     sourceName = M.GetPetOwner(sourceGUID) or sourceName
 
     if destGUID == self.root.states.guid then
-        local shortName = U.ToShortName(sourceName)
+        local shortName = AF.ToShortName(sourceName)
         AF.SetText(self.nameText, shortName, self.nameTextLength)
         local class = M.GetPlayerClass(sourceName)
         self.nameText:SetText(AF.GetIconString("Exclamation_Rhombic") .. AF.WrapTextInColor(self.nameText:GetText(), class))

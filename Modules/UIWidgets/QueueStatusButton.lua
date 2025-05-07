@@ -54,7 +54,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local init
-local function UpdateQueueStatus(module, which)
+local function UpdateQueueStatus(_, module, which)
     if module and module ~= "UIWidgets" then return end
     if which and which ~= "queue" then return end
 
@@ -70,4 +70,4 @@ local function UpdateQueueStatus(module, which)
     queueStatusHolder.scale = config.scale
     QueueStatusButton:SetScale(0.001)
 end
-BFI.RegisterCallback("UpdateModules", "UI_QueueStatus", UpdateQueueStatus)
+AF.RegisterCallback("BFI_UpdateModules", UpdateQueueStatus)

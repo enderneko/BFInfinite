@@ -84,7 +84,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateRaid(module, which)
+local function UpdateRaid(_, module, which)
     if C_AddOns.IsAddOnLoaded("Cell") then
         return
     end
@@ -175,4 +175,4 @@ local function UpdateRaid(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(raid, raid.driverKey, raid.driverValue)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Raid", UpdateRaid)
+AF.RegisterCallback("BFI_UpdateModules", UpdateRaid)

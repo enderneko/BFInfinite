@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@class Auras
 local A = BFI.Auras
 ---@type AbstractFramework
@@ -71,13 +70,13 @@ local defaults = {
     },
 }
 
-BFI.RegisterCallback("UpdateConfigs", "Auras", function(t)
+AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
     if not t["auras"] then
-        t["auras"] = U.Copy(defaults)
+        t["auras"] = AF.Copy(defaults)
     end
     A.config = t["auras"]
 end)
 
 function A.GetDefaults()
-    return U.Copy(defaults)
+    return AF.Copy(defaults)
 end

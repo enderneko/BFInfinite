@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
@@ -11,7 +10,7 @@ local NP = BFI.NamePlates
 local UnitClassification = UnitClassification
 local UnitEffectiveLevel = UnitEffectiveLevel
 local GetCreatureDifficultyColor = GetCreatureDifficultyColor
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- color
@@ -25,7 +24,7 @@ local function UpdateColor(self, event, unitId)
         r, g, b = AF.ExtractColor(GetCreatureDifficultyColor(UnitEffectiveLevel(unit)))
     elseif self.color.type == "class_color" then
         local class = UnitClassBase(unit)
-        if U.UnitIsPlayer(unit) then
+        if AF.UnitIsPlayer(unit) then
             r, g, b = AF.GetClassColor(class)
         else
             r, g, b = AF.GetReactionColor(unit)

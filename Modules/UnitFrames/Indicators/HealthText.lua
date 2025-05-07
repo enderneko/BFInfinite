@@ -1,7 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
@@ -15,8 +14,8 @@ local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
-local UnitClassBase = U.UnitClassBase
-local FormatNumber = U.FormatNumber
+local UnitClassBase = UnitClassBase
+local FormatNumber = AF.FormatNumber
 
 ---------------------------------------------------------------------
 -- value
@@ -61,7 +60,7 @@ local function UpdateColor(self, event, unitId)
     -- color
     local r, g, b
     if self.color.type == "class_color" then
-        if U.UnitIsPlayer(unit) then
+        if AF.UnitIsPlayer(unit) then
             local class = UnitClassBase(unit)
             r, g, b = AF.GetClassColor(class)
         else
@@ -234,10 +233,10 @@ local function HealthText_SetFormat(self, format)
         self.delimiter = format.delimiter
     end
 
-    if format.useAsianUnits and BFI.vars.isAsian then
-        FormatNumber = U.FormatNumber_Asian
+    if format.useAsianUnits and AF.isAsian then
+        FormatNumber = AF.FormatNumber_Asian
     else
-        FormatNumber = U.FormatNumber
+        FormatNumber = AF.FormatNumber
     end
 end
 

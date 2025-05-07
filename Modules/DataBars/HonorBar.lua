@@ -1,7 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
 ---@class DataBars
 local DB = BFI.DataBars
 ---@type AbstractFramework
@@ -92,7 +91,7 @@ end
 
 local function UpdateHonorVisibility(self)
     -- level check
-    if self.hideBelowMaxLevel and not U.IsMaxLevel() then
+    if self.hideBelowMaxLevel and not AF.IsMaxLevel() then
         self:RegisterEvent("PLAYER_LEVEL_UP", UpdateHonorVisibility)
         self:UnregisterEvent("HONOR_XP_UPDATE")
         self:Hide()
@@ -142,7 +141,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local init
-local function UpdateHonorBar(module, which)
+local function UpdateHonorBar(_, module, which)
     if module and module ~= "DataBars" then return end
     if which and which ~= "honor" then return end
 
@@ -190,4 +189,4 @@ local function UpdateHonorBar(module, which)
     honorBar.hideBelowMaxLevel = config.hideBelowMaxLevel
     UpdateHonorVisibility(honorBar)
 end
-BFI.RegisterCallback("UpdateModules", "DB_HonorBar", UpdateHonorBar)
+AF.RegisterCallback("BFI_UpdateModules", UpdateHonorBar)

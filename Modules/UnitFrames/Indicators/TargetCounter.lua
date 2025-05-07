@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
@@ -9,7 +8,7 @@ local UF = BFI.UnitFrames
 -- local functions
 ---------------------------------------------------------------------
 local UnitIsUnit = UnitIsUnit
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- color
@@ -20,7 +19,7 @@ local function UpdateColor(self, event, unitId)
 
     local r, g, b
     if self.color.type == "class_color" then
-        if U.UnitIsPlayer(unit) then
+        if AF.UnitIsPlayer(unit) then
             local class = UnitClassBase(unit)
             r, g, b = AF.GetClassColor(class)
         else
@@ -39,7 +38,7 @@ local function UpdateCounter(self)
     local unit = self.root.displayedUnit
 
     local n = 0
-    for member in U.GroupMembersIterator() do
+    for member in AF.GroupPlayersIterator() do
         if UnitIsUnit(member.."target", unit) then
             n = n + 1
         end

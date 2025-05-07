@@ -14,7 +14,7 @@ Locales\LoadLocales.xml
 Libs\LoadLibs.xml
 Init.lua
 Debug.lua
-Utils\LoadUtils.xml
+Utils.lua
 
 Core.lua
 Slash.lua

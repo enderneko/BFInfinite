@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local NP = BFI.NamePlates
@@ -125,7 +124,7 @@ local function UpdateInterrupt(self, subEvent, ...)
     sourceName = M.GetPetOwner(sourceGUID) or sourceName
 
     if destGUID == self.root.guid then
-        local shortName = U.ToShortName(sourceName)
+        local shortName = AF.ToShortName(sourceName)
         AF.SetText(self.nameText, shortName, self.nameTextLength)
         local class = M.GetPlayerClass(sourceName)
         self.nameText:SetText(AF.GetIconString("Exclamation_Rhombic") .. AF.WrapTextInColor(self.nameText:GetText(), class))
@@ -147,7 +146,7 @@ local function CastInterruptible(self, event, unit)
         self.bar.uninterruptible:Show()
         self:SetBackdropBorderColor(AF.UnpackColor(self.uninterruptibleTextureColor, 1))
         self.iconBG:SetVertexColor(AF.UnpackColor(self.uninterruptibleTextureColor, 1))
-    elseif self.checkInterruptCD and (not self.requireInterruptUsable or U.InterruptUsable()) then -- interruptible
+    elseif self.checkInterruptCD and (not self.requireInterruptUsable or AF.InterruptUsable()) then -- interruptible
         self.bar:SetColor(AF.UnpackColor(self.interruptibleColor))
         self.bar.uninterruptible:Hide()
         self:SetBackdropBorderColor(AF.UnpackColor(self.interruptibleColor, 1))

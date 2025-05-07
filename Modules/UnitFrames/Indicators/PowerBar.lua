@@ -1,6 +1,5 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local UF = BFI.UnitFrames
@@ -13,7 +12,7 @@ local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
 -- local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitIsConnected = UnitIsConnected
-local UnitClassBase = U.UnitClassBase
+local UnitClassBase = UnitClassBase
 
 ---------------------------------------------------------------------
 -- GetClassColor
@@ -72,7 +71,7 @@ local function GetPowerColor(self, unit)
     a = self.color.alpha
     lossA = self.lossColor.alpha
 
-    if U.UnitIsPlayer(unit) then
+    if AF.UnitIsPlayer(unit) then
         if not UnitIsConnected(unit) then
             r, g, b = 0.4, 0.4, 0.4
             lossR, lossG, lossB = 0.4, 0.4, 0.4

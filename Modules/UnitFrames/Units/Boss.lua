@@ -52,7 +52,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateBoss(module, which)
+local function UpdateBoss(_, module, which)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "boss" then return end
 
@@ -80,4 +80,4 @@ local function UpdateBoss(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(boss, boss.driverKey, boss.driverValue)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Boss", UpdateBoss)
+AF.RegisterCallback("BFI_UpdateModules", UpdateBoss)

@@ -63,7 +63,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdatePlayer(module, which)
+local function UpdatePlayer(_, module, which)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "player" then return end
 
@@ -88,13 +88,4 @@ local function UpdatePlayer(module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(player)
 end
-BFI.RegisterCallback("UpdateModules", "UF_Player", UpdatePlayer)
-
----------------------------------------------------------------------
--- init
----------------------------------------------------------------------
--- local function InitPlayer()
---     CreatePlayer()
---     UpdatePlayer()
--- end
--- BFI.RegisterCallback("InitModules", "UF_Player", InitPlayer)
+AF.RegisterCallback("BFI_UpdateModules", UpdatePlayer)
