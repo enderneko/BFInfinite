@@ -104,3 +104,16 @@ function U.ReSkinEditBox(frame)
     frame:SetBackdropColor(AF.GetColorRGB("background"))
     frame:SetBackdropBorderColor(AF.GetColorRGB("border"))
 end
+
+---------------------------------------------------------------------
+-- loot spec
+---------------------------------------------------------------------
+function U.GetLootSpecInfo()
+    local id = GetLootSpecialization()
+    if id == 0 then
+        -- current spec
+        id = AF.player.specID
+    end
+    local _, name, _, icon = GetSpecializationInfoByID(id)
+    return id, name, icon
+end

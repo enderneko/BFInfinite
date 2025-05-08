@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 ---@class UnitFrames
@@ -653,9 +654,16 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     if self.showDuration then
         self.durationText:Show()
     end
+
+    -- the great vault
+    if castSpellID == 449976 then
+        name, texture = select(2, U.GetLootSpecInfo())
+    end
+
     if self.showName then
         AF.SetText(self.nameText, name, self.nameTextLength)
     end
+
     self.status:Hide()
     self.icon:SetTexture(texture or 134400)
     self.bar:SetBarMinMaxValues(0, self.duration)
