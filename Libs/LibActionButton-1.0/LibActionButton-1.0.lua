@@ -712,7 +712,7 @@ function Generic:OnButtonEvent(event, key, down, spellID, castComplete)
     elseif event == "GLOBAL_MOUSE_UP" then
         self:UnregisterEvent(event)
         self.pushedTexture:Hide()
-        if lib.flyoutHandler and lib.flyoutHandler:GetParent() then
+        if lib.flyoutHandler and lib.flyoutHandler:GetParent() ~= AFParent then
             UpdateFlyout(lib.flyoutHandler:GetParent())
         end
     -- elseif self.config.clickOnDown and GetCVarBool("lockActionBars") then -- non-retail only, retail uses ToggleOnDownForPickup method
