@@ -111,7 +111,12 @@ end
 function NP.OnNameplateHide(np)
     for _, indicator in pairs(np.indicators) do
         if indicator.enabled then
-            indicator:UnregisterAllEvents()
+            if indicator.Disable then
+                indicator:Disable()
+            else
+                indicator:UnregisterAllEvents()
+                indicator:Hide()
+            end
         end
     end
 end

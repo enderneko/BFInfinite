@@ -18,7 +18,7 @@ local GetFriendInfoByIndex = C_FriendList.GetFriendInfoByIndex
 -- cache
 ---------------------------------------------------------------------
 local nameToClass = {}
-petToOwner = {}
+local petToOwner = {}
 
 ---------------------------------------------------------------------
 -- functions

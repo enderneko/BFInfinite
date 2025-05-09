@@ -116,14 +116,13 @@ end
 ---------------------------------------------------------------------
 -- interrupt source
 ---------------------------------------------------------------------
-local function UpdateInterrupt(self, subEvent, ...)
+local function UpdateInterrupt(self, _, subEvent, ...)
     -- local _, subEvent, _, sourceGUID, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
     -- if subEvent ~= "SPELL_INTERRUPT" then return end
-    local _, sourceGUID, sourceName, _, _, destGUID = ...
-
-    sourceName = M.GetPetOwner(sourceGUID) or sourceName
+    local _, sourceGUID, sourceName, _, _, destGUID, destName = ...
 
     if destGUID == self.root.guid then
+        sourceName = M.GetPetOwner(sourceGUID) or sourceName
         local shortName = AF.ToShortName(sourceName)
         AF.SetText(self.nameText, shortName, self.nameTextLength)
         local class = M.GetPlayerClass(sourceName)
@@ -431,6 +430,7 @@ end
 local function CastBar_Disable(self)
     Reset(self)
     self:UnregisterAllEvents()
+    self:UnregisterCLEU("SPELL_INTERRUPT")
     self:Hide()
 end
 

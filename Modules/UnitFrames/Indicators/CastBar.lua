@@ -326,7 +326,7 @@ end
 ---------------------------------------------------------------------
 -- interrupt source
 ---------------------------------------------------------------------
-local function UpdateInterrupt(self, subEvent, ...)
+local function UpdateInterrupt(self, _, subEvent, ...)
     -- local _, subEvent, _, sourceGUID, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
     -- if subEvent ~= "SPELL_INTERRUPT" then return end
 
@@ -733,6 +733,7 @@ end
 local function CastBar_Disable(self)
     Reset(self)
     self:UnregisterAllEvents()
+    self:UnregisterCLEU("SPELL_INTERRUPT")
     self:Hide()
 end
 

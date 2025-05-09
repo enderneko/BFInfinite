@@ -372,6 +372,8 @@ end
 local function OnNameplateUpdate(np, elapsed)
     np.elapsed = (np.elapsed or 0) + elapsed
     if np.elapsed >= 0.25 then
+        np.elapsed = 0
+
         --! frame level
         np:SetFrameLevel(np.parent:GetFrameLevel() * 10)
 
