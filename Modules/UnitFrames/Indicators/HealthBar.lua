@@ -309,14 +309,14 @@ local function ForEachAura(self, continuationToken, ...)
     for i = 1, n do
         local slot = select(i, ...)
         local auraData = GetAuraDataBySlot(self.root.displayedUnit, slot)
-        local auraType = auraData.dispelName -- TODO: bleeds
-        if auraType and auraType ~= "" then
+        local auraType = AF.GetDebuffType(auraData)
+        if auraType then
             self.dispelTypes[auraType] = true
         end
     end
 end
 
-local dispel_order = {"Magic", "Curse", "Disease", "Poison"}
+local dispel_order = {"Magic", "Curse", "Disease", "Poison", "Bleed"}
 
 local function UpdateDispelHighlight(self, event, unitId)
     local unit = self.root.displayedUnit
@@ -339,7 +339,7 @@ local function UpdateDispelHighlight(self, event, unitId)
     for _, type in pairs(dispel_order) do
         if self.dispelTypes[type] then
             if not self.dispelHighlightOnlyDispellable or AF.CanDispel(type) then
-                self.dispelHighlight:SetVertexColor(AF.GetAuraTypeColor(type))
+                self.dispelHighlight:SetVertexColor(AF.GetAuraTypeColor(type, self.dispelHighlightAlpha))
                 found = true
                 break
             end
@@ -426,7 +426,7 @@ end
 
 local function DispelHighlight_Setup(self, config)
     self.dispelHighlight:SetBlendMode(config.blendMode)
-    self.dispelHighlight:SetAlpha(config.alpha)
+    -- self.dispelHighlight:SetAlpha(config.alpha)
 end
 
 local function MouseoverHighlight_SetColor(self, color)
@@ -495,6 +495,7 @@ local function HealthBar_LoadConfig(self, config)
     self.healPredictionUseCustomColor = config.healPrediction.useCustomColor
     self.mouseoverHighlightEnabled = config.mouseoverHighlight.enabled
     self.dispelHighlightEnabled = config.dispelHighlight.enabled
+    self.dispelHighlightAlpha = config.dispelHighlight.alpha
     self.dispelHighlightOnlyDispellable = config.dispelHighlight.dispellable
 end
 

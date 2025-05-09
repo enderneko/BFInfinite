@@ -160,7 +160,7 @@ local style1 = {
                 },
                 dispelHighlight = {
                     enabled = true,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -663,7 +663,7 @@ local style1 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -1085,7 +1085,7 @@ local style1 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -1436,7 +1436,7 @@ local style1 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -1795,7 +1795,7 @@ local style1 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -2146,7 +2146,7 @@ local style1 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -2497,7 +2497,7 @@ local style1 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -2851,7 +2851,7 @@ local style2 = {
                 },
                 dispelHighlight = {
                     enabled = true,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -3354,7 +3354,7 @@ local style2 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -3776,7 +3776,7 @@ local style2 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -4127,7 +4127,7 @@ local style2 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -4485,7 +4485,7 @@ local style2 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -4836,7 +4836,7 @@ local style2 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -5187,7 +5187,7 @@ local style2 = {
                 },
                 dispelHighlight = {
                     enabled = false,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -5550,7 +5550,7 @@ local defaults = {
                 },
                 dispelHighlight = {
                     enabled = true,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -5968,7 +5968,7 @@ local defaults = {
                 },
                 dispelHighlight = {
                     enabled = true,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
@@ -6253,7 +6253,7 @@ local defaults = {
                 },
                 dispelHighlight = {
                     enabled = true,
-                    alpha = 0.75,
+                    alpha = 0.5,
                     blendMode = "ADD",
                     dispellable = true,
                 },
