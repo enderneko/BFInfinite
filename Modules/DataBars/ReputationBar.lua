@@ -137,7 +137,7 @@ local function UpdateRep(self)
     if factionID and IsMajorFaction(factionID) then
         reaction = 10
         local data = GetMajorFactionData(factionID)
-        standingLabel = _G.RENOWN_LEVEL_LABEL .. " " .. data.renownLevel
+        standingLabel = _G.RENOWN_LEVEL_LABEL:format(data.renownLevel)
         currentReactionThreshold = 0
         nextReactionThreshold = data.renownLevelThreshold
         currentStanding = HasMaximumRenown(factionID) and data.renownLevelThreshold or data.renownReputationEarned or 0
