@@ -29,7 +29,7 @@ BFI.name = "BFInfinite"
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 AF.RegisterAddon(BFI.name, "BFI")
-AF.SetAccentColor("accent")
+AF.SetAddonAccentColor(BFI.name, "blazing_tangerine")
 
 ---------------------------------------------------------------------
 -- global
