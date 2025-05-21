@@ -224,7 +224,7 @@ end
 local function UpdateFrameDocked(frame, isDocked)
     if not isDocked then
         local tab = GetTab(frame)
-        tab.Text:SetTextColor(AF.GetAccentColorRGB())
+        tab.Text:SetTextColor(AF.GetColorRGB(BFI.name))
         frame.Background:Show()
         tab.underline:Hide()
 
@@ -476,7 +476,7 @@ local function UpdateTabColor(tab, selected)
     tab.selected = selected
 
     if selected then
-        tab.Text:SetTextColor(AF.GetAccentColorRGB())
+        tab.Text:SetTextColor(AF.GetColorRGB(BFI.name))
     else
         tab.Text:SetTextColor(AF.GetColorRGB("white"))
     end
