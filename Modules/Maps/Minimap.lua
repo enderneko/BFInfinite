@@ -21,6 +21,7 @@ local GetInstanceInfo = GetInstanceInfo
 local GetGuildInfo = GetGuildInfo
 local GetLFGDungeonInfo = GetLFGDungeonInfo
 local GetDifficultyInfo = GetDifficultyInfo
+local GetPersonalOrdersInfo = C_CraftingOrders.GetPersonalOrdersInfo
 
 ---------------------------------------------------------------------
 -- expansion button
@@ -42,14 +43,14 @@ end
 ---------------------------------------------------------------------
 -- other widgets
 ---------------------------------------------------------------------
-local function UpdateMinimapWidgets(widget, config)
+local function UpdateMinimapWidgets(widget, config, shouldShow)
     if not config.enabled then
         widget:Hide()
         return
     end
 
     widget:SetParent(Minimap)
-    widget:Show()
+    widget:SetShown(shouldShow)
 
     AF.ClearPoints(widget)
     AF.LoadWidgetPosition(widget, config.position, minimapContainer)
@@ -588,10 +589,10 @@ local function UpdateMinimap(_, module, which)
     UpdateExpansionButton()
 
     -- tracking button
-    UpdateMinimapWidgets(MinimapCluster.Tracking, config.trackingButton)
+    UpdateMinimapWidgets(MinimapCluster.Tracking, config.trackingButton, true)
 
     -- calendar
-    UpdateMinimapWidgets(GameTimeFrame, config.calendar)
+    UpdateMinimapWidgets(GameTimeFrame, config.calendar, true)
 
     -- clock
     if config.clock.enabled then
@@ -620,12 +621,13 @@ local function UpdateMinimap(_, module, which)
     end
 
     -- mail frame
-    UpdateMinimapWidgets(MinimapCluster.IndicatorFrame.MailFrame, config.mailFrame)
+    UpdateMinimapWidgets(MinimapCluster.IndicatorFrame.MailFrame, config.mailFrame, true)
     MinimapCluster.IndicatorFrame.MailFrame.MailIcon:ClearAllPoints()
     MinimapCluster.IndicatorFrame.MailFrame.MailIcon:SetPoint("CENTER")
 
     -- crafting order frame
-    UpdateMinimapWidgets(MinimapCluster.IndicatorFrame.CraftingOrderFrame, config.craftingOrderFrame)
+    local orders = GetPersonalOrdersInfo()
+    UpdateMinimapWidgets(MinimapCluster.IndicatorFrame.CraftingOrderFrame, config.craftingOrderFrame, #orders > 0)
     MiniMapCraftingOrderIcon:ClearAllPoints()
     MiniMapCraftingOrderIcon:SetPoint("CENTER")
 
