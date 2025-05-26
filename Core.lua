@@ -32,10 +32,8 @@ function eventHandler:ADDON_LOADED(arg)
         -- appearance
         if type(BFIConfig["appearance"]) ~= "table" then
             BFIConfig["appearance"] = {
-                ["scale"] = 1,
             }
         end
-        AF.SetScale(BFIConfig["appearance"]["scale"])
 
         -- init configs
         AF.Fire("BFI_UpdateConfigs", BFIConfig["default"], "default")
