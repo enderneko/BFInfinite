@@ -111,9 +111,12 @@ local function UpdateAltPowerBar(_, module, which)
         InitAltPowerBar()
     end
 
+    AF.UpdateMoverSave(altPowerBarHolder, config.position)
+
     if config.useBlizzardStyle then
         blizzardAltPowerBar:SetScale(config.scale)
         altPowerBarHolder:UnregisterAllEvents()
+        altPowerBar:Hide()
     else
         -- bar
         altPowerBar:SetTexture(AF.LSM_GetBarTexture(config.texture))
