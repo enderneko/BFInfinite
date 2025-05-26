@@ -111,7 +111,7 @@ local style1 = {
             oorAlpha = nil,
             tooltip = {
                 enabled = true,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -507,7 +507,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -560,7 +560,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -614,7 +614,7 @@ local style1 = {
             oorAlpha = 1,
             tooltip = {
                 enabled = true,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -917,7 +917,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -970,7 +970,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -1036,7 +1036,7 @@ local style1 = {
             oorAlpha = 1,
             tooltip = {
                 enabled = false,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -1280,7 +1280,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -1333,7 +1333,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -1387,7 +1387,7 @@ local style1 = {
             oorAlpha = 1,
             tooltip = {
                 enabled = true,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -1639,7 +1639,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -1692,7 +1692,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -1746,7 +1746,7 @@ local style1 = {
             oorAlpha = 1,
             tooltip = {
                 enabled = false,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -1990,7 +1990,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -2043,7 +2043,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -2097,7 +2097,7 @@ local style1 = {
             oorAlpha = 0.45,
             tooltip = {
                 enabled = false,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -2341,7 +2341,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -2394,7 +2394,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -2448,7 +2448,7 @@ local style1 = {
             oorAlpha = 0.45,
             tooltip = {
                 enabled = false,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -2692,7 +2692,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -2745,7 +2745,7 @@ local style1 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -2802,7 +2802,7 @@ local style2 = {
             oorAlpha = nil,
             tooltip = {
                 enabled = true,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -3198,7 +3198,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -3251,7 +3251,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -3305,7 +3305,7 @@ local style2 = {
             oorAlpha = 1,
             tooltip = {
                 enabled = true,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -3608,7 +3608,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -3661,7 +3661,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -3727,7 +3727,7 @@ local style2 = {
             oorAlpha = 1,
             tooltip = {
                 enabled = false,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -3971,7 +3971,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -4024,7 +4024,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -4078,7 +4078,7 @@ local style2 = {
             oorAlpha = 1,
             tooltip = {
                 enabled = true,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -4329,7 +4329,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -4382,7 +4382,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -4436,7 +4436,7 @@ local style2 = {
             oorAlpha = 1,
             tooltip = {
                 enabled = false,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -4680,7 +4680,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -4733,7 +4733,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -4787,7 +4787,7 @@ local style2 = {
             oorAlpha = 0.45,
             tooltip = {
                 enabled = false,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -5031,7 +5031,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -5084,7 +5084,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -5138,7 +5138,7 @@ local style2 = {
             oorAlpha = 0.45,
             tooltip = {
                 enabled = false,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"BOTTOM", "TOP", 0, 1},
             },
         },
@@ -5381,7 +5381,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -5434,7 +5434,7 @@ local style2 = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -5501,7 +5501,7 @@ local defaults = {
             oorAlpha = 0.45,
             tooltip = {
                 enabled = true,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"LEFT", "RIGHT", 1, 0},
             },
         },
@@ -5806,7 +5806,7 @@ local defaults = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -5859,7 +5859,7 @@ local defaults = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -5919,7 +5919,7 @@ local defaults = {
             oorAlpha = 0.45,
             tooltip = {
                 enabled = true,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"LEFT", "RIGHT", 1, 0},
             },
         },
@@ -6098,7 +6098,7 @@ local defaults = {
                 frameLevel = 10,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -6151,7 +6151,7 @@ local defaults = {
                 frameLevel = 10,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -6204,7 +6204,7 @@ local defaults = {
             oorAlpha = 0.45,
             tooltip = {
                 enabled = false,
-                anchorTo = "aura",
+                anchorTo = "self",
                 position = {"LEFT", "RIGHT", 1, 0},
             },
         },
@@ -6435,7 +6435,7 @@ local defaults = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
@@ -6488,7 +6488,7 @@ local defaults = {
                 frameLevel = 1,
                 tooltip = {
                     enabled = true,
-                    anchorTo = "aura",
+                    anchorTo = "self",
                     position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
                 },
                 durationText = {
