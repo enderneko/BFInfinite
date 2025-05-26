@@ -576,8 +576,9 @@ local function UpdateMinimap(_, module, which)
         CreateZoneText()
         CreateClockButton()
         CreateInstanceDifficulty()
-        AF.UpdateMoverSave(minimapContainer, config.position)
     end
+
+    AF.UpdateMoverSave(minimapContainer, config.position)
 
     -- minimap
     AF.ClearPoints(minimapContainer)
