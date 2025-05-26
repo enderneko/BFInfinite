@@ -38,6 +38,10 @@ local defaults = {
             rightFormat = "[current] / [total]",
         },
     },
+    buffTimer = {
+        position = {"BOTTOM", 0, 209},
+        scale = 0.75,
+    },
     vehicleSeats = {
         position = {"BOTTOMLEFT", 381, 183},
         scale = 0.7,

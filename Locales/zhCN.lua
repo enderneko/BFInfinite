@@ -23,6 +23,7 @@ L["UI Widgets"] = "界面组件"
 L["Micro Menu"] = "微型主菜单"
 L["Queue Status"] = "队列状态"
 L["Zone Ability"] = "区域技能"
+L["Special Power Timer"] = "特殊能量计时器"
 
 ---------------------------------------------------------------------
 -- data bars
