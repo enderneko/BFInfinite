@@ -51,15 +51,31 @@ end
 ---------------------------------------------------------------------
 -- update cooldown
 ---------------------------------------------------------------------
+local function SetTooltip(self)
+    GameTooltip:SetPetAction(self:GetID())
+end
+
+local function OnEnter(self)
+    SetTooltip(self)
+    self.UpdateTooltip = SetTooltip
+end
+
+local function OnLeave(self)
+    self.UpdateTooltip = nil
+end
+
+local function OnCooldownDone(self)
+    self:GetParent().icon:SetDesaturated(false)
+end
+
 local function UpdatePetCooldowns()
     for i, b in pairs(petBar.buttons) do
         local start, duration = GetPetActionCooldown(i)
         b.cooldown:SetCooldown(start, duration)
-
-        -- FIXME: not work
         b.icon:SetDesaturated(duration and duration > 1.5)
 
         if not GameTooltip:IsForbidden() and GameTooltip:GetOwner() == b then
+            -- GameTooltip:SetPetAction(b:GetID())
             b:OnEnter()
         end
     end
@@ -125,16 +141,18 @@ local function UpdatePetButtons(event, unit)
         if not PetHasActionBar() and texture and name ~= "PET_ACTION_FOLLOW" then
             if b.StartFlash then b:StopFlash() end
             b.icon:SetVertexColor(0.4, 0.4, 0.4)
-            b.icon:SetDesaturation(1)
+            -- b.icon:SetDesaturated(true)
             b:SetChecked(false)
         elseif GetPetActionSlotUsable(i) then
             b.icon:SetVertexColor(1, 1, 1)
-            b.icon:SetDesaturation(0)
+            -- b.icon:SetDesaturated(false)
         else
             b.icon:SetVertexColor(0.4, 0.4, 0.4)
-            b.icon:SetDesaturation(1)
+            -- b.icon:SetDesaturated(true)
         end
     end
+
+    UpdatePetCooldowns()
 end
 
 ---------------------------------------------------------------------
@@ -186,8 +204,12 @@ local function UpdatePetBar(_, module, which)
     for i = 1, 10 do
         local b
         if not petBar.buttons[i] then
+            -- create
             b = AB.CreatePetButton(petBar, i)
             petBar.buttons[i] = b
+            b.cooldown:HookScript("OnCooldownDone", OnCooldownDone)
+            hooksecurefunc(b, "OnEnter", OnEnter)
+            hooksecurefunc(b, "OnLeave", OnLeave)
         else
             b = petBar.buttons[i]
         end
