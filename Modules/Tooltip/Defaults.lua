@@ -14,6 +14,14 @@ local defaults = {
         y = 0,
     },
     combatModifierKey = false,
+    healthBar = {
+        enabled = true,
+        text = {
+            enabled = true,
+            font = {"BFI", 12, "none", true},
+            useAsianUnits = false,
+        }
+    }
 }
 
 AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)

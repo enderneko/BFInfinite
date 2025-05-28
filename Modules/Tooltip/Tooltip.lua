@@ -7,6 +7,7 @@ local AF = _G.AbstractFramework
 
 local tooltipAnchor
 local GameTooltip = GameTooltip
+local GameTooltipStatusBar = GameTooltipStatusBar
 local InCombatLockdown = InCombatLockdown
 
 ---------------------------------------------------------------------
@@ -93,6 +94,12 @@ local function UpdateAnchor(tooltip, parent)
             return
         end
 
+        if tooltip.StatusBar then
+            local statusBar = tooltip.StatusBar
+            statusBar:SetAlpha(T.config.healthBar.enabled and 1 or 0)
+            -- AF.SetPoint(statusBar, "TOPLEFT", tooltip, "BOTTOMLEFT", 0, 0)
+        end
+
         if T.config.cursorAnchor.type then
             -- NOTE: x, y won't be used if type is "ANCHOR_CURSOR"
             tooltip:SetOwner(parent, T.config.cursorAnchor.type, T.config.cursorAnchor.x, T.config.cursorAnchor.y)
@@ -140,6 +147,33 @@ local function PLAYER_REGEN_DISABLED()
 end
 
 ---------------------------------------------------------------------
+-- UpdateStatusBarText
+---------------------------------------------------------------------
+local FormatNumber
+
+local function UpdateStatusBarText(bar, value)
+    if bar:IsForbidden() or not (T.config.healthBar.enabled and T.config.healthBar.text.enabled) or not bar.text then
+        return
+    end
+
+    local _, unit = GameTooltip:GetUnit()
+
+    local maxValue
+    if unit then
+        value = UnitHealth(unit)
+        maxValue = UnitHealthMax(unit)
+    else
+        _, maxValue = bar:GetMinMaxValues()
+    end
+
+    if maxValue == 1 then
+        bar.text:SetFormattedText("%.1f%%", value * 100)
+    else
+        bar.text:SetFormattedText("%s / %s", FormatNumber(value), FormatNumber(maxValue))
+    end
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function InitTooltip()
@@ -148,6 +182,16 @@ local function InitTooltip()
     AF.CreateMover(tooltipAnchor, "BFI: " .. _G.OTHER, L["Tooltip"])
 
     hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
+
+    -- statusBar
+    AF.SetHeight(GameTooltipStatusBar, 5)
+    AF.AddToPixelUpdater(GameTooltipStatusBar)
+    GameTooltipStatusBar:HookScript("OnValueChanged", UpdateStatusBarText)
+
+    local text = GameTooltipStatusBar:CreateFontString(nil, "OVERLAY")
+    GameTooltipStatusBar.text = text
+    AF.SetFont(text, T.config.healthBar.text.font)
+    text:SetPoint("CENTER")
 end
 
 ---------------------------------------------------------------------
@@ -189,5 +233,11 @@ local function UpdateTooltip(_, module, which)
     end
 
     T:RegisterEvent("WORLD_CURSOR_TOOLTIP_UPDATE", WORLD_CURSOR_TOOLTIP_UPDATE)
+
+    if config.healthBar.text.useAsianUnits and AF.isAsian then
+        FormatNumber = AF.FormatNumber_Asian
+    else
+        FormatNumber = AF.FormatNumber
+    end
 end
 AF.RegisterCallback("BFI_UpdateModules", UpdateTooltip)
