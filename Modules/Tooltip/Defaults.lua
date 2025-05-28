@@ -8,6 +8,12 @@ local AF = _G.AbstractFramework
 local defaults = {
     enabled = true,
     position = {"BOTTOMRIGHT", -10, 10},
+    cursorAnchor = {
+        type = "ANCHOR_CURSOR_LEFT", -- false, "ANCHOR_CURSOR", "ANCHOR_CURSOR_RIGHT"
+        x = -5,
+        y = 0,
+    },
+    combatModifierKey = false,
 }
 
 AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)

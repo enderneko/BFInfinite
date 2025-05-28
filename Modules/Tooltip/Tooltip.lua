@@ -7,6 +7,25 @@ local AF = _G.AbstractFramework
 
 local tooltipAnchor
 local GameTooltip = GameTooltip
+local InCombatLockdown = InCombatLockdown
+
+---------------------------------------------------------------------
+-- IsWorldUnitTooltip
+---------------------------------------------------------------------
+local function IsWorldUnitTooltip()
+    local data = C_TooltipInfo.GetWorldCursor()
+    return data and data.type == Enum.TooltipDataType.Unit
+end
+
+---------------------------------------------------------------------
+-- IsModifierKeyDown
+---------------------------------------------------------------------
+local IsModifierKeyDown = AF.noop_true
+local modifiers = {
+    ["SHIFT"] = IsShiftKeyDown,
+    ["CTRL"] = IsControlKeyDown,
+    ["ALT"] = IsAltKeyDown,
+}
 
 ---------------------------------------------------------------------
 -- get anchor
@@ -43,8 +62,6 @@ end
 ---------------------------------------------------------------------
 -- update anchor
 ---------------------------------------------------------------------
-local InCombatLockdown = InCombatLockdown
-
 local function UpdateAnchor(tooltip, parent)
     if not T.config.enabled or tooltip:IsForbidden() or tooltip:GetAnchorType() ~= "ANCHOR_NONE" then
         return
@@ -53,6 +70,7 @@ local function UpdateAnchor(tooltip, parent)
     tooltip:ClearAllPoints()
 
     if parent.tooltip then
+        --! use module settings
         local tt = parent.tooltip
         if tt.enabled and not (tt.hideInCombat and InCombatLockdown()) then
 
@@ -68,9 +86,22 @@ local function UpdateAnchor(tooltip, parent)
         else
             tooltip:Hide()
         end
+
     else
-        local point = GetTooltipAnchorPoint(tooltipAnchor)
-        tooltip:SetPoint(point, tooltipAnchor)
+        --! use tooltip settings
+        if InCombatLockdown() and IsWorldUnitTooltip() and not IsModifierKeyDown() then
+            return
+        end
+
+        if T.config.cursorAnchor.type then
+            -- NOTE: x, y won't be used if type is "ANCHOR_CURSOR"
+            tooltip:SetOwner(parent, T.config.cursorAnchor.type, T.config.cursorAnchor.x, T.config.cursorAnchor.y)
+        else
+            local point = GetTooltipAnchorPoint(tooltipAnchor)
+            tooltip:SetPoint(point, tooltipAnchor)
+        end
+    end
+end
 
 ---------------------------------------------------------------------
 -- WORLD_CURSOR_TOOLTIP_UPDATE
@@ -82,6 +113,29 @@ local function WORLD_CURSOR_TOOLTIP_UPDATE(_, _, state)
         GameTooltip:Hide()
     end
 end
+
+---------------------------------------------------------------------
+-- toggle visibility in combat with modifier key
+---------------------------------------------------------------------
+local function MODIFIER_STATE_CHANGED(_, _, key, down)
+    if not GameTooltip:IsForbidden() and InCombatLockdown() and IsWorldUnitTooltip() and key:find(T.config.combatModifierKey) then
+        if down == 1 then
+            GameTooltip:SetWorldCursor(Enum.WorldCursorAnchorType.Default)
+        else
+            GameTooltip:Hide()
+        end
+    end
+end
+
+local function PLAYER_REGEN_ENABLED()
+    if not GameTooltip:IsForbidden() and IsWorldUnitTooltip() then
+        GameTooltip:SetWorldCursor(Enum.WorldCursorAnchorType.Default)
+    end
+end
+
+local function PLAYER_REGEN_DISABLED()
+    if not GameTooltip:IsForbidden() and IsWorldUnitTooltip() then
+        GameTooltip:Hide()
     end
 end
 
@@ -94,7 +148,6 @@ local function InitTooltip()
     AF.CreateMover(tooltipAnchor, "BFI: " .. _G.OTHER, L["Tooltip"])
 
     hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
-    T:RegisterEvent("WORLD_CURSOR_TOOLTIP_UPDATE", WORLD_CURSOR_TOOLTIP_UPDATE)
 end
 
 ---------------------------------------------------------------------
@@ -110,7 +163,10 @@ local function UpdateTooltip(_, module, which)
         tooltipAnchor.enabled = config.enabled
     end
 
-    if not config.enabled then return end
+    if not config.enabled then
+        T:UnregisterAllEvents()
+        return
+    end
 
     if not init then
         init = true
@@ -119,5 +175,19 @@ local function UpdateTooltip(_, module, which)
 
     AF.UpdateMoverSave(tooltipAnchor, config.position)
     AF.LoadPosition(tooltipAnchor, config.position)
+
+    if config.combatModifierKey then
+        IsModifierKeyDown = modifiers[config.combatModifierKey]
+        T:RegisterEvent("MODIFIER_STATE_CHANGED", MODIFIER_STATE_CHANGED)
+        T:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
+        T:RegisterEvent("PLAYER_REGEN_DISABLED", PLAYER_REGEN_DISABLED)
+    else
+        IsModifierKeyDown = AF.noop_true
+        T:UnregisterEvent("MODIFIER_STATE_CHANGED")
+        T:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        T:UnregisterEvent("PLAYER_REGEN_DISABLED")
+    end
+
+    T:RegisterEvent("WORLD_CURSOR_TOOLTIP_UPDATE", WORLD_CURSOR_TOOLTIP_UPDATE)
 end
 AF.RegisterCallback("BFI_UpdateModules", UpdateTooltip)
