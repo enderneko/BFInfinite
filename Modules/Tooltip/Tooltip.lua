@@ -71,6 +71,17 @@ local function UpdateAnchor(tooltip, parent)
     else
         local point = GetTooltipAnchorPoint(tooltipAnchor)
         tooltip:SetPoint(point, tooltipAnchor)
+
+---------------------------------------------------------------------
+-- WORLD_CURSOR_TOOLTIP_UPDATE
+---------------------------------------------------------------------
+local function WORLD_CURSOR_TOOLTIP_UPDATE(_, _, state)
+    if GameTooltip:IsForbidden() or T.config.cursorAnchor.type then return end
+    if state == 0 then
+        -- hide immediately
+        GameTooltip:Hide()
+    end
+end
     end
 end
 
@@ -83,6 +94,7 @@ local function InitTooltip()
     AF.CreateMover(tooltipAnchor, "BFI: " .. _G.OTHER, L["Tooltip"])
 
     hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
+    T:RegisterEvent("WORLD_CURSOR_TOOLTIP_UPDATE", WORLD_CURSOR_TOOLTIP_UPDATE)
 end
 
 ---------------------------------------------------------------------
