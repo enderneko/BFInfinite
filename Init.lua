@@ -19,6 +19,7 @@ BFI.name = "BFInfinite"
 ---@field Maps Maps
 ---@field DataBars DataBars
 ---@field Chat Chat
+---@field Tooltip Tooltip
 ---@field UIWidgets UIWidgets
 ---@field DisableBlizzard DisableBlizzard
 ---@field Misc Misc
@@ -86,6 +87,9 @@ AF.AddEventHandler(BFI.DataBars)
 
 BFI.Chat = {}
 AF.AddEventHandler(BFI.Chat)
+
+BFI.Tooltip = {}
+AF.AddEventHandler(BFI.Tooltip)
 
 ---------------------------------------------------------------------
 -- libs

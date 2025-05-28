@@ -67,6 +67,19 @@ function ZoneAbility_UpdateAbility()
             spellButton.holder = zoneAbilityHolder
             AB.StylizeButton(spellButton)
             AF.AddToPixelUpdater(spellButton)
+
+            spellButton:SetScript("OnEnter", function()
+                GameTooltip:SetOwner(spellButton, "ANCHOR_NONE")
+                GameTooltip_SetDefaultAnchor(GameTooltip, spellButton)
+                GameTooltip:SetSpellByID(spellButton:GetOverrideSpellID())
+            end)
+
+            spellButton.SetTooltip = function()
+                GameTooltip:SetSpellByID(spellButton:GetOverrideSpellID())
+            end
+            spellButton.UpdateTooltip = spellButton.SetTooltip
+
+            spellButton.tooltip = AB.config.general.tooltip
         end
     end
 end
@@ -103,7 +116,7 @@ local function CreateExtraActionHolder()
 end
 
 function ExtraAction_UpdateParent()
-    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_UpdateParent)
+    -- AB:UnregisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_UpdateParent)
     ExtraActionBarFrame:SetParent(extraActionHolder)
 end
 
@@ -128,6 +141,9 @@ function ExtraAction_UpdateAbility(_, frame)
         button.HotKey:SetText(AB.GetHotkey(GetBindingKey(button.commandName)))
 
         AF.AddToPixelUpdater(button)
+
+        -- tooltip
+        button.tooltip = AB.config.general.tooltip
     end
 end
 

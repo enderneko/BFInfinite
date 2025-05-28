@@ -214,6 +214,9 @@ local function UpdatePetBar(_, module, which)
             b = petBar.buttons[i]
         end
 
+        -- tooltip
+        b.tooltip = AB.config.general.tooltip
+
         if config.buttonConfig.hideElements.hotkey then
             b.HotKey:Hide()
         else

@@ -249,6 +249,9 @@ local function UpdateButton(bar, shared, specific)
         -- b:SetAttribute("checkfocuscast", true)
 
         b:UpdateConfig(bar.buttonConfig)
+
+        -- tooltip
+        b.tooltip = AB.config.general.tooltip
     end
 end
 

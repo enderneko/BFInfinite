@@ -11,6 +11,12 @@ local defaults = {
         frameStrata = "LOW",
         flyoutSize = 32,
         disableAutoAddSpells = true,
+        tooltip = {
+            enabled = true,
+            hideInCombat = false,
+            anchorTo = "self_adaptive", -- self / self_adaptive / default
+            position = {"BOTTOMLEFT", "TOPLEFT", 0, 1},
+        },
     },
     barConfig = {
         bar1 = {enabled = true, position = {"BOTTOM", 0, 8}},

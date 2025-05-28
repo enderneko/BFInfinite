@@ -167,6 +167,9 @@ local function UpdateStanceBar(_, module, which)
             AF.SetPoint(b.hotkey, t.position.anchor, t.position.offsetX, t.position.offsetY)
             b.hotkey:Show()
         end
+
+        -- tooltip
+        b.tooltip = AB.config.general.tooltip
     end
 
     -- load config
