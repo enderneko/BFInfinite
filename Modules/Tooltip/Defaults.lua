@@ -21,6 +21,15 @@ local defaults = {
             font = {"BFI", 12, "none", true},
             useAsianUnits = false,
         }
+    },
+    lines = {
+        "fullname_title",
+        "guild_guildrank",
+        "npc_subtitle",
+        "level_race_gender",
+        "player_spec",
+        "npc_faction",
+        "npc_pvp",
     }
 }
 

@@ -8,13 +8,25 @@ local AF = _G.AbstractFramework
 local tooltipAnchor
 local GameTooltip = GameTooltip
 local GameTooltipStatusBar = GameTooltipStatusBar
+local AddTooltipPostCall = TooltipDataProcessor.AddTooltipPostCall
+local GetWorldCursor = C_TooltipInfo.GetWorldCursor
 local InCombatLockdown = InCombatLockdown
+local UnitExists = UnitExists
+local UnitName = UnitName
+local UnitPVPName = UnitPVPName
+local UnitIsPVP = UnitIsPVP
+local UnitLevel = UnitLevel
+local UnitClassBase = UnitClassBase
+local UnitIsTapDenied = UnitIsTapDenied
+local GetGuildInfo = GetGuildInfo
+local strfind = strfind
+local format = format
 
 ---------------------------------------------------------------------
 -- IsWorldUnitTooltip
 ---------------------------------------------------------------------
 local function IsWorldUnitTooltip()
-    local data = C_TooltipInfo.GetWorldCursor()
+    local data = GetWorldCursor()
     return data and data.type == Enum.TooltipDataType.Unit
 end
 
@@ -162,15 +174,385 @@ local function UpdateStatusBarText(bar, value)
     if unit then
         value = UnitHealth(unit)
         maxValue = UnitHealthMax(unit)
+
+        if UnitIsGhost(unit) then
+            bar.text:SetText(AF.WrapTextInColor(AF.L["Ghost"], "red"))
+        elseif UnitIsDead(unit) then
+            bar.text:SetText(AF.WrapTextInColor(AF.L["Dead"], "red"))
+        else
+            bar.text:SetFormattedText("%s | %d%%", FormatNumber(value), value / maxValue * 100)
+        end
     else
         _, maxValue = bar:GetMinMaxValues()
+        bar.text:SetFormattedText("%.1f%%", value / maxValue * 100)
+    end
+end
+
+---------------------------------------------------------------------
+-- OnTooltipSetUnit
+---------------------------------------------------------------------
+local UNKNOWN = _G.UNKNOWN
+local LEVEL = _G.LEVEL
+local UNIT_SKINNABLE_BOLTS = _G.UNIT_SKINNABLE_BOLTS
+local UNIT_SKINNABLE_LEATHER = _G.UNIT_SKINNABLE_LEATHER
+local BOSS = _G.BOSS
+local RARE = _G.MAP_LEGEND_RARE
+-- local RAREELITE = _G.MAP_LEGEND_RAREELITE
+local genders = {UNKNOWN, _G.MALE, _G.FEMALE}
+
+local function GetLevel(unit)
+    local r, g, b = AF.GetLevelColor(unit)
+    local level = AF.WrapTextInColorRGB(AF.GetLevelText(unit), r, g, b)
+
+    local classification = UnitClassification(unit)
+    if strfind(classification, "^rare") then
+        level = level .. " " .. AF.WrapTextInColor(RARE, "gold")
+    elseif classification == "elite" and UnitLevel(unit) == -1 then
+        level = level .. " " .. AF.WrapTextInColor(BOSS, "firebrick")
     end
 
-    if maxValue == 1 then
-        bar.text:SetFormattedText("%.1f%%", value * 100)
+    return level
+end
+
+local function GetRace(unit, isPlayer)
+    local race
+    if isPlayer then
+        race = UnitRace(unit)
     else
-        bar.text:SetFormattedText("%s / %s", FormatNumber(value), FormatNumber(maxValue))
+        local type = UnitCreatureType(unit)
+        local family = UnitCreatureFamily(unit)
+
+        if family and type then
+            race = family .. " " .. AF.WrapTextInColor(type, "gray")
+        elseif type then
+            race = type
+        elseif family then
+            race = family
+        end
     end
+
+    return race
+end
+
+--? UNUSED
+-- local function UpdateLine(tooltip, line, text, r, g, b)
+--     if tooltip:IsForbidden() then return end
+
+--     if line then
+--         local leftText = _G["GameTooltipTextLeft" .. line]
+--         leftText:SetText(AF.WrapTextInColorRGB(text, r, g, b))
+--     else
+--         tooltip:AddLine(text, r, g, b)
+--     end
+-- end
+
+local sepcLine
+
+local lineFormatters = {
+    name = function(tooltip, unit, isPlayer, isNotSpecified)
+        local name = UnitName(unit)
+        if name then
+            local r, g, b
+            if UnitIsTapDenied(unit) then
+                r, g, b = AF.GetColorRGB("gray")
+            elseif not isNotSpecified then
+                r, g, b = AF.GetUnitColor(unit)
+            end
+            tooltip:AddLine(name, r, g, b)
+        end
+    end,
+
+    name_title = function(tooltip, unit, isPlayer, isNotSpecified)
+        local name = isPlayer and UnitPVPName(unit) or UnitName(unit)
+        if name then
+            local r, g, b
+            if UnitIsTapDenied(unit) then
+                r, g, b = AF.GetColorRGB("gray")
+            elseif not isNotSpecified then
+                r, g, b = AF.GetUnitColor(unit)
+            end
+            tooltip:AddLine(name, r, g, b)
+        end
+    end,
+
+    fullname = function(tooltip, unit, isPlayer, isNotSpecified)
+        local name = AF.UnitFullName(unit)
+        if name then
+            local r, g, b
+            if UnitIsTapDenied(unit) then
+                r, g, b = AF.GetColorRGB("gray")
+            elseif not isNotSpecified then
+                r, g, b = AF.GetUnitColor(unit)
+            end
+            tooltip:AddLine(name, r, g, b)
+        end
+    end,
+
+    fullname_title = function(tooltip, unit, isPlayer, isNotSpecified)
+        local name, realm = UnitName(unit)
+
+        if isPlayer then
+            name = UnitPVPName(unit)
+        end
+
+        if name then
+            local r, g, b
+            if UnitIsTapDenied(unit) then
+                r, g, b = AF.GetColorRGB("gray")
+            elseif not isNotSpecified then
+                r, g, b = AF.GetUnitColor(unit)
+            end
+            if realm and realm ~= "" then
+                name = name .. "-" .. realm
+            end
+            tooltip:AddLine(name, r, g, b)
+        end
+    end,
+
+    level_race = function(tooltip, unit, isPlayer, isNotSpecified)
+        if isNotSpecified then return end
+
+        local level = GetLevel(unit)
+        local race = GetRace(unit, isPlayer)
+        tooltip:AddLine(level .. " " .. race, 1, 1, 1)
+    end,
+
+    level_race_gender = function(tooltip, unit, isPlayer, isNotSpecified)
+        if isNotSpecified then return end
+
+        local level, race, sex
+        level = GetLevel(unit)
+        race = GetRace(unit, isPlayer)
+
+        if isPlayer then
+            sex = UnitSex(unit)
+            sex = AF.WrapTextInColor(genders[sex], "gray")
+        end
+
+        if sex then
+            tooltip:AddLine(level .. " " .. race .. " " .. sex, 1, 1, 1)
+        else
+            tooltip:AddLine(level .. " " .. race, 1, 1, 1)
+        end
+    end,
+
+    guild = function(tooltip, unit, isPlayer)
+        if not isPlayer then return end
+        local name, _, _, realm = GetGuildInfo(unit)
+        if name then
+            if realm then
+                name = name .. "-" .. realm
+            end
+            tooltip:AddLine(format("<%s>", AF.WrapTextInColor(name, "guild")), 1, 1, 1)
+        end
+    end,
+
+    guild_guildrank = function(tooltip, unit, isPlayer)
+        if not isPlayer then return end
+        local name, rank, _, realm = GetGuildInfo(unit)
+        if name and rank then
+            if realm then
+                name = name .. "-" .. realm
+            end
+            tooltip:AddLine(format("<%s> %s", AF.WrapTextInColor(name, "guild"), rank), 1, 1, 1)
+        end
+    end,
+
+    player_spec = function(tooltip, unit)
+        if sepcLine then
+            local class = UnitClassBase(unit)
+            tooltip:AddLine(sepcLine.leftText, AF.GetClassColor(class))
+        end
+    end,
+
+    npc_subtitle = function(tooltip, unit, isPlayer, isNotSpecified)
+        if isPlayer or isNotSpecified then return end
+        local subtitle = AF.GetNPCSubtitle(unit)
+        if subtitle then
+            tooltip:AddLine(format("<%s>", subtitle), 1, 1, 1)
+        end
+    end,
+
+    npc_faction = function(tooltip, unit, isPlayer, isNotSpecified)
+        if isPlayer or isNotSpecified then return end
+        local faction = AF.GetNPCFaction(unit)
+        if faction then
+            tooltip:AddLine(faction, 1, 1, 1)
+        end
+    end,
+
+    npc_pvp = function(tooltip, unit, isPlayer, isNotSpecified)
+        if isNotSpecified then return end
+        if not isPlayer and UnitIsPVP(unit) then
+            tooltip:AddLine(PVP, 1, 1, 1)
+        end
+    end,
+}
+
+-- NOTE: save tooltip lines added by other addons
+local addonLines = {}
+
+local function SaveOtherAddonsLines(index)
+    wipe(addonLines)
+
+    local lt, rt = _G["GameTooltipTextLeft" .. index], _G["GameTooltipTextRight" .. index]
+    local r, g, b
+    while lt and rt do
+        -- left
+        local textLeft = lt:GetText()
+        if lt:IsShown() and textLeft then
+            if not addonLines[index] then addonLines[index] = {} end
+            addonLines[index]["left"] = {
+                text = textLeft,
+                rgb = {lt:GetTextColor()},
+            }
+        end
+
+        -- right
+        local textRight = rt:GetText()
+        if rt:IsShown() and textRight then
+            if not addonLines[index] then addonLines[index] = {} end
+            addonLines[index]["right"] = {
+                text = textRight,
+                rgb = {rt:GetTextColor()},
+            }
+        end
+
+        index = index + 1
+
+        lt = _G["GameTooltipTextLeft" .. index]
+        rt = _G["GameTooltipTextRight" .. index]
+    end
+end
+
+local function RestoreOtherAddonsLines()
+    if GameTooltip:IsForbidden() then return end
+    if not next(addonLines) then return end
+
+    for _, line in pairs(addonLines) do
+        if line.right then
+            if line.left then
+                GameTooltip:AddDoubleLine(line.left.text, line.right.text,
+                    line.left.rgb[1], line.left.rgb[2], line.left.rgb[3],
+                    line.right.rgb[1], line.right.rgb[2], line.right.rgb[3])
+            else
+                GameTooltip:AddDoubleLine("", line.right.text,
+                    1, 1, 1,
+                    line.right.rgb[1], line.right.rgb[2], line.right.rgb[3])
+            end
+        elseif line.left then
+            GameTooltip:AddLine(line.left.text,
+                line.left.rgb[1], line.left.rgb[2], line.left.rgb[3])
+        end
+    end
+
+    wipe(addonLines)
+end
+
+-- NOTE: save some required lines for later restore
+local requiredLines = {}
+
+-- Enum.TooltipDataType
+local IGNORED_UNIT_LINES = {
+    [0] = true, -- None
+    [1] = true, -- Blank
+    [2] = true, -- UnitName
+}
+
+local function SaveRequiredLines(data, isPlayer)
+    if not data.lines then return end
+
+    wipe(requiredLines)
+
+    local levelLineIndex
+
+    for i, line in ipairs(data.lines) do
+        if isPlayer and not levelLineIndex and strfind(line.leftText, LEVEL) then
+            levelLineIndex = i
+        end
+
+        if not IGNORED_UNIT_LINES[line.type] or (line.leftText == UNIT_SKINNABLE_BOLTS or line.leftText == UNIT_SKINNABLE_LEATHER) then
+            if line.type == 8 then
+                line.leftText = "  " .. line.leftText -- add space for QuestObjective
+            end
+            tinsert(requiredLines, line)
+        end
+    end
+
+    if isPlayer and levelLineIndex then
+        sepcLine = data.lines[levelLineIndex + 1]
+    end
+end
+
+local function RestoreRequiredLines()
+    if GameTooltip:IsForbidden() then return end
+    if not next(requiredLines) then return end
+
+    for _, line in ipairs(requiredLines) do
+        if line.rightText then
+            GameTooltip:AddDoubleLine(line.leftText, line.rightText,
+                line.leftColor.r, line.leftColor.g, line.leftColor.b,
+                line.rightColor.r, line.rightColor.g, line.rightColor.b)
+        else
+            GameTooltip:AddLine(line.leftText,
+                line.leftColor.r, line.leftColor.g, line.leftColor.b, line.wrapText)
+        end
+    end
+end
+
+local function OnTooltipSetUnit(tooltip, data)
+    if tooltip:IsForbidden() or tooltip ~= GameTooltip then return end
+    -- texplore(data)
+
+    local _, unit = tooltip:GetUnit()
+    if not (unit and UnitExists(unit)) then return end
+    if UnitIsBattlePetCompanion(unit) or UnitIsWildBattlePet(unit) then return end
+
+    local isPlayer = AF.UnitIsPlayer(unit)
+    local isNotSpecified = select(2, UnitCreatureType(unit)) == 10
+    local numLines = #data.lines
+
+    -- save
+    SaveRequiredLines(data, isPlayer)
+    SaveOtherAddonsLines(numLines + 1)
+
+    -- clear
+    tooltip:ClearLines()
+
+    -- BFI lines
+    local lines = T.config.lines
+    for _, line in ipairs(lines) do
+        if lineFormatters[line] then
+            lineFormatters[line](tooltip, unit, isPlayer, isNotSpecified)
+        end
+    end
+    sepcLine = nil
+
+    -- restore
+    RestoreRequiredLines()
+    RestoreOtherAddonsLines()
+
+    --? UNUSED
+    -- local currentLine = 1
+    -- for _, line in ipairs(lines) do
+    --     if lineFormatters[line] then
+    --         if currentLine > numLines then
+    --             lineFormatters[line](tooltip, unit, isPlayer)
+    --         else
+    --             lineFormatters[line](tooltip, unit, isPlayer)
+    --         end
+    --         currentLine = currentLine + 1
+    --     end
+    -- end
+
+    -- clear unused lines
+    -- for i = currentLine, numLines do
+    --     local leftText = _G["GameTooltipTextLeft" .. i]
+    --     if leftText then
+    --         leftText:SetText("")
+    --         leftText:Hide()
+    --     end
+    -- end
 end
 
 ---------------------------------------------------------------------
@@ -192,6 +574,9 @@ local function InitTooltip()
     GameTooltipStatusBar.text = text
     AF.SetFont(text, T.config.healthBar.text.font)
     text:SetPoint("CENTER")
+
+    -- post call - https://warcraft.wiki.gg/wiki/Patch_10.0.2/API_changes
+    AddTooltipPostCall(Enum.TooltipDataType.Unit, OnTooltipSetUnit)
 end
 
 ---------------------------------------------------------------------
