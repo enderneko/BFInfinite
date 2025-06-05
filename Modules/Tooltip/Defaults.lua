@@ -27,7 +27,7 @@ local defaults = {
         {type = "guild", showRankName = true, showRankIndex = true},
         {type = "npc_subtitle"},
         {type = "level_race", showGender = true},
-        {type = "player_spec"},
+        {type = "spec"},
         {type = "npc_faction"},
         {type = "npc_pvp"},
     }

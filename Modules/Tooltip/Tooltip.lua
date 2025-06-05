@@ -16,8 +16,9 @@ local UnitName = UnitName
 local UnitPVPName = UnitPVPName
 local UnitIsPVP = UnitIsPVP
 local UnitLevel = UnitLevel
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 local UnitIsTapDenied = UnitIsTapDenied
+local UnitIsPlayer = UnitIsPlayer
 local GetGuildInfo = GetGuildInfo
 local strfind = strfind
 local format = format
@@ -199,7 +200,74 @@ local BOSS = _G.BOSS
 local RARE = _G.MAP_LEGEND_RARE
 -- local RAREELITE = _G.MAP_LEGEND_RAREELITE
 local genders = {UNKNOWN, _G.MALE, _G.FEMALE}
+local AI_RACE_MATCHER = TOOLTIP_UNIT_LEVEL_RACE:gsub("%%s", "[0-9?]+", 1):gsub("%%s", "(.+)")
 
+--? UNUSED
+-- local function UpdateLine(tooltip, line, text, r, g, b)
+--     if tooltip:IsForbidden() then return end
+
+--     if line then
+--         local leftText = _G["GameTooltipTextLeft" .. line]
+--         leftText:SetText(AF.WrapTextInColorRGB(text, r, g, b))
+--     else
+--         tooltip:AddLine(text, r, g, b)
+--     end
+-- end
+
+--! save some required system lines ---------------------------------
+local requiredLines = {}
+local specLine, levelLine
+
+-- Enum.TooltipDataType
+local IGNORED_UNIT_LINES = {
+    [0] = true, -- None
+    [1] = true, -- Blank
+    [2] = true, -- UnitName
+}
+
+local function SaveRequiredLines(data, isPlayer, isAI)
+    if not data.lines then return end
+
+    wipe(requiredLines)
+
+    local levelLineIndex
+
+    for i, line in ipairs(data.lines) do
+        if (isPlayer or isAI) and not levelLineIndex and strfind(line.leftText, LEVEL) then
+            levelLineIndex = i
+            levelLine = line
+        end
+
+        if not IGNORED_UNIT_LINES[line.type] or (line.leftText == UNIT_SKINNABLE_BOLTS or line.leftText == UNIT_SKINNABLE_LEATHER) then
+            if line.type == 8 then
+                line.leftText = "  " .. line.leftText -- add space for QuestObjective
+            end
+            tinsert(requiredLines, line)
+        end
+    end
+
+    if (isPlayer or isAI) and levelLineIndex then
+        specLine = data.lines[levelLineIndex + 1]
+    end
+end
+
+local function RestoreRequiredLines()
+    if GameTooltip:IsForbidden() then return end
+    if not next(requiredLines) then return end
+
+    for _, line in ipairs(requiredLines) do
+        if line.rightText then
+            GameTooltip:AddDoubleLine(line.leftText, line.rightText,
+                line.leftColor.r, line.leftColor.g, line.leftColor.b,
+                line.rightColor.r, line.rightColor.g, line.rightColor.b)
+        else
+            GameTooltip:AddLine(line.leftText,
+                line.leftColor.r, line.leftColor.g, line.leftColor.b, line.wrapText)
+        end
+    end
+end
+
+--! formatters ------------------------------------------------------
 local function GetLevel(unit)
     local r, g, b = AF.GetLevelColor(unit)
     local level = AF.WrapTextInColorRGB(AF.GetLevelText(unit), r, g, b)
@@ -218,6 +286,8 @@ local function GetRace(unit, isPlayer)
     local race
     if isPlayer then
         race = UnitRace(unit)
+    elseif levelLine then
+        race = levelLine.leftText:match(AI_RACE_MATCHER)
     else
         local type = UnitCreatureType(unit)
         local family = UnitCreatureFamily(unit)
@@ -233,20 +303,6 @@ local function GetRace(unit, isPlayer)
 
     return race
 end
-
---? UNUSED
--- local function UpdateLine(tooltip, line, text, r, g, b)
---     if tooltip:IsForbidden() then return end
-
---     if line then
---         local leftText = _G["GameTooltipTextLeft" .. line]
---         leftText:SetText(AF.WrapTextInColorRGB(text, r, g, b))
---     else
---         tooltip:AddLine(text, r, g, b)
---     end
--- end
-
-local sepcLine
 
 local lineFormatters = {
     name = function(config, tooltip, unit, isPlayer, isNotSpecified)
@@ -304,10 +360,10 @@ local lineFormatters = {
         end
     end,
 
-    player_spec = function(config, tooltip, unit)
-        if sepcLine then
+    spec = function(config, tooltip, unit)
+        if specLine then
             local class = UnitClassBase(unit)
-            tooltip:AddLine(sepcLine.leftText, AF.GetClassColor(class))
+            tooltip:AddLine(specLine.leftText, AF.GetClassColor(class))
         end
     end,
 
@@ -335,7 +391,7 @@ local lineFormatters = {
     end,
 }
 
--- NOTE: save tooltip lines added by other addons
+--! save tooltip lines added by other addons ------------------------
 local addonLines = {}
 
 local function SaveOtherAddonsLines(index)
@@ -395,57 +451,6 @@ local function RestoreOtherAddonsLines()
     wipe(addonLines)
 end
 
--- NOTE: save some required lines for later restore
-local requiredLines = {}
-
--- Enum.TooltipDataType
-local IGNORED_UNIT_LINES = {
-    [0] = true, -- None
-    [1] = true, -- Blank
-    [2] = true, -- UnitName
-}
-
-local function SaveRequiredLines(data, isPlayer)
-    if not data.lines then return end
-
-    wipe(requiredLines)
-
-    local levelLineIndex
-
-    for i, line in ipairs(data.lines) do
-        if isPlayer and not levelLineIndex and strfind(line.leftText, LEVEL) then
-            levelLineIndex = i
-        end
-
-        if not IGNORED_UNIT_LINES[line.type] or (line.leftText == UNIT_SKINNABLE_BOLTS or line.leftText == UNIT_SKINNABLE_LEATHER) then
-            if line.type == 8 then
-                line.leftText = "  " .. line.leftText -- add space for QuestObjective
-            end
-            tinsert(requiredLines, line)
-        end
-    end
-
-    if isPlayer and levelLineIndex then
-        sepcLine = data.lines[levelLineIndex + 1]
-    end
-end
-
-local function RestoreRequiredLines()
-    if GameTooltip:IsForbidden() then return end
-    if not next(requiredLines) then return end
-
-    for _, line in ipairs(requiredLines) do
-        if line.rightText then
-            GameTooltip:AddDoubleLine(line.leftText, line.rightText,
-                line.leftColor.r, line.leftColor.g, line.leftColor.b,
-                line.rightColor.r, line.rightColor.g, line.rightColor.b)
-        else
-            GameTooltip:AddLine(line.leftText,
-                line.leftColor.r, line.leftColor.g, line.leftColor.b, line.wrapText)
-        end
-    end
-end
-
 local function OnTooltipSetUnit(tooltip, data)
     if tooltip:IsForbidden() or tooltip ~= GameTooltip then return end
     -- texplore(data)
@@ -454,12 +459,13 @@ local function OnTooltipSetUnit(tooltip, data)
     if not (unit and UnitExists(unit)) then return end
     if UnitIsBattlePetCompanion(unit) or UnitIsWildBattlePet(unit) then return end
 
-    local isPlayer = AF.UnitIsPlayer(unit)
+    local isPlayer = UnitIsPlayer(unit)
+    local isAI = UnitInPartyIsAI(unit)
     local isNotSpecified = select(2, UnitCreatureType(unit)) == 10
     local numLines = #data.lines
 
     -- save
-    SaveRequiredLines(data, isPlayer)
+    SaveRequiredLines(data, isPlayer, isAI)
     SaveOtherAddonsLines(numLines + 1)
 
     -- clear
@@ -472,7 +478,8 @@ local function OnTooltipSetUnit(tooltip, data)
             lineFormatters[line.type](line, tooltip, unit, isPlayer, isNotSpecified)
         end
     end
-    sepcLine = nil
+    specLine = nil
+    levelLine = nil
 
     -- restore
     RestoreRequiredLines()
