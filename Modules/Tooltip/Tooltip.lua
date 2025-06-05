@@ -249,123 +249,69 @@ end
 local sepcLine
 
 local lineFormatters = {
-    name = function(tooltip, unit, isPlayer, isNotSpecified)
-        local name = UnitName(unit)
-        if name then
-            local r, g, b
-            if UnitIsTapDenied(unit) then
-                r, g, b = AF.GetColorRGB("gray")
-            elseif not isNotSpecified then
-                r, g, b = AF.GetUnitColor(unit)
-            end
-            tooltip:AddLine(name, r, g, b)
-        end
-    end,
-
-    name_title = function(tooltip, unit, isPlayer, isNotSpecified)
-        local name = isPlayer and UnitPVPName(unit) or UnitName(unit)
-        if name then
-            local r, g, b
-            if UnitIsTapDenied(unit) then
-                r, g, b = AF.GetColorRGB("gray")
-            elseif not isNotSpecified then
-                r, g, b = AF.GetUnitColor(unit)
-            end
-            tooltip:AddLine(name, r, g, b)
-        end
-    end,
-
-    fullname = function(tooltip, unit, isPlayer, isNotSpecified)
-        local name = AF.UnitFullName(unit)
-        if name then
-            local r, g, b
-            if UnitIsTapDenied(unit) then
-                r, g, b = AF.GetColorRGB("gray")
-            elseif not isNotSpecified then
-                r, g, b = AF.GetUnitColor(unit)
-            end
-            tooltip:AddLine(name, r, g, b)
-        end
-    end,
-
-    fullname_title = function(tooltip, unit, isPlayer, isNotSpecified)
+    name = function(config, tooltip, unit, isPlayer, isNotSpecified)
         local name, realm = UnitName(unit)
 
-        if isPlayer then
-            name = UnitPVPName(unit)
+        if config.showTitle then
+            name = isPlayer and UnitPVPName(unit) or UnitName(unit)
         end
 
         if name then
+            if config.showServer and realm then
+                name = name .. "-" .. realm
+            end
+
             local r, g, b
             if UnitIsTapDenied(unit) then
                 r, g, b = AF.GetColorRGB("gray")
             elseif not isNotSpecified then
                 r, g, b = AF.GetUnitColor(unit)
             end
-            if realm and realm ~= "" then
-                name = name .. "-" .. realm
-            end
             tooltip:AddLine(name, r, g, b)
         end
     end,
 
-    level_race = function(tooltip, unit, isPlayer, isNotSpecified)
+    level_race = function(config, tooltip, unit, isPlayer, isNotSpecified)
         if isNotSpecified then return end
 
         local level = GetLevel(unit)
         local race = GetRace(unit, isPlayer)
+
+        if config.showGender and isPlayer then
+            local sex = UnitSex(unit)
+            sex = AF.WrapTextInColor(genders[sex], "gray")
+            race = race .. " " .. sex
+        end
+
         tooltip:AddLine(level .. " " .. race, 1, 1, 1)
     end,
 
-    level_race_gender = function(tooltip, unit, isPlayer, isNotSpecified)
-        if isNotSpecified then return end
-
-        local level, race, sex
-        level = GetLevel(unit)
-        race = GetRace(unit, isPlayer)
-
-        if isPlayer then
-            sex = UnitSex(unit)
-            sex = AF.WrapTextInColor(genders[sex], "gray")
-        end
-
-        if sex then
-            tooltip:AddLine(level .. " " .. race .. " " .. sex, 1, 1, 1)
-        else
-            tooltip:AddLine(level .. " " .. race, 1, 1, 1)
-        end
-    end,
-
-    guild = function(tooltip, unit, isPlayer)
+    guild = function(config, tooltip, unit, isPlayer)
         if not isPlayer then return end
-        local name, _, _, realm = GetGuildInfo(unit)
-        if name then
+        local name, rank, index, realm = GetGuildInfo(unit)
+        if name and rank and index then
             if realm then
                 name = name .. "-" .. realm
             end
-            tooltip:AddLine(format("<%s>", AF.WrapTextInColor(name, "guild")), 1, 1, 1)
-        end
-    end,
-
-    guild_guildrank = function(tooltip, unit, isPlayer)
-        if not isPlayer then return end
-        local name, rank, _, realm = GetGuildInfo(unit)
-        if name and rank then
-            if realm then
-                name = name .. "-" .. realm
+            local fmt = "<" .. AF.WrapTextInColor("%s", "guild") .. ">"
+            if config.showRankName then
+                fmt = fmt .. " %s"
             end
-            tooltip:AddLine(format("<%s> %s", AF.WrapTextInColor(name, "guild"), rank), 1, 1, 1)
+            if config.showRankIndex then
+                fmt = fmt .. AF.WrapTextInColor(" (%d)", "gray")
+            end
+            tooltip:AddLine(format(fmt, name, rank, index), 1, 1, 1)
         end
     end,
 
-    player_spec = function(tooltip, unit)
+    player_spec = function(config, tooltip, unit)
         if sepcLine then
             local class = UnitClassBase(unit)
             tooltip:AddLine(sepcLine.leftText, AF.GetClassColor(class))
         end
     end,
 
-    npc_subtitle = function(tooltip, unit, isPlayer, isNotSpecified)
+    npc_subtitle = function(config, tooltip, unit, isPlayer, isNotSpecified)
         if isPlayer or isNotSpecified then return end
         local subtitle = AF.GetNPCSubtitle(unit)
         if subtitle then
@@ -373,7 +319,7 @@ local lineFormatters = {
         end
     end,
 
-    npc_faction = function(tooltip, unit, isPlayer, isNotSpecified)
+    npc_faction = function(config, tooltip, unit, isPlayer, isNotSpecified)
         if isPlayer or isNotSpecified then return end
         local faction = AF.GetNPCFaction(unit)
         if faction then
@@ -381,7 +327,7 @@ local lineFormatters = {
         end
     end,
 
-    npc_pvp = function(tooltip, unit, isPlayer, isNotSpecified)
+    npc_pvp = function(config, tooltip, unit, isPlayer, isNotSpecified)
         if isNotSpecified then return end
         if not isPlayer and UnitIsPVP(unit) then
             tooltip:AddLine(PVP, 1, 1, 1)
@@ -522,8 +468,8 @@ local function OnTooltipSetUnit(tooltip, data)
     -- BFI lines
     local lines = T.config.lines
     for _, line in ipairs(lines) do
-        if lineFormatters[line] then
-            lineFormatters[line](tooltip, unit, isPlayer, isNotSpecified)
+        if lineFormatters[line.type] then
+            lineFormatters[line.type](line, tooltip, unit, isPlayer, isNotSpecified)
         end
     end
     sepcLine = nil

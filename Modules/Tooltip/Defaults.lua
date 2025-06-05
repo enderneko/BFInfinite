@@ -23,13 +23,13 @@ local defaults = {
         }
     },
     lines = {
-        "fullname_title",
-        "guild_guildrank",
-        "npc_subtitle",
-        "level_race_gender",
-        "player_spec",
-        "npc_faction",
-        "npc_pvp",
+        {type = "name", showServer = true, showTitle = true},
+        {type = "guild", showRankName = true, showRankIndex = true},
+        {type = "npc_subtitle"},
+        {type = "level_race", showGender = true},
+        {type = "player_spec"},
+        {type = "npc_faction"},
+        {type = "npc_pvp"},
     }
 }
 
