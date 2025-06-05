@@ -354,6 +354,11 @@ local lineFormatters = {
             race = race .. " " .. sex
         end
 
+        if isPlayer then
+            local faction = UnitFactionGroup(unit)
+            race = AF.GetIconString("Faction_" .. faction) .. race
+        end
+
         tooltip:AddLine(level .. " " .. race, 1, 1, 1)
     end,
 
@@ -500,6 +505,13 @@ local function OnTooltipSetUnit(tooltip, data)
     RestoreRequiredLines()
     RestoreOtherAddonsLines()
 
+    -- faction icon
+    -- if isPlayer then
+    --     local faction = UnitFactionGroup(unit)
+    --     tooltip.factionIcon:SetTexture(AF.GetIcon("Faction_" .. faction))
+    --     tooltip.factionIcon:Show()
+    -- end
+
     --? UNUSED
     -- local currentLine = 1
     -- for _, line in ipairs(lines) do
@@ -543,6 +555,13 @@ local function InitTooltip()
     AF.SetFont(text, T.config.healthBar.text.font)
     text:SetPoint("CENTER")
 
+    -- faction icon
+    -- local factionIcon = AF.CreateTexture(GameTooltip, nil, nil, "ARTWORK")
+    -- GameTooltip.factionIcon = factionIcon
+    -- GameTooltip:HookScript("OnHide", function()
+    --     factionIcon:Hide()
+    -- end)
+
     -- post call - https://warcraft.wiki.gg/wiki/Patch_10.0.2/API_changes
     AddTooltipPostCall(Enum.TooltipDataType.Unit, OnTooltipSetUnit)
 end
@@ -570,9 +589,11 @@ local function UpdateTooltip(_, module, which)
         InitTooltip()
     end
 
+    -- position
     AF.UpdateMoverSave(tooltipAnchor, config.position)
     AF.LoadPosition(tooltipAnchor, config.position)
 
+    -- combat modifier key
     if config.combatModifierKey then
         IsModifierKeyDown = modifiers[config.combatModifierKey]
         T:RegisterEvent("MODIFIER_STATE_CHANGED", MODIFIER_STATE_CHANGED)
@@ -585,12 +606,21 @@ local function UpdateTooltip(_, module, which)
         T:UnregisterEvent("PLAYER_REGEN_DISABLED")
     end
 
+    -- WORLD_CURSOR_TOOLTIP_UPDATE
     T:RegisterEvent("WORLD_CURSOR_TOOLTIP_UPDATE", WORLD_CURSOR_TOOLTIP_UPDATE)
 
+    -- health text format
     if config.healthBar.text.useAsianUnits and AF.isAsian then
         FormatNumber = AF.FormatNumber_Asian
     else
         FormatNumber = AF.FormatNumber
     end
+
+    -- faction icon
+    -- if config.factionIcon.enabled then
+    --     AF.LoadWidgetPosition(GameTooltip.factionIcon, config.factionIcon.position, GameTooltip)
+    --     AF.SetSize(GameTooltip.factionIcon, config.factionIcon.size, config.factionIcon.size)
+    --     GameTooltip.factionIcon:SetAlpha(config.factionIcon.alpha)
+    -- end
 end
 AF.RegisterCallback("BFI_UpdateModules", UpdateTooltip)

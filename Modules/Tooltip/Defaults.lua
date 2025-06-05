@@ -22,6 +22,12 @@ local defaults = {
             useAsianUnits = false,
         }
     },
+    -- factionIcon = {
+    --     enabled = true,
+    --     position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -2, 2},
+    --     size = 50,
+    --     alpha = 0.4,
+    -- },
     lines = {
         {type = "name", showServer = true, showTitle = true},
         {type = "guild", showRankName = true, showRankIndex = true},
