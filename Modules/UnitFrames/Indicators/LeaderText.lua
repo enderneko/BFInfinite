@@ -10,7 +10,7 @@ local UF = BFI.UnitFrames
 local IsInRaid = IsInRaid
 local UnitIsGroupLeader = UnitIsGroupLeader
 local UnitIsGroupAssistant = UnitIsGroupAssistant
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 
 ---------------------------------------------------------------------
 -- color

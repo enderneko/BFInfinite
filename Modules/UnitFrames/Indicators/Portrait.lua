@@ -9,7 +9,7 @@ local UF = BFI.UnitFrames
 ---------------------------------------------------------------------
 local UnitIsConnected = UnitIsConnected
 local UnitIsVisible = UnitIsVisible
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 
 local function UpdatePortrait3DAlpha(parent, alpha)
     local portrait = parent.indicators.portrait

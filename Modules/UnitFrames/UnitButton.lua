@@ -44,7 +44,7 @@ local UnitPhaseReason = UnitPhaseReason
 local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
 local IsInRaid = IsInRaid
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 local IsDelveInProgress = C_PartyInfo.IsDelveInProgress
 
 ---------------------------------------------------------------------

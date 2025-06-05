@@ -5,7 +5,7 @@ local M = BFI.Misc
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 local UnitLevel = UnitLevel
 local GetNumGuildMembers = GetNumGuildMembers
 local GetGuildRosterInfo = GetGuildRosterInfo

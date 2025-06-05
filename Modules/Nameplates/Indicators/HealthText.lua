@@ -12,7 +12,7 @@ local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitIsConnected = UnitIsConnected
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 local FormatNumber = AF.FormatNumber
 
 ---------------------------------------------------------------------

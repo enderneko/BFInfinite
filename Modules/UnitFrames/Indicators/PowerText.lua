@@ -12,7 +12,7 @@ local gsub = string.gsub
 local format = string.format
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 local FormatNumber = AF.FormatNumber
 
 ---------------------------------------------------------------------

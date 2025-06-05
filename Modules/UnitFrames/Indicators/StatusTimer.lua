@@ -10,7 +10,7 @@ local UF = BFI.UnitFrames
 ---------------------------------------------------------------------
 local UnitGUID = UnitGUID
 local UnitIsPlayer = AF.UnitIsPlayer
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 local UnitIsConnected = UnitIsConnected
 local UnitIsAFK = UnitIsAFK
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost

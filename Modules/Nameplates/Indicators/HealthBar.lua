@@ -23,7 +23,7 @@ local UnitIsUnit = UnitIsUnit
 local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
 local UnitPlayerOrPetInParty = UnitPlayerOrPetInParty
 local UnitPlayerOrPetInRaid = UnitPlayerOrPetInRaid
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitIsTapDenied = UnitIsTapDenied
 

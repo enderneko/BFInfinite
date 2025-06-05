@@ -10,7 +10,7 @@ local NP = BFI.NamePlates
 local UnitName = UnitName
 local UnitIsConnected = UnitIsConnected
 local UnitIsSameServer = UnitIsSameServer
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 
 ---------------------------------------------------------------------
 -- name

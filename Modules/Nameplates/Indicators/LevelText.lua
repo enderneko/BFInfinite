@@ -10,7 +10,7 @@ local NP = BFI.NamePlates
 local UnitClassification = UnitClassification
 local UnitEffectiveLevel = UnitEffectiveLevel
 local GetCreatureDifficultyColor = GetCreatureDifficultyColor
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 
 ---------------------------------------------------------------------
 -- color

@@ -14,7 +14,7 @@ local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
-local UnitClassBase = UnitClassBase
+local UnitClassBase = AF.UnitClassBase
 local FormatNumber = AF.FormatNumber
 
 ---------------------------------------------------------------------
