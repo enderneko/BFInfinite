@@ -196,6 +196,9 @@ local UNKNOWN = _G.UNKNOWN
 local LEVEL = _G.LEVEL
 local UNIT_SKINNABLE_BOLTS = _G.UNIT_SKINNABLE_BOLTS
 local UNIT_SKINNABLE_LEATHER = _G.UNIT_SKINNABLE_LEATHER
+local PVP = _G.PVP
+local FACTION_HORDE = _G.FACTION_HORDE
+local FACTION_ALLIANCE = _G.FACTION_ALLIANCE
 local BOSS = _G.BOSS
 local RARE = _G.MAP_LEGEND_RARE
 -- local RAREELITE = _G.MAP_LEGEND_RAREELITE
@@ -230,17 +233,29 @@ local function SaveRequiredLines(data, isPlayer, isAI)
 
     wipe(requiredLines)
 
-    local levelLineIndex
+    local levelLineIndex, requiredIndex
+    local leftText
 
     for i, line in ipairs(data.lines) do
-        if (isPlayer or isAI) and not levelLineIndex and strfind(line.leftText, LEVEL) then
+        leftText = line.leftText
+
+        if not levelLineIndex and strfind(leftText, LEVEL) then
             levelLineIndex = i
+            requiredIndex = i + 2
+        end
+
+        if levelLineIndex == i and (isPlayer or isAI) then
             levelLine = line
         end
 
-        if not IGNORED_UNIT_LINES[line.type] or (line.leftText == UNIT_SKINNABLE_BOLTS or line.leftText == UNIT_SKINNABLE_LEATHER) then
+        if not IGNORED_UNIT_LINES[line.type] then
+            requiredIndex = i
+        end
+
+        -- if not IGNORED_UNIT_LINES[line.type] or (leftText == UNIT_SKINNABLE_BOLTS or leftText == UNIT_SKINNABLE_LEATHER) then
+        if requiredIndex and i >= requiredIndex and leftText ~= PVP and leftText ~= FACTION_HORDE and leftText ~= FACTION_ALLIANCE then
             if line.type == 8 then
-                line.leftText = "  " .. line.leftText -- add space for QuestObjective
+                line.leftText = "  " .. leftText -- add space for QuestObjective
             end
             tinsert(requiredLines, line)
         end
@@ -274,7 +289,7 @@ local function GetLevel(unit)
 
     local classification = UnitClassification(unit)
     if strfind(classification, "^rare") then
-        level = level .. " " .. AF.WrapTextInColor(RARE, "gold")
+        level = level .. " " .. AF.WrapTextInColor(RARE, "hotpink")
     elseif classification == "elite" and UnitLevel(unit) == -1 then
         level = level .. " " .. AF.WrapTextInColor(BOSS, "firebrick")
     end
