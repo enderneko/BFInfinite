@@ -112,7 +112,7 @@ local style1 = {
             tooltip = {
                 enabled = true,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -615,7 +615,7 @@ local style1 = {
             tooltip = {
                 enabled = true,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -1037,7 +1037,7 @@ local style1 = {
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -1388,7 +1388,7 @@ local style1 = {
             tooltip = {
                 enabled = true,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -1747,7 +1747,7 @@ local style1 = {
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -2098,7 +2098,7 @@ local style1 = {
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -2449,7 +2449,7 @@ local style1 = {
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -2803,7 +2803,7 @@ local style2 = {
             tooltip = {
                 enabled = true,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -3306,7 +3306,7 @@ local style2 = {
             tooltip = {
                 enabled = true,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -3728,7 +3728,7 @@ local style2 = {
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -4079,7 +4079,7 @@ local style2 = {
             tooltip = {
                 enabled = true,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -4437,7 +4437,7 @@ local style2 = {
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -4788,7 +4788,7 @@ local style2 = {
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
@@ -5139,7 +5139,7 @@ local style2 = {
             tooltip = {
                 enabled = false,
                 anchorTo = "self",
-                position = {"BOTTOM", "TOP", 0, 1},
+                position = {"BOTTOM", "TOP", 0, 15},
             },
         },
         indicators = {
