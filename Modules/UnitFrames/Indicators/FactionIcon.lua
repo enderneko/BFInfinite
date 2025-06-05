@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local S = BFI.Shared
+local G = AF.Glyphs
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -19,8 +19,7 @@ local function FactionIcon_Update(self)
 
     if faction == "Horde" or faction == "Alliance" then
         self.icon:SetTexture(AF.GetTexture(faction))
-        self.text:SetText(S.FactionGlyphs[faction].char)
-        self.text:SetTextColor(AF.UnpackColor(S.FactionGlyphs[faction].color))
+        G.SetGlyph(self.text, G.Faction[faction])
         self:Show()
     else
         self:Hide()
@@ -42,7 +41,7 @@ local function FactionIcon_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
-    self.text:SetFont(AF.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
+    G.SetFont(self.text, config.width, "outline")
 
     if config.style == "text" then
         self.text:Show()

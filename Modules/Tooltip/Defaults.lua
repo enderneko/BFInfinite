@@ -36,7 +36,7 @@ local defaults = {
         {type = "spec"},
         {type = "npc_faction"},
         {type = "npc_pvp"},
-    }
+    },
 }
 
 AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)

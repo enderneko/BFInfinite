@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local S = BFI.Shared
+local G = AF.Glyphs
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -21,8 +21,7 @@ local function RoleIcon_Update(self)
         self:Hide()
     else
         -- self.icon:SetTexture(AF.GetTexture(role))
-        self.text:SetText(S.RoleGlyphs[role].char)
-        self.text:SetTextColor(AF.UnpackColor(S.RoleGlyphs[role].color))
+        G.SetGlyph(self.text, G.Role[role])
         self:Show()
     end
 end
@@ -42,7 +41,7 @@ local function RoleIcon_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
-    self.text:SetFont(AF.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
+    G.SetFont(self.text, config.width, "outline")
     self.hideDamager = config.hideDamager
 end
 
@@ -56,8 +55,7 @@ local function RoleIcon_EnableConfigMode(self)
     self:UnregisterAllEvents()
     self:Show()
 
-    self.text:SetText(S.RoleGlyphs.HEALER.char)
-    self.text:SetTextColor(AF.UnpackColor(S.RoleGlyphs.HEALER.color))
+    G.SetGlyph(self.text, G.Role.HEALER)
 end
 
 local function RoleIcon_DisableConfigMode(self)

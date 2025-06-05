@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local S = BFI.Shared
+local G = AF.Glyphs
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -23,13 +23,11 @@ local function UpdateLeaderIcon(self)
 
     if isLeader then
         -- self.icon:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
-        self.text:SetText(S.LeaderGlyphs.leader.char)
-        self.text:SetTextColor(AF.UnpackColor(S.LeaderGlyphs.leader.color))
+        G.SetGlyph(self.text, G.Group.leader)
         self:Show()
     elseif isAssistant then
         -- self.icon:SetTexture("Interface\\GroupFrame\\UI-Group-AssistantIcon")
-        self.text:SetText(S.LeaderGlyphs.assistant.char)
-        self.text:SetTextColor(AF.UnpackColor(S.LeaderGlyphs.assistant.color))
+        G.SetGlyph(self.text, G.Group.assistant)
         self:Show()
     else
         self:Hide()
@@ -58,7 +56,7 @@ local function LeaderIcon_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
-    self.text:SetFont(AF.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
+    G.SetFont(self.text, config.width, "outline")
 end
 
 ---------------------------------------------------------------------
@@ -69,8 +67,7 @@ local function LeaderIcon_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self.text:SetText(S.LeaderGlyphs.leader.char)
-    self.text:SetTextColor(AF.UnpackColor(S.LeaderGlyphs.leader.color))
+    G.SetGlyph(self.text, G.Group.leader)
     self:Show()
 end
 

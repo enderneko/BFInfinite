@@ -4,7 +4,6 @@
     <Include file="Misc\Load.xml"/>
     <Include file="FixBlizzard\Load.xml"/>
     <Include file="DisableBlizzard\Load.xml"/>
-    <Include file="Shared\Load.xml"/>
     <Include file="Auras\Load.xml"/>
     <Include file="ActionBars\Load.xml"/>
     <Include file="UnitFrames\Load.xml"/>

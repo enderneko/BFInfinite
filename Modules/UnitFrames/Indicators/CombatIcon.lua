@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local S = BFI.Shared
+local G = AF.Glyphs
 local UF = BFI.UnitFrames
 
 ---------------------------------------------------------------------
@@ -67,8 +67,8 @@ local function CombatIcon_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
     -- self.icon:SetTexture(AF.GetTexture(config.texture))
-    self.text:SetFont(AF.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
-    self.text:SetText(S.CombatGlyph.char)
+    G.SetFont(self.text, config.width, "outline")
+    G.SetGlyph(self.text, G.Combat)
 end
 
 ---------------------------------------------------------------------
@@ -104,7 +104,6 @@ function UF.CreateCombatIcon(parent, name)
     local text = frame:CreateFontString(nil, "ARTWORK")
     frame.text = text
     text:SetPoint("CENTER")
-    text:SetTextColor(AF.UnpackColor(S.CombatGlyph.color))
 
     -- events
     AF.AddEventHandler(frame)

@@ -58,9 +58,6 @@ AF.AddEventHandler(BFI.Colors)
 BFI.Misc = {}
 AF.AddEventHandler(BFI.Misc)
 
-BFI.Shared = {}
-AF.AddEventHandler(BFI.Shared)
-
 BFI.DisableBlizzard = {}
 AF.AddEventHandler(BFI.DisableBlizzard)
 

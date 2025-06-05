@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local S = BFI.Shared
+local G = AF.Glyphs
 local NP = BFI.NamePlates
 
 ---------------------------------------------------------------------
@@ -20,12 +20,7 @@ local function RaidIcon_Update(self)
     local index = GetRaidTargetIndex(unit)
     if index then
         SetRaidTargetIconTexture(self.icon, index)
-        if S.MarkerGlyphs[index] then
-            self.text:SetText(S.MarkerGlyphs[index].char)
-            self.text:SetTextColor(AF.UnpackColor(S.MarkerGlyphs[index].color))
-        else
-            self.text:SetText("")
-        end
+        G.SetGlyph(self.text, G.Marker[index])
         self:Show()
     else
         self:Hide()
@@ -47,7 +42,7 @@ local function RaidIcon_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
-    self.text:SetFont(AF.GetFont("glyphs", BFI.name), config.width, "OUTLINE")
+    G.SetFont(self.text, config.width, "outline")
 
     if config.style == "text" then
         self.text:Show()
