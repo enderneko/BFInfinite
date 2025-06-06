@@ -255,7 +255,7 @@ local function SaveRequiredLines(data, isPlayer, isAI)
         -- if not IGNORED_UNIT_LINES[line.type] or (leftText == UNIT_SKINNABLE_BOLTS or leftText == UNIT_SKINNABLE_LEATHER) then
         if requiredIndex and i >= requiredIndex and leftText ~= PVP and leftText ~= FACTION_HORDE and leftText ~= FACTION_ALLIANCE then
             if line.type == 8 then
-                line.leftText = "  " .. leftText -- add space for QuestObjective
+                line.leftText = AF.WrapTextInColor(" - ", "darkgray") .. leftText -- add space for QuestObjective
             end
             tinsert(requiredLines, line)
         end
@@ -359,7 +359,9 @@ local lineFormatters = {
             race = AF.GetIconString("Faction_" .. faction) .. race
         end
 
-        tooltip:AddLine(level .. " " .. race, 1, 1, 1)
+        if level and race then
+            tooltip:AddLine(level .. " " .. race, 1, 1, 1)
+        end
     end,
 
     guild = function(config, tooltip, unit, isPlayer)
