@@ -11,18 +11,19 @@ BFI.name = "BFInfinite"
 ---@field utils Utils
 ---@field vars table
 ---@field libs table
----@field Colors Colors
----@field Auras Auras
 ---@field ActionBars ActionBars
----@field UnitFrames UnitFrames
----@field NamePlates NamePlates
----@field Maps Maps
----@field DataBars DataBars
+---@field Auras Auras
 ---@field Chat Chat
+---@field Colors Colors
+---@field DataBars DataBars
+---@field DisableBlizzard DisableBlizzard
+---@field Maps Maps
+---@field Misc Misc
+---@field NamePlates NamePlates
+---@field Style Style
 ---@field Tooltip Tooltip
 ---@field UIWidgets UIWidgets
----@field DisableBlizzard DisableBlizzard
----@field Misc Misc
+---@field UnitFrames UnitFrames
 
 ---------------------------------------------------------------------
 -- AbstractFramework
