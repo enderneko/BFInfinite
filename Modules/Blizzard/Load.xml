@@ -1,9 +1,15 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
-    <Script file="Defaults.lua"/>
-    <Script file="Fix.lua"/>
-    <Script file="UnitFrames.lua"/>
-    <Script file="ActionBars.lua"/>
-    <Script file="EditMode.lua"/>
-    <Script file="Misc.lua"/>
+    <!-- modify -->
+    <Script file="Modify\Modify.lua"/>
+
+    <!-- disable -->
+    <Script file="Disable\Defaults.lua"/>
+    <Script file="Disable\UnitFrames.lua"/>
+    <Script file="Disable\ActionBars.lua"/>
+    <Script file="Disable\EditMode.lua"/>
+    <Script file="Disable\Misc.lua"/>
+
+    <!-- style -->
+    <Script file="Style\Tooltip.lua"/>
 </Ui>
