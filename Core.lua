@@ -47,6 +47,7 @@ end
 AF.RegisterCallback("AF_PLAYER_DATA_UPDATE", function(_, isLogin)
     if isLogin then
         AF.Fire("BFI_DisableBlizzard")
+        AF.Fire("BFI_StyleBlizzard")
     end
     AF.Fire("BFI_UpdateModules")
 end)
