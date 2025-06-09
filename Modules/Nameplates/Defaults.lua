@@ -141,7 +141,7 @@ do
             },
             bgColor = AF.GetColorTable("background", 0),
             borderColor = AF.GetColorTable("border"),
-            texture = "BFI",
+            texture = "AF 1",
             mouseoverHighlight = {
                 enabled = true,
                 color = AF.GetColorTable("white", 0.1)
@@ -216,7 +216,7 @@ do
             height = 13,
             bgColor = AF.GetColorTable("background", 0.75),
             borderColor = AF.GetColorTable("border"),
-            texture = "BFI",
+            texture = "AF 1",
             fadeDuration = 1,
             enableInterruptibleCheck = true,
             icon = {
