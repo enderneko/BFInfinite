@@ -336,7 +336,7 @@ local function UpdateDispelHighlight(self, event, unitId)
     -- show
     local found
 
-    for _, type in pairs(dispel_order) do
+    for _, type in next, dispel_order do
         if self.dispelTypes[type] then
             if not self.dispelHighlightOnlyDispellable or AF.CanDispel(type) then
                 self.dispelHighlight:SetVertexColor(AF.GetAuraTypeColor(type, self.dispelHighlightAlpha))

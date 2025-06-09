@@ -57,7 +57,7 @@ local function UpdateQuests(_, event, unit)
 
             -- objectives https://warcraft.wiki.gg/wiki/API_C_QuestLog.GetQuestObjectives
             local objective
-            for _, o in pairs(GetQuestObjectives(info.questID)) do
+            for _, o in next, GetQuestObjectives(info.questID) do
                 -- print(o.text, o.type, o.finished, o.numFulfilled, o.numRequired)
                 if o.type == "item" or o.type == "monster" then
                     objective = select(3, strmatch(o.text, QUEST_OBJECTIVE_1))

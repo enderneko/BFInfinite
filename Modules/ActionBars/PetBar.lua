@@ -33,7 +33,7 @@ local function AssignBindings()
 
     ClearOverrideBindings(petBar)
 
-    for i, b in ipairs(petBar.buttons) do
+    for i, b in next, petBar.buttons do
         b.HotKey:SetText("")
         for _, key in next, {GetBindingKey("BONUSACTIONBUTTON"..i)} do
             b.HotKey:SetText(AB.GetHotkey(key))
@@ -69,7 +69,7 @@ local function OnCooldownDone(self)
 end
 
 local function UpdatePetCooldowns()
-    for i, b in pairs(petBar.buttons) do
+    for i, b in next, petBar.buttons do
         local start, duration = GetPetActionCooldown(i)
         b.cooldown:SetCooldown(start, duration)
         b.icon:SetDesaturated(duration and duration > 1.5)
@@ -87,7 +87,7 @@ end
 local function UpdatePetButtons(event, unit)
     if (event == "UNIT_FLAGS" and unit ~= "pet") or (event == "UNIT_PET" and unit ~= "player") then return end
 
-    for i, b in pairs(petBar.buttons) do
+    for i, b in next, petBar.buttons do
         local name, texture, isToken, isActive, autoCastAllowed, autoCastEnabled, spellID = GetPetActionInfo(i)
 
         if isToken then

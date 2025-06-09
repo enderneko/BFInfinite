@@ -22,7 +22,7 @@ local builders = {
 }
 
 function NP.CreateIndicators(np)
-    for name, builder in pairs(builders) do
+    for name, builder in next, builders do
         np.indicators[name] = builder(np, np:GetName()..AF.UpperFirst(name))
         np.indicators[name].indicatorName = name
     end
@@ -45,11 +45,11 @@ local efficiencyModeIndicators = {
 
 function NP.SetupIndicators(np, config, mode)
     if mode == "efficiency" then
-        for name, enabled in pairs(efficiencyModeIndicators) do
+        for name, enabled in next, efficiencyModeIndicators do
             NP.LoadIndicatorConfig(np, name, enabled and config[name])
         end
     else
-        for name in pairs(builders) do
+        for name in next, builders do
             NP.LoadIndicatorConfig(np, name, config[name])
         end
     end
@@ -80,7 +80,7 @@ function NP.LoadIndicatorConfig(np, indicatorName, indicatorConfig)
 end
 
 function NP.DisableIndicators(np)
-    for _, indicator in pairs(np.indicators) do
+    for _, indicator in next, np.indicators do
         if indicator.Disable then
             indicator:Disable()
         else
@@ -91,7 +91,7 @@ function NP.DisableIndicators(np)
 end
 
 function NP.UpdateIndicators(np)
-    for _, indicator in pairs(np.indicators) do
+    for _, indicator in next, np.indicators do
         if indicator.enabled then
             indicator:Update()
         end
@@ -99,7 +99,7 @@ function NP.UpdateIndicators(np)
 end
 
 function NP.OnNameplateShow(np)
-    for _, indicator in pairs(np.indicators) do
+    for _, indicator in next, np.indicators do
         if indicator.enabled then
             indicator:Enable()
         elseif indicator.siblings then
@@ -109,7 +109,7 @@ function NP.OnNameplateShow(np)
 end
 
 function NP.OnNameplateHide(np)
-    for _, indicator in pairs(np.indicators) do
+    for _, indicator in next, np.indicators do
         if indicator.enabled then
             if indicator.Disable then
                 indicator:Disable()

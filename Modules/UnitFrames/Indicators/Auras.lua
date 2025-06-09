@@ -113,7 +113,7 @@ local function CheckAuraFilter(self, auraData)
 end
 
 local function CheckAdvancedFilters(self, auraData)
-    for f in pairs(self.filters) do
+    for f in next, self.filters do
         if auraData[f] then
             return true
         end
@@ -137,7 +137,7 @@ end
 ---------------------------------------------------------------------
 local auraColorOrder = {"castByMe", "dispellable", "debuffType"}
 local function GetAuraType(self, auraData)
-    for _, type in pairs(self.colorTypes) do
+    for _, type in next, self.colorTypes do
         if auraData[type] then
             if type == "debuffType" then
                 return auraData.debuffType
@@ -194,7 +194,7 @@ local function HandleUpdateInfo(self, updateInfo)
     local changed
 
     if updateInfo.addedAuras then
-        for _, auraData in pairs(updateInfo.addedAuras) do
+        for _, auraData in next, updateInfo.addedAuras do
             if CheckAuraFilter(self, auraData) then
                 self.auras[auraData.auraInstanceID] = true
                 changed = true
@@ -203,7 +203,7 @@ local function HandleUpdateInfo(self, updateInfo)
     end
 
     if updateInfo.updatedAuraInstanceIDs then
-        for _, auraInstanceID in pairs(updateInfo.updatedAuraInstanceIDs) do
+        for _, auraInstanceID in next, updateInfo.updatedAuraInstanceIDs do
             if self.auras[auraInstanceID] then
                 changed = true
                 break
@@ -212,7 +212,7 @@ local function HandleUpdateInfo(self, updateInfo)
     end
 
     if updateInfo.removedAuraInstanceIDs then
-        for _, auraInstanceID in pairs(updateInfo.removedAuraInstanceIDs) do
+        for _, auraInstanceID in next, updateInfo.removedAuraInstanceIDs do
             if self.auras[auraInstanceID] then
                 self.auras[auraInstanceID] = nil
                 changed = true
@@ -225,7 +225,7 @@ local function HandleUpdateInfo(self, updateInfo)
         wipe(self.sortedAuras)
 
         -- sort
-        for auraInstanceID in pairs(self.auras) do
+        for auraInstanceID in next, self.auras do
             local auraData = GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID)
             if auraData and self:CheckBasicFilter(auraData) then
                 UpdateExtraData(self, auraData)
@@ -241,7 +241,7 @@ local function HandleUpdateInfo(self, updateInfo)
         self.mainShown = 0
         self.subShown = 0
 
-        for i, auraData in pairs(self.sortedAuras) do
+        for i, auraData in next, self.sortedAuras do
             self.numAuras = self.numAuras + 1
             ShowAura(self, auraData, i)
             if self.numAuras == self.numSlots then break end
@@ -286,7 +286,7 @@ local function HandleAllAuras(self)
     sort(self.sortedAuras, self.Comparator)
 
     -- show
-    for i, auraData in pairs(self.sortedAuras) do
+    for i, auraData in next, self.sortedAuras do
         self.numAuras = self.numAuras + 1
         ShowAura(self, auraData)
         if self.numAuras == self.numSlots then break end
@@ -659,13 +659,13 @@ end
 local function Auras_UpdatePixels(self)
     AF.ReSize(self)
     AF.RePoint(self)
-    for _, slot in pairs(self.slots) do
+    for _, slot in next, self.slots do
         slot:UpdatePixels()
     end
     if self.subFrame then
         AF.ReSize(self.subFrame)
         AF.RePoint(self.subFrame)
-        for _, slot in pairs(self.subFrame.slots) do
+        for _, slot in next, self.subFrame.slots do
             slot:UpdatePixels()
         end
     end

@@ -50,13 +50,13 @@ end
 
 function NP.ToggleClickableArea()
     NP.showClickableArea = not NP.showClickableArea
-    for _, np in pairs(NP.created) do
+    for _, np in next, NP.created do
         np.clickableArea:SetShown(NP.showClickableArea)
     end
 end
 
 function NP.IterateAllVisibleNamePlates(func, type)
-    for _, np in pairs(NP.created) do
+    for _, np in next, NP.created do
         if not type or type == np.type then
             if np:IsVisible() then
                 func(np)
@@ -255,7 +255,7 @@ local function GetAlpha(np)
     local alpha
 
     -- base alpha
-    for _, f in ipairs(alpha_funcs) do
+    for _, f in next, alpha_funcs do
         alpha = f(np)
         if alpha then
             break
@@ -336,7 +336,7 @@ local function GetScale(np)
     local scale
 
     -- return directly
-    for _, f in ipairs(scale_funcs) do
+    for _, f in next, scale_funcs do
         scale = f(np)
         if scale then
             break
@@ -531,7 +531,7 @@ end
 -- create
 ---------------------------------------------------------------------
 local function UpdatePixels(self)
-    for _, indicator in pairs(self.indicators) do
+    for _, indicator in next, self.indicators do
         if indicator.UpdatePixels then
             indicator:UpdatePixels()
         end

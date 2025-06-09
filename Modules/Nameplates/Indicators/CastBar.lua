@@ -70,7 +70,7 @@ local function CreatePip(self, stage)
 end
 
 local function ResetPips(self)
-    for _, pip in pairs(self.pips) do
+    for _, pip in next, self.pips do
         --! NOTE: IMPORTANT, or alpha can be weird!
         pip.texture:SetAlpha(PIP_START_ALPHA)
         pip:Hide()

@@ -156,7 +156,7 @@ local function UpdateTicks(self, spell, channelUpdated)
     if not self.ticksEnabled then return end
 
     if not (self.castType == "channel" and spell and channeledSpellTicks[spell]) then
-        for _, tick in pairs(self.ticks) do
+        for _, tick in next, self.ticks do
             tick:Hide()
         end
         return
@@ -247,7 +247,7 @@ local function CreatePip(self, stage)
 end
 
 local function ResetPips(self)
-    for _, pip in pairs(self.pips) do
+    for _, pip in next, self.pips do
         --! NOTE: IMPORTANT, or alpha can be weird!
         pip.texture:SetAlpha(PIP_START_ALPHA)
         pip:Hide()
@@ -256,7 +256,7 @@ end
 
 local function UpdateEmpowerPips(self, numStages)
     if not numStages then
-        for _, pip in pairs(self.pips) do
+        for _, pip in next, self.pips do
             pip:Hide()
         end
         return
@@ -872,7 +872,7 @@ local function CastBar_UpdatePixels(self)
     AF.RePoint(self.durationText)
 
     if self.ticks then
-        for _, tick in pairs(self.ticks) do
+        for _, tick in next, self.ticks do
             AF.ReSize(tick)
         end
     end

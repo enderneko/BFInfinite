@@ -65,7 +65,7 @@ end
 
 local function ActionBar_FlyoutSpells()
     if LAB.FlyoutButtons then
-        for _, b in pairs(LAB.FlyoutButtons) do
+        for _, b in next, LAB.FlyoutButtons do
             HandleFlyoutButton(b)
         end
     end
@@ -154,13 +154,13 @@ end
 local function AssignBindings()
     if InCombatLockdown() then return end
 
-    for barName in pairs(BINDING_MAPPINGS) do
+    for barName in next, BINDING_MAPPINGS do
         local bar = AB.bars[barName]
         ClearOverrideBindings(bar)
 
-        for _, b in ipairs(bar.buttons) do
+        for _, b in next, bar.buttons do
             if b.keyBoundTarget then
-                for _, key in pairs({GetBindingKey(b.keyBoundTarget)}) do
+                for _, key in next, {GetBindingKey(b.keyBoundTarget)} do
                     if key and key ~= "" then
                         SetOverrideBindingClick(bar, false, key, b:GetName())
                     end
@@ -173,7 +173,7 @@ end
 local function RemoveBindings()
     if InCombatLockdown() then return end
 
-    for _, bar in pairs(AB.bars) do
+    for _, bar in next, AB.bars do
         ClearOverrideBindings(bar)
     end
 end

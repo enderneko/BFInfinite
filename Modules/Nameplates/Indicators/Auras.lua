@@ -104,7 +104,7 @@ local function CheckFilters(self, auraData)
 
     -- blockers
     if self.blockers then
-        for f in pairs(self.blockers) do
+        for f in next, self.blockers do
             if auraData[f] then
                 return false
             end
@@ -113,7 +113,7 @@ local function CheckFilters(self, auraData)
 
     -- filter
     if self.filters then
-        for f in pairs(self.filters) do
+        for f in next, self.filters do
             if auraData[f] then
                 return true
             end
@@ -131,7 +131,7 @@ end
 ---------------------------------------------------------------------
 local auraColorOrder = {"castByMe", "dispellable", "debuffType"}
 local function GetAuraType(self, auraData)
-    for _, type in pairs(self.colorTypes) do
+    for _, type in next, self.colorTypes do
         if auraData[type] then
             if type == "debuffType" then
                 return auraData.debuffType
@@ -158,7 +158,7 @@ local function HandleUpdateInfo(self, updateInfo)
     local changed
 
     if updateInfo.addedAuras then
-        for _, auraData in pairs(updateInfo.addedAuras) do
+        for _, auraData in next, updateInfo.addedAuras do
             if CheckAuraFilter(self, auraData) then
                 self.auras[auraData.auraInstanceID] = true
                 changed = true
@@ -167,7 +167,7 @@ local function HandleUpdateInfo(self, updateInfo)
     end
 
     if updateInfo.updatedAuraInstanceIDs then
-        for _, auraInstanceID in pairs(updateInfo.updatedAuraInstanceIDs) do
+        for _, auraInstanceID in next, updateInfo.updatedAuraInstanceIDs do
             if self.auras[auraInstanceID] then
                 changed = true
                 break
@@ -176,7 +176,7 @@ local function HandleUpdateInfo(self, updateInfo)
     end
 
     if updateInfo.removedAuraInstanceIDs then
-        for _, auraInstanceID in pairs(updateInfo.removedAuraInstanceIDs) do
+        for _, auraInstanceID in next, updateInfo.removedAuraInstanceIDs do
             if self.auras[auraInstanceID] then
                 self.auras[auraInstanceID] = nil
                 changed = true
@@ -189,7 +189,7 @@ local function HandleUpdateInfo(self, updateInfo)
         wipe(self.sortedAuras)
 
         -- sort
-        for auraInstanceID in pairs(self.auras) do
+        for auraInstanceID in next, self.auras do
             local auraData = GetAuraDataByAuraInstanceID(self.root.unit, auraInstanceID)
             if auraData then
                 UpdateExtraData(self, auraData)
@@ -202,7 +202,7 @@ local function HandleUpdateInfo(self, updateInfo)
 
         -- show
         self.numAuras = 0
-        for i, auraData in pairs(self.sortedAuras) do
+        for i, auraData in next, self.sortedAuras do
             self.numAuras = self.numAuras + 1
             ShowAura(self, auraData, i)
             if self.numAuras == self.numSlots then break end
@@ -247,7 +247,7 @@ local function HandleAllAuras(self)
     sort(self.sortedAuras, SortAuras)
 
     -- show
-    for i, auraData in pairs(self.sortedAuras) do
+    for i, auraData in next, self.sortedAuras do
         self.numAuras = self.numAuras + 1
         ShowAura(self, auraData, i)
         if self.numAuras == self.numSlots then break end
@@ -323,7 +323,7 @@ function Auras_UpdateSiblings(self)
     if not self.siblings then
         return
     end
-    for sibling in pairs(self.siblings) do
+    for sibling in next, self.siblings do
         AF.ClearPoints(sibling)
         if self.numAuras == 0 then
             AF.SetPoint(sibling, sibling.position[1], self, sibling.position[2])
@@ -523,7 +523,7 @@ local function Auras_LoadConfig(self, config)
     -- blockers
     if config.blockers then
         self.blockers = wipe(self.blockers or {})
-        for f, v in pairs(config.blockers) do
+        for f, v in next, config.blockers do
             if v then
                 self.blockers[f] = true
             end
@@ -537,7 +537,7 @@ local function Auras_LoadConfig(self, config)
             -- always add overall filter
             self.filters[self.overallFilter] = true
         end
-        for f, v in pairs(config.filters) do
+        for f, v in next, config.filters do
             if v then
                 self.filters[f] = true
             end
@@ -547,7 +547,7 @@ local function Auras_LoadConfig(self, config)
     -- crowdControlTypes
     if config.crowdControlTypes then
         self.crowdControlTypes = wipe(self.crowdControlTypes or {})
-        for k, v in pairs(config.crowdControlTypes) do
+        for k, v in next, config.crowdControlTypes do
             if v then
                 self.crowdControlTypes[k] = true
             end
@@ -566,7 +566,7 @@ end
 local function Auras_UpdatePixels(self)
     AF.ReSize(self)
     AF.RePoint(self)
-    for _, slot in pairs(self.slots) do
+    for _, slot in next, self.slots do
         slot:UpdatePixels()
     end
 end

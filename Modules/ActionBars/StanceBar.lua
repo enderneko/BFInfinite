@@ -35,7 +35,7 @@ local function AssignBindings()
 
     for i, b in ipairs(stanceBar.buttons) do
         local command = ("SHAPESHIFTBUTTON%d"):format(i)
-        for _, key in pairs({GetBindingKey(command)}) do
+        for _, key in next, {GetBindingKey(command)} do
             b.hotkey:SetText(AB.GetHotkey(key) or "")
             if key and key ~= "" then
                 SetOverrideBindingClick(stanceBar, false, key, b:GetName())
@@ -65,7 +65,7 @@ end
 ---------------------------------------------------------------------
 local function UpdateStanceButtonStatus()
     local num = GetNumShapeshiftForms()
-    for i, b in pairs(stanceBar.buttons) do
+    for i, b in next, stanceBar.buttons do
         if i <= num then
             local icon, active, castable, spellID = GetShapeshiftFormInfo(i)
             b.icon:SetTexture(icon)
@@ -96,7 +96,7 @@ local function UpdateStanceButtons()
 
     local num = GetNumShapeshiftForms()
 
-    for i, b in pairs(stanceBar.buttons) do
+    for i, b in next, stanceBar.buttons do
         if i <= num then
             stanceBar.buttons[i]:Show()
         else

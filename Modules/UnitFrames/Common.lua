@@ -85,7 +85,7 @@ local builders = {
 }
 
 function UF.CreateIndicators(frame, indicators)
-    for _, v in pairs(indicators) do
+    for _, v in next, indicators do
         if type(v) == "table" then
             local builder, name = v[1], v[2]
             frame.indicators[name] = builders[builder](frame, frame:GetName().."_"..AF.UpperFirst(name), select(3, unpack(v)))
@@ -98,7 +98,7 @@ function UF.CreateIndicators(frame, indicators)
 end
 
 function UF.SetupIndicators(frame, indicators, config)
-    for _, v in pairs(indicators) do
+    for _, v in next, indicators do
         local name
         if type(v) == "table" then
             name = v[2]
@@ -138,7 +138,7 @@ function UF.LoadIndicatorConfig(frame, indicatorName, indicatorConfig)
 end
 
 function UF.DisableIndicators(frame)
-    for _, indicator in pairs(frame.indicators) do
+    for _, indicator in next, frame.indicators do
         if indicator.DisableConfigMode then
             indicator:DisableConfigMode()
         end
@@ -153,7 +153,7 @@ function UF.DisableIndicators(frame)
 end
 
 function UF.UpdateIndicators(frame, force)
-    for _, indicator in pairs(frame.indicators) do
+    for _, indicator in next, frame.indicators do
         if indicator.enabled then
             indicator:Update(force)
         end
@@ -161,7 +161,7 @@ function UF.UpdateIndicators(frame, force)
 end
 
 function UF.OnButtonShow(frame)
-    for _, indicator in pairs(frame.indicators) do
+    for _, indicator in next, frame.indicators do
         if indicator.enabled then
             indicator:Enable()
         end
@@ -169,7 +169,7 @@ function UF.OnButtonShow(frame)
 end
 
 function UF.OnButtonHide(frame)
-    for _, indicator in pairs(frame.indicators) do
+    for _, indicator in next, frame.indicators do
         if indicator.enabled then
             if indicator.Disable then
                 indicator:Disable()

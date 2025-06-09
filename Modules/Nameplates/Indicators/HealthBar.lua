@@ -201,7 +201,7 @@ local function UpdateHealthStates(self)
 
     if self.thresholdEnabled then
         self.threshold:Hide()
-        for _, t in pairs(self.thresholdValues) do
+        for _, t in next, self.thresholdValues do
             if self.healthPercent <= t.value then
                 matched = true
                 self.threshold:Show()

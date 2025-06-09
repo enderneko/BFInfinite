@@ -503,7 +503,7 @@ local function ClassPowerBar_UpdatePixels(self)
 
     C_Timer.After(1, function()
         local width = (AF.ConvertPixelsForRegion(self._width, self) - AF.ConvertPixelsForRegion(self.config.spacing, self) * (self.numPowerBars - 1)) / self.numPowerBars
-        for _, bar in pairs(self.bars) do
+        for _, bar in next, self.bars do
             bar:DefaultUpdatePixels()
             bar:SetWidth(width)
         end
