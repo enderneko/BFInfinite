@@ -574,14 +574,15 @@ local function OnTooltipSetItem(tooltip, data)
 end
 
 ---------------------------------------------------------------------
--- GameTooltip_SetUnitAura / GameTooltip_SetUnitBuffByAuraInstanceID
+-- GameTooltip_SetUnitAura / GameTooltip_SetUnitAuraByAuraInstanceID
 ---------------------------------------------------------------------
 local function UpdateAuraTooltip(tooltip, auraData)
     if not auraData then return end
 
-    if auraData.sourceUnit and AF.UnitInGroup(auraData.sourceUnit) then
-        local class = AF.UnitClassBase(auraData.sourceUnit)
-        tooltip:AddDoubleLine(utf8sub(_G.SOURCE, 1, -2), AF.WrapTextInColor(UnitName(auraData.sourceUnit), class))
+    if auraData.sourceUnit and UnitExists(auraData.sourceUnit) then
+        local class = AF.UnitClassBase(auraData.sourceUnit) or "white"
+        local name = UnitName(auraData.sourceUnit) or UNKNOWN
+        tooltip:AddDoubleLine(utf8sub(_G.SOURCE, 1, -2), AF.WrapTextInColor(name, class))
     end
 
     local mountInfo = M.GetMountInfoBySpellID(auraData.spellId)
@@ -600,7 +601,7 @@ local function GameTooltip_SetUnitAura(tooltip, unit, index, filter)
     UpdateAuraTooltip(tooltip, GetAuraDataByIndex(unit, index, filter))
 end
 
-local function GameTooltip_SetUnitBuffByAuraInstanceID(tooltip, unit, auraInstanceID)
+local function GameTooltip_SetUnitAuraByAuraInstanceID(tooltip, unit, auraInstanceID)
     if tooltip:IsForbidden() then return end
     UpdateAuraTooltip(tooltip, GetAuraDataByAuraInstanceID(unit, auraInstanceID))
 end
@@ -637,7 +638,8 @@ local function InitTooltip()
     hooksecurefunc(GameTooltip, "SetUnitAura", GameTooltip_SetUnitAura)
     hooksecurefunc(GameTooltip, "SetUnitBuff", GameTooltip_SetUnitAura)
     hooksecurefunc(GameTooltip, "SetUnitDebuff", GameTooltip_SetUnitAura)
-    hooksecurefunc(GameTooltip, "SetUnitBuffByAuraInstanceID", GameTooltip_SetUnitBuffByAuraInstanceID)
+    hooksecurefunc(GameTooltip, "SetUnitBuffByAuraInstanceID", GameTooltip_SetUnitAuraByAuraInstanceID)
+    hooksecurefunc(GameTooltip, "SetUnitDebuffByAuraInstanceID", GameTooltip_SetUnitAuraByAuraInstanceID)
 end
 
 ---------------------------------------------------------------------
