@@ -90,6 +90,9 @@ AF.AddEventHandler(BFI.Chat)
 BFI.Tooltip = {}
 AF.AddEventHandler(BFI.Tooltip)
 
+BFI.Style = {}
+AF.AddEventHandler(BFI.Style)
+
 ---------------------------------------------------------------------
 -- libs
 ---------------------------------------------------------------------
