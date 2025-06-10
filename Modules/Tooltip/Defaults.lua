@@ -16,11 +16,12 @@ local defaults = {
     combatModifierKey = false,
     healthBar = {
         enabled = true,
+        height = 4,
         text = {
             enabled = true,
             font = {"BFI", 12, "none", true},
             useAsianUnits = false,
-        }
+        },
     },
     -- factionIcon = {
     --     enabled = true,

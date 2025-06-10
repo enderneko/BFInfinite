@@ -2,13 +2,24 @@
 local BFI = select(2, ...)
 local T = BFI.Tooltip
 local L = BFI.L
+local M = BFI.Misc
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
-local tooltipAnchor
 local GameTooltip = GameTooltip
 local GameTooltipStatusBar = GameTooltipStatusBar
+local ShoppingTooltip1 = ShoppingTooltip1
+local ShoppingTooltip2 = ShoppingTooltip2
+
 local AddTooltipPostCall = TooltipDataProcessor.AddTooltipPostCall
+local GetTooltipItem = TooltipUtil.GetDisplayedItem
+local GetItemQualityByID = C_Item.GetItemQualityByID
+local GetItemQualityColor = C_Item.GetItemQualityColor
+local GetAuraDataByIndex = C_UnitAuras.GetAuraDataByIndex
+local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
+local UnpackAuraData = AuraUtil.UnpackAuraData
+
+local tooltipAnchor
 local GetWorldCursor = C_TooltipInfo.GetWorldCursor
 local InCombatLockdown = InCombatLockdown
 local UnitExists = UnitExists
@@ -22,6 +33,7 @@ local UnitIsPlayer = UnitIsPlayer
 local GetGuildInfo = GetGuildInfo
 local strfind = strfind
 local format = format
+local utf8sub = string.utf8sub
 
 ---------------------------------------------------------------------
 -- IsWorldUnitTooltip
@@ -236,7 +248,7 @@ local function SaveRequiredLines(data, isPlayer, isAI)
     local levelLineIndex, requiredIndex
     local leftText
 
-    for i, line in ipairs(data.lines) do
+    for i, line in next, data.lines do
         leftText = line.leftText
 
         if not levelLineIndex and strfind(leftText, LEVEL) then
@@ -270,7 +282,7 @@ local function RestoreRequiredLines()
     if GameTooltip:IsForbidden() then return end
     if not next(requiredLines) then return end
 
-    for _, line in ipairs(requiredLines) do
+    for _, line in next, requiredLines do
         if line.rightText then
             GameTooltip:AddDoubleLine(line.leftText, line.rightText,
                 line.leftColor.r, line.leftColor.g, line.leftColor.b,
@@ -453,7 +465,7 @@ local function RestoreOtherAddonsLines()
     if GameTooltip:IsForbidden() then return end
     if not next(addonLines) then return end
 
-    for _, line in pairs(addonLines) do
+    for _, line in next, addonLines do
         if line.right then
             if line.left then
                 GameTooltip:AddDoubleLine(line.left.text, line.right.text,
@@ -495,7 +507,7 @@ local function OnTooltipSetUnit(tooltip, data)
 
     -- BFI lines
     local lines = T.config.lines
-    for _, line in ipairs(lines) do
+    for _, line in next, lines do
         if lineFormatters[line.type] then
             lineFormatters[line.type](line, tooltip, unit, isPlayer, isNotSpecified)
         end
@@ -516,7 +528,7 @@ local function OnTooltipSetUnit(tooltip, data)
 
     --? UNUSED
     -- local currentLine = 1
-    -- for _, line in ipairs(lines) do
+    -- for _, line in next, lines do
     --     if lineFormatters[line] then
     --         if currentLine > numLines then
     --             lineFormatters[line](tooltip, unit, isPlayer)
@@ -538,6 +550,55 @@ local function OnTooltipSetUnit(tooltip, data)
 end
 
 ---------------------------------------------------------------------
+-- OnTooltipSetItem
+---------------------------------------------------------------------
+local function OnTooltipSetItem(tooltip, data)
+    if tooltip:IsForbidden() or (tooltip ~= GameTooltip and tooltip ~= ShoppingTooltip1 and tooltip ~= ShoppingTooltip2) then return end
+
+    -- Interface\AddOns\Blizzard_SharedXMLGame\Tooltip\TooltipUtil.lua
+    local name, link, id = GetTooltipItem(tooltip)
+    if not link then return end
+
+    local quality = GetItemQualityByID(link)
+    if quality and quality >= 2 then
+        local r, g, b = GetItemQualityColor(quality)
+        tooltip.NineSlice:SetBorderColor(r, g, b)
+    end
+end
+
+---------------------------------------------------------------------
+-- GameTooltip_SetUnitAura / GameTooltip_SetUnitBuffByAuraInstanceID
+---------------------------------------------------------------------
+local function UpdateAuraTooltip(tooltip, auraData)
+    if not auraData then return end
+
+    if auraData.sourceUnit and AF.UnitInGroup(auraData.sourceUnit) then
+        local class = AF.UnitClassBase(auraData.sourceUnit)
+        tooltip:AddDoubleLine(utf8sub(_G.SOURCE, 1, -2), AF.WrapTextInColor(UnitName(auraData.sourceUnit), class))
+    end
+
+    local mountInfo = M.GetMountInfoBySpellID(auraData.spellId)
+    if mountInfo and mountInfo.source then
+        tooltip:AddLine(" ")
+        tooltip:AddLine(mountInfo.source, 1, 1, 1)
+        -- print(string.gsub(mountInfo.source, "|", "||"))
+    end
+
+    tooltip:Show()
+end
+
+local function GameTooltip_SetUnitAura(tooltip, unit, index, filter)
+    if tooltip:IsForbidden() then return end
+    -- local name, _, _, _, _, _, source, _, _, spellID = UnpackAuraData(GetAuraDataByIndex(unit, index, filter))
+    UpdateAuraTooltip(tooltip, GetAuraDataByIndex(unit, index, filter))
+end
+
+local function GameTooltip_SetUnitBuffByAuraInstanceID(tooltip, unit, auraInstanceID)
+    if tooltip:IsForbidden() then return end
+    UpdateAuraTooltip(tooltip, GetAuraDataByAuraInstanceID(unit, auraInstanceID))
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function InitTooltip()
@@ -545,11 +606,7 @@ local function InitTooltip()
     AF.SetSize(tooltipAnchor, 150, 30)
     AF.CreateMover(tooltipAnchor, "BFI: " .. _G.OTHER, L["Tooltip"])
 
-    hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
-
     -- statusBar
-    AF.SetHeight(GameTooltipStatusBar, 5)
-    AF.AddToPixelUpdater(GameTooltipStatusBar)
     GameTooltipStatusBar:HookScript("OnValueChanged", UpdateStatusBarText)
 
     local text = GameTooltipStatusBar:CreateFontString(nil, "OVERLAY")
@@ -566,6 +623,14 @@ local function InitTooltip()
 
     -- post call - https://warcraft.wiki.gg/wiki/Patch_10.0.2/API_changes
     AddTooltipPostCall(Enum.TooltipDataType.Unit, OnTooltipSetUnit)
+    AddTooltipPostCall(Enum.TooltipDataType.Item, OnTooltipSetItem)
+
+    -- hooks
+    hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
+    hooksecurefunc(GameTooltip, "SetUnitAura", GameTooltip_SetUnitAura)
+    hooksecurefunc(GameTooltip, "SetUnitBuff", GameTooltip_SetUnitAura)
+    hooksecurefunc(GameTooltip, "SetUnitDebuff", GameTooltip_SetUnitAura)
+    hooksecurefunc(GameTooltip, "SetUnitBuffByAuraInstanceID", GameTooltip_SetUnitBuffByAuraInstanceID)
 end
 
 ---------------------------------------------------------------------
@@ -617,6 +682,9 @@ local function UpdateTooltip(_, module, which)
     else
         FormatNumber = AF.FormatNumber
     end
+
+    -- status bar
+    AF.SetHeight(GameTooltipStatusBar, config.healthBar.height)
 
     -- faction icon
     -- if config.factionIcon.enabled then
