@@ -418,10 +418,13 @@ local function UnitButton_OnEnter(self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self)
         end
         GameTooltip:SetUnit(self.unit)
+
+        -- self.UpdateTooltip = UnitButton_OnEnter --! for GameTooltip_OnUpdate
     end
 end
 
 local function UnitButton_OnLeave(self)
+    -- self.UpdateTooltip = nil --! for GameTooltip_OnUpdate
     if self.tooltipEnabled then
         GameTooltip:Hide()
     end

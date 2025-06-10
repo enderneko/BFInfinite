@@ -23,6 +23,7 @@ local tooltipAnchor
 local GetWorldCursor = C_TooltipInfo.GetWorldCursor
 local InCombatLockdown = InCombatLockdown
 local UnitExists = UnitExists
+local UnitIsUnit = UnitIsUnit
 local UnitName = UnitName
 local GetUnitName = GetUnitName
 local UnitPVPName = UnitPVPName
@@ -220,6 +221,8 @@ local RARE = _G.MAP_LEGEND_RARE
 -- local RAREELITE = _G.MAP_LEGEND_RAREELITE
 local genders = {UNKNOWN, _G.MALE, _G.FEMALE}
 local AI_RACE_MATCHER = TOOLTIP_UNIT_LEVEL_RACE:gsub("%%s", "[0-9?]+", 1):gsub("%%s", "(.+)")
+local TARGET = _G.TARGET .. ": %s"
+local YOU = _G.YOU .. "!"
 
 --? UNUSED
 -- local function UpdateLine(tooltip, line, text, r, g, b)
@@ -427,6 +430,22 @@ local lineFormatters = {
             tooltip:AddLine(PVP, 1, 1, 1)
         end
     end,
+
+    target = function(config, tooltip, unit, isPlayer, isNotSpecified)
+        if isNotSpecified then return end
+        local unit = unit == "player" and "target" or unit .. "target"
+        if not UnitExists(unit) then return end
+
+        if UnitIsUnit(unit, "player") then
+            tooltip:AddLine(TARGET:format(AF.WrapTextInColor(YOU, "firebrick")))
+        else
+            local name = GetUnitName(unit)
+            if name then
+                local r, g, b = AF.GetUnitColor(unit)
+                tooltip:AddLine(TARGET:format(AF.WrapTextInColorRGB(name, r, g, b)))
+            end
+        end
+    end,
 }
 
 --! save tooltip lines added by other addons ------------------------
@@ -489,9 +508,27 @@ local function RestoreOtherAddonsLines()
     wipe(addonLines)
 end
 
+--! target ----------------------------------------------------------
+local lastMouseoverGUID, newMouseoverGUID
+
+local function UpdateTarget()
+    newMouseoverGUID = UnitGUID("mouseovertarget")
+    if lastMouseoverGUID ~= newMouseoverGUID then
+        lastMouseoverGUID = newMouseoverGUID
+        GameTooltip:RefreshData()
+    end
+end
+
+local function OnTooltipCleared()
+    GameTooltip.UpdateTooltip = nil
+end
+
+
 local function OnTooltipSetUnit(tooltip, data)
     if tooltip:IsForbidden() or tooltip ~= GameTooltip then return end
     -- texplore(data)
+
+    lastMouseoverGUID = UnitGUID("mouseovertarget")
 
     local _, unit = tooltip:GetUnit()
     if not (unit and UnitExists(unit)) then return end
@@ -511,7 +548,7 @@ local function OnTooltipSetUnit(tooltip, data)
 
     -- BFI lines
     local lines = T.config.lines
-    for _, line in next, lines do
+    for i, line in next, lines do
         if lineFormatters[line.type] then
             lineFormatters[line.type](line, tooltip, unit, isPlayer, isNotSpecified)
         end
@@ -522,6 +559,9 @@ local function OnTooltipSetUnit(tooltip, data)
     -- restore
     RestoreRequiredLines()
     RestoreOtherAddonsLines()
+
+    -- update target
+    tooltip.UpdateTooltip = UpdateTarget
 
     -- faction icon
     -- if isPlayer then
@@ -657,6 +697,7 @@ local function InitTooltip()
     AddTooltipPostCall(Enum.TooltipDataType.Item, OnTooltipSetItem)
 
     -- hooks
+    GameTooltip:HookScript("OnTooltipCleared", OnTooltipCleared)
     hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
     hooksecurefunc(GameTooltip, "RefreshData", GameTooltip_RefreshData)
     hooksecurefunc(GameTooltip, "SetUnitAura", GameTooltip_SetUnitAura)

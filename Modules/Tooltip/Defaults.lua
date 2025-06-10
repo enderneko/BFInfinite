@@ -37,6 +37,7 @@ local defaults = {
         {type = "spec"},
         {type = "npc_faction"},
         {type = "npc_pvp"},
+        {type = "target"},
     },
 }
 
