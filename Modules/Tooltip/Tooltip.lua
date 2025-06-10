@@ -24,6 +24,7 @@ local GetWorldCursor = C_TooltipInfo.GetWorldCursor
 local InCombatLockdown = InCombatLockdown
 local UnitExists = UnitExists
 local UnitName = UnitName
+local GetUnitName = GetUnitName
 local UnitPVPName = UnitPVPName
 local UnitIsPVP = UnitIsPVP
 local UnitLevel = UnitLevel
@@ -576,13 +577,21 @@ end
 ---------------------------------------------------------------------
 -- GameTooltip_SetUnitAura / GameTooltip_SetUnitAuraByAuraInstanceID
 ---------------------------------------------------------------------
+local lastDataInstanceID, lastAuraData
+
 local function UpdateAuraTooltip(tooltip, auraData)
     if not auraData then return end
 
+    local data = tooltip:GetTooltipData()
+    if data then
+        lastDataInstanceID = data.dataInstanceID
+        lastAuraData = auraData
+    end
+
     if auraData.sourceUnit and UnitExists(auraData.sourceUnit) then
-        local class = AF.UnitClassBase(auraData.sourceUnit) or "white"
-        local name = UnitName(auraData.sourceUnit) or UNKNOWN
-        tooltip:AddDoubleLine(utf8sub(_G.SOURCE, 1, -2), AF.WrapTextInColor(name, class))
+        local name = GetUnitName(auraData.sourceUnit) or UNKNOWN
+        local r, g, b = AF.GetUnitColor(auraData.sourceUnit)
+        tooltip:AddDoubleLine(utf8sub(_G.SOURCE, 1, -2), AF.WrapTextInColorRGB(name, r, g, b))
     end
 
     local mountInfo = M.GetMountInfoBySpellID(auraData.spellId)
@@ -604,6 +613,20 @@ end
 local function GameTooltip_SetUnitAuraByAuraInstanceID(tooltip, unit, auraInstanceID)
     if tooltip:IsForbidden() then return end
     UpdateAuraTooltip(tooltip, GetAuraDataByAuraInstanceID(unit, auraInstanceID))
+end
+
+local function GameTooltip_RefreshData()
+    if GameTooltip:IsForbidden() or not lastAuraData then return end
+
+    local info = GameTooltip:GetPrimaryTooltipInfo()
+    if not (info and info.tooltipData and info.getterArgs) then return end
+
+    -- if not (lastDataInstanceID and GameTooltip:HasDataInstanceID(lastDataInstanceID + 1)) then return end
+    if info.tooltipData.dataInstanceID ~= lastDataInstanceID + 1 then return end
+
+    if info.getterArgs[2] == lastAuraData.auraInstanceID then
+        UpdateAuraTooltip(GameTooltip, lastAuraData)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -635,6 +658,7 @@ local function InitTooltip()
 
     -- hooks
     hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
+    hooksecurefunc(GameTooltip, "RefreshData", GameTooltip_RefreshData)
     hooksecurefunc(GameTooltip, "SetUnitAura", GameTooltip_SetUnitAura)
     hooksecurefunc(GameTooltip, "SetUnitBuff", GameTooltip_SetUnitAura)
     hooksecurefunc(GameTooltip, "SetUnitDebuff", GameTooltip_SetUnitAura)
