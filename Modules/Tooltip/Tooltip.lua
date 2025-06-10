@@ -99,6 +99,9 @@ local function UpdateAnchor(tooltip, parent)
         --! use module settings
         local tt = parent.tooltip
         if tt.enabled and not (tt.hideInCombat and InCombatLockdown()) then
+            if tooltip == GameTooltip and type(tt.supportsItemComparison) == "boolean" then
+                tooltip.supportsItemComparison = tt.supportsItemComparison
+            end
 
             if tt.anchorTo == "self" then
                 tooltip:SetPoint(tt.position[1], parent, tt.position[2], tt.position[3], tt.position[4])
@@ -554,6 +557,10 @@ end
 ---------------------------------------------------------------------
 local function OnTooltipSetItem(tooltip, data)
     if tooltip:IsForbidden() or (tooltip ~= GameTooltip and tooltip ~= ShoppingTooltip1 and tooltip ~= ShoppingTooltip2) then return end
+
+    if tooltip == GameTooltip then
+        tooltip.supportsItemComparison = true
+    end
 
     -- Interface\AddOns\Blizzard_SharedXMLGame\Tooltip\TooltipUtil.lua
     local name, link, id = GetTooltipItem(tooltip)

@@ -16,6 +16,7 @@ local defaults = {
             hideInCombat = false,
             anchorTo = "self_adaptive", -- self / self_adaptive / default
             position = {"BOTTOMLEFT", "TOPLEFT", 0, 1},
+            supportsItemComparison = false,
         },
     },
     barConfig = {
