@@ -18,6 +18,7 @@ local UnitGetIncomingHeals = UnitGetIncomingHeals
 local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots
+local UnitCanAttack = UnitCanAttack
 
 ---------------------------------------------------------------------
 -- health
@@ -321,6 +322,7 @@ local dispel_order = {"Magic", "Curse", "Disease", "Poison", "Bleed"}
 local function UpdateDispelHighlight(self, event, unitId)
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
+    if UnitCanAttack("player", unit) then return end
 
     if not self.dispelHighlightEnabled then
         self.dispelHighlight:Hide()
