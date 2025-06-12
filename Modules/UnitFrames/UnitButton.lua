@@ -419,12 +419,16 @@ local function UnitButton_OnEnter(self)
         end
         GameTooltip:SetUnit(self.unit)
 
-        -- self.UpdateTooltip = UnitButton_OnEnter --! for GameTooltip_OnUpdate
+        -- NOTE: moved to OnTooltipSetUnit
+        -- for GameTooltip_OnUpdate
+        -- self.UpdateTooltip = UnitButton_OnEnter
     end
 end
 
 local function UnitButton_OnLeave(self)
-    -- self.UpdateTooltip = nil --! for GameTooltip_OnUpdate
+    -- NOTE: moved to OnTooltipSetUnit
+    -- for GameTooltip_OnUpdate
+    -- self.UpdateTooltip = nil
     if self.tooltipEnabled then
         GameTooltip:Hide()
     end

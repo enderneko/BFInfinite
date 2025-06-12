@@ -30,14 +30,15 @@ local defaults = {
     --     alpha = 0.4,
     -- },
     lines = {
-        {type = "name", showServer = true, showTitle = true},
-        {type = "guild", showRankName = true, showRankIndex = true},
-        {type = "npc_subtitle"},
-        {type = "level_race", showGender = true},
-        {type = "spec"},
-        {type = "npc_faction"},
-        {type = "npc_pvp"},
-        {type = "target"},
+        {type = "name", enabled = true, showServer = true, showTitle = true},
+        {type = "guild", enabled = true, showRankName = true, showRankIndex = true},
+        {type = "npc_subtitle", enabled = true},
+        {type = "level_race", enabled = true, showGender = true},
+        {type = "spec", enabled = true},
+        {type = "npc_faction", enabled = true},
+        {type = "npc_pvp", enabled = true},
+        {type = "target", enabled = true},
+        {type = "targetedBy", enabled = true, includeSelf = true, enChars = 5, nonEnChars = 2},
     },
 }
 

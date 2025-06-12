@@ -33,8 +33,10 @@ local UnitClassBase = AF.UnitClassBase
 local UnitIsTapDenied = UnitIsTapDenied
 local UnitIsPlayer = UnitIsPlayer
 local GetGuildInfo = GetGuildInfo
+local IsInGroup = IsInGroup
 local strfind = strfind
 local format = format
+local tconcat = table.concat
 local utf8sub = string.utf8sub
 
 ---------------------------------------------------------------------
@@ -302,6 +304,10 @@ local function RestoreRequiredLines()
 end
 
 --! formatters ------------------------------------------------------
+local targetedBy = {}
+local targetedByFormat = "%s (|cffffffff%d|r): %s"
+local targetedBySep = AF.WrapTextInColor(", ", "gray")
+
 local function GetLevel(unit)
     local r, g, b = AF.GetLevelColor(unit)
     local level = AF.WrapTextInColorRGB(AF.GetLevelText(unit), r, g, b)
@@ -446,6 +452,37 @@ local lineFormatters = {
             end
         end
     end,
+
+    targetedBy = function(config, tooltip, unit, isPlayer, isNotSpecified)
+        if not IsInGroup() then return end
+        wipe(targetedBy)
+
+        local name
+        if config.includeSelf then
+            for unit in AF.GroupPlayersIterator() do
+                name = AF.TruncateStringByLength(UnitName(unit), config.enChars, config.nonEnChars)
+                if name and UnitIsUnit(unit .. "target", "mouseover") then
+                    if UnitIsUnit(unit, "player") then
+                        tinsert(targetedBy, 1, AF.WrapTextInColor(name, AF.UnitClassBase(unit) or "white"))
+                    else
+                        tinsert(targetedBy, AF.WrapTextInColor(name, AF.UnitClassBase(unit) or "white"))
+                    end
+                end
+            end
+        else
+            for unit in AF.GroupPlayersIterator() do
+                name = AF.TruncateStringByLength(UnitName(unit), config.enChars, config.nonEnChars)
+                if name and UnitIsUnit(unit .. "target", "mouseover") and not UnitIsUnit(unit, "player") then
+                    tinsert(targetedBy, AF.WrapTextInColor(name, AF.UnitClassBase(unit) or "white"))
+                end
+            end
+        end
+
+        local num = #targetedBy
+        if num > 0 then
+            tooltip:AddLine(format(targetedByFormat, L["Targeted By"], num, tconcat(targetedBy, targetedBySep)), nil, nil, nil, true)
+        end
+    end,
 }
 
 --! save tooltip lines added by other addons ------------------------
@@ -509,14 +546,19 @@ local function RestoreOtherAddonsLines()
 end
 
 --! target ----------------------------------------------------------
-local lastMouseoverGUID, newMouseoverGUID
+local lastMouseoverGUID, newMouseoverGUID, groupTargetChanged
 
 local function UpdateTarget()
     newMouseoverGUID = UnitGUID("mouseovertarget")
-    if lastMouseoverGUID ~= newMouseoverGUID then
+    if lastMouseoverGUID ~= newMouseoverGUID or groupTargetChanged then
+        groupTargetChanged = nil
         lastMouseoverGUID = newMouseoverGUID
         GameTooltip:RefreshData()
     end
+end
+
+local function UNIT_TARGET()
+    groupTargetChanged = true
 end
 
 local function OnTooltipCleared()
@@ -549,7 +591,7 @@ local function OnTooltipSetUnit(tooltip, data)
     -- BFI lines
     local lines = T.config.lines
     for i, line in next, lines do
-        if lineFormatters[line.type] then
+        if line.enabled and lineFormatters[line.type] then
             lineFormatters[line.type](line, tooltip, unit, isPlayer, isNotSpecified)
         end
     end
@@ -699,6 +741,7 @@ local function InitTooltip()
     -- hooks
     GameTooltip:HookScript("OnTooltipCleared", OnTooltipCleared)
     hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
+
     hooksecurefunc(GameTooltip, "RefreshData", GameTooltip_RefreshData)
     hooksecurefunc(GameTooltip, "SetUnitAura", GameTooltip_SetUnitAura)
     hooksecurefunc(GameTooltip, "SetUnitBuff", GameTooltip_SetUnitAura)
@@ -745,6 +788,21 @@ local function UpdateTooltip(_, module, which)
         T:UnregisterEvent("MODIFIER_STATE_CHANGED")
         T:UnregisterEvent("PLAYER_REGEN_ENABLED")
         T:UnregisterEvent("PLAYER_REGEN_DISABLED")
+    end
+
+    -- targetedBy includeSelf
+    local targetedByEnabled
+    for _, line in next, config.lines do
+        if line.type == "targetedBy" then
+            targetedByEnabled = line.enabled
+            break
+        end
+    end
+    if targetedByEnabled then
+        T:RegisterEvent("UNIT_TARGET", UNIT_TARGET)
+    else
+        groupTargetChanged = nil
+        T:UnregisterEvent("UNIT_TARGET")
     end
 
     -- WORLD_CURSOR_TOOLTIP_UPDATE
