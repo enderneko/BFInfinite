@@ -38,7 +38,8 @@ local defaults = {
         {type = "npc_faction", enabled = true},
         {type = "npc_pvp", enabled = true},
         {type = "target", enabled = true},
-        {type = "targetedBy", enabled = true, includeSelf = true, enChars = 5, nonEnChars = 2},
+        {type = "mythic_plus_rating", enabled = true, showBestRunLevel = true},
+        {type = "targeted_by", enabled = true, includeSelf = true, enChars = 5, nonEnChars = 2},
     },
 }
 

@@ -19,8 +19,11 @@ local GetAuraDataByIndex = C_UnitAuras.GetAuraDataByIndex
 local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
 local UnpackAuraData = AuraUtil.UnpackAuraData
 
-local tooltipAnchor
+local GetPlayerMythicPlusRatingSummary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary
+local GetDungeonScoreRarityColor = C_ChallengeMode.GetDungeonScoreRarityColor
 local GetWorldCursor = C_TooltipInfo.GetWorldCursor
+
+local WrapTextInColor = WrapTextInColor
 local InCombatLockdown = InCombatLockdown
 local UnitExists = UnitExists
 local UnitIsUnit = UnitIsUnit
@@ -38,6 +41,8 @@ local strfind = strfind
 local format = format
 local tconcat = table.concat
 local utf8sub = string.utf8sub
+
+local tooltipAnchor
 
 ---------------------------------------------------------------------
 -- IsWorldUnitTooltip
@@ -225,6 +230,7 @@ local genders = {UNKNOWN, _G.MALE, _G.FEMALE}
 local AI_RACE_MATCHER = TOOLTIP_UNIT_LEVEL_RACE:gsub("%%s", "[0-9?]+", 1):gsub("%%s", "(.+)")
 local TARGET = _G.TARGET .. ": %s"
 local YOU = _G.YOU .. "!"
+local CHALLENGE_COMPLETE_DUNGEON_SCORE = _G.CHALLENGE_COMPLETE_DUNGEON_SCORE
 
 --? UNUSED
 -- local function UpdateLine(tooltip, line, text, r, g, b)
@@ -307,6 +313,9 @@ end
 local targetedBy = {}
 local targetedByFormat = "%s (|cffffffff%d|r): %s"
 local targetedBySep = AF.WrapTextInColor(", ", "gray")
+local guildFormat = "<" .. AF.WrapTextInColor("%s", "guild") .. ">"
+local bracketFormat = AF.WrapTextInColor(" (%d)", "gray")
+local mythicPlusFormat = "%s" .. bracketFormat
 
 local function GetLevel(unit)
     local r, g, b = AF.GetLevelColor(unit)
@@ -396,12 +405,12 @@ local lineFormatters = {
             if realm then
                 name = name .. "-" .. realm
             end
-            local fmt = "<" .. AF.WrapTextInColor("%s", "guild") .. ">"
+            local fmt = guildFormat
             if config.showRankName then
                 fmt = fmt .. " %s"
             end
             if config.showRankIndex then
-                fmt = fmt .. AF.WrapTextInColor(" (%d)", "gray")
+                fmt = fmt .. bracketFormat
             end
             tooltip:AddLine(format(fmt, name, rank, index), 1, 1, 1)
         end
@@ -453,7 +462,7 @@ local lineFormatters = {
         end
     end,
 
-    targetedBy = function(config, tooltip, unit, isPlayer, isNotSpecified)
+    targeted_by = function(config, tooltip, unit, isPlayer, isNotSpecified)
         if not IsInGroup() then return end
         wipe(targetedBy)
 
@@ -482,6 +491,29 @@ local lineFormatters = {
         if num > 0 then
             tooltip:AddLine(format(targetedByFormat, L["Targeted By"], num, tconcat(targetedBy, targetedBySep)), nil, nil, nil, true)
         end
+    end,
+
+    mythic_plus_rating = function(config, tooltip, unit, isPlayer, isNotSpecified)
+        if not isPlayer then return end
+        local info = GetPlayerMythicPlusRatingSummary(unit)
+        if not (info and info.currentSeasonScore) then return end
+
+        local score = info.currentSeasonScore
+        score = WrapTextInColor(score, GetDungeonScoreRarityColor(score))
+
+        if config.showBestRunLevel and info.runs then
+            local bestRunLevel = 0
+            for _, run in next, info.runs do
+                if run.finishedSuccess and run.bestRunLevel > bestRunLevel then
+                    bestRunLevel = run.bestRunLevel
+                end
+            end
+            if bestRunLevel > 0 then
+                score = format(mythicPlusFormat, score, bestRunLevel)
+            end
+        end
+
+        tooltip:AddLine(format(CHALLENGE_COMPLETE_DUNGEON_SCORE, score))
     end,
 }
 
