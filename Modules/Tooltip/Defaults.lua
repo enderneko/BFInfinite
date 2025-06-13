@@ -37,9 +37,10 @@ local defaults = {
         {type = "spec", enabled = true},
         {type = "npc_faction", enabled = true},
         {type = "npc_pvp", enabled = true},
-        {type = "target", enabled = true},
         {type = "mythic_plus_rating", enabled = true, showBestRunLevel = true},
+        {type = "target", enabled = true},
         {type = "targeted_by", enabled = true, includeSelf = true, enChars = 5, nonEnChars = 2},
+        {type = "mount", enabled = true, showIfOutOfCombat = true},
     },
 }
 

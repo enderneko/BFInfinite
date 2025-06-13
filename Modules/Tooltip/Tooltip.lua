@@ -227,10 +227,11 @@ local BOSS = _G.BOSS
 local RARE = _G.MAP_LEGEND_RARE
 -- local RAREELITE = _G.MAP_LEGEND_RAREELITE
 local genders = {UNKNOWN, _G.MALE, _G.FEMALE}
-local AI_RACE_MATCHER = TOOLTIP_UNIT_LEVEL_RACE:gsub("%%s", "[0-9?]+", 1):gsub("%%s", "(.+)")
+local AI_RACE_MATCHER = _G.TOOLTIP_UNIT_LEVEL_RACE:gsub("%%s", "[0-9?]+", 1):gsub("%%s", "(.+)")
 local TARGET = _G.TARGET .. ": %s"
 local YOU = _G.YOU .. "!"
 local CHALLENGE_COMPLETE_DUNGEON_SCORE = _G.CHALLENGE_COMPLETE_DUNGEON_SCORE
+local RENOWN_REWARD_MOUNT_NAME_FORMAT = _G.RENOWN_REWARD_MOUNT_NAME_FORMAT:gsub("%%s", "|cffffffff%%s|r%%s")
 
 --? UNUSED
 -- local function UpdateLine(tooltip, line, text, r, g, b)
@@ -515,6 +516,16 @@ local lineFormatters = {
 
         tooltip:AddLine(format(CHALLENGE_COMPLETE_DUNGEON_SCORE, score))
     end,
+
+    mount = function(config, tooltip, unit, isPlayer, isNotSpecified)
+        if not isPlayer then return end
+        if config.showIfOutOfCombat and InCombatLockdown() then return end
+
+        local mountInfo = M.GetMountInfoFromUnit(unit)
+        if mountInfo and mountInfo.name then
+            tooltip:AddLine(format(RENOWN_REWARD_MOUNT_NAME_FORMAT, mountInfo.name, AF.GetIconString(mountInfo.isCollected and "Fluent_Color_Yes" or "Fluent_Color_No")))
+        end
+    end,
 }
 
 --! save tooltip lines added by other addons ------------------------
@@ -712,10 +723,13 @@ local function UpdateAuraTooltip(tooltip, auraData)
     end
 
     local mountInfo = M.GetMountInfoFromSpell(auraData.spellId)
-    if mountInfo and mountInfo.source then
-        tooltip:AddLine(" ")
-        tooltip:AddLine(mountInfo.source, 1, 1, 1)
-        -- print(string.gsub(mountInfo.source, "|", "||"))
+    if mountInfo then
+        tooltip:AddDoubleLine("MountID", mountInfo.id, nil, nil, nil, 1, 1, 1)
+        if mountInfo.source then
+            tooltip:AddLine(" ")
+            tooltip:AddLine(mountInfo.source, 1, 1, 1)
+            -- print(string.gsub(mountInfo.source, "|", "||"))
+        end
     end
 
     tooltip:Show()
