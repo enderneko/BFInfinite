@@ -39,7 +39,7 @@ function M.GetMountInfo(mountID)
     return mountInfo[mountID]
 end
 
-function M.GetMountInfoBySpellID(spellID)
+function M.GetMountInfoFromSpell(spellID)
     local mountID = spellID and mountSpellToID[spellID]
     if not mountID then return end
     return M.GetMountInfo(mountID)

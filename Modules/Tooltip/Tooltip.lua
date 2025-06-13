@@ -711,7 +711,7 @@ local function UpdateAuraTooltip(tooltip, auraData)
         tooltip:AddDoubleLine(utf8sub(_G.SOURCE, 1, -2), AF.WrapTextInColorRGB(name, r, g, b))
     end
 
-    local mountInfo = M.GetMountInfoBySpellID(auraData.spellId)
+    local mountInfo = M.GetMountInfoFromSpell(auraData.spellId)
     if mountInfo and mountInfo.source then
         tooltip:AddLine(" ")
         tooltip:AddLine(mountInfo.source, 1, 1, 1)
@@ -736,12 +736,12 @@ local function GameTooltip_RefreshData()
     if GameTooltip:IsForbidden() or not lastAuraData then return end
 
     local info = GameTooltip:GetPrimaryTooltipInfo()
-    if not (info and info.tooltipData and info.getterArgs) then return end
+    if not (info and info.tooltipData) then return end
 
     -- if not (lastDataInstanceID and GameTooltip:HasDataInstanceID(lastDataInstanceID + 1)) then return end
-    if info.tooltipData.dataInstanceID ~= lastDataInstanceID + 1 then return end
+    -- if info.tooltipData.dataInstanceID ~= lastDataInstanceID + 1 then return end
 
-    if info.getterArgs[2] == lastAuraData.auraInstanceID then
+    if info.tooltipData.id == lastAuraData.spellId then
         UpdateAuraTooltip(GameTooltip, lastAuraData)
     end
 end
