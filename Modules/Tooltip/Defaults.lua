@@ -41,6 +41,7 @@ local defaults = {
         {type = "target", enabled = true},
         {type = "targeted_by", enabled = true, includeSelf = true, enChars = 5, nonEnChars = 2},
         {type = "mount", enabled = true, showIfOutOfCombat = true},
+        {type = "item_level", enabled = true},
     },
 }
 

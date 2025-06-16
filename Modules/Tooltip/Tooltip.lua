@@ -5,6 +5,7 @@ local L = BFI.L
 local M = BFI.Misc
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
+local IL = AF.ItemLevel
 
 local GameTooltip = GameTooltip
 local GameTooltipStatusBar = GameTooltipStatusBar
@@ -43,6 +44,7 @@ local tconcat = table.concat
 local utf8sub = string.utf8sub
 
 local tooltipAnchor
+local combatModifierKey, itemLevelEnabled
 
 ---------------------------------------------------------------------
 -- IsWorldUnitTooltip
@@ -161,12 +163,42 @@ end
 ---------------------------------------------------------------------
 -- toggle visibility in combat with modifier key
 ---------------------------------------------------------------------
+local function RefreshData()
+    GameTooltip:RefreshData()
+end
+
+local function ShowItemLevel(_, unit)
+    if unit and unit ~= "mouseover" then return end
+    if not (UnitExists("mouseover") and UnitIsPlayer("mouseover")) then return end
+
+    local itemLevel, elapsed = IL.GetCache(UnitGUID("mouseover"))
+    if itemLevel and elapsed < 120 then
+        AF.UnregisterCallback("AF_UNIT_ITEM_LEVEL_UPDATE")
+        RefreshData()
+    else
+        -- print("REGISTER AF_UNIT_ITEM_LEVEL_UPDATE")
+        AF.RegisterCallback("AF_UNIT_ITEM_LEVEL_UPDATE", RefreshData)
+        IL.UpdateCache("mouseover")
+    end
+end
+
 local function MODIFIER_STATE_CHANGED(_, _, key, down)
-    if not GameTooltip:IsForbidden() and InCombatLockdown() and IsWorldUnitTooltip() and key:find(T.config.combatModifierKey) then
+    if GameTooltip:IsForbidden() then return end
+
+    if combatModifierKey and InCombatLockdown() and IsWorldUnitTooltip() and key:find(combatModifierKey) then
         if down == 1 then
             GameTooltip:SetWorldCursor(Enum.WorldCursorAnchorType.Default)
         else
             GameTooltip:Hide()
+        end
+    end
+
+    if itemLevelEnabled and not InCombatLockdown() and key:find("ALT") then
+        if down == 1 then
+            GameTooltip:RefreshData()
+            ShowItemLevel()
+        else
+            GameTooltip:RefreshData()
         end
     end
 end
@@ -229,9 +261,11 @@ local RARE = _G.MAP_LEGEND_RARE
 local genders = {UNKNOWN, _G.MALE, _G.FEMALE}
 local AI_RACE_MATCHER = _G.TOOLTIP_UNIT_LEVEL_RACE:gsub("%%s", "[0-9?]+", 1):gsub("%%s", "(.+)")
 local TARGET = _G.TARGET .. ": %s"
-local YOU = _G.YOU .. "!"
+local YOU = AF.WrapTextInColor(_G.YOU .. "!", "firebrick")
 local CHALLENGE_COMPLETE_DUNGEON_SCORE = _G.CHALLENGE_COMPLETE_DUNGEON_SCORE
 local RENOWN_REWARD_MOUNT_NAME_FORMAT = _G.RENOWN_REWARD_MOUNT_NAME_FORMAT:gsub("%%s", "|cffffffff%%s|r%%s")
+local CHARACTER_LINK_ITEM_LEVEL_TOOLTIP = _G.CHARACTER_LINK_ITEM_LEVEL_TOOLTIP:gsub("%%d", "|cffffffff%%s|r")
+local CALCULATING = AF.WrapTextInColor(L["Calculating..."], "gray")
 
 --? UNUSED
 -- local function UpdateLine(tooltip, line, text, r, g, b)
@@ -453,7 +487,7 @@ local lineFormatters = {
         if not UnitExists(unit) then return end
 
         if UnitIsUnit(unit, "player") then
-            tooltip:AddLine(TARGET:format(AF.WrapTextInColor(YOU, "firebrick")))
+            tooltip:AddLine(TARGET:format(YOU))
         else
             local name = GetUnitName(unit)
             if name then
@@ -524,6 +558,19 @@ local lineFormatters = {
         local mountInfo = M.GetMountInfoFromUnit(unit)
         if mountInfo and mountInfo.name then
             tooltip:AddLine(format(RENOWN_REWARD_MOUNT_NAME_FORMAT, mountInfo.name, AF.GetIconString(mountInfo.isCollected and "Fluent_Color_Yes" or "Fluent_Color_No")))
+        end
+    end,
+
+    item_level = function(config, tooltip, unit, isPlayer, isNotSpecified)
+        if not (isPlayer and IsAltKeyDown()) then return end
+        if InCombatLockdown() then return end
+
+        local itemLevel, elapsed = IL.GetCache(UnitGUID(unit))
+        if itemLevel and elapsed < 120 then
+            tooltip:AddLine(format(CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, itemLevel))
+        else
+            tooltip:AddLine(format(CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, CALCULATING))
+            ShowItemLevel()
         end
     end,
 }
@@ -826,15 +873,17 @@ local function UpdateTooltip(_, module, which)
     AF.UpdateMoverSave(tooltipAnchor, config.position)
     AF.LoadPosition(tooltipAnchor, config.position)
 
+    -- modifier keys
+    T:RegisterEvent("MODIFIER_STATE_CHANGED", MODIFIER_STATE_CHANGED)
+
     -- combat modifier key
-    if config.combatModifierKey then
-        IsModifierKeyDown = modifiers[config.combatModifierKey]
-        T:RegisterEvent("MODIFIER_STATE_CHANGED", MODIFIER_STATE_CHANGED)
+    combatModifierKey = config.combatModifierKey
+    if combatModifierKey then
+        IsModifierKeyDown = modifiers[combatModifierKey]
         T:RegisterEvent("PLAYER_REGEN_ENABLED", PLAYER_REGEN_ENABLED)
         T:RegisterEvent("PLAYER_REGEN_DISABLED", PLAYER_REGEN_DISABLED)
     else
         IsModifierKeyDown = AF.noop_true
-        T:UnregisterEvent("MODIFIER_STATE_CHANGED")
         T:UnregisterEvent("PLAYER_REGEN_ENABLED")
         T:UnregisterEvent("PLAYER_REGEN_DISABLED")
     end
@@ -848,7 +897,10 @@ local function UpdateTooltip(_, module, which)
                 groupTargetChanged = nil
                 T:UnregisterEvent("UNIT_TARGET")
             end
-            break
+        elseif line.type == "item_level" then
+            if line.enabled then
+                itemLevelEnabled = true
+            end
         end
     end
 
