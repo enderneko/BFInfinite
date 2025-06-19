@@ -118,7 +118,9 @@ function A.InitAuraButton(button)
     AF.ApplyDefaultBackdropColors(button)
 
     -- click
-    button:RegisterForClicks("RightButtonUp", "RightButtonDown")
+    -- NOTE: RegisterForClicks is protected for secure frames since 11.1.7
+    -- moved to BFIAuraButtonTemplate.xml
+    -- button:RegisterForClicks("RightButtonUp", "RightButtonDown")
 
     -- event
     button:SetScript("OnEnter", Button_OnEnter)
