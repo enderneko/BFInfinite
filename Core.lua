@@ -45,9 +45,8 @@ function eventHandler:ADDON_LOADED(arg)
 end
 
 AF.RegisterCallback("AF_PLAYER_DATA_UPDATE", function(_, isLogin)
-    if isLogin then
-        AF.Fire("BFI_DisableBlizzard")
-        AF.Fire("BFI_StyleBlizzard")
-    end
+    AF.UnregisterCallback("AF_PLAYER_DATA_UPDATE", "BFI_Init")
+    AF.Fire("BFI_DisableBlizzard")
+    AF.Fire("BFI_StyleBlizzard")
     AF.Fire("BFI_UpdateModules")
-end)
+end, "high", "BFI_Init")
