@@ -426,6 +426,15 @@ function SetupSecureSnippets(button)
             -- send a notification to the insecure code
             self:CallMethod("ButtonContentsChanged", state, "empty", nil)
         end
+
+        -- hide the flyout
+        if GetActionInfo(self:GetAttribute("action")) == "flyout" then
+            local flyoutHandler = self:GetParent():GetFrameRef("flyoutHandler")
+            if flyoutHandler then
+                flyoutHandler:Hide()
+            end
+        end
+
         -- return the button contents for pickup
         return self:RunAttribute("PickupButton", type, action)
     ]])
@@ -2106,7 +2115,7 @@ function Update(self, which)
 
     UpdateSpellHighlight(self)
 
-    UpdateRegisterClicks(self)
+    -- UpdateRegisterClicks(self)
 
     if GameTooltip_GetOwnerForbidden() == self then
         UpdateTooltip(self)
@@ -2291,7 +2300,7 @@ function UpdateCooldown(self)
     local hasCooldown = enable and enable ~= 0 and start and duration and start > 0 and duration > 0
 
     if self.config.desaturateOnCooldown then
-        self.icon:SetDesaturated(hasCooldown and duration > 1.5)
+        self.icon:SetDesaturated(hasCooldown and duration > 1.875)
     else
         self.icon:SetDesaturated(false)
     end
