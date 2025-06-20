@@ -8,33 +8,6 @@ local AF = _G.AbstractFramework
 ---------------------------------------------------------------------
 -- remove blizzard textures
 ---------------------------------------------------------------------
--- local BlizzardFrames = {
---     "ArtOverlayFrame",
---     "Background",
---     "Bg",
---     "BG",
---     "bgLeft",
---     "bgRight",
---     "border",
---     "Border",
---     "BorderFrame",
---     "bottomInset",
---     "BottomInset",
---     "FilligreeOverlay",
---     "inset",
---     "Inset",
---     "InsetFrame",
---     "LeftInset",
---     "NineSlice",
---     "portrait",
---     "Portrait",
---     "PortraitOverlay",
---     "RightInset",
---     "ScrollDownBorder",
---     "ScrollFrameBorder",
---     "ScrollUpBorder",
--- }
-
 function S.RemoveTextures(region)
     if not region then return end
 
@@ -66,7 +39,7 @@ end
 ---------------------------------------------------------------------
 -- create backdrop
 ---------------------------------------------------------------------
-function S.CreateBackdrop(region, noBackground, isOutside, relativeFrameLevel)
+function S.CreateBackdrop(region, noBackground, offset, relativeFrameLevel)
     if region.BFIBackdrop then return end
 
     local backdropParent = (region.IsObjectType and region:IsObjectType("Texture") and region:GetParent()) or region
@@ -78,10 +51,12 @@ function S.CreateBackdrop(region, noBackground, isOutside, relativeFrameLevel)
         AF.ApplyDefaultBackdropWithColors(region.BFIBackdrop)
     end
 
-    if isOutside then
-        AF.SetOnePixelOutside(region.BFIBackdrop, region)
-    else
+    if not offset or offset == 0 then
         region.BFIBackdrop:SetAllPoints(region)
+    elseif offset > 0 then
+        AF.SetOutside(region.BFIBackdrop, region, offset, offset)
+    else
+        AF.SetInside(region.BFIBackdrop, region, -offset, -offset)
     end
 
     AF.SetFrameLevel(region.BFIBackdrop, relativeFrameLevel or 0)
@@ -274,6 +249,129 @@ local function StyleCloseButton(button)
         AF.SetPoint(button.BFIIcon, "CENTER")
         AF.SetSize(button.BFIIcon, 14, 14)
         button.BFIIcon:SetTexture(AF.GetIcon("Close"))
+    end
+end
+
+---------------------------------------------------------------------
+-- progress bar
+---------------------------------------------------------------------
+function S.StyleProgressBar(bar)
+    assert(bar, "StyleProgressBar: bar is nil")
+
+    if bar._BFIStyled then return end
+    bar._BFIStyled = true
+
+    S.RemoveTextures(bar)
+    S.CreateBackdrop(bar, nil, 1)
+    bar:SetStatusBarTexture(BFI.media.bar)
+end
+
+---------------------------------------------------------------------
+-- dropdown button
+---------------------------------------------------------------------
+function S.StyleDropdownButton(button)
+    assert(button, "StyleDropdownButton: button is nil")
+
+    if button._BFIStyled then return end
+    button._BFIStyled = true
+
+    S.RemoveTextures(button)
+    AF.ApplyDefaultBackdropWithColors(button, "widget")
+
+    if button.Arrow then button.Arrow:SetAlpha(0) end
+    if button.Button then button.Button:SetAlpha(0) end
+
+    -- local button = AF.CreateButton(dropdown, nil, "BFI_hover", 20)
+    -- AF.SetPoint(button, "TOPRIGHT", -2, -2)
+    -- AF.SetPoint(button, "BOTTOMRIGHT", -2, 2)
+    -- button:SetTexture(AF.GetIcon("ArrowDown1"), {16, 16}, {"CENTER", 0, 0})
+
+    local arrow = AF.CreateTexture(button, AF.GetIcon("ArrowDown_Small"), "darkgray")
+    button.BFIArrow = arrow
+    AF.SetSize(arrow, 16, 16)
+    AF.SetPoint(arrow, "RIGHT", -5, 0)
+
+    button:HookScript("OnEnter", function(self)
+        self.BFIArrow:SetVertexColor(AF.GetColorRGB("white", nil, 0.9))
+    end)
+    button:HookScript("OnLeave", function(self)
+        self.BFIArrow:SetVertexColor(AF.GetColorRGB("darkgray"))
+    end)
+
+    -- button:SetScript("OnClick", function()
+    --     if dropdown:IsMenuOpen() then
+    --         print("StyleDropdown: CloseMenu")
+    --         dropdown:CloseMenu()
+    --     -- else
+    --     --     print("StyleDropdown: OpenMenu")
+    --     --     dropdown:OpenMenu()
+    --     end
+    -- end)
+end
+
+---------------------------------------------------------------------
+-- scroll bar
+---------------------------------------------------------------------
+local function StyleScrollBarArrow(arrow, texture)
+    arrow.Texture:SetAlpha(0)
+
+    texture = AF.GetIcon(texture)
+    arrow:SetNormalTexture(texture)
+    -- arrow:SetPushedTexture(texture)
+    arrow:SetDisabledTexture(texture)
+    arrow:SetHighlightTexture(texture)
+
+    local normalTex = arrow:GetNormalTexture()
+    -- local pushedTex = arrow:GetPushedTexture()
+    local disabledTex = arrow:GetDisabledTexture()
+    local highlightTex = arrow:GetHighlightTexture()
+
+    normalTex:SetVertexColor(AF.GetColorRGB("darkgray"))
+    disabledTex:SetVertexColor(AF.GetColorRGB("disabled"))
+    highlightTex:SetVertexColor(AF.GetColorRGB("white", 0.5))
+
+    AF.SetSize(arrow, 16, 16)
+end
+
+local function ScorllThumb_OnEnter(self)
+    self:SetBackdropColor(self.r, self.g, self.b, 0.9)
+end
+
+local function ScorllThumb_OnLeave(self)
+    self:SetBackdropColor(self.r, self.g, self.b, 0.7)
+end
+
+function S.StyleScrollBar(scrollBar)
+    assert(scrollBar, "StyleScrollBar: scrollBar is nil")
+
+    if scrollBar._BFIStyled then return end
+    scrollBar._BFIStyled = true
+
+    S.RemoveTextures(scrollBar)
+    StyleScrollBarArrow(scrollBar.Back, "ArrowUp_Small")
+    StyleScrollBarArrow(scrollBar.Forward, "ArrowDown_Small")
+
+    if scrollBar.Track then
+        S.RemoveTextures(scrollBar.Track)
+        AF.ApplyDefaultBackdropWithColors(scrollBar.Track, "widget")
+    end
+
+    local thumb = scrollBar:GetThumb()
+    if thumb then
+        thumb:DisableDrawLayer("ARTWORK")
+        thumb:DisableDrawLayer("BACKGROUND")
+
+        local newThumb = AF.CreateBorderedFrame(thumb)
+        scrollBar.BFIThumb = newThumb
+        newThumb:SetAllPoints(thumb)
+
+        newThumb.r, newThumb.g, newThumb.b = AF.GetColorRGB("BFI")
+        newThumb:SetBackdropColor(newThumb.r, newThumb.g, newThumb.b, 0.7)
+
+        newThumb:SetScript("OnEnter", ScorllThumb_OnEnter)
+        newThumb:SetScript("OnLeave", ScorllThumb_OnLeave)
+        newThumb:EnableMouse(false)
+        newThumb:EnableMouseMotion(true)
     end
 end
 

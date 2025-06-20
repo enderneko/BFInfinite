@@ -20,6 +20,10 @@ local EquipmentFlyoutFrameHighlight = _G.EquipmentFlyoutFrameHighlight
 local EquipmentFlyoutFrameButtons = _G.EquipmentFlyoutFrameButtons
 local PaperDollSidebarTabs = _G.PaperDollSidebarTabs
 local CharacterModelScene = _G.CharacterModelScene
+local ReputationFrame = _G.ReputationFrame
+
+local IsFactionParagon = C_Reputation.IsFactionParagon
+local GetFactionParagonInfo = C_Reputation.GetFactionParagonInfo
 
 ---------------------------------------------------------------------
 -- tabs
@@ -316,6 +320,116 @@ end
 -- end
 
 ---------------------------------------------------------------------
+-- header
+---------------------------------------------------------------------
+local function Header_OnEnter(header)
+    header:SetBackdropColor(AF.GetColorRGB("sheet_highlight", 1))
+end
+
+local function Header_OnLeave(header)
+    header:SetBackdropColor(AF.GetColorRGB("widget"))
+end
+
+local function HeaderRight_UpdateCollapse(texture, atlas)
+    if not atlas or atlas == "Options_ListExpand_Right" or atlas == "Options_ListExpand_Right_Expanded" then
+        if texture:GetParent():IsCollapsed() then
+            texture:SetTexture(AF.GetIcon("Plus_Small"))
+            -- texture:SetAtlas("glues-characterSelect-icon-plus")
+            -- texture:SetAtlas("QuestLog-icon-Expand", true)
+        else
+            texture:SetTexture(AF.GetIcon("Minus_Small"))
+            -- texture:SetAtlas("glues-characterSelect-icon-minus")
+            -- texture:SetAtlas("QuestLog-icon-shrink", true)
+        end
+        texture:SetSize(16, 16)
+    end
+end
+
+local function HeaderRight_Style(right)
+    right:ClearAllPoints()
+    right:SetPoint("RIGHT", -5, 0)
+    right:SetAlpha(0.5)
+    -- right:SetDesaturated(true)
+    HeaderRight_UpdateCollapse(right)
+    hooksecurefunc(right, "SetAtlas", HeaderRight_UpdateCollapse)
+end
+
+local function StyleHeader(header)
+    if header._BFIStyled then return end
+    header._BFIStyled = true
+
+    S.RemoveTextures(header)
+
+    header.Right:SetDrawLayer("ARTWORK")
+    HeaderRight_Style(header.Right)
+    HeaderRight_Style(header.HighlightRight)
+
+    AF.ApplyDefaultBackdropWithColors(header, "widget")
+    header:HookScript("OnEnter", Header_OnEnter)
+    header:HookScript("OnLeave", Header_OnLeave)
+end
+
+---------------------------------------------------------------------
+-- entry
+---------------------------------------------------------------------
+local function StyleEntry(entry)
+    if entry._BFIStyled then return end
+    entry._BFIStyled = true
+
+    local content = entry.Content
+    content.BackgroundHighlight.Middle:SetAllPoints()
+    content.BackgroundHighlight.Left:SetAlpha(0)
+    content.BackgroundHighlight.Right:SetAlpha(0)
+    S.StyleProgressBar(content.ReputationBar)
+end
+
+---------------------------------------------------------------------
+-- reputation frame
+---------------------------------------------------------------------
+local function UpdateParagon(frame)
+    -- reputation (paragon)
+    local factionID = frame.factionID
+    if factionID then
+        if factionID and IsFactionParagon(factionID) then
+            local current, threshold, _, hasRewardPending = GetFactionParagonInfo(factionID)
+            -- print(C_Reputation.GetFactionDataByID(factionID).name, hasRewardPending)
+
+            local icon = frame.Content.ParagonIcon
+            icon.Icon:SetDesaturated(not hasRewardPending)
+            icon.Highlight:SetDesaturated(not hasRewardPending)
+
+            -- if current and threshold then
+            --     local bar = frame.Content.ReputationBar
+            --     bar:SetMinMaxValues(0, threshold)
+            --     bar:SetValue(current % threshold)
+            -- end
+        end
+    end
+end
+
+local function ReputationFrame_ScrollBox_Update(scroll)
+    scroll:ForEachFrame(function(frame)
+        -- if frame.elementData.isHeader and not frame.elementData.isHeaderWithRep then
+        if frame.Right then
+            StyleHeader(frame)
+        else
+            StyleEntry(frame)
+            UpdateParagon(frame)
+        end
+    end)
+end
+
+local function StyleReputationFrame()
+    -- local backdrop = AF.CreateBorderedFrame(ReputationFrame)
+    -- backdrop:SetAllPoints(CharacterFrameInset)
+
+    S.StyleDropdownButton(ReputationFrame.filterDropdown)
+    S.StyleScrollBar(ReputationFrame.ScrollBar)
+
+    hooksecurefunc(ReputationFrame.ScrollBox, "Update", ReputationFrame_ScrollBox_Update)
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function StyleBlizzard()
@@ -332,5 +446,6 @@ local function StyleBlizzard()
     StyleCharacterFrameInset()
     StyleCharacterFrameInsetRight()
     -- StyleNameAndLevel()
+    StyleReputationFrame()
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)

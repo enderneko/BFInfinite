@@ -27,6 +27,7 @@ local function StyleMenu(menu)
     AF.SetPoint(menu.BFIBackdrop, "BOTTOMRIGHT", menu, 0, 8)
 
     -- texplore({menu:GetChildren()})
+    -- TODO: .ScrollBar
 end
 
 local function Manager_OpenMenu(manager, ownerRegion, menuDescription)

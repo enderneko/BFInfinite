@@ -28,7 +28,7 @@ local function GameTooltip_ShowStatusBar(tooltip)
     if not bar or bar.BFIBackdrop then return end
 
     S.RemoveTextures(bar)
-    S.CreateBackdrop(bar, nil, true)
+    S.CreateBackdrop(bar, nil, 1)
     bar:SetStatusBarTexture(BFI.media.bar)
 end
 
@@ -47,9 +47,7 @@ local function GameTooltip_ShowProgressBar(tooltip)
     bar = bar.Bar
     if bar.BFIBackdrop then return end
 
-    S.RemoveTextures(bar)
-    S.CreateBackdrop(bar, nil, true)
-    bar:SetStatusBarTexture(BFI.media.bar)
+    S.StyleProgressBar(bar)
 end
 
 ---------------------------------------------------------------------
@@ -88,7 +86,7 @@ local function StyleBlizzard(_, which)
     bar:ClearAllPoints()
     AF.SetPoint(bar, "TOPLEFT", _G.GameTooltip, "BOTTOMLEFT", 1, 0)
     AF.SetPoint(bar, "TOPRIGHT", _G.GameTooltip, "BOTTOMRIGHT", -1, 0)
-    S.CreateBackdrop(bar, nil, true)
+    S.CreateBackdrop(bar, nil, 1)
     AF.AddToPixelUpdater(bar)
 
     -- hook
