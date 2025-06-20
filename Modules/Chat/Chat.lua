@@ -214,7 +214,7 @@ local function GetTab(frame)
         hooksecurefunc(tab, "SetAlpha", FixTabAlpha)
 
         tab.underline = AF.CreateSeparator(tab, nil, 1, BFI.name)
-        AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -2)
+        AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -3)
         tab.underline:Hide()
         tab:HookScript("OnClick", HideChatCopyFrame)
     end
