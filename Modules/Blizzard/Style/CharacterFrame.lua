@@ -21,6 +21,7 @@ local EquipmentFlyoutFrameButtons = _G.EquipmentFlyoutFrameButtons
 local PaperDollSidebarTabs = _G.PaperDollSidebarTabs
 local CharacterModelScene = _G.CharacterModelScene
 local ReputationFrame = _G.ReputationFrame
+local TokenFrame = _G.TokenFrame
 
 local IsFactionParagon = C_Reputation.IsFactionParagon
 local GetFactionParagonInfo = C_Reputation.GetFactionParagonInfo
@@ -377,10 +378,15 @@ local function StyleEntry(entry)
     entry._BFIStyled = true
 
     local content = entry.Content
-    content.BackgroundHighlight.Middle:SetAllPoints()
-    content.BackgroundHighlight.Left:SetAlpha(0)
-    content.BackgroundHighlight.Right:SetAlpha(0)
-    S.StyleProgressBar(content.ReputationBar)
+    if content then
+        content.BackgroundHighlight.Middle:SetAllPoints()
+        content.BackgroundHighlight.Left:SetAlpha(0)
+        content.BackgroundHighlight.Right:SetAlpha(0)
+
+        if content.ReputationBar then
+            S.StyleProgressBar(content.ReputationBar)
+        end
+    end
 end
 
 ---------------------------------------------------------------------
@@ -422,11 +428,36 @@ end
 local function StyleReputationFrame()
     -- local backdrop = AF.CreateBorderedFrame(ReputationFrame)
     -- backdrop:SetAllPoints(CharacterFrameInset)
-
     S.StyleDropdownButton(ReputationFrame.filterDropdown)
     S.StyleScrollBar(ReputationFrame.ScrollBar)
-
     hooksecurefunc(ReputationFrame.ScrollBox, "Update", ReputationFrame_ScrollBox_Update)
+end
+
+---------------------------------------------------------------------
+-- token frame
+---------------------------------------------------------------------
+local function TokenFrame_ScrollBox_Update(scroll)
+    scroll:ForEachFrame(function(frame)
+        if frame.Right then
+            StyleHeader(frame)
+        else
+            StyleEntry(frame)
+        end
+    end)
+end
+
+local function StyleTokenFrame()
+    S.StyleDropdownButton(TokenFrame.filterDropdown)
+    S.StyleScrollBar(TokenFrame.ScrollBar)
+
+    local tex = AF.GetIcon("History", BFI.name)
+    local b = TokenFrame.CurrencyTransferLogToggleButton
+    b.NormalTexture:SetTexture(tex)
+    b.NormalTexture:SetVertexColor(AF.GetColorRGB("gray"))
+    b.HighlightTexture:SetTexture(tex)
+    b.PushedTexture:SetTexture(tex)
+
+    hooksecurefunc(TokenFrame.ScrollBox, "Update", TokenFrame_ScrollBox_Update)
 end
 
 ---------------------------------------------------------------------
@@ -447,5 +478,6 @@ local function StyleBlizzard()
     StyleCharacterFrameInsetRight()
     -- StyleNameAndLevel()
     StyleReputationFrame()
+    StyleTokenFrame()
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
