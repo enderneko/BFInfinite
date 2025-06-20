@@ -12,4 +12,5 @@
 
     <!-- style -->
     <Script file="Style\Tooltip.lua"/>
+    <Script file="Style\Menu.lua"/>
 </Ui>
