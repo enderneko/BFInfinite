@@ -188,7 +188,7 @@ local function StyleStatsPaneCategory(frame)
     S.RemoveTextures(frame)
     AF.ApplyDefaultBackdropWithColors(frame)
     AF.SetSize(frame, 177, 17)
-    AF.AddToPixelUpdater(frame)
+    AF.AddToCustomPixelUpdater("BFIStyled", frame)
 
     hooksecurefunc(frame, "SetPoint", function(_, point, anchorTo, relativePoint, xOffset, yOffset, fix)
         if not fix then
@@ -385,6 +385,10 @@ local function StyleEntry(entry)
 
         if content.ReputationBar then
             S.StyleProgressBar(content.ReputationBar)
+        end
+
+        if content.CurrencyIcon then
+            S.StyleIcon(content.CurrencyIcon, true)
         end
     end
 end

@@ -60,7 +60,7 @@ function S.CreateBackdrop(region, noBackground, offset, relativeFrameLevel)
     end
 
     AF.SetFrameLevel(region.BFIBackdrop, relativeFrameLevel or 0)
-    AF.AddToPixelUpdater(region.BFIBackdrop)
+    AF.AddToCustomPixelUpdater("BFIStyled", region.BFIBackdrop)
 end
 
 ---------------------------------------------------------------------
@@ -227,7 +227,7 @@ local function StyleButton(button, color, hoverColor)
 
     RegisterMouseDownUp(button)
 
-    AF.AddToPixelUpdater(button)
+    AF.AddToCustomPixelUpdater("BFIStyled", button)
 end
 
 ---------------------------------------------------------------------
@@ -277,6 +277,7 @@ function S.StyleDropdownButton(button)
 
     S.RemoveTextures(button)
     AF.ApplyDefaultBackdropWithColors(button, "widget")
+    AF.AddToCustomPixelUpdater("BFIStyled", button)
 
     if button.Arrow then button.Arrow:SetAlpha(0) end
     if button.Button then button.Button:SetAlpha(0) end
@@ -290,6 +291,8 @@ function S.StyleDropdownButton(button)
     button.BFIArrow = arrow
     AF.SetSize(arrow, 16, 16)
     AF.SetPoint(arrow, "RIGHT", -5, 0)
+    AF.RemoveFromPixelUpdater(arrow)
+    AF.AddToCustomPixelUpdater("BFIStyled", arrow)
 
     button:HookScript("OnEnter", function(self)
         self.BFIArrow:SetVertexColor(AF.GetColorRGB("white", nil, 0.9))
@@ -354,6 +357,7 @@ function S.StyleScrollBar(scrollBar)
     if scrollBar.Track then
         S.RemoveTextures(scrollBar.Track)
         AF.ApplyDefaultBackdropWithColors(scrollBar.Track, "widget")
+        AF.AddToCustomPixelUpdater("BFIStyled", scrollBar.Track)
     end
 
     local thumb = scrollBar:GetThumb()
@@ -372,6 +376,9 @@ function S.StyleScrollBar(scrollBar)
         newThumb:SetScript("OnLeave", ScorllThumb_OnLeave)
         newThumb:EnableMouse(false)
         newThumb:EnableMouseMotion(true)
+
+        AF.RemoveFromPixelUpdater(newThumb)
+        AF.AddToCustomPixelUpdater("BFIStyled", newThumb)
     end
 end
 
@@ -431,12 +438,18 @@ function S.StylePortraitFrame(frame)
     frame.BFIBg:SetAllPoints(frame)
     AF.SetFrameLevel(frame.BFIBg)
 
+    AF.RemoveFromPixelUpdater(frame.BFIBg)
+    AF.AddToCustomPixelUpdater("BFIStyled", frame.BFIBg)
+
     -- title
     frame.BFIHeader = AF.CreateBorderedFrame(frame, nil, nil, nil, "header", "border")
     frame.BFIHeader:SetPoint("TOPLEFT")
     frame.BFIHeader:SetPoint("TOPRIGHT")
     AF.SetHeight(frame.BFIHeader, 20)
     AF.SetFrameLevel(frame.BFIHeader, 0, frame.TitleContainer)
+
+    AF.RemoveFromPixelUpdater(frame.BFIHeader)
+    AF.AddToCustomPixelUpdater("BFIStyled", frame.BFIHeader)
 
     frame.BFIHeader.tex = frame.BFIHeader:CreateTexture(nil, "ARTWORK")
     frame.BFIHeader.tex:SetColorTexture(AF.GetColorRGB("BFI", 0.025))
