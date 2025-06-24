@@ -98,7 +98,7 @@ function A.InitAuraButton(button)
     button.filter = button.header.filter
 
     button.LoadConfig = Button_LoadConfig
-    AF.AddToPixelUpdater(button, Button_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(button, Button_UpdatePixels)
 
     --
     button.SetDesaturated = AF.SetAuraDesaturated

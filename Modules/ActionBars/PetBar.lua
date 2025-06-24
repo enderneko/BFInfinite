@@ -22,7 +22,7 @@ local function CreatePetBar()
     petBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     petBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 
-    AF.AddToPixelUpdater(petBar)
+    AF.AddToPixelUpdater_Auto(petBar, nil, true)
 end
 
 ---------------------------------------------------------------------

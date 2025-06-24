@@ -18,7 +18,7 @@ end
 
 local function CreateThreatFrame()
     threatFrame = CreateFrame("Frame")
-    AF.AddToPixelUpdater(threatFrame, UpdatePixels)
+    AF.AddToPixelUpdater_Auto(threatFrame, UpdatePixels)
     AF.CreateMover(threatFrame, "BFI: " .. L["Data Bars"], L["Threats"])
 end
 

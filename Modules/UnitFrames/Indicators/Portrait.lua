@@ -238,7 +238,7 @@ function UF.CreatePortrait(parent, name)
     portrait.LoadConfig = Portrait_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(portrait, Portrait_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(portrait, Portrait_UpdatePixels)
 
     return portrait
 end

@@ -104,7 +104,7 @@ function UF.CreateMouseoverHighlight(parent, name)
     highlight.LoadConfig = MouseoverHighlight_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(highlight)
+    AF.AddToPixelUpdater_Auto(highlight)
 
     return highlight
 end

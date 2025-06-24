@@ -39,9 +39,6 @@ local function CreatePet()
     -- config mode
     UF.AddToConfigMode("pet", pet)
 
-    -- pixel perfect
-    -- AF.AddToPixelUpdater(pet)
-
     -- indicators
     UF.CreateIndicators(pet, indicators)
 end

@@ -78,7 +78,7 @@ local function CreateRaid()
     AF.CreateMover(raid, "BFI: " .. L["Unit Frames"], _G.RAID)
 
     -- pixel perfect
-    AF.AddToPixelUpdater(raid)
+    AF.AddToPixelUpdater_Auto(raid, nil, true)
 end
 
 ---------------------------------------------------------------------

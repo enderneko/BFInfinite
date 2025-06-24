@@ -349,7 +349,7 @@ function AB.CreateButton(parent, id, name)
         end)
     end
 
-    AF.AddToPixelUpdater(b)
+    AF.AddToPixelUpdater_Auto(b, nil, true)
 
     return b
 end
@@ -373,7 +373,7 @@ function AB.CreateStanceButton(parent, id)
     b.hotkey:SetShadowColor(0, 0, 0, 0)
     b.hotkey:SetShadowOffset(0, 0)
 
-    AF.AddToPixelUpdater(b)
+    AF.AddToPixelUpdater_Auto(b, nil, true)
 
     return b
 end
@@ -395,7 +395,7 @@ function AB.CreatePetButton(parent, id)
     -- b.hotkey:SetShadowColor(0, 0, 0, 0)
     -- b.hotkey:SetShadowOffset(0, 0)
 
-    AF.AddToPixelUpdater(b)
+    AF.AddToPixelUpdater_Auto(b, nil, true)
 
     return b
 end

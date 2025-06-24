@@ -66,7 +66,7 @@ function ZoneAbility_UpdateAbility()
 
             spellButton.holder = zoneAbilityHolder
             AB.StylizeButton(spellButton)
-            AF.AddToPixelUpdater(spellButton)
+            AF.AddToPixelUpdater_Auto(spellButton, nil, true)
 
             spellButton:SetScript("OnEnter", function()
                 GameTooltip:SetOwner(spellButton, "ANCHOR_NONE")
@@ -140,7 +140,7 @@ function ExtraAction_UpdateAbility(_, frame)
         AB.ApplyTextConfig(button.HotKey, extraActionHolder.font)
         button.HotKey:SetText(AB.GetHotkey(GetBindingKey(button.commandName)))
 
-        AF.AddToPixelUpdater(button)
+        AF.AddToPixelUpdater_Auto(button, nil, true)
 
         -- tooltip
         button.tooltip = AB.config.general.tooltip

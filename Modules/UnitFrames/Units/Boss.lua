@@ -46,7 +46,7 @@ local function CreateBoss()
     AF.CreateMover(boss, "BFI: " .. L["Unit Frames"], _G.BOSS)
 
     -- pixel perfect
-    AF.AddToPixelUpdater(boss)
+    AF.AddToPixelUpdater_Auto(boss, nil, true)
 end
 
 ---------------------------------------------------------------------

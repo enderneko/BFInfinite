@@ -538,7 +538,7 @@ function NP.CreateHealthBar(parent, name)
     bar.LoadConfig = HealthBar_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(bar, HealthBar_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(bar, HealthBar_UpdatePixels)
 
     return bar
 end

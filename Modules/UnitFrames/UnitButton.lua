@@ -430,11 +430,11 @@ end
 ---------------------------------------------------------------------
 -- update pixels
 ---------------------------------------------------------------------
-local function UnitButton_UpdatePixels(self)
-    AF.ReSize(self)
-    AF.RePoint(self)
-    AF.ReBorder(self)
-end
+-- local function UnitButton_UpdatePixels(self)
+--     AF.ReSize(self)
+--     AF.RePoint(self)
+--     AF.ReBorder(self)
+-- end
 
 ---------------------------------------------------------------------
 -- ping system
@@ -483,7 +483,7 @@ function BFIUnitButton_OnLoad(self)
     self:SetScript("OnEvent", UnitButton_OnEvent)
 
     -- pixel perfect
-    AF.AddToPixelUpdater(self, UnitButton_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(self, nil, true)
 end
 
 ---------------------------------------------------------------------

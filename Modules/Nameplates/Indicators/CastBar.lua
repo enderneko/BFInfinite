@@ -607,6 +607,7 @@ function NP.CreateCastBar(parent, name)
     AF.SetOnePixelInside(bar, frame)
     bar.fg:SetDrawLayer("ARTWORK", 0)
     AF.SetFrameLevel(bar, 1, frame)
+    AF.RemoveFromPixelUpdater(bar)
 
     -- spark
     local spark = bar:CreateTexture(nil, "ARTWORK", nil, 3)
@@ -647,7 +648,7 @@ function NP.CreateCastBar(parent, name)
     frame.LoadConfig = CastBar_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(frame, CastBar_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(frame, CastBar_UpdatePixels)
 
     return frame
 end

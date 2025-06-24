@@ -517,7 +517,7 @@ local function InitMinimap()
     minimapContainer = CreateFrame("Frame", "BFI_MinimapContainer", AF.UIParent, "BackdropTemplate")
     AF.ApplyDefaultBackdropWithColors(minimapContainer)
     AF.CreateMover(minimapContainer, "BFI: " .. _G.OTHER, _G.HUD_EDIT_MODE_MINIMAP_LABEL)
-    AF.AddToPixelUpdater(minimapContainer, UpdatePixels)
+    AF.AddToPixelUpdater_Auto(minimapContainer, UpdatePixels)
 
     -- Minimap
     Minimap.Layout = AF.noop -- MinimapCluster.IndicatorFrame

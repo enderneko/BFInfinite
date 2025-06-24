@@ -1067,7 +1067,7 @@ function UF.CreateCastBar(parent, name)
     frame.LoadConfig = CastBar_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(frame, CastBar_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(frame, CastBar_UpdatePixels)
 
     return frame
 end

@@ -51,9 +51,6 @@ local function CreatePlayer()
     -- config mode
     UF.AddToConfigMode("player", player)
 
-    -- pixel perfect
-    -- AF.AddToPixelUpdater(player)
-
     -- indicators
     player.hasCastBarTicks = true
     player.hasLatency = true

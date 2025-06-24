@@ -37,7 +37,6 @@ end
 local microMenu
 local function CreateMicroMenu()
     microMenu = CreateFrame("Frame", "BFI_MicroMenu", AF.UIParent)
-    AF.AddToPixelUpdater(microMenu)
 
     microMenu.visibility = CreateFrame("Frame", nil, AF.UIParent, "SecureHandlerStateTemplate")
     microMenu.visibility:SetScript("OnShow", function()
@@ -67,7 +66,6 @@ local function CreateMicroMenu()
             _G[b]:SetParent(microMenu)
             _G[b]:HookScript("OnEnter", microMenu.onEnter)
             _G[b]:HookScript("OnLeave", microMenu.onLeave)
-            AF.AddToPixelUpdater(_G[b])
         end
     end
 
@@ -148,6 +146,17 @@ local function ButtonOnEnter(b)
     b:GetNormalTexture():SetAlpha(1)
 end
 
+local function UpdatePixels()
+    AF.DefaultUpdatePixels(microMenu)
+    for _, b in next, microMenu.buttons do
+        if b:GetName() == "CharacterMicroButton" then
+            UpdatePortrait(b)
+        else
+            UpdateButton(b)
+        end
+    end
+end
+
 ---------------------------------------------------------------------
 -- update bar
 ---------------------------------------------------------------------
@@ -157,6 +166,7 @@ local function UpdateMicroMenu(_, module, which)
 
     if not microMenu then
         CreateMicroMenu()
+        AF.AddToPixelUpdater_Auto(microMenu, UpdatePixels)
     end
 
     local config = UI.config.microMenu

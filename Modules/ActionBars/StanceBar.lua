@@ -22,7 +22,7 @@ local function CreateStanceBar()
     stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 
-    AF.AddToPixelUpdater(stanceBar)
+    AF.AddToPixelUpdater_Auto(stanceBar, nil, true)
 end
 
 ---------------------------------------------------------------------

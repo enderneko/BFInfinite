@@ -87,7 +87,7 @@ function NP.CreateClassIcon(parent, name)
     frame.LoadConfig = ClassIcon_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(frame, ClassIcon_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(frame, ClassIcon_UpdatePixels)
 
     return frame
 end

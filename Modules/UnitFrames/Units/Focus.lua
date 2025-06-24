@@ -42,9 +42,6 @@ local function CreateFocus()
     -- config mode
     UF.AddToConfigMode("focus", focus)
 
-    -- pixel perfect
-    -- AF.AddToPixelUpdater(focus)
-
     -- indicators
     UF.CreateIndicators(focus, indicators)
 end

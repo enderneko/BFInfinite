@@ -530,13 +530,13 @@ end
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
-local function UpdatePixels(self)
-    for _, indicator in next, self.indicators do
-        if indicator.UpdatePixels then
-            indicator:UpdatePixels()
-        end
-    end
-end
+-- local function UpdatePixels(self)
+--     for _, indicator in next, self.indicators do
+--         if indicator.UpdatePixels then
+--             indicator:UpdatePixels()
+--         end
+--     end
+-- end
 
 local function CreateNameplate(self, event, nameplate)
     local np = CreateFrame("Frame", "BFI_" .. nameplate:GetName(), AF.UIParent)
@@ -565,7 +565,8 @@ local function CreateNameplate(self, event, nameplate)
     np.clickableArea:SetShown(NP.showClickableArea)
 
     -- pixel perfect
-    AF.AddToPixelUpdater(np, UpdatePixels)
+    -- seems unnecessary, each widget handle its own pixel update
+    -- AF.AddToPixelUpdater_Auto(np, UpdatePixels)
 end
 
 ---------------------------------------------------------------------

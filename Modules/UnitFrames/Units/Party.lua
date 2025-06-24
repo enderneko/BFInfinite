@@ -74,7 +74,7 @@ local function CreateParty()
     AF.CreateMover(party, "BFI: " .. L["Unit Frames"], _G.PARTY)
 
     -- pixel perfect
-    AF.AddToPixelUpdater(party)
+    AF.AddToPixelUpdater_Auto(party, nil, true)
 end
 
 ---------------------------------------------------------------------

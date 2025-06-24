@@ -43,9 +43,6 @@ local function CreateTargetTarget()
     -- config mode
     UF.AddToConfigMode("targettarget", targettarget)
 
-    -- pixel perfect
-    -- AF.AddToPixelUpdater(targettarget)
-
     -- indicators
     UF.CreateIndicators(targettarget, indicators)
 end

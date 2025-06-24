@@ -574,7 +574,7 @@ function UF.CreateClassPowerBar(parent, name)
     frame.LoadConfig = ClassPowerBar_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(frame, ClassPowerBar_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(frame, ClassPowerBar_UpdatePixels)
 
     return frame
 end

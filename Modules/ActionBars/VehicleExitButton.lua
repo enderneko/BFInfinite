@@ -16,10 +16,10 @@ local vehicleExitHolder
 local function CreateButton()
     vehicleExitHolder = AF.CreateBorderedFrame(AF.UIParent, "BFI_VehicleExitHolder", 20, 20)
     vehicleExitHolder:Hide()
-    AF.AddToPixelUpdater(vehicleExitHolder, function()
+    AF.AddToPixelUpdater_Auto(vehicleExitHolder, function()
         AF.DefaultUpdatePixels(vehicleExitHolder)
         AF.SetOnePixelInside(vehicleExitHolder.button, vehicleExitHolder)
-    end)
+    end, true)
 
     vehicleExitHolder.button = _G.MainMenuBarVehicleLeaveButton
     vehicleExitHolder.button:SetParent(vehicleExitHolder)

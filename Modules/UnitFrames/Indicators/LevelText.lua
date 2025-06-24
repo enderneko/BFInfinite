@@ -87,5 +87,8 @@ function UF.CreateLevelText(parent, name)
     text.Update = LevelText_Update
     text.LoadConfig = LevelText_LoadConfig
 
+    -- pixel perfect
+    AF.AddToPixelUpdater_Auto(text)
+
     return text
 end

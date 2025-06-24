@@ -143,7 +143,7 @@ local function CreateBar(name, id)
     bar:SetScript("OnLeave", AB.ActionBar_OnLeave)
 
     -- update pixels --------------------------------------------------------- --
-    AF.AddToPixelUpdater(bar)
+    AF.AddToPixelUpdater_Auto(bar, nil, true)
 
     return bar
 end

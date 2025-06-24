@@ -764,7 +764,7 @@ function UF.CreateAuras(parent, name, auraFilter, hasSubFrame)
     frame.LoadConfig = Auras_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(frame, Auras_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(frame, Auras_UpdatePixels)
 
     return frame
 end

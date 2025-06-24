@@ -116,7 +116,7 @@ function UF.CreateTargetHighlight(parent, name)
     highlight.LoadConfig = TargetHighlight_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(highlight)
+    AF.AddToPixelUpdater_Auto(highlight)
 
     return highlight
 end

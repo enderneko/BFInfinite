@@ -89,7 +89,7 @@ function UF.CreateThreatGlow(parent, name)
     glow.LoadConfig = ThreatGlow_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater(glow)
+    AF.AddToPixelUpdater_Auto(glow)
 
     return glow
 end

@@ -607,7 +607,7 @@ local function CreateAuras(parent, name, auraFilter)
     frame.UpdateSiblings = Auras_UpdateSiblings
 
     -- pixel perfect
-    AF.AddToPixelUpdater(frame, Auras_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(frame, Auras_UpdatePixels)
 
     return frame
 end

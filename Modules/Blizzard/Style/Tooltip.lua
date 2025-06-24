@@ -87,7 +87,7 @@ local function StyleBlizzard(_, which)
     AF.SetPoint(bar, "TOPLEFT", _G.GameTooltip, "BOTTOMLEFT", 1, 0)
     AF.SetPoint(bar, "TOPRIGHT", _G.GameTooltip, "BOTTOMRIGHT", -1, 0)
     S.CreateBackdrop(bar, nil, 1)
-    AF.AddToPixelUpdater(bar)
+    AF.AddToPixelUpdater_Auto(bar)
 
     -- hook
     hooksecurefunc("SharedTooltip_SetBackdropStyle", Style)
