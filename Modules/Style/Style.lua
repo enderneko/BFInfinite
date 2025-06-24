@@ -505,11 +505,10 @@ function S.RemoveNineSliceAndBackground(frame)
 end
 
 ---------------------------------------------------------------------
--- portrait frame
+-- titled frame
 ---------------------------------------------------------------------
--- PortraitFrameBaseTemplate
-function S.StylePortraitFrame(frame)
-    assert(frame, "StylePortraitFrame: frame is nil")
+function S.StyleTitledFrame(frame)
+    assert(frame, "StyleTitledFrame: frame is nil")
 
     if frame._BFIStyled then return end
     frame._BFIStyled = true
@@ -619,6 +618,9 @@ function S.StyleTab(tab)
     -- tab._BFIStyled = true
 end
 
+---------------------------------------------------------------------
+-- update pixels using OnUpdateExecutor
+---------------------------------------------------------------------
 local start
 local function UpdatePixels(_, region, remaining, total)
     region:UpdatePixels()

@@ -23,6 +23,7 @@ local CharacterModelScene = _G.CharacterModelScene
 local ReputationFrame = _G.ReputationFrame
 local TokenFrame = _G.TokenFrame
 local TokenFramePopup = _G.TokenFramePopup
+local CurrencyTransferLog = _G.CurrencyTransferLog
 
 local IsFactionParagon = C_Reputation.IsFactionParagon
 local GetFactionParagonInfo = C_Reputation.GetFactionParagonInfo
@@ -549,10 +550,31 @@ local function StyleTokenFrame()
 end
 
 ---------------------------------------------------------------------
+-- transfer log
+---------------------------------------------------------------------
+local function CurrencyTransferLog_ScrollBox_UpdateEach(frame)
+    frame.BackgroundHighlight.Middle:SetAllPoints()
+    frame.BackgroundHighlight.Left:SetAlpha(0)
+    frame.BackgroundHighlight.Right:SetAlpha(0)
+    S.StyleIcon(frame.CurrencyIcon, true)
+end
+
+local function CurrencyTransferLog_ScrollBox_Update(scroll)
+    scroll:ForEachFrame(CurrencyTransferLog_ScrollBox_UpdateEach)
+end
+
+local function StyleTransferLog()
+    S.StyleTitledFrame(CurrencyTransferLog)
+    S.StyleScrollBar(CurrencyTransferLog.ScrollBar)
+    _G.CurrencyTransferLogInset:SetAlpha(0)
+    hooksecurefunc(CurrencyTransferLog.ScrollBox, "Update", CurrencyTransferLog_ScrollBox_Update)
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function StyleBlizzard()
-    S.StylePortraitFrame(CharacterFrame)
+    S.StyleTitledFrame(CharacterFrame)
     S.RemoveNineSliceAndBackground(CharacterFrameInset)
     S.RemoveNineSliceAndBackground(CharacterFrameInsetRight)
     S.RemoveNineSliceAndBackground(CharacterStatsPane)
@@ -567,5 +589,6 @@ local function StyleBlizzard()
     -- StyleNameAndLevel()
     StyleReputationFrame()
     StyleTokenFrame()
+    StyleTransferLog()
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
