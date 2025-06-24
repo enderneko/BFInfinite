@@ -119,6 +119,8 @@ local function UpdateAnchor(tooltip, parent)
             elseif tt.anchorTo == "self_adaptive" then
                 local point, anchorPoint, x, y = GetTooltipAnchorPoint(parent)
                 tooltip:SetPoint(point, parent, anchorPoint, x, y)
+            -- elseif tt.anchorTo then
+            --     tooltip:SetPoint(tt.position[1], tt.anchorTo, tt.position[2], tt.position[3], tt.position[4])
             else
                 local point = GetTooltipAnchorPoint(tooltipAnchor)
                 tooltip:SetPoint(point, tooltipAnchor)

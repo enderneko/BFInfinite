@@ -22,6 +22,7 @@ local PaperDollSidebarTabs = _G.PaperDollSidebarTabs
 local CharacterModelScene = _G.CharacterModelScene
 local ReputationFrame = _G.ReputationFrame
 local TokenFrame = _G.TokenFrame
+local TokenFramePopup = _G.TokenFramePopup
 
 local IsFactionParagon = C_Reputation.IsFactionParagon
 local GetFactionParagonInfo = C_Reputation.GetFactionParagonInfo
@@ -188,7 +189,7 @@ local function StyleStatsPaneCategory(frame)
     S.RemoveTextures(frame)
     AF.ApplyDefaultBackdropWithColors(frame)
     AF.SetSize(frame, 177, 17)
-    AF.AddToCustomPixelUpdater("BFIStyled", frame)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame)
 
     hooksecurefunc(frame, "SetPoint", function(_, point, anchorTo, relativePoint, xOffset, yOffset, fix)
         if not fix then
@@ -263,6 +264,50 @@ local function PaperDollFrame_UpdateSidebarTabs()
     end
 end
 
+local function TitleManagerPane_UpdateEach(button)
+    if button._BFIStyled then return end
+    button._BFIStyled = true
+
+    button:DisableDrawLayer("BACKGROUND")
+    button.SelectedBar:SetColorTexture(AF.GetColorRGB("sheet_highlight"))
+    button.SelectedBar:SetAlpha(0.75)
+    button:GetHighlightTexture():SetColorTexture(AF.GetColorRGB("sheet_highlight", 0.5))
+end
+
+local function TitleManagerPane_Update(frame)
+    frame:ForEachFrame(TitleManagerPane_UpdateEach)
+end
+
+local function GearSetButton_OnEnter(self)
+    if self.setID then
+        GameTooltip_SetDefaultAnchor(GameTooltip, self)
+        GameTooltip:SetEquipmentSet(self.setID)
+    end
+end
+
+-- Modules\Tooltip\Tooltip.lua UpdateAnchor
+local tooltip = {
+    enabled = true,
+    anchorTo = "self",
+    position = {"TOPLEFT", "TOPRIGHT", 32, 0},
+}
+
+local function EquipmentManagerPane_UpdateEach(button)
+    if button._BFIStyled then return end
+    button._BFIStyled = true
+
+    button:DisableDrawLayer("BACKGROUND")
+    button.SelectedBar:SetColorTexture(AF.GetColorRGB("sheet_highlight"))
+    button.SelectedBar:SetAlpha(0.75)
+    button.HighlightBar:SetColorTexture(AF.GetColorRGB("sheet_highlight"))
+    button.HighlightBar:SetAlpha(0.5)
+    button.tooltip = tooltip
+end
+
+local function EquipmentManagerPane_Update(frame)
+    frame:ForEachFrame(EquipmentManagerPane_UpdateEach)
+end
+
 local function StyleCharacterFrameInsetRight()
     -- tabs
     -- PaperDollSidebarTabs.DecorLeft:SetAlpha(0)
@@ -290,6 +335,18 @@ local function StyleCharacterFrameInsetRight()
 
     hooksecurefunc("PaperDollFrame_UpdateStats", PaperDollFrame_UpdateStats)
     hooksecurefunc("PaperDollFrame_SetLabelAndText", PaperDollFrame_SetLabelAndText)
+
+    -- title
+    hooksecurefunc(PaperDollFrame.TitleManagerPane.ScrollBox, "Update", TitleManagerPane_Update)
+    S.StyleScrollBar(PaperDollFrame.TitleManagerPane.ScrollBar)
+
+    -- equipment
+    hooksecurefunc(PaperDollFrame.EquipmentManagerPane.ScrollBox, "Update", EquipmentManagerPane_Update)
+    S.StyleScrollBar(PaperDollFrame.EquipmentManagerPane.ScrollBar)
+    S.StyleButton(_G.PaperDollFrameEquipSet)
+    AF.SetOnePixelInside(_G.PaperDollFrameEquipSet.BFIBackdrop, _G.PaperDollFrameEquipSet)
+    S.StyleButton(_G.PaperDollFrameSaveSet)
+    AF.SetOnePixelInside(_G.PaperDollFrameSaveSet.BFIBackdrop, _G.PaperDollFrameSaveSet)
 end
 
 ---------------------------------------------------------------------
@@ -435,19 +492,35 @@ local function StyleReputationFrame()
     S.StyleDropdownButton(ReputationFrame.filterDropdown)
     S.StyleScrollBar(ReputationFrame.ScrollBar)
     hooksecurefunc(ReputationFrame.ScrollBox, "Update", ReputationFrame_ScrollBox_Update)
+
+    local detailFrame = ReputationFrame.ReputationDetailFrame
+    S.RemoveTextures(detailFrame)
+    S.RemoveBorder(detailFrame)
+    S.CreateBackdrop(detailFrame, nil, -1)
+
+    S.StyleCloseButton(detailFrame.CloseButton)
+    detailFrame.CloseButton:SetPoint("TOPRIGHT", detailFrame.BFIBackdrop)
+
+    S.StyleCheckButton(detailFrame.AtWarCheckbox)
+    S.StyleCheckButton(detailFrame.MakeInactiveCheckbox)
+    S.StyleCheckButton(detailFrame.WatchFactionCheckbox)
+    S.StyleScrollBar(detailFrame.ScrollingDescriptionScrollBar)
+    S.StyleButton(detailFrame.ViewRenownButton)
 end
 
 ---------------------------------------------------------------------
 -- token frame
 ---------------------------------------------------------------------
+local function TokenFrame_ScrollBox_UpdateEach(frame)
+    if frame.Right then
+        StyleHeader(frame)
+    else
+        StyleEntry(frame)
+    end
+end
+
 local function TokenFrame_ScrollBox_Update(scroll)
-    scroll:ForEachFrame(function(frame)
-        if frame.Right then
-            StyleHeader(frame)
-        else
-            StyleEntry(frame)
-        end
-    end)
+    scroll:ForEachFrame(TokenFrame_ScrollBox_UpdateEach)
 end
 
 local function StyleTokenFrame()
@@ -462,6 +535,17 @@ local function StyleTokenFrame()
     b.PushedTexture:SetTexture(tex)
 
     hooksecurefunc(TokenFrame.ScrollBox, "Update", TokenFrame_ScrollBox_Update)
+
+    S.RemoveBorder(TokenFramePopup)
+    S.CreateBackdrop(TokenFramePopup, nil, -1)
+
+    S.StyleCheckButton(TokenFramePopup.InactiveCheckbox)
+    S.StyleCheckButton(TokenFramePopup.BackpackCheckbox)
+    S.StyleButton(TokenFramePopup.CurrencyTransferToggleButton)
+
+    local closeButton = TokenFramePopup["$parent.CloseButton"]
+    S.StyleCloseButton(closeButton)
+    closeButton:SetPoint("TOPRIGHT", TokenFramePopup.BFIBackdrop)
 end
 
 ---------------------------------------------------------------------

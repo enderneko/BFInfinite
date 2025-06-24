@@ -6,33 +6,61 @@ local S = BFI.Style
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
+-- remove regions
+---------------------------------------------------------------------
+local uselessRegions = {
+    "Left",
+    "Right",
+    "Center",
+}
+
+function S.RemoveRegions(region)
+    local name = region.GetName and region:GetName()
+    for _, subName in next, uselessRegions do
+        local r = region[subName] or (name and _G[name .. subName])
+        if r then
+            r:SetAlpha(0)
+            r:Hide()
+        end
+    end
+end
+
+---------------------------------------------------------------------
 -- remove blizzard textures
 ---------------------------------------------------------------------
-function S.RemoveTextures(region)
+function S.RemoveTextures(region, hide)
     if not region then return end
 
     if region:IsObjectType("Texture") then
         region:SetTexture(AF.GetEmptyTexture())
         region:SetAtlas("")
+        if hide then
+            region:SetAlpha(0)
+            region:Hide()
+        end
     else
-        -- REVIEW:
-        -- local name = region.GetName and region:GetName()
-        -- for _, subName in next, BlizzardFrames do
-        --     local f = region[subName] or (name and _G[name .. subName])
-        --     if f then
-        --         print(f)
-        --         S.RemoveTextures(f)
-        --     end
-        -- end
-
         if region.GetRegions then -- Frame
             for _, r in next, {region:GetRegions()} do
                 if r and r:IsObjectType("Texture") then
                     r:SetTexture(AF.GetEmptyTexture())
                     r:SetAtlas("")
+                    if hide then
+                        r:SetAlpha(0)
+                        r:Hide()
+                    end
                 end
             end
         end
+    end
+end
+
+---------------------------------------------------------------------
+-- remove border
+---------------------------------------------------------------------
+function S.RemoveBorder(region)
+    if not region then return end
+    if region.Border then
+        region.Border:SetAlpha(0)
     end
 end
 
@@ -60,7 +88,7 @@ function S.CreateBackdrop(region, noBackground, offset, relativeFrameLevel)
     end
 
     AF.SetFrameLevel(region.BFIBackdrop, relativeFrameLevel or 0)
-    AF.AddToCustomPixelUpdater("BFIStyled", region.BFIBackdrop)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", region.BFIBackdrop)
 end
 
 ---------------------------------------------------------------------
@@ -147,12 +175,12 @@ end
 -- button
 ---------------------------------------------------------------------
 local function Button_OnEnter(button)
-    button:SetBackdropColor(AF.UnpackColor(button._hoverColor))
+    button.BFIBackdrop:SetBackdropColor(AF.UnpackColor(button._hoverColor))
 end
 
 local function Button_OnLeave(button)
     if not button.isSelected then
-        button:SetBackdropColor(AF.UnpackColor(button._color))
+        button.BFIBackdrop:SetBackdropColor(AF.UnpackColor(button._color))
     end
 end
 
@@ -199,10 +227,12 @@ local function Button_OnDisable(button)
     end
 end
 
-local function StyleButton(button, color, hoverColor)
+function S.StyleButton(button, color, hoverColor)
     assert(button, "StyleButton: button is nil")
     if button._BFIStyled then return end
     button._BFIStyled = true
+
+    S.RemoveTextures(button, true)
 
     button:SetNormalTexture(AF.GetEmptyTexture())
     button:SetPushedTexture(AF.GetEmptyTexture())
@@ -212,22 +242,23 @@ local function StyleButton(button, color, hoverColor)
     button._color = AF.GetButtonNormalColor(color or "BFI_hover")
     button._hoverColor = AF.GetButtonHoverColor(hoverColor or color or "BFI_hover")
 
+    S.CreateBackdrop(button)
+    button.BFIBackdrop:SetBackdropColor(AF.UnpackColor(button._color))
+    button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+
     button.BFIBg = button:CreateTexture(nil, "BACKGROUND", nil, -8)
     button.BFIBg:SetColorTexture(AF.GetColorRGB("background", 1))
-    button.BFIBg:SetAllPoints(button)
-
-    AF.ApplyDefaultBackdrop(button)
-    button:SetBackdropColor(AF.UnpackColor(button._color))
-    button:SetBackdropBorderColor(AF.GetColorRGB("border"))
+    button.BFIBg:SetAllPoints(button.BFIBackdrop)
 
     button:HookScript("OnEnter", Button_OnEnter)
     button:HookScript("OnLeave", Button_OnLeave)
     button:HookScript("OnEnable", Button_OnEnable)
     button:HookScript("OnDisable", Button_OnDisable)
 
+    button:SetPushedTextOffset(0, -AF.GetOnePixelForRegion(button))
     RegisterMouseDownUp(button)
 
-    AF.AddToCustomPixelUpdater("BFIStyled", button)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", button)
 end
 
 ---------------------------------------------------------------------
@@ -238,18 +269,62 @@ local function CloseButton_UpdatePixels(button)
     AF.ReSize(button.BFIIcon)
 end
 
-local function StyleCloseButton(button)
+function S.StyleCloseButton(button)
     assert(button, "StyleCloseButton: button is nil")
 
-    StyleButton(button, "red")
+    if button._BFIStyled then return end
+
+    S.StyleButton(button, "red")
     AF.SetSize(button, 20, 20)
 
-    if not button.BFIIcon then
-        button.BFIIcon = button:CreateTexture(nil, "ARTWORK")
-        AF.SetPoint(button.BFIIcon, "CENTER")
-        AF.SetSize(button.BFIIcon, 14, 14)
-        button.BFIIcon:SetTexture(AF.GetIcon("Close"))
-    end
+    button.BFIIcon = button:CreateTexture(nil, "ARTWORK")
+    AF.SetPoint(button.BFIIcon, "CENTER")
+    AF.SetSize(button.BFIIcon, 16, 16)
+    button.BFIIcon:SetTexture(AF.GetIcon("Close"))
+
+    button._BFIStyled = true
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", button, CloseButton_UpdatePixels)
+end
+
+---------------------------------------------------------------------
+-- check button
+---------------------------------------------------------------------
+function S.StyleCheckButton(button)
+    assert(button, "StyleCheckButton: button is nil")
+
+    if button._BFIStyled then return end
+    button._BFIStyled = true
+
+    S.RemoveTextures(button)
+
+    S.CreateBackdrop(button)
+    button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
+    AF.ClearPoints(button.BFIBackdrop)
+    button.BFIBackdrop:SetPoint("CENTER")
+    AF.SetSize(button.BFIBackdrop, 15, 15)
+
+    local checkedTexture = button:CreateTexture(nil, "ARTWORK")
+    checkedTexture:SetColorTexture(AF.GetColorRGB("BFI", 0.7))
+    AF.SetOnePixelInside(checkedTexture, button.BFIBackdrop)
+    button:SetCheckedTexture(checkedTexture)
+
+    local highlightTexture = button:CreateTexture(nil, "ARTWORK")
+    highlightTexture:SetColorTexture(AF.GetColorRGB("BFI", 0.1))
+    highlightTexture:SetAllPoints(checkedTexture)
+    button:SetHighlightTexture(highlightTexture)
+
+    local disabledTexture = button:CreateTexture(nil, "ARTWORK")
+    disabledTexture:SetColorTexture(AF.GetColorRGB("disabled", 0.7))
+    disabledTexture:SetAllPoints(checkedTexture)
+    button:SetDisabledCheckedTexture(disabledTexture)
+
+    button:HookScript("OnEnable", function(self)
+        self.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+    end)
+
+    button:HookScript("OnDisable", function(self)
+        self.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("disabled", nil, 0.7))
+    end)
 end
 
 ---------------------------------------------------------------------
@@ -277,7 +352,7 @@ function S.StyleDropdownButton(button)
 
     S.RemoveTextures(button)
     AF.ApplyDefaultBackdropWithColors(button, "widget")
-    AF.AddToCustomPixelUpdater("BFIStyled", button)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", button)
 
     if button.Arrow then button.Arrow:SetAlpha(0) end
     if button.Button then button.Button:SetAlpha(0) end
@@ -292,7 +367,7 @@ function S.StyleDropdownButton(button)
     AF.SetSize(arrow, 16, 16)
     AF.SetPoint(arrow, "RIGHT", -5, 0)
     AF.RemoveFromPixelUpdater(arrow)
-    AF.AddToCustomPixelUpdater("BFIStyled", arrow)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", arrow)
 
     button:HookScript("OnEnter", function(self)
         self.BFIArrow:SetVertexColor(AF.GetColorRGB("white", nil, 0.9))
@@ -311,6 +386,27 @@ function S.StyleDropdownButton(button)
     --     end
     -- end)
 end
+
+---------------------------------------------------------------------
+-- dropdown
+---------------------------------------------------------------------
+-- local function Dropdown_Create(prefix, level, index)
+--     print("DropDownMenu_CreateFrames:", prefix, level, index)
+-- end
+
+-- local function Dropdown_Toggle(prefix, level)
+--     print("ToggleDropDownMenu:", prefix, level)
+-- end
+
+-- function S.StyleDropdown(prefix)
+--     -- Interface\AddOns\Blizzard_SharedXML\Mainline\UIDropDownMenu.lua
+--     hooksecurefunc("UIDropDownMenu_CreateFrames", function(level, index)
+--         Dropdown_Create(prefix, level, index)
+--     end)
+--     hooksecurefunc("ToggleDropDownMenu", function(level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList, button, autoHideDelay, overrideDisplayMode)
+--         Dropdown_Toggle(prefix, level)
+--     end)
+-- end
 
 ---------------------------------------------------------------------
 -- scroll bar
@@ -357,7 +453,7 @@ function S.StyleScrollBar(scrollBar)
     if scrollBar.Track then
         S.RemoveTextures(scrollBar.Track)
         AF.ApplyDefaultBackdropWithColors(scrollBar.Track, "widget")
-        AF.AddToCustomPixelUpdater("BFIStyled", scrollBar.Track)
+        AF.AddToPixelUpdater_CustomGroup("BFIStyled", scrollBar.Track)
     end
 
     local thumb = scrollBar:GetThumb()
@@ -378,7 +474,7 @@ function S.StyleScrollBar(scrollBar)
         newThumb:EnableMouseMotion(true)
 
         AF.RemoveFromPixelUpdater(newThumb)
-        AF.AddToCustomPixelUpdater("BFIStyled", newThumb)
+        AF.AddToPixelUpdater_CustomGroup("BFIStyled", newThumb)
     end
 end
 
@@ -439,7 +535,7 @@ function S.StylePortraitFrame(frame)
     AF.SetFrameLevel(frame.BFIBg)
 
     AF.RemoveFromPixelUpdater(frame.BFIBg)
-    AF.AddToCustomPixelUpdater("BFIStyled", frame.BFIBg)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIBg)
 
     -- title
     frame.BFIHeader = AF.CreateBorderedFrame(frame, nil, nil, nil, "header", "border")
@@ -449,7 +545,7 @@ function S.StylePortraitFrame(frame)
     AF.SetFrameLevel(frame.BFIHeader, 0, frame.TitleContainer)
 
     AF.RemoveFromPixelUpdater(frame.BFIHeader)
-    AF.AddToCustomPixelUpdater("BFIStyled", frame.BFIHeader)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader)
 
     frame.BFIHeader.tex = frame.BFIHeader:CreateTexture(nil, "ARTWORK")
     frame.BFIHeader.tex:SetColorTexture(AF.GetColorRGB("BFI", 0.025))
@@ -460,7 +556,7 @@ function S.StylePortraitFrame(frame)
 
     -- close button
     local closeButton = frame.CloseButton or (name and _G[name .. "CloseButton"])
-    StyleCloseButton(closeButton)
+    S.StyleCloseButton(closeButton)
     closeButton:ClearAllPoints()
     closeButton:SetPoint("TOPRIGHT")
     AF.SetFrameLevel(closeButton, 1, frame.BFIHeader)
@@ -483,17 +579,17 @@ hooksecurefunc("PanelTemplates_UpdateTabs", function(frame)
                     -- PanelTemplates_SetDisabledTabState(tab)
                     -- print("PanelTemplates_UpdateTabs: tab is disabled", tab:GetName())
                     tab.isSelected = false
-                    tab:SetBackdropColor(AF.UnpackColor(tab._color))
+                    tab.BFIBackdrop:SetBackdropColor(AF.UnpackColor(tab._color))
                 elseif i == frame.selectedTab then
                     -- PanelTemplates_SelectTab(tab)
                     -- print("PanelTemplates_UpdateTabs: tab is selected", tab:GetName())
                     tab.isSelected = true
-                    tab:SetBackdropColor(AF.UnpackColor(tab._hoverColor))
+                    tab.BFIBackdrop:SetBackdropColor(AF.UnpackColor(tab._hoverColor))
                 else
                     -- PanelTemplates_DeselectTab(tab)
                     -- print("PanelTemplates_UpdateTabs: tab is deselected", tab:GetName())
                     tab.isSelected = false
-                    tab:SetBackdropColor(AF.UnpackColor(tab._color))
+                    tab.BFIBackdrop:SetBackdropColor(AF.UnpackColor(tab._color))
                 end
             end
         end
@@ -505,8 +601,7 @@ function S.StyleTab(tab)
     if tab._BFIStyled then return end
 
     S.RemoveTextures(tab)
-    AF.ApplyDefaultBackdrop(tab)
-    StyleButton(tab, "BFI_hover")
+    S.StyleButton(tab, "BFI_hover")
 
     -- Interface\AddOns\Blizzard_SharedXML\Mainline\SharedUIPanelTemplates.lua
     if tab.isTopTab then
@@ -520,7 +615,22 @@ function S.StyleTab(tab)
     tab.deselectedTextX = 0
 
     AF.SetHeight(tab, 26)
-    tab:SetPushedTextOffset(0, -AF.GetOnePixelForRegion(tab))
 
-    tab._BFIStyled = true
+    -- tab._BFIStyled = true
 end
+
+local start
+local function UpdatePixels(_, region, remaining, total)
+    region:UpdatePixels()
+    -- print("BFIStyled: ", AF.RoundToDecimal((total - remaining) / total, 2))
+end
+local pixelUpdateExecutor = AF.BuildOnUpdateExecutor(UpdatePixels, function()
+    print("AF_PIXEL_UPDATE: BFIStyled group updated", GetTimePreciseSec() - start)
+end, 5)
+
+AF.RegisterCallback("AF_PIXEL_UPDATE", function()
+    -- AF.UpdatePixels_CustomGroup("BFIStyled")
+    pixelUpdateExecutor:Clear()
+    start = GetTimePreciseSec()
+    pixelUpdateExecutor:Submit(AF.GetPixelUpdaterCustomGroup("BFIStyled"), true)
+end)
