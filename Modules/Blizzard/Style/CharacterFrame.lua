@@ -294,6 +294,10 @@ local tooltip = {
 }
 
 local function EquipmentManagerPane_UpdateEach(button)
+    if button.icon.BFIBackdrop then
+        button.icon.BFIBackdrop:SetShown(button.setID and true or false)
+    end
+
     if button._BFIStyled then return end
     button._BFIStyled = true
 
@@ -303,6 +307,11 @@ local function EquipmentManagerPane_UpdateEach(button)
     button.HighlightBar:SetColorTexture(AF.GetColorRGB("sheet_highlight"))
     button.HighlightBar:SetAlpha(0.5)
     button.tooltip = tooltip
+
+    S.StyleIcon(button.icon, true)
+    AF.SetOnePixelOutside(button.icon.BFIBackdrop, button.icon)
+    AF.SetFrameLevel(button.icon.BFIBackdrop, -1)
+    button.icon.BFIBackdrop:SetShown(button.setID and true or false)
 end
 
 local function EquipmentManagerPane_Update(frame)
