@@ -62,7 +62,7 @@ local function EquipmentFlyout_UpdateItems()
             button:SetPushedTexture(AF.GetEmptyTexture())
             -- texplore(button)
 
-            S.CreateBackdrop(button, true, 1)
+            S.CreateBackdrop(button, true, nil, 1)
             S.StyleIcon(button.icon)
             S.StyleIconBorder(button.IconBorder)
             button.HighlightTexture:SetColorTexture(AF.GetColorRGB("button_highlight"))
