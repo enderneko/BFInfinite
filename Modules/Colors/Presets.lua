@@ -58,5 +58,7 @@ local uf_colors = {
     exp_rested = {0.31, 0.56, 1, 0.35},
 
     honor = {1, 0.3, 0.14, 1},
+
+    button_highlight = {1, 1, 1, 0.25},
 }
 AF.AddColors(uf_colors)

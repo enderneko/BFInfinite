@@ -155,6 +155,12 @@ function S.StyleIconBorder(border, backdrop)
         backdrop = parent.BFIBackdrop or parent
     end
 
+    -- apply color immediately
+    local r, g, b, a = border:GetVertexColor()
+    if r then
+        backdrop:SetBackdropBorderColor(r, g, b, a)
+    end
+
     if border.BFIBackdrop ~= backdrop then
         border.BFIBackdrop = backdrop
     end
@@ -163,6 +169,7 @@ function S.StyleIconBorder(border, backdrop)
         border._BFIIconBorderHooked = true
         border:Hide()
 
+        -- hook to update color
         hooksecurefunc(border, "Show", AF.TextureHide)
         hooksecurefunc(border, "Hide", IconBorder_ResetColor)
         hooksecurefunc(border, "SetShown", IconBorder_SetShown)
@@ -307,6 +314,7 @@ function S.StyleCheckButton(button)
     checkedTexture:SetColorTexture(AF.GetColorRGB("BFI", 0.7))
     AF.SetOnePixelInside(checkedTexture, button.BFIBackdrop)
     button:SetCheckedTexture(checkedTexture)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", checkedTexture)
 
     local highlightTexture = button:CreateTexture(nil, "ARTWORK")
     highlightTexture:SetColorTexture(AF.GetColorRGB("BFI", 0.1))
@@ -542,6 +550,7 @@ function S.StyleTitledFrame(frame)
     frame.BFIHeader:SetPoint("TOPRIGHT")
     AF.SetHeight(frame.BFIHeader, 20)
     AF.SetFrameLevel(frame.BFIHeader, 0, frame.TitleContainer)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader)
 
     AF.RemoveFromPixelUpdater(frame.BFIHeader)
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader)
@@ -549,6 +558,7 @@ function S.StyleTitledFrame(frame)
     frame.BFIHeader.tex = frame.BFIHeader:CreateTexture(nil, "ARTWORK")
     frame.BFIHeader.tex:SetColorTexture(AF.GetColorRGB("BFI", 0.025))
     AF.SetOnePixelInside(frame.BFIHeader.tex, frame.BFIHeader)
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader.tex)
 
     frame.TitleContainer.TitleText:ClearAllPoints()
     frame.TitleContainer.TitleText:SetPoint("CENTER", frame.BFIHeader)

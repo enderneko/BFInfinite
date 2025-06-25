@@ -53,6 +53,27 @@ end
 ---------------------------------------------------------------------
 -- flyout
 ---------------------------------------------------------------------
+local function EquipmentFlyout_UpdateItems()
+    for _, button in next, EquipmentFlyoutFrame.buttons do
+        if not button._BFIStyled then
+            button._BFIStyled = true
+
+            button:SetNormalTexture(AF.GetEmptyTexture())
+            button:SetPushedTexture(AF.GetEmptyTexture())
+            -- texplore(button)
+
+            S.CreateBackdrop(button, true, 1)
+            S.StyleIcon(button.icon)
+            S.StyleIconBorder(button.IconBorder)
+            button.HighlightTexture:SetColorTexture(AF.GetColorRGB("button_highlight"))
+        end
+
+        if button.location >= _G.EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+            button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+        end
+    end
+end
+
 local function StyleFlyout()
     -- flyout
     EquipmentFlyoutFrameHighlight:SetAlpha(0)
@@ -62,10 +83,14 @@ local function StyleFlyout()
 	EquipmentFlyoutFrameButtons:DisableDrawLayer("ARTWORK")
 
     AF.ApplyDefaultBackdropWithColors(EquipmentFlyoutFrame, "none", "BFI")
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", EquipmentFlyoutFrame)
 
     hooksecurefunc("EquipmentFlyout_Show", function(b)
         AF.SetOutside(EquipmentFlyoutFrame, b, 2, 2)
     end)
+
+    hooksecurefunc("EquipmentFlyout_UpdateItems", EquipmentFlyout_UpdateItems)
+    -- hooksecurefunc("EquipmentFlyout_DisplayButton", EquipmentFlyout_DisplayButton) -- won't work well, why?
 end
 
 ---------------------------------------------------------------------
@@ -96,12 +121,10 @@ local function StyleSlots()
         local name = slot:GetName()
         local icon = _G[name .. "IconTexture"]
         if icon then
-            icon:SetAlpha(1)
             S.StyleIcon(icon)
         end
 
-        slot.ignoreTexture:SetAlpha(1)
-        slot.IconBorder:SetAlpha(1)
+        slot.ignoreTexture:SetTexture("Interface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent") -- restore
         S.StyleIconBorder(slot.IconBorder)
 
         -- local text = AF.CreateFontString(slot)
@@ -163,7 +186,7 @@ end
 local function PaperDollItemSlotButton_Update(slot)
     local highlightTexture = slot:GetHighlightTexture()
     highlightTexture:SetTexture(AF.GetPlainTexture())
-    highlightTexture:SetVertexColor(1, 1, 1, 0.25)
+    highlightTexture:SetVertexColor(AF.GetColorRGB("button_highlight"))
     AF.SetOnePixelInside(highlightTexture, slot)
 end
 
@@ -240,25 +263,25 @@ local function PaperDollFrame_SetLabelAndText(statFrame, label, text, isPercenta
 end
 
 local function PaperDollFrame_UpdateSidebarTabs()
-
-
     local i = 1
     local tab, last = _G["PaperDollSidebarTab" .. i]
     while tab do
         AF.ApplyDefaultBackdropWithColors(tab, "widget")
+        AF.AddToPixelUpdater_CustomGroup("BFIStyled", tab)
 
         tab.TabBg:SetAlpha(0)
 
         tab.Hider:SetColorTexture(0, 0, 0, 0.75)
-        AF.SetOnePixelInside(tab.Hider, tab)
+        tab.Hider:SetAllPoints(tab.Icon)
 
-        tab.Highlight:SetColorTexture(1, 1, 1, 0.25)
-        AF.SetOnePixelInside(tab.Highlight, tab)
+        tab.Highlight:SetColorTexture(AF.GetColorRGB("button_highlight"))
+        tab.Highlight:SetAllPoints(tab.Icon)
 
         AF.SetOnePixelInside(tab.Icon, tab)
         if i == 1 then
             tab.Icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
         end
+        AF.AddToPixelUpdater_CustomGroup("BFIStyled", tab.Icon)
 
         i = i + 1
         tab = _G["PaperDollSidebarTab" .. i]
@@ -433,6 +456,8 @@ local function StyleHeader(header)
     HeaderRight_Style(header.HighlightRight)
 
     AF.ApplyDefaultBackdropWithColors(header, "widget")
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", header)
+
     header:HookScript("OnEnter", Header_OnEnter)
     header:HookScript("OnLeave", Header_OnLeave)
 end
