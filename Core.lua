@@ -29,11 +29,8 @@ function eventHandler:ADDON_LOADED(arg)
             BFIConfig["default"] = {}
         end
 
-        -- appearance
-        if type(BFIConfig["appearance"]) ~= "table" then
-            BFIConfig["appearance"] = {
-            }
-        end
+        -- init general
+        AF.Fire("BFI_UpdateGeneral", BFIConfig)
 
         -- init configs
         AF.Fire("BFI_UpdateConfigs", BFIConfig["default"], "default")

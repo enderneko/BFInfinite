@@ -12,6 +12,7 @@ BFI.name = "BFInfinite"
 ---@field vars table
 ---@field media table
 ---@field libs table
+---@field General General
 ---@field ActionBars ActionBars
 ---@field Auras Auras
 ---@field Chat Chat
@@ -54,6 +55,9 @@ AF.AddEventHandler(BFI.utils)
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
+BFI.General = {}
+AF.AddEventHandler(BFI.General)
+
 BFI.Colors = {}
 AF.AddEventHandler(BFI.Colors)
 

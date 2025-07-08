@@ -20,10 +20,10 @@ local defaults = {
 }
 
 AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
-    if not t["BFI_DisableBlizzard"] then
-        t["BFI_DisableBlizzard"] = AF.Copy(defaults)
+    if not t["disableBlizzard"] then
+        t["disableBlizzard"] = AF.Copy(defaults)
     end
-    DB.config = t["BFI_DisableBlizzard"]
+    DB.config = t["disableBlizzard"]
 end)
 
 function DB.GetDefaults()

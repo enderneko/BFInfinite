@@ -262,6 +262,11 @@ function S.StyleButton(button, color, hoverColor)
     button:HookScript("OnEnable", Button_OnEnable)
     button:HookScript("OnDisable", Button_OnDisable)
 
+    button.BFI_OnEnter = Button_OnEnter
+    button.BFI_OnLeave = Button_OnLeave
+    button.BFI_OnEnable = Button_OnEnable
+    button.BFI_OnDisable = Button_OnDisable
+
     button:SetPushedTextOffset(0, -AF.GetOnePixelForRegion(button))
     RegisterMouseDownUp(button)
 
@@ -637,11 +642,10 @@ local function UpdatePixels(_, region, remaining, total)
     -- print("BFIStyled: ", AF.RoundToDecimal((total - remaining) / total, 2))
 end
 local pixelUpdateExecutor = AF.BuildOnUpdateExecutor(UpdatePixels, function()
-    print("AF_PIXEL_UPDATE: BFIStyled group updated", GetTimePreciseSec() - start)
+    AF.Debug("AF_PIXEL_UPDATE: BFIStyled group updated", AF.RoundToDecimal(GetTimePreciseSec() - start, 3))
 end, 5)
 
 AF.RegisterCallback("AF_PIXEL_UPDATE", function()
-    -- AF.UpdatePixels_CustomGroup("BFIStyled")
     pixelUpdateExecutor:Clear()
     start = GetTimePreciseSec()
     pixelUpdateExecutor:Submit(AF.GetPixelUpdaterCustomGroup("BFIStyled"), true)
