@@ -106,17 +106,17 @@ local function CreateExtraActionHolder()
 
     hooksecurefunc(ExtraActionBarFrame, "SetParent", function(_, parent)
         if parent ~= extraActionHolder then
-            -- if InCombatLockdown() then
-            --     AB:RegisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_UpdateParent)
-            -- else
+            if InCombatLockdown() then
+                AB:RegisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_UpdateParent)
+            else
                 ExtraAction_UpdateParent()
-            -- end
+            end
         end
     end)
 end
 
 function ExtraAction_UpdateParent()
-    -- AB:UnregisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_UpdateParent)
+    AB:UnregisterEvent("PLAYER_REGEN_ENABLED", ExtraAction_UpdateParent)
     ExtraActionBarFrame:SetParent(extraActionHolder)
 end
 
@@ -203,6 +203,7 @@ local function UpdateButton(_, module, which)
     extraActionHolder.scale = extraActionConfig.scale
     extraActionHolder:SetSize(size * extraActionConfig.scale, size * extraActionConfig.scale)
     ExtraActionBarFrame:SetScale(extraActionConfig.scale)
+    ExtraActionBarFrame:SetParent(extraActionHolder)
 
     extraActionHolder.hideTexture = extraActionConfig.hideTexture
     for button in pairs(extraButtons) do
