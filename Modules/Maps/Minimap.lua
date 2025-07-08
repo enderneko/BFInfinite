@@ -416,7 +416,7 @@ local function UpdateInstanceDifficulty(_, event, arg)
         Minimap.instanceDifficultyFrame:Hide()
     end
 
-    AF.SetSizeToFitText(Minimap.instanceDifficultyFrame, Minimap.instanceDifficultyFrame.text)
+    AF.ResizeToFitText(Minimap.instanceDifficultyFrame, Minimap.instanceDifficultyFrame.text, 1, 1)
 end
 
 local function UpdateGuild()
