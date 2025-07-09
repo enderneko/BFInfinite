@@ -5,6 +5,8 @@ local S = BFI.Style
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local _G = _G
+
 ---------------------------------------------------------------------
 -- remove regions
 ---------------------------------------------------------------------
@@ -12,6 +14,8 @@ local uselessRegions = {
     "Left",
     "Right",
     "Center",
+    "Mid",
+    "Middle",
 }
 
 function S.RemoveRegions(region)
@@ -299,6 +303,44 @@ function S.StyleCloseButton(button)
 end
 
 ---------------------------------------------------------------------
+-- item button
+---------------------------------------------------------------------
+function S.StyleItemButton(button)
+    local name = button:GetName()
+
+    S.CreateBackdrop(button, true, nil, 1)
+
+    local iconTexture = name and _G[name .. "IconTexture"] or button.IconTexture
+    if iconTexture then
+        S.StyleIcon(iconTexture)
+        -- AF.SetOnePixelInside(iconTexture, button.BFIBackdrop)
+    end
+
+    local iconBorder = name and _G[name .. "IconBorder"] or button.IconBorder
+    if iconBorder then
+        S.StyleIconBorder(iconBorder)
+    end
+
+    local normalTexture = name and _G[name .. "NormalTexture"] or button.NormalTexture
+    if normalTexture then
+        normalTexture:SetAlpha(0)
+    end
+
+    local highlightTexture = button:GetHighlightTexture()
+    if highlightTexture then
+        AF.SetOnePixelInside(highlightTexture, button.BFIBackdrop)
+        highlightTexture:SetColorTexture(AF.GetColorRGB("white", 0.25))
+    end
+
+    local pushedTexture = button:GetPushedTexture()
+    if pushedTexture then
+        AF.SetOnePixelInside(pushedTexture, button.BFIBackdrop)
+        pushedTexture:SetColorTexture(AF.GetColorRGB("yellow", 0.25))
+    end
+    -- button:SetPushedTexture(AF.GetEmptyTexture())
+end
+
+---------------------------------------------------------------------
 -- check button
 ---------------------------------------------------------------------
 function S.StyleCheckButton(button)
@@ -352,6 +394,23 @@ function S.StyleProgressBar(bar)
     S.RemoveTextures(bar)
     S.CreateBackdrop(bar, nil, 1)
     bar:SetStatusBarTexture(BFI.media.bar)
+end
+
+---------------------------------------------------------------------
+-- edit box
+---------------------------------------------------------------------
+function S.StyleEditBox(box, tlx, tly, brx, bry)
+    assert(box, "StyleEditBox: box is nil")
+
+    if box._BFIStyled then return end
+    box._BFIStyled = true
+
+    S.RemoveRegions(box)
+    S.CreateBackdrop(box)
+    box.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
+    AF.ClearPoints(box.BFIBackdrop)
+    AF.SetPoint(box.BFIBackdrop, "TOPLEFT", tlx or 0, tly or 0)
+    AF.SetPoint(box.BFIBackdrop, "BOTTOMRIGHT", brx or 0, bry or 0)
 end
 
 ---------------------------------------------------------------------
