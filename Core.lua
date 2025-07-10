@@ -30,7 +30,7 @@ function eventHandler:ADDON_LOADED(arg)
         end
 
         -- init general
-        AF.Fire("BFI_UpdateGeneral", BFIConfig)
+        AF.Fire("BFI_UpdateGeneral", BFIConfig["default"])
 
         -- init configs
         AF.Fire("BFI_UpdateConfigs", BFIConfig["default"], "default")

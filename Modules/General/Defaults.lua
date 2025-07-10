@@ -7,6 +7,10 @@ local AF = _G.AbstractFramework
 
 local defaults = {
     gameMenuScale = 0.8,
+    customAccentColor = {
+        enabled = false,
+        color = AF.GetColorTable("hotpink"),
+    },
 }
 
 AF.RegisterCallback("BFI_UpdateGeneral", function(_, t)

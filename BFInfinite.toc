@@ -7,7 +7,7 @@
 ## SavedVariablesPerCharacter: BFIGuild
 ## Dependencies: AbstractFramework
 # AddonCompartmentFunc: BFInfinite_OnAddonCompartmentClick
-# IconTexture: Interface\icon.tga
+## IconTexture: Interface\AddOns\BFInfinite\Media\Icons\BFI_64
 
 Locales\LoadLocales.xml
 
@@ -19,3 +19,4 @@ Utils.lua
 Core.lua
 Slash.lua
 Modules\LoadModules.xml
+Options\LoadOptions.xml
