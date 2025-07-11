@@ -165,7 +165,7 @@ end
 -- UpdateNameplateBase
 ---------------------------------------------------------------------
 local function UpdateNameplateBase(np)
-    -- BFI.Debug("|cffffff00UpdateNameplateBase:|r", np:GetName())
+    -- AF.Debug("|cffffff00UpdateNameplateBase:|r", np:GetName())
 
     local unit = np.unit
 
@@ -455,13 +455,13 @@ local function Show(np)
 
     -- if guid ~= np.guid then
     --     np.guid = guid
-    --     -- BFI.Debug("|cffff7700NP.UnitChanged:|r", np:GetName())
+    --     -- AF.Debug("|cffff7700NP.UnitChanged:|r", np:GetName())
     --     UpdateNameplateBase(np)
     -- end
 
     -- load indicator config
     if np.previousType ~= np.type or np.previousMode ~= np.mode then
-        -- BFI.Debug("|cffffff00NP.UnitTypeChanged:|r", np:GetName(), np.previousType, "->", np.type)
+        -- AF.Debug("|cffffff00NP.UnitTypeChanged:|r", np:GetName(), np.previousType, "->", np.type)
         np.previousType = np.type
         np.previousMode = np.mode
         NP.SetupIndicators(np, NP.config[np.type], np.mode)
@@ -498,7 +498,7 @@ local function ShowNameplate(_, event, unit)
     local np, bUnitFrame = NP.GetNameplateForUnit(unit)
     if not np then return end
 
-    -- BFI.Debug("|cff00ff00ShowNameplate:|r", np:GetName())
+    -- AF.Debug("|cff00ff00ShowNameplate:|r", np:GetName())
 
     np.bUnitFrame = bUnitFrame
 
@@ -523,7 +523,7 @@ local function HideNameplate(_, event, unit)
     local np = NP.GetNameplateForUnit(unit)
     if not np then return end
 
-    -- BFI.Debug("|cff229922HideNameplate:|r", np:GetName())
+    -- AF.Debug("|cff229922HideNameplate:|r", np:GetName())
     Hide(np)
 end
 
@@ -548,7 +548,7 @@ local function CreateNameplate(self, event, nameplate)
     nameplate.bfi = np
     NP.created[nameplate] = np
 
-    -- BFI.Debug("|cffff7777CreateNameplate:|r", np:GetName())
+    -- AF.Debug("|cffff7777CreateNameplate:|r", np:GetName())
 
     np.states = {}
     np.indicators = {}

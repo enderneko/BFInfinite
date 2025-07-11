@@ -331,7 +331,7 @@ local function UnitButton_OnShow(self)
     UF.OnButtonShow(self)
     -- local success, result = pcall(UnitButton_UpdateAll, self, true)
     -- if not success then
-    --     BFI.Debug("|cffabababUpdateAll FAILED|r", self:GetName(), result)
+    --     AF.Debug("|cffabababUpdateAll FAILED|r", self:GetName(), result)
     -- end
 end
 

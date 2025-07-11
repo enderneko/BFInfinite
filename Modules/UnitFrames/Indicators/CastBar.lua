@@ -80,7 +80,7 @@ do
         if name then
             temp[name] = ticks
         else
-            BFI.Debug("|cffabababChanneledSpellTicks INVALID|r", id)
+            AF.Debug("|cffabababChanneledSpellTicks INVALID|r", id)
         end
     end
     channeledSpellTicks = temp

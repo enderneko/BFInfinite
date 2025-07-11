@@ -103,7 +103,7 @@ local function UpdateRep(self)
     local nextReactionThreshold = data.nextReactionThreshold
     local currentStanding = data.currentStanding
     local factionID = data.factionID
-    -- BFI.Debug(name, reaction, factionID, "currentStanding:", currentStanding, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
+    -- AF.Debug(name, reaction, factionID, "currentStanding:", currentStanding, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
 
     local standingLabel, hasRewardPending
     -- TODO: hasRewardPending
@@ -115,7 +115,7 @@ local function UpdateRep(self)
         currentReactionThreshold = info.reactionThreshold or 0
         nextReactionThreshold = info.nextThreshold
         currentStanding = info.standing or 1
-        -- BFI.Debug("[friendship]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
+        -- AF.Debug("[friendship]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
     end
 
     --! paragon (Legion)
@@ -130,7 +130,7 @@ local function UpdateRep(self)
             currentStanding = current % threshold
             reaction = 9
         end
-        -- BFI.Debug("[paragon]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
+        -- AF.Debug("[paragon]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
     end
 
     --! renown
@@ -141,7 +141,7 @@ local function UpdateRep(self)
         currentReactionThreshold = 0
         nextReactionThreshold = data.renownLevelThreshold
         currentStanding = HasMaximumRenown(factionID) and data.renownLevelThreshold or data.renownReputationEarned or 0
-        -- BFI.Debug("[renown]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
+        -- AF.Debug("[renown]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
     end
 
     -- bar
