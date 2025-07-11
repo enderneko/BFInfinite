@@ -169,14 +169,12 @@ local function RefreshData()
     GameTooltip:RefreshData()
 end
 
-local function ShowItemLevel(_, unit)
-    if unit and unit ~= "mouseover" then return end
+local function UpdateItemLevel()
     if not (UnitExists("mouseover") and UnitIsPlayer("mouseover")) then return end
 
     local itemLevel, elapsed = IL.GetCache(UnitGUID("mouseover"))
     if itemLevel and elapsed < 120 then
         AF.UnregisterCallback("AF_UNIT_ITEM_LEVEL_UPDATE")
-        RefreshData()
     else
         -- print("REGISTER AF_UNIT_ITEM_LEVEL_UPDATE")
         AF.RegisterCallback("AF_UNIT_ITEM_LEVEL_UPDATE", RefreshData)
@@ -197,11 +195,9 @@ local function MODIFIER_STATE_CHANGED(_, _, key, down)
 
     if itemLevelEnabled and not InCombatLockdown() and key:find("ALT") then
         if down == 1 then
-            GameTooltip:RefreshData()
-            ShowItemLevel()
-        else
-            GameTooltip:RefreshData()
+            UpdateItemLevel()
         end
+        GameTooltip:RefreshData()
     end
 end
 
@@ -572,7 +568,7 @@ local lineFormatters = {
             tooltip:AddLine(format(CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, itemLevel))
         else
             tooltip:AddLine(format(CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, CALCULATING))
-            ShowItemLevel()
+            UpdateItemLevel()
         end
     end,
 }
