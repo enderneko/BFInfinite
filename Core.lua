@@ -9,6 +9,8 @@ function eventHandler:ADDON_LOADED(arg)
     if arg == BFI.name then
         eventHandler:UnregisterEvent("ADDON_LOADED")
 
+        BFI.version, BFI.versionNum = AF.GetAddOnVersion(BFI.name)
+
         if type(BFIConfig) ~= "table" then BFIConfig = {} end
 
         if not BFIConfig.cvarInited then
@@ -27,15 +29,15 @@ function eventHandler:ADDON_LOADED(arg)
         end
 
         -- accent color
-        if type(BFIConfig.customAccentColor) ~= "table" then
-            BFIConfig.customAccentColor = {
-                enabled = false,
+        if type(BFIConfig.accentColor) ~= "table" then
+            BFIConfig.accentColor = {
+                type = "default",
                 color = AF.GetColorTable("hotpink"),
             }
         end
 
-        if BFIConfig.customAccentColor.enabled then
-            AF.SetAddonAccentColor(BFI.name, BFIConfig.customAccentColor.color)
+        if BFIConfig.accentColor.type == "custom" then
+            AF.SetAddonAccentColor(BFI.name, BFIConfig.accentColor.color)
         else
             AF.SetAddonAccentColor(BFI.name, "blazing_tangerine")
         end

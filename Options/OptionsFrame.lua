@@ -107,7 +107,7 @@ end
 -- options frame
 ---------------------------------------------------------------------
 local function CreateOptionsFrame()
-    optionsFrame = AF.CreateFrame(AFParent, "BFIOptionsFrame", 800, 600)
+    optionsFrame = AF.CreateFrame(AFParent, "BFIOptionsFrame", 750, 600)
     optionsFrame:Hide()
 
     tinsert(_G.UISpecialFrames, optionsFrame:GetName())
@@ -133,7 +133,7 @@ local function CreateOptionsFrame()
     AF.SetDraggable(headerPane, optionsFrame, true)
 
     -- logo
-    local color2 = BFIConfig.customAccentColor.enabled and {AF.InvertColor(AF.GetColorRGB("BFI"))} or "vivid_raspberry"
+    local color2 = BFIConfig.accentColor.type == "custom" and {AF.InvertColor(AF.GetColorRGB("BFI"))} or "vivid_raspberry"
     local logo = AF.CreateGradientTexture(headerPane, "HORIZONTAL", "BFI", color2, AF.GetIcon("BFI_64_W", BFI.name))
     AF.SetSize(logo, 40, 40)
     AF.SetPoint(logo, "LEFT", headerPane, 7, 0)
@@ -161,7 +161,7 @@ local function CreateOptionsFrame()
     --------------------------------------------------
     -- list pane
     --------------------------------------------------
-    local listPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrame_ListPane", 200)
+    local listPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrame_ListPane", 170)
     optionsFrame.listPane = listPane
     AF.SetPoint(listPane, "TOPLEFT", headerPane, "BOTTOMLEFT", 0, 1)
     AF.SetPoint(listPane, "BOTTOMLEFT", optionsFrame)

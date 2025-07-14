@@ -24,22 +24,51 @@ end
 ---------------------------------------------------------------------
 -- bfi pane
 ---------------------------------------------------------------------
+local bfiPane
+
 local function CreateBFIPane()
-    local bfiPane = AF.CreateTitledPane(generalPanel, "BFI", nil, 200)
+    bfiPane = AF.CreateTitledPane(generalPanel, "BFI", nil, 300)
     generalPanel.bfiPane = bfiPane
     AF.SetPoint(bfiPane, "TOPLEFT", generalPanel, 15, -15)
     AF.SetPoint(bfiPane, "TOPRIGHT", generalPanel, -15, -15)
 
     -- language
-    -- local languageDropdown = AF.CreateDropdown(bfiPane, 140)
+    -- local languageDropdown = AF.CreateDropdown(bfiPane, 150)
     -- bfiPane.languageDropdown = languageDropdown
     -- AF.SetPoint(languageDropdown, "TOPLEFT", bfiPane, 15, -45)
     -- languageDropdown:SetLabel(L["Language"])
 
+    -- accent color
+    local accentColorDropdown = AF.CreateDropdown(bfiPane, 150)
+    bfiPane.accentColorDropdown = accentColorDropdown
+    AF.SetPoint(accentColorDropdown, "TOPLEFT", bfiPane, 15, -45)
+    accentColorDropdown:SetLabel("BFI " .. AF.L["Accent Color"])
+
+    accentColorDropdown:SetItems({
+        {text = DEFAULT, value = "default"},
+        -- {text = CLASS, value = "class", disabled = true},
+        {text = CUSTOM, value = "custom"},
+    })
+
+    accentColorDropdown:SetOnSelect(function(value)
+        BFIConfig.accentColor.type = value
+        bfiPane.accentColorPicker:SetShown(value == "custom")
+        ShowReloadPopup()
+    end)
+
+    local accentColorPicker = AF.CreateColorPicker(accentColorDropdown, nil, nil, nil, function(r, g, b)
+        BFIConfig.accentColor.color[1] = r
+        BFIConfig.accentColor.color[2] = g
+        BFIConfig.accentColor.color[3] = b
+        ShowReloadPopup()
+    end)
+    bfiPane.accentColorPicker = accentColorPicker
+    AF.SetPoint(accentColorPicker, "LEFT", accentColorDropdown, "RIGHT", 5, 0)
+
     -- scale
-    local scaleSlider = AF.CreateSlider(bfiPane, "UI " .. L["Scale"], 140, 0.5, 1.5, 0.01, nil, true)
+    local scaleSlider = AF.CreateSlider(bfiPane, "UI " .. L["Scale"], 150, 0.5, 1.5, 0.01, nil, true)
     bfiPane.scaleSlider = scaleSlider
-    AF.SetPoint(scaleSlider, "TOPLEFT", bfiPane, 15, -45)
+    AF.SetPoint(scaleSlider, "TOPLEFT", accentColorDropdown, 0, -50)
     scaleSlider:SetAfterValueChanged(function(value)
         BFIConfig.scale = value
         AF.SetUIParentScale(value, true)
@@ -61,52 +90,103 @@ local function CreateBFIPane()
     end)
 
     -- game menu scale
-    local gameMenuScaleSlider = AF.CreateSlider(bfiPane, L["Game Menu Scale"], 140, 0.5, 1.5, 0.1, nil, true)
+    local gameMenuScaleSlider = AF.CreateSlider(bfiPane, L["Game Menu Scale"], 150, 0.5, 1.5, 0.1, nil, true)
     bfiPane.gameMenuScaleSlider = gameMenuScaleSlider
     AF.SetPoint(gameMenuScaleSlider, "TOPLEFT", scaleSlider, "TOPRIGHT", 35, 0)
     gameMenuScaleSlider:SetAfterValueChanged(function(value)
         BFIConfig.gameMenuScale = value
-        GameMenuFrame:SetScale(BFIConfig.gameMenuScale)
+        _G.GameMenuFrame:SetScale(BFIConfig.gameMenuScale)
+        AF.UpdatePixelsForRegionAndChildren(_G.GameMenuFrame)
     end)
 
-    -- custom accent color
-    local customAccentColorCheckbox = AF.CreateCheckButton(bfiPane, nil, function(checked)
-        BFIConfig.customAccentColor.enabled = checked
-        generalPanel.bfiPane.customAccentColorColorPicker:SetEnabled(checked)
+    -- auto repair
+    local autoRepairDropdown = AF.CreateDropdown(bfiPane, 150)
+    bfiPane.autoRepairDropdown = autoRepairDropdown
+    AF.SetPoint(autoRepairDropdown, "TOPLEFT", scaleSlider, 0, -55)
+    autoRepairDropdown:SetLabel(L["Auto Repair"])
+    autoRepairDropdown:SetItems({
+        {text = L["Disabled"], value = "disabled"},
+        {text = PLAYER, value = "player"},
+        {text = GUILD, value = "guild"},
+    })
+    autoRepairDropdown:SetOnSelect(function(value)
     end)
-    customAccentColorCheckbox:SetTooltip("BFI " .. AF.L["Accent Color"], AF.L["A UI reload is required"])
-    bfiPane.customAccentColorCheckbox = customAccentColorCheckbox
-    AF.SetPoint(customAccentColorCheckbox, "TOPLEFT", scaleSlider, 0, -45)
-
-    local customAccentColorColorPicker = AF.CreateColorPicker(customAccentColorCheckbox, "BFI " .. AF.L["Accent Color"], nil, nil, function(r, g, b)
-        BFIConfig.customAccentColor.color[1] = r
-        BFIConfig.customAccentColor.color[2] = g
-        BFIConfig.customAccentColor.color[3] = b
-        ShowReloadPopup()
-    end)
-    bfiPane.customAccentColorColorPicker = customAccentColorColorPicker
-    AF.SetPoint(customAccentColorColorPicker, "TOPLEFT", customAccentColorCheckbox, "TOPRIGHT", 5, 0)
+    autoRepairDropdown:SetSelectedValue("disabled")
+    autoRepairDropdown:SetEnabled(false)
 end
 
 ---------------------------------------------------------------------
 -- abstract framework pane
 ---------------------------------------------------------------------
+local afPane
+
 local function CreateAFPane()
-    local afPane = AF.CreateTitledPane(generalPanel, AF.GetIconString("AF") .. "AbstractFramework", nil, 100)
+    afPane = AF.CreateTitledPane(generalPanel, "AbstractFramework", nil, 100)
     generalPanel.afPane = afPane
     AF.SetPoint(afPane, "TOPLEFT", generalPanel.bfiPane, "BOTTOMLEFT", 0, -15)
     AF.SetPoint(afPane, "TOPRIGHT", generalPanel.bfiPane, "BOTTOMRIGHT", 0, -15)
+
+    afPane:SetTips("AbstractFramework", L["These settings may affect all addons using AbstractFramework"])
+
+    -- accent color
+    local accentColorDropdown = AF.CreateDropdown(afPane, 150)
+    afPane.accentColorDropdown = accentColorDropdown
+    AF.SetPoint(accentColorDropdown, "TOPLEFT", afPane, 15, -45)
+    accentColorDropdown:SetLabel("AF " .. AF.L["Accent Color"])
+
+    accentColorDropdown:SetItems({
+        {text = DEFAULT, value = "default"},
+        {text = CUSTOM, value = "custom"},
+    })
+
+    accentColorDropdown:SetOnSelect(function(value)
+        AFConfig.accentColor.type = value
+        afPane.accentColorPicker:SetShown(value == "custom")
+        ShowReloadPopup()
+    end)
+
+    local accentColorPicker = AF.CreateColorPicker(accentColorDropdown, nil, nil, nil, function(r, g, b)
+        AFConfig.accentColor.color = AF.BuildAccentColorTable({r, g, b})
+        ShowReloadPopup()
+    end)
+    afPane.accentColorPicker = accentColorPicker
+    AF.SetPoint(accentColorPicker, "LEFT", accentColorDropdown, "RIGHT", 5, 0)
+
+    -- scale
+    local scaleSlider = AF.CreateSlider(afPane, "AF " .. L["Scale"], 150, 0.5, 1.5, 0.1, nil, true)
+    afPane.scaleSlider = scaleSlider
+    AF.SetPoint(scaleSlider, "TOPLEFT", accentColorDropdown, 0, -50)
+    scaleSlider:SetAfterValueChanged(function(value)
+        AFConfig.scale = value
+        AF.SetScale(value, true)
+        ShowReloadPopup()
+    end)
+
+    -- font size
+    local fontSizeSlider = AF.CreateSlider(afPane, "AF " .. L["Font Size"], 150, -5, 5, 1, nil, true)
+    afPane.fontSizeSlider = fontSizeSlider
+    AF.SetPoint(fontSizeSlider, "TOPLEFT", scaleSlider, "TOPRIGHT", 35, 0)
+    fontSizeSlider:SetAfterValueChanged(function(value)
+        AFConfig.fontSizeOffset = value
+        AF.UpdateFontSize(value)
+    end)
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
 local function Load()
-    generalPanel.bfiPane.scaleSlider:SetValue(BFIConfig.scale)
-    generalPanel.bfiPane.gameMenuScaleSlider:SetValue(BFIConfig.gameMenuScale)
-    generalPanel.bfiPane.customAccentColorCheckbox:SetChecked(BFIConfig.customAccentColor.enabled)
-    generalPanel.bfiPane.customAccentColorColorPicker:SetColor(BFIConfig.customAccentColor.color)
-    generalPanel.bfiPane.customAccentColorColorPicker:SetEnabled(BFIConfig.customAccentColor.enabled)
+    bfiPane.scaleSlider:SetValue(BFIConfig.scale)
+    bfiPane.gameMenuScaleSlider:SetValue(BFIConfig.gameMenuScale)
+    bfiPane.accentColorDropdown:SetSelectedValue(BFIConfig.accentColor.type)
+    bfiPane.accentColorPicker:SetColor(BFIConfig.accentColor.color)
+    bfiPane.accentColorPicker:SetShown(BFIConfig.accentColor.type == "custom")
+
+    afPane.accentColorDropdown:SetSelectedValue(AFConfig.accentColor.type)
+    afPane.accentColorPicker:SetColor(AFConfig.accentColor.color.t)
+    afPane.accentColorPicker:SetShown(AFConfig.accentColor.type == "custom")
+    afPane.scaleSlider:SetValue(AFConfig.scale)
+    afPane.fontSizeSlider:SetValue(AFConfig.fontSizeOffset)
 end
 
 ---------------------------------------------------------------------
