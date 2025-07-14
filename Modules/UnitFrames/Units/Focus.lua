@@ -74,4 +74,4 @@ local function UpdateFocus(_, module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(focus)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateFocus)
+AF.RegisterCallback("BFI_UpdateModule", UpdateFocus)

@@ -724,7 +724,7 @@ end
 --     },
 -- }
 
-AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
+AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     if not t["nameplates"] then
         t["nameplates"] = AF.Copy(defaults)
     end

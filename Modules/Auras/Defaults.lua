@@ -70,7 +70,7 @@ local defaults = {
     },
 }
 
-AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
+AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     if not t["auras"] then
         t["auras"] = AF.Copy(defaults)
     end

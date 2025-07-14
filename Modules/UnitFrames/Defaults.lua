@@ -6535,7 +6535,7 @@ local defaults = {
     },
 }
 
-AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
+AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     if not t["unitFrames"] then
         t["unitFrames"] = AF.Copy(defaults, style1)
     end

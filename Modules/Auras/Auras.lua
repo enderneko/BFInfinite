@@ -254,4 +254,4 @@ local function UpdateAuras(_, module, which)
     AF.LoadPosition(buffFrame, config.buffs.position)
     AF.LoadPosition(debuffFrame, config.debuffs.position)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateAuras)
+AF.RegisterCallback("BFI_UpdateModule", UpdateAuras)

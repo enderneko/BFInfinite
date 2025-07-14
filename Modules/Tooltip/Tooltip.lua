@@ -922,4 +922,4 @@ local function UpdateTooltip(_, module, which)
     --     GameTooltip.factionIcon:SetAlpha(config.factionIcon.alpha)
     -- end
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateTooltip)
+AF.RegisterCallback("BFI_UpdateModule", UpdateTooltip)

@@ -13,6 +13,7 @@ function SlashCmdList.BFI(msg, editbox)
         AF.ToggleMovers()
     elseif command == "reset" then
         BFIConfig = nil
+        BFIProfile = nil
         ReloadUI()
     else
         BFI.ToggleOptionsFrame()

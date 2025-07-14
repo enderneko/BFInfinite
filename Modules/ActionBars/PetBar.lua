@@ -252,4 +252,4 @@ local function UpdatePetBar(_, module, which)
     UpdatePetButtons()
     AssignBindings()
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdatePetBar)
+AF.RegisterCallback("BFI_UpdateModule", UpdatePetBar)

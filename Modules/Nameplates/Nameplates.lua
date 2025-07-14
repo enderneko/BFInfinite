@@ -654,4 +654,4 @@ local function UpdateNameplates(_, module, which)
     -- indicators
     NP.EnableQuestIndicator(config.hostile_npc.questIndicator.enabled, config.hostile_npc.questIndicator.hideInInstance)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateNameplates)
+AF.RegisterCallback("BFI_UpdateModule", UpdateNameplates)

@@ -70,4 +70,4 @@ local function UpdateQueueStatus(_, module, which)
     queueStatusHolder.scale = config.scale
     QueueStatusButton:SetScale(0.001)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateQueueStatus)
+AF.RegisterCallback("BFI_UpdateModule", UpdateQueueStatus)

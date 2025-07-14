@@ -11,10 +11,10 @@ local AF = _G.AbstractFramework
 UF.Parent = CreateFrame("Frame", "BFIUnitFrameParent", AF.UIParent, "SecureHandlerStateTemplate")
 UF.Parent:SetFrameStrata("LOW")
 UF.Parent:SetAllPoints(AF.UIParent)
-AF.RegisterCallback("BFI_UpdateModules", function()
+AF.RegisterCallback("BFI_UpdateModule", function()
     -- NOTE: in case of reload during pet battle
     RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
-    AF.UnregisterCallback("BFI_UpdateModules", "UF_Parent")
+    AF.UnregisterCallback("BFI_UpdateModule", "UF_Parent")
 end, "low", "UF_Parent")
 
 -- hide during minigame
@@ -48,7 +48,7 @@ local function UpdateGeneral(_, module, which)
     if which and which ~= "general" then return end
     UF.Parent:SetFrameStrata(UF.config.general.frameStrata)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateGeneral)
+AF.RegisterCallback("BFI_UpdateModule", UpdateGeneral)
 
 ---------------------------------------------------------------------
 -- indicator

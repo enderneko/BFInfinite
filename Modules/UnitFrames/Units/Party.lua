@@ -166,4 +166,4 @@ local function UpdateParty(_, module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(party, party.driverKey, party.driverValue)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateParty)
+AF.RegisterCallback("BFI_UpdateModule", UpdateParty)

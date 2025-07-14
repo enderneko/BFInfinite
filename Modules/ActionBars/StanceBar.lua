@@ -188,4 +188,4 @@ local function UpdateStanceBar(_, module, which)
     UpdateStanceButtons()
     AssignBindings()
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateStanceBar)
+AF.RegisterCallback("BFI_UpdateModule", UpdateStanceBar)

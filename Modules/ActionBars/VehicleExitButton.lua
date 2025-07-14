@@ -103,4 +103,4 @@ local function UpdateButton(_, module, which)
     vehicleExitHolder:SetFrameStrata(AB.config.general.frameStrata)
     vehicleExitHolder:SetFrameLevel(AB.config.general.frameLevel)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateButton)
+AF.RegisterCallback("BFI_UpdateModule", UpdateButton)

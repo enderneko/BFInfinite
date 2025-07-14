@@ -1,6 +1,21 @@
-if not LOCALE_zhCN then return end
+-- local _L = select(2, ...).L
+-- local L = {}
+-- ---@type AbstractFramework
+-- local AF = _G.AbstractFramework
 
-local L = select( 2, ...).L
+-- AF.RegisterCallback("BFI_UpdateLocale", function(_, locale)
+--     if locale == "zhCN" then
+--         for key, value in next, L do
+--             _L[key] = value
+--         end
+--     else
+--         wipe(L)
+--         L = nil
+--     end
+-- end)
+
+if not LOCALE_zhCN then return end
+local L = select(2, ...).L
 
 L["DEAD"] = "死亡"
 L["GHOST"] = "鬼魂"

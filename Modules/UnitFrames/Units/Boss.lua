@@ -80,4 +80,4 @@ local function UpdateBoss(_, module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(boss, boss.driverKey, boss.driverValue)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateBoss)
+AF.RegisterCallback("BFI_UpdateModule", UpdateBoss)

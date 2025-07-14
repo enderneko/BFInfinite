@@ -48,4 +48,4 @@ local function UpdateThreats(_, module, which)
     AF.LoadPosition(threatFrame, config.position)
     AF.SetSize(threatFrame, config.width, config.height)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateThreats)
+AF.RegisterCallback("BFI_UpdateModule", UpdateThreats)

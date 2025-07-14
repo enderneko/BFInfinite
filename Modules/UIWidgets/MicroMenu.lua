@@ -232,4 +232,4 @@ local function UpdateMicroMenu(_, module, which)
     -- position
     AF.LoadPosition(microMenu, config.position)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateMicroMenu)
+AF.RegisterCallback("BFI_UpdateModule", UpdateMicroMenu)

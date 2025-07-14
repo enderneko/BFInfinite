@@ -119,7 +119,7 @@ local function CreateChatCopyFrame()
     chatCopyFrame:SetFrameStrata("DIALOG")
     chatCopyFrame:EnableMouse(true)
     chatCopyFrame:SetScript("OnMouseWheel", AF.noop)
-    tinsert(UISpecialFrames, "BFIChatCopyFrame")
+    tinsert(_G.UISpecialFrames, "BFIChatCopyFrame")
 
     chatCopyFrame.scroll = AF.CreateScrollEditBox(chatCopyFrame, nil, nil, 20, 20, 5)
     chatCopyFrame.scroll:SetAllPoints()
@@ -619,4 +619,4 @@ local function UpdateChat(_, module)
 
     -- TODO: button size
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateChat)
+AF.RegisterCallback("BFI_UpdateModule", UpdateChat)

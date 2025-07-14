@@ -1,16 +1,113 @@
 ---@class BFI
 local BFI = select(2, ...)
-local G = BFI.General
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 local optionsFrame
 
 ---------------------------------------------------------------------
+-- list
+---------------------------------------------------------------------
+local list = {
+    "General",
+    "SEPARATOR",
+    "Unit Frames",
+    "Nameplates",
+    "Action Bars",
+    "Chat",
+    "Tooltip",
+    "SEPARATOR",
+    "About",
+}
+
+local function CreateButton(name)
+    local button = AF.CreateButton(optionsFrame.listPane, name, nil, nil, 25, nil, "", "")
+    button:SetTextJustifyH("LEFT")
+    button:SetTextPadding(10)
+    button:SetBackdropColor(AF.GetColorRGB("none"))
+
+    -- local highlight = AF.CreateTexture(button, nil, AF.GetColorTable("BFI", 0.6), "BORDER")
+    local highlight = AF.CreateGradientTexture(button, "HORIZONTAL", "BFI", "none", nil, "BORDER")
+    button.highlight = highlight
+    highlight:Hide()
+    highlight:SetPoint("TOPLEFT")
+    highlight:SetPoint("BOTTOMLEFT")
+    AF.SetWidth(highlight, 1)
+
+    return button
+end
+
+local function CreateSeparator()
+    local separator = AF.CreateTexture(optionsFrame.listPane, nil, "border")
+    AF.SetHeight(separator, 1)
+    return separator
+end
+
+local function ButtonOnSelect(_, b)
+    AF.AnimatedResize(b.highlight, b:GetWidth(), nil, nil, nil, function()
+        b.highlight:Show()
+    end)
+end
+
+local function ButtonOnDeselect(_, b)
+    AF.AnimatedResize(b.highlight, 1, nil, nil, nil, nil, function()
+        b.highlight:Hide()
+    end)
+end
+
+local function ButtonOnEnter(b)
+    if b.isSelected then return end
+    AF.AnimatedResize(b.highlight, 7, nil, nil, nil, function()
+        b.highlight:Show()
+    end)
+end
+
+local function ButtonOnLeave(b)
+    if b.isSelected then return end
+    AF.AnimatedResize(b.highlight, 1, nil, nil, nil, nil, function()
+        b.highlight:Hide()
+    end)
+end
+
+local function ShowOptionsPanel(id)
+    AF.Fire("BFI_ShowOptionsPanel", id)
+end
+
+local function BuildList()
+    local buttons = {}
+
+    local first
+    local last
+
+    for _, name in next, list do
+        local item
+        if name == "SEPARATOR" then
+            item = CreateSeparator()
+        else
+            item = CreateButton(name)
+            tinsert(buttons, item)
+            if not first then first = item end
+        end
+
+        if last then
+            AF.SetPoint(item, "TOPLEFT", last, "BOTTOMLEFT", 0, -5)
+            AF.SetPoint(item, "TOPRIGHT", last, "BOTTOMRIGHT", 0, -5)
+        else
+            AF.SetPoint(item, "TOPLEFT", 7, -15)
+            AF.SetPoint(item, "TOPRIGHT", -7, -15)
+        end
+        last = item
+    end
+
+    AF.CreateButtonGroup(buttons, ShowOptionsPanel, ButtonOnSelect, ButtonOnDeselect, ButtonOnEnter, ButtonOnLeave)
+    first:SilentClick()
+end
+
+---------------------------------------------------------------------
 -- options frame
 ---------------------------------------------------------------------
 local function CreateOptionsFrame()
-    optionsFrame = AF.CreateFrame(AFParent, "BFIOptionsFrame", 1000, 600)
+    optionsFrame = AF.CreateFrame(AFParent, "BFIOptionsFrame", 800, 600)
     optionsFrame:Hide()
 
     tinsert(_G.UISpecialFrames, optionsFrame:GetName())
@@ -28,14 +125,15 @@ local function CreateOptionsFrame()
     --------------------------------------------------
     -- header pane
     --------------------------------------------------
-    local headerPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrameHeaderPane", nil, 35)
+    local headerPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrame_HeaderPane", nil, 35)
+    optionsFrame.headerPane = headerPane
     headerPane:SetPoint("TOPLEFT")
     headerPane:SetPoint("TOPRIGHT")
     headerPane:SetBackdropColor(0.12, 0.12, 0.12, 0.95)
     AF.SetDraggable(headerPane, optionsFrame, true)
 
     -- logo
-    local color2 = G.config.customAccentColor.enabled and {AF.InvertColor(AF.GetColorRGB("BFI"))} or "vivid_raspberry"
+    local color2 = BFIConfig.customAccentColor.enabled and {AF.InvertColor(AF.GetColorRGB("BFI"))} or "vivid_raspberry"
     local logo = AF.CreateGradientTexture(headerPane, "HORIZONTAL", "BFI", color2, AF.GetIcon("BFI_64_W", BFI.name))
     AF.SetSize(logo, 40, 40)
     AF.SetPoint(logo, "LEFT", headerPane, 7, 0)
@@ -50,24 +148,21 @@ local function CreateOptionsFrame()
     AF.SetPoint(closeButton, "RIGHT", headerPane, -7, 0)
 
     -- reload button
-    local reloadButton = AF.CreateButton(headerPane, _G.RELOADUI, "BFI", 115, 21)
+    local reloadButton = AF.CreateButton(headerPane, _G.RELOADUI, "BFI", 110, 21)
     AF.SetPoint(reloadButton, "BOTTOMRIGHT", closeButton, "BOTTOMLEFT", -7, 0)
     reloadButton:SetTexture(AF.GetIcon("Reload"), nil, {"LEFT", 5, 0}, nil, nil, nil, "TRILINEAR")
+    reloadButton:SetOnClick(_G.ReloadUI)
 
     -- edit mode button
-    local editModeButton = AF.CreateButton(headerPane, _G.HUD_EDIT_MODE_MENU, "BFI", 115, 21)
+    local editModeButton = AF.CreateButton(headerPane, _G.HUD_EDIT_MODE_MENU, "BFI", 110, 21)
     AF.SetPoint(editModeButton, "BOTTOMRIGHT", reloadButton, "BOTTOMLEFT", -7, 0)
     editModeButton:SetTexture(AF.GetIcon("Layout"), nil, {"LEFT", 5, 0})
-
-    -- AbstractFramework button
-    local afButton = AF.CreateButton(headerPane, "AbstractFramework", "BFI", 175, 21)
-    AF.SetPoint(afButton, "BOTTOMRIGHT", editModeButton, "BOTTOMLEFT", -7, 0)
-    afButton:SetTexture(AF.GetIcon("AF"), nil, {"LEFT", 5, 0})
 
     --------------------------------------------------
     -- list pane
     --------------------------------------------------
-    local listPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrameListPane", 200)
+    local listPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrame_ListPane", 200)
+    optionsFrame.listPane = listPane
     AF.SetPoint(listPane, "TOPLEFT", headerPane, "BOTTOMLEFT", 0, 1)
     AF.SetPoint(listPane, "BOTTOMLEFT", optionsFrame)
     listPane:SetBackdropColor(0.12, 0.12, 0.12, 0.9)
@@ -76,7 +171,8 @@ local function CreateOptionsFrame()
     --------------------------------------------------
     -- content pane
     --------------------------------------------------
-    local contentPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrameContentPane")
+    local contentPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrame_ContentPane")
+    optionsFrame.contentPane = contentPane
     AF.SetPoint(contentPane, "TOPLEFT", listPane, "TOPRIGHT", -1, 0)
     AF.SetPoint(contentPane, "BOTTOMRIGHT")
     AF.SetDraggable(contentPane, optionsFrame, true)
@@ -88,6 +184,7 @@ end
 function BFI.ToggleOptionsFrame()
     if not optionsFrame then
         CreateOptionsFrame()
+        BuildList()
     end
     optionsFrame:Toggle()
 end

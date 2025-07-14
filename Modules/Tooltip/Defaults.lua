@@ -45,7 +45,7 @@ local defaults = {
     },
 }
 
-AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
+AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     if not t["tooltip"] then
         t["tooltip"] = AF.Copy(defaults)
     end

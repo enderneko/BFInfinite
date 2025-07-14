@@ -200,7 +200,7 @@ do
     end
 end
 
-AF.RegisterCallback("BFI_UpdateConfigs", function(_, t)
+AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     if not t["actionBars"] then
         t["actionBars"] = AF.Copy(defaults)
     end

@@ -86,4 +86,4 @@ local function UpdateTarget(_, module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(target)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateTarget)
+AF.RegisterCallback("BFI_UpdateModule", UpdateTarget)

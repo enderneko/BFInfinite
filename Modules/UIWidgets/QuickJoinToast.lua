@@ -123,4 +123,4 @@ local function UpdateQuickJoinToast(_, module, which)
     AF.LoadPosition(quickJoinToastHolder, config.position)
 
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateQuickJoinToast)
+AF.RegisterCallback("BFI_UpdateModule", UpdateQuickJoinToast)

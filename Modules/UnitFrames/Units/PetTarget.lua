@@ -74,4 +74,4 @@ local function UpdatePetTarget(_, module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(pettarget)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdatePetTarget)
+AF.RegisterCallback("BFI_UpdateModule", UpdatePetTarget)

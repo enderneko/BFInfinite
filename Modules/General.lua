@@ -1,19 +1,14 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class General
-local G = BFI.General
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- update config
 ---------------------------------------------------------------------
-local function UpdateConfig(_, module, which)
-    if module and module ~= "General" then return end
-    -- if which and which ~= "" then return end
-
-    local config = G.config
+local function UpdateConfig()
+    local config = BFIConfig
 
     -- GameMenuFrame scale
     local GameMenuFrame = _G.GameMenuFrame
@@ -28,4 +23,4 @@ local function UpdateConfig(_, module, which)
     end
     GameMenuFrame:SetScale(config.gameMenuScale)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateConfig)
+AF.RegisterCallback("BFI_UpdateConfig", UpdateConfig)

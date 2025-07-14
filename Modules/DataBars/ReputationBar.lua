@@ -273,4 +273,4 @@ local function UpdateReputationBar(_, module, which)
     reputationBar.hideBelowMaxLevel = config.hideBelowMaxLevel
     UpdateRepVisibility(reputationBar)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateReputationBar)
+AF.RegisterCallback("BFI_UpdateModule", UpdateReputationBar)

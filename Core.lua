@@ -9,9 +9,10 @@ function eventHandler:ADDON_LOADED(arg)
     if arg == BFI.name then
         eventHandler:UnregisterEvent("ADDON_LOADED")
 
-        if type(BFIConfig) ~= "table" then
-            BFIConfig = {}
+        if type(BFIConfig) ~= "table" then BFIConfig = {} end
 
+        if not BFIConfig.cvarInited then
+            BFIConfig.cvarInited = true
             -- init some cvar
             SetCVar("fstack_preferParentKeys", 0)
             SetCVar("screenshotQuality", 10)
@@ -25,25 +26,65 @@ function eventHandler:ADDON_LOADED(arg)
             SetCVar("statusTextDisplay", "NUMERIC") -- NONE,NUMERIC,PERCENT,BOTH
         end
 
-        if type(BFIConfig["default"]) ~= "table" then
-            BFIConfig["default"] = {}
+        -- accent color
+        if type(BFIConfig.customAccentColor) ~= "table" then
+            BFIConfig.customAccentColor = {
+                enabled = false,
+                color = AF.GetColorTable("hotpink"),
+            }
         end
 
-        -- init general
-        AF.Fire("BFI_UpdateGeneral", BFIConfig["default"])
+        if BFIConfig.customAccentColor.enabled then
+            AF.SetAddonAccentColor(BFI.name, BFIConfig.customAccentColor.color)
+        else
+            AF.SetAddonAccentColor(BFI.name, "blazing_tangerine")
+        end
 
-        -- init configs
-        AF.Fire("BFI_UpdateConfigs", BFIConfig["default"], "default")
+        -- language
+        -- if type(BFIConfig.locale) ~= "string" then
+        --     BFIConfig.locale = GetLocale()
+        -- end
+        -- AF.Fire("BFI_UpdateLocale", BFIConfig.locale)
+
+        if type(BFIProfile) ~= "table" then BFIProfile = {} end
+
+        -- default profile
+        if type(BFIProfile.default) ~= "table" then
+            BFIProfile.default = {}
+        end
+
+        -- profile
+        AF.Fire("BFI_UpdateProfile", BFIProfile.default, "default")
 
         -- TODO:
-        BFI.vars.currentConfig = "default"
-        BFI.vars.currentConfigTable = BFIConfig["default"]
+        BFI.vars.profileName = "default"
+        BFI.vars.profile = BFIProfile.default
     end
 end
 
 AF.RegisterCallback("AF_PLAYER_DATA_UPDATE", function(_, isLogin)
     AF.UnregisterCallback("AF_PLAYER_DATA_UPDATE", "BFI_Init")
+
+    if isLogin then
+        -- scale
+        if type(BFIConfig.scale) ~= "number" then
+            BFIConfig.scale = AF.RoundToDecimal(UIParent:GetScale(), 2)
+        end
+        AF.SetUIParentScale(BFIConfig.scale, true)
+
+        -- game menu scale
+        if type(BFIConfig.gameMenuScale) ~= "number" then
+            BFIConfig.gameMenuScale = 0.8
+        end
+    end
+
+    -- disable blizzard frames
     AF.Fire("BFI_DisableBlizzard")
+    -- restyle blizzard frames
     AF.Fire("BFI_StyleBlizzard")
-    AF.Fire("BFI_UpdateModules")
+    -- update general config
+    AF.Fire("BFI_UpdateConfig")
+    -- update modules
+    AF.Fire("BFI_UpdateModule")
+
 end, "high", "BFI_Init")

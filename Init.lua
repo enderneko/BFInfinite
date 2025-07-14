@@ -12,7 +12,6 @@ BFI.name = "BFInfinite"
 ---@field vars table
 ---@field media table
 ---@field libs table
----@field General General
 ---@field ActionBars ActionBars
 ---@field Auras Auras
 ---@field Chat Chat
@@ -26,6 +25,7 @@ BFI.name = "BFInfinite"
 ---@field Tooltip Tooltip
 ---@field UIWidgets UIWidgets
 ---@field UnitFrames UnitFrames
+-----@field General General
 
 ---------------------------------------------------------------------
 -- AbstractFramework
@@ -33,7 +33,6 @@ BFI.name = "BFInfinite"
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 AF.RegisterAddon(BFI.name, "BFI")
-AF.SetAddonAccentColor(BFI.name, "blazing_tangerine")
 
 ---------------------------------------------------------------------
 -- global

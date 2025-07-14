@@ -175,4 +175,4 @@ local function UpdateRaid(_, module, which)
     -- visibility NOTE: show must invoke after settings applied
     RegisterAttributeDriver(raid, raid.driverKey, raid.driverValue)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateRaid)
+AF.RegisterCallback("BFI_UpdateModule", UpdateRaid)

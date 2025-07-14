@@ -699,4 +699,4 @@ local function UpdateMinimap(_, module, which)
         addonButtonHolder:Hide()
     end
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateMinimap)
+AF.RegisterCallback("BFI_UpdateModule", UpdateMinimap)

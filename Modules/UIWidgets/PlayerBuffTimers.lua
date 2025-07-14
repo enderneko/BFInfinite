@@ -56,4 +56,4 @@ local function UpdateConfig(_, module, which)
     AF.LoadPosition(buffTimerHolder, config.position)
     AF.UpdateMoverSave(buffTimerHolder, config.position)
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateConfig)
+AF.RegisterCallback("BFI_UpdateModule", UpdateConfig)

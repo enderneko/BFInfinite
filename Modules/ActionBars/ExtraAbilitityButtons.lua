@@ -211,4 +211,4 @@ local function UpdateButton(_, module, which)
         AB.ApplyTextConfig(button.HotKey, extraActionConfig.hotkey)
     end
 end
-AF.RegisterCallback("BFI_UpdateModules", UpdateButton)
+AF.RegisterCallback("BFI_UpdateModule", UpdateButton)
