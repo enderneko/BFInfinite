@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -20,8 +21,19 @@ local list = {
     "About",
 }
 
+local frameWidths = {
+    ["General"] = 750,
+    ["Unit Frames"] = 800,
+    ["Nameplates"] = 750,
+    ["Action Bars"] = 750,
+    ["Chat"] = 750,
+    ["Tooltip"] = 750,
+    ["About"] = 750,
+}
+
 local function CreateButton(name)
-    local button = AF.CreateButton(optionsFrame.listPane, name, nil, nil, 25, nil, "", "")
+    local button = AF.CreateButton(optionsFrame.listPane, L[name], nil, nil, 25, nil, "", "")
+    button.id = name
     button:SetTextJustifyH("LEFT")
     button:SetTextPadding(10)
     button:SetBackdropColor(AF.GetColorRGB("none"))
@@ -70,6 +82,7 @@ local function ButtonOnLeave(b)
 end
 
 local function ShowOptionsPanel(id)
+    AF.SetWidth(optionsFrame, frameWidths[id])
     AF.Fire("BFI_ShowOptionsPanel", id)
 end
 
@@ -106,6 +119,10 @@ end
 ---------------------------------------------------------------------
 -- options frame
 ---------------------------------------------------------------------
+local function ReAnchor()
+    AF.ReAnchorRegion(optionsFrame, "TOPLEFT")
+end
+
 local function CreateOptionsFrame()
     optionsFrame = AF.CreateFrame(AFParent, "BFIOptionsFrame", 750, 600)
     optionsFrame:Hide()
@@ -122,6 +139,8 @@ local function CreateOptionsFrame()
 
     AF.CreateGlow(optionsFrame, "shadow")
 
+    optionsFrame:SetOnShow(ReAnchor)
+
     --------------------------------------------------
     -- header pane
     --------------------------------------------------
@@ -130,7 +149,7 @@ local function CreateOptionsFrame()
     headerPane:SetPoint("TOPLEFT")
     headerPane:SetPoint("TOPRIGHT")
     headerPane:SetBackdropColor(0.12, 0.12, 0.12, 0.95)
-    AF.SetDraggable(headerPane, optionsFrame, true)
+    AF.SetDraggable(headerPane, optionsFrame, true, nil, ReAnchor)
 
     -- logo
     local color2 = BFIConfig.accentColor.type == "custom" and {AF.InvertColor(AF.GetColorRGB("BFI"))} or "vivid_raspberry"
@@ -157,6 +176,10 @@ local function CreateOptionsFrame()
     local editModeButton = AF.CreateButton(headerPane, _G.HUD_EDIT_MODE_MENU, "BFI", 110, 21)
     AF.SetPoint(editModeButton, "BOTTOMRIGHT", reloadButton, "BOTTOMLEFT", -7, 0)
     editModeButton:SetTexture(AF.GetIcon("Layout"), nil, {"LEFT", 5, 0})
+    editModeButton:SetOnClick(function()
+        optionsFrame:Hide()
+        AF.ShowMovers()
+    end)
 
     --------------------------------------------------
     -- list pane
@@ -166,7 +189,7 @@ local function CreateOptionsFrame()
     AF.SetPoint(listPane, "TOPLEFT", headerPane, "BOTTOMLEFT", 0, 1)
     AF.SetPoint(listPane, "BOTTOMLEFT", optionsFrame)
     listPane:SetBackdropColor(0.12, 0.12, 0.12, 0.9)
-    AF.SetDraggable(listPane, optionsFrame, true)
+    AF.SetDraggable(listPane, optionsFrame, true, nil, ReAnchor)
 
     --------------------------------------------------
     -- content pane
@@ -175,7 +198,7 @@ local function CreateOptionsFrame()
     optionsFrame.contentPane = contentPane
     AF.SetPoint(contentPane, "TOPLEFT", listPane, "TOPRIGHT", -1, 0)
     AF.SetPoint(contentPane, "BOTTOMRIGHT")
-    AF.SetDraggable(contentPane, optionsFrame, true)
+    AF.SetDraggable(contentPane, optionsFrame, true, nil, ReAnchor)
 end
 
 ---------------------------------------------------------------------
