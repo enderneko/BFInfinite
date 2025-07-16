@@ -23,7 +23,7 @@ local list = {
 
 local frameWidths = {
     ["General"] = 750,
-    ["Unit Frames"] = 800,
+    ["Unit Frames"] = 750,
     ["Nameplates"] = 750,
     ["Action Bars"] = 750,
     ["Chat"] = 750,
@@ -55,13 +55,7 @@ local function CreateSeparator()
     return separator
 end
 
-local function ButtonOnSelect(_, b)
-    AF.AnimatedResize(b.highlight, b:GetWidth(), nil, nil, nil, function()
-        b.highlight:Show()
-    end)
-end
-
-local function ButtonOnDeselect(_, b)
+local function ButtonOnDeselect(b)
     AF.AnimatedResize(b.highlight, 1, nil, nil, nil, nil, function()
         b.highlight:Hide()
     end)
@@ -81,7 +75,10 @@ local function ButtonOnLeave(b)
     end)
 end
 
-local function ShowOptionsPanel(id)
+local function ShowOptionsPanel(b, id)
+    AF.AnimatedResize(b.highlight, b:GetWidth(), nil, nil, nil, function()
+        b.highlight:Show()
+    end)
     AF.SetWidth(optionsFrame, frameWidths[id])
     AF.Fire("BFI_ShowOptionsPanel", id)
 end
@@ -112,7 +109,7 @@ local function BuildList()
         last = item
     end
 
-    AF.CreateButtonGroup(buttons, ShowOptionsPanel, ButtonOnSelect, ButtonOnDeselect, ButtonOnEnter, ButtonOnLeave)
+    AF.CreateButtonGroup(buttons, ShowOptionsPanel, ButtonOnDeselect, nil, ButtonOnEnter, ButtonOnLeave)
     first:SilentClick()
 end
 

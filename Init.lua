@@ -8,10 +8,11 @@ BFI.name = "BFInfinite"
 
 ---@class BFI
 ---@field L table
----@field utils Utils
+---@field libs table
 ---@field vars table
 ---@field media table
----@field libs table
+---@field funcs Funcs
+---@field utils Utils
 ---@field ActionBars ActionBars
 ---@field Auras Auras
 ---@field Chat Chat
@@ -35,17 +36,10 @@ local AF = _G.AbstractFramework
 AF.RegisterAddon(BFI.name, "BFI")
 
 ---------------------------------------------------------------------
--- global
----------------------------------------------------------------------
-BFI_DEFAULT = "BFI ".._G.DEFAULT
--- BFI_PATH = [[Interface/AddOns/BFInfinite]]
-
----------------------------------------------------------------------
 -- tables
 ---------------------------------------------------------------------
 BFI.vars = {} -- vars
--- BFI.widgets = {} -- widgets (regions/frames)
--- BFI.funcs = {} -- functions
+BFI.funcs = {} -- functions
 BFI.libs = {}
 
 BFI.utils = {} -- utils
@@ -110,7 +104,7 @@ AddLib("LRC", "LibRangeCheck-3.0")
 -- media
 ---------------------------------------------------------------------
 BFI.media = {}
-BFI.media.bar = AF.GetTexture("StatusBar1")
+BFI.media.bar = AF.GetTexture("Bar_AF")
 -- AF.Libs.LSM:Register("statusbar", "BFI", AF.GetTexture("StatusBar", BFI.name))
 -- AF.Libs.LSM:Register("statusbar", "BFI Plain", AF.GetPlainTexture())
 AF.Libs.LSM:Register("font", "BFI", AF.GetFont("Noto_AP_SC", BFI.name), 255)
