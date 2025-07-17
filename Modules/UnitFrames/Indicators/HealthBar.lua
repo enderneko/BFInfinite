@@ -19,6 +19,8 @@ local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
 local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
 local GetAuraSlots = C_UnitAuras.GetAuraSlots
 local UnitCanAttack = UnitCanAttack
+local UnitPlayerControlled = UnitPlayerControlled
+local UnitIsTapDenied = UnitIsTapDenied
 
 ---------------------------------------------------------------------
 -- health
@@ -205,72 +207,85 @@ local function GetReactionColor(type, unit)
     end
 end
 
-local function GetHealthColor(self, unit)
-    if not (self.color and self.lossColor) then return end
-
+local function GetHealthColor(self, unit, colorTable)
     local class = UnitClassBase(unit) or "UNKNOWN"
     local inVehicle = UnitHasVehicleUI(unit)
 
-    local r, g, b, a, lossR, lossG, lossB, lossA
-
-    a = self.color.alpha
-    lossA = self.lossColor.alpha
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2
 
     if AF.UnitIsPlayer(unit) then
         if not UnitIsConnected(unit) then
-            r, g, b = AF.GetColorRGB("OFFLINE")
-            lossR, lossG, lossB = AF.GetColorRGB("OFFLINE")
+            r1, g1, b1 = AF.GetColorRGB("OFFLINE")
         elseif UnitIsCharmed(unit) then
-            r, g, b = AF.GetColorRGB("CHARMED")
-            lossR, lossG, lossB = r*0.2, g*0.2, b*0.2
+            r1, g1, b1 = AF.GetColorRGB("CHARMED")
         else
-            -- bar
-            if self.color.type == "custom_color" then
-                r, g, b = unpack(self.color.rgb)
-            else
-                r, g, b = GetClassColor(self.color.type, class, inVehicle)
-            end
-
-            -- loss
-            if self.lossColor.type == "custom_color" then
-                lossR, lossG, lossB = unpack(self.lossColor.rgb)
-            else
-                lossR, lossG, lossB = GetClassColor(self.lossColor.type, class, inVehicle)
+            if colorTable.type == "custom_color" then
+                if colorTable.gradient == "disabled" then
+                    r1, g1, b1 = AF.UnpackColor(colorTable.rgb)
+                else
+                    r1, g1, b1 = AF.UnpackColor(colorTable.rgb[1])
+                end
+            else -- class_color, class_color_dark
+                r1, g1, b1 = GetClassColor(colorTable.type, class, inVehicle)
             end
         end
     else
-        -- bar
         if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
-            r, g, b = AF.GetColorRGB("TAP_DENIED")
-        elseif self.color.type == "custom_color" then
-            r, g, b = unpack(self.color.rgb)
-        else
-            r, g, b = GetReactionColor(self.color.type, unit)
-        end
-
-        -- loss
-        if self.lossColor.type == "custom_color" then
-            lossR, lossG, lossB = unpack(self.lossColor.rgb)
-        else
-            lossR, lossG, lossB = GetReactionColor(self.lossColor.type, unit)
+            r1, g1, b1 = AF.GetColorRGB("TAP_DENIED")
+        elseif colorTable.type == "custom_color" then
+            if colorTable.gradient == "disabled" then
+                r1, g1, b1 = AF.UnpackColor(colorTable.rgb)
+            else
+                r1, g1, b1 = AF.UnpackColor(colorTable.rgb[1])
+            end
+        else -- class_color, class_color_dark
+            r1, g1, b1 = GetReactionColor(colorTable.type, unit)
         end
     end
 
-    return r, g, b, a, lossR, lossG, lossB, lossA
+    if colorTable.gradient == "disabled" then
+        a1 = colorTable.alpha
+        return nil, r1, g1, b1, a1
+    else
+        a1, a2 = colorTable.alpha[1], colorTable.alpha[2]
+        if #colorTable.rgb == 4 then
+            r2, g2, b2 = AF.UnpackColor(colorTable.rgb)
+        else
+            r2, g2, b2 = AF.UnpackColor(colorTable.rgb[2])
+        end
+
+        orientation = colorTable.gradient:find("^vertical") and "VERTICAL" or "HORIZONTAL"
+        if colorTable.gradient:find("flipped$") then
+            return orientation, r2, g2, b2, a2, r1, g1, b1, a1
+        else
+            return orientation, r1, g1, b1, a1, r2, g2, b2, a2
+        end
+    end
 end
 
 local function UpdateHealthColor(self, event, unitId)
     local unit = self.root.unit
     if unitId and unit ~= unitId then return end
 
-    -- healthBar
-    local r, g, b, a, lossR, lossG, lossB, lossA = GetHealthColor(self, unit)
-    self:SetColor(r, g, b, a)
-    self:SetLossColor(lossR, lossG, lossB, lossA)
+    -- color
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor(self, unit, self.color)
+    if orientation then
+        self:SetGradientColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+    else
+        self:SetColor(r1, g1, b1, a1)
+    end
+
+    -- lossColor
+    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor(self, unit, self.lossColor)
+    if orientation then
+        self:SetGradientLossColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+    else
+        self:SetLossColor(r1, g1, b1, a1)
+    end
 
     -- healPrediction
     if not self.healPredictionUseCustomColor then
-        self.healPrediction:SetVertexColor(r, g, b, 0.4)
+        self.healPrediction:SetVertexColor(r1, g1, b1, 0.4)
     end
 end
 
@@ -383,7 +398,7 @@ local function HealthBar_Enable(self)
 
     self:Show()
     -- C_Timer.After(1, function()
-        self:Update()
+    self:Update()
     -- end)
 end
 
@@ -406,24 +421,24 @@ end
 -- base
 ---------------------------------------------------------------------
 local function ShieldBar_SetColor(self, color)
-    self.shield:SetVertexColor(unpack(color))
+    self.shield:SetVertexColor(AF.UnpackColor(color))
 end
 
 local function OvershieldGlow_SetColor(self, color)
-    self.overshieldGlow:SetVertexColor(unpack(color))
-    self.overshieldGlowR:SetVertexColor(unpack(color))
+    self.overshieldGlow:SetVertexColor(AF.UnpackColor(color))
+    self.overshieldGlowR:SetVertexColor(AF.UnpackColor(color))
 end
 
 local function HealAbsorbBar_SetColor(self, color)
-    self.healAbsorb:SetVertexColor(unpack(color))
+    self.healAbsorb:SetVertexColor(AF.UnpackColor(color))
 end
 
 local function OverabsorbGlow_SetColor(self, color)
-    self.overabsorbGlow:SetVertexColor(unpack(color))
+    self.overabsorbGlow:SetVertexColor(AF.UnpackColor(color))
 end
 
 local function HealPrediction_SetColor(self, color)
-    self.healPrediction:SetVertexColor(unpack(color))
+    self.healPrediction:SetVertexColor(AF.UnpackColor(color))
 end
 
 local function DispelHighlight_Setup(self, config)
@@ -468,8 +483,8 @@ local function HealthBar_LoadConfig(self, config)
     AF.SetSize(self, config.width, config.height)
 
     HealthBar_SetTexture(self, AF.LSM_GetBarTexture(config.texture))
-    self:SetBackgroundColor(unpack(config.bgColor))
-    self:SetBorderColor(unpack(config.borderColor))
+    self:SetBackgroundColor(AF.UnpackColor(config.bgColor))
+    self:SetBorderColor(AF.UnpackColor(config.borderColor))
     self:SetSmoothing(config.smoothing)
 
     ShieldBar_SetColor(self, config.shield.color)
@@ -553,14 +568,14 @@ function UF.CreateHealthBar(parent, name)
     AF.AddEventHandler(bar)
 
     -- healPrediction
-    local healPrediction = bar:CreateTexture(name.."HealPrediction", "ARTWORK", nil, 1)
+    local healPrediction = bar:CreateTexture(name .. "HealPrediction", "ARTWORK", nil, 1)
     bar.healPrediction = healPrediction
     healPrediction:Hide()
     healPrediction:SetPoint("TOPLEFT", bar.fg.mask, "TOPRIGHT")
     healPrediction:SetPoint("BOTTOMLEFT", bar.fg.mask, "BOTTOMRIGHT")
 
     -- shield
-    local shield = bar:CreateTexture(name.."Stripe", "ARTWORK", nil, 2)
+    local shield = bar:CreateTexture(name .. "Stripe", "ARTWORK", nil, 2)
     bar.shield = shield
     shield:Hide()
     shield:SetPoint("TOPLEFT", bar.fg.mask, "TOPRIGHT")
@@ -570,7 +585,7 @@ function UF.CreateHealthBar(parent, name)
     shield:SetVertTile(true)
 
     -- overshield
-    local overshieldGlow = bar:CreateTexture(name.."OvershieldGlow", "ARTWORK", nil, 3)
+    local overshieldGlow = bar:CreateTexture(name .. "OvershieldGlow", "ARTWORK", nil, 3)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
     overshieldGlow:SetTexture(AF.GetTexture("Overshield", BFI.name))
@@ -579,7 +594,7 @@ function UF.CreateHealthBar(parent, name)
     AF.SetWidth(overshieldGlow, 4)
 
     -- overshieldR
-    local overshieldGlowR = bar:CreateTexture(name.."OvershieldGlowR", "ARTWORK", nil, 3)
+    local overshieldGlowR = bar:CreateTexture(name .. "OvershieldGlowR", "ARTWORK", nil, 3)
     bar.overshieldGlowR = overshieldGlowR
     overshieldGlowR:Hide()
     overshieldGlowR:SetTexture(AF.GetTexture("OvershieldR", BFI.name))
@@ -587,7 +602,7 @@ function UF.CreateHealthBar(parent, name)
     AF.SetPoint(overshieldGlowR, "BOTTOM", shield, "BOTTOMLEFT")
     AF.SetWidth(overshieldGlowR, 6)
 
-    local fullOvershieldGlowR = bar:CreateTexture(name.."FullOvershieldGlowR", "ARTWORK", nil, 3)
+    local fullOvershieldGlowR = bar:CreateTexture(name .. "FullOvershieldGlowR", "ARTWORK", nil, 3)
     bar.fullOvershieldGlowR = fullOvershieldGlowR
     fullOvershieldGlowR:Hide()
     fullOvershieldGlowR:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
@@ -596,7 +611,7 @@ function UF.CreateHealthBar(parent, name)
     AF.SetWidth(fullOvershieldGlowR, 4)
 
     -- healAbsorb
-    local healAbsorb = bar:CreateTexture(name.."HealAbsorb", "ARTWORK", nil, 4)
+    local healAbsorb = bar:CreateTexture(name .. "HealAbsorb", "ARTWORK", nil, 4)
     bar.healAbsorb = healAbsorb
     healAbsorb:Hide()
     healAbsorb:SetPoint("TOPRIGHT", bar.fg.mask)
@@ -606,7 +621,7 @@ function UF.CreateHealthBar(parent, name)
     healAbsorb:SetVertTile(true)
 
     -- overabsorb
-    local overabsorbGlow = bar:CreateTexture(name.."OverabsorbGlow", "ARTWORK", nil, 5)
+    local overabsorbGlow = bar:CreateTexture(name .. "OverabsorbGlow", "ARTWORK", nil, 5)
     bar.overabsorbGlow = overabsorbGlow
     overabsorbGlow:Hide()
     overabsorbGlow:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
@@ -615,7 +630,7 @@ function UF.CreateHealthBar(parent, name)
     AF.SetWidth(overabsorbGlow, 4)
 
     -- mouseover highlight
-    local mouseoverHighlight = bar:CreateTexture(name.."MouseoverHighlight", "ARTWORK", nil, 7)
+    local mouseoverHighlight = bar:CreateTexture(name .. "MouseoverHighlight", "ARTWORK", nil, 7)
     -- local mouseoverHighlight = AF.CreateGradientTexture(bar, "VERTICAL", nil, {1, 1, 1, 0.1}, nil, "ARTWORK", 7)
     bar.mouseoverHighlight = mouseoverHighlight
     mouseoverHighlight:SetAllPoints(bar.bg)
@@ -625,7 +640,7 @@ function UF.CreateHealthBar(parent, name)
     parent:HookScript("OnLeave", MouseoverHighlight_OnLeave)
 
     -- dispel highlight
-    local dispelHighlight = bar:CreateTexture(name.."DispelHighlight", "ARTWORK", nil, 1)
+    local dispelHighlight = bar:CreateTexture(name .. "DispelHighlight", "ARTWORK", nil, 1)
     bar.dispelHighlight = dispelHighlight
     dispelHighlight:SetAllPoints(bar.fg.mask)
     dispelHighlight:Hide()

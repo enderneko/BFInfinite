@@ -7,9 +7,9 @@ local AF = _G.AbstractFramework
 -- colors preset for modules, no persistence requirement
 ---------------------------------------------------------------------
 local uf_colors = {
-    uf = {0.135, 0.135, 0.135}, -- unitframe foreground
-    uf_loss = {0.6, 0, 0}, -- unitframe background
-    uf_power = {0.7, 0.7, 0.7}, -- unitframe background
+    uf = {0.135, 0.135, 0.135, 1}, -- unitframe foreground
+    uf_loss = {0.6, 0, 0, 1}, -- unitframe background
+    uf_power = {0.7, 0.7, 0.7, 1}, -- unitframe background
 
     target_highlight = AF.GetColorTable("BFI", 0.6),
     mouseover_highlight = {1, 1, 1, 0.6},
@@ -32,19 +32,19 @@ local uf_colors = {
     aura_percent = {1, 1, 0},
     aura_seconds = {1, 0.3, 0.3},
 
-    marker_1 = {1, 0.9, 0},
-    marker_2 = {1, 0.5, 0},
-    marker_3 = {0.98, 0.47, 0.98},
-    marker_4 = {0.34, 0.94, 0.31},
-    marker_5 = {0.84, 0.92, 0.97},
-    marker_6 = {0, 0.64, 1},
-    marker_7 = {1, 0.33, 0.22},
-    marker_8 = {1, 1, 0.99},
+    marker_1 = {1, 0.9, 0, 1},
+    marker_2 = {1, 0.5, 0, 1},
+    marker_3 = {0.98, 0.47, 0.98, 1},
+    marker_4 = {0.34, 0.94, 0.31, 1},
+    marker_5 = {0.84, 0.92, 0.97, 1},
+    marker_6 = {0, 0.64, 1, 1},
+    marker_7 = {1, 0.33, 0.22, 1},
+    marker_8 = {1, 1, 0.99, 1},
 
-    range_5 = {1, 1, 1},
-    range_20 = {0.055, 0.875, 0.825},
-    range_30 = {0.035, 0.865, 0},
-    range_40 = {1.0, 0.82, 0},
+    range_5 = {1, 1, 1, 1},
+    range_20 = {0.055, 0.875, 0.825, 1},
+    range_30 = {0.035, 0.865, 0, 1},
+    range_40 = {1.0, 0.82, 0, 1},
     range_out = {0.9, 0.055, 0.075, 1},
 
     -- swing = {1, 1, 0.1, 1},

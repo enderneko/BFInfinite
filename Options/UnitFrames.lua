@@ -78,6 +78,7 @@ local function CreateContentPane()
 
     -- scroll config frame
     local scrollConfig = AF.CreateScrollFrame(contentPane, nil, nil, nil, "none", "none")
+    scrollConfig.scrollBar:SetBackdropBorderColor(AF.GetColorRGB("border"))
     contentPane.scrollConfig = scrollConfig
     AF.SetPoint(scrollConfig, "TOPLEFT", indicatorList, "TOPRIGHT", 15, 0)
     AF.SetPoint(scrollConfig, "BOTTOM", indicatorList)
@@ -167,13 +168,15 @@ local function ListItem_OnLeave(self)
 end
 
 local function ListItem_LoadOptions(self)
+    local scroll = contentPane.scrollConfig
+    scroll:Reset()
+
     -- button carries frame/indicator/config data
     local options = F.GetIndicatorOptions(self)
 
-    local scroll = contentPane.scrollConfig
-    scroll:ClearContent()
-
+    local height = 0
     local last
+
     for _, pane in pairs(options) do
         pane:SetParent(scroll.scrollContent)
         AF.ClearPoints(pane)
@@ -186,8 +189,13 @@ local function ListItem_LoadOptions(self)
         AF.SetPoint(pane, "RIGHT", scroll.scrollContent)
 
         pane:Show()
+
         last = pane
+        height = height + AF.ConvertPixels(pane._height)
     end
+
+    height = height + (#options - 1) * AF.ConvertPixels(10)
+    scroll.scrollContent:SetHeight(height)
 end
 
 LoadList = function(main, sub)

@@ -191,8 +191,8 @@ local function UpdatePowerColor(self, event, unitId)
     if r2 then
         -- gradient
         for i = 1, self.numPowerBars do
-            self.bars[i]:SetGradientColor(r, g, b, a, r2, g2, b2, a)
-            self.bars[i]:SetGradientLossColor(lossR, lossG, lossB, lossA, lossR2, lossG2, lossB2, lossA)
+            self.bars[i]:SetGradientColor(nil, r, g, b, a, r2, g2, b2, a)
+            self.bars[i]:SetGradientLossColor(nil, lossR, lossG, lossB, lossA, lossR2, lossG2, lossB2, lossA)
         end
     else
         -- solid

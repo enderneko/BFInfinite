@@ -295,7 +295,7 @@ local function UpdateXPerienceBar(_, module, which)
     -- main
     experienceBar:SetTexture(texture)
     if config.normalColor.useGradient then
-        experienceBar:SetGradientColor(config.normalColor.startColor, config.normalColor.endColor)
+        experienceBar:SetGradientColor(nil, config.normalColor.startColor, config.normalColor.endColor)
     else
         experienceBar:SetColor(AF.UnpackColor(config.normalColor.startColor))
     end

@@ -4,5 +4,5 @@
     <Script file="ExperienceBar.lua"/>
     <Script file="ReputationBar.lua"/>
     <Script file="HonorBar.lua"/>
-    <Script file="Threats.lua"/>
+    <Script file="Threat.lua"/>
 </Ui>

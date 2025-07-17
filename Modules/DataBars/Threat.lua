@@ -19,13 +19,13 @@ end
 local function CreateThreatFrame()
     threatFrame = CreateFrame("Frame")
     AF.AddToPixelUpdater_Auto(threatFrame, UpdatePixels)
-    AF.CreateMover(threatFrame, "BFI: " .. L["Data Bars"], L["Threats"])
+    AF.CreateMover(threatFrame, "BFI: " .. L["Data Bars"], L["Threat"])
 end
 
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateThreats(_, module, which)
+local function UpdateThreat(_, module, which)
     if module and module ~= "DataBars" then return end
     if which and which ~= "threats" then return end
 
@@ -48,4 +48,4 @@ local function UpdateThreats(_, module, which)
     AF.LoadPosition(threatFrame, config.position)
     AF.SetSize(threatFrame, config.width, config.height)
 end
-AF.RegisterCallback("BFI_UpdateModule", UpdateThreats)
+AF.RegisterCallback("BFI_UpdateModule", UpdateThreat)
