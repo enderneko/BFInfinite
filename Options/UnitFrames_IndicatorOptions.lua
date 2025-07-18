@@ -7,27 +7,42 @@ local UF = BFI.UnitFrames
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local created = {}
+local builder = {}
+
+---------------------------------------------------------------------
+-- indicator settings
+---------------------------------------------------------------------
 local indicators = {
     healthBar = {
         "enabled",
+        "width,height",
+        "position,anchorTo",
         "texture",
         "barColor",
         "barLossColor",
         "bgColor,borderColor",
-        "width,height",
         "smoothing",
         "healPrediction",
         "shield,overshieldGlow",
         "healAbsorb,overabsorbGlow",
         "mouseoverHighlight",
         "dispelHighlight",
+        "frameLevel",
+    },
+    powerBar = {
+        "enabled",
+        "width,height",
         "position,anchorTo",
+        "texture",
+        "barColor",
+        "barLossColor",
+        "bgColor,borderColor",
+        "smoothing",
+        "frequent",
         "frameLevel",
     }
 }
-
-local created = {}
-local builder = {}
 
 ---------------------------------------------------------------------
 -- copy,paste,reset
@@ -331,11 +346,20 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
     local colorDropdown = AF.CreateDropdown(pane, 150)
     colorDropdown:SetLabel(label)
     AF.SetPoint(colorDropdown, "TOPLEFT", 15, -25)
-    colorDropdown:SetItems({
+
+    local healthBarColorItems = {
         {text = L["Class"], value = "class_color"},
         {text = L["Class (Dark)"], value = "class_color_dark"},
         {text = L["Custom"], value = "custom_color"},
-    })
+    }
+
+    local powerBarColorItems = {
+        {text = L["Class"], value = "class_color"},
+        {text = L["Class (Dark)"], value = "class_color_dark"},
+        {text = L["Power"], value = "power_color"},
+        {text = L["Power (Dark)"], value = "power_color_dark"},
+        {text = L["Custom"], value = "custom_color"},
+    }
 
     local orientationDropdown = AF.CreateDropdown(pane, 150)
     orientationDropdown:SetLabel(gradientLabel)
@@ -392,7 +416,7 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
         AF.ClearPoints(colorPicker1)
         AF.ClearPoints(colorPicker2)
 
-        if color.type == "class_color" or color.type == "class_color_dark" then
+        if color.type == "class_color" or color.type == "class_color_dark" or color.type == "power_color" or color.type == "power_color_dark" then
             if color.gradient == "disabled" then
                 colorPicker1:Hide()
                 colorPicker2:Hide()
@@ -462,6 +486,13 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
 
     function pane.Load(t)
         pane.t = t
+
+        if pane.t.id == "healthBar" then
+            colorDropdown:SetItems(healthBarColorItems)
+        else
+            colorDropdown:SetItems(powerBarColorItems)
+        end
+
         colorDropdown:SetSelectedValue(t.cfg[colorType].type)
         orientationDropdown:SetSelectedValue(t.cfg[colorType].gradient)
         UpdateColorWidgets(t.cfg[colorType])
@@ -850,6 +881,30 @@ builder["dispelHighlight"] = function(parent)
     function pane.Load(t)
         pane.t = t
         UpdateWidgets()
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- frequent
+---------------------------------------------------------------------
+builder["frequent"] = function(parent)
+    if created["frequent"] then return created["frequent"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Frequent", nil, 30)
+    created["frequent"] = pane
+
+    local frequentCheckButton = AF.CreateCheckButton(pane, L["Frequent Updates"])
+    AF.SetPoint(frequentCheckButton, "LEFT", 15, 0)
+    frequentCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.frequent = checked
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        frequentCheckButton:SetChecked(t.cfg.frequent)
     end
 
     return pane

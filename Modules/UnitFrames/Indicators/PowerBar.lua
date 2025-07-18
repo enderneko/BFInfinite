@@ -56,77 +56,73 @@ local function GetPowerTypeColor(type, power, unit)
 end
 
 ---------------------------------------------------------------------
--- GetPowerColor
+-- color
 ---------------------------------------------------------------------
-local function GetPowerColor(self, unit)
-    if not (self.color and self.lossColor) then return end
+local function GetPowerColor(self, unit, colorTable)
+    if not colorTable then return end
 
     self.powerType = select(2, UnitPowerType(unit))
 
     local class = UnitClassBase(unit)
-    -- local inVehicle = UnitHasVehicleUI(unit)
+    local inVehicle = UnitHasVehicleUI(unit)
 
-    local r, g, b, a, lossR, lossG, lossB, lossA
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2
 
-    a = self.color.alpha
-    lossA = self.lossColor.alpha
-
-    if AF.UnitIsPlayer(unit) then
-        if not UnitIsConnected(unit) then
-            r, g, b = 0.4, 0.4, 0.4
-            lossR, lossG, lossB = 0.4, 0.4, 0.4
-        else
-            -- bar
-            if strfind(self.color.type, "^power") then
-                r, g, b = GetPowerTypeColor(self.color.type, self.powerType, unit)
-            elseif strfind(self.color.type, "^class") then
-                r, g, b = GetClassColor(self.color.type, class, inVehicle)
-            else
-                r, g, b = unpack(self.color.rgb)
-            end
-
-            -- loss
-            if strfind(self.lossColor.type, "^power") then
-                lossR, lossG, lossB = GetPowerTypeColor(self.lossColor.type, self.powerType, unit)
-            elseif strfind(self.lossColor.type, "^class") then
-                lossR, lossG, lossB = GetClassColor(self.lossColor.type, class, inVehicle)
-            else
-                lossR, lossG, lossB = unpack(self.lossColor.rgb)
-            end
-        end
+    if AF.UnitIsPlayer(unit) and not UnitIsConnected(unit) then
+        r1, g1, b1 = AF.GetColorRGB("OFFLINE")
     else
-        -- bar
-        if strfind(self.color.type, "^power") then
-            r, g, b = GetPowerTypeColor(self.color.type, self.powerType, unit)
-        elseif strfind(self.color.type, "^class") then
-            r, g, b = GetReactionColor(self.color.type, unit)
+        if colorTable.type:find("^power") then
+            r1, g1, b1 = GetPowerTypeColor(colorTable.type, self.powerType, unit)
+        elseif colorTable.type:find("^class") then
+            r1, g1, b1 = GetClassColor(colorTable.type, class, inVehicle)
         else
-            r, g, b = unpack(self.color.rgb)
-        end
-
-        -- loss
-        if strfind(self.lossColor.type, "^power") then
-            lossR, lossG, lossB = GetPowerTypeColor(self.lossColor.type, self.powerType, unit)
-        elseif strfind(self.lossColor.type, "^class") then
-            lossR, lossG, lossB = GetReactionColor(self.lossColor.type, unit)
-        else
-            lossR, lossG, lossB = unpack(self.lossColor.rgb)
+            if colorTable.gradient == "disabled" then
+                r1, g1, b1 = AF.UnpackColor(colorTable.rgb)
+            else
+                r1, g1, b1 = AF.UnpackColor(colorTable.rgb[1])
+            end
         end
     end
 
-    return r, g, b, a, lossR, lossG, lossB, lossA
+    if colorTable.gradient == "disabled" then
+        a1 = colorTable.alpha
+        return nil, r1, g1, b1, a1
+    else
+        a1, a2 = colorTable.alpha[1], colorTable.alpha[2]
+        if #colorTable.rgb == 4 then
+            r2, g2, b2 = AF.UnpackColor(colorTable.rgb)
+        else
+            r2, g2, b2 = AF.UnpackColor(colorTable.rgb[2])
+        end
+
+        orientation = colorTable.gradient:find("^vertical") and "VERTICAL" or "HORIZONTAL"
+        if colorTable.gradient:find("flipped$") then
+            return orientation, r2, g2, b2, a2, r1, g1, b1, a1
+        else
+            return orientation, r1, g1, b1, a1, r2, g2, b2, a2
+        end
+    end
 end
 
----------------------------------------------------------------------
--- color
----------------------------------------------------------------------
 local function UpdatePowerColor(self, event, unitId)
     local unit = self.root.displayedUnit
     if unitId and unit ~= unitId then return end
 
-    local r, g, b, a, lossR, lossG, lossB, lossA = GetPowerColor(self, unit)
-    self:SetColor(r, g, b, a)
-    self:SetLossColor(lossR, lossG, lossB, lossA)
+    -- color
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetPowerColor(self, unit, self.color)
+    if orientation then
+        self:SetGradientColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+    else
+        self:SetColor(r1, g1, b1, a1)
+    end
+
+    -- lossColor
+    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetPowerColor(self, unit, self.lossColor)
+    if orientation then
+        self:SetGradientLossColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+    else
+        self:SetLossColor(r1, g1, b1, a1)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -189,8 +185,8 @@ local function PowerBar_LoadConfig(self, config)
     AF.SetSize(self, config.width, config.height)
 
     self:SetTexture(AF.LSM_GetBarTexture(config.texture))
-    self:SetBackgroundColor(unpack(config.bgColor))
-    self:SetBorderColor(unpack(config.borderColor))
+    self:SetBackgroundColor(AF.UnpackColor(config.bgColor))
+    self:SetBorderColor(AF.UnpackColor(config.borderColor))
     self:SetSmoothing(config.smoothing)
 
     self.color = config.color
