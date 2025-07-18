@@ -217,6 +217,7 @@ LoadList = function(main, sub)
     itemPool:ReleaseAll()
     wipe(listItems)
 
+    local owner = sub
     sub = sub:gsub(" ", "")
 
     local cfg = BFI.vars.profile.unitFrames[sub:lower()]
@@ -227,6 +228,8 @@ LoadList = function(main, sub)
         button:SetText(L[name])
 
         button.id = name
+        button.ownerName = L[owner]
+        button.owner = sub:lower()
         button.target = _G["BFI_" .. sub]
 
         if name == "general" then

@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+---@class UnitFrames
 local UF = BFI.UnitFrames
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -6544,6 +6545,22 @@ end)
 
 function UF.GetDefaults()
     return AF.Copy(defaults, style1)
+end
+
+function UF.GetFrameDefaults(which, config, indicator)
+    if config == "indicator" then
+        if which == "party" or which == "raid" or which == "boss" then
+            return AF.Copy(defaults[which]["indicators"][indicator])
+        else
+            return AF.Copy(style1[which]["indicators"][indicator])
+        end
+    elseif config == "general" then
+        if which == "party" or which == "raid" or which == "boss" then
+            return AF.Copy(defaults[which]["general"])
+        else
+            return AF.Copy(style1[which]["general"])
+        end
+    end
 end
 
 function UF.GetStyleDefaults(style)

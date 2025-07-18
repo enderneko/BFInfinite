@@ -30,6 +30,67 @@ local created = {}
 local builder = {}
 
 ---------------------------------------------------------------------
+-- copy,paste,reset
+---------------------------------------------------------------------
+builder["copy,paste,reset"] = function(parent)
+    if created["copy,paste,reset"] then return created["copy,paste,reset"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_CopyPasteReset", nil, 30)
+    created["copy,paste,reset"] = pane
+    pane:Hide()
+
+    local copiedId, copiedOwnerName, copiedTime, copiedCfg
+
+    local copy = AF.CreateButton(pane, L["Copy"], "BFI_hover", 100, 20)
+    AF.SetPoint(copy, "LEFT", 15, 0)
+    copy:SetOnClick(function()
+        copiedId = pane.t.id
+        copiedOwnerName = pane.t.ownerName
+        copiedTime = time()
+        copiedCfg = AF.Copy(pane.t.cfg)
+    end)
+
+    local paste = AF.CreateButton(pane, L["Paste"], "BFI_hover", 100, 20)
+    AF.SetPoint(paste, "TOPLEFT", copy, "TOPRIGHT", 5, 0)
+    paste:SetOnClick(function()
+        local text = AF.WrapTextInColor(L["Overwrite with copied config?"], "BFI") .. "\n"
+            .. "[" .. L[copiedId] .. "]\n"
+            .. copiedOwnerName .. AF.WrapTextInColor(" -> ", "darkgray") .. pane.t.ownerName .. "\n"
+            .. AF.WrapTextInColor(AF.FormatRelativeTime(copiedTime), "darkgray")
+
+        local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
+        dialog:SetPoint("TOP", pane, "BOTTOM")
+        dialog:SetOnConfirm(function()
+            AF.Merge(pane.t.cfg, copiedCfg)
+            UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        end)
+    end)
+
+
+    local reset = AF.CreateButton(pane, L["Reset"], "BFI_hover", 100, 20)
+    AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 5, 0)
+    reset:SetOnClick(function()
+        local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n"
+            .. "[" .. L[pane.t.id] .. "]\n"
+            .. pane.t.ownerName
+
+        local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
+        dialog:SetPoint("TOP", pane, "BOTTOM")
+        dialog:SetOnConfirm(function()
+            AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "indicator", pane.t.id))
+            UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        end)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        AF.SetEnabled(pane.t.id == copiedId, paste)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- enabled
 ---------------------------------------------------------------------
 builder["enabled"] = function(parent)
@@ -803,9 +864,11 @@ function F.GetIndicatorOptions(parent, id)
         AF.ClearPoints(option)
     end
 
-    if not indicators[id] then return {} end
-
     local options = {}
+    tinsert(options, builder["copy,paste,reset"](parent))
+    created["copy,paste,reset"]:Show()
+
+    if not indicators[id] then return options end
 
     for _, option in pairs(indicators[id]) do
         if builder[option] then
