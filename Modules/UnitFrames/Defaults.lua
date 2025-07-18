@@ -276,6 +276,10 @@ local style1 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {

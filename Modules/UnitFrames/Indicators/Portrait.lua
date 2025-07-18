@@ -151,12 +151,12 @@ local function Portrait_LoadConfig(self, config)
     --     self:SetBackdropBorderColor(unpack(config.borderColor))
     -- end
 
-    if config.anchorTo == "healthBar" then
-        AF.ClearPoints(self)
-        self:SetAllPoints(self.root.indicators.healthBar)
-    else
+    -- if config.anchorTo == "healthBar" then
+    --     AF.ClearPoints(self)
+    --     self:SetAllPoints(self.root.indicators.healthBar)
+    -- else
         UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    end
+    -- end
 
     self:SetBackdropColor(unpack(config.bgColor))
     self:SetBackdropBorderColor(unpack(config.borderColor))
@@ -165,6 +165,9 @@ local function Portrait_LoadConfig(self, config)
         self.model:Show()
         self.texture:Hide()
         self.modelConfig = config.model
+
+        self.model:SetPoint("TOPLEFT", config.model.x1Fix, config.model.y1Fix)
+        self.model:SetPoint("BOTTOMRIGHT", config.model.x2Fix, config.model.y2Fix)
     else
         self.model:Hide()
         self.texture:Show()
@@ -220,8 +223,8 @@ function UF.CreatePortrait(parent, name)
     portrait.model = CreateFrame("PlayerModel", nil, portrait)
 
     -- NOTE: LIKE A SHIT!
-    portrait.model:SetPoint("TOPLEFT", 1, -0.5)
-    portrait.model:SetPoint("BOTTOMRIGHT", -1.5, 2)
+    -- portrait.model:SetPoint("TOPLEFT", 1, -0.5)
+    -- portrait.model:SetPoint("BOTTOMRIGHT", -1.5, 2)
     -- AF.SetOnePixelInside(portrait.model, portrait)
     -- AF.SetPoint(portrait.model, "TOPLEFT", portrait, 1, -1)
     -- AF.SetPoint(portrait.model, "BOTTOMRIGHT", portrait, -1, 2)

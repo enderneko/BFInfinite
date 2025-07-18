@@ -9,6 +9,7 @@ local AF = _G.AbstractFramework
 
 local created = {}
 local builder = {}
+local options = {}
 
 ---------------------------------------------------------------------
 -- indicator settings
@@ -40,6 +41,14 @@ local indicators = {
         "bgColor,borderColor",
         "smoothing",
         "frequent",
+        "frameLevel",
+    },
+    portrait = {
+        "enabled",
+        "width,height",
+        "position,anchorTo",
+        "style,model",
+        "bgColor,borderColor",
         "frameLevel",
     }
 }
@@ -94,6 +103,10 @@ builder["copy,paste,reset"] = function(parent)
         dialog:SetOnConfirm(function()
             AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "indicator", pane.t.id))
             UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+            -- reload settings
+            for _, p in next, options do
+                p.Load(p.t)
+            end
         end)
     end)
 
@@ -911,6 +924,116 @@ builder["frequent"] = function(parent)
 end
 
 ---------------------------------------------------------------------
+-- style,model
+---------------------------------------------------------------------
+builder["style,model"] = function(parent)
+    if created["style,model"] then return created["style,model"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PortraitStyle", nil, 252)
+    created["style,model"] = pane
+
+    local styleDropdown = AF.CreateDropdown(pane, 150)
+    styleDropdown:SetLabel(L["Style"])
+    AF.SetPoint(styleDropdown, "TOPLEFT", 15, -25)
+    styleDropdown:SetItems({
+        {text = "3D", value = "3d"},
+        {text = "2D", value = "2d"},
+        {text = L["Class Icon"], value = "class_icon"},
+    })
+
+    local warningText = AF.CreateFontString(pane, L["3D portraits may cause FPS drops"])
+    AF.SetPoint(warningText, "BOTTOMLEFT", styleDropdown, 185, 3)
+    warningText:Hide()
+    warningText:SetWidth(150)
+    warningText:SetSpacing(5)
+    warningText:SetColor("firebrick")
+    AF.CreateBlinkAnimation(warningText, 0.75, true)
+
+    local xSlider = AF.CreateSlider(pane, L["X Offset"], 150, -200, 200, 1, nil, true)
+    AF.SetPoint(xSlider, "TOPLEFT", styleDropdown, 0, -45)
+    xSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.model.xOffset = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local ySlider = AF.CreateSlider(pane, L["Y Offset"], 150, -200, 200, 1, nil, true)
+    AF.SetPoint(ySlider, "TOPLEFT", xSlider, 185, 0)
+    ySlider:SetOnValueChanged(function(value)
+        pane.t.cfg.model.yOffset = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local rotationSlider = AF.CreateSlider(pane, L["Rotation"], 150, 0, 360, 1, nil, true)
+    AF.SetPoint(rotationSlider, "TOPLEFT", xSlider, 0, -49)
+    rotationSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.model.rotation = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local distanceSlider = AF.CreateSlider(pane, L["Distance"], 150, 0.5, 5, 0.01, nil, true)
+    AF.SetPoint(distanceSlider, "TOPLEFT", rotationSlider, 185, 0)
+    distanceSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.model.camDistanceScale = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local x1FixSlider = AF.CreateSlider(pane, L["TopLeft X Fix"], 150, -3, 3, 0.5, nil, true)
+    AF.SetPoint(x1FixSlider, "TOPLEFT", rotationSlider, 0, -49)
+    x1FixSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.model.x1Fix = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local y1FixSlider = AF.CreateSlider(pane, L["TopLeft Y Fix"], 150, -3, 3, 0.5, nil, true)
+    AF.SetPoint(y1FixSlider, "TOPLEFT", x1FixSlider, 185, 0)
+    y1FixSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.model.y1Fix = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local x2FixSlider = AF.CreateSlider(pane, L["BottomRight X Fix"], 150, -3, 3, 0.5, nil, true)
+    AF.SetPoint(x2FixSlider, "TOPLEFT", x1FixSlider, 0, -49)
+    x2FixSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.model.x2Fix = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local y2FixSlider = AF.CreateSlider(pane, L["BottomRight Y Fix"], 150, -3, 3, 0.5, nil, true)
+    AF.SetPoint(y2FixSlider, "TOPLEFT", x2FixSlider, 185, 0)
+    y2FixSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.model.y2Fix = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local function UpdateWidgets()
+        AF.SetEnabled(pane.t.cfg.style == "3d", xSlider, ySlider, rotationSlider, distanceSlider, x1FixSlider, y1FixSlider, x2FixSlider, y2FixSlider)
+        warningText:SetShown(pane.t.cfg.style == "3d")
+    end
+
+    styleDropdown:SetOnSelect(function(value)
+        pane.t.cfg.style = value
+        UpdateWidgets()
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        UpdateWidgets()
+        styleDropdown:SetSelectedValue(t.cfg.style)
+        xSlider:SetValue(t.cfg.model.xOffset)
+        ySlider:SetValue(t.cfg.model.yOffset)
+        rotationSlider:SetValue(t.cfg.model.rotation)
+        distanceSlider:SetValue(t.cfg.model.camDistanceScale)
+        x1FixSlider:SetValue(t.cfg.model.x1Fix)
+        y1FixSlider:SetValue(t.cfg.model.y1Fix)
+        x2FixSlider:SetValue(t.cfg.model.x2Fix)
+        y2FixSlider:SetValue(t.cfg.model.y2Fix)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- get
 ---------------------------------------------------------------------
 function F.GetIndicatorOptions(parent, id)
@@ -919,7 +1042,7 @@ function F.GetIndicatorOptions(parent, id)
         AF.ClearPoints(option)
     end
 
-    local options = {}
+    wipe(options)
     tinsert(options, builder["copy,paste,reset"](parent))
     created["copy,paste,reset"]:Show()
 
