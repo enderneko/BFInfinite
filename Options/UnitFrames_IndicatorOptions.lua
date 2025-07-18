@@ -618,7 +618,7 @@ end
 builder["healAbsorb,overabsorbGlow"] = function(parent)
     if created["healAbsorb,overabsorbGlow"] then return created["healAbsorb,overabsorbGlow"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HealAbsorb", nil, 54)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HealAbsorbs", nil, 54)
     created["healAbsorb,overabsorbGlow"] = pane
 
     local absorbDropdown = AF.CreateDropdown(pane, 150)
@@ -627,7 +627,7 @@ builder["healAbsorb,overabsorbGlow"] = function(parent)
     tinsert(items, 1, {text = L["Default"], value = "default"})
     absorbDropdown:SetItems(items)
 
-    local absorbCheckButton = AF.CreateCheckButton(pane, L["Shield"])
+    local absorbCheckButton = AF.CreateCheckButton(pane, L["Heal Absorb"])
     AF.SetPoint(absorbCheckButton, "BOTTOMLEFT", absorbDropdown, "TOPLEFT", 0, 2)
 
     local absorbColorPicker = AF.CreateColorPicker(pane, nil, true)
@@ -643,7 +643,7 @@ builder["healAbsorb,overabsorbGlow"] = function(parent)
     local overabsorbGlowCheckButton = AF.CreateCheckButton(pane)
     AF.SetPoint(overabsorbGlowCheckButton, "LEFT", absorbDropdown, 185, 0)
 
-    local overabsorbGlowColorPicker = AF.CreateColorPicker(pane, L["Overshield Texture"], true)
+    local overabsorbGlowColorPicker = AF.CreateColorPicker(pane, L["Overabsorb Texture"], true)
     AF.SetPoint(overabsorbGlowColorPicker, "TOPLEFT", overabsorbGlowCheckButton, "TOPRIGHT", 2, 0)
     overabsorbGlowColorPicker:SetOnChange(function(r, g, b, a)
         pane.t.cfg.overabsorbGlow.color[1] = r
@@ -680,6 +680,108 @@ builder["healAbsorb,overabsorbGlow"] = function(parent)
 
     overabsorbGlowCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.overabsorbGlow.enabled = checked
+        UpdateWidgets()
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        UpdateWidgets()
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- mouseoverHighlight
+---------------------------------------------------------------------
+builder["mouseoverHighlight"] = function(parent)
+    if created["mouseoverHighlight"] then return created["mouseoverHighlight"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_MouseoverHighlight", nil, 30)
+    created["mouseoverHighlight"] = pane
+
+    local mouseoverHighlightCheckButton = AF.CreateCheckButton(pane)
+    AF.SetPoint(mouseoverHighlightCheckButton, "LEFT", 15, 0)
+
+    local mouseoverHighlightColorPicker = AF.CreateColorPicker(pane, L["Mouseover Highlight Color"], true)
+    AF.SetPoint(mouseoverHighlightColorPicker, "TOPLEFT", mouseoverHighlightCheckButton, "TOPRIGHT", 2, 0)
+    mouseoverHighlightColorPicker:SetOnChange(function(r, g, b, a)
+        pane.t.cfg.mouseoverHighlight.color[1] = r
+        pane.t.cfg.mouseoverHighlight.color[2] = g
+        pane.t.cfg.mouseoverHighlight.color[3] = b
+        pane.t.cfg.mouseoverHighlight.color[4] = a
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    mouseoverHighlightCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.mouseoverHighlight.enabled = checked
+        mouseoverHighlightColorPicker:SetEnabled(checked)
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        mouseoverHighlightCheckButton:SetChecked(t.cfg.mouseoverHighlight.enabled)
+        mouseoverHighlightColorPicker:SetColor(t.cfg.mouseoverHighlight.color)
+        mouseoverHighlightColorPicker:SetEnabled(t.cfg.mouseoverHighlight.enabled)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- dispelHighlight
+---------------------------------------------------------------------
+builder["dispelHighlight"] = function(parent)
+    if created["dispelHighlight"] then return created["dispelHighlight"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_DispelHighlight", nil, 80)
+    created["dispelHighlight"] = pane
+
+    local dispelHighlightCheckButton = AF.CreateCheckButton(pane, L["Dispel Highlight"])
+    AF.SetPoint(dispelHighlightCheckButton, "TOPLEFT", 15, -8)
+
+    local onlyDispellableCheckButton = AF.CreateCheckButton(pane, L["Only Dispellable"])
+    AF.SetPoint(onlyDispellableCheckButton, "TOPLEFT", dispelHighlightCheckButton, 185, 0)
+    onlyDispellableCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.dispelHighlight.dispellable = checked
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local alphaSlider = AF.CreateSlider(pane, L["Alpha"], 150, 0, 1, 0.01, true, true)
+    AF.SetPoint(alphaSlider, "TOPLEFT", dispelHighlightCheckButton, "BOTTOMLEFT", 0, -25)
+    alphaSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.dispelHighlight.alpha = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local blendModeDropdown = AF.CreateDropdown(pane, 150)
+    blendModeDropdown:SetLabel(L["Blend Mode"])
+    AF.SetPoint(blendModeDropdown, "TOPLEFT", alphaSlider, 185, 0)
+    blendModeDropdown:SetItems({
+        {text = "DISABLE"},
+        {text = "ADD"},
+        -- {text = "ALPHAKEY"},
+        -- {text = "BLEND"},
+        {text = "MOD"},
+    })
+    blendModeDropdown:SetOnSelect(function(value)
+        pane.t.cfg.dispelHighlight.blendMode = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local function UpdateWidgets()
+        AF.SetEnabled(pane.t.cfg.dispelHighlight.enabled, onlyDispellableCheckButton, alphaSlider, blendModeDropdown)
+
+        dispelHighlightCheckButton:SetChecked(pane.t.cfg.dispelHighlight.enabled)
+        onlyDispellableCheckButton:SetChecked(pane.t.cfg.dispelHighlight.dispellable)
+        alphaSlider:SetValue(pane.t.cfg.dispelHighlight.alpha)
+        blendModeDropdown:SetSelectedValue(pane.t.cfg.dispelHighlight.blendMode)
+    end
+
+    dispelHighlightCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.dispelHighlight.enabled = checked
         UpdateWidgets()
         UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
     end)

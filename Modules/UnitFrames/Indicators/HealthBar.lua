@@ -462,7 +462,6 @@ end
 
 local function DispelHighlight_Setup(self, config)
     self.dispelHighlight:SetBlendMode(config.blendMode)
-    -- self.dispelHighlight:SetAlpha(config.alpha)
 end
 
 local function MouseoverHighlight_SetColor(self, color)
