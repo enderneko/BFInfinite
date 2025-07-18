@@ -194,7 +194,7 @@ local function CreateExperienceBar()
     local disabledTexture = experienceBar:CreateTexture(nil, "OVERLAY")
     experienceBar.disabledTexture = disabledTexture
     disabledTexture:SetAllPoints(experienceBar.bg)
-    disabledTexture:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
+    disabledTexture:SetTexture(AF.GetTexture("Stripe"), "REPEAT", "REPEAT")
     disabledTexture:SetHorizTile(true)
     disabledTexture:SetVertTile(true)
     disabledTexture:SetVertexColor(AF.GetColorRGB("disabled", 0.75))

@@ -76,13 +76,14 @@ local function CreateContentPane()
     indicatorList:SetPoint("TOPLEFT")
     AF.SetWidth(indicatorList, 150)
 
-    -- scroll config frame
-    local scrollConfig = AF.CreateScrollFrame(contentPane, nil, nil, nil, "none", "none")
-    scrollConfig.scrollBar:SetBackdropBorderColor(AF.GetColorRGB("border"))
-    contentPane.scrollConfig = scrollConfig
-    AF.SetPoint(scrollConfig, "TOPLEFT", indicatorList, "TOPRIGHT", 15, 0)
-    AF.SetPoint(scrollConfig, "BOTTOM", indicatorList)
-    AF.SetPoint(scrollConfig, "RIGHT")
+    -- scroll settings frame
+    local scrollSettings = AF.CreateScrollFrame(contentPane, nil, nil, nil, "none", "none")
+    scrollSettings.scrollBar:SetBackdropBorderColor(AF.GetColorRGB("border"))
+    contentPane.scrollSettings = scrollSettings
+    AF.SetPoint(scrollSettings, "TOPLEFT", indicatorList, "TOPRIGHT", 15, 0)
+    AF.SetPoint(scrollSettings, "BOTTOM", indicatorList)
+    AF.SetPoint(scrollSettings, "RIGHT")
+    scrollSettings:SetScrollStep(50)
 end
 
 ---------------------------------------------------------------------
@@ -168,18 +169,18 @@ local function ListItem_OnLeave(self)
 end
 
 local function ListItem_LoadOptions(self)
-    local scroll = contentPane.scrollConfig
-    scroll:Reset()
-
     -- button carries frame/indicator/config data
-    local options = F.GetIndicatorOptions(self)
 
-    local height = 0
+    local scroll = contentPane.scrollSettings
+    local options = F.GetIndicatorOptions(scroll.scrollContent, self.id)
+
+    local heights = {}
     local last
 
     for _, pane in pairs(options) do
-        pane:SetParent(scroll.scrollContent)
-        AF.ClearPoints(pane)
+        -- FIXME: seems cause weird issues that option values are not loaded properly (visible)
+        -- maybe should set parent when creating the pane?
+        -- pane:SetParent(scroll.scrollContent)
 
         if last then
             AF.SetPoint(pane, "TOPLEFT", last, "BOTTOMLEFT", 0, -10)
@@ -188,14 +189,23 @@ local function ListItem_LoadOptions(self)
         end
         AF.SetPoint(pane, "RIGHT", scroll.scrollContent)
 
-        pane:Show()
-
         last = pane
-        height = height + AF.ConvertPixels(pane._height)
+        tinsert(heights, pane._height)
     end
 
-    height = height + (#options - 1) * AF.ConvertPixels(10)
-    scroll.scrollContent:SetHeight(height)
+    scroll:SetContentHeights(heights, 10)
+
+    --! NOTE: sometimes option panes won't show, but if scrolled or BFIOptionsFrame is dragged they will appear
+    --! maybe it's a WoW UI bug? or intentional?
+    --! ScrollFrame SUCKS!!! so repoint to force update, hope it works
+    C_Timer.After(0, function()
+        AF.RePoint(scroll)
+
+        -- FIXME: fix weird issues that option values are not loaded properly (slider editbox text invisible)
+        for _, pane in pairs(options) do
+            pane.Load(self)
+        end
+    end)
 end
 
 LoadList = function(main, sub)

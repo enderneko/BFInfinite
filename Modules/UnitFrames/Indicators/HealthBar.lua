@@ -109,6 +109,7 @@ local function UpdateShield(self, event, unitId)
                         self.fullOvershieldGlowR:Hide()
                     end
                 end
+                self.overshieldGlow:Hide()
             else -- normal
                 local p = 1 - self.healthPercent
                 if p ~= 0 then
@@ -420,6 +421,15 @@ end
 ---------------------------------------------------------------------
 -- base
 ---------------------------------------------------------------------
+local function ShieldBar_SetTexture(self, texture)
+    if texture == "default" then
+        texture = AF.GetTexture("Stripe")
+    else
+        texture = AF.LSM_GetBarTexture(texture)
+    end
+    self.shield:SetTexture(texture)
+end
+
 local function ShieldBar_SetColor(self, color)
     self.shield:SetVertexColor(AF.UnpackColor(color))
 end
@@ -427,6 +437,15 @@ end
 local function OvershieldGlow_SetColor(self, color)
     self.overshieldGlow:SetVertexColor(AF.UnpackColor(color))
     self.overshieldGlowR:SetVertexColor(AF.UnpackColor(color))
+end
+
+local function HealAbsorbBar_SetTexture(self, texture)
+    if texture == "default" then
+        texture = AF.GetTexture("Stripe")
+    else
+        texture = AF.LSM_GetBarTexture(texture)
+    end
+    self.healAbsorb:SetTexture(texture)
 end
 
 local function HealAbsorbBar_SetColor(self, color)
@@ -487,6 +506,7 @@ local function HealthBar_LoadConfig(self, config)
     self:SetBorderColor(AF.UnpackColor(config.borderColor))
     self:SetSmoothing(config.smoothing)
 
+    ShieldBar_SetTexture(self, config.shield.texture)
     ShieldBar_SetColor(self, config.shield.color)
     OvershieldGlow_SetColor(self, config.overshieldGlow.color)
 
@@ -575,12 +595,11 @@ function UF.CreateHealthBar(parent, name)
     healPrediction:SetPoint("BOTTOMLEFT", bar.fg.mask, "BOTTOMRIGHT")
 
     -- shield
-    local shield = bar:CreateTexture(name .. "Stripe", "ARTWORK", nil, 2)
+    local shield = bar:CreateTexture(name .. "Shield", "ARTWORK", nil, 2)
     bar.shield = shield
     shield:Hide()
     shield:SetPoint("TOPLEFT", bar.fg.mask, "TOPRIGHT")
     shield:SetPoint("BOTTOMLEFT", bar.fg.mask, "BOTTOMRIGHT")
-    shield:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
 
@@ -616,7 +635,6 @@ function UF.CreateHealthBar(parent, name)
     healAbsorb:Hide()
     healAbsorb:SetPoint("TOPRIGHT", bar.fg.mask)
     healAbsorb:SetPoint("BOTTOMRIGHT", bar.fg.mask)
-    healAbsorb:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
     healAbsorb:SetHorizTile(true)
     healAbsorb:SetVertTile(true)
 

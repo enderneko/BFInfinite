@@ -485,7 +485,7 @@ function NP.CreateHealthBar(parent, name)
     shield:Hide()
     shield:SetPoint("TOPLEFT", bar.fg.mask, "TOPRIGHT")
     shield:SetPoint("BOTTOMLEFT", bar.fg.mask, "BOTTOMRIGHT")
-    shield:SetTexture(AF.GetTexture("Stripe", BFI.name), "REPEAT", "REPEAT")
+    shield:SetTexture(AF.GetTexture("Stripe"), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
 

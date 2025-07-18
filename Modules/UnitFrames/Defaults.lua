@@ -141,7 +141,7 @@ local style1 = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -151,7 +151,7 @@ local style1 = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -644,7 +644,7 @@ local style1 = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -654,7 +654,7 @@ local style1 = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -1066,7 +1066,7 @@ local style1 = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -1076,7 +1076,7 @@ local style1 = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -1417,7 +1417,7 @@ local style1 = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -1427,7 +1427,7 @@ local style1 = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -1776,7 +1776,7 @@ local style1 = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -1786,7 +1786,7 @@ local style1 = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -2127,7 +2127,7 @@ local style1 = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -2137,7 +2137,7 @@ local style1 = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -2478,7 +2478,7 @@ local style1 = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -2488,7 +2488,7 @@ local style1 = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -2832,7 +2832,7 @@ local style2 = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -2842,7 +2842,7 @@ local style2 = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -3335,7 +3335,7 @@ local style2 = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -3345,7 +3345,7 @@ local style2 = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -3757,7 +3757,7 @@ local style2 = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -3767,7 +3767,7 @@ local style2 = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -4108,7 +4108,7 @@ local style2 = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -4118,7 +4118,7 @@ local style2 = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -4466,7 +4466,7 @@ local style2 = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -4476,7 +4476,7 @@ local style2 = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -4817,7 +4817,7 @@ local style2 = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -4827,7 +4827,7 @@ local style2 = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -5168,7 +5168,7 @@ local style2 = {
                 },
                 shield = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -5178,7 +5178,7 @@ local style2 = {
                 },
                 healAbsorb = {
                     enabled = false,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -5531,7 +5531,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -5541,7 +5541,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -5949,7 +5949,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = false,
                 },
@@ -5959,7 +5959,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
@@ -6234,7 +6234,7 @@ local defaults = {
                 },
                 shield = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("shield", 0.4),
                     reverseFill = true,
                 },
@@ -6244,7 +6244,7 @@ local defaults = {
                 },
                 healAbsorb = {
                     enabled = true,
-                    -- texture = AF.GetTexture("Stripe", BFI.name), -- no customization now
+                    texture = "default",
                     color = AF.GetColorTable("absorb", 0.7),
                 },
                 overabsorbGlow = {
