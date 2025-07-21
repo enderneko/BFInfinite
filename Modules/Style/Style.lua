@@ -669,6 +669,16 @@ hooksecurefunc("PanelTemplates_UpdateTabs", function(frame)
     end
 end)
 
+hooksecurefunc("PanelTemplates_SelectTab", function(tab)
+    if not tab._BFIStyled then return end
+    tab.Text:SetPoint("CENTER", tab, "CENTER", 0, 0)
+end)
+
+hooksecurefunc("PanelTemplates_DeselectTab", function(tab)
+    if not tab._BFIStyled then return end
+    tab.Text:SetPoint("CENTER", tab, "CENTER", 0, 0)
+end)
+
 function S.StyleTab(tab)
     assert(tab, "StyleTab: tab is nil")
     if tab._BFIStyled then return end
@@ -676,20 +686,19 @@ function S.StyleTab(tab)
     S.RemoveTextures(tab)
     S.StyleButton(tab, "BFI_hover")
 
+    --! NOTE: taint
     -- Interface\AddOns\Blizzard_SharedXML\Mainline\SharedUIPanelTemplates.lua
-    if tab.isTopTab then
-        tab.selectedTextY = -7
-        tab.deselectedTextY = -6
-    else
-        tab.selectedTextY = 0
-        tab.deselectedTextY = 0
-    end
-    tab.selectedTextX = 0
-    tab.deselectedTextX = 0
+    -- if tab.isTopTab then
+    --     tab.selectedTextY = -7
+    --     tab.deselectedTextY = -6
+    -- else
+    --     tab.selectedTextY = 0
+    --     tab.deselectedTextY = 0
+    -- end
+    -- tab.selectedTextX = 0
+    -- tab.deselectedTextX = 0
 
     AF.SetHeight(tab, 26)
-
-    -- tab._BFIStyled = true
 end
 
 ---------------------------------------------------------------------
