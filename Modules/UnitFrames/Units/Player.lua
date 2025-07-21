@@ -70,6 +70,7 @@ local function UpdatePlayer(_, module, which)
         if player then
             UF.DisableIndicators(player)
             UnregisterUnitWatch(player)
+            player.enabled = false -- for mover
             player:Hide()
         end
         return
@@ -78,6 +79,8 @@ local function UpdatePlayer(_, module, which)
     if not player then
         CreatePlayer()
     end
+
+    player.enabled = true -- for mover
 
     -- setup
     UF.SetupUnitFrame(player, config, indicators)

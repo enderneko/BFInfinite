@@ -294,7 +294,13 @@ local style1 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = false,
+                showLatency = true,
+                interruptibleCheck = {
+                    enabled = false,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -314,29 +320,12 @@ local style1 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
-                },
                 ticks = {
                     enabled = true,
-                    color = AF.GetColorTable("cast_tick"),
                     width = 2,
-                },
-                latency = {
-                    enabled = true,
-                    color = AF.GetColorTable("cast_latency"),
                 },
             },
             staggerBar = {
@@ -747,6 +736,10 @@ local style1 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -761,7 +754,12 @@ local style1 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -781,20 +779,8 @@ local style1 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             combatIcon = {
@@ -1185,6 +1171,10 @@ local style1 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -1199,7 +1189,12 @@ local style1 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -1219,20 +1214,8 @@ local style1 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -1544,6 +1527,10 @@ local style1 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -1558,7 +1545,12 @@ local style1 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -1578,20 +1570,8 @@ local style1 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -1895,6 +1875,10 @@ local style1 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -1909,7 +1893,12 @@ local style1 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -1929,20 +1918,8 @@ local style1 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -2246,6 +2223,10 @@ local style1 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -2260,7 +2241,12 @@ local style1 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = false,
-                enableInterruptibleCheck = false,
+                interruptibleCheck = {
+                    enabled = false,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -2280,20 +2266,8 @@ local style1 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             combatIcon = {
@@ -2597,6 +2571,10 @@ local style1 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -2611,7 +2589,12 @@ local style1 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -2631,20 +2614,8 @@ local style1 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -2971,6 +2942,10 @@ local style2 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -2980,12 +2955,18 @@ local style2 = {
                 frameLevel = 15,
                 width = 207,
                 height = 16,
-                bgColor = AF.GetColorTable("cast_background"),
+                bgColor = AF.GetColorTable("background", 0.5),
                 borderColor = AF.GetColorTable("border"),
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = false,
+                showLatency = true,
+                interruptibleCheck = {
+                    enabled = false,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -3005,29 +2986,12 @@ local style2 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
                 },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
-                },
                 ticks = {
                     enabled = true,
-                    color = AF.GetColorTable("cast_tick"),
                     width = 2,
-                },
-                latency = {
-                    enabled = true,
-                    color = AF.GetColorTable("cast_latency"),
                 },
             },
             staggerBar = {
@@ -3438,6 +3402,10 @@ local style2 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -3452,7 +3420,12 @@ local style2 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -3472,20 +3445,8 @@ local style2 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             combatIcon = {
@@ -3876,6 +3837,10 @@ local style2 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -3890,7 +3855,12 @@ local style2 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -3910,20 +3880,8 @@ local style2 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -4234,6 +4192,10 @@ local style2 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -4248,7 +4210,12 @@ local style2 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -4268,20 +4235,8 @@ local style2 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -4585,6 +4540,10 @@ local style2 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -4599,7 +4558,12 @@ local style2 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -4619,20 +4583,8 @@ local style2 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -4936,6 +4888,10 @@ local style2 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -4950,7 +4906,12 @@ local style2 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = false,
-                enableInterruptibleCheck = false,
+                interruptibleCheck = {
+                    enabled = false,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -4970,20 +4931,8 @@ local style2 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             combatIcon = {
@@ -5286,6 +5235,10 @@ local style2 = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
             },
             castBar = {
@@ -5300,7 +5253,12 @@ local style2 = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -5320,20 +5278,8 @@ local style2 = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {
@@ -5668,6 +5614,10 @@ local defaults = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
                 -- cutaway = true, --! anchorTo == "healthBar" & style == "3d"
             },
@@ -5683,7 +5633,12 @@ local defaults = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = false,
-                enableInterruptibleCheck = false,
+                interruptibleCheck = {
+                    enabled = false,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = false,
                     font = {"BFI", 12, "none", true},
@@ -5703,20 +5658,8 @@ local defaults = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             combatIcon = {
@@ -6353,6 +6296,10 @@ local defaults = {
                     yOffset = 0, -- [-100, 100]
                     rotation = 0, -- [0, 360]
                     camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
                 },
                 -- cutaway = true, --! anchorTo == "healthBar" & style == "3d"
             },
@@ -6368,7 +6315,12 @@ local defaults = {
                 texture = "AF",
                 fadeDuration = 1,
                 showIcon = true,
-                enableInterruptibleCheck = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
                 nameText = {
                     enabled = true,
                     font = {"BFI", 12, "none", true},
@@ -6388,20 +6340,8 @@ local defaults = {
                 spark = {
                     enabled = true,
                     texture = "plain",
-                    color = AF.GetColorTable("cast_spark"),
                     width = 1,
                     height = 0,
-                },
-                colors = {
-                    normal = AF.GetColorTable("cast_normal"),
-                    failed = AF.GetColorTable("cast_failed"),
-                    succeeded = AF.GetColorTable("cast_succeeded"),
-                    interruptible = {
-                        requireInterruptUsable = true,
-                        value = AF.GetColorTable("cast_interruptible"),
-                    },
-                    uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                    uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
                 },
             },
             raidIcon = {

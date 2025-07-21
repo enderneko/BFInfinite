@@ -149,6 +149,7 @@ local indicators = {
 -- load
 ---------------------------------------------------------------------
 local listItems = {}
+local lastIndicator
 
 local itemPool = AF.CreateObjectPool(function()
     local button = AF.CreateButton(contentPane.indicatorList, "", "BFI_transparent", nil, nil, nil, "none", "")
@@ -170,6 +171,8 @@ end
 
 local function ListItem_LoadOptions(self)
     -- button carries frame/indicator/config data
+
+    lastIndicator = self.id
 
     local scroll = contentPane.scrollSettings
     local options = F.GetIndicatorOptions(scroll.scrollContent, self.id)
@@ -248,6 +251,15 @@ LoadList = function(main, sub)
 
     list:SetWidgets(listItems)
     AF.CreateButtonGroup(listItems, ListItem_LoadOptions, nil, nil, ListItem_OnEnter, ListItem_OnLeave)
+
+    if lastIndicator then
+        for _, item in next, listItems do
+            if item.id == lastIndicator then
+                item:SilentClick()
+                return
+            end
+        end
+    end
 
     listItems[1]:SilentClick()
 end

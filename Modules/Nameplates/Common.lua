@@ -160,3 +160,14 @@ function NP.LoadIndicatorPosition(self, position, anchorTo, parent)
         AF.Fire("BFI_IncorrectAnchor", self)
     end
 end
+
+function NP.GetIndicator(frame, indicatorName, requireEnabled)
+    if not (frame and frame.indicators) then return end
+
+    local indicator = frame.indicators[indicatorName]
+    if not indicator then return end
+
+    if not requireEnabled or indicator.enabled then
+        return indicator
+    end
+end

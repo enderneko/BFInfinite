@@ -214,6 +214,17 @@ function UF.LoadIndicatorPosition(self, position, anchorTo, parent)
     end
 end
 
+function UF.GetIndicator(frame, indicatorName, requireEnabled)
+    if not (frame and frame.indicators) then return end
+
+    local indicator = frame.indicators[indicatorName]
+    if not indicator then return end
+
+    if not requireEnabled or indicator.enabled then
+        return indicator
+    end
+end
+
 ---------------------------------------------------------------------
 -- setup frame
 ---------------------------------------------------------------------

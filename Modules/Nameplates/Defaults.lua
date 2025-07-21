@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+---@ class NamePlates
 local NP = BFI.NamePlates
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -218,7 +219,12 @@ do
             borderColor = AF.GetColorTable("border"),
             texture = "AF",
             fadeDuration = 1,
-            enableInterruptibleCheck = true,
+            interruptibleCheck = {
+                enabled = true,
+                requireUsable = true,
+                showTexture = true,
+                colorBorder = true,
+            },
             icon = {
                 enabled = true,
                 position = {"BOTTOMRIGHT", "BOTTOMLEFT", -2, 0},
@@ -243,20 +249,8 @@ do
             spark = {
                 enabled = true,
                 texture = "plain",
-                color = AF.GetColorTable("cast_spark"),
                 width = 1,
                 height = 0,
-            },
-            colors = {
-                normal = AF.GetColorTable("cast_normal"),
-                failed = AF.GetColorTable("cast_failed"),
-                succeeded = AF.GetColorTable("cast_succeeded"),
-                interruptible = {
-                    requireInterruptUsable = true,
-                    value = AF.GetColorTable("cast_interruptible"),
-                },
-                uninterruptible = AF.GetColorTable("cast_uninterruptible"),
-                uninterruptibleTexture = AF.GetColorTable("cast_uninterruptible_texture"),
             },
         },
         raidIcon = {

@@ -11,6 +11,7 @@ local optionsFrame
 ---------------------------------------------------------------------
 local list = {
     "General",
+    "Colors",
     "SEPARATOR",
     "Unit Frames",
     "Nameplates",
@@ -23,6 +24,7 @@ local list = {
 
 local frameWidths = {
     ["General"] = 750,
+    ["Colors"] = 750,
     ["Unit Frames"] = 750,
     ["Nameplates"] = 750,
     ["Action Bars"] = 750,

@@ -14,16 +14,7 @@ local uf_colors = {
     target_highlight = AF.GetColorTable("BFI", 0.6),
     mouseover_highlight = {1, 1, 1, 0.6},
 
-    cast_background = {0.175, 0.175, 0.175, 1},
-    cast_normal = {0.5, 0.5, 0.5, 0.9},
-    cast_failed = {0.7, 0.3, 0.3, 0.9},
-    cast_succeeded = {0.3, 0.7, 0.3, 0.9},
-    cast_interruptible = {0.7, 0.7, 0.3, 0.9},
-    cast_uninterruptible = {0.4, 0.4, 0.4, 0.9},
-    cast_uninterruptible_texture = {1, 0.2, 0.2, 0.6},
-    cast_spark = {0.9, 0.9, 0.9, 0.6},
-    cast_tick = {1, 1, 0, 0.3},
-    cast_latency = {1, 0, 0, 0.4},
+    -- cast_background = {0.175, 0.175, 0.175, 1},
 
     shield = {1, 1, 1, 1},
     absorb = {1, 0.1, 0.1, 1},

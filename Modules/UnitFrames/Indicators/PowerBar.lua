@@ -65,16 +65,21 @@ local function GetPowerColor(self, unit, colorTable)
 
     local class = UnitClassBase(unit)
     local inVehicle = UnitHasVehicleUI(unit)
+    local isPlayer = AF.UnitIsPlayer(unit)
 
     local orientation, r1, g1, b1, a1, r2, g2, b2, a2
 
-    if AF.UnitIsPlayer(unit) and not UnitIsConnected(unit) then
+    if isPlayer and not UnitIsConnected(unit) then
         r1, g1, b1 = AF.GetColorRGB("OFFLINE")
     else
         if colorTable.type:find("^power") then
             r1, g1, b1 = GetPowerTypeColor(colorTable.type, self.powerType, unit)
         elseif colorTable.type:find("^class") then
-            r1, g1, b1 = GetClassColor(colorTable.type, class, inVehicle)
+            if isPlayer then
+                r1, g1, b1 = GetClassColor(colorTable.type, class, inVehicle)
+            else
+                r1, g1, b1 = GetReactionColor(colorTable.type, unit)
+            end
         else
             if colorTable.gradient == "disabled" then
                 r1, g1, b1 = AF.UnpackColor(colorTable.rgb)

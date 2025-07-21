@@ -59,6 +59,7 @@ local function UpdateFocus(_, module, which)
         if focus then
             UF.DisableIndicators(focus)
             UnregisterUnitWatch(focus)
+            focus.enabled = false -- for mover
             focus:Hide()
         end
         return
@@ -67,6 +68,8 @@ local function UpdateFocus(_, module, which)
     if not focus then
         CreateFocus()
     end
+
+    focus.enabled = true -- for mover
 
     -- setup
     UF.SetupUnitFrame(focus, config, indicators)

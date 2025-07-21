@@ -43,6 +43,18 @@ local defaults = {
         TAP_DENIED = {0.5, 0.5, 0.5},
     },
 
+    casts = {
+        cast_normal = {0.5, 0.5, 0.5, 0.9},
+        cast_failed = {0.7, 0.3, 0.3, 0.9},
+        cast_succeeded = {0.3, 0.7, 0.3, 0.9},
+        cast_interruptible = {0.7, 0.7, 0.3, 0.9},
+        cast_uninterruptible = {0.4, 0.4, 0.4, 0.9},
+        cast_uninterruptible_texture = {1, 0.2, 0.2, 0.6},
+        cast_spark = {0.9, 0.9, 0.9, 0.6},
+        cast_tick = {1, 1, 0, 0.5},
+        cast_latency = {1, 0, 0, 0.4},
+    },
+
     spells = {
         -- [8936] = {0.29, 0.86, 0.68, 1},
     },
@@ -56,6 +68,7 @@ AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     for _, st in pairs(t["colors"]) do
         AF.AddColors(st)
     end
+    C.config = t["colors"]
 end, "high")
 
 function C.ResetDefaults(which)

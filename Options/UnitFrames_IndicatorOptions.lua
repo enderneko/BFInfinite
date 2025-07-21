@@ -50,7 +50,23 @@ local indicators = {
         "style,model",
         "bgColor,borderColor",
         "frameLevel",
-    }
+    },
+    castBar = {
+        "enabled",
+        "width,height",
+        "position,anchorTo",
+        "texture",
+        "interruptibleCheck",
+        "bgColor,borderColor",
+        "showIcon",
+        "showLatency",
+        "fadeDuration",
+        "spark",
+        "ticks",
+        "castBarNameText",
+        "castBarDurationText",
+        "frameLevel",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -1028,6 +1044,214 @@ builder["style,model"] = function(parent)
         y1FixSlider:SetValue(t.cfg.model.y1Fix)
         x2FixSlider:SetValue(t.cfg.model.x2Fix)
         y2FixSlider:SetValue(t.cfg.model.y2Fix)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- interruptibleCheck
+---------------------------------------------------------------------
+builder["interruptibleCheck"] = function(parent)
+    if created["interruptibleCheck"] then return created["interruptibleCheck"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_InterruptibleCheck", nil, 93)
+    created["interruptibleCheck"] = pane
+
+    local enableInterruptibleCheck = AF.CreateCheckButton(pane, L["Enable Interruptible Check"])
+    AF.SetPoint(enableInterruptibleCheck, "TOPLEFT", 15, -8)
+
+    local requireInterruptUsable = AF.CreateCheckButton(pane, L["Require Interrupt Usable"])
+    AF.SetPoint(requireInterruptUsable, "TOPLEFT", enableInterruptibleCheck, "BOTTOMLEFT", 0, -7)
+    requireInterruptUsable._scrollParent = BFIOptionsFrame_UnitFramesPanel
+    requireInterruptUsable:SetTooltip(L["Only show interruptible color when interrupt is usable"])
+    requireInterruptUsable:SetOnCheck(function(checked)
+        pane.t.cfg.interruptibleCheck.requireUsable = checked
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local showUninterruptibleTexture = AF.CreateCheckButton(pane, L["Show Uninterruptible Texture"])
+    AF.SetPoint(showUninterruptibleTexture, "TOPLEFT", requireInterruptUsable, "BOTTOMLEFT", 0, -7)
+    showUninterruptibleTexture:SetOnCheck(function(checked)
+        pane.t.cfg.interruptibleCheck.showTexture = checked
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local changeBorderColor = AF.CreateCheckButton(pane, L["Change Border Color"])
+    AF.SetPoint(changeBorderColor, "TOPLEFT", showUninterruptibleTexture, "BOTTOMLEFT", 0, -7)
+    changeBorderColor:SetOnCheck(function(checked)
+        pane.t.cfg.interruptibleCheck.colorBorder = checked
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    enableInterruptibleCheck:SetOnCheck(function(checked)
+        pane.t.cfg.interruptibleCheck.enabled = checked
+        AF.SetEnabled(checked, requireInterruptUsable, showUninterruptibleTexture, changeBorderColor)
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        enableInterruptibleCheck:SetChecked(t.cfg.interruptibleCheck.enabled)
+        requireInterruptUsable:SetChecked(t.cfg.interruptibleCheck.requireUsable)
+        showUninterruptibleTexture:SetChecked(t.cfg.interruptibleCheck.showTexture)
+        changeBorderColor:SetChecked(t.cfg.interruptibleCheck.colorBorder)
+        AF.SetEnabled(pane.t.cfg.interruptibleCheck.enabled, requireInterruptUsable, showUninterruptibleTexture, changeBorderColor)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- showIcon
+---------------------------------------------------------------------
+builder["showIcon"] = function(parent)
+    if created["showIcon"] then return created["showIcon"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_ShowIcon", nil, 30)
+    created["showIcon"] = pane
+
+    local showIconCheckButton = AF.CreateCheckButton(pane, L["Show Icon"])
+    AF.SetPoint(showIconCheckButton, "LEFT", 15, 0)
+    showIconCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.showIcon = checked
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        showIconCheckButton:SetChecked(t.cfg.showIcon)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- showLatency
+---------------------------------------------------------------------
+builder["showLatency"] = function(parent)
+    if created["showLatency"] then return created["showLatency"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_ShowLatency", nil, 30)
+    created["showLatency"] = pane
+
+    local showLatencyCheckButton = AF.CreateCheckButton(pane, L["Show Latency"])
+    AF.SetPoint(showLatencyCheckButton, "LEFT", 15, 0)
+    showLatencyCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.showLatency = checked
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        showLatencyCheckButton:SetChecked(t.cfg.showLatency)
+        if t.owner == "player" then
+            AF.HideMask(pane)
+        else
+            AF.ShowMask(pane)
+        end
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- fadeDuration
+---------------------------------------------------------------------
+builder["fadeDuration"] = function(parent)
+    if created["fadeDuration"] then return created["fadeDuration"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_FadeDuration", nil, 55)
+    created["fadeDuration"] = pane
+
+    local fadeDurationSlider = AF.CreateSlider(pane, L["Fade Duration"], 150, 0, 2, 0.1, nil, true)
+    AF.SetPoint(fadeDurationSlider, "LEFT", 15, 0)
+    fadeDurationSlider:SetAfterValueChanged(function(value)
+        pane.t.cfg.fadeDuration = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        fadeDurationSlider:SetValue(t.cfg.fadeDuration)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- spark
+---------------------------------------------------------------------
+builder["spark"] = function(parent)
+    if created["spark"] then return created["spark"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Spark", nil, 80)
+    created["spark"] = pane
+
+    local sparkCheckButton = AF.CreateCheckButton(pane, L["Spark"])
+    AF.SetPoint(sparkCheckButton, "TOPLEFT", 15, -8)
+
+    local sparkWidthSlider = AF.CreateSlider(pane, L["Width"], 150, 1, 1000, 1, nil, true)
+    AF.SetPoint(sparkWidthSlider, "TOPLEFT", sparkCheckButton, "BOTTOMLEFT", 0, -25)
+    sparkWidthSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.spark.width = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    local sparkHeightSlider = AF.CreateSlider(pane, L["Height"], 150, 0, 1000, 1, nil, true)
+    AF.SetPoint(sparkHeightSlider, "TOPLEFT", sparkWidthSlider, 185, 0)
+    sparkHeightSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.spark.height = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    sparkCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.spark.enabled = checked
+        AF.SetEnabled(checked, sparkWidthSlider, sparkHeightSlider)
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        sparkCheckButton:SetChecked(t.cfg.spark.enabled)
+        sparkWidthSlider:SetValue(t.cfg.spark.width)
+        sparkHeightSlider:SetValue(t.cfg.spark.height)
+        AF.SetEnabled(t.cfg.spark.enabled, sparkWidthSlider, sparkHeightSlider)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- ticks
+---------------------------------------------------------------------
+builder["ticks"] = function(parent)
+    if created["ticks"] then return created["ticks"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Ticks", nil, 55)
+    created["ticks"] = pane
+
+    local ticksCheckButton = AF.CreateCheckButton(pane, L["Ticks"])
+    AF.SetPoint(ticksCheckButton, "LEFT", 15, 0)
+
+    local ticksWidthSlider = AF.CreateSlider(pane, L["Width"], 150, 1, 50, 1, nil, true)
+    AF.SetPoint(ticksWidthSlider, "LEFT", ticksCheckButton, 185, 0)
+    ticksWidthSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.ticks.width = value
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    ticksCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.ticks.enabled = checked
+        ticksWidthSlider:SetEnabled(checked)
+        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        ticksCheckButton:SetChecked(t.cfg.ticks.enabled)
+        ticksWidthSlider:SetValue(t.cfg.ticks.width)
+        ticksWidthSlider:SetEnabled(t.cfg.ticks.enabled)
     end
 
     return pane

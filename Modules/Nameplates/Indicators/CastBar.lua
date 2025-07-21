@@ -58,7 +58,7 @@ local function CreatePip(self, stage)
     pip.texture:SetVertexColor(AF.GetColorRGB(map[stage], PIP_START_ALPHA))
 
     pip.bound = pip:CreateTexture(nil, "ARTWORK", nil, 1)
-    pip.bound:SetColorTexture(AF.GetColorRGB("black"))
+    pip.bound:SetColorTexture(AF.UnpackColor(self.borderColor))
     pip.bound:SetPoint("LEFT", pip)
     pip.bound:SetPoint("TOP", pip)
     pip.bound:SetPoint("BOTTOM", pip)
@@ -140,22 +140,34 @@ local function CastInterruptible(self, event, unit)
         self.notInterruptible = event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE"
     end
 
+    local borderR, borderG, borderB, borderA = AF.UnpackColor(self.borderColor)
+
     if self.notInterruptible then
-        self.bar:SetColor(AF.UnpackColor(self.uninterruptibleColor))
-        self.bar.uninterruptible:Show()
-        self:SetBackdropBorderColor(AF.UnpackColor(self.uninterruptibleTextureColor, 1))
-        self.iconBG:SetVertexColor(AF.UnpackColor(self.uninterruptibleTextureColor, 1))
-    elseif self.checkInterruptCD and (not self.requireInterruptUsable or AF.InterruptUsable()) then -- interruptible
-        self.bar:SetColor(AF.UnpackColor(self.interruptibleColor))
-        self.bar.uninterruptible:Hide()
-        self:SetBackdropBorderColor(AF.UnpackColor(self.interruptibleColor, 1))
-        self.iconBG:SetVertexColor(AF.UnpackColor(self.interruptibleColor, 1))
+        self.bar:SetColor(AF.GetColorRGB("cast_uninterruptible"))
+        if self.showUninterruptibleTexture then
+            self.uninterruptible:Show()
+            if self.interruptibleColorBorder then
+                borderR, borderG, borderB, borderA = AF.GetColorRGB("cast_uninterruptible_texture", 1)
+            end
+        else
+            self.uninterruptible:Hide()
+            if self.interruptibleColorBorder then
+                borderR, borderG, borderB, borderA = AF.GetColorRGB("cast_uninterruptible", 1)
+            end
+        end
+    elseif self.doInterruptibleCheck and (not self.requireInterruptUsable or AF.InterruptUsable()) then -- interruptible
+        self.bar:SetColor(AF.GetColorRGB("cast_interruptible"))
+        self.uninterruptible:Hide()
+        if self.interruptibleColorBorder then
+            borderR, borderG, borderB, borderA = AF.GetColorRGB("cast_interruptible", 1)
+        end
     else -- interrupt cd
-        self.bar:SetColor(AF.UnpackColor(self.normalColor))
-        self.bar.uninterruptible:Hide()
-        self:SetBackdropBorderColor(AF.UnpackColor(self.borderColor))
-        self.iconBG:SetVertexColor(AF.UnpackColor(self.borderColor))
+        self.bar:SetColor(AF.GetColorRGB("cast_normal"))
+        self.uninterruptible:Hide()
     end
+
+    self:SetBackdropBorderColor(borderR, borderG, borderB, borderA)
+    self.iconBG:SetVertexColor(borderR, borderG, borderB, borderA)
 end
 
 ---------------------------------------------------------------------
@@ -163,9 +175,9 @@ end
 ---------------------------------------------------------------------
 local function ShowOverlay(self, failed)
     if failed then
-        self.status:SetVertexColor(AF.UnpackColor(self.failedColor))
+        self.status:SetVertexColor(AF.GetColorRGB("cast_failed"))
     else
-        self.status:SetVertexColor(AF.UnpackColor(self.succeededColor))
+        self.status:SetVertexColor(AF.GetColorRGB("cast_succeeded"))
     end
     self.bar:Hide()
     self.status:Show()
@@ -296,7 +308,7 @@ local function OnUpdate(self, elapsed)
             end
         end
 
-        if self.enableInterruptibleCheck and self.checkInterruptCD and self.requireInterruptUsable and not self.notInterruptible then
+        if self.interruptibleCheckEnabled and self.doInterruptibleCheck and self.requireInterruptUsable and not self.notInterruptible then
             self.elapsed = (self.elapsed or 0) + elapsed
             if self.elapsed >= 0.25 then
                 CastInterruptible(self)
@@ -343,20 +355,20 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     self.duration = self.endTime - self.startTime
 
     -- interruptible
-    if self.enableInterruptibleCheck and not isTradeSkill then
+    if self.interruptibleCheckEnabled and not isTradeSkill then
         if UnitCanAttack("player", unit) then
-            self.checkInterruptCD = true
+            self.doInterruptibleCheck = true
         else
-            self.checkInterruptCD = nil
+            self.doInterruptibleCheck = nil
         end
         self.notInterruptible = notInterruptible
         CastInterruptible(self)
     else
-        self.checkInterruptCD = nil
+        self.doInterruptibleCheck = nil
         self.notInterruptible = nil
         -- restore to normal
-        self.bar:SetColor(AF.UnpackColor(self.normalColor))
-        self.bar.uninterruptible:Hide()
+        self.bar:SetColor(AF.GetColorRGB("cast_normal"))
+        self.uninterruptible:Hide()
         self:SetBackdropBorderColor(AF.UnpackColor(self.borderColor))
         self.gap:SetColorTexture(AF.UnpackColor(self.borderColor))
     end
@@ -408,7 +420,7 @@ local function CastBar_Enable(self)
     self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", self.root.unit, CastFail)
 
     -- interruptible
-    if self.enableInterruptibleCheck then
+    if self.interruptibleCheckEnabled then
         self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", self.root.unit, CastInterruptible)
         self:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", self.root.unit, CastInterruptible)
         self:RegisterUnitEvent("UNIT_FACTION", self.root.unit, CastInterruptible)
@@ -447,10 +459,10 @@ local function CastBar_SetTexture(self, texture)
     end
 end
 
-local function CastBar_SetupNameText(self, config, showIcon)
+local function CastBar_SetupNameText(self, config)
     self.nameText:SetShown(config.enabled)
     AF.SetFont(self.nameText, config.font)
-    AF.LoadTextPosition(self.nameText, config.position, showIcon and self.icon)
+    AF.LoadTextPosition(self.nameText, config.position)
     self.nameText:SetTextColor(unpack(config.color))
     self.nameTextLength = config.length
     self.showName = config.enabled
@@ -492,13 +504,17 @@ local function CastBar_SetupSpark(self, config)
     self.spark:Show()
 
     self.spark:ClearAllPoints()
-    self.spark:SetPoint("RIGHT", self.bar.fg.mask)
     if config.height == 0 then
-        self.spark:SetPoint("TOP")
-        self.spark:SetPoint("BOTTOM")
-        self.spark:SetPoint("RIGHT", self.bar.fg.mask)
+        if config.width == 1 then
+            self.spark:SetPoint("TOPRIGHT", self.bar.fg.mask)
+            self.spark:SetPoint("BOTTOMRIGHT", self.bar.fg.mask)
+        else
+            self.spark:SetPoint("TOP", self.bar.fg.mask, "TOPRIGHT")
+            self.spark:SetPoint("BOTTOM", self.bar.fg.mask, "BOTTOMRIGHT")
+        end
     else
-        self.spark:SetHeight(config.height)
+        self.spark:SetPoint("CENTER", self.bar.fg.mask, "RIGHT")
+        AF.SetHeight(self.spark, config.height)
     end
 
     AF.SetWidth(self.spark, config.width)
@@ -507,7 +523,7 @@ local function CastBar_SetupSpark(self, config)
     else
         -- TODO:
     end
-    self.spark:SetVertexColor(unpack(config.color))
+    self.spark:SetVertexColor(AF.GetColorRGB("cast_spark"))
 end
 
 local function CastBar_UpdatePixels(self)
@@ -525,16 +541,12 @@ end
 -- load
 ---------------------------------------------------------------------
 local function CastBar_LoadConfig(self, config)
-    self.normalColor = config.colors.normal
-    self.failedColor = config.colors.failed
-    self.succeededColor = config.colors.succeeded
-    self.interruptibleColor = config.colors.interruptible.value
-    self.uninterruptibleColor = config.colors.uninterruptible
-    self.uninterruptibleTextureColor = config.colors.uninterruptibleTexture
     self.borderColor = config.borderColor
 
-    self.requireInterruptUsable = config.colors.interruptible.requireInterruptUsable
-    self.enableInterruptibleCheck = config.enableInterruptibleCheck
+    self.interruptibleCheckEnabled = config.interruptibleCheck.enabled
+    self.requireInterruptUsable = config.interruptibleCheck.requireUsable
+    self.showUninterruptibleTexture = config.interruptibleCheck.showTexture
+    self.interruptibleColorBorder = config.interruptibleCheck.colorBorder
 
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
@@ -545,16 +557,56 @@ local function CastBar_LoadConfig(self, config)
     self:SetBackdropColor(AF.UnpackColor(config.bgColor))
     self:SetBackdropBorderColor(AF.UnpackColor(config.borderColor))
 
-    self.bar:SetColor(AF.UnpackColor(config.colors.normal))
-    self.bar.uninterruptible:SetVertexColor(unpack(config.colors.uninterruptibleTexture))
+    self.bar:SetColor(AF.GetColorRGB("cast_normal"))
+    self.uninterruptible:SetVertexColor(AF.GetColorRGB("cast_uninterruptible_texture"))
 
     AF.SetFadeInOutAnimationDuration(self, config.fadeDuration)
 
-    CastBar_SetupNameText(self, config.nameText, config.showIcon)
+    CastBar_SetupNameText(self, config.nameText)
     CastBar_SetupDurationText(self, config.durationText)
     CastBar_SetupIcon(self, config.icon)
     CastBar_SetupSpark(self, config.spark)
 end
+
+---------------------------------------------------------------------
+-- BFI_UpdateColor
+---------------------------------------------------------------------
+AF.RegisterCallback("BFI_UpdateColor", function(_, group, which)
+    if not NP.config.enabled then return end
+    if group == "casts" then
+        if which == "spark" then
+            for _, frame in next, NP.created do
+                local castBar = NP.GetIndicator(frame, "castBar")
+                if castBar then
+                    castBar.spark:SetVertexColor(AF.GetColorRGB("cast_spark"))
+                end
+            end
+        elseif which == "uninterruptible_texture" then
+            for _, frame in next, NP.created do
+                local castBar = NP.GetIndicator(frame, "castBar")
+                if castBar then
+                    castBar.uninterruptible:SetVertexColor(AF.GetColorRGB("cast_uninterruptible_texture"))
+                end
+            end
+        else
+            for _, frame in next, NP.created do
+                local castBar = NP.GetIndicator(frame, "castBar")
+                if castBar and castBar:IsVisible() then
+                    CastBar_Update(castBar)
+                end
+            end
+        end
+    elseif group == "empower" then
+        for _, frame in next, NP.created do
+            local castBar = NP.GetIndicator(frame, "castBar")
+            if castBar then
+                for i, pip in pairs(castBar.pips) do
+                    pip.texture:SetVertexColor(AF.GetColorRGB(map[i], PIP_START_ALPHA))
+                end
+            end
+        end
+    end
+end)
 
 ---------------------------------------------------------------------
 -- create
@@ -612,11 +664,11 @@ function NP.CreateCastBar(parent, name)
     -- spark
     local spark = bar:CreateTexture(nil, "ARTWORK", nil, 3)
     frame.spark = spark
-    spark:SetBlendMode("ADD")
+    -- spark:SetBlendMode("ADD")
 
     -- uninterruptible texture
     local uninterruptible = bar:CreateTexture(nil, "ARTWORK", nil, 4)
-    bar.uninterruptible = uninterruptible
+    frame.uninterruptible = uninterruptible
     uninterruptible:SetAllPoints()
     uninterruptible:SetTexture(AF.GetTexture("Uninterruptible1", BFI.name), "REPEAT", "REPEAT")
     uninterruptible:SetHorizTile(true)

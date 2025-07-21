@@ -65,6 +65,7 @@ local function UpdateBoss(_, module, which)
                 UnregisterUnitWatch(boss[i])
                 UF.DisableIndicators(boss[i])
             end
+            boss.enabled = false -- for mover
             boss:Hide()
         end
         return
@@ -73,6 +74,8 @@ local function UpdateBoss(_, module, which)
     if not boss then
         CreateBoss()
     end
+
+    boss.enabled = true -- for mover
 
     -- setup
     UF.SetupUnitGroup(boss, config, indicators)
