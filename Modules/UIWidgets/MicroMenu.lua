@@ -59,6 +59,7 @@ local function CreateMicroMenu()
     microMenu:SetScript("OnLeave", microMenu.onLeave)
 
     -- buttons
+    _G.ResetMicroMenuPosition()
     microMenu.buttons = {}
     for _, b in pairs(MICRO_BUTTONS) do
         if _G[b] then
@@ -70,6 +71,7 @@ local function CreateMicroMenu()
     end
 
     -- ticket button anchor
+    microMenu.UpdateHelpTicketButtonAnchor = AF.noop
     hooksecurefunc(_G.MicroMenu, "UpdateHelpTicketButtonAnchor", UpdateHelpTicketButtonAnchor)
 
     -- mover
