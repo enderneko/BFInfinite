@@ -91,6 +91,7 @@ end
 ---------------------------------------------------------------------
 local function HealthText_Update(self)
     UpdateHealth(self)
+    UpdateColor(self)
 end
 
 ---------------------------------------------------------------------
@@ -243,9 +244,9 @@ end
 ---------------------------------------------------------------------
 -- base
 ---------------------------------------------------------------------
-local function HealthText_SetColor(self, color)
-    self:SetTextColor(unpack(color))
-end
+-- local function HealthText_SetColor(self, color)
+--     self:SetTextColor(unpack(color))
+-- end
 
 ---------------------------------------------------------------------
 -- load

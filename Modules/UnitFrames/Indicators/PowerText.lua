@@ -12,6 +12,7 @@ local gsub = string.gsub
 local format = string.format
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
+local UnitPowerType = UnitPowerType
 local UnitClassBase = AF.UnitClassBase
 local FormatNumber = AF.FormatNumber
 
@@ -63,6 +64,9 @@ local function UpdateColor(self, event, unitId)
         else
             r, g, b = AF.GetReactionColor(unit)
         end
+    elseif self.color.type == "power_color" then
+        local powerType = select(2, UnitPowerType(unit))
+        r, g, b = AF.GetPowerColor(powerType, unit)
     else
         r, g, b = unpack(self.color.rgb)
     end

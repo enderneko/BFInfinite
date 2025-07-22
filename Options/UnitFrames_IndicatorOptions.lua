@@ -122,6 +122,16 @@ local indicators = {
         "frequent",
         "hideIfFull,hideIfEmpty",
     },
+    levelText = {
+        "enabled",
+        "position,anchorTo,parent",
+        "font,color",
+    },
+    targetCounter = {
+        "enabled",
+        "position,anchorTo,parent",
+        "font,color",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -213,6 +223,33 @@ local function GetParentItems()
         end
     end
     return validParents
+end
+
+local function GetColorItems(which)
+    local items = {
+        {text = L["Class"], value = "class_color"},
+    }
+
+    if not (which:find("Text$") or which:find("Counter$") or which:find("Timer$")) then
+        tinsert(items, {text = L["Class (Dark)"], value = "class_color_dark"})
+    end
+
+    if which:find("^power") then
+        tinsert(items, {text = L["Power"], value = "power_color"})
+        if not which:find("Text$") then
+            tinsert(items, {text = L["Power (Dark)"], value = "power_color_dark"})
+        end
+    elseif which:find("^extraMana") then
+        AF.InsertAll(items, {
+            {text = L["Mana"], value = "mana_color"},
+            {text = L["Mana (Dark)"], value = "mana_color_dark"},
+        })
+    elseif which:find("^level") then
+        tinsert(items, {text = L["Level"], value = "level_color"})
+    end
+
+    tinsert(items, {text = L["Custom"], value = "custom_color"})
+    return items
 end
 
 ---------------------------------------------------------------------
@@ -495,28 +532,6 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
     colorDropdown:SetLabel(label)
     AF.SetPoint(colorDropdown, "TOPLEFT", 15, -25)
 
-    local healthBarColorItems = {
-        {text = L["Class"], value = "class_color"},
-        {text = L["Class (Dark)"], value = "class_color_dark"},
-        {text = L["Custom"], value = "custom_color"},
-    }
-
-    local powerBarColorItems = {
-        {text = L["Class"], value = "class_color"},
-        {text = L["Class (Dark)"], value = "class_color_dark"},
-        {text = L["Power"], value = "power_color"},
-        {text = L["Power (Dark)"], value = "power_color_dark"},
-        {text = L["Custom"], value = "custom_color"},
-    }
-
-    local extraManaBarItems = {
-        {text = L["Class"], value = "class_color"},
-        {text = L["Class (Dark)"], value = "class_color_dark"},
-        {text = L["Mana"], value = "mana_color"},
-        {text = L["Mana (Dark)"], value = "mana_color_dark"},
-        {text = L["Custom"], value = "custom_color"},
-    }
-
     local orientationDropdown = AF.CreateDropdown(pane, 150)
     orientationDropdown:SetLabel(gradientLabel)
     AF.SetPoint(orientationDropdown, "TOPLEFT", colorDropdown, 185, 0)
@@ -643,14 +658,7 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
     function pane.Load(t)
         pane.t = t
 
-        if pane.t.id == "powerBar" or pane.t.id == "classPowerBar" then
-            colorDropdown:SetItems(powerBarColorItems)
-        elseif pane.t.id == "extraManaBar" then
-            colorDropdown:SetItems(extraManaBarItems)
-        else
-            colorDropdown:SetItems(healthBarColorItems)
-        end
-
+        colorDropdown:SetItems(GetColorItems(t.id))
         colorDropdown:SetSelectedValue(t.cfg[colorType].type)
         orientationDropdown:SetSelectedValue(t.cfg[colorType].gradient)
         UpdateColorWidgets(t.cfg[colorType])
@@ -2146,6 +2154,82 @@ builder["hideIfFull"] = function(parent)
     function pane.Load(t)
         pane.t = t
         hideIfFullCheckButton:SetChecked(t.cfg.hideIfFull)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- font,color
+---------------------------------------------------------------------
+builder["font,color"] = function(parent)
+    if created["font,color"] then return created["font,color"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_FontColor", nil, 148)
+    created["font,color"] = pane
+
+    local fontDropdown = AF.CreateDropdown(pane, 150)
+    fontDropdown:SetLabel(L["Font"])
+    AF.SetPoint(fontDropdown, "TOPLEFT", 15, -25)
+    fontDropdown:SetItems(AF.LSM_GetFontDropdownItems())
+    fontDropdown:SetOnSelect(function(value)
+        pane.t.cfg.font[1] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontOutlineDropdown = AF.CreateDropdown(pane, 150)
+    fontOutlineDropdown:SetLabel(L["Outline"])
+    AF.SetPoint(fontOutlineDropdown, "TOPLEFT", fontDropdown, 185, 0)
+    fontOutlineDropdown:SetItems(AF.LSM_GetFontOutlineDropdownItems())
+    fontOutlineDropdown:SetOnSelect(function(value)
+        pane.t.cfg.font[3] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontSizeSlider = AF.CreateSlider(pane, L["Size"], 150, 5, 50, 1, nil, true)
+    AF.SetPoint(fontSizeSlider, "TOPLEFT", fontDropdown, "BOTTOMLEFT", 0, -25)
+    fontSizeSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.font[2] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local shadowCheckButton = AF.CreateCheckButton(pane, L["Shadow"])
+    AF.SetPoint(shadowCheckButton, "LEFT", fontSizeSlider, 185, 0)
+    shadowCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.font[4] = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local colorDropdown = AF.CreateDropdown(pane, 150)
+    colorDropdown:SetLabel(L["Color"])
+    AF.SetPoint(colorDropdown, "TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, -40)
+
+    local colorPicker = AF.CreateColorPicker(pane)
+    AF.SetPoint(colorPicker, "BOTTOMRIGHT", colorDropdown, "TOPRIGHT", 0, 2)
+    colorPicker:SetOnChange(function(r, g, b)
+        pane.t.cfg.color.rgb[1] = r
+        pane.t.cfg.color.rgb[2] = g
+        pane.t.cfg.color.rgb[3] = b
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    colorDropdown:SetOnSelect(function(value)
+        pane.t.cfg.color.type = value
+        LoadIndicatorConfig(pane.t)
+        colorPicker:SetShown(value == "custom_color")
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+
+        colorDropdown:SetItems(GetColorItems(t.id))
+        fontDropdown:SetSelectedValue(t.cfg.font[1])
+        fontSizeSlider:SetValue(t.cfg.font[2])
+        fontOutlineDropdown:SetSelectedValue(t.cfg.font[3])
+        shadowCheckButton:SetChecked(t.cfg.font[4])
+        colorDropdown:SetSelectedValue(t.cfg.color.type)
+        colorPicker:SetColor(t.cfg.color.rgb)
+        colorPicker:SetShown(t.cfg.color.type == "custom_color")
     end
 
     return pane
