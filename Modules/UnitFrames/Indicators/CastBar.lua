@@ -556,7 +556,7 @@ local function OnUpdate(self, elapsed)
                 return
             end
             if self.showDelay and self.delay ~= 0 then
-                self.durationText:SetFormattedText(self.delayedDurationFormat, "+", self.delay, self.duration - self.current)
+                self.durationText:SetFormattedText(self.delayedDurationFormat, self.duration - self.current,"+", self.delay)
             else
                 self.durationText:SetFormattedText(self.durationFormat, self.duration - self.current)
             end
@@ -567,7 +567,7 @@ local function OnUpdate(self, elapsed)
                 return
             end
             if self.showDelay and self.delay ~= 0 then
-                self.durationText:SetFormattedText(self.delayedDurationFormat, "-", self.delay, self.current)
+                self.durationText:SetFormattedText(self.delayedDurationFormat, self.current, "-", self.delay)
             else
                 self.durationText:SetFormattedText(self.durationFormat, self.current)
             end
@@ -794,7 +794,7 @@ local function CastBar_SetupDurationText(self, config)
     AF.LoadTextPosition(self.durationText, config.position)
     self.durationText:SetTextColor(AF.UnpackColor(config.color))
     self.durationFormat = config.format
-    self.delayedDurationFormat = "|cffff0000%s%.2f|r "..config.format
+    self.delayedDurationFormat = config.format .. " |cffff0000%s%.2f|r"
     self.showDelay = config.showDelay
     self.showDuration = config.enabled
 end

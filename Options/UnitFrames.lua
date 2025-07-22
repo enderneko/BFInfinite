@@ -175,7 +175,7 @@ local function ListItem_LoadOptions(self)
     lastIndicator = self.id
 
     local scroll = contentPane.scrollSettings
-    local options = F.GetIndicatorOptions(scroll.scrollContent, self.id)
+    local options = F.GetIndicatorOptions(scroll.scrollContent, self)
 
     local heights = {}
     local last

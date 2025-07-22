@@ -70,6 +70,13 @@ local indicators = {
 }
 
 ---------------------------------------------------------------------
+-- LoadIndicatorConfig
+---------------------------------------------------------------------
+local function LoadIndicatorConfig(t)
+    UF.LoadIndicatorConfig(t.target, t.id, t.cfg)
+end
+
+---------------------------------------------------------------------
 -- copy,paste,reset
 ---------------------------------------------------------------------
 builder["copy,paste,reset"] = function(parent)
@@ -102,7 +109,7 @@ builder["copy,paste,reset"] = function(parent)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
             AF.Merge(pane.t.cfg, copiedCfg)
-            UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+            LoadIndicatorConfig(pane.t)
         end)
     end)
 
@@ -118,7 +125,7 @@ builder["copy,paste,reset"] = function(parent)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
             AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "indicator", pane.t.id))
-            UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+            LoadIndicatorConfig(pane.t)
             -- reload settings
             for _, p in next, options do
                 p.Load(p.t)
@@ -149,7 +156,7 @@ builder["enabled"] = function(parent)
         pane.t.cfg.enabled = checked
         -- pane.t is list button that carries info
         pane.t:SetTextColor(checked and "white" or "disabled")
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -173,14 +180,14 @@ builder["width,height"] = function(parent)
     AF.SetPoint(width, "LEFT", 15, 0)
     width:SetOnValueChanged(function(value)
         pane.t.cfg.width = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local height = AF.CreateSlider(pane, L["Height"], 150, 10, 1000, 1, nil, true)
     AF.SetPoint(height, "TOPLEFT", width, 185, 0)
     height:SetOnValueChanged(function(value)
         pane.t.cfg.height = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -304,7 +311,7 @@ builder["frameLevel"] = function(parent)
     AF.SetPoint(frameLevel, "LEFT", 15, 0)
     frameLevel:SetOnValueChanged(function(value)
         pane.t.cfg.frameLevel = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -328,7 +335,7 @@ builder["smoothing"] = function(parent)
     AF.SetPoint(smoothing, "LEFT", 15, 0)
     smoothing:SetOnCheck(function(checked)
         pane.t.cfg.smoothing = checked
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -354,7 +361,7 @@ builder["texture"] = function(parent)
     texture:SetItems(AF.LSM_GetBarTextureDropdownItems())
     texture:SetOnSelect(function(value)
         pane.t.cfg.texture = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -412,7 +419,7 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
             pane.t.cfg[colorType].rgb[1][2] = g
             pane.t.cfg[colorType].rgb[1][3] = b
         end
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local colorPicker2 = AF.CreateColorPicker(pane)
@@ -420,7 +427,7 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
         pane.t.cfg[colorType].rgb[2][1] = r
         pane.t.cfg[colorType].rgb[2][2] = g
         pane.t.cfg[colorType].rgb[2][3] = b
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local colorAlphaSlider1 = AF.CreateSlider(pane, alphaLabel .. " 1", 150, 0, 1, 0.01, true, true)
@@ -431,14 +438,14 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
         else
             pane.t.cfg[colorType].alpha[1] = value
         end
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local colorAlphaSlider2 = AF.CreateSlider(pane, alphaLabel .. " 2", 150, 0, 1, 0.01, true, true)
     AF.SetPoint(colorAlphaSlider2, "TOPLEFT", colorAlphaSlider1, 185, 0)
     colorAlphaSlider2:SetOnValueChanged(function(value)
         pane.t.cfg[colorType].alpha[2] = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local function UpdateColorWidgets(color)
@@ -503,14 +510,14 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
         AF.HideColorPicker()
         pane.t.cfg[colorType].type = value
         UpdateColorWidgets(pane.t.cfg[colorType])
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     orientationDropdown:SetOnSelect(function(value)
         AF.HideColorPicker()
         pane.t.cfg[colorType].gradient = value
         UpdateColorWidgets(pane.t.cfg[colorType])
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -566,7 +573,7 @@ builder["bgColor,borderColor"] = function(parent)
         pane.t.cfg.bgColor[2] = g
         pane.t.cfg.bgColor[3] = b
         pane.t.cfg.bgColor[4] = a
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local borderColor = AF.CreateColorPicker(pane, L["Border Color"], true)
@@ -576,7 +583,7 @@ builder["bgColor,borderColor"] = function(parent)
         pane.t.cfg.borderColor[2] = g
         pane.t.cfg.borderColor[3] = b
         pane.t.cfg.borderColor[4] = a
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -614,7 +621,7 @@ builder["healPrediction"] = function(parent)
         pane.t.cfg.healPrediction.color[2] = g
         pane.t.cfg.healPrediction.color[3] = b
         pane.t.cfg.healPrediction.color[4] = a
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local function UpdateWidgets()
@@ -625,13 +632,13 @@ builder["healPrediction"] = function(parent)
     healPredictionCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.healPrediction.enabled = checked
         UpdateWidgets()
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     customColorCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.healPrediction.useCustomColor = checked
         UpdateWidgets()
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -670,14 +677,14 @@ builder["shield,overshieldGlow"] = function(parent)
         pane.t.cfg.shield.color[2] = g
         pane.t.cfg.shield.color[3] = b
         pane.t.cfg.shield.color[4] = a
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local shieldReverseFillCheckButton = AF.CreateCheckButton(pane, L["Reverse Fill"])
     AF.SetPoint(shieldReverseFillCheckButton, "TOPLEFT", shieldDropdown, "BOTTOMLEFT", 0, -10)
     shieldReverseFillCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.shield.reverseFill = checked
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local overshieldGlowCheckButton = AF.CreateCheckButton(pane)
@@ -690,7 +697,7 @@ builder["shield,overshieldGlow"] = function(parent)
         pane.t.cfg.overshieldGlow.color[2] = g
         pane.t.cfg.overshieldGlow.color[3] = b
         pane.t.cfg.overshieldGlow.color[4] = a
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local function UpdateWidgets()
@@ -710,19 +717,19 @@ builder["shield,overshieldGlow"] = function(parent)
 
     shieldDropdown:SetOnSelect(function(value)
         pane.t.cfg.shield.texture = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     shieldCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.shield.enabled = checked
         UpdateWidgets()
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     overshieldGlowCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.overshieldGlow.enabled = checked
         UpdateWidgets()
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -758,7 +765,7 @@ builder["healAbsorb,overabsorbGlow"] = function(parent)
         pane.t.cfg.healAbsorb.color[2] = g
         pane.t.cfg.healAbsorb.color[3] = b
         pane.t.cfg.healAbsorb.color[4] = a
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local overabsorbGlowCheckButton = AF.CreateCheckButton(pane)
@@ -771,7 +778,7 @@ builder["healAbsorb,overabsorbGlow"] = function(parent)
         pane.t.cfg.overabsorbGlow.color[2] = g
         pane.t.cfg.overabsorbGlow.color[3] = b
         pane.t.cfg.overabsorbGlow.color[4] = a
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local function UpdateWidgets()
@@ -790,19 +797,19 @@ builder["healAbsorb,overabsorbGlow"] = function(parent)
 
     absorbDropdown:SetOnSelect(function(value)
         pane.t.cfg.healAbsorb.texture = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     absorbCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.healAbsorb.enabled = checked
         UpdateWidgets()
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     overabsorbGlowCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.overabsorbGlow.enabled = checked
         UpdateWidgets()
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -832,13 +839,13 @@ builder["mouseoverHighlight"] = function(parent)
         pane.t.cfg.mouseoverHighlight.color[2] = g
         pane.t.cfg.mouseoverHighlight.color[3] = b
         pane.t.cfg.mouseoverHighlight.color[4] = a
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     mouseoverHighlightCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.mouseoverHighlight.enabled = checked
         mouseoverHighlightColorPicker:SetEnabled(checked)
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -867,14 +874,14 @@ builder["dispelHighlight"] = function(parent)
     AF.SetPoint(onlyDispellableCheckButton, "TOPLEFT", dispelHighlightCheckButton, 185, 0)
     onlyDispellableCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.dispelHighlight.dispellable = checked
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local alphaSlider = AF.CreateSlider(pane, L["Alpha"], 150, 0, 1, 0.01, true, true)
     AF.SetPoint(alphaSlider, "TOPLEFT", dispelHighlightCheckButton, "BOTTOMLEFT", 0, -25)
     alphaSlider:SetOnValueChanged(function(value)
         pane.t.cfg.dispelHighlight.alpha = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local blendModeDropdown = AF.CreateDropdown(pane, 150)
@@ -889,7 +896,7 @@ builder["dispelHighlight"] = function(parent)
     })
     blendModeDropdown:SetOnSelect(function(value)
         pane.t.cfg.dispelHighlight.blendMode = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local function UpdateWidgets()
@@ -904,7 +911,7 @@ builder["dispelHighlight"] = function(parent)
     dispelHighlightCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.dispelHighlight.enabled = checked
         UpdateWidgets()
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -928,7 +935,7 @@ builder["frequent"] = function(parent)
     AF.SetPoint(frequentCheckButton, "LEFT", 15, 0)
     frequentCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.frequent = checked
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -969,56 +976,56 @@ builder["style,model"] = function(parent)
     AF.SetPoint(xSlider, "TOPLEFT", styleDropdown, 0, -45)
     xSlider:SetOnValueChanged(function(value)
         pane.t.cfg.model.xOffset = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local ySlider = AF.CreateSlider(pane, L["Y Offset"], 150, -200, 200, 1, nil, true)
     AF.SetPoint(ySlider, "TOPLEFT", xSlider, 185, 0)
     ySlider:SetOnValueChanged(function(value)
         pane.t.cfg.model.yOffset = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local rotationSlider = AF.CreateSlider(pane, L["Rotation"], 150, 0, 360, 1, nil, true)
     AF.SetPoint(rotationSlider, "TOPLEFT", xSlider, 0, -49)
     rotationSlider:SetOnValueChanged(function(value)
         pane.t.cfg.model.rotation = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local distanceSlider = AF.CreateSlider(pane, L["Distance"], 150, 0.5, 5, 0.01, nil, true)
     AF.SetPoint(distanceSlider, "TOPLEFT", rotationSlider, 185, 0)
     distanceSlider:SetOnValueChanged(function(value)
         pane.t.cfg.model.camDistanceScale = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local x1FixSlider = AF.CreateSlider(pane, L["TopLeft X Fix"], 150, -3, 3, 0.5, nil, true)
     AF.SetPoint(x1FixSlider, "TOPLEFT", rotationSlider, 0, -49)
     x1FixSlider:SetOnValueChanged(function(value)
         pane.t.cfg.model.x1Fix = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local y1FixSlider = AF.CreateSlider(pane, L["TopLeft Y Fix"], 150, -3, 3, 0.5, nil, true)
     AF.SetPoint(y1FixSlider, "TOPLEFT", x1FixSlider, 185, 0)
     y1FixSlider:SetOnValueChanged(function(value)
         pane.t.cfg.model.y1Fix = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local x2FixSlider = AF.CreateSlider(pane, L["BottomRight X Fix"], 150, -3, 3, 0.5, nil, true)
     AF.SetPoint(x2FixSlider, "TOPLEFT", x1FixSlider, 0, -49)
     x2FixSlider:SetOnValueChanged(function(value)
         pane.t.cfg.model.x2Fix = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local y2FixSlider = AF.CreateSlider(pane, L["BottomRight Y Fix"], 150, -3, 3, 0.5, nil, true)
     AF.SetPoint(y2FixSlider, "TOPLEFT", x2FixSlider, 185, 0)
     y2FixSlider:SetOnValueChanged(function(value)
         pane.t.cfg.model.y2Fix = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local function UpdateWidgets()
@@ -1029,7 +1036,7 @@ builder["style,model"] = function(parent)
     styleDropdown:SetOnSelect(function(value)
         pane.t.cfg.style = value
         UpdateWidgets()
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -1067,27 +1074,27 @@ builder["interruptibleCheck"] = function(parent)
     requireInterruptUsable:SetTooltip(L["Only show interruptible color when interrupt is usable"])
     requireInterruptUsable:SetOnCheck(function(checked)
         pane.t.cfg.interruptibleCheck.requireUsable = checked
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local showUninterruptibleTexture = AF.CreateCheckButton(pane, L["Show Uninterruptible Texture"])
     AF.SetPoint(showUninterruptibleTexture, "TOPLEFT", requireInterruptUsable, "BOTTOMLEFT", 0, -7)
     showUninterruptibleTexture:SetOnCheck(function(checked)
         pane.t.cfg.interruptibleCheck.showTexture = checked
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local changeBorderColor = AF.CreateCheckButton(pane, L["Change Border Color"])
     AF.SetPoint(changeBorderColor, "TOPLEFT", showUninterruptibleTexture, "BOTTOMLEFT", 0, -7)
     changeBorderColor:SetOnCheck(function(checked)
         pane.t.cfg.interruptibleCheck.colorBorder = checked
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     enableInterruptibleCheck:SetOnCheck(function(checked)
         pane.t.cfg.interruptibleCheck.enabled = checked
         AF.SetEnabled(checked, requireInterruptUsable, showUninterruptibleTexture, changeBorderColor)
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -1115,7 +1122,7 @@ builder["showIcon"] = function(parent)
     AF.SetPoint(showIconCheckButton, "LEFT", 15, 0)
     showIconCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.showIcon = checked
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -1139,17 +1146,16 @@ builder["showLatency"] = function(parent)
     AF.SetPoint(showLatencyCheckButton, "LEFT", 15, 0)
     showLatencyCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.showLatency = checked
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
+
+    function pane.IsApplicable(t)
+        return t.owner == "player"
+    end
 
     function pane.Load(t)
         pane.t = t
         showLatencyCheckButton:SetChecked(t.cfg.showLatency)
-        if t.owner == "player" then
-            AF.HideMask(pane)
-        else
-            AF.ShowMask(pane)
-        end
     end
 
     return pane
@@ -1168,7 +1174,7 @@ builder["fadeDuration"] = function(parent)
     AF.SetPoint(fadeDurationSlider, "LEFT", 15, 0)
     fadeDurationSlider:SetAfterValueChanged(function(value)
         pane.t.cfg.fadeDuration = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -1195,20 +1201,20 @@ builder["spark"] = function(parent)
     AF.SetPoint(sparkWidthSlider, "TOPLEFT", sparkCheckButton, "BOTTOMLEFT", 0, -25)
     sparkWidthSlider:SetOnValueChanged(function(value)
         pane.t.cfg.spark.width = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     local sparkHeightSlider = AF.CreateSlider(pane, L["Height"], 150, 0, 1000, 1, nil, true)
     AF.SetPoint(sparkHeightSlider, "TOPLEFT", sparkWidthSlider, 185, 0)
     sparkHeightSlider:SetOnValueChanged(function(value)
         pane.t.cfg.spark.height = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     sparkCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.spark.enabled = checked
         AF.SetEnabled(checked, sparkWidthSlider, sparkHeightSlider)
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
@@ -1238,14 +1244,18 @@ builder["ticks"] = function(parent)
     AF.SetPoint(ticksWidthSlider, "LEFT", ticksCheckButton, 185, 0)
     ticksWidthSlider:SetOnValueChanged(function(value)
         pane.t.cfg.ticks.width = value
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
 
     ticksCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.ticks.enabled = checked
         ticksWidthSlider:SetEnabled(checked)
-        UF.LoadIndicatorConfig(pane.t.target, pane.t.id, pane.t.cfg)
+        LoadIndicatorConfig(pane.t)
     end)
+
+    function pane.IsApplicable(t)
+        return t.owner == "player"
+    end
 
     function pane.Load(t)
         pane.t = t
@@ -1258,24 +1268,298 @@ builder["ticks"] = function(parent)
 end
 
 ---------------------------------------------------------------------
+-- castBarNameText
+---------------------------------------------------------------------
+builder["castBarNameText"] = function(parent)
+    if created["castBarNameText"] then return created["castBarNameText"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_CastBarNameText", nil, 246)
+    created["castBarNameText"] = pane
+
+    local enabledCheckButton = AF.CreateCheckButton(pane)
+    AF.SetPoint(enabledCheckButton, "TOPLEFT", 15, -8)
+
+    local colorPicker = AF.CreateColorPicker(pane, L["Name Text"])
+    AF.SetPoint(colorPicker, "TOPLEFT", enabledCheckButton, "TOPRIGHT", 2, 0)
+    colorPicker:SetOnChange(function(r, g, b)
+        pane.t.cfg.nameText.color[1] = r
+        pane.t.cfg.nameText.color[2] = g
+        pane.t.cfg.nameText.color[3] = b
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local showInterruptSourceCheckButton = AF.CreateCheckButton(pane, L["Show Interrupt Source"])
+    AF.SetPoint(showInterruptSourceCheckButton, "TOPLEFT", enabledCheckButton, "BOTTOMLEFT", 0, -7)
+    showInterruptSourceCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.nameText.showInterruptSource = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local lengthSlider = AF.CreateSlider(pane, L["Length"], 150, 0, 1, 0.05, true, true)
+    AF.SetPoint(lengthSlider, "TOPLEFT", enabledCheckButton, "BOTTOMLEFT", 185, 0)
+    lengthSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.nameText.length = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontDropdown = AF.CreateDropdown(pane, 150)
+    fontDropdown:SetLabel(L["Font"])
+    AF.SetPoint(fontDropdown, "TOPLEFT", showInterruptSourceCheckButton, "BOTTOMLEFT", 0, -30)
+    fontDropdown:SetItems(AF.LSM_GetFontDropdownItems())
+    fontDropdown:SetOnSelect(function(value)
+        pane.t.cfg.nameText.font[1] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontOutlineDropdown = AF.CreateDropdown(pane, 150)
+    fontOutlineDropdown:SetLabel(L["Outline"])
+    AF.SetPoint(fontOutlineDropdown, "TOPLEFT", fontDropdown, 185, 0)
+    fontOutlineDropdown:SetItems(AF.LSM_GetFontOutlineDropdownItems())
+    fontOutlineDropdown:SetOnSelect(function(value)
+        pane.t.cfg.nameText.font[3] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontSizeSlider = AF.CreateSlider(pane, L["Size"], 150, 5, 50, 1, nil, true)
+    AF.SetPoint(fontSizeSlider, "TOPLEFT", fontDropdown, "BOTTOMLEFT", 0, -25)
+    fontSizeSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.nameText.font[2] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local shadowCheckButton = AF.CreateCheckButton(pane, L["Shadow"])
+    AF.SetPoint(shadowCheckButton, "LEFT", fontSizeSlider, 185, 0)
+    shadowCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.nameText.font[4] = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, -40)
+    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.nameText.position[1] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local relativePoint = AF.CreateDropdown(pane, 150)
+    relativePoint:SetLabel(L["Relative Point"])
+    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
+    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetOnSelect(function(value)
+        pane.t.cfg.nameText.position[2] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
+    AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
+    xOffset:SetOnValueChanged(function(value)
+        pane.t.cfg.nameText.position[3] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
+    AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
+    yOffset:SetOnValueChanged(function(value)
+        pane.t.cfg.nameText.position[4] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local function UpdateWidgets()
+        AF.HideColorPicker()
+        AF.SetEnabled(pane.t.cfg.nameText.enabled, colorPicker, lengthSlider, showInterruptSourceCheckButton,
+            fontDropdown, fontOutlineDropdown, fontSizeSlider, shadowCheckButton,
+            anchorPoint, relativePoint, xOffset, yOffset)
+    end
+
+    enabledCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.nameText.enabled = checked
+        UpdateWidgets()
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        UpdateWidgets()
+        enabledCheckButton:SetChecked(t.cfg.nameText.enabled)
+        colorPicker:SetColor(pane.t.cfg.nameText.color)
+        showInterruptSourceCheckButton:SetChecked(pane.t.cfg.nameText.showInterruptSource)
+        lengthSlider:SetValue(pane.t.cfg.nameText.length)
+        fontDropdown:SetSelectedValue(pane.t.cfg.nameText.font[1])
+        fontSizeSlider:SetValue(pane.t.cfg.nameText.font[2])
+        fontOutlineDropdown:SetSelectedValue(pane.t.cfg.nameText.font[3])
+        shadowCheckButton:SetChecked(pane.t.cfg.nameText.font[4])
+        anchorPoint:SetSelectedValue(pane.t.cfg.nameText.position[1])
+        relativePoint:SetSelectedValue(pane.t.cfg.nameText.position[2])
+        xOffset:SetValue(pane.t.cfg.nameText.position[3])
+        yOffset:SetValue(pane.t.cfg.nameText.position[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- castBarDurationText
+---------------------------------------------------------------------
+builder["castBarDurationText"] = function(parent)
+    if created["castBarDurationText"] then return created["castBarDurationText"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_CastBarDurationText", nil, 246)
+    created["castBarDurationText"] = pane
+
+    local enabledCheckButton = AF.CreateCheckButton(pane)
+    AF.SetPoint(enabledCheckButton, "TOPLEFT", 15, -8)
+
+    local colorPicker = AF.CreateColorPicker(pane, L["Duration Text"])
+    AF.SetPoint(colorPicker, "TOPLEFT", enabledCheckButton, "TOPRIGHT", 2, 0)
+    colorPicker:SetOnChange(function(r, g, b)
+        pane.t.cfg.durationText.color[1] = r
+        pane.t.cfg.durationText.color[2] = g
+        pane.t.cfg.durationText.color[3] = b
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local showDelayCheckButton = AF.CreateCheckButton(pane, L["Show Delay"])
+    AF.SetPoint(showDelayCheckButton, "TOPLEFT", enabledCheckButton, "BOTTOMLEFT", 0, -7)
+    showDelayCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.durationText.showDelay = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local formatDropdown = AF.CreateDropdown(pane, 150)
+    formatDropdown:SetLabel(L["Format"])
+    AF.SetPoint(formatDropdown, "TOPLEFT", enabledCheckButton, "BOTTOMLEFT", 185, 0)
+    formatDropdown:SetItems({
+        {text = "7", value = "%d"},
+        {text = "7.1", value =  "%.1f"},
+        {text = "7.12", value = "%.2f"},
+    })
+    formatDropdown:SetOnSelect(function(value)
+        pane.t.cfg.durationText.format = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontDropdown = AF.CreateDropdown(pane, 150)
+    fontDropdown:SetLabel(L["Font"])
+    AF.SetPoint(fontDropdown, "TOPLEFT", showDelayCheckButton, "BOTTOMLEFT", 0, -30)
+    fontDropdown:SetItems(AF.LSM_GetFontDropdownItems())
+    fontDropdown:SetOnSelect(function(value)
+        pane.t.cfg.durationText.font[1] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontOutlineDropdown = AF.CreateDropdown(pane, 150)
+    fontOutlineDropdown:SetLabel(L["Outline"])
+    AF.SetPoint(fontOutlineDropdown, "TOPLEFT", fontDropdown, 185, 0)
+    fontOutlineDropdown:SetItems(AF.LSM_GetFontOutlineDropdownItems())
+    fontOutlineDropdown:SetOnSelect(function(value)
+        pane.t.cfg.durationText.font[3] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontSizeSlider = AF.CreateSlider(pane, L["Size"], 150, 5, 50, 1, nil, true)
+    AF.SetPoint(fontSizeSlider, "TOPLEFT", fontDropdown, "BOTTOMLEFT", 0, -25)
+    fontSizeSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.durationText.font[2] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local shadowCheckButton = AF.CreateCheckButton(pane, L["Shadow"])
+    AF.SetPoint(shadowCheckButton, "LEFT", fontSizeSlider, 185, 0)
+    shadowCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.durationText.font[4] = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, -40)
+    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.durationText.position[1] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local relativePoint = AF.CreateDropdown(pane, 150)
+    relativePoint:SetLabel(L["Relative Point"])
+    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
+    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetOnSelect(function(value)
+        pane.t.cfg.durationText.position[2] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
+    AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
+    xOffset:SetOnValueChanged(function(value)
+        pane.t.cfg.durationText.position[3] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
+    AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
+    yOffset:SetOnValueChanged(function(value)
+        pane.t.cfg.durationText.position[4] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local function UpdateWidgets()
+        AF.HideColorPicker()
+        AF.SetEnabled(pane.t.cfg.durationText.enabled, colorPicker, formatDropdown, showDelayCheckButton,
+            fontDropdown, fontOutlineDropdown, fontSizeSlider, shadowCheckButton,
+            anchorPoint, relativePoint, xOffset, yOffset)
+    end
+
+    enabledCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.durationText.enabled = checked
+        UpdateWidgets()
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        UpdateWidgets()
+        enabledCheckButton:SetChecked(t.cfg.durationText.enabled)
+        colorPicker:SetColor(pane.t.cfg.durationText.color)
+        showDelayCheckButton:SetChecked(pane.t.cfg.durationText.showDelay)
+        formatDropdown:SetSelectedValue(pane.t.cfg.durationText.format)
+        fontDropdown:SetSelectedValue(pane.t.cfg.durationText.font[1])
+        fontSizeSlider:SetValue(pane.t.cfg.durationText.font[2])
+        fontOutlineDropdown:SetSelectedValue(pane.t.cfg.durationText.font[3])
+        shadowCheckButton:SetChecked(pane.t.cfg.durationText.font[4])
+        anchorPoint:SetSelectedValue(pane.t.cfg.durationText.position[1])
+        relativePoint:SetSelectedValue(pane.t.cfg.durationText.position[2])
+        xOffset:SetValue(pane.t.cfg.durationText.position[3])
+        yOffset:SetValue(pane.t.cfg.durationText.position[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- get
 ---------------------------------------------------------------------
-function F.GetIndicatorOptions(parent, id)
-    for _, option in pairs(created) do
-        option:Hide()
-        AF.ClearPoints(option)
+function F.GetIndicatorOptions(parent, info)
+    for _, pane in pairs(created) do
+        pane:Hide()
+        AF.ClearPoints(pane)
     end
 
     wipe(options)
     tinsert(options, builder["copy,paste,reset"](parent))
     created["copy,paste,reset"]:Show()
 
+    local id = info.id
     if not indicators[id] then return options end
 
     for _, option in pairs(indicators[id]) do
         if builder[option] then
-            tinsert(options, builder[option](parent))
-            created[option]:Show()
+            local pane = builder[option](parent)
+            if not pane.IsApplicable or pane.IsApplicable(info) then
+                tinsert(options, pane)
+                pane:Show()
+            end
         end
     end
 
