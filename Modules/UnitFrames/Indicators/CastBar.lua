@@ -338,19 +338,19 @@ end
 ---------------------------------------------------------------------
 -- interrupt source
 ---------------------------------------------------------------------
-local function UpdateInterrupt(self, _, subEvent, ...)
-    -- local _, subEvent, _, sourceGUID, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
-    -- if subEvent ~= "SPELL_INTERRUPT" then return end
+local exclamation = AF.GetIconString("Exclamation_Rhombic")
 
+local function UpdateInterrupt(self, _, subEvent, ...)
     local _, sourceGUID, sourceName, _, _, destGUID = ...
 
-    sourceName = M.GetPetOwner(sourceGUID) or sourceName
-
     if destGUID == self.root.states.guid then
-        local shortName = AF.ToShortName(sourceName)
-        AF.SetText(self.nameText, shortName, self.nameTextLength)
+        sourceName = M.GetPetOwner(sourceGUID) or sourceName
+
         local class = M.GetPlayerClass(sourceName)
-        self.nameText:SetText(AF.GetIconString("Exclamation_Rhombic") .. AF.WrapTextInColor(self.nameText:GetText(), class))
+        self.nameText:SetTextColor(AF.GetColorRGB(class))
+
+        local shortName = AF.ToShortName(sourceName)
+        AF.SetText(self.nameText, shortName, self.nameTextLength, exclamation)
     end
 end
 
@@ -673,6 +673,7 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
     end
 
     if self.showName then
+        self.nameText:SetTextColor(AF.UnpackColor(self.nameTextColor))
         AF.SetText(self.nameText, name, self.nameTextLength)
     end
 
@@ -930,7 +931,7 @@ local function CastBar_LoadConfig(self, config)
     end
 
     self.borderColor = config.borderColor
-
+    self.nameTextColor = config.nameText.color
     self.interruptibleCheckEnabled = config.interruptibleCheck.enabled
     self.requireInterruptUsable = config.interruptibleCheck.requireUsable
     self.showUninterruptibleTexture = config.interruptibleCheck.showTexture

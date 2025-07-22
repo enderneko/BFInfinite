@@ -25,7 +25,7 @@ local function UpdateName(self, event, unitId)
     local class = UnitClassBase(unit)
 
     -- length
-    AF.SetText(self, name, self.length, (self.showOtherServerSign and not UnitIsSameServer(unit)) and "*")
+    AF.SetText(self, name, self.length, nil, (self.showOtherServerSign and not UnitIsSameServer(unit)) and "*")
 
     -- color
     local r, g, b
