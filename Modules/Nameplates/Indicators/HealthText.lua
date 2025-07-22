@@ -133,35 +133,35 @@ local percent = {
     end,
 
     current = function(current, max, absorbs)
-        return format("%d%%", current/max*100)
+        return format("%d%%", current / max * 100)
     end,
 
     current_decimal = function(current, max, absorbs)
-        return format("%.1f%%", current/max*100):gsub("%.0%%$", "%%")
+        return format("%.1f%%", current / max * 100):gsub("%.0%%$", "%%")
     end,
 
     current_absorbs = function(current, max, absorbs)
         if absorbs == 0 then
-            return format("%d%%", current/max*100)
+            return format("%d%%", current / max * 100)
         else
-            return format("%d%%+%d%%", current/max*100, absorbs/max*100)
+            return format("%d%%+%d%%", current / max * 100, absorbs / max * 100)
         end
     end,
 
     current_absorbs_decimal = function(current, max, absorbs)
         if absorbs == 0 then
-            return format("%.1f%%", current/max*100):gsub("%.0%%$", "%%")
+            return format("%.1f%%", current / max * 100):gsub("%.0%%$", "%%")
         else
-            return format("%.1f%%+%.1f%%", current/max*100, absorbs/max*100):gsub("%.0%%", "%%")
+            return format("%.1f%%+%.1f%%", current / max * 100, absorbs / max * 100):gsub("%.0%%", "%%")
         end
     end,
 
     current_absorbs_sum = function(current, max, absorbs)
-        return format("%d%%", (current+absorbs)/max*100)
+        return format("%d%%", (current + absorbs) / max * 100)
     end,
 
     current_absorbs_sum_decimal = function(current, max, absorbs)
-        return format("%.1f%%", (current+absorbs)/max*100):gsub("%.0%%$", "%%")
+        return format("%.1f%%", (current + absorbs) / max * 100):gsub("%.0%%$", "%%")
     end,
 }
 
@@ -174,35 +174,35 @@ local percent_np = {
     end,
 
     current = function(current, max, absorbs)
-        return format("%d", current/max*100)
+        return format("%d", current / max * 100)
     end,
 
     current_decimal = function(current, max, absorbs)
-        return format("%.1f", current/max*100):gsub("%.0$", "")
+        return format("%.1f", current / max * 100):gsub("%.0$", "")
     end,
 
     current_absorbs = function(current, max, absorbs)
         if absorbs == 0 then
-            return format("%d", current/max*100)
+            return format("%d", current / max * 100)
         else
-            return format("%d+%d", current/max*100, absorbs/max*100)
+            return format("%d+%d", current / max * 100, absorbs / max * 100)
         end
     end,
 
     current_absorbs_decimal = function(current, max, absorbs)
         if absorbs == 0 then
-            return format("%.1f", current/max*100):gsub("%.0$", "")
+            return format("%.1f", current / max * 100):gsub("%.0$", "")
         else
-            return format("%.1f+%.1f", current/max*100, absorbs/max*100):gsub("%.0", "")
+            return format("%.1f+%.1f", current / max * 100, absorbs / max * 100):gsub("%.0", "")
         end
     end,
 
     current_absorbs_sum = function(current, max, absorbs)
-        return format("%d", (current+absorbs)/max*100)
+        return format("%d", (current + absorbs) / max * 100)
     end,
 
     current_absorbs_sum_decimal = function(current, max, absorbs)
-        return format("%.1f", (current+absorbs)/max*100):gsub("%.0$", "")
+        return format("%.1f", (current + absorbs) / max * 100):gsub("%.0$", "")
     end,
 }
 

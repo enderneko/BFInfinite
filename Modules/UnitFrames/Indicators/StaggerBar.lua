@@ -14,6 +14,7 @@ local UnitStagger = UnitStagger
 local UnitHealthMax = UnitHealthMax
 local UnitHasVehicleUI = UnitHasVehicleUI
 local FormatNumber = AF.FormatNumber
+local GetSpecialization = GetSpecialization
 
 ---------------------------------------------------------------------
 -- value
@@ -35,9 +36,9 @@ local function UpdateStagger(self, event, unitId)
 
     if self.textEnabled then
         self.text:SetFormattedText("%s%s%s",
-                self.GetNumeric(stagger),
-                self.delimiter,
-                self.GetPercent(p))
+            self.GetNumeric(stagger),
+            self.delimiter,
+            self.GetPercent(p))
     end
 
     self:SetBarMinMaxValues(0, staggerMax)
@@ -119,11 +120,11 @@ local percent = {
     end,
 
     current = function(p)
-        return format("%d%%", p*100)
+        return format("%d%%", p * 100)
     end,
 
     current_decimal = function(p)
-        return format("%.1f%%", p*100):gsub("%.0%%$", "%%")
+        return format("%.1f%%", p * 100):gsub("%.0%%$", "%%")
     end,
 }
 
@@ -136,11 +137,11 @@ local percent_np = {
     end,
 
     current = function(p)
-        return format("%d", p*100)
+        return format("%d", p * 100)
     end,
 
     current_decimal = function(p)
-        return format("%.1f", p*100):gsub("%.0$", "")
+        return format("%.1f", p * 100):gsub("%.0$", "")
     end,
 }
 
@@ -149,10 +150,10 @@ local percent_np = {
 ---------------------------------------------------------------------
 local function StaggerText_SetFormat(self, format)
     self.GetNumeric = numeric[format.numeric]
-    if format.noPercentSign then
-        self.GetPercent = percent_np[format.percent]
-    else
+    if format.showPercentSign then
         self.GetPercent = percent[format.percent]
+    else
+        self.GetPercent = percent_np[format.percent]
     end
 
     if format.numeric == "none" or format.percent == "none" then
@@ -170,7 +171,7 @@ end
 
 local function StaggerBar_SetupText(self, config)
     AF.SetFont(self.text, config.font)
-    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
+    UF.LoadIndicatorPosition(self.text, config.position, config.anchorTo)
     self.text:SetTextColor(AF.UnpackColor(config.color))
     StaggerText_SetFormat(self, config.format)
 end

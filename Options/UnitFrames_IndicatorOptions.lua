@@ -92,6 +92,15 @@ local indicators = {
         "cooldownText",
         "frameLevel",
     },
+    staggerBar = {
+        "enabled",
+        "width,height",
+        "position,anchorTo",
+        "texture",
+        "bgColor,borderColor",
+        "textWithFormat",
+        "frameLevel",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -1631,8 +1640,27 @@ end
 ---------------------------------------------------------------------
 -- CreateGeneralTextPane
 ---------------------------------------------------------------------
-local function CreateGeneralTextPane(parent, textType, frameName, label)
-    local pane = AF.CreateBorderedFrame(parent, frameName, nil, 198)
+local function GetFormatItems(which)
+    local numeric, percent
+
+    if which == "staggerBar" then
+        numeric = {
+            {text = L["None"], value = "none"},
+            {text = L["Current"], value = "current"},
+            {text = L["Current (Short)"], value = "current_short"},
+        }
+        percent = {
+            {text = L["None"], value = "none"},
+            {text = L["Current"], value = "current"},
+            {text = L["Current (Decimal)"], value = "current_decimal"},
+        }
+    end
+
+    return numeric, percent
+end
+
+local function CreateGeneralTextPane(parent, textType, frameName, label, hasFormat)
+    local pane = AF.CreateBorderedFrame(parent, frameName, nil, hasFormat and 315 or 198)
 
     local fontDropdown = AF.CreateDropdown(pane, 150)
     AF.SetPoint(fontDropdown, "TOPLEFT", 15, -25)
@@ -1709,11 +1737,69 @@ local function CreateGeneralTextPane(parent, textType, frameName, label)
         LoadIndicatorConfig(pane.t)
     end)
 
+    --------------------------------------------------
+    -- format
+    local numericFormatDropdown, percentFormatDropdown, delimiterEditBox, percentSignCheckButton, useAsianUnitsCheckButton
+
+    if hasFormat then
+        numericFormatDropdown = AF.CreateDropdown(pane, 250)
+        numericFormatDropdown:SetLabel(L["Numeric Format"])
+        AF.SetPoint(numericFormatDropdown, "TOPLEFT", xOffset, "BOTTOMLEFT", 0, -45)
+        numericFormatDropdown:SetOnSelect(function(value)
+            pane.t.cfg[textType].format.numeric = value
+            LoadIndicatorConfig(pane.t)
+        end)
+
+        percentFormatDropdown = AF.CreateDropdown(pane, 250)
+        percentFormatDropdown:SetLabel(L["Percent Format"])
+        AF.SetPoint(percentFormatDropdown, "TOPLEFT", numericFormatDropdown, "BOTTOMLEFT", 0, -25)
+        percentFormatDropdown:SetOnSelect(function(value)
+            pane.t.cfg[textType].format.percent = value
+            LoadIndicatorConfig(pane.t)
+        end)
+
+        delimiterEditBox = AF.CreateEditBox(pane, L["Delimiter"], 70, 20)
+        delimiterEditBox:SetPoint("TOP", numericFormatDropdown)
+        delimiterEditBox:SetPoint("RIGHT", yOffset)
+        delimiterEditBox:SetMaxLetters(5)
+        AF.ClearPoints(delimiterEditBox.label)
+        AF.SetPoint(delimiterEditBox.label, "BOTTOMLEFT", delimiterEditBox, "TOPLEFT", 2, 2)
+        delimiterEditBox.label:SetColor("white")
+        delimiterEditBox:SetOnTextChanged(function(text, userChanged)
+            delimiterEditBox.label:Show()
+            if userChanged then
+                pane.t.cfg[textType].format.delimiter = text
+                LoadIndicatorConfig(pane.t)
+            end
+        end)
+
+        percentSignCheckButton = AF.CreateCheckButton(pane, "%")
+        AF.SetPoint(percentSignCheckButton, "TOP", percentFormatDropdown, 0, -3)
+        AF.SetPoint(percentSignCheckButton, "LEFT", delimiterEditBox)
+        percentSignCheckButton:SetOnCheck(function(checked)
+            pane.t.cfg[textType].format.showPercentSign = checked
+            LoadIndicatorConfig(pane.t)
+        end)
+
+        useAsianUnitsCheckButton = AF.CreateCheckButton(pane, L["Use Asian Units"])
+        AF.SetPoint(useAsianUnitsCheckButton, "TOPLEFT", percentFormatDropdown, "BOTTOMLEFT", 0, -8)
+        useAsianUnitsCheckButton:SetOnCheck(function(checked)
+            pane.t.cfg[textType].format.useAsianUnits = checked
+            LoadIndicatorConfig(pane.t)
+        end)
+    end
+
+    --------------------------------------------------
+
     local function UpdateWidgets()
         AF.HideColorPicker()
         AF.SetEnabled(pane.t.cfg[textType].enabled, colorPicker,
             fontDropdown, fontOutlineDropdown, fontSizeSlider, shadowCheckButton,
             anchorPoint, relativePoint, xOffset, yOffset)
+        if hasFormat then
+            AF.SetEnabled(pane.t.cfg[textType].enabled, numericFormatDropdown, percentFormatDropdown, delimiterEditBox, delimiterEditBox.label, percentSignCheckButton)
+            useAsianUnitsCheckButton:SetEnabled(pane.t.cfg[textType].enabled and AF.isAsian)
+        end
     end
 
     enabledCheckButton:SetOnCheck(function(checked)
@@ -1725,6 +1811,7 @@ local function CreateGeneralTextPane(parent, textType, frameName, label)
     function pane.Load(t)
         pane.t = t
         UpdateWidgets()
+
         enabledCheckButton:SetChecked(t.cfg[textType].enabled)
         colorPicker:SetColor(pane.t.cfg[textType].color)
         fontDropdown:SetSelectedValue(pane.t.cfg[textType].font[1])
@@ -1735,6 +1822,18 @@ local function CreateGeneralTextPane(parent, textType, frameName, label)
         relativePoint:SetSelectedValue(pane.t.cfg[textType].position[2])
         xOffset:SetValue(pane.t.cfg[textType].position[3])
         yOffset:SetValue(pane.t.cfg[textType].position[4])
+
+        if hasFormat then
+            local numeric, percent = GetFormatItems(t.id)
+            numericFormatDropdown:SetItems(numeric)
+            percentFormatDropdown:SetItems(percent)
+
+            numericFormatDropdown:SetSelectedValue(t.cfg[textType].format.numeric)
+            percentFormatDropdown:SetSelectedValue(t.cfg[textType].format.percent)
+            delimiterEditBox:SetText(t.cfg[textType].format.delimiter or "")
+            percentSignCheckButton:SetChecked(t.cfg[textType].format.showPercentSign)
+            useAsianUnitsCheckButton:SetChecked(t.cfg[textType].format.useAsianUnits)
+        end
     end
 
     return pane
@@ -1750,6 +1849,15 @@ builder["cooldownText"] = function(parent)
     return created["cooldownText"]
 end
 
+---------------------------------------------------------------------
+-- textWithFormat
+---------------------------------------------------------------------
+builder["textWithFormat"] = function(parent)
+    if created["textWithFormat"] then return created["textWithFormat"] end
+
+    created["textWithFormat"] = CreateGeneralTextPane(parent, "text", "BFI_IndicatorOption_TextWithFormat", L["Text"], true)
+    return created["textWithFormat"]
+end
 
 ---------------------------------------------------------------------
 -- get
