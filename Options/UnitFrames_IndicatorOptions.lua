@@ -101,6 +101,12 @@ local indicators = {
         "textWithFormat",
         "frameLevel",
     },
+    nameText = {
+        "enabled",
+        "position,anchorTo,parent",
+        "font,color",
+        "textLength",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -108,6 +114,10 @@ local indicators = {
 ---------------------------------------------------------------------
 local function LoadIndicatorConfig(t)
     UF.LoadIndicatorConfig(t.target, t.id, t.cfg)
+end
+
+local function LoadIndicatorPosition(t)
+    UF.LoadIndicatorPosition(t.target.indicators[t.id], t.cfg.position, t.cfg.anchorTo, t.cfg.parent)
 end
 
 ---------------------------------------------------------------------
@@ -277,7 +287,7 @@ builder["position,anchorTo"] = function(parent)
     relativeTo:SetItems(validRelativeTos)
     relativeTo:SetOnSelect(function(value)
         pane.t.cfg.anchorTo = value
-        UF.LoadIndicatorPosition(pane.t.target.indicators[pane.t.id], pane.t.cfg.position, pane.t.cfg.anchorTo)
+        LoadIndicatorPosition(pane.t)
     end)
 
     local anchorPoint = AF.CreateDropdown(pane, 150)
@@ -286,7 +296,7 @@ builder["position,anchorTo"] = function(parent)
     anchorPoint:SetItems(GetAnchorPointItems())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.position[1] = value
-        UF.LoadIndicatorPosition(pane.t.target.indicators[pane.t.id], pane.t.cfg.position, pane.t.cfg.anchorTo)
+        LoadIndicatorPosition(pane.t)
     end)
 
     local relativePoint = AF.CreateDropdown(pane, 150)
@@ -295,21 +305,21 @@ builder["position,anchorTo"] = function(parent)
     relativePoint:SetItems(GetAnchorPointItems())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg.position[2] = value
-        UF.LoadIndicatorPosition(pane.t.target.indicators[pane.t.id], pane.t.cfg.position, pane.t.cfg.anchorTo)
+        LoadIndicatorPosition(pane.t)
     end)
 
     local x = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
     AF.SetPoint(x, "TOPLEFT", anchorPoint, 0, -45)
     x:SetOnValueChanged(function(value)
         pane.t.cfg.position[3] = value
-        UF.LoadIndicatorPosition(pane.t.target.indicators[pane.t.id], pane.t.cfg.position, pane.t.cfg.anchorTo)
+        LoadIndicatorPosition(pane.t)
     end)
 
     local y = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
     AF.SetPoint(y, "TOPLEFT", x, 185, 0)
     y:SetOnValueChanged(function(value)
         pane.t.cfg.position[4] = value
-        UF.LoadIndicatorPosition(pane.t.target.indicators[pane.t.id], pane.t.cfg.position, pane.t.cfg.anchorTo)
+        LoadIndicatorPosition(pane.t)
     end)
 
     function pane.Load(t)
@@ -1788,7 +1798,6 @@ local function CreateGeneralTextPane(parent, textType, frameName, label, hasForm
             LoadIndicatorConfig(pane.t)
         end)
     end
-
     --------------------------------------------------
 
     local function UpdateWidgets()
@@ -1857,6 +1866,127 @@ builder["textWithFormat"] = function(parent)
 
     created["textWithFormat"] = CreateGeneralTextPane(parent, "text", "BFI_IndicatorOption_TextWithFormat", L["Text"], true)
     return created["textWithFormat"]
+end
+
+---------------------------------------------------------------------
+-- position,anchorTo,parent
+---------------------------------------------------------------------
+local function GetParentItems()
+    local validParents = {
+        "root",  "healthBar", "powerBar", "portrait"
+    }
+
+    for i, to in next, validParents do
+        if to == "root" then
+            validParents[i] = {text = L["Unit Frame"], value = to}
+        else
+            validParents[i] = {text = L[to], value = to}
+        end
+    end
+    return validParents
+end
+
+builder["position,anchorTo,parent"] = function(parent)
+    if created["position,anchorTo,parent"] then return created["position,anchorTo,parent"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PositionAnchorToParent", nil, 150)
+    created["position,anchorTo,parent"] = pane
+
+    local validRelativeTos = GetAnchorToItems()
+
+    local relativeTo = AF.CreateDropdown(pane, 150)
+    relativeTo:SetLabel(L["Relative To"])
+    AF.SetPoint(relativeTo, "TOPLEFT", 15, -25)
+    relativeTo:SetItems(validRelativeTos)
+    relativeTo:SetOnSelect(function(value)
+        pane.t.cfg.anchorTo = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local parent = AF.CreateDropdown(pane, 150)
+    parent:SetLabel(L["Parent"])
+    AF.SetPoint(parent, "TOPLEFT", relativeTo, 185, 0)
+    parent:SetItems(GetParentItems())
+    parent:SetOnSelect(function(value)
+        pane.t.cfg.parent = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", relativeTo, 0, -45)
+    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.position[1] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local relativePoint = AF.CreateDropdown(pane, 150)
+    relativePoint:SetLabel(L["Relative Point"])
+    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
+    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetOnSelect(function(value)
+        pane.t.cfg.position[2] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local x = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
+    AF.SetPoint(x, "TOPLEFT", anchorPoint, 0, -45)
+    x:SetOnValueChanged(function(value)
+        pane.t.cfg.position[3] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local y = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
+    AF.SetPoint(y, "TOPLEFT", x, 185, 0)
+    y:SetOnValueChanged(function(value)
+        pane.t.cfg.position[4] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+
+        for _, to in next, validRelativeTos do
+            if to.value ~= "root" then
+                to.disabled = not t.target.indicators[to.value] or to.value == t.id
+            end
+        end
+        relativeTo.reloadRequired = true
+
+        relativeTo:SetSelectedValue(t.cfg.anchorTo)
+        parent:SetSelectedValue(t.cfg.parent)
+        anchorPoint:SetSelectedValue(t.cfg.position[1])
+        relativePoint:SetSelectedValue(t.cfg.position[2])
+        x:SetValue(t.cfg.position[3])
+        y:SetValue(t.cfg.position[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- textLength
+---------------------------------------------------------------------
+builder["textLength"] = function(parent)
+    if created["textLength"] then return created["textLength"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_TextLength", nil, 55)
+    created["textLength"] = pane
+
+    local textLengthSlider = AF.CreateSlider(pane, L["Length"], 150, 0, 1, 0.05, true, true)
+    AF.SetPoint(textLengthSlider, "LEFT", 15, 0)
+    textLengthSlider:SetAfterValueChanged(function(value)
+        pane.t.cfg.length = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        textLengthSlider:SetValue(t.cfg.length)
+    end
+
+    return pane
 end
 
 ---------------------------------------------------------------------
