@@ -80,6 +80,18 @@ local indicators = {
         "hideIfHasClassPower,hideIfFull",
         "frameLevel",
     },
+    classPowerBar = {
+        "enabled",
+        "width,height",
+        "spacing",
+        "position,anchorTo",
+        "texture",
+        "barColor",
+        "barLossColor",
+        "bgColor,borderColor",
+        "cooldownText",
+        "frameLevel",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -544,7 +556,7 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
     function pane.Load(t)
         pane.t = t
 
-        if pane.t.id == "powerBar" then
+        if pane.t.id == "powerBar" or pane.t.id == "classPowerBar" then
             colorDropdown:SetItems(powerBarColorItems)
         elseif pane.t.id == "extraManaBar" then
             colorDropdown:SetItems(extraManaBarItems)
@@ -1375,14 +1387,14 @@ builder["castBarNameText"] = function(parent)
         LoadIndicatorConfig(pane.t)
     end)
 
-    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 0.5, nil, true)
     AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
     xOffset:SetOnValueChanged(function(value)
         pane.t.cfg.nameText.position[3] = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 0.5, nil, true)
     AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
     yOffset:SetOnValueChanged(function(value)
         pane.t.cfg.nameText.position[4] = value
@@ -1513,14 +1525,14 @@ builder["castBarDurationText"] = function(parent)
         LoadIndicatorConfig(pane.t)
     end)
 
-    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 0.5, nil, true)
     AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
     xOffset:SetOnValueChanged(function(value)
         pane.t.cfg.durationText.position[3] = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 0.5, nil, true)
     AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
     yOffset:SetOnValueChanged(function(value)
         pane.t.cfg.durationText.position[4] = value
@@ -1591,6 +1603,153 @@ builder["hideIfHasClassPower,hideIfFull"] = function(parent)
 
     return pane
 end
+
+---------------------------------------------------------------------
+-- spacing
+---------------------------------------------------------------------
+builder["spacing"] = function(parent)
+    if created["spacing"] then return created["spacing"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Spacing", nil, 55)
+    created["spacing"] = pane
+
+    local spacingSlider = AF.CreateSlider(pane, L["Spacing"], 150, -1, 100, 1, nil, true)
+    AF.SetPoint(spacingSlider, "LEFT", 15, 0)
+    spacingSlider:SetAfterValueChanged(function(value)
+        pane.t.cfg.spacing = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        spacingSlider:SetValue(t.cfg.spacing)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- CreateGeneralTextPane
+---------------------------------------------------------------------
+local function CreateGeneralTextPane(parent, textType, frameName, label)
+    local pane = AF.CreateBorderedFrame(parent, frameName, nil, 198)
+
+    local fontDropdown = AF.CreateDropdown(pane, 150)
+    AF.SetPoint(fontDropdown, "TOPLEFT", 15, -25)
+    fontDropdown:SetItems(AF.LSM_GetFontDropdownItems())
+    fontDropdown:SetOnSelect(function(value)
+        pane.t.cfg[textType].font[1] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local enabledCheckButton = AF.CreateCheckButton(pane, label)
+    AF.SetPoint(enabledCheckButton, "BOTTOMLEFT", fontDropdown, "TOPLEFT", 0, 2)
+
+    local colorPicker = AF.CreateColorPicker(pane)
+    AF.SetPoint(colorPicker, "BOTTOMRIGHT", fontDropdown, "TOPRIGHT", 0, 2)
+    colorPicker:SetOnChange(function(r, g, b)
+        pane.t.cfg[textType].color[1] = r
+        pane.t.cfg[textType].color[2] = g
+        pane.t.cfg[textType].color[3] = b
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontOutlineDropdown = AF.CreateDropdown(pane, 150)
+    fontOutlineDropdown:SetLabel(L["Outline"])
+    AF.SetPoint(fontOutlineDropdown, "TOPLEFT", fontDropdown, 185, 0)
+    fontOutlineDropdown:SetItems(AF.LSM_GetFontOutlineDropdownItems())
+    fontOutlineDropdown:SetOnSelect(function(value)
+        pane.t.cfg[textType].font[3] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontSizeSlider = AF.CreateSlider(pane, L["Size"], 150, 5, 50, 1, nil, true)
+    AF.SetPoint(fontSizeSlider, "TOPLEFT", fontDropdown, "BOTTOMLEFT", 0, -25)
+    fontSizeSlider:SetOnValueChanged(function(value)
+        pane.t.cfg[textType].font[2] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local shadowCheckButton = AF.CreateCheckButton(pane, L["Shadow"])
+    AF.SetPoint(shadowCheckButton, "LEFT", fontSizeSlider, 185, 0)
+    shadowCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg[textType].font[4] = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, -40)
+    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg[textType].position[1] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local relativePoint = AF.CreateDropdown(pane, 150)
+    relativePoint:SetLabel(L["Relative Point"])
+    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
+    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetOnSelect(function(value)
+        pane.t.cfg[textType].position[2] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 0.5, nil, true)
+    AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
+    xOffset:SetOnValueChanged(function(value)
+        pane.t.cfg[textType].position[3] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 0.5, nil, true)
+    AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
+    yOffset:SetOnValueChanged(function(value)
+        pane.t.cfg[textType].position[4] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local function UpdateWidgets()
+        AF.HideColorPicker()
+        AF.SetEnabled(pane.t.cfg[textType].enabled, colorPicker,
+            fontDropdown, fontOutlineDropdown, fontSizeSlider, shadowCheckButton,
+            anchorPoint, relativePoint, xOffset, yOffset)
+    end
+
+    enabledCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg[textType].enabled = checked
+        UpdateWidgets()
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        UpdateWidgets()
+        enabledCheckButton:SetChecked(t.cfg[textType].enabled)
+        colorPicker:SetColor(pane.t.cfg[textType].color)
+        fontDropdown:SetSelectedValue(pane.t.cfg[textType].font[1])
+        fontSizeSlider:SetValue(pane.t.cfg[textType].font[2])
+        fontOutlineDropdown:SetSelectedValue(pane.t.cfg[textType].font[3])
+        shadowCheckButton:SetChecked(pane.t.cfg[textType].font[4])
+        anchorPoint:SetSelectedValue(pane.t.cfg[textType].position[1])
+        relativePoint:SetSelectedValue(pane.t.cfg[textType].position[2])
+        xOffset:SetValue(pane.t.cfg[textType].position[3])
+        yOffset:SetValue(pane.t.cfg[textType].position[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- cooldownText
+---------------------------------------------------------------------
+builder["cooldownText"] = function(parent)
+    if created["cooldownText"] then return created["cooldownText"] end
+
+    created["cooldownText"] = CreateGeneralTextPane(parent, "cooldownText", "BFI_IndicatorOption_CooldownText", L["Cooldown Text"])
+    return created["cooldownText"]
+end
+
 
 ---------------------------------------------------------------------
 -- get

@@ -151,34 +151,44 @@ end
 ---------------------------------------------------------------------
 -- GetClassPowerColor
 ---------------------------------------------------------------------
-local function GetClassPowerColor(self)
-    if not (self.config.color and self.config.lossColor) then return end
+local function GetClassPowerColor(self, colorTable)
+    if not colorTable then return end
+
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2
 
     local r, g, b, a, lossR, lossG, lossB, lossA
     local r2, g2, b2, lossR2, lossG2, lossB2
 
-    a = self.config.color.alpha
-    lossA = self.config.lossColor.alpha
-
-    -- bar
-    if strfind(self.config.color.type, "^power") then
-        r, g, b, _, r2, g2, b2 = GetPowerColor(self, self.config.color.type)
-    elseif strfind(self.config.color.type, "^class") then
-        r, g, b = GetClassColor(self.config.color.type, class)
+    if colorTable.type:find("^power") then
+        r1, g1, b1, _, r2, g2, b2, a2 = GetPowerColor(self, colorTable.type)
+    elseif colorTable.type:find("^class") then
+        r1, g1, b1 = GetClassColor(colorTable.type, class)
     else
-        r, g, b = unpack(self.config.color.rgb)
+        if colorTable.gradient == "disabled" then
+            r1, g1, b1 = AF.UnpackColor(colorTable.rgb)
+        else
+            r1, g1, b1 = AF.UnpackColor(colorTable.rgb[1])
+        end
     end
 
-    -- loss
-    if strfind(self.config.lossColor.type, "^power") then
-        lossR, lossG, lossB, _, lossR2, lossG2, lossB2 = GetPowerColor(self, self.config.lossColor.type)
-    elseif strfind(self.config.lossColor.type, "^class") then
-        lossR, lossG, lossB = GetClassColor(self.config.lossColor.type, class)
+    if colorTable.gradient == "disabled" then
+        a1 = colorTable.alpha
+        return nil, r1, g1, b1, a1, r2, g2, b2, a1
     else
-        lossR, lossG, lossB = unpack(self.config.lossColor.rgb)
-    end
+        a1, a2 = colorTable.alpha[1], colorTable.alpha[2]
+        if #colorTable.rgb == 4 then
+            r2, g2, b2 = AF.UnpackColor(colorTable.rgb)
+        else
+            r2, g2, b2 = AF.UnpackColor(colorTable.rgb[2])
+        end
 
-    return r, g, b, a, lossR, lossG, lossB, lossA, r2, g2, b2, lossR2, lossG2, lossB2
+        orientation = colorTable.gradient:find("^vertical") and "VERTICAL" or "HORIZONTAL"
+        if colorTable.gradient:find("flipped$") then
+            return orientation, r2, g2, b2, a2, r1, g1, b1, a1
+        else
+            return orientation, r1, g1, b1, a1, r2, g2, b2, a2
+        end
+    end
 end
 
 ---------------------------------------------------------------------
@@ -187,18 +197,27 @@ end
 local function UpdatePowerColor(self, event, unitId)
     if unitId and unitId ~= self.unit then return end
 
-    local r, g, b, a, lossR, lossG, lossB, lossA, r2, g2, b2, lossR2, lossG2, lossB2 = GetClassPowerColor(self)
+    -- bar
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetClassPowerColor(self, self.config.color)
     if r2 then
-        -- gradient
         for i = 1, self.numPowerBars do
-            self.bars[i]:SetGradientColor(nil, r, g, b, a, r2, g2, b2, a)
-            self.bars[i]:SetGradientLossColor(nil, lossR, lossG, lossB, lossA, lossR2, lossG2, lossB2, lossA)
+            self.bars[i]:SetGradientColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
         end
     else
-        -- solid
         for i = 1, self.numPowerBars do
-            self.bars[i]:SetColor(r, g, b, a)
-            self.bars[i]:SetLossColor(lossR, lossG, lossB, lossA)
+            self.bars[i]:SetColor(r1, g1, b1, a1)
+        end
+    end
+
+    -- loss
+    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetClassPowerColor(self, self.config.lossColor)
+    if r2 then
+        for i = 1, self.numPowerBars do
+            self.bars[i]:SetGradientLossColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+        end
+    else
+        for i = 1, self.numPowerBars do
+            self.bars[i]:SetLossColor(r1, g1, b1, a1)
         end
     end
 end
@@ -241,8 +260,9 @@ local function SetupBars(self)
         AF.LoadTextPosition(bar.text, self.config.cooldownText.position, bar)
         AF.SetFont(bar.text, unpack(self.config.cooldownText.font))
         bar.text:SetText("")
+        bar.text:SetTextColor(AF.UnpackColor(self.config.cooldownText.color))
 
-        bar:Desaturate(false)
+        bar:Dim(false)
         bar:Show()
     end
 
@@ -263,13 +283,13 @@ local function SetBarValues_Static(self)
     for i = 1, self.numPowerBars do
         if value >= 1 then
             self.bars[i]:SetBarValue(1)
-            self.bars[i]:Desaturate(false)
+            self.bars[i]:Dim(false)
         elseif value >= 0 then
             self.bars[i]:SetBarValue(value)
-            self.bars[i]:Desaturate(true)
+            self.bars[i]:Dim(true)
         else
             self.bars[i]:SetBarValue(0)
-            self.bars[i]:Desaturate(false)
+            self.bars[i]:Dim(false)
         end
         value = value - 1
     end
@@ -303,19 +323,19 @@ local function SetBarValues_Essence(self)
             end
             self.bars[i].text:SetText("")
             self.bars[i]:SetScript("OnUpdate", EssenceRegenOnUpdate)
-            self.bars[i]:Desaturate(true)
+            self.bars[i]:Dim(true)
         elseif i <= self.power then
             self.bars[i]:SetScript("OnUpdate", nil)
             self.bars[i]:SetBarValue(1)
             self.bars[i].regenValue = nil
             self.bars[i].text:SetText("")
-            self.bars[i]:Desaturate(false)
+            self.bars[i]:Dim(false)
         else
             self.bars[i]:SetScript("OnUpdate", nil)
             self.bars[i]:SetBarValue(0)
             self.bars[i].regenValue = nil
             self.bars[i].text:SetText("")
-            self.bars[i]:Desaturate(false)
+            self.bars[i]:Dim(false)
         end
     end
     self.lastRegenBar = self.bars[self.power + 1]
@@ -379,13 +399,13 @@ local function UpdateRune(self)
             self.bars[i]:SetMinMaxValues(0, 1)
             self.bars[i]:SetBarValue(1)
             self.bars[i].text:SetText("")
-            self.bars[i]:Desaturate(false)
+            self.bars[i]:Dim(false)
         else
             self.bars[i]:SetMinMaxValues(0, self.runes[i].duration)
             self.bars[i]:SetBarValue(GetTime() - self.runes[i].start)
             self.bars[i].text:SetText("")
             self.bars[i]:SetScript("OnUpdate", RuneOnUpdate)
-            self.bars[i]:Desaturate(true)
+            self.bars[i]:Dim(true)
         end
     end
 end
