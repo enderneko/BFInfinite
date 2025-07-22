@@ -107,6 +107,14 @@ local indicators = {
         "font,color",
         "textLength",
     },
+    powerText = {
+        "enabled",
+        "position,anchorTo,parent",
+        "font,color",
+        "textFormat",
+        "frequent",
+        "hideIfFull,hideIfEmpty",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -276,7 +284,7 @@ end
 builder["position,anchorTo"] = function(parent)
     if created["position,anchorTo"] then return created["position,anchorTo"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PositionAnchorTo", nil, 150)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PositionAnchorTo", nil, 148)
     created["position,anchorTo"] = pane
 
     local validRelativeTos = GetAnchorToItems()
@@ -420,7 +428,7 @@ end
 -- pane for bar colors
 ---------------------------------------------------------------------
 local function CreatePaneForBarColors(parent, colorType, frameName, label, gradientLabel, alphaLabel)
-    local pane = AF.CreateBorderedFrame(parent, frameName, nil, 105)
+    local pane = AF.CreateBorderedFrame(parent, frameName, nil, 103)
 
     -- color --------------------------------------------------
     local colorDropdown = AF.CreateDropdown(pane, 150)
@@ -1406,14 +1414,14 @@ builder["castBarNameText"] = function(parent)
         LoadIndicatorConfig(pane.t)
     end)
 
-    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 0.5, nil, true)
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -100, 100, 0.5, nil, true)
     AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
     xOffset:SetOnValueChanged(function(value)
         pane.t.cfg.nameText.position[3] = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 0.5, nil, true)
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -100, 100, 0.5, nil, true)
     AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
     yOffset:SetOnValueChanged(function(value)
         pane.t.cfg.nameText.position[4] = value
@@ -1544,14 +1552,14 @@ builder["castBarDurationText"] = function(parent)
         LoadIndicatorConfig(pane.t)
     end)
 
-    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 0.5, nil, true)
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -100, 100, 0.5, nil, true)
     AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
     xOffset:SetOnValueChanged(function(value)
         pane.t.cfg.durationText.position[3] = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 0.5, nil, true)
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -100, 100, 0.5, nil, true)
     AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
     yOffset:SetOnValueChanged(function(value)
         pane.t.cfg.durationText.position[4] = value
@@ -1648,12 +1656,12 @@ builder["spacing"] = function(parent)
 end
 
 ---------------------------------------------------------------------
--- CreateGeneralTextPane
+-- CreateFontPositionFormatPane
 ---------------------------------------------------------------------
 local function GetFormatItems(which)
     local numeric, percent
 
-    if which == "staggerBar" then
+    if which == "staggerBar" or which == "powerText" then
         numeric = {
             {text = L["None"], value = "none"},
             {text = L["Current"], value = "current"},
@@ -1669,7 +1677,7 @@ local function GetFormatItems(which)
     return numeric, percent
 end
 
-local function CreateGeneralTextPane(parent, textType, frameName, label, hasFormat)
+local function CreateFontPositionFormatPane(parent, textType, frameName, label, hasFormat)
     local pane = AF.CreateBorderedFrame(parent, frameName, nil, hasFormat and 315 or 198)
 
     local fontDropdown = AF.CreateDropdown(pane, 150)
@@ -1733,14 +1741,14 @@ local function CreateGeneralTextPane(parent, textType, frameName, label, hasForm
         LoadIndicatorConfig(pane.t)
     end)
 
-    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 0.5, nil, true)
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -100, 100, 0.5, nil, true)
     AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
     xOffset:SetOnValueChanged(function(value)
         pane.t.cfg[textType].position[3] = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 0.5, nil, true)
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -100, 100, 0.5, nil, true)
     AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
     yOffset:SetOnValueChanged(function(value)
         pane.t.cfg[textType].position[4] = value
@@ -1854,7 +1862,7 @@ end
 builder["cooldownText"] = function(parent)
     if created["cooldownText"] then return created["cooldownText"] end
 
-    created["cooldownText"] = CreateGeneralTextPane(parent, "cooldownText", "BFI_IndicatorOption_CooldownText", L["Cooldown Text"])
+    created["cooldownText"] = CreateFontPositionFormatPane(parent, "cooldownText", "BFI_IndicatorOption_CooldownText", L["Cooldown Text"])
     return created["cooldownText"]
 end
 
@@ -1864,7 +1872,7 @@ end
 builder["textWithFormat"] = function(parent)
     if created["textWithFormat"] then return created["textWithFormat"] end
 
-    created["textWithFormat"] = CreateGeneralTextPane(parent, "text", "BFI_IndicatorOption_TextWithFormat", L["Text"], true)
+    created["textWithFormat"] = CreateFontPositionFormatPane(parent, "text", "BFI_IndicatorOption_TextWithFormat", L["Text"], true)
     return created["textWithFormat"]
 end
 
@@ -1930,14 +1938,14 @@ builder["position,anchorTo,parent"] = function(parent)
         LoadIndicatorPosition(pane.t)
     end)
 
-    local x = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
+    local x = AF.CreateSlider(pane, L["X Offset"], 150, -100, 100, 0.5, nil, true)
     AF.SetPoint(x, "TOPLEFT", anchorPoint, 0, -45)
     x:SetOnValueChanged(function(value)
         pane.t.cfg.position[3] = value
         LoadIndicatorPosition(pane.t)
     end)
 
-    local y = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
+    local y = AF.CreateSlider(pane, L["Y Offset"], 150, -100, 100, 0.5, nil, true)
     AF.SetPoint(y, "TOPLEFT", x, 185, 0)
     y:SetOnValueChanged(function(value)
         pane.t.cfg.position[4] = value
@@ -1984,6 +1992,110 @@ builder["textLength"] = function(parent)
     function pane.Load(t)
         pane.t = t
         textLengthSlider:SetValue(t.cfg.length)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- textFormat
+---------------------------------------------------------------------
+builder["textFormat"] = function(parent)
+    if created["textFormat"] then return created["textFormat"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_TextFormat", nil, 120)
+    created["textFormat"] = pane
+
+    local numericFormatDropdown = AF.CreateDropdown(pane, 250)
+    numericFormatDropdown:SetLabel(L["Numeric Format"])
+    AF.SetPoint(numericFormatDropdown, "TOPLEFT", 15, -25)
+    numericFormatDropdown:SetOnSelect(function(value)
+        pane.t.cfg.format.numeric = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local percentFormatDropdown = AF.CreateDropdown(pane, 250)
+    percentFormatDropdown:SetLabel(L["Percent Format"])
+    AF.SetPoint(percentFormatDropdown, "TOPLEFT", numericFormatDropdown, "BOTTOMLEFT", 0, -25)
+    percentFormatDropdown:SetOnSelect(function(value)
+        pane.t.cfg.format.percent = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local delimiterEditBox = AF.CreateEditBox(pane, L["Delimiter"], 70, 20)
+    AF.SetPoint(delimiterEditBox, "TOPLEFT", numericFormatDropdown, "TOPRIGHT", 15, 0)
+    delimiterEditBox:SetMaxLetters(5)
+    AF.ClearPoints(delimiterEditBox.label)
+    AF.SetPoint(delimiterEditBox.label, "BOTTOMLEFT", delimiterEditBox, "TOPLEFT", 2, 2)
+    delimiterEditBox.label:SetColor("white")
+    delimiterEditBox:SetOnTextChanged(function(text, userChanged)
+        delimiterEditBox.label:Show()
+        if userChanged then
+            pane.t.cfg.format.delimiter = text
+            LoadIndicatorConfig(pane.t)
+        end
+    end)
+
+    local percentSignCheckButton = AF.CreateCheckButton(pane, "%")
+    AF.SetPoint(percentSignCheckButton, "TOP", percentFormatDropdown, 0, -3)
+    AF.SetPoint(percentSignCheckButton, "LEFT", delimiterEditBox)
+    percentSignCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.format.showPercentSign = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local useAsianUnitsCheckButton = AF.CreateCheckButton(pane, L["Use Asian Units"])
+    AF.SetPoint(useAsianUnitsCheckButton, "TOPLEFT", percentFormatDropdown, "BOTTOMLEFT", 0, -8)
+    useAsianUnitsCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.format.useAsianUnits = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+    useAsianUnitsCheckButton:SetEnabled(AF.isAsian)
+
+    function pane.Load(t)
+        pane.t = t
+
+        local numeric, percent = GetFormatItems(t.id)
+        numericFormatDropdown:SetItems(numeric)
+        percentFormatDropdown:SetItems(percent)
+
+        numericFormatDropdown:SetSelectedValue(t.cfg.format.numeric)
+        percentFormatDropdown:SetSelectedValue(t.cfg.format.percent)
+        delimiterEditBox:SetText(t.cfg.format.delimiter or "")
+        percentSignCheckButton:SetChecked(t.cfg.format.showPercentSign)
+        useAsianUnitsCheckButton:SetChecked(t.cfg.format.useAsianUnits)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- hideIfFull,hideIfEmpty
+---------------------------------------------------------------------
+builder["hideIfFull,hideIfEmpty"] = function(parent)
+    if created["hideIfFull,hideIfEmpty"] then return created["hideIfFull,hideIfEmpty"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HideIfFullOrEmpty", nil, 30)
+    created["hideIfFull,hideIfEmpty"] = pane
+
+    local hideIfFullCheckButton = AF.CreateCheckButton(pane, L["Hide When Full"])
+    AF.SetPoint(hideIfFullCheckButton, "LEFT", 15, 0)
+    hideIfFullCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.hideIfFull = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local hideIfEmptyCheckButton = AF.CreateCheckButton(pane, L["Hide When Empty"])
+    AF.SetPoint(hideIfEmptyCheckButton, "TOPLEFT", hideIfFullCheckButton, 185, 0)
+    hideIfEmptyCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.hideIfEmpty = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        hideIfFullCheckButton:SetChecked(t.cfg.hideIfFull)
+        hideIfEmptyCheckButton:SetChecked(t.cfg.hideIfEmpty)
     end
 
     return pane
