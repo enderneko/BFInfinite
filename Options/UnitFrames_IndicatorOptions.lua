@@ -67,6 +67,19 @@ local indicators = {
         "castBarDurationText",
         "frameLevel",
     },
+    extraManaBar = {
+        "enabled",
+        "width,height",
+        "position,anchorTo",
+        "texture",
+        "barColor",
+        "barLossColor",
+        "bgColor,borderColor",
+        "smoothing",
+        "frequent",
+        "hideIfHasClassPower,hideIfFull",
+        "frameLevel",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -397,6 +410,14 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
         {text = L["Custom"], value = "custom_color"},
     }
 
+    local extraManaBarItems = {
+        {text = L["Class"], value = "class_color"},
+        {text = L["Class (Dark)"], value = "class_color_dark"},
+        {text = L["Mana"], value = "mana_color"},
+        {text = L["Mana (Dark)"], value = "mana_color_dark"},
+        {text = L["Custom"], value = "custom_color"},
+    }
+
     local orientationDropdown = AF.CreateDropdown(pane, 150)
     orientationDropdown:SetLabel(gradientLabel)
     AF.SetPoint(orientationDropdown, "TOPLEFT", colorDropdown, 185, 0)
@@ -452,7 +473,7 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
         AF.ClearPoints(colorPicker1)
         AF.ClearPoints(colorPicker2)
 
-        if color.type == "class_color" or color.type == "class_color_dark" or color.type == "power_color" or color.type == "power_color_dark" then
+        if color.type:find("^class") or color.type:find("^power") or color.type:find("^mana") then
             if color.gradient == "disabled" then
                 colorPicker1:Hide()
                 colorPicker2:Hide()
@@ -523,10 +544,12 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
     function pane.Load(t)
         pane.t = t
 
-        if pane.t.id == "healthBar" then
-            colorDropdown:SetItems(healthBarColorItems)
-        else
+        if pane.t.id == "powerBar" then
             colorDropdown:SetItems(powerBarColorItems)
+        elseif pane.t.id == "extraManaBar" then
+            colorDropdown:SetItems(extraManaBarItems)
+        else
+            colorDropdown:SetItems(healthBarColorItems)
         end
 
         colorDropdown:SetSelectedValue(t.cfg[colorType].type)
@@ -1532,6 +1555,38 @@ builder["castBarDurationText"] = function(parent)
         relativePoint:SetSelectedValue(pane.t.cfg.durationText.position[2])
         xOffset:SetValue(pane.t.cfg.durationText.position[3])
         yOffset:SetValue(pane.t.cfg.durationText.position[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- hideIfHasClassPower,hideIfFull
+---------------------------------------------------------------------
+builder["hideIfHasClassPower,hideIfFull"] = function(parent)
+    if created["hideIfHasClassPower,hideIfFull"] then return created["hideIfHasClassPower,hideIfFull"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HideIfHasClassPower", nil, 51)
+    created["hideIfHasClassPower,hideIfFull"] = pane
+
+    local hideIfHasClassPowerCheckButton = AF.CreateCheckButton(pane, L["Hide When Class Power Exists"])
+    AF.SetPoint(hideIfHasClassPowerCheckButton, "TOPLEFT", 15, -8)
+    hideIfHasClassPowerCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.hideIfHasClassPower = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local hideIfFullCheckButton = AF.CreateCheckButton(pane, L["Hide When Full"])
+    AF.SetPoint(hideIfFullCheckButton, "TOPLEFT", hideIfHasClassPowerCheckButton, "BOTTOMLEFT", 0, -7)
+    hideIfFullCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.hideIfFull = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        hideIfHasClassPowerCheckButton:SetChecked(t.cfg.hideIfHasClassPower)
+        hideIfFullCheckButton:SetChecked(t.cfg.hideIfFull)
     end
 
     return pane

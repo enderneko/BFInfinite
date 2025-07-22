@@ -61,33 +61,41 @@ end
 ---------------------------------------------------------------------
 -- GetManaColor
 ---------------------------------------------------------------------
-local function GetManaColor(self)
-    if not (self.color and self.lossColor) then return end
+local function GetManaColor(self, colorTable)
+    if not colorTable then return end
 
-    local r, g, b, a, lossR, lossG, lossB, lossA
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2
 
-    a = self.color.alpha
-    lossA = self.lossColor.alpha
-
-    -- bar
-    if strfind(self.color.type, "^mana") then
-        r, g, b = GetExactManaColor(self.color.type)
-    elseif strfind(self.color.type, "^class") then
-        r, g, b = GetClassColor(self.color.type, class)
+    if colorTable.type:find("^mana") then
+        r1, g1, b1 = GetExactManaColor(colorTable.type)
+    elseif colorTable.type:find("^class") then
+        r1, g1, b1 = GetClassColor(colorTable.type, class)
     else
-        r, g, b = unpack(self.color.rgb)
+        if colorTable.gradient == "disabled" then
+            r1, g1, b1 = AF.UnpackColor(colorTable.rgb)
+        else
+            r1, g1, b1 = AF.UnpackColor(colorTable.rgb[1])
+        end
     end
 
-    -- loss
-    if strfind(self.lossColor.type, "^mana") then
-        lossR, lossG, lossB = GetExactManaColor(self.lossColor.type)
-    elseif strfind(self.lossColor.type, "^class") then
-        lossR, lossG, lossB = GetClassColor(self.lossColor.type, class)
+    if colorTable.gradient == "disabled" then
+        a1 = colorTable.alpha
+        return nil, r1, g1, b1, a1
     else
-        lossR, lossG, lossB = unpack(self.lossColor.rgb)
-    end
+        a1, a2 = colorTable.alpha[1], colorTable.alpha[2]
+         if #colorTable.rgb == 4 then
+            r2, g2, b2 = AF.UnpackColor(colorTable.rgb)
+        else
+            r2, g2, b2 = AF.UnpackColor(colorTable.rgb[2])
+        end
 
-    return r, g, b, a, lossR, lossG, lossB, lossA
+        orientation = colorTable.gradient:find("^vertical") and "VERTICAL" or "HORIZONTAL"
+        if colorTable.gradient:find("flipped$") then
+            return orientation, r2, g2, b2, a2, r1, g1, b1, a1
+        else
+            return orientation, r1, g1, b1, a1, r2, g2, b2, a2
+        end
+    end
 end
 
 ---------------------------------------------------------------------
@@ -96,9 +104,21 @@ end
 local function UpdateManaColor(self, event, unitId)
     if unitId and unitId ~= "player" then return end
 
-    local r, g, b, a, lossR, lossG, lossB, lossA = GetManaColor(self, "player")
-    self:SetColor(r, g, b, a)
-    self:SetLossColor(lossR, lossG, lossB, lossA)
+    -- color
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetManaColor(self, self.color)
+    if orientation then
+        self:SetGradientColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+    else
+        self:SetColor(r1, g1, b1, a1)
+    end
+
+    -- lossColor
+    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetManaColor(self, self.lossColor)
+    if orientation then
+        self:SetGradientLossColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+    else
+        self:SetLossColor(r1, g1, b1, a1)
+    end
 end
 
 ---------------------------------------------------------------------
