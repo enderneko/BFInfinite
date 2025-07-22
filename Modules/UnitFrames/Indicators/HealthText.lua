@@ -32,7 +32,7 @@ local function UpdateHealth(self, event, unitId)
         self.healthMax = 1
     end
 
-    if self.hideIfFull and self.health >= self.healthMax then
+    if self.hideIfFull and self.health >= self.healthMax and self.totalAbsorbs == 0 then
         self:Hide()
         return
     end

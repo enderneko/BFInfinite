@@ -107,6 +107,13 @@ local indicators = {
         "font,color",
         "textLength",
     },
+    healthText = {
+        "enabled",
+        "position,anchorTo,parent",
+        "font,color",
+        "textFormat",
+        "hideIfFull",
+    },
     powerText = {
         "enabled",
         "position,anchorTo,parent",
@@ -118,7 +125,7 @@ local indicators = {
 }
 
 ---------------------------------------------------------------------
--- LoadIndicatorConfig
+-- shared functions
 ---------------------------------------------------------------------
 local function LoadIndicatorConfig(t)
     UF.LoadIndicatorConfig(t.target, t.id, t.cfg)
@@ -126,6 +133,86 @@ end
 
 local function LoadIndicatorPosition(t)
     UF.LoadIndicatorPosition(t.target.indicators[t.id], t.cfg.position, t.cfg.anchorTo, t.cfg.parent)
+end
+
+local function GetFormatItems(which)
+    local numeric, percent
+
+    if which == "staggerBar" or which == "powerText" then
+        numeric = {
+            {text = L["None"], value = "none"},
+            {text = L["Current"], value = "current"},
+            {text = L["Current (Short)"], value = "current_short"},
+        }
+        percent = {
+            {text = L["None"], value = "none"},
+            {text = L["Current"], value = "current"},
+            {text = L["Current (Decimal)"], value = "current_decimal"},
+        }
+    elseif which == "healthText" then
+        numeric = {
+            {text = L["None"], value = "none"},
+            {text = L["Current"], value = "current"},
+            {text = L["Current (Short)"], value = "current_short"},
+            {text = L["Current + Absorbs"], value = "current_absorbs"},
+            {text = L["Current + Absorbs (Short)"], value = "current_absorbs_short"},
+            {text = L["Effective"], value = "current_absorbs_sum"},
+            {text = L["Effective (Short)"], value = "current_absorbs_short_sum"},
+        }
+        percent = {
+            {text = L["None"], value = "none"},
+            {text = L["Current"], value = "current"},
+            {text = L["Current (Decimal)"], value = "current_decimal"},
+            {text = L["Current + Absorbs"], value = "current_absorbs"},
+            {text = L["Current + Absorbs (Decimal)"], value = "current_absorbs_decimal"},
+            {text = L["Effective"], value = "current_absorbs_sum"},
+            {text = L["Effective (Decimal)"], value = "current_absorbs_sum_decimal"},
+        }
+    end
+
+    return numeric, percent
+end
+
+local function GetAnchorToItems()
+    local validRelativeTos = {
+        "root",
+        "healthBar", "powerBar", "portrait", "castBar", "extraManaBar", "classPowerBar", "staggerBar",
+        "nameText", "healthText", "powerText", "leaderText", "levelText", "targetCounter", "statusTimer", "incDmgHealText",
+        "buffs", "debuffs",
+        "raidIcon", "leaderIcon", "roleIcon", "combatIcon", "readyCheckIcon", "factionIcon", "statusIcon",
+    }
+
+    for i, to in next, validRelativeTos do
+        if to == "root" then
+            validRelativeTos[i] = {text = L["Unit Frame"], value = to}
+        else
+            validRelativeTos[i] = {text = L[to], value = to}
+        end
+    end
+    return validRelativeTos
+end
+
+local function GetAnchorPointItems()
+    local items = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT", "CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM"}
+    for i, item in next, items do
+        items[i] = {text = L[item], value = item}
+    end
+    return items
+end
+
+local function GetParentItems()
+    local validParents = {
+        "root",  "healthBar", "powerBar", "portrait"
+    }
+
+    for i, to in next, validParents do
+        if to == "root" then
+            validParents[i] = {text = L["Unit Frame"], value = to}
+        else
+            validParents[i] = {text = L[to], value = to}
+        end
+    end
+    return validParents
 end
 
 ---------------------------------------------------------------------
@@ -254,33 +341,6 @@ end
 ---------------------------------------------------------------------
 -- position,anchorTo
 ---------------------------------------------------------------------
-local function GetAnchorToItems()
-    local validRelativeTos = {
-        "root",
-        "healthBar", "powerBar", "portrait", "castBar", "extraManaBar", "classPowerBar", "staggerBar",
-        "nameText", "healthText", "powerText", "leaderText", "levelText", "targetCounter", "statusTimer", "incDmgHealText",
-        "buffs", "debuffs",
-        "raidIcon", "leaderIcon", "roleIcon", "combatIcon", "readyCheckIcon", "factionIcon", "statusIcon",
-    }
-
-    for i, to in next, validRelativeTos do
-        if to == "root" then
-            validRelativeTos[i] = {text = L["Unit Frame"], value = to}
-        else
-            validRelativeTos[i] = {text = L[to], value = to}
-        end
-    end
-    return validRelativeTos
-end
-
-local function GetAnchorPointItems()
-    local items = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT", "CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM"}
-    for i, item in next, items do
-        items[i] = {text = L[item], value = item}
-    end
-    return items
-end
-
 builder["position,anchorTo"] = function(parent)
     if created["position,anchorTo"] then return created["position,anchorTo"] end
 
@@ -1658,25 +1718,6 @@ end
 ---------------------------------------------------------------------
 -- CreateFontPositionFormatPane
 ---------------------------------------------------------------------
-local function GetFormatItems(which)
-    local numeric, percent
-
-    if which == "staggerBar" or which == "powerText" then
-        numeric = {
-            {text = L["None"], value = "none"},
-            {text = L["Current"], value = "current"},
-            {text = L["Current (Short)"], value = "current_short"},
-        }
-        percent = {
-            {text = L["None"], value = "none"},
-            {text = L["Current"], value = "current"},
-            {text = L["Current (Decimal)"], value = "current_decimal"},
-        }
-    end
-
-    return numeric, percent
-end
-
 local function CreateFontPositionFormatPane(parent, textType, frameName, label, hasFormat)
     local pane = AF.CreateBorderedFrame(parent, frameName, nil, hasFormat and 315 or 198)
 
@@ -1879,21 +1920,6 @@ end
 ---------------------------------------------------------------------
 -- position,anchorTo,parent
 ---------------------------------------------------------------------
-local function GetParentItems()
-    local validParents = {
-        "root",  "healthBar", "powerBar", "portrait"
-    }
-
-    for i, to in next, validParents do
-        if to == "root" then
-            validParents[i] = {text = L["Unit Frame"], value = to}
-        else
-            validParents[i] = {text = L[to], value = to}
-        end
-    end
-    return validParents
-end
-
 builder["position,anchorTo,parent"] = function(parent)
     if created["position,anchorTo,parent"] then return created["position,anchorTo,parent"] end
 
@@ -2096,6 +2122,30 @@ builder["hideIfFull,hideIfEmpty"] = function(parent)
         pane.t = t
         hideIfFullCheckButton:SetChecked(t.cfg.hideIfFull)
         hideIfEmptyCheckButton:SetChecked(t.cfg.hideIfEmpty)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- hideIfFull
+---------------------------------------------------------------------
+builder["hideIfFull"] = function(parent)
+    if created["hideIfFull"] then return created["hideIfFull"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HideIfFull", nil, 30)
+    created["hideIfFull"] = pane
+
+    local hideIfFullCheckButton = AF.CreateCheckButton(pane, L["Hide When Full"])
+    AF.SetPoint(hideIfFullCheckButton, "LEFT", 15, 0)
+    hideIfFullCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.hideIfFull = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        hideIfFullCheckButton:SetChecked(t.cfg.hideIfFull)
     end
 
     return pane

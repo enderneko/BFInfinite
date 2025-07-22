@@ -427,7 +427,7 @@ local function ShieldBar_SetTexture(self, texture)
     else
         texture = AF.LSM_GetBarTexture(texture)
     end
-    self.shield:SetTexture(texture)
+    self.shield:SetTexture(texture, "REPEAT", "REPEAT")
 end
 
 local function ShieldBar_SetColor(self, color)
