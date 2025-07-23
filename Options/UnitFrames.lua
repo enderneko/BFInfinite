@@ -171,6 +171,7 @@ end
 
 local function ListItem_LoadOptions(self)
     -- button carries frame/indicator/config data
+    -- AF.Fire("BFI_CheckCopiedInfo", self.module, self.id, self.ownerName, self.cfg)
 
     lastIndicator = self.id
 
@@ -230,6 +231,7 @@ LoadList = function(main, sub)
         tinsert(listItems, button)
         button:SetText(L[name])
 
+        button.module = "UnitFrames"
         button.id = name
         button.ownerName = L[owner]
         button.owner = sub:lower()

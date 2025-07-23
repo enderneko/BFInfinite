@@ -3,6 +3,7 @@
     <Script file="OptionsFrame.lua"/>
     <Script file="General.lua"/>
     <Script file="Colors.lua"/>
+    <!-- <Script file="CopiedInfo.lua"/> -->
     <Script file="UnitFrames_IndicatorOptions.lua"/>
     <Script file="UnitFrames.lua"/>
     <Script file="About.lua"/>

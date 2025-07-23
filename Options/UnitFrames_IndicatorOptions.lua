@@ -122,6 +122,11 @@ local indicators = {
         "frequent",
         "hideIfFull,hideIfEmpty",
     },
+    leaderText = {
+        "enabled",
+        "position,anchorTo,parent",
+        "font,color",
+    },
     levelText = {
         "enabled",
         "position,anchorTo,parent",
@@ -234,7 +239,7 @@ local function GetColorItems(which)
         tinsert(items, {text = L["Class (Dark)"], value = "class_color_dark"})
     end
 
-    if which:find("^power") then
+    if which:find("^power") or which:find("^classPower") then
         tinsert(items, {text = L["Power"], value = "power_color"})
         if not which:find("Text$") then
             tinsert(items, {text = L["Power (Dark)"], value = "power_color_dark"})
@@ -262,22 +267,32 @@ builder["copy,paste,reset"] = function(parent)
     created["copy,paste,reset"] = pane
     pane:Hide()
 
-    local copiedId, copiedOwnerName, copiedTime, copiedCfg
+    local copiedModule, copiedId, copiedOwnerName, copiedTime, copiedCfg
 
-    local copy = AF.CreateButton(pane, L["Copy"], "BFI_hover", 100, 20)
+    local copy = AF.CreateButton(pane, L["Copy"], "BFI_hover", 107, 20)
     AF.SetPoint(copy, "LEFT", 15, 0)
+    copy.tick = AF.CreateTexture(copy, AF.GetIcon("Fluent_Color_Yes"))
+    AF.SetSize(copy.tick, 16, 16)
+    AF.SetPoint(copy.tick, "RIGHT", -5, 0)
+    copy.tick:Hide()
+
+    local paste = AF.CreateButton(pane, L["Paste"], "BFI_hover", 107, 20)
+    AF.SetPoint(paste, "TOPLEFT", copy, "TOPRIGHT", 7, 0)
+
     copy:SetOnClick(function()
+        copiedModule = pane.t.module
         copiedId = pane.t.id
         copiedOwnerName = pane.t.ownerName
         copiedTime = time()
         copiedCfg = AF.Copy(pane.t.cfg)
+        AF.FrameFadeInOut(copy.tick, 0.15)
+        paste:SetEnabled(true)
+        -- AF.Fire("BFI_ShowCopiedInfo", pane.t.module, pane.t.id, nil, pane.t.ownerName, pane.t.time, pane.t.cfg)
     end)
 
-    local paste = AF.CreateButton(pane, L["Paste"], "BFI_hover", 100, 20)
-    AF.SetPoint(paste, "TOPLEFT", copy, "TOPRIGHT", 5, 0)
     paste:SetOnClick(function()
         local text = AF.WrapTextInColor(L["Overwrite with copied config?"], "BFI") .. "\n"
-            .. "[" .. L[copiedId] .. "]\n"
+            .. AF.WrapTextInColor("[" .. L[copiedId] .. "]", "softlime") .. "\n"
             .. copiedOwnerName .. AF.WrapTextInColor(" -> ", "darkgray") .. pane.t.ownerName .. "\n"
             .. AF.WrapTextInColor(AF.FormatRelativeTime(copiedTime), "darkgray")
 
@@ -290,8 +305,8 @@ builder["copy,paste,reset"] = function(parent)
     end)
 
 
-    local reset = AF.CreateButton(pane, L["Reset"], "BFI_hover", 100, 20)
-    AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 5, 0)
+    local reset = AF.CreateButton(pane, L["Reset"], "BFI_hover", 107, 20)
+    AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 7, 0)
     reset:SetOnClick(function()
         local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n"
             .. "[" .. L[pane.t.id] .. "]\n"
@@ -311,7 +326,7 @@ builder["copy,paste,reset"] = function(parent)
 
     function pane.Load(t)
         pane.t = t
-        AF.SetEnabled(pane.t.id == copiedId, paste)
+        paste:SetEnabled(t.module == copiedModule and t.id == copiedId)
     end
 
     return pane

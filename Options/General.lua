@@ -79,7 +79,7 @@ local function CreateBFIPane()
     local recommendedScaleButton = AF.CreateButton(scaleSlider, nil, "BFI_hover", 17, 17)
     recommendedScaleButton:SetTexture(AF.GetIcon("Resize"), {15, 15})
     AF.SetPoint(recommendedScaleButton, "BOTTOMRIGHT", scaleSlider, "TOPRIGHT", 0, 2)
-    recommendedScaleButton:SetTooltip(L["Apply Recommended Scale"])
+    recommendedScaleButton:SetTooltip(L["Auto Scale"])
     recommendedScaleButton:SetOnClick(function()
         local bestScale = AF.GetBestScale()
         if BFIConfig.scale == bestScale then return end
