@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
+local S = BFI.Style
 ---@class Chat
 local C = BFI.Chat
 ---@type AbstractFramework
@@ -304,7 +305,8 @@ local function SetupChat()
             AF.SetWidth(editBox, C.config.width)
             AF.LoadWidgetPosition(editBox, C.config.editBoxPosition, frame)
             -- style
-            U.ReSkinEditBox(editBox)
+            S.StyleEditBox(editBox)
+            editBox.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("background"))
         end
 
         -- ButtonFrame
@@ -546,13 +548,13 @@ local function UpdateEditBox(editbox)
 
     if chatType == "CHANNEL" and id then
         if id == 0 then
-            editbox:SetBackdropBorderColor(AF.GetColorRGB("border"))
+            editbox.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
         else
             info = ChatTypeInfo[chatType .. id]
-            editbox:SetBackdropBorderColor(AF.ExtractColor(info))
+            editbox.BFIBackdrop:SetBackdropBorderColor(AF.ExtractColor(info))
         end
     else
-        editbox:SetBackdropBorderColor(AF.ExtractColor(info))
+        editbox.BFIBackdrop:SetBackdropBorderColor(AF.ExtractColor(info))
     end
 end
 
