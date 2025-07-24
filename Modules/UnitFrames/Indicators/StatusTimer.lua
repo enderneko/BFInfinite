@@ -71,14 +71,20 @@ end
 -- status
 ---------------------------------------------------------------------
 local function SetStatus(self, status)
-    self.status = status
-    if status then
-        if not self.useEn then
-            self.status = L[status]
-        end
-        ShowTimer(self)
+    if self.useEn then
+        self.status = status
     else
-        HideTimer(self)
+        self.status = status and L[status]
+    end
+
+    if self.showTimer then
+        if status then
+            ShowTimer(self)
+        else
+            HideTimer(self)
+        end
+    else
+        self:SetText(self.status or "")
     end
 end
 
@@ -108,16 +114,12 @@ end
 ---------------------------------------------------------------------
 -- onupdate
 ---------------------------------------------------------------------
-local function StatusTimer_OnUpdate(self, elapsed)
-    self.elapsed = (self.elapsed or 0) + elapsed
-    if self.elapsed >= 1 then
-        self.elapsed = 0
-        local sec = GetTime() - self.text.start
-        if self.text.showLabel then
-            self.text:SetFormattedText("%s %02d:%02d", self.text.status, sec / 60, sec % 60)
-        else
-            self.text:SetFormattedText("%02d:%02d", sec / 60, sec % 60)
-        end
+local function StatusTimer_OnUpdate(updater, elapsed)
+    updater.elapsed = (updater.elapsed or 0) + elapsed
+    if updater.elapsed >= 1 then
+        updater.elapsed = 0
+        local sec = GetTime() - updater.text.start
+        updater.text:SetFormattedText("%s %02d:%02d", updater.text.status, sec / 60, sec % 60)
     end
 end
 
@@ -159,7 +161,14 @@ local function StatusTimer_LoadConfig(self, config)
 
     self.color = config.color
     self.useEn = config.useEn
-    self.showLabel = config.showLabel
+    self.showTimer = config.showTimer
+
+    if config.showTimer then
+        self.updater:SetScript("OnUpdate", StatusTimer_OnUpdate)
+    else
+        self.updater:SetScript("OnUpdate", nil)
+        self.updater:Hide()
+    end
 end
 
 ---------------------------------------------------------------------
@@ -203,8 +212,6 @@ function UF.CreateStatusTimer(parent, name)
     text.updater = updater
     updater:Hide()
     updater.text = text
-
-    updater:SetScript("OnUpdate", StatusTimer_OnUpdate)
 
     -- events
     AF.AddEventHandler(text)

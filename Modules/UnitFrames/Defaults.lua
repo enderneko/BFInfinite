@@ -402,7 +402,7 @@ local style1 = {
                 font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
-                showLabel = true,
+                showTimer = true,
             },
             statusIcon = {
                 enabled = true,
@@ -840,7 +840,7 @@ local style1 = {
                 font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
-                showLabel = true,
+                showTimer = true,
             },
             statusIcon = {
                 enabled = true,
@@ -3069,7 +3069,7 @@ local style2 = {
                 font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
-                showLabel = true,
+                showTimer = true,
             },
             statusIcon = {
                 enabled = true,
@@ -3507,7 +3507,7 @@ local style2 = {
                 font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
-                showLabel = true,
+                showTimer = true,
             },
             statusIcon = {
                 enabled = true,
@@ -5599,7 +5599,7 @@ local defaults = {
                 font = {"Visitor", 9, "monochrome_outline", false},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
-                showLabel = true,
+                showTimer = true,
             },
             portrait = {
                 enabled = false,
@@ -5980,7 +5980,7 @@ local defaults = {
                 font = {"Visitor", 9, "monochrome", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 useEn = true,
-                showLabel = false,
+                showTimer = false,
             },
             statusIcon = {
                 enabled = true,

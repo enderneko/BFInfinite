@@ -137,6 +137,12 @@ local indicators = {
         "position,anchorTo,parent",
         "font,color",
     },
+    statusTimer = {
+        "enabled",
+        "position,anchorTo,parent",
+        "font,color",
+        "showTimer,useEn",
+    }
 }
 
 ---------------------------------------------------------------------
@@ -2245,6 +2251,40 @@ builder["font,color"] = function(parent)
         colorDropdown:SetSelectedValue(t.cfg.color.type)
         colorPicker:SetColor(t.cfg.color.rgb)
         colorPicker:SetShown(t.cfg.color.type == "custom_color")
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- showTimer,useEn
+---------------------------------------------------------------------
+builder["showTimer,useEn"] = function(parent)
+    if created["showTimer,useEn"] then return created["showTimer,useEn"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_ShowTimerUseEn", nil, 30)
+    created["showTimer,useEn"] = pane
+
+    local showTimerCheckButton = AF.CreateCheckButton(pane, L["Show Timer"])
+    AF.SetPoint(showTimerCheckButton, "LEFT", 15, 0)
+
+    local useEnCheckButton = AF.CreateCheckButton(pane, L["Use English Label"])
+    AF.SetPoint(useEnCheckButton, "TOPLEFT", showTimerCheckButton, 185, 0)
+    useEnCheckButton:SetEnabled(not LOCALE_enUS)
+    useEnCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.useEn = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    showTimerCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.showTimer = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        showTimerCheckButton:SetChecked(t.cfg.showTimer)
+        useEnCheckButton:SetChecked(t.cfg.useEn)
     end
 
     return pane
