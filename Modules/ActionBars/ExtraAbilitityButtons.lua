@@ -21,7 +21,7 @@ local function CreateZoneAbilityHolder()
 
     ZoneAbilityFrame:SetParent(zoneAbilityHolder)
     ZoneAbilityFrame:ClearAllPoints()
-    ZoneAbilityFrame:SetAllPoints()
+    ZoneAbilityFrame:SetAllPoints(zoneAbilityHolder)
     ZoneAbilityFrame.ignoreInLayout = true
 
     ZoneAbilityFrame.SpellButtonContainer.holder = zoneAbilityHolder
@@ -99,7 +99,8 @@ local function CreateExtraActionHolder()
 
     ExtraActionBarFrame:SetParent(extraActionHolder)
     ExtraActionBarFrame:ClearAllPoints()
-    ExtraActionBarFrame:SetAllPoints()
+    ExtraActionBarFrame:SetAllPoints(extraActionHolder)
+    ExtraActionBarFrame:SetIgnoreParentScale(true)
     ExtraActionBarFrame.ignoreInLayout = true
 
     hooksecurefunc(ExtraAbilityContainer, "AddFrame", ExtraAction_UpdateAbility)
@@ -202,7 +203,7 @@ local function UpdateButton(_, module, which)
 
     extraActionHolder.scale = extraActionConfig.scale
     extraActionHolder:SetSize(size * extraActionConfig.scale, size * extraActionConfig.scale)
-    ExtraActionBarFrame:SetScale(extraActionConfig.scale)
+    ExtraActionBarFrame:SetScale(extraActionConfig.scale * extraActionHolder:GetEffectiveScale())
     ExtraActionBarFrame:SetParent(extraActionHolder)
 
     extraActionHolder.hideTexture = extraActionConfig.hideTexture
