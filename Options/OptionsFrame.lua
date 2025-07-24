@@ -166,15 +166,17 @@ local function CreateOptionsFrame()
     AF.SetPoint(closeButton, "RIGHT", headerPane, -7, 0)
 
     -- reload button
-    local reloadButton = AF.CreateButton(headerPane, _G.RELOADUI, "BFI", 110, 21)
+    local reloadButton = AF.CreateButton(headerPane, nil, "BFI", 35, 21)
     AF.SetPoint(reloadButton, "BOTTOMRIGHT", closeButton, "BOTTOMLEFT", -7, 0)
-    reloadButton:SetTexture(AF.GetIcon("Reload"), nil, {"LEFT", 5, 0}, nil, nil, nil, "TRILINEAR")
+    reloadButton:SetTexture(AF.GetIcon("Refresh"))
+    reloadButton:SetTooltip(_G.RELOADUI)
     reloadButton:SetOnClick(_G.ReloadUI)
 
     -- edit mode button
-    local editModeButton = AF.CreateButton(headerPane, _G.HUD_EDIT_MODE_MENU, "BFI", 110, 21)
+    local editModeButton = AF.CreateButton(headerPane, nil, "BFI", 35, 21)
     AF.SetPoint(editModeButton, "BOTTOMRIGHT", reloadButton, "BOTTOMLEFT", -7, 0)
-    editModeButton:SetTexture(AF.GetIcon("Layout"), nil, {"LEFT", 5, 0})
+    editModeButton:SetTexture(AF.GetIcon("Layers"))
+    editModeButton:SetTooltip(_G.HUD_EDIT_MODE_MENU)
     editModeButton:SetOnClick(function()
         optionsFrame:Hide()
         AF.ShowMovers()

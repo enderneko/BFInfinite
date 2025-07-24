@@ -510,11 +510,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -563,11 +562,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -917,11 +915,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -970,11 +967,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -1277,11 +1273,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -1330,11 +1325,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -1633,11 +1627,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -1686,11 +1679,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -1981,11 +1973,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -2034,11 +2025,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -2329,11 +2319,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -2347,7 +2336,7 @@ local style1 = {
                     castByUnit = true,
                     castByNPC = true,
                     isBossAura = true,
-                    dispellable = true,
+                    dispellable = nil,
                 },
                 mode = "blacklist",
                 priorities = {},
@@ -2355,7 +2344,7 @@ local style1 = {
                 whitelist = {},
                 auraTypeColor = {
                     castByMe = true,
-                    dispellable = true,
+                    dispellable = nil,
                     debuffType = nil,
                 },
             },
@@ -2382,11 +2371,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -2677,11 +2665,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -2730,11 +2717,10 @@ local style1 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -3177,11 +3163,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -3230,11 +3215,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -3584,11 +3568,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -3637,11 +3620,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -3944,11 +3926,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -3997,11 +3978,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -4299,11 +4279,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -4352,11 +4331,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -4647,11 +4625,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -4700,11 +4677,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -4995,11 +4971,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -5013,7 +4988,7 @@ local style2 = {
                     castByUnit = true,
                     castByNPC = true,
                     isBossAura = true,
-                    dispellable = true,
+                    dispellable = nil,
                 },
                 mode = "blacklist",
                 priorities = {},
@@ -5021,7 +4996,7 @@ local style2 = {
                 whitelist = {},
                 auraTypeColor = {
                     castByMe = true,
-                    dispellable = true,
+                    dispellable = nil,
                     debuffType = nil,
                 },
             },
@@ -5048,11 +5023,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -5342,11 +5316,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -5395,11 +5368,10 @@ local style2 = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -5764,11 +5736,10 @@ local defaults = {
                     font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -5817,11 +5788,10 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -6056,11 +6026,10 @@ local defaults = {
                     font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -6109,11 +6078,10 @@ local defaults = {
                     font = {"Visitor", 9, "monochrome_outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -6390,11 +6358,10 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,
@@ -6443,11 +6410,10 @@ local defaults = {
                     font = {"BFI", 10, "outline", false},
                     position = {"TOP", "TOP", 1, 1},
                     color = {
-                        AF.GetColorTable("white"), -- normal
-                        {false, 0.5, AF.GetColorTable("aura_percent")}, -- less than 50%
-                        {true,  5,   AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
                     },
-                    colorBy = "percent_seconds",
                 },
                 stackText = {
                     enabled = true,

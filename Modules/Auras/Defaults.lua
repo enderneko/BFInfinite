@@ -30,10 +30,10 @@ local defaults = {
             position = {"BOTTOM", "BOTTOM", 1, -3},
             font = {"Expressway", 10, "outline", false},
             color = {
-                AF.GetColorTable("white"),
-                AF.GetColorTable("aura_seconds"),
+                normal = AF.GetColorTable("white"), -- normal
+                percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
             },
-            colorBy = "expiring",
             showSecondsUnit = true,
         },
 
@@ -61,10 +61,10 @@ local defaults = {
             position = {"BOTTOM", "BOTTOM", 1, -3},
             font = {"Expressway", 10, "outline", false},
             color = {
-                AF.GetColorTable("white"),
-                AF.GetColorTable("aura_seconds"),
+                normal = AF.GetColorTable("white"), -- normal
+                percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
             },
-            colorBy = "expiring",
             showSecondsUnit = true,
         },
     },

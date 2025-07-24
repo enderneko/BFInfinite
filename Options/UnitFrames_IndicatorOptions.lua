@@ -150,6 +150,18 @@ local indicators = {
         "damage,healing",
         "numericFormat",
     },
+    buffs = {
+        "enabled",
+        "auraBaseFilters",
+        "auraCustomFilters",
+        "auraTypeColor",
+        "auraArrangement",
+        "position,anchorTo",
+        "stackText",
+        "durationText",
+        "tooltip",
+        "frameLevel"
+    }
 }
 
 ---------------------------------------------------------------------
@@ -1758,10 +1770,19 @@ builder["spacing"] = function(parent)
 end
 
 ---------------------------------------------------------------------
--- CreateFontPositionFormatPane
+-- CreateFontPositionExtraPane
 ---------------------------------------------------------------------
-local function CreateFontPositionFormatPane(parent, textType, frameName, label, hasFormat)
-    local pane = AF.CreateBorderedFrame(parent, frameName, nil, hasFormat and 315 or 198)
+local function CreateFontPositionExtraPane(parent, textType, frameName, label, extra)
+    local height
+    if extra == "format" then
+        height = 315
+    elseif extra == "duration" then
+        height = 277
+    else
+        height = 198
+    end
+
+    local pane = AF.CreateBorderedFrame(parent, frameName, nil, height)
 
     local fontDropdown = AF.CreateDropdown(pane, 150)
     AF.SetPoint(fontDropdown, "TOPLEFT", 15, -25)
@@ -1842,7 +1863,7 @@ local function CreateFontPositionFormatPane(parent, textType, frameName, label, 
     -- format
     local numericFormatDropdown, percentFormatDropdown, delimiterEditBox, percentSignCheckButton, useAsianUnitsCheckButton
 
-    if hasFormat then
+    if extra == "format" then
         numericFormatDropdown = AF.CreateDropdown(pane, 250)
         numericFormatDropdown:SetLabel(L["Numeric Format"])
         AF.SetPoint(numericFormatDropdown, "TOPLEFT", xOffset, "BOTTOMLEFT", 0, -45)
@@ -1891,14 +1912,99 @@ local function CreateFontPositionFormatPane(parent, textType, frameName, label, 
     end
     --------------------------------------------------
 
+    --------------------------------------------------
+    -- duration
+    local normalColorPicker, percentCheckButton, percentColorPicker, percentDropdown, secondsCheckButton, secondsColorPicker, secondsEditBox, sec
+
+    if extra == "duration" then
+        normalColorPicker = AF.CreateColorPicker(pane, L["Normal"])
+        AF.SetPoint(normalColorPicker, "TOPLEFT", xOffset, "BOTTOMLEFT", 0, -35)
+        normalColorPicker:SetOnChange(function(r, g, b)
+            pane.t.cfg[textType].color.normal[1] = r
+            pane.t.cfg[textType].color.normal[2] = g
+            pane.t.cfg[textType].color.normal[3] = b
+            LoadIndicatorConfig(pane.t)
+        end)
+
+        percentCheckButton = AF.CreateCheckButton(pane)
+        AF.SetPoint(percentCheckButton, "TOPLEFT", normalColorPicker, "BOTTOMLEFT", 0, -7)
+
+        percentColorPicker = AF.CreateColorPicker(pane, L["Remaining Time"] .. " <")
+        AF.SetPoint(percentColorPicker, "TOPLEFT", percentCheckButton, "TOPRIGHT", 2, 0)
+        percentColorPicker:SetOnChange(function(r, g, b)
+            pane.t.cfg[textType].color.percent.rgb[1] = r
+            pane.t.cfg[textType].color.percent.rgb[2] = g
+            pane.t.cfg[textType].color.percent.rgb[3] = b
+            LoadIndicatorConfig(pane.t)
+        end)
+
+        percentDropdown = AF.CreateDropdown(pane, 50, nil, "vertical")
+        AF.SetPoint(percentDropdown, "LEFT", percentColorPicker.label, "RIGHT", 5, 0)
+        percentDropdown:SetItems({
+            {text = "90%", value = 0.9},
+            {text = "80%", value = 0.8},
+            {text = "70%", value = 0.7},
+            {text = "60%", value = 0.6},
+            {text = "50%", value = 0.5},
+            {text = "40%", value = 0.4},
+            {text = "30%", value = 0.3},
+            {text = "20%", value = 0.2},
+            {text = "10%", value = 0.1},
+        })
+        percentDropdown:SetOnSelect(function(value)
+            pane.t.cfg[textType].color.percent.value = value
+            LoadIndicatorConfig(pane.t)
+        end)
+
+        percentCheckButton:SetOnCheck(function(checked)
+            pane.t.cfg[textType].color.percent.enabled = checked
+            AF.SetEnabled(checked, percentColorPicker, percentDropdown)
+            LoadIndicatorConfig(pane.t)
+        end)
+
+        secondsCheckButton = AF.CreateCheckButton(pane)
+        AF.SetPoint(secondsCheckButton, "TOPLEFT", percentCheckButton, "BOTTOMLEFT", 0, -7)
+
+        secondsColorPicker = AF.CreateColorPicker(pane, L["Remaining Time"] .. " <")
+        AF.SetPoint(secondsColorPicker, "TOPLEFT", secondsCheckButton, "TOPRIGHT", 2, 0)
+        secondsColorPicker:SetOnChange(function(r, g, b)
+            pane.t.cfg[textType].color.seconds.rgb[1] = r
+            pane.t.cfg[textType].color.seconds.rgb[2] = g
+            pane.t.cfg[textType].color.seconds.rgb[3] = b
+            LoadIndicatorConfig(pane.t)
+        end)
+
+        secondsEditBox = AF.CreateEditBox(pane, nil, 50, 20, "number")
+        AF.SetPoint(secondsEditBox, "LEFT", secondsColorPicker.label, "RIGHT", 5, 0)
+        secondsEditBox:SetMaxLetters(3)
+        secondsEditBox:SetConfirmButton(function(value)
+            pane.t.cfg[textType].color.seconds.value = value
+            LoadIndicatorConfig(pane.t)
+        end, nil, "RIGHT_OUTSIDE")
+
+        sec = AF.CreateFontString(pane, L["sec"])
+        AF.SetPoint(sec, "LEFT", secondsEditBox, "RIGHT", 5, 0)
+
+        secondsCheckButton:SetOnCheck(function(checked)
+            pane.t.cfg[textType].color.seconds.enabled = checked
+            AF.SetEnabled(checked, secondsColorPicker, secondsEditBox, sec)
+            LoadIndicatorConfig(pane.t)
+        end)
+    end
+    --------------------------------------------------
+
     local function UpdateWidgets()
         AF.HideColorPicker()
         AF.SetEnabled(pane.t.cfg[textType].enabled, colorPicker,
             fontDropdown, fontOutlineDropdown, fontSizeSlider, shadowCheckButton,
             anchorPoint, relativePoint, xOffset, yOffset)
-        if hasFormat then
+        if extra == "format" then
             AF.SetEnabled(pane.t.cfg[textType].enabled, numericFormatDropdown, percentFormatDropdown, delimiterEditBox, delimiterEditBox.label, percentSignCheckButton)
             useAsianUnitsCheckButton:SetEnabled(pane.t.cfg[textType].enabled and AF.isAsian)
+        elseif extra == "duration" then
+            AF.SetEnabled(pane.t.cfg[textType].enabled, normalColorPicker, percentCheckButton, secondsCheckButton)
+            AF.SetEnabled(pane.t.cfg[textType].enabled and pane.t.cfg[textType].color.percent.enabled, percentColorPicker, percentDropdown)
+            AF.SetEnabled(pane.t.cfg[textType].enabled and pane.t.cfg[textType].color.seconds.enabled, secondsColorPicker, secondsEditBox, sec)
         end
     end
 
@@ -1913,7 +2019,6 @@ local function CreateFontPositionFormatPane(parent, textType, frameName, label, 
         UpdateWidgets()
 
         enabledCheckButton:SetChecked(t.cfg[textType].enabled)
-        colorPicker:SetColor(pane.t.cfg[textType].color)
         fontDropdown:SetSelectedValue(pane.t.cfg[textType].font[1])
         fontSizeSlider:SetValue(pane.t.cfg[textType].font[2])
         fontOutlineDropdown:SetSelectedValue(pane.t.cfg[textType].font[3])
@@ -1923,7 +2028,11 @@ local function CreateFontPositionFormatPane(parent, textType, frameName, label, 
         xOffset:SetValue(pane.t.cfg[textType].position[3])
         yOffset:SetValue(pane.t.cfg[textType].position[4])
 
-        if hasFormat then
+        if extra ~= "duration" then
+            colorPicker:SetColor(pane.t.cfg[textType].color)
+        end
+
+        if extra == "format" then
             local numeric, percent = GetFormatItems(t.id)
             numericFormatDropdown:SetItems(numeric)
             percentFormatDropdown:SetItems(percent)
@@ -1933,6 +2042,15 @@ local function CreateFontPositionFormatPane(parent, textType, frameName, label, 
             delimiterEditBox:SetText(t.cfg[textType].format.delimiter or "")
             percentSignCheckButton:SetChecked(t.cfg[textType].format.showPercentSign)
             useAsianUnitsCheckButton:SetChecked(t.cfg[textType].format.useAsianUnits)
+        elseif extra == "duration" then
+            colorPicker:Hide()
+            normalColorPicker:SetColor(pane.t.cfg[textType].color.normal)
+            percentColorPicker:SetColor(pane.t.cfg[textType].color.percent.rgb)
+            secondsColorPicker:SetColor(pane.t.cfg[textType].color.seconds.rgb)
+            percentCheckButton:SetChecked(pane.t.cfg[textType].color.percent.enabled)
+            percentDropdown:SetSelectedValue(pane.t.cfg[textType].color.percent.value)
+            secondsCheckButton:SetChecked(pane.t.cfg[textType].color.seconds.enabled)
+            secondsEditBox:SetText(t.cfg[textType].color.seconds.value)
         end
     end
 
@@ -1945,7 +2063,7 @@ end
 builder["cooldownText"] = function(parent)
     if created["cooldownText"] then return created["cooldownText"] end
 
-    created["cooldownText"] = CreateFontPositionFormatPane(parent, "cooldownText", "BFI_IndicatorOption_CooldownText", L["Cooldown Text"])
+    created["cooldownText"] = CreateFontPositionExtraPane(parent, "cooldownText", "BFI_IndicatorOption_CooldownText", L["Cooldown Text"])
     return created["cooldownText"]
 end
 
@@ -1955,8 +2073,28 @@ end
 builder["textWithFormat"] = function(parent)
     if created["textWithFormat"] then return created["textWithFormat"] end
 
-    created["textWithFormat"] = CreateFontPositionFormatPane(parent, "text", "BFI_IndicatorOption_TextWithFormat", L["Text"], true)
+    created["textWithFormat"] = CreateFontPositionExtraPane(parent, "text", "BFI_IndicatorOption_TextWithFormat", L["Text"], true)
     return created["textWithFormat"]
+end
+
+---------------------------------------------------------------------
+-- stackText
+---------------------------------------------------------------------
+builder["stackText"] = function(parent)
+    if created["stackText"] then return created["stackText"] end
+
+    created["stackText"] = CreateFontPositionExtraPane(parent, "stackText", "BFI_IndicatorOption_StackText", AF.WrapTextInColor(L["Stack Text"], "BFI"))
+    return created["stackText"]
+end
+
+---------------------------------------------------------------------
+-- durationText
+---------------------------------------------------------------------
+builder["durationText"] = function(parent)
+    if created["durationText"] then return created["durationText"] end
+
+    created["durationText"] = CreateFontPositionExtraPane(parent, "durationText", "BFI_IndicatorOption_DurationText", AF.WrapTextInColor(L["Duration Text"], "BFI"), "duration")
+    return created["durationText"]
 end
 
 ---------------------------------------------------------------------
@@ -2448,6 +2586,282 @@ builder["damage,healing"] = function(parent)
     return pane
 end
 
+---------------------------------------------------------------------
+-- auraBaseFilters
+---------------------------------------------------------------------
+builder["auraBaseFilters"] = function(parent)
+    if created["auraBaseFilters"] then return created["auraBaseFilters"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraBaseFilters", nil, 94)
+    created["auraBaseFilters"] = pane
+
+    local tip = AF.CreateFontString(pane, L["The aura will show if any enabled filter is met"])
+    tip:SetColor("tip")
+    AF.SetPoint(tip, "TOPLEFT", 15, -8)
+
+    local castByMe = AF.CreateCheckButton(pane, L["Cast By Me"])
+    AF.SetPoint(castByMe, "TOPLEFT", 15, -30)
+    castByMe:SetOnCheck(function(checked)
+        pane.t.cfg.filters.castByMe = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local castByOthers = AF.CreateCheckButton(pane, L["Cast By Others"])
+    AF.SetPoint(castByOthers, "TOPLEFT", castByMe, 185, 0)
+    castByOthers:SetOnCheck(function(checked)
+        pane.t.cfg.filters.castByOthers = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local castByUnit = AF.CreateCheckButton(pane, L["Cast By Unit"])
+    AF.SetPoint(castByUnit, "TOPLEFT", castByMe, "BOTTOMLEFT", 0, -7)
+    castByUnit:SetOnCheck(function(checked)
+        pane.t.cfg.filters.castByUnit = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local castByNPC = AF.CreateCheckButton(pane, L["Cast By NPC"])
+    AF.SetPoint(castByNPC, "TOPLEFT", castByUnit, 185, 0)
+    castByNPC:SetOnCheck(function(checked)
+        pane.t.cfg.filters.castByNPC = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local castByBoss = AF.CreateCheckButton(pane, L["Cast By Boss"])
+    AF.SetPoint(castByBoss, "TOPLEFT", castByUnit, "BOTTOMLEFT", 0, -7)
+    castByBoss:SetOnCheck(function(checked)
+        pane.t.cfg.filters.isBossAura = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local dispellable = AF.CreateCheckButton(pane, L["Dispellable"])
+    AF.SetPoint(dispellable, "TOPLEFT", castByBoss, 185, 0)
+    dispellable:SetOnCheck(function(checked)
+        pane.t.cfg.filters.dispellable = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        castByMe:SetChecked(t.cfg.filters.castByMe)
+        castByOthers:SetChecked(t.cfg.filters.castByOthers)
+        castByUnit:SetChecked(t.cfg.filters.castByUnit)
+        castByNPC:SetChecked(t.cfg.filters.castByNPC)
+        castByBoss:SetChecked(t.cfg.filters.isBossAura)
+        dispellable:SetChecked(t.cfg.filters.dispellable)
+
+        if t.id == "buffs" and (t.owner == "player" or t.owner == "pet" or t.owner == "party" or t.owner == "raid") then
+            dispellable:SetEnabled(false)
+        else
+            dispellable:SetEnabled(true)
+        end
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- auraTypeColor
+---------------------------------------------------------------------
+builder["auraTypeColor"] = function(parent)
+    if created["auraTypeColor"] then return created["auraTypeColor"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraTypeColor", nil, 72)
+    created["auraTypeColor"] = pane
+
+    local castByMe = AF.CreateCheckButton(pane, L["Cast By Me"])
+    AF.SetPoint(castByMe, "TOPLEFT", 15, -8)
+    castByMe:SetOnCheck(function(checked)
+        pane.t.cfg.auraTypeColor.castByMe = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local dispellable = AF.CreateCheckButton(pane, L["Dispellable"])
+    AF.SetPoint(dispellable, "TOPLEFT", castByMe, "BOTTOMLEFT", 0, -7)
+    dispellable:SetOnCheck(function(checked)
+        pane.t.cfg.auraTypeColor.dispellable = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local debuffType = AF.CreateCheckButton(pane, L["Debuff Type"])
+    AF.SetPoint(debuffType, "TOPLEFT", dispellable, "BOTTOMLEFT", 0, -7)
+    debuffType:SetOnCheck(function(checked)
+        pane.t.cfg.auraTypeColor.debuffType = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local tip = AF.CreateFontString(pane, L["Priority:\ntop to bottom"])
+    AF.SetWidth(tip, 150)
+    AF.SetPoint(tip, "TOPLEFT", castByMe, 185, 0)
+    AF.SetPoint(tip, "BOTTOMLEFT", debuffType, 185, 0)
+    tip:SetColor("tip")
+    tip:SetJustifyH("LEFT")
+    tip:SetJustifyV("MIDDLE")
+    tip:SetSpacing(5)
+
+    function pane.Load(t)
+        pane.t = t
+        castByMe:SetChecked(t.cfg.auraTypeColor.castByMe)
+        dispellable:SetChecked(t.cfg.auraTypeColor.dispellable)
+        debuffType:SetChecked(t.cfg.auraTypeColor.debuffType)
+
+        if t.id == "buffs" and (t.owner == "player" or t.owner == "pet" or t.owner == "party" or t.owner == "raid") then
+            dispellable:SetEnabled(false)
+        else
+            dispellable:SetEnabled(true)
+        end
+
+        debuffType:SetEnabled(t.id == "debuffs")
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- auraArrangement
+---------------------------------------------------------------------
+builder["auraArrangement"] = function(parent)
+    if created["auraArrangement"] then return created["auraArrangement"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraArrangement", nil, 203)
+    created["auraArrangement"] = pane
+
+    local arrangement = AF.CreateDropdown(pane, 150)
+    arrangement:SetLabel(L["Arrangement"])
+    AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
+    arrangement:SetItems({
+        {text = L["Left to Right"], value = "left_to_right"},
+        {text = L["Right to Left"], value = "right_to_left"},
+        {text = L["Top to Bottom"], value = "top_to_bottom"},
+        {text = L["Bottom to Top"], value = "bottom_to_top"},
+    })
+    arrangement:SetOnSelect(function(value)
+        pane.t.cfg.orientation = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local width = AF.CreateSlider(pane, L["Width"], 150, 10, 100, 1, nil, true)
+    AF.SetPoint(width, "TOPLEFT",  arrangement, "BOTTOMLEFT", 0, -25)
+    width:SetOnValueChanged(function(value)
+        pane.t.cfg.width = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local height = AF.CreateSlider(pane, L["Height"], 150, 10, 100, 1, nil, true)
+    AF.SetPoint(height, "TOPLEFT", width, 185, 0)
+    height:SetOnValueChanged(function(value)
+        pane.t.cfg.height = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local spacingX = AF.CreateSlider(pane, L["Spacing"] .. " X", 150, -1, 50, 1, nil, true)
+    AF.SetPoint(spacingX, "TOPLEFT", width, "BOTTOMLEFT", 0, -40)
+    spacingX:SetOnValueChanged(function(value)
+        pane.t.cfg.spacingX = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local spacingY = AF.CreateSlider(pane, L["Spacing"] .. " Y", 150, -1, 50, 1, nil, true)
+    AF.SetPoint(spacingY, "TOPLEFT", spacingX, 185, 0)
+    spacingY:SetOnValueChanged(function(value)
+        pane.t.cfg.spacingY = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local numPerLine = AF.CreateSlider(pane, L["Num Per Line"], 150, 2, 50, 1, nil, true)
+    AF.SetPoint(numPerLine, "TOPLEFT", spacingX, "BOTTOMLEFT", 0, -40)
+    numPerLine:SetOnValueChanged(function(value)
+        pane.t.cfg.numPerLine = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local numTotal = AF.CreateSlider(pane, L["Num Total"], 150, 1, 100, 1, nil, true)
+    AF.SetPoint(numTotal, "TOPLEFT", numPerLine, 185, 0)
+    numTotal:SetOnValueChanged(function(value)
+        pane.t.cfg.numTotal = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        arrangement:SetSelectedValue(t.cfg.orientation)
+        width:SetValue(t.cfg.width)
+        height:SetValue(t.cfg.height)
+        spacingX:SetValue(t.cfg.spacingX)
+        spacingY:SetValue(t.cfg.spacingY)
+        numPerLine:SetValue(t.cfg.numPerLine)
+        numTotal:SetValue(t.cfg.numTotal)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- tooltip
+---------------------------------------------------------------------
+builder["tooltip"] = function(parent)
+    if created["tooltip"] then return created["tooltip"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Tooltip", nil, 200)
+    created["tooltip"] = pane
+
+    local enabledCheckButton = AF.CreateCheckButton(pane, L["Enable Aura Tooltip"])
+    AF.SetPoint(enabledCheckButton, "TOPLEFT", 15, -25)
+    enabledCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.tooltip.enabled = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local anchorTo = AF.CreateDropdown(pane, 150)
+    anchorTo:SetLabel(L["Relative To"])
+    AF.SetPoint(anchorTo, "LEFT", enabledCheckButton, 185, 0)
+    AF.SetPoint(anchorTo, "TOP", pane, 0, -25)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", enabledCheckButton, 0, -45)
+    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.tooltip.position[1] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local relativePoint = AF.CreateDropdown(pane, 150)
+    relativePoint:SetLabel(L["Relative Point"])
+    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
+    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetOnSelect(function(value)
+        pane.t.cfg.tooltip.position[2] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local x = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
+    AF.SetPoint(x, "TOPLEFT", anchorPoint, 0, -45)
+    x:SetOnValueChanged(function(value)
+        pane.t.cfg.tooltip.position[3] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local y = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
+    AF.SetPoint(y, "TOPLEFT", x, 185, 0)
+    y:SetOnValueChanged(function(value)
+        pane.t.cfg.tooltip.position[4] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+
+    function pane.Load(t)
+        pane.t = t
+        enabledCheckButton:SetChecked(t.cfg.tooltip.enabled)
+        anchorTo:SetSelectedValue(t.cfg.tooltip.anchorTo)
+        anchorPoint:SetSelectedValue(t.cfg.tooltip.position[1])
+        relativePoint:SetSelectedValue(t.cfg.tooltip.position[2])
+        x:SetValue(t.cfg.tooltip.position[3])
+        y:SetValue(t.cfg.tooltip.position[4])
+    end
+
+    return pane
+end
 
 ---------------------------------------------------------------------
 -- get

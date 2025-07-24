@@ -184,7 +184,7 @@ local function CreateAurasPane()
     local noneColorPicker = AF.CreateColorPicker(aurasPane, L["None"], true)
     AF.SetPoint(noneColorPicker, "TOPLEFT", bleedColorPicker, "BOTTOMLEFT", 0, -7)
 
-    local castByMeColorPicker = AF.CreateColorPicker(aurasPane, L["Cast by Me"], true)
+    local castByMeColorPicker = AF.CreateColorPicker(aurasPane, L["Cast By Me"], true)
     AF.SetPoint(castByMeColorPicker, "TOPLEFT", noneColorPicker, "BOTTOMLEFT", 0, -7)
 
     local dispellableColorPicker = AF.CreateColorPicker(aurasPane, L["Dispellable"], true)

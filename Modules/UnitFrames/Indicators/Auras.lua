@@ -64,7 +64,8 @@ local function IsCastByMe(source)
 end
 
 local function IsCastByUnit(source, unit)
-    return source and not UnitIsUnit(source, "player") and (UnitIsUnit(source, unit) or UnitIsOwnerOrControllerOfUnit(unit, source))
+    -- return source and not UnitIsUnit(source, "player") and (UnitIsUnit(source, unit) or UnitIsOwnerOrControllerOfUnit(unit, source))
+    return source and (UnitIsUnit(source, unit) or UnitIsOwnerOrControllerOfUnit(unit, source))
 end
 
 local function IsDispellable(self, auraData)
@@ -89,10 +90,10 @@ local function UpdateExtraData(self, auraData)
     auraData.castByOthers = auraData.isFromPlayerOrPlayerPet and not auraData.castByMe
     auraData.castByUnit = IsCastByUnit(auraData.sourceUnit, self.root.unit)
     auraData.castByNPC = not auraData.isFromPlayerOrPlayerPet
+    auraData.dispellable = IsDispellable(self, auraData)
     -- auraData.castByBoss = auraData.isBossAura
     -- auraData.castByUnknown = not auraData.sourceUnit
     auraData.debuffType = AF.GetDebuffType(auraData)
-    auraData.dispellable = IsDispellable(self, auraData)
     auraData.noDuration = auraData.duration == 0
     if self.whitelist then
         auraData.priority = self.whitelist[auraData.spellId] or 999
