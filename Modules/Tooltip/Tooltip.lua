@@ -399,13 +399,13 @@ local lineFormatters = {
                 name = name .. "-" .. realm
             end
 
-            local r, g, b
+            local color
             if UnitIsTapDenied(unit) then
-                r, g, b = AF.GetColorRGB("gray")
+                color = "gray"
             elseif not isNotSpecified then
-                r, g, b = AF.GetUnitColor(unit)
+                color = AF.GetUnitColorName(unit)
             end
-            tooltip:AddLine(name, r, g, b)
+            tooltip:AddLine(AF.WrapTextInColor(name, color))
         end
     end,
 
