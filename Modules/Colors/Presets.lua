@@ -40,7 +40,7 @@ local uf_colors = {
 
     -- swing = {1, 1, 0.1, 1},
     damage = {1, 0.1, 0.1, 1},
-    heal = {0.1, 1, 0.1, 1},
+    healing = {0.1, 1, 0.1, 1},
 
     exp_normal_start = {0.34, 0.39, 1, 1},
     exp_normal_end = {0.78, 0.38, 1, 1},

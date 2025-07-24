@@ -480,7 +480,7 @@ local style1 = {
                 font = {"Visitor", 9, "monochrome_outline", false},
                 types = {
                     damage = {enabled = true, color = AF.GetColorTable("damage")},
-                    heal = {enabled = true, color = AF.GetColorTable("heal")},
+                    healing = {enabled = true, color = AF.GetColorTable("healing")},
                 },
                 format = {
                     numeric = "current_short",
@@ -3147,7 +3147,7 @@ local style2 = {
                 font = {"Visitor", 9, "monochrome_outline", false},
                 types = {
                     damage = {enabled = true, color = AF.GetColorTable("damage")},
-                    heal = {enabled = true, color = AF.GetColorTable("heal")},
+                    healing = {enabled = true, color = AF.GetColorTable("healing")},
                 },
                 format = {
                     numeric = "current_short",

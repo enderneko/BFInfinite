@@ -142,7 +142,14 @@ local indicators = {
         "position,anchorTo,parent",
         "font,color",
         "showTimer,useEn",
-    }
+    },
+    incDmgHealText = {
+        "enabled",
+        "position,anchorTo,parent",
+        "font",
+        "damage,healing",
+        "numericFormat",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -188,6 +195,11 @@ local function GetFormatItems(which)
             {text = L["Current + Absorbs (Decimal)"], value = "current_absorbs_decimal"},
             {text = L["Effective"], value = "current_absorbs_sum"},
             {text = L["Effective (Decimal)"], value = "current_absorbs_sum_decimal"},
+        }
+    elseif which == "incDmgHealText" then
+        numeric = {
+            {text = L["Current"], value = "current"},
+            {text = L["Current (Short)"], value = "current_short"},
         }
     end
 
@@ -305,7 +317,7 @@ builder["copy,paste,reset"] = function(parent)
         local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
-            AF.Merge(pane.t.cfg, copiedCfg)
+            AF.MergeExistingKeys(pane.t.cfg, copiedCfg)
             LoadIndicatorConfig(pane.t)
         end)
     end)
@@ -315,12 +327,13 @@ builder["copy,paste,reset"] = function(parent)
     AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 7, 0)
     reset:SetOnClick(function()
         local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n"
-            .. "[" .. L[pane.t.id] .. "]\n"
+            .. AF.WrapTextInColor("[" .. L[pane.t.id] .. "]", "softlime") .. "\n"
             .. pane.t.ownerName
 
         local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
+            wipe(pane.t.cfg)
             AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "indicator", pane.t.id))
             LoadIndicatorConfig(pane.t)
             -- reload settings
@@ -2125,6 +2138,41 @@ builder["textFormat"] = function(parent)
 end
 
 ---------------------------------------------------------------------
+-- numericFormat
+---------------------------------------------------------------------
+builder["numericFormat"] = function(parent)
+    if created["numericFormat"] then return created["numericFormat"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_NumericFormat", nil, 75)
+    created["numericFormat"] = pane
+
+    local numericFormatDropdown = AF.CreateDropdown(pane, 250)
+    AF.SetPoint(numericFormatDropdown, "TOPLEFT", 15, -25)
+    numericFormatDropdown:SetLabel(L["Numeric Format"])
+    numericFormatDropdown:SetOnSelect(function(value)
+        pane.t.cfg.format.numeric = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local useAsianUnitsCheckButton = AF.CreateCheckButton(pane, L["Use Asian Units"])
+    AF.SetPoint(useAsianUnitsCheckButton, "TOPLEFT", numericFormatDropdown, "BOTTOMLEFT", 0, -8)
+    useAsianUnitsCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.format.useAsianUnits = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+    useAsianUnitsCheckButton:SetEnabled(AF.isAsian)
+
+    function pane.Load(t)
+        pane.t = t
+        local numeric = GetFormatItems(t.id)
+        numericFormatDropdown:SetItems(numeric)
+        numericFormatDropdown:SetSelectedValue(t.cfg.format.numeric)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- hideIfFull,hideIfEmpty
 ---------------------------------------------------------------------
 builder["hideIfFull,hideIfEmpty"] = function(parent)
@@ -2257,6 +2305,58 @@ builder["font,color"] = function(parent)
 end
 
 ---------------------------------------------------------------------
+-- font
+---------------------------------------------------------------------
+builder["font"] = function(parent)
+    if created["font"] then return created["font"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Font", nil, 103)
+    created["font"] = pane
+
+    local fontDropdown = AF.CreateDropdown(pane, 150)
+    fontDropdown:SetLabel(L["Font"])
+    AF.SetPoint(fontDropdown, "TOPLEFT", 15, -25)
+    fontDropdown:SetItems(AF.LSM_GetFontDropdownItems())
+    fontDropdown:SetOnSelect(function(value)
+        pane.t.cfg.font[1] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontOutlineDropdown = AF.CreateDropdown(pane, 150)
+    fontOutlineDropdown:SetLabel(L["Outline"])
+    AF.SetPoint(fontOutlineDropdown, "TOPLEFT", fontDropdown, 185, 0)
+    fontOutlineDropdown:SetItems(AF.LSM_GetFontOutlineDropdownItems())
+    fontOutlineDropdown:SetOnSelect(function(value)
+        pane.t.cfg.font[3] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local fontSizeSlider = AF.CreateSlider(pane, L["Size"], 150, 5, 50, 1, nil, true)
+    AF.SetPoint(fontSizeSlider, "TOPLEFT", fontDropdown, "BOTTOMLEFT", 0, -25)
+    fontSizeSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.font[2] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local shadowCheckButton = AF.CreateCheckButton(pane, L["Shadow"])
+    AF.SetPoint(shadowCheckButton, "LEFT", fontSizeSlider, 185, 0)
+    shadowCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.font[4] = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        fontDropdown:SetSelectedValue(t.cfg.font[1])
+        fontSizeSlider:SetValue(t.cfg.font[2])
+        fontOutlineDropdown:SetSelectedValue(t.cfg.font[3])
+        shadowCheckButton:SetChecked(t.cfg.font[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- showTimer,useEn
 ---------------------------------------------------------------------
 builder["showTimer,useEn"] = function(parent)
@@ -2289,6 +2389,65 @@ builder["showTimer,useEn"] = function(parent)
 
     return pane
 end
+
+---------------------------------------------------------------------
+-- damage,healing
+---------------------------------------------------------------------
+builder["damage,healing"] = function(parent)
+    if created["damage,healing"] then return created["damage,healing"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_DamageHealing", nil, 30)
+    created["damage,healing"] = pane
+
+    local damageCheckButton = AF.CreateCheckButton(pane)
+    AF.SetPoint(damageCheckButton, "LEFT", 15, 0)
+
+    local damageColorPicker = AF.CreateColorPicker(pane, L["Damage"])
+    AF.SetPoint(damageColorPicker, "TOPLEFT", damageCheckButton, "TOPRIGHT", 2, 0)
+    damageColorPicker:SetOnConfirm(function(r, g, b)
+        pane.t.cfg.types.damage.color[1] = r
+        pane.t.cfg.types.damage.color[2] = g
+        pane.t.cfg.types.damage.color[3] = b
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    damageCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.types.damage.enabled = checked
+        damageColorPicker:SetEnabled(checked)
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local healingCheckButton = AF.CreateCheckButton(pane)
+    AF.SetPoint(healingCheckButton, "TOPLEFT", damageCheckButton, 185, 0)
+
+    local healingColorPicker = AF.CreateColorPicker(pane, L["Healing"])
+    AF.SetPoint(healingColorPicker, "TOPLEFT", healingCheckButton, "TOPRIGHT", 2, 0)
+    healingColorPicker:SetOnConfirm(function(r, g, b)
+        pane.t.cfg.types.healing.color[1] = r
+        pane.t.cfg.types.healing.color[2] = g
+        pane.t.cfg.types.healing.color[3] = b
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    healingCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.types.healing.enabled = checked
+        healingColorPicker:SetEnabled(checked)
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        damageCheckButton:SetChecked(t.cfg.types.damage.enabled)
+        healingCheckButton:SetChecked(t.cfg.types.healing.enabled)
+        damageColorPicker:SetColor(t.cfg.types.damage.color)
+        healingColorPicker:SetColor(t.cfg.types.healing.color)
+        damageColorPicker:SetEnabled(t.cfg.types.damage.enabled)
+        healingColorPicker:SetEnabled(t.cfg.types.healing.enabled)
+    end
+
+    return pane
+end
+
 
 ---------------------------------------------------------------------
 -- get

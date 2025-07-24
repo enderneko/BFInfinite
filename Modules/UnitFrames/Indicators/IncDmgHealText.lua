@@ -13,12 +13,14 @@ local EVENT_COLORS = {}
 
 local function UpdateText(self, _, unit, event, flag, amount, schoolMask)
     -- event: HEAL, DODGE, BLOCK, WOUND, MISS, PARRY, RESIST, ...
-    self:SetTextColor(AF.UnpackColor(EVENT_COLORS[event == "HEAL" and "HEAL" or "DAMAGE"]))
+    event = event == "HEAL" and "HEAL" or "DAMAGE"
+    if not EVENT_COLORS[event] then return end
+    self:SetTextColor(AF.UnpackColor(EVENT_COLORS[event]))
     self:SetFormattedText("%s%s", self.GetNumeric(amount), (flag == "CRITICAL" or flag == "CRUSHING") and "!" or "")
     self:FadeInOut()
 end
 
----------------------------------------------------------------------w
+---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
 local function IncDmgHealText_Update(self)
@@ -50,8 +52,8 @@ local numeric = {
 -- load
 ---------------------------------------------------------------------
 local function UpdateEvents(config)
-    EVENT_COLORS["DAMAGE"] = config.damage.color
-    EVENT_COLORS["HEAL"] = config.heal.color
+    EVENT_COLORS["DAMAGE"] = config.damage.enabled and config.damage.color
+    EVENT_COLORS["HEAL"] = config.healing.enabled and config.healing.color
 end
 
 local function IncDmgHealText_LoadConfig(self, config)
