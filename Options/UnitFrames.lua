@@ -181,7 +181,9 @@ local function ListItem_LoadOptions(self)
     local heights = {}
     local last
 
-    for _, pane in next, options do
+    for i, pane in next, options do
+        pane.index = i
+
         -- FIXME: seems cause weird issues that option values are not loaded properly (visible)
         -- maybe should set parent when creating the pane?
         -- pane:SetParent(scroll.scrollContent)

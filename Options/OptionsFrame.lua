@@ -4,6 +4,10 @@ local L = BFI.L
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local DEFAULT_WIDTH, DEFAULT_HEIGHT = 750, 600
+local LIST_WIDTH = 170
+local HEADER_HEIGHT = 35
+
 local optionsFrame
 
 ---------------------------------------------------------------------
@@ -11,10 +15,13 @@ local optionsFrame
 ---------------------------------------------------------------------
 local list = {
     "General",
+    "SEPARATOR",
     "Colors",
+    "Auras",
     "SEPARATOR",
     "Unit Frames",
     "Nameplates",
+    "Buffs & Debuffs",
     "Action Bars",
     "Chat",
     "Tooltip",
@@ -23,14 +30,7 @@ local list = {
 }
 
 local frameWidths = {
-    ["General"] = 750,
-    ["Colors"] = 750,
-    ["Unit Frames"] = 750,
-    ["Nameplates"] = 750,
-    ["Action Bars"] = 750,
-    ["Chat"] = 750,
-    ["Tooltip"] = 750,
-    ["About"] = 750,
+
 }
 
 local function CreateButton(name)
@@ -81,7 +81,7 @@ local function ShowOptionsPanel(b, id)
     AF.AnimatedResize(b.highlight, b:GetWidth(), nil, nil, nil, function()
         b.highlight:Show()
     end)
-    AF.SetWidth(optionsFrame, frameWidths[id])
+    AF.SetWidth(optionsFrame, frameWidths[id] or DEFAULT_WIDTH)
     AF.Fire("BFI_ShowOptionsPanel", id)
 end
 
@@ -123,7 +123,7 @@ local function ReAnchor()
 end
 
 local function CreateOptionsFrame()
-    optionsFrame = AF.CreateFrame(AFParent, "BFIOptionsFrame", 750, 600)
+    optionsFrame = AF.CreateFrame(AFParent, "BFIOptionsFrame", DEFAULT_WIDTH, DEFAULT_HEIGHT)
     optionsFrame:Hide()
 
     tinsert(_G.UISpecialFrames, optionsFrame:GetName())
@@ -143,7 +143,7 @@ local function CreateOptionsFrame()
     --------------------------------------------------
     -- header pane
     --------------------------------------------------
-    local headerPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrame_HeaderPane", nil, 35)
+    local headerPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrame_HeaderPane", nil, HEADER_HEIGHT)
     optionsFrame.headerPane = headerPane
     headerPane:SetPoint("TOPLEFT")
     headerPane:SetPoint("TOPRIGHT")
@@ -185,7 +185,7 @@ local function CreateOptionsFrame()
     --------------------------------------------------
     -- list pane
     --------------------------------------------------
-    local listPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrame_ListPane", 170)
+    local listPane = AF.CreateBorderedFrame(optionsFrame, "BFIOptionsFrame_ListPane", LIST_WIDTH)
     optionsFrame.listPane = listPane
     AF.SetPoint(listPane, "TOPLEFT", headerPane, "BOTTOMLEFT", 0, 1)
     AF.SetPoint(listPane, "BOTTOMLEFT", optionsFrame)

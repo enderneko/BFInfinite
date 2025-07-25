@@ -503,7 +503,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -555,7 +555,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -908,7 +908,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -960,7 +960,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -1266,7 +1266,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -1318,7 +1318,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -1620,7 +1620,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -1672,7 +1672,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -1966,7 +1966,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -2018,7 +2018,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -2312,7 +2312,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -2364,7 +2364,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -2658,7 +2658,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -2710,7 +2710,7 @@ local style1 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -3156,7 +3156,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -3208,7 +3208,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -3561,7 +3561,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -3613,7 +3613,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -3919,7 +3919,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -3971,7 +3971,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -4272,7 +4272,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -4324,7 +4324,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -4618,7 +4618,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -4670,7 +4670,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -4964,7 +4964,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -5016,7 +5016,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -5309,7 +5309,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -5361,7 +5361,7 @@ local style2 = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -5729,7 +5729,7 @@ local defaults = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = false,
@@ -5781,7 +5781,7 @@ local defaults = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -6019,7 +6019,7 @@ local defaults = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = false,
@@ -6071,7 +6071,7 @@ local defaults = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = false,
@@ -6351,7 +6351,7 @@ local defaults = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,
@@ -6403,7 +6403,7 @@ local defaults = {
                 tooltip = {
                     enabled = true,
                     anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMLEFT", 0, -1},
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
                 },
                 durationText = {
                     enabled = true,

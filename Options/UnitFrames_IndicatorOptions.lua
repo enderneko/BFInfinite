@@ -153,7 +153,7 @@ local indicators = {
     buffs = {
         "enabled",
         "auraBaseFilters",
-        "auraCustomFilters",
+        "auraBlackListWhitelist",
         "auraTypeColor",
         "auraArrangement",
         "position,anchorTo",
@@ -2083,7 +2083,7 @@ end
 builder["stackText"] = function(parent)
     if created["stackText"] then return created["stackText"] end
 
-    created["stackText"] = CreateFontPositionExtraPane(parent, "stackText", "BFI_IndicatorOption_StackText", AF.WrapTextInColor(L["Stack Text"], "BFI"))
+    created["stackText"] = CreateFontPositionExtraPane(parent, "stackText", "BFI_IndicatorOption_StackText", AF.GetGradientText(L["Stack Text"], "BFI", "white"))
     return created["stackText"]
 end
 
@@ -2093,7 +2093,7 @@ end
 builder["durationText"] = function(parent)
     if created["durationText"] then return created["durationText"] end
 
-    created["durationText"] = CreateFontPositionExtraPane(parent, "durationText", "BFI_IndicatorOption_DurationText", AF.WrapTextInColor(L["Duration Text"], "BFI"), "duration")
+    created["durationText"] = CreateFontPositionExtraPane(parent, "durationText", "BFI_IndicatorOption_DurationText", AF.GetGradientText(L["Duration Text"], "BFI", "white"), "duration")
     return created["durationText"]
 end
 
@@ -2661,6 +2661,169 @@ builder["auraBaseFilters"] = function(parent)
 end
 
 ---------------------------------------------------------------------
+-- auraBlackListWhitelist
+---------------------------------------------------------------------
+builder["auraBlackListWhitelist"] = function(parent)
+    if created["auraBlackListWhitelist"] then return created["auraBlackListWhitelist"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraBlackListWhitelist", nil, 0)
+    created["auraBlackListWhitelist"] = pane
+
+    local mode = AF.CreateDropdown(pane, 150)
+    AF.SetPoint(mode, "TOPLEFT", 15, -8)
+    mode:SetItems({
+        {text = L["Blacklist"], value = "blacklist"},
+        {text = L["Whitelist"], value = "whitelist"},
+    })
+
+    local tip = AF.CreateFontString(pane, AF.GetIconString("MouseLeftClick") .. L["Edit"] .. "  " .. AF.GetIconString("MouseRightClick") .. L["Delete"])
+    AF.SetPoint(tip, "LEFT", mode, "RIGHT", 8, 0)
+    tip:SetColor("tip")
+
+    local buttons = {}
+    local editBox
+
+    local function HideEditBox()
+        if editBox then
+            editBox:Hide()
+            editBox = nil
+        end
+    end
+
+    local function GetEditBox(owner)
+        HideEditBox()
+
+        editBox = AF.GetEditBox(parent:GetParent(), L["Input Spell ID"], nil, nil, "number")
+        editBox:SetAllPoints(owner)
+        editBox:SetBorderColor("BFI")
+
+        editBox:SetOnTextChanged(function(spell)
+            if not spell then
+                AF.Tooltip2:Hide()
+                return
+            end
+            AF.Tooltip2:SetOwner(editBox, "ANCHOR_NONE")
+            AF.Tooltip2:SetSpellByID(spell, true)
+            AF.Tooltip2:SetPoint("TOPRIGHT", editBox, "TOPLEFT", -1, 0)
+            AF.Tooltip2:Show()
+        end)
+
+        editBox:SetOnEnterPressed(function(spell)
+            if not (spell and AF.SpellExists(spell)) then return end
+            if owner.index then
+                pane.list[owner.index] = spell
+            else
+                tinsert(pane.list, spell)
+            end
+            pane.Load(pane.t)
+            LoadIndicatorConfig(pane.t)
+        end)
+
+        editBox:SetText(owner.spell or "")
+    end
+
+    mode:SetOnSelect(function(value)
+        HideEditBox()
+        pane.t.cfg.mode = value
+        pane.Load(pane.t)
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    pane:SetOnHide(function()
+        HideEditBox()
+        AF.Tooltip2:Hide()
+    end)
+
+    local addButton = AF.CreateButton(pane, nil, "BFI_hover", 150, 20)
+    addButton:SetTexture(AF.GetIcon("Plus"))
+    addButton:EnablePushEffect(false)
+    addButton:SetOnClick(function()
+        GetEditBox(addButton)
+    end)
+
+    local pool = AF.CreateObjectPool(function()
+        local b = AF.CreateButton(pane, nil, "BFI_hover", 150, 20)
+        b:SetTexture(AF.GetIcon("QuestionMark"), nil, {"LEFT", 2, 0}, nil, "black")
+        b:EnablePushEffect(false)
+        b:SetTextJustifyH("LEFT")
+        b:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+
+        b:SetOnClick(function(_, click)
+            if click == "LeftButton" then
+                GetEditBox(b)
+            elseif click == "RightButton" then
+                AF.Remove(pane.list, b.spell)
+                pane.Load(pane.t)
+                LoadIndicatorConfig(pane.t)
+            end
+        end)
+
+        b:HookOnEnter(function()
+            if editBox and editBox:IsShown() then return end
+            AF.Tooltip2:SetOwner(parent:GetParent(), "ANCHOR_NONE")
+            AF.Tooltip2:SetSpellByID(b.spell, true)
+            AF.Tooltip2:SetPoint("TOPRIGHT", b, "TOPLEFT", -1, 0)
+            AF.Tooltip2:Show()
+        end)
+
+        b:HookOnLeave(function()
+            if editBox and editBox:IsShown() then return end
+            AF.Tooltip2:Hide()
+        end)
+
+        return b
+    end, function(_, b)
+        b:Hide()
+        AF.ClearPoints(b)
+    end)
+
+
+    function pane.Load(t)
+        pane.t = t
+        mode:SetSelectedValue(t.cfg.mode)
+
+        pane.list = t.cfg.mode == "blacklist" and t.cfg.blacklist or t.cfg.whitelist
+
+        pool:ReleaseAll()
+        wipe(buttons)
+
+        local num = #pane.list
+
+        for i = 1, num + 1 do
+            local spell = pane.list[i]
+
+            local b
+            if i <= num then
+                b = pool:Acquire()
+                local name, icon = AF.GetSpellInfo(spell)
+                b:SetText(name)
+                b:SetTexture(icon, nil, nil, nil, "black")
+                b.spell = spell
+                b.index = i
+            else
+                b = addButton
+            end
+
+            buttons[i] = b
+            b:Show()
+
+            if i == 1 then
+                AF.SetPoint(b, "TOPLEFT", mode, "BOTTOMLEFT", 0, -8)
+            elseif i % 2 == 1 then
+                AF.SetPoint(b, "TOPLEFT", buttons[i - 2], "BOTTOMLEFT", 0, -5)
+            else
+                AF.SetPoint(b, "TOPLEFT", buttons[i - 1], "TOPRIGHT", 5, 0)
+            end
+        end
+
+        AF.SetListHeight(pane, ceil((num + 1) / 2), 20, 5, 8 + 20 + 8, 8)
+        parent._contentHeights[pane.index] = tostring(pane:GetHeight()) -- update height
+        AF.ReSize(parent) -- call AF.SetScrollContentHeight
+    end
+
+    return pane
+end
+---------------------------------------------------------------------
 -- auraTypeColor
 ---------------------------------------------------------------------
 builder["auraTypeColor"] = function(parent)
@@ -2669,8 +2832,16 @@ builder["auraTypeColor"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraTypeColor", nil, 72)
     created["auraTypeColor"] = pane
 
+    local tip = AF.CreateFontString(pane, AF.GetGradientText(L["Border Color"], "BFI", "white") .. "\n" .. L["Priority: top to bottom"])
+    AF.SetPoint(tip, "TOPLEFT", 15, -8)
+    AF.SetPoint(tip, "BOTTOMLEFT", 15, 8)
+    tip:SetColor("tip")
+    tip:SetJustifyH("LEFT")
+    tip:SetJustifyV("MIDDLE")
+    tip:SetSpacing(5)
+
     local castByMe = AF.CreateCheckButton(pane, L["Cast By Me"])
-    AF.SetPoint(castByMe, "TOPLEFT", 15, -8)
+    AF.SetPoint(castByMe, "TOPLEFT", tip, 185, 0)
     castByMe:SetOnCheck(function(checked)
         pane.t.cfg.auraTypeColor.castByMe = checked
         LoadIndicatorConfig(pane.t)
@@ -2689,15 +2860,6 @@ builder["auraTypeColor"] = function(parent)
         pane.t.cfg.auraTypeColor.debuffType = checked
         LoadIndicatorConfig(pane.t)
     end)
-
-    local tip = AF.CreateFontString(pane, L["Priority:\ntop to bottom"])
-    AF.SetWidth(tip, 150)
-    AF.SetPoint(tip, "TOPLEFT", castByMe, 185, 0)
-    AF.SetPoint(tip, "BOTTOMLEFT", debuffType, 185, 0)
-    tip:SetColor("tip")
-    tip:SetJustifyH("LEFT")
-    tip:SetJustifyV("MIDDLE")
-    tip:SetSpacing(5)
 
     function pane.Load(t)
         pane.t = t
@@ -2802,20 +2964,22 @@ end
 builder["tooltip"] = function(parent)
     if created["tooltip"] then return created["tooltip"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Tooltip", nil, 200)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Tooltip", nil, 148)
     created["tooltip"] = pane
 
     local enabledCheckButton = AF.CreateCheckButton(pane, L["Enable Aura Tooltip"])
     AF.SetPoint(enabledCheckButton, "TOPLEFT", 15, -25)
-    enabledCheckButton:SetOnCheck(function(checked)
-        pane.t.cfg.tooltip.enabled = checked
-        LoadIndicatorConfig(pane.t)
-    end)
 
-    local anchorTo = AF.CreateDropdown(pane, 150)
-    anchorTo:SetLabel(L["Relative To"])
-    AF.SetPoint(anchorTo, "LEFT", enabledCheckButton, 185, 0)
-    AF.SetPoint(anchorTo, "TOP", pane, 0, -25)
+    local relativeTo = AF.CreateDropdown(pane, 150)
+    relativeTo:SetLabel(L["Relative To"])
+    AF.SetPoint(relativeTo, "LEFT", enabledCheckButton, 185, 0)
+    AF.SetPoint(relativeTo, "TOP", pane, 0, -25)
+    relativeTo:SetItems({
+        {text = L["Unit Frame"], value = "root"},
+        {text = L["Group"], value = "parent"},
+        {text = L["Icon"], value = "self"},
+        {text = L["Icon (Adaptive)"], value = "self_adaptive"},
+    })
 
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
@@ -2849,11 +3013,28 @@ builder["tooltip"] = function(parent)
         LoadIndicatorPosition(pane.t)
     end)
 
+    local function UpdateWidgets()
+        relativeTo:SetEnabled(pane.t.cfg.tooltip.enabled)
+        AF.SetEnabled(pane.t.cfg.tooltip.enabled and pane.t.cfg.tooltip.anchorTo ~= "self_adaptive", anchorPoint, relativePoint, x, y)
+    end
+
+    enabledCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.tooltip.enabled = checked
+        UpdateWidgets()
+        LoadIndicatorConfig(pane.t)
+    end)
+
+     relativeTo:SetOnSelect(function(value)
+        pane.t.cfg.tooltip.anchorTo = value
+        UpdateWidgets()
+        LoadIndicatorPosition(pane.t)
+    end)
 
     function pane.Load(t)
         pane.t = t
+        UpdateWidgets()
         enabledCheckButton:SetChecked(t.cfg.tooltip.enabled)
-        anchorTo:SetSelectedValue(t.cfg.tooltip.anchorTo)
+        relativeTo:SetSelectedValue(t.cfg.tooltip.anchorTo)
         anchorPoint:SetSelectedValue(t.cfg.tooltip.position[1])
         relativePoint:SetSelectedValue(t.cfg.tooltip.position[2])
         x:SetValue(t.cfg.tooltip.position[3])
