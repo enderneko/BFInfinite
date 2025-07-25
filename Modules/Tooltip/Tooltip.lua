@@ -119,6 +119,8 @@ local function UpdateAnchor(tooltip, parent)
             elseif tt.anchorTo == "self_adaptive" then
                 local point, anchorPoint, x, y = GetTooltipAnchorPoint(parent)
                 tooltip:SetPoint(point, parent, anchorPoint, x, y)
+            elseif tt.anchorTo == "parent" then
+                tooltip:SetPoint(tt.position[1], parent:GetParent(), tt.position[2], tt.position[3], tt.position[4])
             elseif tt.anchorTo == "root" then
                 tooltip:SetPoint(tt.position[1], parent.root, tt.position[2], tt.position[3], tt.position[4])
             -- elseif tt.anchorTo then
@@ -582,7 +584,6 @@ local function SaveOtherAddonsLines(index)
     wipe(addonLines)
 
     local lt, rt = _G["GameTooltipTextLeft" .. index], _G["GameTooltipTextRight" .. index]
-    local r, g, b
     while lt and rt do
         -- left
         local textLeft = lt:GetText()
@@ -654,8 +655,8 @@ local function UNIT_TARGET()
     groupTargetChanged = true
 end
 
-local function OnTooltipCleared()
-    GameTooltip.UpdateTooltip = nil
+local function OnTooltipCleared(tooltip)
+    tooltip.UpdateTooltip = nil
 end
 
 local function OnTooltipSetUnit(tooltip, data)
@@ -696,7 +697,7 @@ local function OnTooltipSetUnit(tooltip, data)
     lastMouseoverTargetGUID = UnitGUID(unit .. "target")
     tooltip.UpdateTooltip = UpdateTarget
 
-    -- tooltip:Show()
+    tooltip:Show()
 
     -- faction icon
     -- if isPlayer then
@@ -755,12 +756,16 @@ end
 local lastDataInstanceID, lastAuraData
 
 local function UpdateAuraTooltip(tooltip, auraData)
-    if not auraData then return end
-
     local data = tooltip:GetTooltipData()
-    if data then
-        lastDataInstanceID = data.dataInstanceID
-        lastAuraData = auraData
+    if not (data or auraData) then return end
+
+    lastDataInstanceID = data.dataInstanceID
+    lastAuraData = auraData
+
+    -- FIXME: is this fix correct?
+    if data.lines and data.lines[1] and data.lines[1].leftColor then
+        local leftColor = data.lines[1]["leftColor"]
+        GameTooltipTextLeft1:SetTextColor(leftColor.r, leftColor.g, leftColor.b)
     end
 
     if auraData.sourceUnit and UnitExists(auraData.sourceUnit) then
@@ -797,7 +802,8 @@ local function GameTooltip_RefreshData()
     if GameTooltip:IsForbidden() or not lastAuraData then return end
 
     local info = GameTooltip:GetPrimaryTooltipInfo()
-    if not (info and info.tooltipData) then return end
+    if not (info and info.tooltipData and info.getterName) then return end
+    if not (info.getterName:find("Aura$") or info.getterName:find("AuraInstanceID$")) then return end
 
     -- if not (lastDataInstanceID and GameTooltip:HasDataInstanceID(lastDataInstanceID + 1)) then return end
     -- if info.tooltipData.dataInstanceID ~= lastDataInstanceID + 1 then return end
@@ -840,8 +846,8 @@ local function InitTooltip()
 
     hooksecurefunc(GameTooltip, "RefreshData", GameTooltip_RefreshData)
     hooksecurefunc(GameTooltip, "SetUnitAura", GameTooltip_SetUnitAura)
-    hooksecurefunc(GameTooltip, "SetUnitBuff", GameTooltip_SetUnitAura)
-    hooksecurefunc(GameTooltip, "SetUnitDebuff", GameTooltip_SetUnitAura)
+    hooksecurefunc(GameTooltip, "SetUnitBuff", GameTooltip_SetUnitAura) -- classic?
+    hooksecurefunc(GameTooltip, "SetUnitDebuff", GameTooltip_SetUnitAura) -- classic?
     hooksecurefunc(GameTooltip, "SetUnitBuffByAuraInstanceID", GameTooltip_SetUnitAuraByAuraInstanceID)
     hooksecurefunc(GameTooltip, "SetUnitDebuffByAuraInstanceID", GameTooltip_SetUnitAuraByAuraInstanceID)
 end
