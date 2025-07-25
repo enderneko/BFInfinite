@@ -13,10 +13,11 @@ BFI.name = "BFInfinite"
 ---@field media table
 ---@field funcs Funcs
 ---@field utils Utils
----@field ActionBars ActionBars
 ---@field Auras Auras
----@field Chat Chat
 ---@field Colors Colors
+---@field ActionBars ActionBars
+---@field BuffsDebuffs BuffsDebuffs
+---@field Chat Chat
 ---@field DataBars DataBars
 ---@field DisableBlizzard DisableBlizzard
 ---@field Maps Maps
@@ -54,6 +55,9 @@ AF.AddEventHandler(BFI.General)
 BFI.Colors = {}
 AF.AddEventHandler(BFI.Colors)
 
+BFI.Auras = {}
+AF.AddEventHandler(BFI.Auras)
+
 BFI.Misc = {}
 AF.AddEventHandler(BFI.Misc)
 
@@ -63,8 +67,8 @@ AF.AddEventHandler(BFI.DisableBlizzard)
 BFI.UIWidgets = {}
 AF.AddEventHandler(BFI.UIWidgets)
 
-BFI.Auras = {}
-AF.AddEventHandler(BFI.Auras)
+BFI.BuffsDebuffs = {}
+AF.AddEventHandler(BFI.BuffsDebuffs)
 
 BFI.ActionBars = {["bars"] = {}}
 AF.AddEventHandler(BFI.ActionBars)

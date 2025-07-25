@@ -7,7 +7,7 @@
         </Attributes>
         <Scripts>
             <OnLoad>
-                BFI.Auras.InitAuraButton(self)
+                BFI.BuffsDebuffs.InitAuraButton(self)
             </OnLoad>
         </Scripts>
     </Button>

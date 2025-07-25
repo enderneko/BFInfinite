@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class Auras
-local A = BFI.Auras
+---@class BuffsDebuffs
+local BD = BFI.BuffsDebuffs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -71,12 +71,12 @@ local defaults = {
 }
 
 AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
-    if not t["auras"] then
-        t["auras"] = AF.Copy(defaults)
+    if not t["buffsDebuffs"] then
+        t["buffsDebuffs"] = AF.Copy(defaults)
     end
-    A.config = t["auras"]
+    BD.config = t["buffsDebuffs"]
 end)
 
-function A.GetDefaults()
+function BD.GetDefaults()
     return AF.Copy(defaults)
 end

@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
----@class Auras
-local A = BFI.Auras
+---@class BuffsDebuffs
+local BD = BFI.BuffsDebuffs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -93,7 +93,7 @@ local function Button_UpdatePixels(button)
     AF.RePoint(button.icon)
 end
 
-function A.InitAuraButton(button)
+function BD.InitAuraButton(button)
     button.header = button:GetParent()
     button.filter = button.header.filter
 
@@ -230,7 +230,7 @@ end
 local function UpdateAuras(_, module, which)
     if module and module ~= "Auras" then return end
 
-    local config = A.config
+    local config = BD.config
 
     if not config.enabled then
         -- A:UnregisterAllEvents()
