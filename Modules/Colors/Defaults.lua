@@ -71,7 +71,11 @@ AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     C.config = t["colors"]
 end, "high")
 
-function C.ResetDefaults(which)
+function C.GetDefaults()
+    return AF.Copy(defaults)
+end
+
+function C.ResetToDefaults(which)
     if not which then
         BFI.vars.profile["colors"] = AF.Copy(defaults)
     else

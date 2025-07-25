@@ -335,7 +335,7 @@ builder["copy,paste,reset"] = function(parent)
     end)
 
 
-    local reset = AF.CreateButton(pane, L["Reset"], "BFI_hover", 107, 20)
+    local reset = AF.CreateButton(pane, _G.RESET, "red_hover", 107, 20)
     AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 7, 0)
     reset:SetOnClick(function()
         local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n"
@@ -2795,7 +2795,7 @@ builder["auraBlackListWhitelist"] = function(parent)
             local b
             if i <= num then
                 b = pool:Acquire()
-                local name, icon = AF.GetSpellInfo(spell)
+                local name, icon = AF.GetSpellInfo(spell, true)
                 b:SetText(name)
                 b:SetTexture(icon, nil, nil, nil, "black")
                 b.spell = spell

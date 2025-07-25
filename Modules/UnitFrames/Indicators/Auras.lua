@@ -95,11 +95,14 @@ local function UpdateExtraData(self, auraData)
     -- auraData.castByUnknown = not auraData.sourceUnit
     auraData.debuffType = AF.GetDebuffType(auraData)
     auraData.noDuration = auraData.duration == 0
-    if self.whitelist then
-        auraData.priority = self.whitelist[auraData.spellId] or 999
-    else
-        auraData.priority = self.priorities[auraData.spellId] or 999
-    end
+
+    -- TODO:
+    auraData.priority = 999
+    -- if self.whitelist then
+    --     auraData.priority = self.whitelist[auraData.spellId] or 999
+    -- else
+    --     auraData.priority = self.priorities[auraData.spellId] or 999
+    -- end
 end
 
 ---------------------------------------------------------------------
@@ -601,8 +604,6 @@ local function Auras_LoadConfig(self, config)
         -- basic filter
         self.CheckBasicFilter = CheckWhitelist
     else
-        -- priorities
-        self.priorities = config.priorities
         -- blacklist
         self.blacklist = AF.TransposeSpellTable(config.blacklist)
         -- comparator

@@ -530,7 +530,6 @@ local style1 = {
                     dispellable = nil,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -582,7 +581,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -935,7 +933,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -1293,7 +1290,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -1345,7 +1341,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -1647,7 +1642,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -1699,7 +1693,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -1993,7 +1986,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -2045,7 +2037,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -2339,7 +2330,6 @@ local style1 = {
                     dispellable = nil,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -2391,7 +2381,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -2685,7 +2674,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -2737,7 +2725,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -3183,7 +3170,6 @@ local style2 = {
                     dispellable = nil,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -3235,7 +3221,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -3588,7 +3573,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -3946,7 +3930,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -3998,7 +3981,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -4299,7 +4281,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -4351,7 +4332,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -4645,7 +4625,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -4697,7 +4676,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -4991,7 +4969,6 @@ local style2 = {
                     dispellable = nil,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -5043,7 +5020,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -5336,7 +5312,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -5388,7 +5363,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -5756,7 +5730,6 @@ local defaults = {
                     dispellable = nil,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -5808,7 +5781,6 @@ local defaults = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -6046,7 +6018,6 @@ local defaults = {
                     dispellable = nil,
                 },
                 mode = "whitelist",
-                priorities = {},
                 blacklist = {},
                 whitelist = AF.Copy(default_whitelist),
                 auraTypeColor = {
@@ -6098,7 +6069,6 @@ local defaults = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = AF.Copy(default_blacklist),
                 whitelist = {},
                 auraTypeColor = {
@@ -6378,7 +6348,6 @@ local defaults = {
                     dispellable = nil,
                 },
                 mode = "blacklist",
-                priorities = {},
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
