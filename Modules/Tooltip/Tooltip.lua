@@ -251,6 +251,7 @@ end
 -- OnTooltipSetUnit
 ---------------------------------------------------------------------
 local UNKNOWN = _G.UNKNOWN
+local UNKNOWNOBJECT = _G.UNKNOWNOBJECT
 local LEVEL = _G.LEVEL
 local UNIT_SKINNABLE_BOLTS = _G.UNIT_SKINNABLE_BOLTS
 local UNIT_SKINNABLE_LEATHER = _G.UNIT_SKINNABLE_LEATHER
@@ -394,23 +395,28 @@ local lineFormatters = {
     name = function(config, tooltip, unit, isPlayer, isNotSpecified)
         local name, realm = UnitName(unit)
 
-        if config.showTitle then
-            name = isPlayer and UnitPVPName(unit) or UnitName(unit)
+        if config.showTitle and isPlayer then
+            name = UnitPVPName(unit)
+            if AF.IsBlank(name) then
+                name = UnitName(unit)
+            end
         end
 
-        if name then
-            if config.showServer and realm then
-                name = name .. "-" .. realm
-            end
-
-            local color
-            if UnitIsTapDenied(unit) then
-                color = "gray"
-            elseif not isNotSpecified then
-                color = AF.GetUnitColorName(unit)
-            end
-            tooltip:AddLine(AF.WrapTextInColor(name, color))
+        if AF.IsBlank(name) then
+            name = UNKNOWNOBJECT
         end
+
+        if config.showServer and realm then
+            name = name .. "-" .. realm
+        end
+
+        local color
+        if UnitIsTapDenied(unit) then
+            color = "gray"
+        elseif not isNotSpecified then
+            color = AF.GetUnitColorName(unit)
+        end
+        tooltip:AddLine(AF.WrapTextInColor(name, color))
     end,
 
     level_race = function(config, tooltip, unit, isPlayer, isNotSpecified)
@@ -757,7 +763,7 @@ local lastDataInstanceID, lastAuraData
 
 local function UpdateAuraTooltip(tooltip, auraData)
     local data = tooltip:GetTooltipData()
-    if not (data or auraData) then return end
+    if not (data and auraData) then return end
 
     lastDataInstanceID = data.dataInstanceID
     lastAuraData = auraData
