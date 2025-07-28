@@ -152,6 +152,7 @@ local indicators = {
     },
     buffs = {
         "enabled",
+        "cooldownStyle",
         "auraBaseFilters",
         "auraBlackListWhitelist",
         "auraTypeColor",
@@ -2953,6 +2954,44 @@ builder["auraArrangement"] = function(parent)
         spacingY:SetValue(t.cfg.spacingY)
         numPerLine:SetValue(t.cfg.numPerLine)
         numTotal:SetValue(t.cfg.numTotal)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- cooldownStyle
+---------------------------------------------------------------------
+builder["cooldownStyle"] = function(parent)
+    if created["cooldownStyle"] then return created["cooldownStyle"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_CooldownStyle", nil, 54)
+    created["cooldownStyle"] = pane
+
+    local styleDropdown = AF.CreateDropdown(pane, 250)
+    styleDropdown:SetLabel(L["Cooldown Style"])
+    AF.SetPoint(styleDropdown, "TOPLEFT", 15, -25)
+
+    -- none, vertical, block_vertical, clock(_with_leading_edge), block_clock(_with_leading_edge)
+    styleDropdown:SetItems({
+        {text = L["None"], value = "none"},
+        {text = L["Vertical"], value = "vertical"},
+        {text = L["Block Vertical"], value = "block_vertical"},
+        {text = L["Clock"], value = "clock"},
+        {text = L["Block Clock"], value = "block_clock"},
+        {text = L["Clock (With Leading Edge)"], value = "clock_with_leading_edge"},
+        {text = L["Block Clock (With Leading Edge)"], value = "block_clock_with_leading_edge"},
+    })
+    styleDropdown:SetOnSelect(function(value)
+        pane.t.cfg.cooldownStyle = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    styleDropdown:SetTooltip(L["Cooldown Style"], L["Block type: Recommended for whitelist mode only, and set aura colors in %s"]:format(AF.WrapTextInColor(L["Auras"], "BFI")))
+
+    function pane.Load(t)
+        pane.t = t
+        styleDropdown:SetSelectedValue(t.cfg.cooldownStyle)
     end
 
     return pane
