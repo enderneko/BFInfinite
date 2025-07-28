@@ -243,13 +243,7 @@ LoadList = function(main, sub)
             button.cfg = cfg.general
         else
             button.cfg = cfg.indicators[name]
-        end
-
-        if cfg.enabled then
-            button:SetEnabled(true)
             button:SetTextColor(button.cfg.enabled and "white" or "disabled")
-        else
-            button:SetEnabled(name == "general")
         end
     end
 

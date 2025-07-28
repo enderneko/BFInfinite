@@ -114,7 +114,7 @@ function UF.LoadIndicatorConfig(frame, indicatorName, indicatorConfig)
 
     if indicatorConfig then
         indicator:LoadConfig(indicatorConfig)
-        indicator.enabled = indicatorConfig.enabled
+        indicator.enabled = indicatorConfig.enabled and frame.enabled
     else
         indicator.enabled = false
     end
