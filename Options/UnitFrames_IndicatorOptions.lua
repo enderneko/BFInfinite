@@ -143,6 +143,11 @@ local indicators = {
         "font,color",
         "showTimer,useEn",
     },
+    rangeText = {
+        "enabled",
+        "position,anchorTo,parent",
+        "font",
+    },
     incDmgHealText = {
         "enabled",
         "position,anchorTo,parent",
