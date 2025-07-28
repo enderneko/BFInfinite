@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local UF = BFI.UnitFrames
+local A = BFI.Auras
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -96,13 +97,7 @@ local function UpdateExtraData(self, auraData)
     auraData.debuffType = AF.GetDebuffType(auraData)
     auraData.noDuration = auraData.duration == 0
 
-    -- TODO:
-    auraData.priority = 999
-    -- if self.whitelist then
-    --     auraData.priority = self.whitelist[auraData.spellId] or 999
-    -- else
-    --     auraData.priority = self.priorities[auraData.spellId] or 999
-    -- end
+    auraData.priority = A.GetAuraPriority(auraData.spellId)
 end
 
 ---------------------------------------------------------------------
@@ -131,7 +126,7 @@ local function CheckWhitelist(self, auraData)
 end
 
 local function CheckBlacklist(self, auraData)
-    if not self.blacklist[auraData.spellId] then
+    if not (A.IsBlacklisted(auraData.spellId) or self.blacklist[auraData.spellId]) then
         return true
     end
 end
@@ -166,7 +161,7 @@ local function ShowAura(self, auraData)
         local aura = self.slots[self.mainShown]
         aura.auraInstanceID = auraData.auraInstanceID -- tooltips
         if self.isBlock then
-            aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData), nil, nil, AF.GetColorRGB(auraData.spellId))
+            aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData), nil, nil, A.GetAuraColor(auraData.spellId))
         else
             aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData))
         end
@@ -356,6 +351,24 @@ local function Auras_Disable(self)
     self.mainShown = 0
     self.subShown = 0
 end
+
+---------------------------------------------------------------------
+-- BFI_UpdateAuras
+---------------------------------------------------------------------
+AF.RegisterCallback("BFI_UpdateAuras", function()
+    for _, frame in next, BFI.vars.unitButtons do
+        if frame:IsVisible() then
+            local buffs = UF.GetIndicator(frame, "buffs")
+            if buffs and buffs.enabled then
+                Auras_Update(buffs)
+            end
+            local debuffs = UF.GetIndicator(frame, "debuffs")
+            if debuffs and debuffs.enabled then
+                Auras_Update(debuffs)
+            end
+        end
+    end
+end)
 
 ---------------------------------------------------------------------
 -- config

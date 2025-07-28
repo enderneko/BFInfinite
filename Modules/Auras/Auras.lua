@@ -5,6 +5,7 @@ local A = BFI.Auras
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local blacklist = {}
 local auraPriorities = {}
 local auraColors = {}
 
@@ -12,15 +13,17 @@ local auraColors = {}
 -- get
 ---------------------------------------------------------------------
 function A.GetAuraPriority(spellId)
-    if auraPriorities[spellId] then
-        return auraPriorities[spellId].priority
-    end
+    return auraPriorities[spellId] or 9999
 end
 
 function A.GetAuraColor(spellId)
     if auraColors[spellId] then
-        return AF.UnpackColor(auraColors[spellId].color)
+        return AF.UnpackColor(auraColors[spellId])
     end
+end
+
+function A.IsBlacklisted(spellId)
+    return blacklist[spellId] == true
 end
 
 ---------------------------------------------------------------------
@@ -32,9 +35,10 @@ local function UpdateAuras(_, module, which, operation, index, value)
     local config = A.config
 
     if not which then
+        blacklist = config.blacklist
         auraPriorities = config.priorities
         auraColors = config.colors
         return
     end
 end
-AF.RegisterCallback("BFI_UpdateModule", UpdateAuras)
+AF.RegisterCallback("BFI_UpdateModule", UpdateAuras, "high")

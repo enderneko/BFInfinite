@@ -984,12 +984,6 @@ local style1 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {
-                    [980] = 1,
-                    [32390] = 2,
-                    [316099] = 3,
-                    [48181] = 4,
-                },
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -3624,12 +3618,6 @@ local style2 = {
                     dispellable = true,
                 },
                 mode = "blacklist",
-                priorities = {
-                    [980] = 1,
-                    [32390] = 2,
-                    [316099] = 3,
-                    [48181] = 4,
-                },
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {
@@ -6399,12 +6387,6 @@ local defaults = {
                     dispellable = false,
                 },
                 mode = "blacklist",
-                priorities = {
-                    [980] = 1,
-                    [32390] = 2,
-                    [316099] = 3,
-                    [48181] = 4,
-                },
                 blacklist = {},
                 whitelist = {},
                 auraTypeColor = {

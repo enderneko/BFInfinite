@@ -328,7 +328,6 @@ do
                 canBeDispelled = true,
             },
             blockers = {},
-            priorities = {},
             blacklist = {},
             auraTypeColor = {
                 castByMe = false,
@@ -376,12 +375,6 @@ do
             },
             blockers = {
                 crowdControlType = true,
-            },
-            priorities = {
-                [980] = 1,
-                [32390] = 2,
-                [316099] = 3,
-                [48181] = 4,
             },
             blacklist = {},
             auraTypeColor = {
@@ -439,7 +432,6 @@ do
             },
             -- filters = {},
             -- blockers = {},
-            -- priorities = {},
             -- blacklist = {},
             auraTypeColor = {
                 castByMe = false,
@@ -544,7 +536,6 @@ do
                 dispellable = false,
             },
             blockers = {},
-            priorities = {},
             blacklist = {},
             auraTypeColor = {
                 castByMe = false,
@@ -592,7 +583,6 @@ do
             blockers = {
                 crowdControlType = true,
             },
-            priorities = {},
             blacklist = {},
             auraTypeColor = {
                 castByMe = false,
@@ -649,7 +639,6 @@ do
             },
             -- filters = {},
             -- blockers = {},
-            -- priorities = {},
             -- blacklist = {},
             auraTypeColor = {
                 castByMe = false,

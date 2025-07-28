@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local NP = BFI.NamePlates
+local A = BFI.Auras
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -80,9 +81,8 @@ local function UpdateExtraData(self, auraData)
     auraData.dispellable = IsDispellable(self, auraData)
     auraData.canBeDispelled = CanBeDispelled(self, auraData)
     auraData.crowdControlType = AF.GetCrowdControlType(auraData)
-    if self.priorities then
-        auraData.priority = self.priorities[auraData.spellId] or 999
-    end
+
+    auraData.priority = A.GetAuraPriority(auraData.spellId)
 end
 
 ---------------------------------------------------------------------
@@ -97,9 +97,13 @@ local function CheckAuraFilter(self, auraData)
 end
 
 local function CheckFilters(self, auraData)
+    if A.IsBlacklisted(auraData.spellId) then
+        return false
+    end
+
     -- blacklist
-    if self.blacklist then
-        if self.blacklist[auraData.spellId] then return end
+    if self.blacklist and self.blacklist[auraData.spellId] then
+        return false
     end
 
     -- blockers
@@ -301,6 +305,26 @@ local function Auras_Disable(self)
     self.numAuras = 0
     Auras_UpdateSiblings(self)
 end
+
+---------------------------------------------------------------------
+-- BFI_UpdateAuras
+---------------------------------------------------------------------
+AF.RegisterCallback("BFI_UpdateAuras", function(_, which)
+    if which == "blacklist" or which == "priorities" then
+        for _, frame in next, NP.created do
+            if frame:IsVisible() then
+                local buffs = NP.GetIndicator(frame, "buffs")
+                if buffs and buffs.enabled then
+                    Auras_Update(buffs)
+                end
+                local debuffs = NP.GetIndicator(frame, "debuffs")
+                if debuffs and debuffs.enabled then
+                    Auras_Update(debuffs)
+                end
+            end
+        end
+    end
+end)
 
 ---------------------------------------------------------------------
 -- siblings
@@ -509,11 +533,6 @@ local function Auras_LoadConfig(self, config)
     Auras_SetOrientation(self, config.orientation)
     Auras_SetupAuras(self, config)
     Auras_UpdateSize(self, 0)
-
-    -- priorities
-    if config.priorities then
-        self.priorities = config.priorities
-    end
 
     -- blacklist
     if config.blacklist then

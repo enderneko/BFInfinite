@@ -10,13 +10,14 @@ local AF = _G.AbstractFramework
 ---------------------------------------------------------------------
 local defaults = {
     blacklist = {
-        [8936] = true,
     },
     priorities = {
-        [373862] = 1,
+        [980] = 1,
+        [32390] = 2,
+        [316099] = 3,
+        [48181] = 4,
     },
     colors = {
-        [373862] = {0, 1, 0, 1},
     },
 }
 
@@ -27,6 +28,9 @@ AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     A.config = t["auras"]
 end, "high")
 
-function A.GetDefaults()
+function A.GetDefaults(which)
+    if which then
+        return AF.Copy(defaults[which])
+    end
     return AF.Copy(defaults)
 end
