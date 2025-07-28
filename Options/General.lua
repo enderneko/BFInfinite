@@ -27,10 +27,10 @@ end
 local bfiPane
 
 local function CreateBFIPane()
-    bfiPane = AF.CreateTitledPane(generalPanel, "BFI", nil, 300)
+    bfiPane = AF.CreateTitledPane(generalPanel, "BFI", 260, 300)
     generalPanel.bfiPane = bfiPane
     AF.SetPoint(bfiPane, "TOPLEFT", generalPanel, 15, -15)
-    AF.SetPoint(bfiPane, "TOPRIGHT", generalPanel, -15, -15)
+    -- AF.SetPoint(bfiPane, "TOPRIGHT", generalPanel, -15, -15)
 
     -- language
     -- local languageDropdown = AF.CreateDropdown(bfiPane, 150)
@@ -66,14 +66,16 @@ local function CreateBFIPane()
     AF.SetPoint(accentColorPicker, "LEFT", accentColorDropdown, "RIGHT", 5, 0)
 
     -- scale
-    local scaleSlider = AF.CreateSlider(bfiPane, "UI " .. L["Scale"], 150, 0.5, 1.5, 0.01, nil, true)
+    local scaleSlider = AF.CreateSlider(bfiPane, _G.UI_SCALE, 150, 0.5, 1.5, 0.01, nil, true)
     bfiPane.scaleSlider = scaleSlider
-    AF.SetPoint(scaleSlider, "TOPLEFT", accentColorDropdown, 0, -50)
+    AF.SetPoint(scaleSlider, "TOPLEFT", accentColorDropdown, "BOTTOMLEFT", 0, -35)
     scaleSlider:SetAfterValueChanged(function(value)
-        BFIConfig.scale = value
+        BFIConfig.scale[BFI.vars.resolution] = value
         AF.SetUIParentScale(value, true)
         ShowReloadPopup()
     end)
+    scaleSlider:SetTooltip(_G.UI_SCALE, L["A separate UI scale is saved for each resolution"],
+        AF.WrapTextInColor(L["Current resolution: %dx%d"]:format(GetPhysicalScreenSize()), "gray"))
 
     -- recommended scale
     local recommendedScaleButton = AF.CreateButton(scaleSlider, nil, "BFI_hover", 17, 17)
@@ -82,8 +84,8 @@ local function CreateBFIPane()
     recommendedScaleButton:SetTooltip(L["Auto Scale"])
     recommendedScaleButton:SetOnClick(function()
         local bestScale = AF.GetBestScale()
-        if BFIConfig.scale == bestScale then return end
-        BFIConfig.scale = bestScale
+        if BFIConfig.scale[BFI.vars.resolution] == bestScale then return end
+        BFIConfig.scale[BFI.vars.resolution] = bestScale
         scaleSlider:SetValue(bestScale)
         AF.SetUIParentScale(bestScale, true)
         ShowReloadPopup()
@@ -92,7 +94,7 @@ local function CreateBFIPane()
     -- game menu scale
     local gameMenuScaleSlider = AF.CreateSlider(bfiPane, L["Game Menu Scale"], 150, 0.5, 1.5, 0.1, nil, true)
     bfiPane.gameMenuScaleSlider = gameMenuScaleSlider
-    AF.SetPoint(gameMenuScaleSlider, "TOPLEFT", scaleSlider, "TOPRIGHT", 35, 0)
+    AF.SetPoint(gameMenuScaleSlider, "TOPLEFT", scaleSlider, "BOTTOMLEFT", 0, -50)
     gameMenuScaleSlider:SetAfterValueChanged(function(value)
         BFIConfig.gameMenuScale = value
         _G.GameMenuFrame:SetScale(BFIConfig.gameMenuScale)
@@ -100,19 +102,19 @@ local function CreateBFIPane()
     end)
 
     -- auto repair
-    local autoRepairDropdown = AF.CreateDropdown(bfiPane, 150)
-    bfiPane.autoRepairDropdown = autoRepairDropdown
-    AF.SetPoint(autoRepairDropdown, "TOPLEFT", scaleSlider, 0, -55)
-    autoRepairDropdown:SetLabel(L["Auto Repair"])
-    autoRepairDropdown:SetItems({
-        {text = L["Disabled"], value = "disabled"},
-        {text = PLAYER, value = "player"},
-        {text = GUILD, value = "guild"},
-    })
-    autoRepairDropdown:SetOnSelect(function(value)
-    end)
-    autoRepairDropdown:SetSelectedValue("disabled")
-    autoRepairDropdown:SetEnabled(false)
+    -- local autoRepairDropdown = AF.CreateDropdown(bfiPane, 150)
+    -- bfiPane.autoRepairDropdown = autoRepairDropdown
+    -- AF.SetPoint(autoRepairDropdown, "TOPLEFT", scaleSlider, 0, -55)
+    -- autoRepairDropdown:SetLabel(L["Auto Repair"])
+    -- autoRepairDropdown:SetItems({
+    --     {text = L["Disabled"], value = "disabled"},
+    --     {text = PLAYER, value = "player"},
+    --     {text = GUILD, value = "guild"},
+    -- })
+    -- autoRepairDropdown:SetOnSelect(function(value)
+    -- end)
+    -- autoRepairDropdown:SetSelectedValue("disabled")
+    -- autoRepairDropdown:SetEnabled(false)
 end
 
 ---------------------------------------------------------------------
@@ -121,10 +123,10 @@ end
 local afPane
 
 local function CreateAFPane()
-    afPane = AF.CreateTitledPane(generalPanel, "AbstractFramework", nil, 100)
+    afPane = AF.CreateTitledPane(generalPanel, "AbstractFramework", 260, 300)
     generalPanel.afPane = afPane
-    AF.SetPoint(afPane, "TOPLEFT", generalPanel.bfiPane, "BOTTOMLEFT", 0, -15)
-    AF.SetPoint(afPane, "TOPRIGHT", generalPanel.bfiPane, "BOTTOMRIGHT", 0, -15)
+    AF.SetPoint(afPane, "TOPLEFT", generalPanel.bfiPane, "TOPRIGHT", 30, 0)
+    -- AF.SetPoint(afPane, "TOPRIGHT", generalPanel.bfiPane, "BOTTOMRIGHT", 0, -15)
 
     afPane:SetTips("AbstractFramework", L["These settings may affect all addons using AbstractFramework"])
 
@@ -155,7 +157,7 @@ local function CreateAFPane()
     -- scale
     local scaleSlider = AF.CreateSlider(afPane, "AF " .. L["Scale"], 150, 0.5, 1.5, 0.1, nil, true)
     afPane.scaleSlider = scaleSlider
-    AF.SetPoint(scaleSlider, "TOPLEFT", accentColorDropdown, 0, -50)
+    AF.SetPoint(scaleSlider, "TOPLEFT", accentColorDropdown, "BOTTOMLEFT", 0, -35)
     scaleSlider:SetAfterValueChanged(function(value)
         AFConfig.scale = value
         AF.SetScale(value, true)
@@ -165,7 +167,7 @@ local function CreateAFPane()
     -- font size
     local fontSizeSlider = AF.CreateSlider(afPane, "AF " .. L["Font Size"], 150, -5, 5, 1, nil, true)
     afPane.fontSizeSlider = fontSizeSlider
-    AF.SetPoint(fontSizeSlider, "TOPLEFT", scaleSlider, "TOPRIGHT", 35, 0)
+    AF.SetPoint(fontSizeSlider, "TOPLEFT", scaleSlider, "BOTTOMLEFT", 0, -50)
     fontSizeSlider:SetAfterValueChanged(function(value)
         AFConfig.fontSizeOffset = value
         AF.UpdateFontSize(value)
@@ -176,7 +178,7 @@ end
 -- load
 ---------------------------------------------------------------------
 local function Load()
-    bfiPane.scaleSlider:SetValue(BFIConfig.scale)
+    bfiPane.scaleSlider:SetValue(BFIConfig.scale[BFI.vars.resolution])
     bfiPane.gameMenuScaleSlider:SetValue(BFIConfig.gameMenuScale)
     bfiPane.accentColorDropdown:SetSelectedValue(BFIConfig.accentColor.type)
     bfiPane.accentColorPicker:SetColor(BFIConfig.accentColor.color)

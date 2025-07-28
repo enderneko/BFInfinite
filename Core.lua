@@ -28,6 +28,11 @@ function eventHandler:ADDON_LOADED(arg)
             SetCVar("statusTextDisplay", "NUMERIC") -- NONE,NUMERIC,PERCENT,BOTH
         end
 
+        -- scales
+        if type(BFIConfig.scale) ~= "table" then
+            BFIConfig.scale = {}
+        end
+
         -- accent color
         if type(BFIConfig.accentColor) ~= "table" then
             BFIConfig.accentColor = {
@@ -64,15 +69,42 @@ function eventHandler:ADDON_LOADED(arg)
     end
 end
 
+function eventHandler:UI_SCALE_CHANGED()
+    local res = ("%dx%d"):format(GetPhysicalScreenSize())
+    if res == BFI.vars.resolution then return end
+    BFI.vars.resolution = res
+
+    if type(BFIConfig.scale[res]) ~= "number" then
+        BFIConfig.scale[res] = AF.RoundToDecimal(UIParent:GetScale(), 2)
+    else
+        if InCombatLockdown() then
+            eventHandler:RegisterEvent("PLAYER_REGEN_ENABLED")
+        else
+            AF.SetUIParentScale(BFIConfig.scale[res])
+        end
+    end
+end
+
+function eventHandler:PLAYER_REGEN_ENABLED()
+    eventHandler:UnregisterEvent("PLAYER_REGEN_ENABLED")
+    AF.SetUIParentScale(BFIConfig.scale[BFI.vars.resolution])
+end
+
 AF.RegisterCallback("AF_PLAYER_DATA_UPDATE", function(_, isLogin)
     AF.UnregisterCallback("AF_PLAYER_DATA_UPDATE", "BFI_Init")
 
     if isLogin then
-        -- scale
-        if type(BFIConfig.scale) ~= "number" then
-            BFIConfig.scale = AF.RoundToDecimal(UIParent:GetScale(), 2)
+        eventHandler:RegisterEvent("UI_SCALE_CHANGED")
+
+        local res = ("%dx%d"):format(GetPhysicalScreenSize())
+        BFI.vars.resolution = res
+
+        -- ui scale
+        if type(BFIConfig.scale[res]) ~= "number" then
+            BFIConfig.scale[res] = AF.RoundToDecimal(UIParent:GetScale(), 2)
+        else
+            AF.SetUIParentScale(BFIConfig.scale[res], true)
         end
-        AF.SetUIParentScale(BFIConfig.scale, true)
 
         -- game menu scale
         if type(BFIConfig.gameMenuScale) ~= "number" then
