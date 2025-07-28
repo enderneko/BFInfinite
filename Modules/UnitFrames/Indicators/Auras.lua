@@ -648,10 +648,10 @@ local function Auras_LoadConfig(self, config)
     -- subFrame
     if config.subFrame then
         self.subFrameEnabled = config.subFrame.enabled
-        self.subFrameFilter = config.subFrame.filter
         self.subFrameDesaturated = config.subFrame.desaturated
 
         if config.subFrame.enabled then
+            self.subFrameFilter = config.subFrame.filter
             self.subFrame:Show()
 
             self.subFrame.anchor = config.position[1]
@@ -666,6 +666,7 @@ local function Auras_LoadConfig(self, config)
             Auras_UpdateSize(self, 0)
             Auras_UpdateSubFramePosition(self, config.orientation)
         else
+            self.subFrameFilter = nil
             self.subFrame:Hide()
         end
     end

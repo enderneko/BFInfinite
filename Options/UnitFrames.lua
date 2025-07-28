@@ -196,7 +196,7 @@ local function ListItem_LoadOptions(self)
         AF.SetPoint(pane, "RIGHT", scroll.scrollContent)
 
         last = pane
-        tinsert(heights, pane._height)
+        tinsert(heights, pane._height or 0)
     end
 
     scroll:SetContentHeights(heights, 10)

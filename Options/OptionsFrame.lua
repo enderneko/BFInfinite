@@ -15,6 +15,7 @@ local optionsFrame
 ---------------------------------------------------------------------
 local list = {
     "General",
+    "Tweaks",
     "SEPARATOR",
     "Colors",
     "Auras",

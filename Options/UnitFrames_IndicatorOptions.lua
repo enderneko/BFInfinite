@@ -162,7 +162,21 @@ local indicators = {
         "durationText",
         "tooltip",
         "frameLevel"
-    }
+    },
+    debuffs = {
+        "enabled",
+        "cooldownStyle",
+        "auraBaseFilters",
+        "auraBlackListWhitelist",
+        "auraTypeColor",
+        "auraArrangement",
+        "auraSubFrame",
+        "position,anchorTo",
+        "stackText",
+        "durationText",
+        "tooltip",
+        "frameLevel"
+    },
 }
 
 ---------------------------------------------------------------------
@@ -2875,6 +2889,79 @@ builder["auraTypeColor"] = function(parent)
         end
 
         debuffType:SetEnabled(t.id == "debuffs")
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- auraSubFrame
+---------------------------------------------------------------------
+builder["auraSubFrame"] = function(parent)
+    if created["auraSubFrame"] then return created["auraSubFrame"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraSubFrame", nil, 125)
+    created["auraSubFrame"] = pane
+
+    -- TODO: more filters and separate arrangement
+
+    local enabled = AF.CreateCheckButton(pane, AF.GetGradientText(L["Enable Sub Frame"], "BFI", "white"))
+    AF.SetPoint(enabled, "TOPLEFT", 15, -8)
+
+    local filter = AF.CreateDropdown(pane, 150)
+    filter:SetLabel(L["Filter"])
+    AF.SetPoint(filter, "TOPLEFT", enabled, "BOTTOMLEFT", 0, -25)
+    filter:SetItems({
+        {text = L["Not Cast By Me"], value = "notCastByMe"},
+    })
+    filter:SetOnSelect(function(value)
+        pane.t.cfg.subFrame.filter = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local desaturated = AF.CreateCheckButton(pane, L["Desaturated"])
+    AF.SetPoint(desaturated, "TOPLEFT", filter, 185, 0)
+    desaturated:SetOnCheck(function(checked)
+        pane.t.cfg.subFrame.desaturated = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local width = AF.CreateSlider(pane, L["Width"], 150, 10, 100, 1, nil, true)
+    AF.SetPoint(width, "TOPLEFT", filter, "BOTTOMLEFT", 0, -25)
+    width:SetOnValueChanged(function(value)
+        pane.t.cfg.subFrame.width = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local height = AF.CreateSlider(pane, L["Height"], 150, 10, 100, 1, nil, true)
+    AF.SetPoint(height, "TOPLEFT", width, 185, 0)
+    height:SetOnValueChanged(function(value)
+        pane.t.cfg.subFrame.height = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local function UpdateWidgets()
+        AF.SetEnabled(pane.t.cfg.subFrame.enabled, filter, desaturated, width, height)
+    end
+
+    enabled:SetOnCheck(function(checked)
+        pane.t.cfg.subFrame.enabled = checked
+        UpdateWidgets()
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.IsApplicable(t)
+        return t.owner == "target"
+    end
+
+    function pane.Load(t)
+        pane.t = t
+        UpdateWidgets()
+        enabled:SetChecked(t.cfg.subFrame.enabled)
+        filter:SetSelectedValue(t.cfg.subFrame.filter)
+        desaturated:SetChecked(t.cfg.subFrame.desaturated)
+        width:SetValue(t.cfg.subFrame.width)
+        height:SetValue(t.cfg.subFrame.height)
     end
 
     return pane
