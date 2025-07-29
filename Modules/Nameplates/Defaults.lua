@@ -259,7 +259,7 @@ do
             anchorTo = "healthBar",
             frameLevel = 2,
             size = 13,
-            style = "text",
+            style = "af",
         },
         classIcon = {
             enabled = false,
@@ -474,7 +474,7 @@ do
             anchorTo = "nameText",
             frameLevel = 2,
             size = 13,
-            style = "text",
+            style = "af",
         },
         targetIndicator = {
             enabled = true,

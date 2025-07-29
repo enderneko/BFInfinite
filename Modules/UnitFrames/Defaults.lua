@@ -415,7 +415,7 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             readyCheckIcon = {
                 enabled = true,
@@ -438,7 +438,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 16,
-                style = "text",
             },
             restingIndicator = {
                 enabled = true,
@@ -842,7 +841,7 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -858,7 +857,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 16,
-                style = "text",
             },
             targetHighlight = {
                 enabled = false,
@@ -1199,7 +1197,7 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -1549,7 +1547,7 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -1891,7 +1889,7 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -2241,7 +2239,7 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             targetHighlight = {
                 enabled = false,
@@ -2575,7 +2573,7 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -3026,7 +3024,7 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             readyCheckIcon = {
                 enabled = true,
@@ -3049,7 +3047,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 16,
-                style = "text",
             },
             restingIndicator = {
                 enabled = true,
@@ -3453,7 +3450,7 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -3469,7 +3466,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 16,
-                style = "text",
             },
             targetHighlight = {
                 enabled = false,
@@ -3810,7 +3806,7 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -4159,7 +4155,7 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -4501,7 +4497,7 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -4851,7 +4847,7 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             targetHighlight = {
                 enabled = false,
@@ -5184,7 +5180,7 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -5580,7 +5576,7 @@ local defaults = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             readyCheckIcon = {
                 enabled = true,
@@ -5603,7 +5599,6 @@ local defaults = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 13,
-                style = "text",
             },
             targetHighlight = {
                 enabled = true,
@@ -5871,7 +5866,7 @@ local defaults = {
                 anchorTo = "root",
                 frameLevel = 5,
                 size = 10,
-                style = "text",
+                style = "af",
             },
             readyCheckIcon = {
                 enabled = true,
@@ -6220,7 +6215,7 @@ local defaults = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "text",
+                style = "af",
             },
             targetHighlight = {
                 enabled = true,

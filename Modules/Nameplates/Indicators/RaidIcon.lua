@@ -44,7 +44,7 @@ local function RaidIcon_LoadConfig(self, config)
     AF.SetSize(self, config.size, config.size)
     G.SetFont(self.text, config.size, "outline")
 
-    if config.style == "text" then
+    if config.style == "af" then
         self.text:Show()
         self.icon:Hide()
     else -- "icon"

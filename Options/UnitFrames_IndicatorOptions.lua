@@ -182,6 +182,32 @@ local indicators = {
         "tooltip",
         "frameLevel"
     },
+    raidIcon = {
+        "enabled",
+        "position,anchorTo",
+        "iconStyle",
+        "size",
+        "frameLevel",
+    },
+    statusIcon = {
+        "enabled",
+        "position,anchorTo",
+        "size",
+        "frameLevel",
+    },
+    readyCheckIcon = {
+        "enabled",
+        "position,anchorTo",
+        "size",
+        "frameLevel",
+    },
+    roleIcon = {
+        "enabled",
+        "hideDamager",
+        "position,anchorTo",
+        "size",
+        "frameLevel",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -436,6 +462,30 @@ builder["width,height"] = function(parent)
         pane.t = t
         width:SetValue(t.cfg.width)
         height:SetValue(t.cfg.height)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- size
+---------------------------------------------------------------------
+builder["size"] = function(parent)
+    if created["size"] then return created["size"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Size", nil, 55)
+    created["size"] = pane
+
+    local size = AF.CreateSlider(pane, L["Size"], 150, 10, 100, 1, nil, true)
+    AF.SetPoint(size, "LEFT", 15, 0)
+    size:SetOnValueChanged(function(value)
+        pane.t.cfg.size = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        size:SetValue(t.cfg.size)
     end
 
     return pane
@@ -3170,6 +3220,59 @@ builder["tooltip"] = function(parent)
         relativePoint:SetSelectedValue(t.cfg.tooltip.position[2])
         x:SetValue(t.cfg.tooltip.position[3])
         y:SetValue(t.cfg.tooltip.position[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- iconStyle
+---------------------------------------------------------------------
+builder["iconStyle"] = function(parent)
+    if created["iconStyle"] then return created["iconStyle"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_IconStyle", nil, 54)
+    created["iconStyle"] = pane
+
+    local styleDropdown = AF.CreateDropdown(pane, 150)
+    styleDropdown:SetLabel(L["Icon Style"])
+    AF.SetPoint(styleDropdown, "TOPLEFT", 15, -25)
+    styleDropdown:SetItems({
+        {text = L["Blizzard"], value = "blizzard"},
+        {text = "AF", value = "af"},
+    })
+    styleDropdown:SetOnSelect(function(value)
+        pane.t.cfg.style = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        styleDropdown:SetSelectedValue(t.cfg.style)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- hideDamager
+---------------------------------------------------------------------
+builder["hideDamager"] = function(parent)
+    if created["hideDamager"] then return created["hideDamager"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HideDamager", nil, 30)
+    created["hideDamager"] = pane
+
+    local hideDamagerCheckButton = AF.CreateCheckButton(pane, L["Hide Damager"])
+    AF.SetPoint(hideDamagerCheckButton, "LEFT", 15, 0)
+    hideDamagerCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.hideDamager = checked
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        hideDamagerCheckButton:SetChecked(t.cfg.hideDamager)
     end
 
     return pane

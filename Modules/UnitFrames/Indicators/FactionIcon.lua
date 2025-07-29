@@ -18,7 +18,7 @@ local function FactionIcon_Update(self)
     local faction = UnitFactionGroup(unit)
 
     if faction == "Horde" or faction == "Alliance" then
-        self.icon:SetTexture(AF.GetTexture(faction))
+        -- self.icon:SetTexture(AF.GetTexture(faction))
         G.SetGlyph(self.text, G.Faction[faction])
         self:Show()
     else
@@ -43,13 +43,13 @@ local function FactionIcon_LoadConfig(self, config)
     AF.SetSize(self, config.size, config.size)
     G.SetFont(self.text, config.size, "outline")
 
-    if config.style == "text" then
-        self.text:Show()
-        self.icon:Hide()
-    else -- "icon"
-        self.icon:Show()
-        self.text:Hide()
-    end
+    -- if config.style == "text" then
+    --     self.text:Show()
+    --     self.icon:Hide()
+    -- else -- "icon"
+    --     self.icon:Show()
+    --     self.text:Hide()
+    -- end
 end
 
 ---------------------------------------------------------------------
@@ -83,9 +83,9 @@ function UF.CreateFactionIcon(parent, name)
     frame:Hide()
 
     -- icon
-    local icon = frame:CreateTexture(nil, "ARTWORK")
-    frame.icon = icon
-    icon:SetAllPoints()
+    -- local icon = frame:CreateTexture(nil, "ARTWORK")
+    -- frame.icon = icon
+    -- icon:SetAllPoints()
 
     -- text
     local text = frame:CreateFontString(nil, "ARTWORK")
