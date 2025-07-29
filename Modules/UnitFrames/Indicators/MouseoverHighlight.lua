@@ -87,12 +87,12 @@ function UF.CreateMouseoverHighlight(parent, name)
     -- mask
     local mask = highlight:CreateMaskTexture()
     highlight.mask = mask
-    mask:SetTexture(AF.GetTexture("Empty"), "CLAMPTOWHITE","CLAMPTOWHITE")
+    mask:SetTexture(AF.GetEmptyTexture(), "CLAMPTOWHITE","CLAMPTOWHITE", "NEAREST")
 
     -- texture
     local tex = highlight:CreateTexture(nil, "BORDER")
     highlight.tex = tex
-    tex:SetTexture(AF.GetTexture("White"))
+    tex:SetTexture(AF.GetPlainTexture(), nil, nil, "NEAREST")
     tex:AddMaskTexture(mask)
 
     -- events

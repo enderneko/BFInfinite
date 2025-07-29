@@ -233,6 +233,18 @@ local indicators = {
         "size",
         "frameLevel",
     },
+    targetHighlight = {
+        "enabled",
+        "color",
+        "size",
+        "frameLevel",
+    },
+    mouseoverHighlight = {
+        "enabled",
+        "color",
+        "size",
+        "frameLevel",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -510,6 +522,13 @@ builder["size"] = function(parent)
 
     function pane.Load(t)
         pane.t = t
+
+        if t.id:find("Highlight$") then
+            size:SetMinMaxValues(-10, 10)
+        else
+            size:SetMinMaxValues(5, 100)
+        end
+
         size:SetValue(t.cfg.size)
     end
 
@@ -3306,6 +3325,33 @@ builder["hideDamager"] = function(parent)
     function pane.Load(t)
         pane.t = t
         hideDamagerCheckButton:SetChecked(t.cfg.hideDamager)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- color
+---------------------------------------------------------------------
+builder["color"] = function(parent)
+    if created["color"] then return created["color"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Color", nil, 30)
+    created["color"] = pane
+
+    local colorPicker = AF.CreateColorPicker(pane, L["Color"], true)
+    AF.SetPoint(colorPicker, "LEFT", 15, 0)
+    colorPicker:SetOnChange(function(r, g, b, a)
+        pane.t.cfg.color[1] = r
+        pane.t.cfg.color[2] = g
+        pane.t.cfg.color[3] = b
+        pane.t.cfg.color[4] = a
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        colorPicker:SetColor(t.cfg.color)
     end
 
     return pane

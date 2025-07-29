@@ -115,8 +115,8 @@ function UF.LoadIndicatorConfig(frame, indicatorName, indicatorConfig)
     local indicator = frame.indicators[indicatorName]
 
     if indicatorConfig then
-        indicator:LoadConfig(indicatorConfig)
         indicator.enabled = indicatorConfig.enabled and frame.enabled
+        indicator:LoadConfig(indicatorConfig)
     else
         indicator.enabled = false
     end
