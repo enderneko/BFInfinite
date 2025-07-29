@@ -359,7 +359,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 10,
-                texture = "Combat1",
             },
             leaderIcon = {
                 enabled = false,
@@ -778,7 +777,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 10,
-                texture = "Combat1",
             },
             leaderIcon = {
                 enabled = false,
@@ -2231,7 +2229,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 10,
-                texture = "Combat1",
             },
             raidIcon = {
                 enabled = true,
@@ -2968,7 +2965,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 10,
-                texture = "Combat1",
             },
             leaderIcon = {
                 enabled = false,
@@ -3387,7 +3383,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 10,
-                texture = "Combat1",
             },
             leaderIcon = {
                 enabled = false,
@@ -4839,7 +4834,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 10,
-                texture = "Combat1",
             },
             raidIcon = {
                 enabled = true,
@@ -5554,7 +5548,6 @@ local defaults = {
                 anchorTo = "healthBar",
                 frameLevel = 10,
                 size = 8,
-                texture = "Combat1",
             },
             leaderIcon = {
                 enabled = false,

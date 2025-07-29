@@ -208,6 +208,24 @@ local indicators = {
         "size",
         "frameLevel",
     },
+    leaderIcon = {
+        "enabled",
+        "position,anchorTo",
+        "size",
+        "frameLevel",
+    },
+    combatIcon = {
+        "enabled",
+        "position,anchorTo",
+        "size",
+        "frameLevel",
+    },
+    factionIcon = {
+        "enabled",
+        "position,anchorTo",
+        "size",
+        "frameLevel",
+    },
     restingIndicator = {
         "enabled",
         "position,anchorTo",
@@ -483,7 +501,7 @@ builder["size"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Size", nil, 55)
     created["size"] = pane
 
-    local size = AF.CreateSlider(pane, L["Size"], 150, 10, 100, 1, nil, true)
+    local size = AF.CreateSlider(pane, L["Size"], 150, 5, 100, 1, nil, true)
     AF.SetPoint(size, "LEFT", 15, 0)
     size:SetOnValueChanged(function(value)
         pane.t.cfg.size = value
