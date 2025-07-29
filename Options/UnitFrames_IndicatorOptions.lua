@@ -245,6 +245,11 @@ local indicators = {
         "size",
         "frameLevel",
     },
+    threatGlow = {
+        "enabled",
+        "alpha",
+        "size",
+    }
 }
 
 ---------------------------------------------------------------------
@@ -525,6 +530,8 @@ builder["size"] = function(parent)
 
         if t.id:find("Highlight$") then
             size:SetMinMaxValues(-10, 10)
+        elseif t.id:find("Glow$") then
+            size:SetMinMaxValues(3, 20)
         else
             size:SetMinMaxValues(5, 100)
         end
@@ -3352,6 +3359,30 @@ builder["color"] = function(parent)
     function pane.Load(t)
         pane.t = t
         colorPicker:SetColor(t.cfg.color)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- alpha
+---------------------------------------------------------------------
+builder["alpha"] = function(parent)
+    if created["alpha"] then return created["alpha"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Alpha", nil, 55)
+    created["alpha"] = pane
+
+    local alphaSlider = AF.CreateSlider(pane, L["Alpha"], 150, 0, 1, 0.01, true, true)
+    AF.SetPoint(alphaSlider, "LEFT", 15, 0)
+    alphaSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.alpha = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        alphaSlider:SetValue(t.cfg.alpha)
     end
 
     return pane
