@@ -256,11 +256,39 @@ local indicators = {
 -- shared functions
 ---------------------------------------------------------------------
 local function LoadIndicatorConfig(t)
-    UF.LoadIndicatorConfig(t.target, t.id, t.cfg)
+    if t.owner == "party" then
+        for i = 1, 5 do
+            UF.LoadIndicatorConfig(t.target.header[i], t.id, t.cfg)
+        end
+    elseif t.owner == "raid" then
+        for i = 1, 40 do
+            UF.LoadIndicatorConfig(t.target.header[i], t.id, t.cfg)
+        end
+    elseif t.owner == "boss" then
+        for i = 1, 8 do
+            UF.LoadIndicatorConfig(t.target[i], t.id, t.cfg)
+        end
+    else
+        UF.LoadIndicatorConfig(t.target, t.id, t.cfg)
+    end
 end
 
 local function LoadIndicatorPosition(t)
-    UF.LoadIndicatorPosition(t.target.indicators[t.id], t.cfg.position, t.cfg.anchorTo, t.cfg.parent)
+    if t.owner == "party" then
+        for i = 1, 5 do
+            UF.LoadIndicatorPosition(t.target.header[i].indicators[t.id], t.cfg.position, t.cfg.anchorTo, t.cfg.parent)
+        end
+    elseif t.owner == "raid" then
+        for i = 1, 40 do
+            UF.LoadIndicatorPosition(t.target.header[i].indicators[t.id], t.cfg.position, t.cfg.anchorTo, t.cfg.parent)
+        end
+    elseif t.owner == "boss" then
+        for i = 1, 8 do
+            UF.LoadIndicatorPosition(t.target[i].indicators[t.id], t.cfg.position, t.cfg.anchorTo, t.cfg.parent)
+        end
+    else
+        UF.LoadIndicatorPosition(t.target.indicators[t.id], t.cfg.position, t.cfg.anchorTo, t.cfg.parent)
+    end
 end
 
 local function GetFormatItems(which)
@@ -323,6 +351,22 @@ local function GetAnchorToItems()
         end
     end
     return validRelativeTos
+end
+
+local function UpdateAnchorToItems(t, items)
+    local indicators
+    if t.owner == "party" or t.owner == "raid" then
+        indicators = t.target.header[1].indicators
+    elseif t.owner == "boss" then
+        indicators = t.target[1].indicators
+    else
+        indicators = t.target.indicators
+    end
+    for _, to in next, items do
+        if to.value ~= "root" then
+            to.disabled = not indicators[to.value] or to.value == t.id
+        end
+    end
 end
 
 local function GetAnchorPointItems()
@@ -597,14 +641,88 @@ builder["position,anchorTo"] = function(parent)
     function pane.Load(t)
         pane.t = t
 
-        for _, to in next, validRelativeTos do
-            if to.value ~= "root" then
-                to.disabled = not t.target.indicators[to.value] or to.value == t.id
-            end
-        end
+        UpdateAnchorToItems(t, validRelativeTos)
         relativeTo.reloadRequired = true
 
         relativeTo:SetSelectedValue(t.cfg.anchorTo)
+        anchorPoint:SetSelectedValue(t.cfg.position[1])
+        relativePoint:SetSelectedValue(t.cfg.position[2])
+        x:SetValue(t.cfg.position[3])
+        y:SetValue(t.cfg.position[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- position,anchorTo,parent
+---------------------------------------------------------------------
+builder["position,anchorTo,parent"] = function(parent)
+    if created["position,anchorTo,parent"] then return created["position,anchorTo,parent"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PositionAnchorToParent", nil, 150)
+    created["position,anchorTo,parent"] = pane
+
+    local validRelativeTos = GetAnchorToItems()
+
+    local relativeTo = AF.CreateDropdown(pane, 150)
+    relativeTo:SetLabel(L["Relative To"])
+    AF.SetPoint(relativeTo, "TOPLEFT", 15, -25)
+    relativeTo:SetItems(validRelativeTos)
+    relativeTo:SetOnSelect(function(value)
+        pane.t.cfg.anchorTo = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local parent = AF.CreateDropdown(pane, 150)
+    parent:SetLabel(L["Parent"])
+    AF.SetPoint(parent, "TOPLEFT", relativeTo, 185, 0)
+    parent:SetItems(GetParentItems())
+    parent:SetOnSelect(function(value)
+        pane.t.cfg.parent = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", relativeTo, 0, -45)
+    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.position[1] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local relativePoint = AF.CreateDropdown(pane, 150)
+    relativePoint:SetLabel(L["Relative Point"])
+    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
+    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetOnSelect(function(value)
+        pane.t.cfg.position[2] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local x = AF.CreateSlider(pane, L["X Offset"], 150, -100, 100, 0.5, nil, true)
+    AF.SetPoint(x, "TOPLEFT", anchorPoint, 0, -45)
+    x:SetOnValueChanged(function(value)
+        pane.t.cfg.position[3] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    local y = AF.CreateSlider(pane, L["Y Offset"], 150, -100, 100, 0.5, nil, true)
+    AF.SetPoint(y, "TOPLEFT", x, 185, 0)
+    y:SetOnValueChanged(function(value)
+        pane.t.cfg.position[4] = value
+        LoadIndicatorPosition(pane.t)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+
+        UpdateAnchorToItems(t, validRelativeTos)
+        relativeTo.reloadRequired = true
+
+        relativeTo:SetSelectedValue(t.cfg.anchorTo)
+        parent:SetSelectedValue(t.cfg.parent)
         anchorPoint:SetSelectedValue(t.cfg.position[1])
         relativePoint:SetSelectedValue(t.cfg.position[2])
         x:SetValue(t.cfg.position[3])
@@ -2216,88 +2334,6 @@ builder["durationText"] = function(parent)
 
     created["durationText"] = CreateFontPositionExtraPane(parent, "durationText", "BFI_IndicatorOption_DurationText", AF.GetGradientText(L["Duration Text"], "BFI", "white"), "duration")
     return created["durationText"]
-end
-
----------------------------------------------------------------------
--- position,anchorTo,parent
----------------------------------------------------------------------
-builder["position,anchorTo,parent"] = function(parent)
-    if created["position,anchorTo,parent"] then return created["position,anchorTo,parent"] end
-
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PositionAnchorToParent", nil, 150)
-    created["position,anchorTo,parent"] = pane
-
-    local validRelativeTos = GetAnchorToItems()
-
-    local relativeTo = AF.CreateDropdown(pane, 150)
-    relativeTo:SetLabel(L["Relative To"])
-    AF.SetPoint(relativeTo, "TOPLEFT", 15, -25)
-    relativeTo:SetItems(validRelativeTos)
-    relativeTo:SetOnSelect(function(value)
-        pane.t.cfg.anchorTo = value
-        LoadIndicatorPosition(pane.t)
-    end)
-
-    local parent = AF.CreateDropdown(pane, 150)
-    parent:SetLabel(L["Parent"])
-    AF.SetPoint(parent, "TOPLEFT", relativeTo, 185, 0)
-    parent:SetItems(GetParentItems())
-    parent:SetOnSelect(function(value)
-        pane.t.cfg.parent = value
-        LoadIndicatorPosition(pane.t)
-    end)
-
-    local anchorPoint = AF.CreateDropdown(pane, 150)
-    anchorPoint:SetLabel(L["Anchor Point"])
-    AF.SetPoint(anchorPoint, "TOPLEFT", relativeTo, 0, -45)
-    anchorPoint:SetItems(GetAnchorPointItems())
-    anchorPoint:SetOnSelect(function(value)
-        pane.t.cfg.position[1] = value
-        LoadIndicatorPosition(pane.t)
-    end)
-
-    local relativePoint = AF.CreateDropdown(pane, 150)
-    relativePoint:SetLabel(L["Relative Point"])
-    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
-    relativePoint:SetItems(GetAnchorPointItems())
-    relativePoint:SetOnSelect(function(value)
-        pane.t.cfg.position[2] = value
-        LoadIndicatorPosition(pane.t)
-    end)
-
-    local x = AF.CreateSlider(pane, L["X Offset"], 150, -100, 100, 0.5, nil, true)
-    AF.SetPoint(x, "TOPLEFT", anchorPoint, 0, -45)
-    x:SetOnValueChanged(function(value)
-        pane.t.cfg.position[3] = value
-        LoadIndicatorPosition(pane.t)
-    end)
-
-    local y = AF.CreateSlider(pane, L["Y Offset"], 150, -100, 100, 0.5, nil, true)
-    AF.SetPoint(y, "TOPLEFT", x, 185, 0)
-    y:SetOnValueChanged(function(value)
-        pane.t.cfg.position[4] = value
-        LoadIndicatorPosition(pane.t)
-    end)
-
-    function pane.Load(t)
-        pane.t = t
-
-        for _, to in next, validRelativeTos do
-            if to.value ~= "root" then
-                to.disabled = not t.target.indicators[to.value] or to.value == t.id
-            end
-        end
-        relativeTo.reloadRequired = true
-
-        relativeTo:SetSelectedValue(t.cfg.anchorTo)
-        parent:SetSelectedValue(t.cfg.parent)
-        anchorPoint:SetSelectedValue(t.cfg.position[1])
-        relativePoint:SetSelectedValue(t.cfg.position[2])
-        x:SetValue(t.cfg.position[3])
-        y:SetValue(t.cfg.position[4])
-    end
-
-    return pane
 end
 
 ---------------------------------------------------------------------

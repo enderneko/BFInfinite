@@ -46,7 +46,7 @@ local function CreateUnitFramesPanel()
         if not subItems[value] then
             for _, name in pairs(subs[value]) do
                 subItems[value] = subItems[value] or {}
-                tinsert(subItems[value], {text = L[name], value = name})
+                tinsert(subItems[value], {text = L[name], value = name, disabled = name == "Arena"})
             end
         end
 
@@ -141,6 +141,31 @@ local indicators = {
             "buffs", "debuffs",
             "raidIcon", "roleIcon",
             "targetHighlight", "mouseoverHighlight", "threatGlow",
+        },
+    },
+    group = {
+        party = {
+            "healthBar", "powerBar", "portrait", "castBar",
+            "nameText", "healthText", "powerText", "leaderText", "levelText", "targetCounter", "statusTimer",
+            "buffs", "debuffs",
+            "raidIcon", "leaderIcon", "roleIcon", "combatIcon", "readyCheckIcon", "factionIcon", "statusIcon",
+            "targetHighlight", "mouseoverHighlight", "threatGlow",
+        },
+        raid = {
+            "healthBar", "powerBar",
+            "nameText", "healthText", "statusTimer",
+            "buffs", "debuffs",
+            "raidIcon", "leaderIcon", "roleIcon", "readyCheckIcon", "statusIcon",
+            "targetHighlight", "mouseoverHighlight", "threatGlow",
+        },
+        boss = {
+            "healthBar", "powerBar", "portrait", "castBar",
+            "nameText", "healthText", "powerText", "levelText", "targetCounter",
+            "buffs", "debuffs",
+            "raidIcon",
+            "targetHighlight", "mouseoverHighlight",
+        },
+        arena = {
         },
     },
 }
