@@ -98,6 +98,8 @@ function UF.CreateIndicators(frame, indicators)
 end
 
 function UF.SetupIndicators(frame, indicators, config)
+    frame.enabled = true --! for LoadIndicatorConfig and mover (non-group frames)
+
     for _, v in next, indicators do
         local name
         if type(v) == "table" then
@@ -138,6 +140,8 @@ function UF.LoadIndicatorConfig(frame, indicatorName, indicatorConfig)
 end
 
 function UF.DisableIndicators(frame)
+    frame.enabled = false --! for LoadIndicatorConfig and mover (non-group frames)
+
     for _, indicator in next, frame.indicators do
         if indicator.DisableConfigMode then
             indicator:DisableConfigMode()

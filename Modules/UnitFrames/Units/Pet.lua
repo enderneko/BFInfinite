@@ -56,7 +56,6 @@ local function UpdatePet(_, module, which)
         if pet then
             UF.DisableIndicators(pet)
             UnregisterUnitWatch(pet)
-            pet.enabled = false -- for mover
             pet:Hide()
         end
         return
@@ -65,8 +64,6 @@ local function UpdatePet(_, module, which)
     if not pet then
         CreatePet()
     end
-
-    pet.enabled = true -- for mover
 
     -- setup
     UF.SetupUnitFrame(pet, config, indicators)

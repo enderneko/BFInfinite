@@ -60,7 +60,6 @@ local function UpdateTargetTarget(_, module, which)
         if targettarget then
             UF.DisableIndicators(targettarget)
             UnregisterUnitWatch(targettarget)
-            targettarget.enabled = false -- for mover
             targettarget:Hide()
         end
         return
@@ -69,8 +68,6 @@ local function UpdateTargetTarget(_, module, which)
     if not targettarget then
         CreateTargetTarget()
     end
-
-    targettarget.enabled = true -- for mover
 
     -- setup
     UF.SetupUnitFrame(targettarget, config, indicators)
