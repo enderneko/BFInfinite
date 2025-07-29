@@ -39,6 +39,9 @@ local function CreatePetTarget()
     -- mover
     AF.CreateMover(pettarget, "BFI: " .. L["Unit Frames"], L["Pet Target"])
 
+    -- preview rect
+    UF.CreatePreviewRect(pettarget)
+
     -- config mode
     UF.AddToConfigMode("pettarget", pettarget)
 
@@ -49,13 +52,13 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdatePetTarget(_, module, which)
+local function UpdatePetTarget(_, module, which, skipIndicatorUpdate)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "pettarget" then return end
 
     local config = UF.config.pettarget
 
-    if not config.enabled then
+    if not config.general.enabled then
         if pettarget then
             UF.DisableIndicators(pettarget)
             UnregisterUnitWatch(pettarget)
@@ -69,7 +72,7 @@ local function UpdatePetTarget(_, module, which)
     end
 
     -- setup
-    UF.SetupUnitFrame(pettarget, config, indicators)
+    UF.SetupUnitFrame(pettarget, config, indicators, skipIndicatorUpdate)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(pettarget)

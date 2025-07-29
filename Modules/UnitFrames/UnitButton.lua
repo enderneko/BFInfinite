@@ -137,6 +137,8 @@ end
 -- range
 ---------------------------------------------------------------------
 local function UnitButton_UpdateInRange(self, ir)
+    if not self.oorAlpha then return end
+
     local unit = self.displayedUnit
     if not unit then return end
 
@@ -147,7 +149,7 @@ local function UnitButton_UpdateInRange(self, ir)
         if inRange then
             AF.FrameFadeIn(self, 0.25, self:GetAlpha(), 1)
         else
-            AF.FrameFadeOut(self, 0.25, self:GetAlpha(), self.oorAlpha or 1)
+            AF.FrameFadeOut(self, 0.25, self:GetAlpha(), self.oorAlpha)
         end
     end
     self.states.wasInRange = inRange
@@ -400,13 +402,13 @@ end
 -- OnEnter/Leave
 ---------------------------------------------------------------------
 local function UnitButton_OnEnter(self)
-    if self.tooltipEnabled then
-        if self.tooltipAnchorTo == "self" then
+    if self.tooltip.enabled then
+        if self.tooltip.anchorTo == "self" then
             GameTooltip:SetOwner(self, "ANCHOR_NONE")
-            GameTooltip:SetPoint(self.tooltipPosition[1], self, self.tooltipPosition[2], self.tooltipPosition[3], self.tooltipPosition[4])
-        elseif self.tooltipAnchorTo == "container" then -- party/raid
+            GameTooltip:SetPoint(self.tooltip.position[1], self, self.tooltip.position[2], self.tooltip.position[3], self.tooltip.position[4])
+        elseif self.tooltip.anchorTo == "parent" then -- party/raid
             GameTooltip:SetOwner(self, "ANCHOR_NONE")
-            GameTooltip:SetPoint(self.tooltipPosition[1], self:GetParent():GetParent(), self.tooltipPosition[2], self.tooltipPosition[3], self.tooltipPosition[4])
+            GameTooltip:SetPoint(self.tooltip.position[1], self:GetParent():GetParent(), self.tooltip.position[2], self.tooltip.position[3], self.tooltip.position  [4])
         else -- default
             GameTooltip_SetDefaultAnchor(GameTooltip, self)
         end
@@ -422,7 +424,7 @@ local function UnitButton_OnLeave(self)
     -- NOTE: moved to OnTooltipSetUnit
     -- for GameTooltip_OnUpdate
     -- self.UpdateTooltip = nil
-    if self.tooltipEnabled then
+    if self.tooltip.enabled then
         GameTooltip:Hide()
     end
 end

@@ -58,7 +58,7 @@ local function UpdateBoss(_, module, which)
 
     local config = UF.config.boss
 
-    if not config.enabled then
+    if not config.general.enabled then
         if boss then
             UnregisterAttributeDriver(boss)
             for i = 1, 8 do

@@ -87,11 +87,12 @@ local function CreateContentPane()
 end
 
 ---------------------------------------------------------------------
--- indicators
+-- settings
 ---------------------------------------------------------------------
-local indicators = {
+local settings = {
     unit = {
         player = {
+            "general_single",
             "healthBar", "powerBar", "portrait", "castBar", "extraManaBar", "classPowerBar", "staggerBar",
             "nameText", "healthText", "powerText", "leaderText", "levelText", "targetCounter", "statusTimer", "incDmgHealText",
             "buffs", "debuffs", "privateAuras",
@@ -99,6 +100,7 @@ local indicators = {
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
         target = {
+            "general_single",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "leaderText", "levelText", "targetCounter", "statusTimer", "rangeText",
             "buffs", "debuffs", "privateAuras",
@@ -106,6 +108,7 @@ local indicators = {
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
         focus = {
+            "general_single",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "levelText", "targetCounter", "rangeText",
             "buffs", "debuffs", "privateAuras",
@@ -113,6 +116,7 @@ local indicators = {
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
         pet = {
+            "general_single",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "levelText", "targetCounter",
             "buffs", "debuffs",
@@ -122,6 +126,7 @@ local indicators = {
     },
     target = {
         targettarget = {
+            "general_single",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "levelText", "targetCounter",
             "buffs", "debuffs",
@@ -129,6 +134,7 @@ local indicators = {
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
         focustarget = {
+            "general_single",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "levelText", "targetCounter",
             "buffs", "debuffs",
@@ -136,6 +142,7 @@ local indicators = {
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
         pettarget = {
+            "general_single",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "levelText", "targetCounter",
             "buffs", "debuffs",
@@ -251,25 +258,29 @@ LoadList = function(main, sub)
     local owner = sub
     sub = sub:gsub(" ", "")
 
-    local cfg = BFI.vars.profile.unitFrames[sub:lower()]
+    local lowerSub = sub:lower()
 
-    for i, name in next, indicators[main][sub:lower()] do
+    local cfg = BFI.vars.profile.unitFrames[lowerSub]
+
+    for i, setting in next, settings[main][lowerSub] do
         local button = itemPool:Acquire()
         tinsert(listItems, button)
-        button:SetText(L[name])
 
-        button.module = "UnitFrames"
-        button.id = name
-        button.ownerName = L[owner]
-        button.owner = sub:lower()
-        button.target = _G["BFI_" .. sub]
-
-        if name == "general" then
+        if setting:find("^general") then
+            button:SetText(L["General"])
             button.cfg = cfg.general
+            button:SetTextColor("white")
         else
-            button.cfg = cfg.indicators[name]
+            button:SetText(L[setting])
+            button.cfg = cfg.indicators[setting]
             button:SetTextColor(button.cfg.enabled and "white" or "disabled")
         end
+
+        button.module = "unitFrames"
+        button.id = setting
+        button.ownerName = L[owner]
+        button.owner = lowerSub
+        button.target = _G["BFI_" .. sub]
     end
 
     list:SetWidgets(listItems)

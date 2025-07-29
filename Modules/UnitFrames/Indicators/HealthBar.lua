@@ -445,7 +445,7 @@ local function HealAbsorbBar_SetTexture(self, texture)
     else
         texture = AF.LSM_GetBarTexture(texture)
     end
-    self.healAbsorb:SetTexture(texture)
+    self.healAbsorb:SetTexture(texture, "REPEAT", "REPEAT")
 end
 
 local function HealAbsorbBar_SetColor(self, color)
@@ -509,6 +509,7 @@ local function HealthBar_LoadConfig(self, config)
     ShieldBar_SetColor(self, config.shield.color)
     OvershieldGlow_SetColor(self, config.overshieldGlow.color)
 
+    HealAbsorbBar_SetTexture(self, config.healAbsorb.texture)
     HealAbsorbBar_SetColor(self, config.healAbsorb.color)
     OverabsorbGlow_SetColor(self, config.overabsorbGlow.color)
 

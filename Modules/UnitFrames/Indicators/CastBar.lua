@@ -1031,7 +1031,9 @@ local function CastBar_DisableConfigMode(self)
     UnitIsUnit = UF.UnitIsUnit
     UnitCastingInfo = UF.UnitCastingInfo
 
-    self._preview:Hide()
+    if self._preview then
+        self._preview:Hide()
+    end
 end
 
 ---------------------------------------------------------------------

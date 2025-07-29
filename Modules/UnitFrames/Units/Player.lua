@@ -48,6 +48,9 @@ local function CreatePlayer()
     -- mover
     AF.CreateMover(player, "BFI: " .. L["Unit Frames"], _G.PLAYER)
 
+    -- preview rect
+    UF.CreatePreviewRect(player)
+
     -- config mode
     UF.AddToConfigMode("player", player)
 
@@ -60,13 +63,13 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdatePlayer(_, module, which)
+local function UpdatePlayer(_, module, which, skipIndicatorUpdate)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "player" then return end
 
     local config = UF.config.player
 
-    if not config.enabled then
+    if not config.general.enabled then
         if player then
             UF.DisableIndicators(player)
             UnregisterUnitWatch(player)
@@ -80,7 +83,7 @@ local function UpdatePlayer(_, module, which)
     end
 
     -- setup
-    UF.SetupUnitFrame(player, config, indicators)
+    UF.SetupUnitFrame(player, config, indicators, skipIndicatorUpdate)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(player)

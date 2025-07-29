@@ -143,7 +143,7 @@ function UF.DisableIndicators(frame)
     frame.enabled = false --! for LoadIndicatorConfig and mover (non-group frames)
 
     for _, indicator in next, frame.indicators do
-        if indicator.DisableConfigMode then
+        if UF.configModeEnabled and indicator.DisableConfigMode then
             indicator:DisableConfigMode()
         end
 
@@ -230,9 +230,19 @@ function UF.GetIndicator(frame, indicatorName, requireEnabled)
 end
 
 ---------------------------------------------------------------------
+-- preview rect
+---------------------------------------------------------------------
+function UF.CreatePreviewRect(parent)
+    parent.previewRect = parent:CreateTexture(nil, "BACKGROUND")
+    parent.previewRect:SetColorTexture(AF.GetColorRGB("BFI", 0.277))
+    parent.previewRect:SetAllPoints(parent)
+    parent.previewRect:Hide()
+end
+
+---------------------------------------------------------------------
 -- setup frame
 ---------------------------------------------------------------------
-function UF.SetupUnitFrame(frame, config, indicators)
+function UF.SetupUnitFrame(frame, config, indicators, skipIndicatorUpdate)
     -- mover
     AF.UpdateMoverSave(frame, config.general.position)
 
@@ -241,7 +251,7 @@ function UF.SetupUnitFrame(frame, config, indicators)
     -- frame:SetFrameLevel(config.general.frameLevel)
 
     -- tooltip
-    UF.SetupTooltip(frame, config.general.tooltip)
+    frame.tooltip = config.general.tooltip
 
     -- size & position
     AF.SetSize(frame, config.general.width, config.general.height)
@@ -254,7 +264,9 @@ function UF.SetupUnitFrame(frame, config, indicators)
     AF.ApplyDefaultBackdropWithColors(frame, config.general.bgColor, config.general.borderColor)
 
     -- indicators
-    UF.SetupIndicators(frame, indicators, config)
+    if not skipIndicatorUpdate then
+        UF.SetupIndicators(frame, indicators, config)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -286,7 +298,7 @@ function UF.SetupUnitGroup(group, config, indicators)
         -- out of range alpha
         b.oorAlpha = config.general.oorAlpha
         -- tooltip
-        UF.SetupTooltip(b, config.general.tooltip)
+        b.tooltip = config.general.tooltip
         -- color
         AF.ApplyDefaultBackdropWithColors(b, config.general.bgColor, config.general.borderColor)
         -- indicators
@@ -299,20 +311,5 @@ function UF.SetupUnitGroup(group, config, indicators)
             AF.SetPoint(b, p)
         end
         last = b
-    end
-end
-
----------------------------------------------------------------------
--- setup tooltip
----------------------------------------------------------------------
-function UF.SetupTooltip(self, config)
-    if config.enabled then
-        self.tooltipEnabled = true
-        self.tooltipAnchorTo = config.anchorTo
-        self.tooltipPosition = config.position
-    else
-        self.tooltipEnabled = nil
-        self.tooltipAnchorTo = nil
-        self.tooltipPosition = nil
     end
 end

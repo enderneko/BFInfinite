@@ -10,7 +10,7 @@ local AF = _G.AbstractFramework
 ---------------------------------------------------------------------
 UF.UnitHealth = UnitHealth
 function UF.CFG_UnitHealth()
-    return random(20, 100)
+    return random(25, 75)
 end
 
 UF.UnitHealthMax = UnitHealthMax
@@ -20,12 +20,12 @@ end
 
 UF.UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 function UF.CFG_UnitGetTotalAbsorbs()
-    return random(0, 50) * random(0, 1)
+    return random(25, 50)
 end
 
 UF.UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
 function UF.CFG_UnitGetTotalHealAbsorbs()
-    return random(0, 50) * random(0, 1)
+    return random(25, 50)
 end
 
 function UF.CFG_UnitClassBase()

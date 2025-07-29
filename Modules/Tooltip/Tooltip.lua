@@ -108,21 +108,21 @@ local function UpdateAnchor(tooltip, parent)
 
     if parent.tooltip then
         --! use module settings
-        local tt = parent.tooltip
-        if tt.enabled and not (tt.hideInCombat and InCombatLockdown()) then
-            if tooltip == GameTooltip and type(tt.supportsItemComparison) == "boolean" then
-                tooltip.supportsItemComparison = tt.supportsItemComparison
+        local cfg = parent.tooltip
+        if cfg.enabled and not (cfg.hideInCombat and InCombatLockdown()) then
+            if tooltip == GameTooltip and type(cfg.supportsItemComparison) == "boolean" then
+                tooltip.supportsItemComparison = cfg.supportsItemComparison
             end
 
-            if tt.anchorTo == "self" then
-                tooltip:SetPoint(tt.position[1], parent, tt.position[2], tt.position[3], tt.position[4])
-            elseif tt.anchorTo == "self_adaptive" then
+            if cfg.anchorTo == "self" then
+                tooltip:SetPoint(cfg.position[1], parent, cfg.position[2], cfg.position[3], cfg.position[4])
+            elseif cfg.anchorTo == "self_adaptive" then
                 local point, anchorPoint, x, y = GetTooltipAnchorPoint(parent)
                 tooltip:SetPoint(point, parent, anchorPoint, x, y)
-            elseif tt.anchorTo == "parent" then
-                tooltip:SetPoint(tt.position[1], parent:GetParent(), tt.position[2], tt.position[3], tt.position[4])
-            elseif tt.anchorTo == "root" then
-                tooltip:SetPoint(tt.position[1], parent.root, tt.position[2], tt.position[3], tt.position[4])
+            elseif cfg.anchorTo == "parent" then
+                tooltip:SetPoint(cfg.position[1], parent:GetParent(), cfg.position[2], cfg.position[3], cfg.position[4])
+            elseif cfg.anchorTo == "root" then
+                tooltip:SetPoint(cfg.position[1], parent.root, cfg.position[2], cfg.position[3], cfg.position[4])
             -- elseif tt.anchorTo then
             --     tooltip:SetPoint(tt.position[1], tt.anchorTo, tt.position[2], tt.position[3], tt.position[4])
             else

@@ -12,9 +12,19 @@ local builder = {}
 local options = {}
 
 ---------------------------------------------------------------------
--- indicator settings
+-- settings
 ---------------------------------------------------------------------
-local indicators = {
+local settings = {
+    -- general
+    general_single = {
+        "enabled",
+        "width,height",
+        "bgColor,borderColor",
+        "oorAlpha",
+        "tooltip",
+    },
+
+    -- indicators
     healthBar = {
         "enabled",
         "width,height",
@@ -429,7 +439,7 @@ builder["copy,paste,reset"] = function(parent)
     created["copy,paste,reset"] = pane
     pane:Hide()
 
-    local copiedModule, copiedId, copiedOwnerName, copiedTime, copiedCfg
+    local copiedModule, copiedId, copiedOwnerName, copiedTime, copiedCfg, isWholeCfg
 
     local copy = AF.CreateButton(pane, L["Copy"], "BFI_hover", 107, 20)
     AF.SetPoint(copy, "LEFT", 15, 0)
@@ -442,27 +452,55 @@ builder["copy,paste,reset"] = function(parent)
     AF.SetPoint(paste, "TOPLEFT", copy, "TOPRIGHT", 7, 0)
 
     copy:SetOnClick(function()
+        if pane.t.id:find("^general") and IsShiftKeyDown() then
+            isWholeCfg = true
+            copiedId = "All"
+            copiedCfg = AF.Copy(BFI.vars.profile[pane.t.module][pane.t.owner])
+        else
+            isWholeCfg = false
+            copiedId = pane.t.id
+            copiedCfg = AF.Copy(pane.t.cfg)
+        end
         copiedModule = pane.t.module
-        copiedId = pane.t.id
         copiedOwnerName = pane.t.ownerName
         copiedTime = time()
-        copiedCfg = AF.Copy(pane.t.cfg)
         AF.FrameFadeInOut(copy.tick, 0.15)
         paste:SetEnabled(true)
-        -- AF.Fire("BFI_ShowCopiedInfo", pane.t.module, pane.t.id, nil, pane.t.ownerName, pane.t.time, pane.t.cfg)
     end)
 
     paste:SetOnClick(function()
         local text = AF.WrapTextInColor(L["Overwrite with copied config?"], "BFI") .. "\n"
-            .. AF.WrapTextInColor("[" .. L[copiedId] .. "]", "softlime") .. "\n"
+            .. AF.WrapTextInColor("[" .. L[copiedId:find("^general") and "General" or copiedId] .. "]", "softlime") .. "\n"
             .. copiedOwnerName .. AF.WrapTextInColor(" -> ", "darkgray") .. pane.t.ownerName .. "\n"
             .. AF.WrapTextInColor(AF.FormatRelativeTime(copiedTime), "darkgray")
 
         local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
-            AF.MergeExistingKeys(pane.t.cfg, copiedCfg)
-            LoadIndicatorConfig(pane.t)
+            if pane.t.id:find("^general") then
+                local pos = pane.t.cfg.position
+                if isWholeCfg then
+                    AF.MergeExistingKeys(BFI.vars.profile[pane.t.module][pane.t.owner].general, copiedCfg.general)
+                    for k, t in next, BFI.vars.profile[pane.t.module][pane.t.owner].indicators do
+                        if copiedCfg.indicators[k] then
+                            AF.MergeExistingKeys(BFI.vars.profile[pane.t.module][pane.t.owner].indicators[k], copiedCfg.indicators[k])
+                        else
+                            BFI.vars.profile[pane.t.module][pane.t.owner].indicators[k].enabled = false
+                        end
+                    end
+                    pane.t.cfg.position = pos -- keep position
+                    AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner)
+                else
+                    AF.MergeExistingKeys(pane.t.cfg, copiedCfg)
+                    pane.t.cfg.position = pos -- keep position
+                    AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+                end
+            else
+                AF.MergeExistingKeys(pane.t.cfg, copiedCfg)
+                LoadIndicatorConfig(pane.t)
+            end
+
+            -- TODO: reload list & options
         end)
     end)
 
@@ -471,15 +509,23 @@ builder["copy,paste,reset"] = function(parent)
     AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 7, 0)
     reset:SetOnClick(function()
         local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n"
-            .. AF.WrapTextInColor("[" .. L[pane.t.id] .. "]", "softlime") .. "\n"
+            .. AF.WrapTextInColor("[" .. L[pane.t.id:find("^general") and "General" or pane.t.id] .. "]", "softlime") .. "\n"
             .. pane.t.ownerName
 
         local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
             wipe(pane.t.cfg)
-            AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "indicator", pane.t.id))
-            LoadIndicatorConfig(pane.t)
+
+            if pane.t.id:find("^general") then
+                AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "general"))
+                AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+            else
+                AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "indicator", pane.t.id))
+                LoadIndicatorConfig(pane.t)
+            end
+
+            -- TODO: reload list & options
             -- reload settings
             for _, p in next, options do
                 p.Load(p.t)
@@ -489,7 +535,11 @@ builder["copy,paste,reset"] = function(parent)
 
     function pane.Load(t)
         pane.t = t
-        paste:SetEnabled(t.module == copiedModule and t.id == copiedId)
+        if isWholeCfg then
+            paste:SetEnabled(t.module == copiedModule and t.id:find("^general"))
+        else
+            paste:SetEnabled(t.module == copiedModule and t.id == copiedId)
+        end
     end
 
     return pane
@@ -506,15 +556,30 @@ builder["enabled"] = function(parent)
 
     local enabled = AF.CreateCheckButton(pane, L["Enabled"])
     AF.SetPoint(enabled, "LEFT", 15, 0)
+
+    local function UpdateColor(checked)
+        if checked then
+            enabled.label:SetTextColor(AF.GetColorRGB("softlime"))
+        else
+            enabled.label:SetTextColor(AF.GetColorRGB("firebrick"))
+        end
+    end
+
     enabled:SetOnCheck(function(checked)
         pane.t.cfg.enabled = checked
+        UpdateColor(checked)
         -- pane.t is list button that carries info
-        pane.t:SetTextColor(checked and "white" or "disabled")
-        LoadIndicatorConfig(pane.t)
+        if pane.t.id:find("^general") then
+            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner)
+        else
+            pane.t:SetTextColor(checked and "white" or "disabled")
+            LoadIndicatorConfig(pane.t)
+        end
     end)
 
     function pane.Load(t)
         pane.t = t
+        UpdateColor(t.cfg.enabled)
         enabled:SetChecked(t.cfg.enabled)
     end
 
@@ -534,14 +599,24 @@ builder["width,height"] = function(parent)
     AF.SetPoint(width, "LEFT", 15, 0)
     width:SetOnValueChanged(function(value)
         pane.t.cfg.width = value
-        LoadIndicatorConfig(pane.t)
+        if pane.t.id:find("^general") then
+            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+            AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
+        else
+            LoadIndicatorConfig(pane.t)
+        end
     end)
 
     local height = AF.CreateSlider(pane, L["Height"], 150, 10, 1000, 1, nil, true)
     AF.SetPoint(height, "TOPLEFT", width, 185, 0)
     height:SetOnValueChanged(function(value)
         pane.t.cfg.height = value
-        LoadIndicatorConfig(pane.t)
+        if pane.t.id:find("^general") then
+            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+            AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
+        else
+            LoadIndicatorConfig(pane.t)
+        end
     end)
 
     function pane.Load(t)
@@ -988,7 +1063,11 @@ builder["bgColor,borderColor"] = function(parent)
         pane.t.cfg.bgColor[2] = g
         pane.t.cfg.bgColor[3] = b
         pane.t.cfg.bgColor[4] = a
-        LoadIndicatorConfig(pane.t)
+        if pane.t.id:find("^general") then
+            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+        else
+            LoadIndicatorConfig(pane.t)
+        end
     end)
 
     local borderColor = AF.CreateColorPicker(pane, L["Border Color"], true)
@@ -998,7 +1077,11 @@ builder["bgColor,borderColor"] = function(parent)
         pane.t.cfg.borderColor[2] = g
         pane.t.cfg.borderColor[3] = b
         pane.t.cfg.borderColor[4] = a
-        LoadIndicatorConfig(pane.t)
+        if pane.t.id:find("^general") then
+            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+        else
+            LoadIndicatorConfig(pane.t)
+        end
     end)
 
     function pane.Load(t)
@@ -3235,19 +3318,29 @@ builder["tooltip"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Tooltip", nil, 148)
     created["tooltip"] = pane
 
-    local enabledCheckButton = AF.CreateCheckButton(pane, L["Enable Aura Tooltip"])
+    local enabledCheckButton = AF.CreateCheckButton(pane)
     AF.SetPoint(enabledCheckButton, "TOPLEFT", 15, -25)
 
     local relativeTo = AF.CreateDropdown(pane, 150)
     relativeTo:SetLabel(L["Relative To"])
     AF.SetPoint(relativeTo, "LEFT", enabledCheckButton, 185, 0)
     AF.SetPoint(relativeTo, "TOP", pane, 0, -25)
-    relativeTo:SetItems({
-        {text = L["Unit Frame"], value = "root"},
+
+    local singleItems = {
+        {text = L["Unit Frame"], value = "self"},
+    }
+
+    local groupItems = {
+        {text = L["Unit Frame"], value = "self"},
         {text = L["Group"], value = "parent"},
+    }
+
+    local auraItems = {
+        {text = L["Unit Frame"], value = "root"},
         {text = L["Icon"], value = "self"},
         {text = L["Icon (Adaptive)"], value = "self_adaptive"},
-    })
+        {text = L["Group"], value = "parent"},
+    }
 
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
@@ -3255,7 +3348,6 @@ builder["tooltip"] = function(parent)
     anchorPoint:SetItems(GetAnchorPointItems())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.tooltip.position[1] = value
-        LoadIndicatorPosition(pane.t)
     end)
 
     local relativePoint = AF.CreateDropdown(pane, 150)
@@ -3264,21 +3356,18 @@ builder["tooltip"] = function(parent)
     relativePoint:SetItems(GetAnchorPointItems())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg.tooltip.position[2] = value
-        LoadIndicatorPosition(pane.t)
     end)
 
     local x = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
     AF.SetPoint(x, "TOPLEFT", anchorPoint, 0, -45)
     x:SetOnValueChanged(function(value)
         pane.t.cfg.tooltip.position[3] = value
-        LoadIndicatorPosition(pane.t)
     end)
 
     local y = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
     AF.SetPoint(y, "TOPLEFT", x, 185, 0)
     y:SetOnValueChanged(function(value)
         pane.t.cfg.tooltip.position[4] = value
-        LoadIndicatorPosition(pane.t)
     end)
 
     local function UpdateWidgets()
@@ -3289,18 +3378,31 @@ builder["tooltip"] = function(parent)
     enabledCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.tooltip.enabled = checked
         UpdateWidgets()
-        LoadIndicatorConfig(pane.t)
+        if not pane.t.id:find("^general") then
+            LoadIndicatorConfig(pane.t)
+        end
     end)
 
      relativeTo:SetOnSelect(function(value)
         pane.t.cfg.tooltip.anchorTo = value
         UpdateWidgets()
-        LoadIndicatorPosition(pane.t)
     end)
 
     function pane.Load(t)
         pane.t = t
         UpdateWidgets()
+
+        if t.id == "general_single" then
+            enabledCheckButton:SetText(L["Enable Tooltip"])
+            relativeTo:SetItems(singleItems)
+        elseif t.id == "general_group" then
+            enabledCheckButton:SetText(L["Enable Tooltip"])
+            relativeTo:SetItems(groupItems)
+        else
+            enabledCheckButton:SetText(L["Enable Aura Tooltip"])
+            relativeTo:SetItems(auraItems)
+        end
+
         enabledCheckButton:SetChecked(t.cfg.tooltip.enabled)
         relativeTo:SetSelectedValue(t.cfg.tooltip.anchorTo)
         anchorPoint:SetSelectedValue(t.cfg.tooltip.position[1])
@@ -3425,6 +3527,36 @@ builder["alpha"] = function(parent)
 end
 
 ---------------------------------------------------------------------
+-- oorAlpha
+---------------------------------------------------------------------
+builder["oorAlpha"] = function(parent)
+    if created["oorAlpha"] then return created["oorAlpha"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_OorAlpha", nil, 55)
+    created["oorAlpha"] = pane
+
+    local oorAlphaSlider = AF.CreateSlider(pane, L["Out Of Range Alpha"], 150, 0, 1, 0.01, true, true)
+    AF.SetPoint(oorAlphaSlider, "LEFT", 15, 0)
+    oorAlphaSlider:SetAfterValueChanged(function(value)
+        pane.t.cfg.oorAlpha = value
+        -- AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+        pane.t.target.oorAlpha = value
+        pane.t.target.states.wasInRange = nil
+    end)
+
+    function pane.IsApplicable(t)
+        return t.cfg.oorAlpha ~= nil
+    end
+
+    function pane.Load(t)
+        pane.t = t
+        oorAlphaSlider:SetValue(t.cfg.oorAlpha)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- get
 ---------------------------------------------------------------------
 function F.GetIndicatorOptions(parent, info)
@@ -3438,9 +3570,9 @@ function F.GetIndicatorOptions(parent, info)
     created["copy,paste,reset"]:Show()
 
     local id = info.id
-    if not indicators[id] then return options end
+    if not settings[id] then return options end
 
-    for _, option in pairs(indicators[id]) do
+    for _, option in pairs(settings[id]) do
         if builder[option] then
             local pane = builder[option](parent)
             if not pane.IsApplicable or pane.IsApplicable(info) then

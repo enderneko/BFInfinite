@@ -39,6 +39,9 @@ local function CreateFocusTarget()
     -- mover
     AF.CreateMover(focustarget, "BFI: " .. L["Unit Frames"], L["Focus Target"])
 
+    -- preview rect
+    UF.CreatePreviewRect(focustarget)
+
     -- config mode
     UF.AddToConfigMode("focustarget", focustarget)
 
@@ -49,13 +52,13 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateFocusTarget(_, module, which)
+local function UpdateFocusTarget(_, module, which, skipIndicatorUpdate)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "focustarget" then return end
 
     local config = UF.config.focustarget
 
-    if not config.enabled then
+    if not config.general.enabled then
         if focustarget then
             UF.DisableIndicators(focustarget)
             UnregisterUnitWatch(focustarget)
@@ -69,7 +72,7 @@ local function UpdateFocusTarget(_, module, which)
     end
 
     -- setup
-    UF.SetupUnitFrame(focustarget, config, indicators)
+    UF.SetupUnitFrame(focustarget, config, indicators, skipIndicatorUpdate)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(focustarget)

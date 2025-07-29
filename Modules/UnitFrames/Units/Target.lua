@@ -47,6 +47,9 @@ local function CreateTarget()
     -- mover
     AF.CreateMover(target, "BFI: " .. L["Unit Frames"], _G.TARGET)
 
+    -- preview rect
+    UF.CreatePreviewRect(target)
+
     -- config mode
     UF.AddToConfigMode("target", target)
 
@@ -57,13 +60,13 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateTarget(_, module, which)
+local function UpdateTarget(_, module, which, skipIndicatorUpdate)
     if module and module ~= "UnitFrames" then return end
     if which and which ~= "target" then return end
 
     local config = UF.config.target
 
-    if not config.enabled then
+    if not config.general.enabled then
         if target then
             UF.DisableIndicators(target)
             UnregisterUnitWatch(target)
@@ -78,7 +81,7 @@ local function UpdateTarget(_, module, which)
     end
 
     -- setup
-    UF.SetupUnitFrame(target, config, indicators)
+    UF.SetupUnitFrame(target, config, indicators, skipIndicatorUpdate)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(target)

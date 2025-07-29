@@ -102,8 +102,8 @@ local default_blacklist = {
 
 local style1 = {
     player = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -218, 250},
@@ -586,8 +586,8 @@ local style1 = {
         },
     },
     target = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 218, 250},
@@ -988,8 +988,8 @@ local style1 = {
         },
     },
     targettarget = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 47, 250},
@@ -1330,8 +1330,8 @@ local style1 = {
         },
     },
     focus = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 0, 273},
@@ -1680,8 +1680,8 @@ local style1 = {
         },
     },
     focustarget = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -48, 250},
@@ -2022,8 +2022,8 @@ local style1 = {
         },
     },
     pet = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -370, 270},
@@ -2363,8 +2363,8 @@ local style1 = {
         },
     },
     pettarget = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -370, 250},
@@ -2708,8 +2708,8 @@ local style1 = {
 
 local style2 = {
     player = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -218, 250},
@@ -3192,8 +3192,8 @@ local style2 = {
         },
     },
     target = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 218, 250},
@@ -3594,8 +3594,8 @@ local style2 = {
         },
     },
     targettarget = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 48, 250},
@@ -3936,8 +3936,8 @@ local style2 = {
         },
     },
     focus = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 0, 273},
@@ -4285,8 +4285,8 @@ local style2 = {
         },
     },
     focustarget = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -48, 250},
@@ -4627,8 +4627,8 @@ local style2 = {
         },
     },
     pet = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -370, 270},
@@ -4968,8 +4968,8 @@ local style2 = {
         },
     },
     pettarget = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -370, 250},
@@ -5315,8 +5315,8 @@ local defaults = {
         frameStrata = "LOW",
     },
     party = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", -550, 300},
@@ -5715,8 +5715,8 @@ local defaults = {
         },
     },
     raid = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOMRIGHT", -5, 250},
@@ -5998,8 +5998,8 @@ local defaults = {
         },
     },
     boss = {
-        enabled = true,
         general = {
+            enabled = true,
             bgColor = AF.GetColorTable("none"),
             borderColor = AF.GetColorTable("none"),
             position = {"BOTTOM", 406, 345},

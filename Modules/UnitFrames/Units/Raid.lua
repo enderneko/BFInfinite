@@ -94,7 +94,7 @@ local function UpdateRaid(_, module, which)
 
     local config = UF.config.raid
 
-    if not config.enabled then
+    if not config.general.enabled then
         if raid then
             UnregisterAttributeDriver(raid)
             for i = 1, 40 do
@@ -145,7 +145,7 @@ local function UpdateRaid(_, module, which)
         -- out of range alpha
         button.oorAlpha = config.general.oorAlpha
         -- tooltip
-        UF.SetupTooltip(button, config.general.tooltip)
+        button.tooltip = config.general.tooltip
         -- color
         AF.ApplyDefaultBackdropWithColors(button, config.general.bgColor, config.general.borderColor)
         -- indicators
