@@ -444,8 +444,8 @@ local style1 = {
                 position = {"BOTTOMLEFT", "TOPLEFT", 0, 0},
                 anchorTo = "root",
                 frameLevel = 5,
-                width = 32,
-                height = 16,
+                size = 13,
+                style = "bfi",
             },
             targetHighlight = {
                 enabled = false,
@@ -3053,8 +3053,8 @@ local style2 = {
                 position = {"BOTTOMLEFT", "TOPLEFT", 0, 0},
                 anchorTo = "root",
                 frameLevel = 5,
-                width = 32,
-                height = 16,
+                size = 13,
+                style = "bfi",
             },
             targetHighlight = {
                 enabled = false,

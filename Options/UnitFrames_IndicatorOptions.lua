@@ -185,7 +185,7 @@ local indicators = {
     raidIcon = {
         "enabled",
         "position,anchorTo",
-        "iconStyle",
+        "style",
         "size",
         "frameLevel",
     },
@@ -205,6 +205,13 @@ local indicators = {
         "enabled",
         "hideDamager",
         "position,anchorTo",
+        "size",
+        "frameLevel",
+    },
+    restingIndicator = {
+        "enabled",
+        "position,anchorTo",
+        "style",
         "size",
         "frameLevel",
     },
@@ -3226,27 +3233,35 @@ builder["tooltip"] = function(parent)
 end
 
 ---------------------------------------------------------------------
--- iconStyle
+-- style
 ---------------------------------------------------------------------
-builder["iconStyle"] = function(parent)
-    if created["iconStyle"] then return created["iconStyle"] end
+builder["style"] = function(parent)
+    if created["style"] then return created["style"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_IconStyle", nil, 54)
-    created["iconStyle"] = pane
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Style", nil, 54)
+    created["style"] = pane
 
     local styleDropdown = AF.CreateDropdown(pane, 150)
-    styleDropdown:SetLabel(L["Icon Style"])
+    styleDropdown:SetLabel(L["Style"])
     AF.SetPoint(styleDropdown, "TOPLEFT", 15, -25)
-    styleDropdown:SetItems({
-        {text = L["Blizzard"], value = "blizzard"},
-        {text = "AF", value = "af"},
-    })
     styleDropdown:SetOnSelect(function(value)
         pane.t.cfg.style = value
         LoadIndicatorConfig(pane.t)
     end)
 
     function pane.Load(t)
+        if t.id == "raidIcon" then
+            styleDropdown:SetItems({
+                {text = L["Blizzard"], value = "blizzard"},
+                {text = "AF", value = "af"},
+            })
+        else
+            styleDropdown:SetItems({
+                {text = L["Blizzard"], value = "blizzard"},
+                {text = "BFI", value = "bfi"},
+            })
+        end
+
         pane.t = t
         styleDropdown:SetSelectedValue(t.cfg.style)
     end
