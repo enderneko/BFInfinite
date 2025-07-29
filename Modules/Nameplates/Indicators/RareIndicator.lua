@@ -42,7 +42,7 @@ end
 ---------------------------------------------------------------------
 local function RareIndicator_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
-    AF.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.size, config.size)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
     self.icon:SetVertexColor(AF.UnpackColor(config.color))
 end

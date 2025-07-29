@@ -207,7 +207,7 @@ end
 ---------------------------------------------------------------------
 local function QuestIndicator_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
-    AF.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.size, config.size)
     NP.LoadIndicatorPosition(self, config.position, config.anchorTo)
 end
 

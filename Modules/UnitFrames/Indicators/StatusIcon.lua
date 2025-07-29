@@ -166,7 +166,7 @@ end
 local function StatusIcon_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AF.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.size, config.size)
 end
 
 ---------------------------------------------------------------------

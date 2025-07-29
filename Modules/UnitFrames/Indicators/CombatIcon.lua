@@ -65,9 +65,9 @@ end
 local function CombatIcon_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AF.SetSize(self, config.width, config.height)
+    AF.SetSize(self, config.size, config.size)
     -- self.icon:SetTexture(AF.GetTexture(config.texture))
-    G.SetFont(self.text, config.width, "outline")
+    G.SetFont(self.text, config.size, "outline")
     G.SetGlyph(self.text, G.Combat)
 end
 

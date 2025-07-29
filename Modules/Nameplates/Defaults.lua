@@ -258,8 +258,7 @@ do
             position = {"RIGHT", "LEFT", -2, 0},
             anchorTo = "healthBar",
             frameLevel = 2,
-            width = 13,
-            height = 13,
+            size = 13,
             style = "text",
         },
         classIcon = {
@@ -267,8 +266,7 @@ do
             position = {"RIGHT", "TOPRIGHT", 0, 0},
             anchorTo = "healthBar",
             frameLevel = 2,
-            width = 16,
-            height = 16,
+            size = 16,
         },
     }
 
@@ -278,8 +276,7 @@ do
             position = {"BOTTOM", "TOP", 0, 30},
             anchorTo = "healthBar",
             frameLevel = 1,
-            width = 40,
-            height = 40,
+            size = 40,
             target = {
                 texture = "Arrow1_Red",
                 color = AF.GetColorTable("white"),
@@ -448,16 +445,14 @@ do
             anchorTo = "healthBar",
             frameLevel = 2,
             color = AF.GetColorTable("white"),
-            width = 16,
-            height = 16,
+            size = 16,
         },
         questIndicator = {
             enabled = true,
             position = {"LEFT", "RIGHT", 0, 0},
             anchorTo = "healthBar",
             frameLevel = 2,
-            width = 18,
-            height = 18,
+            size = 18,
             hideInInstance = true,
         }
     }
@@ -478,8 +473,7 @@ do
             position = {"RIGHT", "LEFT", -2, 2},
             anchorTo = "nameText",
             frameLevel = 2,
-            width = 13,
-            height = 13,
+            size = 13,
             style = "text",
         },
         targetIndicator = {
@@ -487,8 +481,7 @@ do
             position = {"BOTTOM", "TOP", 0, 15},
             anchorTo = "nameText",
             frameLevel = 1,
-            width = 40,
-            height = 40,
+            size = 40,
             target = {
                 texture = "Arrow1_Green",
                 color = AF.GetColorTable("white"),

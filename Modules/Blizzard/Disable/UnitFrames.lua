@@ -180,10 +180,6 @@ local function DisableBlizzard()
         hooksecurefunc(_G.CompactRaidFrameContainer, "Show", _G.CompactRaidFrameContainer.Hide)
         hooksecurefunc(_G.CompactRaidFrameContainer, "SetShown", SetShown)
         hooksecurefunc("CompactRaidGroup_InitializeForGroup", DisableBlizzard_InitializeForGroup)
-
-        CompactRaidFrameManager_SetSetting("IsShown", "0")
-        _G.CompactRaidFrameManager:UnregisterAllEvents()
-        _G.CompactRaidFrameManager:SetParent(hiddenParent)
     end
 
     -- boss

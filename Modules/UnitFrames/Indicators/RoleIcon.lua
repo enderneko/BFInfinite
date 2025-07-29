@@ -40,8 +40,8 @@ end
 local function RoleIcon_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
-    AF.SetSize(self, config.width, config.height)
-    G.SetFont(self.text, config.width, "outline")
+    AF.SetSize(self, config.size, config.size)
+    G.SetFont(self.text, config.size, "outline")
     self.hideDamager = config.hideDamager
 end
 
