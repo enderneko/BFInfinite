@@ -52,7 +52,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateFocusTarget(_, module, which, skipIndicatorUpdate)
+local function UpdateFocusTarget(_, module, which, skipIndicatorUpdates)
     if module and module ~= "unitFrames" then return end
     if which and which ~= "focustarget" then return end
 
@@ -72,7 +72,7 @@ local function UpdateFocusTarget(_, module, which, skipIndicatorUpdate)
     end
 
     -- setup
-    UF.SetupUnitFrame(focustarget, config, indicators, skipIndicatorUpdate)
+    UF.SetupUnitFrame(focustarget, config, indicators, skipIndicatorUpdates)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(focustarget)

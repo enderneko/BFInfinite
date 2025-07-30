@@ -84,7 +84,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateRaid(_, module, which)
+local function UpdateRaid(_, module, which, skipIndicatorUpdates)
     if C_AddOns.IsAddOnLoaded("Cell") then
         return
     end
@@ -149,30 +149,39 @@ local function UpdateRaid(_, module, which)
         -- color
         AF.ApplyDefaultBackdropWithColors(button, config.general.bgColor, config.general.borderColor)
         -- indicators
-        UF.SetupIndicators(button, indicators, config)
+        if not skipIndicatorUpdates then
+            UF.SetupIndicators(button, indicators, config)
+        end
     end
 
     -- header
-    local p, rp, x, y, cs, hp, cp = AF.GetAnchorPoints_GroupHeader(config.general.orientation, config.general.spacingX, config.general.spacingY)
+    header:SetAttribute("_ignore", true) -- skip SecureGroupHeader_OnAttributeChanged -> SecureGroupHeader_Update
+
+    local _, rp, x, y, cs, hp, cp = AF.GetAnchorPoints_GroupHeader(config.general.orientation, config.general.spacingX, config.general.spacingY)
     header:SetSize(config.general.width, config.general.height)
     header:ClearAllPoints()
-    header:SetPoint(p, raid)
+    header:SetPoint(config.general.anchor)
+    header:SetAttribute("minWidth", AF.ConvertPixelsForRegion(config.general.width, raid))
+    header:SetAttribute("minHeight", AF.ConvertPixelsForRegion(config.general.height, raid))
     header:SetAttribute("point", hp)
-    header:SetAttribute("columnAnchorPoint", cp)
-    header:SetAttribute("columnSpacing", cs)
     header:SetAttribute("xOffset", x)
     header:SetAttribute("yOffset", y)
     header:SetAttribute("sortMethod", config.general.sortMethod)
     header:SetAttribute("sortDir", config.general.sortDir)
     header:SetAttribute("groupingOrder", config.general.groupingOrder)
     header:SetAttribute("groupBy", config.general.groupBy)
-    header:SetAttribute("buttonWidth", AF.ConvertPixelsForRegion(config.general.width, raid))
-    header:SetAttribute("buttonHeight", AF.ConvertPixelsForRegion(config.general.height, raid))
+    header:SetAttribute("columnAnchorPoint", cp)
+    header:SetAttribute("columnSpacing", cs)
     header:SetAttribute("maxColumns", config.general.maxColumns)
+    header:SetAttribute("groupFilter", config.general.groupFilter)
+
+    header:SetAttribute("_ignore", nil) -- ready for updates
     header:SetAttribute("unitsPerColumn", config.general.unitsPerColumn)
     header:Show()
 
-    -- visibility NOTE: show must invoke after settings applied
-    RegisterAttributeDriver(raid, raid.driverKey, raid.driverValue)
+    if not UF.configModeEnabled then
+        -- visibility NOTE: show must invoke after settings applied
+        RegisterAttributeDriver(raid, raid.driverKey, raid.driverValue)
+    end
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateRaid)

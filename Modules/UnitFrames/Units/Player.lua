@@ -63,7 +63,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdatePlayer(_, module, which, skipIndicatorUpdate)
+local function UpdatePlayer(_, module, which, skipIndicatorUpdates)
     if module and module ~= "unitFrames" then return end
     if which and which ~= "player" then return end
 
@@ -83,7 +83,7 @@ local function UpdatePlayer(_, module, which, skipIndicatorUpdate)
     end
 
     -- setup
-    UF.SetupUnitFrame(player, config, indicators, skipIndicatorUpdate)
+    UF.SetupUnitFrame(player, config, indicators, skipIndicatorUpdates)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(player)

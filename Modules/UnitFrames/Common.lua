@@ -232,17 +232,25 @@ end
 ---------------------------------------------------------------------
 -- preview rect
 ---------------------------------------------------------------------
-function UF.CreatePreviewRect(parent)
-    parent.previewRect = parent:CreateTexture(nil, "BACKGROUND")
-    parent.previewRect:SetColorTexture(AF.GetColorRGB("BFI", 0.277))
-    parent.previewRect:SetAllPoints(parent)
-    parent.previewRect:Hide()
+function UF.CreatePreviewRect(parent, pointTo)
+    local previewRect = parent:CreateTexture(nil, "BACKGROUND")
+    previewRect:SetIgnoreParentAlpha(true)
+    previewRect:SetColorTexture(AF.GetColorRGB("BFI", 0.277))
+    previewRect:SetAlpha(0)
+    previewRect:SetAllPoints(pointTo or parent)
+    previewRect:Hide()
+
+    if pointTo then
+        pointTo.previewRect = previewRect
+    else
+        parent.previewRect = previewRect
+    end
 end
 
 ---------------------------------------------------------------------
 -- setup frame
 ---------------------------------------------------------------------
-function UF.SetupUnitFrame(frame, config, indicators, skipIndicatorUpdate)
+function UF.SetupUnitFrame(frame, config, indicators, skipIndicatorUpdates)
     -- mover
     AF.UpdateMoverSave(frame, config.general.position)
 
@@ -264,7 +272,7 @@ function UF.SetupUnitFrame(frame, config, indicators, skipIndicatorUpdate)
     AF.ApplyDefaultBackdropWithColors(frame, config.general.bgColor, config.general.borderColor)
 
     -- indicators
-    if not skipIndicatorUpdate then
+    if not skipIndicatorUpdates then
         UF.SetupIndicators(frame, indicators, config)
     end
 end
@@ -272,7 +280,7 @@ end
 ---------------------------------------------------------------------
 -- setup group
 ---------------------------------------------------------------------
-function UF.SetupUnitGroup(group, config, indicators)
+function UF.SetupUnitGroup(group, config, indicators, skipIndicatorUpdates)
     -- mover
     AF.UpdateMoverSave(group, config.general.position)
 
@@ -302,7 +310,9 @@ function UF.SetupUnitGroup(group, config, indicators)
         -- color
         AF.ApplyDefaultBackdropWithColors(b, config.general.bgColor, config.general.borderColor)
         -- indicators
-        UF.SetupIndicators(b, indicators, config)
+        if not skipIndicatorUpdates then
+            UF.SetupIndicators(b, indicators, config)
+        end
         -- position
         AF.ClearPoints(b)
         if last then

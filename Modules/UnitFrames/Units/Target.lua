@@ -60,7 +60,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateTarget(_, module, which, skipIndicatorUpdate)
+local function UpdateTarget(_, module, which, skipIndicatorUpdates)
     if module and module ~= "unitFrames" then return end
     if which and which ~= "target" then return end
 
@@ -81,7 +81,7 @@ local function UpdateTarget(_, module, which, skipIndicatorUpdate)
     end
 
     -- setup
-    UF.SetupUnitFrame(target, config, indicators, skipIndicatorUpdate)
+    UF.SetupUnitFrame(target, config, indicators, skipIndicatorUpdates)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(target)

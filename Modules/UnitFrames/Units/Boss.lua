@@ -52,7 +52,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateBoss(_, module, which)
+local function UpdateBoss(_, module, which, skipIndicatorUpdates)
     if module and module ~= "unitFrames" then return end
     if which and which ~= "boss" then return end
 
@@ -78,9 +78,11 @@ local function UpdateBoss(_, module, which)
     boss.enabled = true -- for mover
 
     -- setup
-    UF.SetupUnitGroup(boss, config, indicators)
+    UF.SetupUnitGroup(boss, config, indicators, skipIndicatorUpdates)
 
-    -- visibility NOTE: show must invoke after settings applied
-    RegisterAttributeDriver(boss, boss.driverKey, boss.driverValue)
+    if not UF.configModeEnabled then
+        -- visibility NOTE: show must invoke after settings applied
+        RegisterAttributeDriver(boss, boss.driverKey, boss.driverValue)
+    end
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateBoss)

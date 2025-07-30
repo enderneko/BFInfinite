@@ -33,7 +33,7 @@ local indicators = {
 }
 
 ---------------------------------------------------------------------
--- create
+-- create -- TODO: pet & target
 ---------------------------------------------------------------------
 local function CreateParty()
     local name = "BFI_Party"
@@ -68,6 +68,7 @@ local function CreateParty()
         header[i].enableUnitButtonMapping = true
         UF.AddToConfigMode("party", header[i])
         UF.CreateIndicators(header[i], indicators)
+        UF.CreatePreviewRect(header[i])
     end
 
     -- mover
@@ -80,7 +81,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateParty(_, module, which)
+local function UpdateParty(_, module, which, skipIndicatorUpdates)
     if module and module ~= "unitFrames" then return end
     if which and which ~= "party" then return end
 
@@ -107,7 +108,7 @@ local function UpdateParty(_, module, which)
 
     -- setup
     local header = party.header
-    local unitCount = config.general.showPlayer and 5 or 4
+    local unitCount = 5 -- config.general.showPlayer and 5 or 4
 
     -- strata & level
     -- party:SetFrameStrata(config.general.frameStrata)
@@ -142,13 +143,15 @@ local function UpdateParty(_, module, which)
         -- color
         AF.ApplyDefaultBackdropWithColors(button, config.general.bgColor, config.general.borderColor)
         -- indicators
-        UF.SetupIndicators(button, indicators, config)
+        if not skipIndicatorUpdates then
+            UF.SetupIndicators(button, indicators, config)
+        end
     end
 
     -- header
-    local p, rp, _, x, y, _, _, hp = AF.GetAnchorPoints_Simple("BOTTOMLEFT", config.general.orientation, config.general.spacing)
+    local _, rp, _, x, y, _, _, hp = AF.GetAnchorPoints_Simple(config.general.anchor, config.general.orientation, config.general.spacing)
     header:ClearAllPoints()
-    header:SetPoint(p, party)
+    header:SetPoint(config.general.anchor, party)
     header:SetAttribute("point", hp)
     header:SetAttribute("xOffset", x)
     header:SetAttribute("yOffset", y)
@@ -163,7 +166,9 @@ local function UpdateParty(_, module, which)
     header:SetAttribute("unitsPerColumn", 5)
     header:Show()
 
-    -- visibility NOTE: show must invoke after settings applied
-    RegisterAttributeDriver(party, party.driverKey, party.driverValue)
+    if not UF.configModeEnabled then
+        -- visibility NOTE: show must invoke after settings applied
+        RegisterAttributeDriver(party, party.driverKey, party.driverValue)
+    end
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateParty)

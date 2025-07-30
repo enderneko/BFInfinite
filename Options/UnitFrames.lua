@@ -152,6 +152,7 @@ local settings = {
     },
     group = {
         party = {
+            "general_party",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "leaderText", "levelText", "targetCounter", "statusTimer",
             "buffs", "debuffs",
@@ -159,6 +160,7 @@ local settings = {
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
         raid = {
+            "general_raid",
             "healthBar", "powerBar",
             "nameText", "healthText", "statusTimer",
             "buffs", "debuffs",
@@ -166,14 +168,15 @@ local settings = {
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
         boss = {
+            "general_group",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "levelText", "targetCounter",
             "buffs", "debuffs",
             "raidIcon",
             "targetHighlight", "mouseoverHighlight",
         },
-        arena = {
-        },
+        -- arena = {
+        -- },
     },
 }
 
@@ -242,11 +245,11 @@ local function ListItem_LoadOptions(self)
 
     --! NOTE: fix weird issues that option values are not loaded properly (slider editbox text invisible)
     --! 王德发！！啥破玩意儿？！
-    C_Timer.NewTicker(0, function()
+    C_Timer.After(0, function()
         for _, pane in next, options do
             pane.Load(self)
         end
-    end, 2)
+    end)
 end
 
 LoadList = function(main, sub)

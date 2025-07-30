@@ -19,10 +19,34 @@ local settings = {
     general_single = {
         "enabled",
         "width,height",
-        "bgColor,borderColor",
         "oorAlpha",
+        "bgColor,borderColor",
         "tooltip",
     },
+    general_party = {
+        "enabled",
+        "width,height",
+        "partyArrangement",
+        "oorAlpha",
+        "bgColor,borderColor",
+        "tooltip",
+    },
+    general_raid = {
+        "enabled",
+        "width,height",
+        "raidArrangement",
+        "oorAlpha",
+        "bgColor,borderColor",
+        "tooltip",
+    },
+    general_group = {
+        "enabled",
+        "width,height",
+        "groupArrangement",
+        "oorAlpha",
+        "bgColor,borderColor",
+        "tooltip",
+     },
 
     -- indicators
     healthBar = {
@@ -379,8 +403,11 @@ local function UpdateAnchorToItems(t, items)
     end
 end
 
-local function GetAnchorPointItems()
-    local items = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT", "CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM"}
+local function GetAnchorPointItems(noCenter)
+    local items = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT", "LEFT", "RIGHT", "TOP", "BOTTOM"}
+    if not noCenter then
+        tinsert(items, "CENTER")
+    end
     for i, item in next, items do
         items[i] = {text = L[item], value = item}
     end
@@ -425,7 +452,7 @@ local function GetColorItems(which)
         tinsert(items, {text = L["Level"], value = "level_color"})
     end
 
-    tinsert(items, {text = L["Custom"], value = "custom_color"})
+    tinsert(items, {text = _G.CUSTOM, value = "custom_color"})
     return items
 end
 
@@ -454,7 +481,6 @@ builder["copy,paste,reset"] = function(parent)
     copy:SetOnClick(function()
         if pane.t.id:find("^general") and IsShiftKeyDown() then
             isWholeCfg = true
-            copiedId = "All"
             copiedCfg = AF.Copy(BFI.vars.profile[pane.t.module][pane.t.owner])
         else
             isWholeCfg = false
@@ -478,8 +504,14 @@ builder["copy,paste,reset"] = function(parent)
     copy:HookOnLeave(AF.HideTooltip)
 
     paste:SetOnClick(function()
+        local which
+        if isWholeCfg then
+            which = "All"
+        else
+            which = copiedId:find("^general") and "General" or copiedId
+        end
         local text = AF.WrapTextInColor(L["Overwrite with copied config?"], "BFI") .. "\n"
-            .. AF.WrapTextInColor("[" .. L[copiedId:find("^general") and "General" or copiedId] .. "]", "softlime") .. "\n"
+            .. AF.WrapTextInColor("[" .. L[which] .. "]", "softlime") .. "\n"
             .. copiedOwnerName .. AF.WrapTextInColor(" -> ", "darkgray") .. pane.t.ownerName .. "\n"
             .. AF.WrapTextInColor(AF.FormatRelativeTime(copiedTime), "darkgray")
 
@@ -500,7 +532,14 @@ builder["copy,paste,reset"] = function(parent)
                     pane.t.cfg.position = pos -- restore position
                     AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner)
                 else
+                    -- NOTE: special "groupBy" handling
+                    if pane.t.cfg.groupingOrder and not pane.t.cfg.groupBy then
+                        pane.t.cfg.groupBy = "nil"
+                    end
                     AF.MergeExistingKeys(pane.t.cfg, copiedCfg)
+                    if pane.t.cfg.groupBy == "nil" then
+                        pane.t.cfg.groupBy = nil
+                    end
                     pane.t.cfg.position = pos -- restore position
                     AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
                 end
@@ -560,10 +599,12 @@ builder["copy,paste,reset"] = function(parent)
 
     function pane.Load(t)
         pane.t = t
-        if isWholeCfg then
-            paste:SetEnabled(t.module == copiedModule and t.id:find("^general"))
+        paste:SetEnabled(t.module == copiedModule and t.id == copiedId)
+
+        if t.id:find("^general") then
+            AF.ApplyCombatProtectionToFrame(parent, 0, 0, 0, 0)
         else
-            paste:SetEnabled(t.module == copiedModule and t.id == copiedId)
+            AF.RemoveCombatProtectionFromFrame(parent)
         end
     end
 
@@ -624,9 +665,14 @@ builder["width,height"] = function(parent)
     AF.SetPoint(width, "LEFT", 15, 0)
     width:SetOnValueChanged(function(value)
         pane.t.cfg.width = value
-        if pane.t.id:find("^general") then
+        if pane.t.id == "general_single" then
             AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
             AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
+        elseif pane.t.id == "general_party" then
+            for i = 1, 5 do
+                AF.FrameFadeInOut(pane.t.target.header[i].previewRect, nil, nil, true)
+            end
+            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
         else
             LoadIndicatorConfig(pane.t)
         end
@@ -636,9 +682,14 @@ builder["width,height"] = function(parent)
     AF.SetPoint(height, "TOPLEFT", width, 185, 0)
     height:SetOnValueChanged(function(value)
         pane.t.cfg.height = value
-        if pane.t.id:find("^general") then
+        if pane.t.id == "general_single" then
             AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
             AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
+        elseif pane.t.id == "general_party" then
+            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+            for i = 1, 5 do
+                AF.FrameFadeInOut(pane.t.target.header[i].previewRect, nil, nil, true)
+            end
         else
             LoadIndicatorConfig(pane.t)
         end
@@ -1187,7 +1238,7 @@ builder["shield,overshieldGlow"] = function(parent)
     local shieldDropdown = AF.CreateDropdown(pane, 150)
     AF.SetPoint(shieldDropdown, "TOPLEFT", 15, -25)
     local items = AF.LSM_GetBarTextureDropdownItems()
-    tinsert(items, 1, {text = L["Default"], value = "default"})
+    tinsert(items, 1, {text = _G.DEFAULT, value = "default"})
     shieldDropdown:SetItems(items)
 
     local shieldCheckButton = AF.CreateCheckButton(pane, L["Shield"])
@@ -1275,7 +1326,7 @@ builder["healAbsorb,overabsorbGlow"] = function(parent)
     local absorbDropdown = AF.CreateDropdown(pane, 150)
     AF.SetPoint(absorbDropdown, "TOPLEFT", 15, -25)
     local items = AF.LSM_GetBarTextureDropdownItems()
-    tinsert(items, 1, {text = L["Default"], value = "default"})
+    tinsert(items, 1, {text = _G.DEFAULT, value = "default"})
     absorbDropdown:SetItems(items)
 
     local absorbCheckButton = AF.CreateCheckButton(pane, L["Heal Absorb"])
@@ -3227,7 +3278,7 @@ builder["auraArrangement"] = function(parent)
     created["auraArrangement"] = pane
 
     local arrangement = AF.CreateDropdown(pane, 150)
-    arrangement:SetLabel(L["Arrangement"])
+    arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
     arrangement:SetItems({
         {text = L["Left to Right"], value = "left_to_right"},
@@ -3353,11 +3404,13 @@ builder["tooltip"] = function(parent)
 
     local singleItems = {
         {text = L["Unit Frame"], value = "self"},
+        {text = _G.DEFAULT, value = "default"},
     }
 
     local groupItems = {
         {text = L["Unit Frame"], value = "self"},
         {text = L["Group"], value = "parent"},
+        {text = _G.DEFAULT, value = "default"},
     }
 
     local auraItems = {
@@ -3365,6 +3418,7 @@ builder["tooltip"] = function(parent)
         {text = L["Icon"], value = "self"},
         {text = L["Icon (Adaptive)"], value = "self_adaptive"},
         {text = L["Group"], value = "parent"},
+        {text = _G.DEFAULT, value = "default"},
     }
 
     local anchorPoint = AF.CreateDropdown(pane, 150)
@@ -3397,7 +3451,7 @@ builder["tooltip"] = function(parent)
 
     local function UpdateWidgets()
         relativeTo:SetEnabled(pane.t.cfg.tooltip.enabled)
-        AF.SetEnabled(pane.t.cfg.tooltip.enabled and pane.t.cfg.tooltip.anchorTo ~= "self_adaptive", anchorPoint, relativePoint, x, y)
+        AF.SetEnabled(pane.t.cfg.tooltip.enabled and pane.t.cfg.tooltip.anchorTo ~= "self_adaptive" and pane.t.cfg.tooltip.anchorTo ~= "default", anchorPoint, relativePoint, x, y)
     end
 
     enabledCheckButton:SetOnCheck(function(checked)
@@ -3420,7 +3474,7 @@ builder["tooltip"] = function(parent)
         if t.id == "general_single" then
             enabledCheckButton:SetText(L["Enable Tooltip"])
             relativeTo:SetItems(singleItems)
-        elseif t.id == "general_group" then
+        elseif t.id:find("^general") then
             enabledCheckButton:SetText(L["Enable Tooltip"])
             relativeTo:SetItems(groupItems)
         else
@@ -3565,8 +3619,28 @@ builder["oorAlpha"] = function(parent)
     oorAlphaSlider:SetAfterValueChanged(function(value)
         pane.t.cfg.oorAlpha = value
         -- AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
-        pane.t.target.oorAlpha = value
-        pane.t.target.states.wasInRange = nil
+        if pane.t.id == "general_single" then
+            pane.t.target.oorAlpha = value
+            pane.t.target.states.wasInRange = nil
+        elseif pane.t.id == "general_party" then
+            for i = 1, 5 do
+                local b = pane.t.target.header[i]
+                b.oorAlpha = value
+                b.states.wasInRange = nil
+            end
+        elseif pane.t.id == "general_raid" then
+            for i = 1, 40 do
+                local b = pane.t.target.header[i]
+                b.oorAlpha = value
+                b.states.wasInRange = nil
+            end
+        elseif pane.t.id == "general_boss" then
+            for i = 1, 8 do
+                local b = pane.t.target[i]
+                b.oorAlpha = value
+                b.states.wasInRange = nil
+            end
+        end
     end)
 
     function pane.IsApplicable(t)
@@ -3576,6 +3650,334 @@ builder["oorAlpha"] = function(parent)
     function pane.Load(t)
         pane.t = t
         oorAlphaSlider:SetValue(t.cfg.oorAlpha)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- partyArrangement
+---------------------------------------------------------------------
+builder["partyArrangement"] = function(parent)
+    if created["partyArrangement"] then return created["partyArrangement"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PartyArrangement", nil, 103)
+    created["partyArrangement"] = pane
+
+    local arrangement = AF.CreateDropdown(pane, 150)
+    arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
+    AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
+    arrangement:SetItems({
+        {text = L["Left to Right"], value = "left_to_right"},
+        {text = L["Right to Left"], value = "right_to_left"},
+        {text = L["Top to Bottom"], value = "top_to_bottom"},
+        {text = L["Bottom to Top"], value = "bottom_to_top"},
+    })
+    arrangement:SetOnSelect(function(value)
+        pane.t.cfg.orientation = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", arrangement, 185, 0)
+    anchorPoint:SetItems(GetAnchorPointItems(true))
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.anchor = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local spacing = AF.CreateSlider(pane, L["Spacing"], 150, -1, 100, 1, nil, true)
+    AF.SetPoint(spacing, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
+    spacing:SetOnValueChanged(function(value)
+        pane.t.cfg.spacing = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local showPlayer = AF.CreateCheckButton(pane, L["Show Player"])
+    AF.SetPoint(showPlayer, "TOPLEFT", arrangement, "BOTTOMLEFT", 0, -10)
+    showPlayer:SetOnCheck(function(checked)
+        pane.t.cfg.showPlayer = checked
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local sortByRole = AF.CreateCheckButton(pane, L["Sort By Role"])
+    AF.SetPoint(sortByRole, "TOPLEFT", showPlayer, "BOTTOMLEFT", 0, -9)
+    sortByRole:SetTooltip(L["Drag to reorder"])
+
+    local sorter = AF.CreateDragSorter(pane)
+    sorter:SetPoint("CENTER", sortByRole.label)
+    sorter:SetPoint("RIGHT", arrangement)
+
+    local widgets = {}
+    local roles = {"TANK", "DAMAGER", "HEALER"}
+    for i = 1, 3 do
+        widgets[i] = AF.CreateIconButton(sorter, AF.GetIcon("Role_" .. roles[i]))
+        widgets[i]:SetHoverBorder("BFI")
+        widgets[i].tipText = AF.L[roles[i]]
+        widgets[i].value = roles[i]
+    end
+    sorter:SetWidgets(widgets)
+
+    local function callback(t)
+        pane.t.cfg.groupingOrder = AF.TableToString(t, ",")
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end
+    sorter:SetCallback(callback)
+
+    sortByRole:SetOnCheck(function(checked)
+        if checked then
+            pane.t.cfg.sortMethod = "NAME"
+            pane.t.cfg.groupBy = "ASSIGNEDROLE"
+            pane.t.cfg.groupingOrder = "TANK,HEALER,DAMAGER,NONE"
+            sorter:SetConfigTable(AF.StringToTable(pane.t.cfg.groupingOrder, ","))
+            sortByRole:SetText(L["Order"])
+            sorter:Show()
+        else
+            pane.t.cfg.sortMethod = "INDEX"
+            pane.t.cfg.groupBy = nil
+            pane.t.cfg.groupingOrder = ""
+            sortByRole:SetText(L["Sort By Role"])
+            sorter:Hide()
+        end
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        arrangement:SetSelectedValue(t.cfg.orientation)
+        anchorPoint:SetSelectedValue(t.cfg.anchor)
+        spacing:SetValue(t.cfg.spacing)
+        showPlayer:SetChecked(t.cfg.showPlayer)
+        sortByRole:SetChecked(t.cfg.groupBy == "ASSIGNEDROLE")
+        sorter:SetShown(t.cfg.groupBy == "ASSIGNEDROLE")
+        if t.cfg.groupBy == "ASSIGNEDROLE" then
+            sorter:SetConfigTable(AF.StringToTable(t.cfg.groupingOrder, ","))
+            sortByRole:SetText(L["Order"])
+        else
+            sortByRole:SetText(L["Sort By Role"])
+        end
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- raidArrangement
+---------------------------------------------------------------------
+builder["raidArrangement"] = function(parent)
+    if created["raidArrangement"] then return created["raidArrangement"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_RaidArrangement", nil, 217)
+    created["raidArrangement"] = pane
+
+    local arrangement = AF.CreateDropdown(pane, 200)
+    arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
+    AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
+    arrangement:SetItems({
+        {text = L["Left to Right then Top"], value = "left_to_right_then_top"},
+        {text = L["Left to Right then Bottom"], value = "left_to_right_then_bottom"},
+        {text = L["Right to Left then Top"], value = "right_to_left_then_top"},
+        {text = L["Right to Left then Bottom"], value = "right_to_left_then_bottom"},
+        {text = L["Top to Bottom then Left"], value = "top_to_bottom_then_left"},
+        {text = L["Top to Bottom then Right"], value = "top_to_bottom_then_right"},
+        {text = L["Bottom to Top then Left"], value = "bottom_to_top_then_left"},
+        {text = L["Bottom to Top then Right"], value = "bottom_to_top_then_right"},
+    })
+    arrangement:SetOnSelect(function(value)
+        pane.t.cfg.orientation = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 120)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", arrangement, 215, 0)
+    anchorPoint:SetItems(GetAnchorPointItems(true))
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.anchor = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local sortByRole = AF.CreateCheckButton(pane, L["Sort By Role"])
+    AF.SetPoint(sortByRole, "TOPLEFT", arrangement, "BOTTOMLEFT", 0, -15)
+    sortByRole:SetTooltip(L["Drag to reorder"])
+
+    local sorter = AF.CreateDragSorter(pane)
+    AF.SetPoint(sorter, "LEFT", sortByRole.label, "RIGHT", 10, 0)
+
+    local widgets = {}
+    local roles = {"TANK", "DAMAGER", "HEALER"}
+    for i = 1, 3 do
+        widgets[i] = AF.CreateIconButton(sorter, AF.GetIcon("Role_" .. roles[i]))
+        widgets[i]:SetHoverBorder("BFI")
+        widgets[i].tipText = AF.L[roles[i]]
+        widgets[i].value = roles[i]
+    end
+    sorter:SetWidgets(widgets)
+
+    local groups = {}
+
+    local function UpdateGroupButtons()
+        for i = 1, 8 do
+            if pane.groupFilter[i] then
+                groups[i]:SetBorderColor("BFI")
+            else
+                groups[i]:SetBorderColor("border")
+            end
+        end
+    end
+
+    for i = 1, 8 do
+        groups[i] = AF.CreateButton(pane, i, "BFI_hover", 20, 20)
+        AF.ClearPoints(groups[i].text)
+        AF.SetPoint(groups[i].text, "CENTER")
+
+        groups[i]:SetOnClick(function()
+            if not pane.groupFilter[i] then
+                pane.groupFilter[i] = true
+            else
+                pane.groupFilter[i] = nil
+            end
+            UpdateGroupButtons()
+            pane.t.cfg.groupFilter = AF.TableToString(pane.groupFilter, ",", true)
+            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        end)
+
+        if i == 1 then
+            AF.SetPoint(groups[i], "TOPLEFT", sortByRole, "BOTTOMLEFT", 0, -15)
+        else
+            AF.SetPoint(groups[i], "TOPLEFT", groups[i - 1], "TOPRIGHT", 5, 0)
+        end
+    end
+
+    local spacingX = AF.CreateSlider(pane, L["Spacing"] .. " X", 150, -1, 100, 1, nil, true)
+    AF.SetPoint(spacingX, "TOPLEFT", groups[1], "BOTTOMLEFT", 0, -25)
+    spacingX:SetOnValueChanged(function(value)
+        pane.t.cfg.spacingX = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local spacingY = AF.CreateSlider(pane, L["Spacing"] .. " Y", 150, -1, 100, 1, nil, true)
+    AF.SetPoint(spacingY, "TOPLEFT", spacingX, 185, 0)
+    spacingY:SetOnValueChanged(function(value)
+        pane.t.cfg.spacingY = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local maxColumns = AF.CreateSlider(pane, L["Max Columns"], 150, 1, 8, 1, nil, true)
+    AF.SetPoint(maxColumns, "TOPLEFT", spacingX, "BOTTOMLEFT", 0, -40)
+
+    local unitsPerColumn = AF.CreateSlider(pane, L["Units Per Column"], 150, 1, 40, 1, nil, true)
+    AF.SetPoint(unitsPerColumn, "TOPLEFT", maxColumns, 185, 0)
+    unitsPerColumn:SetOnValueChanged(function(value)
+        pane.t.cfg.unitsPerColumn = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    maxColumns:SetOnValueChanged(function(value)
+        pane.t.cfg.maxColumns = value
+        local maxUnitsPerColumn = ceil(40 / value)
+        unitsPerColumn:SetMinMaxValues(1, maxUnitsPerColumn)
+        if pane.t.cfg.unitsPerColumn > maxUnitsPerColumn then
+            pane.t.cfg.unitsPerColumn = maxUnitsPerColumn
+            unitsPerColumn:SetValue(maxUnitsPerColumn)
+        end
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local function callback(t)
+        pane.t.cfg.groupingOrder = AF.TableToString(t, ",")
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end
+    sorter:SetCallback(callback)
+
+    sortByRole:SetOnCheck(function(checked)
+        if checked then
+            pane.t.cfg.sortMethod = "NAME"
+            pane.t.cfg.groupBy = "ASSIGNEDROLE"
+            pane.t.cfg.groupingOrder = "TANK,HEALER,DAMAGER,NONE"
+            sorter:SetConfigTable(AF.StringToTable(pane.t.cfg.groupingOrder, ","))
+            sorter:Show()
+        else
+            pane.t.cfg.sortMethod = "INDEX"
+            pane.t.cfg.groupBy = nil
+            pane.t.cfg.groupingOrder = ""
+            sorter:Hide()
+        end
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+
+        arrangement:SetSelectedValue(t.cfg.orientation)
+        anchorPoint:SetSelectedValue(t.cfg.anchor)
+        spacingX:SetValue(t.cfg.spacingX)
+        spacingY:SetValue(t.cfg.spacingY)
+
+        local maxUnitsPerColumn = ceil(40 / t.cfg.maxColumns)
+        unitsPerColumn:SetMinMaxValues(1, maxUnitsPerColumn)
+        maxColumns:SetValue(t.cfg.maxColumns)
+        unitsPerColumn:SetValue(t.cfg.unitsPerColumn)
+
+        sortByRole:SetChecked(t.cfg.groupBy == "ASSIGNEDROLE")
+        sorter:SetShown(t.cfg.groupBy == "ASSIGNEDROLE")
+        if t.cfg.groupBy == "ASSIGNEDROLE" then
+            sorter:SetConfigTable(AF.StringToTable(t.cfg.groupingOrder, ","))
+        end
+
+        pane.groupFilter = AF.TransposeTable(AF.StringToTable(t.cfg.groupFilter, ",", true), true)
+        UpdateGroupButtons()
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- groupArrangement
+---------------------------------------------------------------------
+builder["groupArrangement"] = function(parent)
+    if created["groupArrangement"] then return created["groupArrangement"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_GroupArrangement", nil, 103)
+    created["groupArrangement"] = pane
+
+    local arrangement = AF.CreateDropdown(pane, 150)
+    arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
+    AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
+    arrangement:SetItems({
+        {text = L["Left to Right"], value = "left_to_right"},
+        {text = L["Right to Left"], value = "right_to_left"},
+        {text = L["Top to Bottom"], value = "top_to_bottom"},
+        {text = L["Bottom to Top"], value = "bottom_to_top"},
+    })
+    arrangement:SetOnSelect(function(value)
+        pane.t.cfg.orientation = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", arrangement, 185, 0)
+    anchorPoint:SetEnabled(false) -- TODO: add auto-sized header
+    anchorPoint:SetItems(GetAnchorPointItems(true))
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.anchor = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    local spacing = AF.CreateSlider(pane, L["Spacing"], 150, -1, 100, 1, nil, true)
+    AF.SetPoint(spacing, "TOPLEFT", arrangement, "BOTTOMLEFT", 0, -25)
+    spacing:SetOnValueChanged(function(value)
+        pane.t.cfg.spacing = value
+        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        arrangement:SetSelectedValue(t.cfg.orientation)
+        anchorPoint:SetSelectedValue(t.cfg.anchor)
+        spacing:SetValue(t.cfg.spacing)
     end
 
     return pane

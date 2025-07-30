@@ -49,7 +49,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdatePet(_, module, which, skipIndicatorUpdate)
+local function UpdatePet(_, module, which, skipIndicatorUpdates)
     if module and module ~= "unitFrames" then return end
     if which and which ~= "pet" then return end
 
@@ -69,7 +69,7 @@ local function UpdatePet(_, module, which, skipIndicatorUpdate)
     end
 
     -- setup
-    UF.SetupUnitFrame(pet, config, indicators, skipIndicatorUpdate)
+    UF.SetupUnitFrame(pet, config, indicators, skipIndicatorUpdates)
 
     -- visibility NOTE: show must invoke after settings applied
     RegisterUnitWatch(pet)
