@@ -584,7 +584,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateChat(_, module)
-    if module and module ~= "Chat" then return end
+    if module and module ~= "chat" then return end
 
     local config = C.config
     if chatContainer then

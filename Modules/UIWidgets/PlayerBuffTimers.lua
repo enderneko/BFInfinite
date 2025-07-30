@@ -42,7 +42,7 @@ end
 -- update config
 ---------------------------------------------------------------------
 local function UpdateConfig(_, module, which)
-    if module and module ~= "UIWidgets" then return end
+    if module and module ~= "uiWidgets" then return end
     if which and which ~= "bufftimer" then return end
 
     local config = UI.config.buffTimer

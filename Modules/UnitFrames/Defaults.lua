@@ -6341,11 +6341,20 @@ end
 
 function UF.GetFrameDefaults(which, config, indicator)
     if config == "indicator" then
+        local t
+
         if which == "party" or which == "raid" or which == "boss" then
-            return AF.Copy(defaults[which]["indicators"][indicator])
+            t = defaults[which]["indicators"]
         else
-            return AF.Copy(style1[which]["indicators"][indicator])
+            t = style1[which]["indicators"]
         end
+
+        if indicator then
+            return AF.Copy(t[indicator])
+        else
+            return AF.Copy(t)
+        end
+
     elseif config == "general" then
         if which == "party" or which == "raid" or which == "boss" then
             return AF.Copy(defaults[which]["general"])

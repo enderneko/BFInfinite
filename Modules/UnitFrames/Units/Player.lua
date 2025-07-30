@@ -64,7 +64,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdatePlayer(_, module, which, skipIndicatorUpdate)
-    if module and module ~= "UnitFrames" then return end
+    if module and module ~= "unitFrames" then return end
     if which and which ~= "player" then return end
 
     local config = UF.config.player

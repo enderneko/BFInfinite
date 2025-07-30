@@ -8,8 +8,7 @@ local AF = _G.AbstractFramework
 ---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
-local function StyleBlizzard(_, which)
-    if type(which) == "string" and which ~= "playerspells" then return end
+local function StyleBlizzard()
     if not _G.PlayerSpellsFrame then return end
 
     S.StyleTitledFrame(_G.PlayerSpellsFrame)

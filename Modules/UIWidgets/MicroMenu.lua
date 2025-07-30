@@ -163,7 +163,7 @@ end
 -- update bar
 ---------------------------------------------------------------------
 local function UpdateMicroMenu(_, module, which)
-    if module and module ~= "UIWidgets" then return end
+    if module and module ~= "uiWidgets" then return end
     if which and which ~= "menu" then return end
 
     if not microMenu then

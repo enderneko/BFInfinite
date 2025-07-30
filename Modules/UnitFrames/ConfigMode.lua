@@ -255,7 +255,7 @@ end
 
 local function ToggleConfigMode(_, module, group)
     if InCombatLockdown() then return end
-    if module and module ~= "UnitFrames" then return end
+    if module and module ~= "unitFrames" then return end
 
     if group then
         if UF.configModeEnabled then

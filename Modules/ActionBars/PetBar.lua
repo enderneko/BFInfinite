@@ -159,7 +159,7 @@ end
 -- update bar
 ---------------------------------------------------------------------
 local function UpdatePetBar(_, module, which)
-    if module and module ~= "ActionBars" then return end
+    if module and module ~= "actionBars" then return end
     if which and which ~= "pet" then return end
 
     local enabled = AB.config.general.enabled

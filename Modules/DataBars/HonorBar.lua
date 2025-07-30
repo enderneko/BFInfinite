@@ -142,7 +142,7 @@ end
 ---------------------------------------------------------------------
 local init
 local function UpdateHonorBar(_, module, which)
-    if module and module ~= "DataBars" then return end
+    if module and module ~= "dataBars" then return end
     if which and which ~= "honor" then return end
 
     local config = DB.config.honorBar

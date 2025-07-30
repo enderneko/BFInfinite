@@ -102,7 +102,7 @@ end
 -- update config
 ---------------------------------------------------------------------
 local function UpdateAltPowerBar(_, module, which)
-    if module and module ~= "UIWidgets" then return end
+    if module and module ~= "uiWidgets" then return end
     if which and which ~= "altpower" then return end
 
     local config = UI.config.altPowerBar

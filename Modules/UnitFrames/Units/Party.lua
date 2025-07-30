@@ -81,7 +81,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateParty(_, module, which)
-    if module and module ~= "UnitFrames" then return end
+    if module and module ~= "unitFrames" then return end
     if which and which ~= "party" then return end
 
     local config = UF.config.party

@@ -44,7 +44,7 @@ end, "low", "UF_Parent")
 
 
 local function UpdateGeneral(_, module, which)
-    if module and module ~= "UnitFrames" then return end
+    if module and module ~= "unitFrames" then return end
     if which and which ~= "general" then return end
     UF.Parent:SetFrameStrata(UF.config.general.frameStrata)
 end

@@ -54,7 +54,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateTargetTarget(_, module, which, skipIndicatorUpdate)
-    if module and module ~= "UnitFrames" then return end
+    if module and module ~= "unitFrames" then return end
     if which and which ~= "targettarget" then return end
 
     local config = UF.config.targettarget

@@ -119,7 +119,7 @@ end
 -- update bar
 ---------------------------------------------------------------------
 local function UpdateStanceBar(_, module, which)
-    if module and module ~= "ActionBars" then return end
+    if module and module ~= "actionBars" then return end
     if which and which ~= "stance" then return end
 
     local enabled = AB.config.general.enabled

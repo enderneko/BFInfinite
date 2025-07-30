@@ -594,7 +594,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateNameplates(_, module, which)
-    if module and module ~= "Nameplates" then return end
+    if module and module ~= "nameplates" then return end
     -- if which and which ~= "focus" then return end
 
     local config = NP.config

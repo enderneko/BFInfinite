@@ -264,7 +264,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateXPerienceBar(_, module, which)
-    if module and module ~= "DataBars" then return end
+    if module and module ~= "dataBars" then return end
     if which and which ~= "experience" then return end
 
     local config = DB.config.experienceBar

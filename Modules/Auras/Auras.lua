@@ -30,7 +30,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateAuras(_, module, which, operation, index, value)
-    if module and module ~= "Auras" then return end
+    if module and module ~= "auras" then return end
 
     local config = A.config
 

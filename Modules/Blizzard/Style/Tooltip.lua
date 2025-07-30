@@ -53,9 +53,7 @@ end
 ---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
-local function StyleBlizzard(_, which)
-    if which and which ~= "tooltip" then return end
-
+local function StyleBlizzard()
     -- init
     for _, tooltip in next, {
         _G.EmbeddedItemTooltip,

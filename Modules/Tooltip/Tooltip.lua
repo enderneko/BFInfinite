@@ -863,7 +863,7 @@ end
 ---------------------------------------------------------------------
 local init
 local function UpdateTooltip(_, module, which)
-    if module and module ~= "Tooltip" then return end
+    if module and module ~= "tooltip" then return end
 
     local config = T.config
 

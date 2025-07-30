@@ -26,7 +26,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateThreat(_, module, which)
-    if module and module ~= "DataBars" then return end
+    if module and module ~= "dataBars" then return end
     if which and which ~= "threats" then return end
 
     local config = DB.config.threats

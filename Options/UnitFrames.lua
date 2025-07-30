@@ -7,7 +7,7 @@ local UF = BFI.UnitFrames
 local AF = _G.AbstractFramework
 
 local unitFramesPanel
-local LoadList
+local LoadList, curMain, curSub
 
 ---------------------------------------------------------------------
 -- unit frames panel
@@ -181,7 +181,7 @@ local settings = {
 -- load
 ---------------------------------------------------------------------
 local listItems = {}
-local lastIndicator
+local lastIndicator, lastScroll
 
 local itemPool = AF.CreateObjectPool(function()
     local button = AF.CreateButton(contentPane.indicatorList, "", "BFI_transparent", nil, nil, nil, "none", "")
@@ -250,6 +250,8 @@ local function ListItem_LoadOptions(self)
 end
 
 LoadList = function(main, sub)
+    curMain, curSub = main, sub
+
     local list = contentPane.indicatorList
     list:Reset()
     itemPool:ReleaseAll()
@@ -287,9 +289,15 @@ LoadList = function(main, sub)
     AF.CreateButtonGroup(listItems, ListItem_LoadOptions, nil, nil, ListItem_OnEnter, ListItem_OnLeave)
 
     if lastIndicator then
-        for _, item in next, listItems do
+        for i, item in next, listItems do
             if item.id == lastIndicator then
                 item:SilentClick()
+                if lastScroll then
+                    contentPane.indicatorList:SetScroll(lastScroll)
+                    lastScroll = nil
+                else
+                    contentPane.indicatorList:ScrollTo(i)
+                end
                 return
             end
         end
@@ -297,6 +305,12 @@ LoadList = function(main, sub)
 
     listItems[1]:SilentClick()
 end
+
+AF.RegisterCallback("BFI_RefreshOptionsList", function(_, which)
+    if which ~= "unitFrames" or not contentPane then return end
+    lastScroll = contentPane.indicatorList:GetScroll()
+    LoadList(curMain, curSub) -- will load lastIndicator
+end)
 
 ---------------------------------------------------------------------
 -- show

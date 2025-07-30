@@ -300,7 +300,7 @@ end
 
 local init
 local function UpdateMainBars(_, module, which, barName)
-    if module and module ~= "ActionBars" then return end
+    if module and module ~= "actionBars" then return end
     if which and which ~= "main" then return end
 
     if not AB.config.general.enabled then

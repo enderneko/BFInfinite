@@ -53,7 +53,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateBoss(_, module, which)
-    if module and module ~= "UnitFrames" then return end
+    if module and module ~= "unitFrames" then return end
     if which and which ~= "boss" then return end
 
     local config = UF.config.boss

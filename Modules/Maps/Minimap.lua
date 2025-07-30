@@ -558,7 +558,7 @@ end
 ---------------------------------------------------------------------
 local init
 local function UpdateMinimap(_, module, which)
-    if module and module ~= "Maps" then return end
+    if module and module ~= "maps" then return end
     if which and which ~= "minimap" then return end
 
     local config = M.config.minimap

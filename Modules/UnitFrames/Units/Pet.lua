@@ -50,7 +50,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdatePet(_, module, which, skipIndicatorUpdate)
-    if module and module ~= "UnitFrames" then return end
+    if module and module ~= "unitFrames" then return end
     if which and which ~= "pet" then return end
 
     local config = UF.config.pet

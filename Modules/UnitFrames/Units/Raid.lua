@@ -89,7 +89,7 @@ local function UpdateRaid(_, module, which)
         return
     end
 
-    if module and module ~= "UnitFrames" then return end
+    if module and module ~= "unitFrames" then return end
     if which and which ~= "raid" then return end
 
     local config = UF.config.raid

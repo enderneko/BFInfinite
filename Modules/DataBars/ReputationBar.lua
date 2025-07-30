@@ -228,7 +228,7 @@ end
 ---------------------------------------------------------------------
 local init
 local function UpdateReputationBar(_, module, which)
-    if module and module ~= "DataBars" then return end
+    if module and module ~= "dataBars" then return end
     if which and which ~= "reputation" then return end
 
     local config = DB.config.reputationBar

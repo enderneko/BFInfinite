@@ -35,7 +35,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function UpdateWidgets(_, module, which)
-    if module and module ~= "UIWidgets" then return end
+    if module and module ~= "uiWidgets" then return end
     if which and which ~= "widgets" then return end
 
     local config = UI.config

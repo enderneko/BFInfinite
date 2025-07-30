@@ -468,6 +468,15 @@ builder["copy,paste,reset"] = function(parent)
         paste:SetEnabled(true)
     end)
 
+    local copyTooltips = {L["Copy"], L["Hold %s while clicking to copy all settings for this unit frame"]:format(AF.WrapTextInColor("Shift", "BFI"))}
+    copy._tooltipOwner = BFIOptionsFrame_UnitFramesPanel
+    copy:HookOnEnter(function()
+        if pane.t.id:find("^general") then
+            AF.ShowTooltip(copy, "TOPLEFT", 0, 2, copyTooltips)
+        end
+    end)
+    copy:HookOnLeave(AF.HideTooltip)
+
     paste:SetOnClick(function()
         local text = AF.WrapTextInColor(L["Overwrite with copied config?"], "BFI") .. "\n"
             .. AF.WrapTextInColor("[" .. L[copiedId:find("^general") and "General" or copiedId] .. "]", "softlime") .. "\n"
@@ -488,19 +497,19 @@ builder["copy,paste,reset"] = function(parent)
                             BFI.vars.profile[pane.t.module][pane.t.owner].indicators[k].enabled = false
                         end
                     end
-                    pane.t.cfg.position = pos -- keep position
-                    AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner)
+                    pane.t.cfg.position = pos -- restore position
+                    AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner)
                 else
                     AF.MergeExistingKeys(pane.t.cfg, copiedCfg)
-                    pane.t.cfg.position = pos -- keep position
-                    AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+                    pane.t.cfg.position = pos -- restore position
+                    AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
                 end
             else
                 AF.MergeExistingKeys(pane.t.cfg, copiedCfg)
                 LoadIndicatorConfig(pane.t)
             end
 
-            -- TODO: reload list & options
+            AF.Fire("BFI_RefreshOptionsList", pane.t.module)
         end)
     end)
 
@@ -508,8 +517,14 @@ builder["copy,paste,reset"] = function(parent)
     local reset = AF.CreateButton(pane, _G.RESET, "red_hover", 107, 20)
     AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 7, 0)
     reset:SetOnClick(function()
+        local which
+        if pane.t.id:find("^general") then
+            which = IsShiftKeyDown() and "All" or "General"
+        else
+            which = pane.t.id
+        end
         local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n"
-            .. AF.WrapTextInColor("[" .. L[pane.t.id:find("^general") and "General" or pane.t.id] .. "]", "softlime") .. "\n"
+            .. AF.WrapTextInColor("[" .. L[which] .. "]", "softlime") .. "\n"
             .. pane.t.ownerName
 
         local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
@@ -519,19 +534,29 @@ builder["copy,paste,reset"] = function(parent)
 
             if pane.t.id:find("^general") then
                 AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "general"))
-                AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+                if which == "All" then
+                    AF.Merge(BFI.vars.profile[pane.t.module][pane.t.owner].indicators, UF.GetFrameDefaults(pane.t.owner, "indicator"))
+                    AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner)
+                else
+                    AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+                end
             else
                 AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "indicator", pane.t.id))
                 LoadIndicatorConfig(pane.t)
             end
 
-            -- TODO: reload list & options
-            -- reload settings
-            for _, p in next, options do
-                p.Load(p.t)
-            end
+            AF.Fire("BFI_RefreshOptionsList", pane.t.module) -- and reload option panes
         end)
     end)
+
+    local resetTooltips = {L["Reset"], L["Hold %s while clicking to reset all settings for this unit frame"]:format(AF.WrapTextInColor("Shift", "BFI"))}
+    reset._tooltipOwner = BFIOptionsFrame_UnitFramesPanel
+    reset:HookOnEnter(function()
+        if pane.t.id:find("^general") then
+            AF.ShowTooltip(reset, "TOPLEFT", 0, 2, resetTooltips)
+        end
+    end)
+    reset:HookOnLeave(AF.HideTooltip)
 
     function pane.Load(t)
         pane.t = t
@@ -570,7 +595,7 @@ builder["enabled"] = function(parent)
         UpdateColor(checked)
         -- pane.t is list button that carries info
         if pane.t.id:find("^general") then
-            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner)
+            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner)
         else
             pane.t:SetTextColor(checked and "white" or "disabled")
             LoadIndicatorConfig(pane.t)
@@ -600,7 +625,7 @@ builder["width,height"] = function(parent)
     width:SetOnValueChanged(function(value)
         pane.t.cfg.width = value
         if pane.t.id:find("^general") then
-            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
             AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
         else
             LoadIndicatorConfig(pane.t)
@@ -612,7 +637,7 @@ builder["width,height"] = function(parent)
     height:SetOnValueChanged(function(value)
         pane.t.cfg.height = value
         if pane.t.id:find("^general") then
-            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
             AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
         else
             LoadIndicatorConfig(pane.t)
@@ -1064,7 +1089,7 @@ builder["bgColor,borderColor"] = function(parent)
         pane.t.cfg.bgColor[3] = b
         pane.t.cfg.bgColor[4] = a
         if pane.t.id:find("^general") then
-            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
         else
             LoadIndicatorConfig(pane.t)
         end
@@ -1078,7 +1103,7 @@ builder["bgColor,borderColor"] = function(parent)
         pane.t.cfg.borderColor[3] = b
         pane.t.cfg.borderColor[4] = a
         if pane.t.id:find("^general") then
-            AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
         else
             LoadIndicatorConfig(pane.t)
         end
@@ -1568,7 +1593,7 @@ builder["interruptibleCheck"] = function(parent)
 
     local requireInterruptUsable = AF.CreateCheckButton(pane, L["Require Interrupt Usable"])
     AF.SetPoint(requireInterruptUsable, "TOPLEFT", enableInterruptibleCheck, "BOTTOMLEFT", 0, -7)
-    requireInterruptUsable._scrollParent = BFIOptionsFrame_UnitFramesPanel
+    requireInterruptUsable._tooltipOwner = BFIOptionsFrame_UnitFramesPanel
     requireInterruptUsable:SetTooltip(L["Only show interruptible color when interrupt is usable"])
     requireInterruptUsable:SetOnCheck(function(checked)
         pane.t.cfg.interruptibleCheck.requireUsable = checked
@@ -3539,7 +3564,7 @@ builder["oorAlpha"] = function(parent)
     AF.SetPoint(oorAlphaSlider, "LEFT", 15, 0)
     oorAlphaSlider:SetAfterValueChanged(function(value)
         pane.t.cfg.oorAlpha = value
-        -- AF.Fire("BFI_UpdateModule", "UnitFrames", pane.t.owner, true)
+        -- AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
         pane.t.target.oorAlpha = value
         pane.t.target.states.wasInRange = nil
     end)
