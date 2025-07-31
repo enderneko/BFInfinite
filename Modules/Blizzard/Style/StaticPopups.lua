@@ -5,12 +5,12 @@ local S = BFI.Style
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
--- init
+-- init -- Interface\AddOns\Blizzard_StaticPopup_Game\GameDialog.xml
 ---------------------------------------------------------------------
 local function StyleBlizzard()
     for i = 1, 4 do
         local popup = _G["StaticPopup" .. i]
-        S.RemoveBorder(popup)
+        S.RemoveBackground(popup)
         S.CreateBackdrop(popup)
         AF.SetPoint(popup.BFIBackdrop, "TOPLEFT", popup, 5, -2)
         AF.SetPoint(popup.BFIBackdrop, "BOTTOMRIGHT", popup, -5, 5)
@@ -21,33 +21,39 @@ local function StyleBlizzard()
         AF.SetPoint(strip, "TOPRIGHT", popup.BFIBackdrop, -1, -1)
         AF.SetHeight(strip, 2)
 
-        -- button
+        local buttons = {popup.ExtraButton}
         for j = 1, 4 do
-            local button = popup["button" .. j]
-            S.StyleButton(button)
+            tinsert(buttons, popup.ButtonContainer["Button" .. j])
+        end
+
+        -- button
+        for _, b in next, buttons do
+            S.StyleButton(b)
 
             -- pulse animation
-            button.Flash:Hide() -- old target
-            AF.CreateGlow(button, "BFI", 3)
-            button.glow:SetAlpha(0)
+            b.Flash:Hide() -- old target
+            AF.CreateGlow(b, "BFI", 3)
+            b.glow:SetAlpha(0)
 
-            local anim1, anim2 = button.PulseAnim:GetAnimations()
-            anim1:SetTarget(button.glow)
-            anim2:SetTarget(button.glow)
+            local anim1, anim2 = b.PulseAnim:GetAnimations()
+            anim1:SetTarget(b.glow)
+            anim2:SetTarget(b.glow)
         end
 
         -- editbox
-        S.StyleEditBox(popup.editBox, -2, -5, 2, 5)
+        S.StyleEditBox(popup.EditBox, -2, -5, 2, 5)
+
+        -- dropdown
+        S.StyleDropdownButton(popup.Dropdown)
 
         -- moneyInputFrame
-        S.StyleEditBox(popup.moneyInputFrame.copper, -2, nil, -11)
-        S.StyleEditBox(popup.moneyInputFrame.silver, -2, nil, -11)
-        S.StyleEditBox(popup.moneyInputFrame.gold, -2)
+        S.StyleEditBox(popup.MoneyInputFrame.copper, -2, nil, -11)
+        S.StyleEditBox(popup.MoneyInputFrame.silver, -2, nil, -11)
+        S.StyleEditBox(popup.MoneyInputFrame.gold, -2)
 
         -- ItemFrame (BlackMarket, Purchase, Upgrade, Refund ...)
-        -- StaticPopup.xml
-        S.StyleItemButton(popup.ItemFrame)
-        _G["StaticPopup" .. i .. "ItemFrameNameFrame"]:SetAlpha(0) -- name background texture
+        S.StyleItemButton(popup.ItemFrame.Item)
+        popup.ItemFrame.NameFrame:SetAlpha(0) -- name background texture
     end
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)

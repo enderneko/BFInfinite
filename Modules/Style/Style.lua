@@ -107,6 +107,22 @@ function S.RemoveBorder(region)
 end
 
 ---------------------------------------------------------------------
+-- remove Background
+---------------------------------------------------------------------
+function S.RemoveBackground(region)
+    if not region then return end
+    if region.Bg then
+        region.Bg:SetAlpha(0)
+    end
+    if region.BG then
+        region.BG:SetAlpha(0)
+    end
+    if region.Background then
+        region.Background:SetAlpha(0)
+    end
+end
+
+---------------------------------------------------------------------
 -- create backdrop
 ---------------------------------------------------------------------
 function S.CreateBackdrop(region, noBackground, offset, relativeFrameLevel)

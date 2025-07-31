@@ -15,17 +15,17 @@ local optionsFrame
 ---------------------------------------------------------------------
 local list = {
     "General",
-    "Tweaks",
+    "-Tweaks",
     "SEPARATOR",
     "Colors",
     "Auras",
     "SEPARATOR",
     "Unit Frames",
-    "Nameplates",
-    "Buffs & Debuffs",
+    "-Nameplates",
+    "-Buffs & Debuffs",
     "Action Bars",
     "Chat",
-    "Tooltip",
+    "-Tooltip",
     "SEPARATOR",
     "About",
 }
@@ -35,11 +35,15 @@ local frameWidths = {
 }
 
 local function CreateButton(name)
+    local disabled
+    name, disabled = name:gsub("^-", "")
+
     local button = AF.CreateButton(optionsFrame.listPane, L[name], nil, nil, 25, nil, "", "")
     button.id = name
     button:SetTextJustifyH("LEFT")
     button:SetTextPadding(10)
     button:SetBackdropColor(AF.GetColorRGB("none"))
+    button:SetEnabled(disabled == 0)
 
     -- local highlight = AF.CreateTexture(button, nil, AF.GetColorTable("BFI", 0.6), "BORDER")
     local highlight = AF.CreateGradientTexture(button, "HORIZONTAL", "BFI", "none", nil, "BORDER")

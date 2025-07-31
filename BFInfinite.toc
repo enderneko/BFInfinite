@@ -1,4 +1,4 @@
-## Interface: 110105,110107
+## Interface: 110200
 ## Title: |cFFFF5F00BFInfinite|r
 ## Version: r1-alpha
 ## Author: enderneko (BigFootTeam)
