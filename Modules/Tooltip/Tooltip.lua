@@ -538,6 +538,8 @@ local lineFormatters = {
 
     mythic_plus_rating = function(config, tooltip, unit, isPlayer, isNotSpecified)
         if not isPlayer then return end
+        if not AF.IsMaxLevel(unit) then return end
+
         local info = GetPlayerMythicPlusRatingSummary(unit)
         if not (info and info.currentSeasonScore) then return end
 
