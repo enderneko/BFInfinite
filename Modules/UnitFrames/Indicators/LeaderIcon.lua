@@ -68,7 +68,7 @@ local function LeaderIcon_EnableConfigMode(self)
 
     self:UnregisterAllEvents()
     G.SetGlyph(self.text, G.Group.leader)
-    self:Show()
+    self:SetShown(self.enabled)
 end
 
 local function LeaderIcon_DisableConfigMode(self)

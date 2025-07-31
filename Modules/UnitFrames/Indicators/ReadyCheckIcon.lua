@@ -66,7 +66,7 @@ local function ReadyCheckIcon_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
 
     self.icon:SetTexture(READY_CHECK_STATUS.waiting)
 end

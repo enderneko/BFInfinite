@@ -1021,7 +1021,7 @@ local function CastBar_EnableConfigMode(self)
 
     self._elapsed = 9
     self._previewInterrupt = false
-    self._preview:Show()
+    self._preview:SetShown(self.enabled)
 end
 
 local function CastBar_DisableConfigMode(self)

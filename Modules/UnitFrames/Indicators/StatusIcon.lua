@@ -177,12 +177,11 @@ local function StatusIcon_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
 
     self.icon:SetVertexColor(1, 1, 1, 1)
     self.icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Rez")
     self.icon:SetTexCoord(0, 1, 0, 1)
-    self:Show()
 end
 
 local function StatusIcon_DisableConfigMode(self)

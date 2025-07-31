@@ -62,7 +62,7 @@ local function RaidIcon_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
 
     GetRaidTargetIndex = UF.CFG_GetRaidTargetIndex
 

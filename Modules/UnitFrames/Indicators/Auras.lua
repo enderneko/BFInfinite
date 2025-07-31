@@ -711,13 +711,23 @@ local function Auras_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    if not self.configModeTicker then
+
+    if self.enabled then
+        if self.configModeTicker then
+            self.configModeTicker:Cancel()
+        end
         ConfigMode_RefreshAuras(self)
         self.configModeTicker = C_Timer.NewTicker(15, function()
             ConfigMode_RefreshAuras(self)
         end)
+        self:Show()
+    else
+        if self.configModeTicker then
+            self.configModeTicker:Cancel()
+            self.configModeTicker = nil
+        end
+        self:Hide()
     end
-    self:Show()
 end
 
 local function Auras_DisableConfigMode(self)

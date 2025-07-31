@@ -117,7 +117,7 @@ function UF.AddToConfigMode(group, frame)
     local main, sub = strsplit(".", group)
 
     if not configModeGroups[main] then
-        configModeGroups[main] = {enabled = true}
+        configModeGroups[main] = {enabled = false}
     end
 
     if sub == "container" then
@@ -167,6 +167,8 @@ end
 -- enable config mode
 ---------------------------------------------------------------------
 local function EnableConfigModeForGroup(group)
+    configModeGroups[group]["enabled"] = true
+
     for i, frame in pairs(configModeGroups[group]["children"]) do
         frame.inConfigMode = true
         frame.oldUnit = frame.unit
@@ -179,7 +181,7 @@ local function EnableConfigModeForGroup(group)
 
         -- force show indicators
         for _, indicator in pairs(frame.indicators) do
-            if indicator.enabled and indicator.EnableConfigMode then
+            if indicator.EnableConfigMode then
                 indicator:EnableConfigMode()
             end
         end
@@ -193,18 +195,19 @@ local function EnableConfigModeForGroup(group)
     end
 
     if configModeGroups[group]["container"] then
+        configModeGroups[group]["container"].inConfigMode = true
         UnregisterAttributeDriver(configModeGroups[group]["container"])
     end
 
-    if configModeGroups[group]["enabled"] then
-        ForceShowGroup(group)
-    end
+    ForceShowGroup(group)
 end
 
 ---------------------------------------------------------------------
 -- disable config mode
 ---------------------------------------------------------------------
 local function DisableConfigModeForGroup(group)
+    configModeGroups[group]["enabled"] = false
+
     for _, frame in pairs(configModeGroups[group]["children"]) do
         -- restore indicators
         for _, indicator in pairs(frame.indicators) do
@@ -232,6 +235,7 @@ local function DisableConfigModeForGroup(group)
 
     if configModeGroups[group]["container"] then
         local container = configModeGroups[group]["container"]
+        container.inConfigMode = nil
         RegisterAttributeDriver(container, container.driverKey, container.driverValue)
     end
 end
@@ -240,40 +244,35 @@ end
 -- toggle
 ---------------------------------------------------------------------
 local function EnableConfigMode()
-    UF.configModeEnabled = true
-    for group, t in pairs(configModeGroups) do
-        EnableConfigModeForGroup(group)
+    for group, t in next, configModeGroups do
+        if not t.enabled then
+            EnableConfigModeForGroup(group)
+        end
     end
 end
 
 local function DisableConfigMode()
-    UF.configModeEnabled = false
-    for group in pairs(configModeGroups) do
-        DisableConfigModeForGroup(group)
+    for group, t in next, configModeGroups do
+        if t.enabled then
+            DisableConfigModeForGroup(group)
+        end
     end
 end
 
-local function ToggleConfigMode(_, module, group)
+local function ToggleConfigMode(_, module, group, enabled)
     if InCombatLockdown() then return end
     if module and module ~= "unitFrames" then return end
 
     if group then
-        if UF.configModeEnabled then
-            configModeGroups[group]["enabled"] = not configModeGroups[group]["enabled"]
-            if configModeGroups[group]["enabled"] then
-                ForceShowGroup(group)
-            else
-                ForceHideGroup(group)
-            end
+        if enabled then
+            EnableConfigModeForGroup(group)
+        else
+            DisableConfigModeForGroup(group)
         end
     else
-        UF.configModeEnabled = not UF.configModeEnabled
-
-        if UF.configModeEnabled then
-            UF:RegisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
+        if enabled then
             EnableConfigMode()
         else
-            UF:UnregisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
             DisableConfigMode()
         end
     end

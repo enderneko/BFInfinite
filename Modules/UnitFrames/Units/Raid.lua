@@ -72,6 +72,7 @@ local function CreateRaid()
         header[i].enableUnitButtonMapping = true
         UF.AddToConfigMode("raid", header[i])
         UF.CreateIndicators(header[i], indicators)
+        UF.CreatePreviewRect(header[i])
     end
 
     -- mover

@@ -86,7 +86,7 @@ local function NameText_EnableConfigMode(self)
 
     self:UnregisterAllEvents()
     UpdateName(self)
-    self:Show()
+    self:SetShown(self.enabled)
 end
 
 local function NameText_DisableConfigMode(self)

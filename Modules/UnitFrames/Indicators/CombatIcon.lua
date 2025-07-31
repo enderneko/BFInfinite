@@ -80,7 +80,7 @@ local function CombatIcon_EnableConfigMode(self)
 
     self:UnregisterAllEvents()
     if self.ticker then self.ticker:Cancel() end
-    self:Show()
+    self:SetShown(self.enabled)
 end
 
 local function CombatIcon_DisableConfigMode(self)

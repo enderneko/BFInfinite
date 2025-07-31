@@ -57,7 +57,7 @@ local function LevelText_Enable(self)
     self:RegisterEvent("UNIT_LEVEL", UpdateLevel, UpdateColor)
     self:RegisterEvent("PLAYER_LEVEL_UP", UpdateLevel, UpdateColor)
 
-    self:Show()
+    self:SetShown(self.enabled)
     self:Update()
 end
 

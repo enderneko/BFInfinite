@@ -39,7 +39,7 @@ local settings = {
         "bgColor,borderColor",
         "tooltip",
     },
-    general_group = {
+    general_boss = {
         "enabled",
         "width,height",
         "groupArrangement",
@@ -506,7 +506,7 @@ builder["copy,paste,reset"] = function(parent)
     paste:SetOnClick(function()
         local which
         if isWholeCfg then
-            which = "All"
+            which = "All Settings"
         else
             which = copiedId:find("^general") and "General" or copiedId
         end
@@ -558,7 +558,7 @@ builder["copy,paste,reset"] = function(parent)
     reset:SetOnClick(function()
         local which
         if pane.t.id:find("^general") then
-            which = IsShiftKeyDown() and "All" or "General"
+            which = IsShiftKeyDown() and "All Settings" or "General"
         else
             which = pane.t.id
         end
@@ -573,7 +573,7 @@ builder["copy,paste,reset"] = function(parent)
 
             if pane.t.id:find("^general") then
                 AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "general"))
-                if which == "All" then
+                if which == "All Settings" then
                     AF.Merge(BFI.vars.profile[pane.t.module][pane.t.owner].indicators, UF.GetFrameDefaults(pane.t.owner, "indicator"))
                     AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner)
                 else
@@ -661,17 +661,30 @@ builder["width,height"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_WidthHeight", nil, 55)
     created["width,height"] = pane
 
-    local width = AF.CreateSlider(pane, L["Width"], 150, 10, 1000, 1, nil, true)
-    AF.SetPoint(width, "LEFT", 15, 0)
-    width:SetOnValueChanged(function(value)
-        pane.t.cfg.width = value
+    local function ShowPreviewRect()
         if pane.t.id == "general_single" then
-            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
             AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
         elseif pane.t.id == "general_party" then
             for i = 1, 5 do
                 AF.FrameFadeInOut(pane.t.target.header[i].previewRect, nil, nil, true)
             end
+        elseif pane.t.id == "general_raid" then
+            for i = 1, 40 do
+                AF.FrameFadeInOut(pane.t.target.header[i].previewRect, nil, nil, true)
+            end
+        elseif pane.t.id == "general_boss" then
+            for i = 1, 8 do
+                AF.FrameFadeInOut(pane.t.target[i].previewRect, nil, nil, true)
+            end
+        end
+    end
+
+    local width = AF.CreateSlider(pane, L["Width"], 150, 10, 1000, 1, nil, true)
+    AF.SetPoint(width, "LEFT", 15, 0)
+    width:SetOnValueChanged(function(value)
+        pane.t.cfg.width = value
+        if pane.t.id:find("^general") then
+            ShowPreviewRect()
             AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
         else
             LoadIndicatorConfig(pane.t)
@@ -682,14 +695,9 @@ builder["width,height"] = function(parent)
     AF.SetPoint(height, "TOPLEFT", width, 185, 0)
     height:SetOnValueChanged(function(value)
         pane.t.cfg.height = value
-        if pane.t.id == "general_single" then
+        if pane.t.id:find("^general") then
+            ShowPreviewRect()
             AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
-            AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
-        elseif pane.t.id == "general_party" then
-            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
-            for i = 1, 5 do
-                AF.FrameFadeInOut(pane.t.target.header[i].previewRect, nil, nil, true)
-            end
         else
             LoadIndicatorConfig(pane.t)
         end

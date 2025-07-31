@@ -60,7 +60,7 @@ local function FactionIcon_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
 
     UnitFactionGroup = UF.CFG_UnitFactionGroup
 

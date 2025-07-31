@@ -22,24 +22,27 @@ local function CreateUnitFramesPanel()
         unit = {"Player", "Target", "Focus", "Pet"},
         target = {"Target Target", "Focus Target", "Pet Target"},
         group = {"Party", "Raid", "Boss", "Arena"},
+        extra = {"Party Pets", "Party Targets"},
     }
 
     local subItems = {}
+    local lastSelected = {}
 
-    local mainSwitch = AF.CreateSwitch(unitFramesPanel, 200, 20)
+    local mainSwitch = AF.CreateSwitch(unitFramesPanel, 300, 20)
     unitFramesPanel.mainSwitch = mainSwitch
     AF.SetPoint(mainSwitch, "TOPLEFT", 15, -15)
     -- AF.SetPoint(mainSwitch, "TOPRIGHT")
 
-    local subSwitch = AF.CreateSwitch(unitFramesPanel, 340, 20)
+    local subSwitch = AF.CreateSwitch(unitFramesPanel, nil, 20)
     unitFramesPanel.subSwitch = subSwitch
-    AF.SetPoint(subSwitch, "TOPLEFT", mainSwitch, "TOPRIGHT", 10, 0)
-    AF.SetPoint(subSwitch, "TOPRIGHT", unitFramesPanel, "TOPRIGHT", -15, -15)
+    AF.SetPoint(subSwitch, "TOPLEFT", mainSwitch, "BOTTOMLEFT", 0, -10)
+    AF.SetPoint(subSwitch, "RIGHT", unitFramesPanel, -15, 0)
 
     mainSwitch:SetLabels({
         {text = "Unit", value = "unit"},
         {text = "Target", value = "target"},
         {text = "Group", value = "group"},
+        {text = "Extra", value = "extra", disabled = true},
     })
 
     mainSwitch:SetOnSelect(function(value)
@@ -51,11 +54,146 @@ local function CreateUnitFramesPanel()
         end
 
         subSwitch:SetLabels(subItems[value])
-        subSwitch:SetSelectedValue(subs[value][1])
+        subSwitch:SetSelectedValue(lastSelected[value] or subs[value][1])
     end)
 
     subSwitch:SetOnSelect(function(value)
+        lastSelected[mainSwitch:GetSelectedValue()] = value
         LoadList(mainSwitch:GetSelectedValue(), value)
+    end)
+end
+
+---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function CreateConfigModeWidgets()
+    --------------------------------------------------
+    -- config mode frame
+    --------------------------------------------------
+    local configModeFrame = AF.CreateBorderedFrame(unitFramesPanel, nil, nil, 263)
+    unitFramesPanel.configModeFrame = configModeFrame
+    AF.SetPoint(configModeFrame, "TOPLEFT", unitFramesPanel, "TOPRIGHT", 5, -15)
+    configModeFrame:Hide()
+
+    local groups = {
+        "Player", "Target", "Focus", "Pet",
+        "Target Target", "Focus Target", "Pet Target",
+        "Party", "Raid", "Boss", "Arena"
+    }
+
+    local checkButtons = {}
+
+    local all = AF.CreateCheckButton(configModeFrame, _G.ALL)
+    AF.SetPoint(all, "TOPLEFT", 7, -7)
+    all:SetOnCheck(function(checked)
+        for check in next, checkButtons do
+            if checked then
+                check:SetTextColor("white")
+            else
+                check:SetTextColor("gray")
+            end
+            check:SetChecked(checked)
+        end
+        AF.Fire("BFI_ConfigMode", "unitFrames", nil, checked)
+    end)
+
+    local sep = AF.CreateSeparator(configModeFrame, nil, 1, AF.GetColorTable("BFI", 0.8))
+    AF.SetPoint(sep, "TOPLEFT", all, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(sep, "RIGHT", -7, 0)
+
+    local function OnCheck(checked, self)
+        if checked then
+            self:SetTextColor("white")
+        else
+            self:SetTextColor("gray")
+        end
+
+        local allChecked = true
+        for check in next, checkButtons do
+            if not check:GetChecked() then
+                allChecked = false
+                break
+            end
+        end
+        all:SetChecked(allChecked)
+
+        AF.Fire("BFI_ConfigMode", "unitFrames", checkButtons[self], checked)
+    end
+
+    local width = 0
+    local last
+    for _, group in next, groups do
+        local check = AF.CreateCheckButton(configModeFrame, L[group])
+
+        -- TODO: arena
+        if group == "Arena" then
+            check:SetEnabled(false)
+        else
+            checkButtons[check] = group:gsub(" ", ""):lower()
+            check:SetTextColor("gray")
+            check:SetOnCheck(OnCheck)
+        end
+
+        if last then
+            AF.SetPoint(check, "TOPLEFT", last, "BOTTOMLEFT", 0, -7)
+        else
+            AF.SetPoint(check, "TOPLEFT", all, "BOTTOMLEFT", 0, -11)
+        end
+        last = check
+        width = max(width, check.label:GetStringWidth() + 35)
+    end
+
+    configModeFrame:SetWidth(width)
+
+    --------------------------------------------------
+    -- config mode button
+    --------------------------------------------------
+    local ON = L["Config Mode"] .. ": " .. AF.UpperFirst(SLASH_TEXTTOSPEECH_ON)
+    local OFF = L["Config Mode"] .. ": " .. AF.UpperFirst(SLASH_TEXTTOSPEECH_OFF)
+
+    local configModeButton = AF.CreateButton(unitFramesPanel, OFF, "BFI_hover", nil, 20)
+    AF.SetPoint(configModeButton, "TOPLEFT", unitFramesPanel.mainSwitch, "TOPRIGHT", 10, 0)
+    AF.SetPoint(configModeButton, "RIGHT", -15, 0)
+    AF.ApplyCombatProtectionToWidget(configModeButton)
+
+    local function DisableConfigMode()
+        UF.configModeEnabled = false
+
+        AF.FlowText_Stop(configModeButton.text)
+        configModeButton:SetText(OFF)
+        configModeFrame:Hide()
+
+        UF:UnregisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
+        AF.Fire("BFI_ConfigMode", "unitFrames", nil, false)
+    end
+
+    local function EnableConfigMode()
+        UF.configModeEnabled = true
+
+        configModeButton:SetText(ON)
+        AF.FlowText_Start(configModeButton.text, "BFI", "white", 2)
+        configModeFrame:Show()
+
+        UF:RegisterEvent("PLAYER_REGEN_DISABLED", DisableConfigMode)
+
+        if all:GetChecked() then
+            AF.Fire("BFI_ConfigMode", "unitFrames", nil, true)
+        else
+            for check, group in next, checkButtons do
+                if check:GetChecked() then
+                    AF.Fire("BFI_ConfigMode", "unitFrames", group, true)
+                end
+            end
+        end
+    end
+
+    configModeButton:SetOnClick(function()
+        UF.configModeEnabled = not UF.configModeEnabled
+        if UF.configModeEnabled then
+            EnableConfigMode()
+        else
+            DisableConfigMode()
+        end
     end)
 end
 
@@ -67,11 +205,11 @@ local function CreateContentPane()
     -- content
     contentPane = AF.CreateFrame(unitFramesPanel)
     unitFramesPanel.contentPane = contentPane
-    AF.SetPoint(contentPane, "TOPLEFT", unitFramesPanel.mainSwitch, "BOTTOMLEFT", 0, -15)
+    AF.SetPoint(contentPane, "TOPLEFT", unitFramesPanel.subSwitch, "BOTTOMLEFT", 0, -10)
     AF.SetPoint(contentPane, "BOTTOMRIGHT", -15, 15)
 
     -- indicator list
-    local indicatorList = AF.CreateScrollList(contentPane, nil, 0, 0, 26, 20, -1)
+    local indicatorList = AF.CreateScrollList(contentPane, nil, 0, 0, 25, 20, -1)
     contentPane.indicatorList = indicatorList
     indicatorList:SetPoint("TOPLEFT")
     AF.SetWidth(indicatorList, 150)
@@ -95,7 +233,7 @@ local settings = {
             "general_single",
             "healthBar", "powerBar", "portrait", "castBar", "extraManaBar", "classPowerBar", "staggerBar",
             "nameText", "healthText", "powerText", "leaderText", "levelText", "targetCounter", "statusTimer", "incDmgHealText",
-            "buffs", "debuffs", "privateAuras",
+            "buffs", "debuffs", -- "privateAuras",
             "raidIcon", "leaderIcon", "roleIcon", "combatIcon", "readyCheckIcon", "factionIcon", "statusIcon", "restingIndicator",
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
@@ -103,7 +241,7 @@ local settings = {
             "general_single",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "leaderText", "levelText", "targetCounter", "statusTimer", "rangeText",
-            "buffs", "debuffs", "privateAuras",
+            "buffs", "debuffs", -- "privateAuras",
             "raidIcon", "leaderIcon", "roleIcon", "combatIcon", "factionIcon", "statusIcon",
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
@@ -111,7 +249,7 @@ local settings = {
             "general_single",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "levelText", "targetCounter", "rangeText",
-            "buffs", "debuffs", "privateAuras",
+            "buffs", "debuffs", -- "privateAuras",
             "raidIcon", "roleIcon",
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
@@ -168,7 +306,7 @@ local settings = {
             "targetHighlight", "mouseoverHighlight", "threatGlow",
         },
         boss = {
-            "general_group",
+            "general_boss",
             "healthBar", "powerBar", "portrait", "castBar",
             "nameText", "healthText", "powerText", "levelText", "targetCounter",
             "buffs", "debuffs",
@@ -322,6 +460,7 @@ AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
     if id == "Unit Frames" then
         if not unitFramesPanel then
             CreateUnitFramesPanel()
+            CreateConfigModeWidgets()
             CreateContentPane()
             unitFramesPanel.mainSwitch:SetSelectedValue("unit")
         end

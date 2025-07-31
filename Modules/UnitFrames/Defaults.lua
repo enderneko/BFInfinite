@@ -1324,9 +1324,6 @@ local style1 = {
                     debuffType = true,
                 },
             },
-            privateAuras = {
-                enabled = true,
-            },
         },
     },
     focus = {
@@ -2016,9 +2013,6 @@ local style1 = {
                     debuffType = true,
                 },
             },
-            privateAuras = {
-                enabled = true,
-            },
         },
     },
     pet = {
@@ -2698,9 +2692,6 @@ local style1 = {
                     dispellable = true,
                     debuffType = true,
                 },
-            },
-            privateAuras = {
-                enabled = false,
             },
         },
     },
@@ -3930,9 +3921,6 @@ local style2 = {
                     debuffType = true,
                 },
             },
-            privateAuras = {
-                enabled = true,
-            },
         },
     },
     focus = {
@@ -4621,9 +4609,6 @@ local style2 = {
                     debuffType = true,
                 },
             },
-            privateAuras = {
-                enabled = true,
-            },
         },
     },
     pet = {
@@ -5303,9 +5288,6 @@ local style2 = {
                     debuffType = true,
                 },
             },
-            privateAuras = {
-                enabled = false,
-            },
         },
     },
 }
@@ -5713,6 +5695,9 @@ local defaults = {
                     debuffType = true,
                 },
             },
+            privateAuras = {
+                enabled = false,
+            },
         },
     },
     raid = {
@@ -5997,6 +5982,9 @@ local defaults = {
                     dispellable = true,
                     debuffType = true,
                 },
+            },
+            privateAuras = {
+                enabled = false,
             },
         },
     },

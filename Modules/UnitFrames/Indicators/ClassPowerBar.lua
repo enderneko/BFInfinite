@@ -553,7 +553,7 @@ local function ClassPowerBar_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
 
     class = "PALADIN"
     self.power = 3

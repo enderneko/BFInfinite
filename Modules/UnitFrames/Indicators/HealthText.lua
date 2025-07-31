@@ -268,7 +268,7 @@ local function HealthText_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
 
     UnitHealth = UF.CFG_UnitHealth
     UnitHealthMax = UF.CFG_UnitHealthMax

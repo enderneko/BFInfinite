@@ -196,7 +196,7 @@ local function Portrait_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
     Portrait_Update(self, true)
 end
 

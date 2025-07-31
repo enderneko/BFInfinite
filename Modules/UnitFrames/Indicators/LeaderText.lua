@@ -86,7 +86,7 @@ local function LeaderText_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
 
     self:SetText("L")
     UpdateColor(self)

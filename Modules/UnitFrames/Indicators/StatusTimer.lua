@@ -179,6 +179,7 @@ local function StatusTimer_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
+    self:SetShown(self.enabled)
 
     UnitGUID = UF.CFG_UnitGUID
     UnitIsPlayer = UF.CFG_UnitIsPlayer
@@ -187,7 +188,6 @@ local function StatusTimer_EnableConfigMode(self)
     timers["TEST"] = nil
     self.updater.elapsed = 1
     SetStatus(self, "AFK")
-    self:Show()
 end
 
 local function StatusTimer_DisableConfigMode(self)

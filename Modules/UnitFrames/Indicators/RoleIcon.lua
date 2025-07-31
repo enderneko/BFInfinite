@@ -53,7 +53,7 @@ local function RoleIcon_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
 
     G.SetGlyph(self.text, G.Role.HEALER)
 end

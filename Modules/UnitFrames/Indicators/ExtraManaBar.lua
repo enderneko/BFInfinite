@@ -232,7 +232,7 @@ local function ExtraManaBar_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:Show()
+    self:SetShown(self.enabled)
 
     UnitPower = UF.CFG_UnitPower
     UnitPowerMax = UF.CFG_UnitPowerMax

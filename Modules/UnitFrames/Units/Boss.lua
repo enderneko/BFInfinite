@@ -36,6 +36,7 @@ local function CreateBoss()
         boss[i]:SetAttribute("unit", "boss" .. i)
         UF.AddToConfigMode("boss", boss[i])
         UF.CreateIndicators(boss[i], indicators)
+        UF.CreatePreviewRect(boss[i])
         RegisterUnitWatch(boss[i])
     end
 
