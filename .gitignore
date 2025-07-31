@@ -1,1 +1,10 @@
+# ignored
 .vscode/
+.release/*
+.utils/*.csv
+Libs/*
+
+# excluded
+!.release/release.sh
+!Libs/LoadLibs.xml
+!Libs/LibActionButton-1.0

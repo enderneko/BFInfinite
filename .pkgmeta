@@ -1,0 +1,9 @@
+package-as: BFInfinite
+enable-nolib-creation: no
+
+externals:
+  Libs/LibRangeCheck-3.0: https://github.com/WeakAuras/LibRangeCheck-3.0
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
