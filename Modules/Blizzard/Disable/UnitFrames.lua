@@ -14,9 +14,24 @@ local function Reparent(self, parent)
     end
 end
 
-local function SetShown(self, shown)
-    if shown then
-        self:Hide()
+local framesToHide = {}
+
+local eh = AF.CreateBasicEventHandler(function(self)
+    for frame in next, framesToHide do
+        frame:Hide()
+        framesToHide[frame] = nil
+    end
+    self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+end)
+
+local function HideFrame(self, shown)
+    if shown or shown == nil then
+        if InCombatLockdown() then
+            eh:RegisterEvent("PLAYER_REGEN_ENABLED")
+            framesToHide[self] = true
+        else
+            self:Hide()
+        end
     end
 end
 
@@ -158,8 +173,8 @@ local function DisableBlizzard()
         _G.CompactPartyFrame:UnregisterAllEvents()
         frame_SetUp[_G.CompactPartyFrame] = "^CompactPartyFrameMember%d+$"
 
-        hooksecurefunc(_G.CompactPartyFrame, "Show", _G.CompactPartyFrame.Hide)
-        hooksecurefunc(_G.CompactPartyFrame, "SetShown", SetShown)
+        hooksecurefunc(_G.CompactPartyFrame, "Show", HideFrame)
+        hooksecurefunc(_G.CompactPartyFrame, "SetShown", HideFrame) -- CompactPartyFrameMixin:UpdateVisibility()
 
         _G.PartyFrame:UnregisterAllEvents()
         _G.PartyFrame:SetScript("OnShow", nil)
@@ -177,8 +192,8 @@ local function DisableBlizzard()
         _G.CompactRaidFrameContainer:UnregisterAllEvents()
         frame_SetUp[_G.CompactRaidFrameContainer] = "^CompactRaidGroup%d+Member%d+$"
 
-        hooksecurefunc(_G.CompactRaidFrameContainer, "Show", _G.CompactRaidFrameContainer.Hide)
-        hooksecurefunc(_G.CompactRaidFrameContainer, "SetShown", SetShown)
+        hooksecurefunc(_G.CompactRaidFrameContainer, "Show", HideFrame)
+        hooksecurefunc(_G.CompactRaidFrameContainer, "SetShown", HideFrame)
         hooksecurefunc("CompactRaidGroup_InitializeForGroup", DisableBlizzard_InitializeForGroup)
     end
 
