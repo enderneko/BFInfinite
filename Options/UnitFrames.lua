@@ -349,13 +349,13 @@ local function ListItem_LoadOptions(self)
     lastIndicator = self.id
 
     local scroll = contentPane.scrollSettings
-    local options = F.GetIndicatorOptions(scroll.scrollContent, self)
+    local options = F.GetUnitFrameOptions(scroll.scrollContent, self)
 
     local heights = {}
     local last
 
     for i, pane in next, options do
-        pane.index = i
+        pane.index = i -- for re-height
 
         -- FIXME: seems cause weird issues that option values are not loaded properly (visible)
         -- maybe should set parent when creating the pane?

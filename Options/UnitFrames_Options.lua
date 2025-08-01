@@ -462,7 +462,7 @@ end
 builder["copy,paste,reset"] = function(parent)
     if created["copy,paste,reset"] then return created["copy,paste,reset"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_CopyPasteReset", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_CopyPasteReset", nil, 30)
     created["copy,paste,reset"] = pane
     pane:Hide()
 
@@ -617,7 +617,7 @@ end
 builder["enabled"] = function(parent)
     if created["enabled"] then return created["enabled"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Enabled", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Enabled", nil, 30)
     created["enabled"] = pane
 
     local enabled = AF.CreateCheckButton(pane, L["Enabled"])
@@ -658,7 +658,7 @@ end
 builder["width,height"] = function(parent)
     if created["width,height"] then return created["width,height"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_WidthHeight", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_WidthHeight", nil, 55)
     created["width,height"] = pane
 
     local function ShowPreviewRect()
@@ -718,7 +718,7 @@ end
 builder["size"] = function(parent)
     if created["size"] then return created["size"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Size", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Size", nil, 55)
     created["size"] = pane
 
     local size = AF.CreateSlider(pane, L["Size"], 150, 5, 100, 1, nil, true)
@@ -751,7 +751,7 @@ end
 builder["position,anchorTo"] = function(parent)
     if created["position,anchorTo"] then return created["position,anchorTo"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PositionAnchorTo", nil, 148)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_PositionAnchorTo", nil, 148)
     created["position,anchorTo"] = pane
 
     local validRelativeTos = GetAnchorToItems()
@@ -819,7 +819,7 @@ end
 builder["position,anchorTo,parent"] = function(parent)
     if created["position,anchorTo,parent"] then return created["position,anchorTo,parent"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PositionAnchorToParent", nil, 150)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_PositionAnchorToParent", nil, 150)
     created["position,anchorTo,parent"] = pane
 
     local validRelativeTos = GetAnchorToItems()
@@ -897,7 +897,7 @@ end
 builder["frameLevel"] = function(parent)
     if created["frameLevel"] then return created["frameLevel"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_FrameLevel", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_FrameLevel", nil, 55)
     created["frameLevel"] = pane
 
     local frameLevel = AF.CreateSlider(pane, L["Frame Level"], 150, 0, 100, 1, nil, true)
@@ -921,7 +921,7 @@ end
 builder["smoothing"] = function(parent)
     if created["smoothing"] then return created["smoothing"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Smoothing", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Smoothing", nil, 30)
     created["smoothing"] = pane
 
     local smoothing = AF.CreateCheckButton(pane, L["Smooth Bar Transition"])
@@ -945,7 +945,7 @@ end
 builder["texture"] = function(parent)
     if created["texture"] then return created["texture"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Texture", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Texture", nil, 55)
     created["texture"] = pane
 
     local texture = AF.CreateDropdown(pane, 150)
@@ -1117,7 +1117,7 @@ end
 builder["barColor"] = function(parent)
     if created["barColor"] then return created["barColor"] end
 
-    created["barColor"] = CreatePaneForBarColors(parent, "color", "BFI_IndicatorOption_BarColor", L["Bar Color"], L["Bar Gradient"], L["Bar Alpha"])
+    created["barColor"] = CreatePaneForBarColors(parent, "color", "BFI_UnitFrameOption_BarColor", L["Bar Color"], L["Bar Gradient"], L["Bar Alpha"])
     return created["barColor"]
 end
 
@@ -1127,7 +1127,7 @@ end
 builder["barLossColor"] = function(parent)
     if created["barLossColor"] then return created["barLossColor"] end
 
-    created["barLossColor"] = CreatePaneForBarColors(parent, "lossColor", "BFI_IndicatorOption_BarLossColor", L["Loss Color"], L["Loss Gradient"], L["Loss Alpha"])
+    created["barLossColor"] = CreatePaneForBarColors(parent, "lossColor", "BFI_UnitFrameOption_BarLossColor", L["Loss Color"], L["Loss Gradient"], L["Loss Alpha"])
     return created["barLossColor"]
 end
 
@@ -1137,7 +1137,7 @@ end
 builder["bgColor,borderColor"] = function(parent)
     if created["bgColor,borderColor"] then return created["bgColor,borderColor"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_BgBorderColor", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_BgBorderColor", nil, 30)
     created["bgColor,borderColor"] = pane
 
     local bgColor = AF.CreateColorPicker(pane, L["Background Color"], true)
@@ -1183,7 +1183,7 @@ end
 builder["healPrediction"] = function(parent)
     if created["healPrediction"] then return created["healPrediction"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HealPrediction", nil, 51)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_HealPrediction", nil, 51)
     created["healPrediction"] = pane
 
     local healPredictionCheckButton = AF.CreateCheckButton(pane, L["Heal Prediction"])
@@ -1240,7 +1240,7 @@ end
 builder["shield,overshieldGlow"] = function(parent)
     if created["shield,overshieldGlow"] then return created["shield,overshieldGlow"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Shields", nil, 78)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Shields", nil, 78)
     created["shield,overshieldGlow"] = pane
 
     local shieldDropdown = AF.CreateDropdown(pane, 150)
@@ -1328,7 +1328,7 @@ end
 builder["healAbsorb,overabsorbGlow"] = function(parent)
     if created["healAbsorb,overabsorbGlow"] then return created["healAbsorb,overabsorbGlow"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HealAbsorbs", nil, 54)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_HealAbsorbs", nil, 54)
     created["healAbsorb,overabsorbGlow"] = pane
 
     local absorbDropdown = AF.CreateDropdown(pane, 150)
@@ -1408,7 +1408,7 @@ end
 builder["mouseoverHighlight"] = function(parent)
     if created["mouseoverHighlight"] then return created["mouseoverHighlight"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_MouseoverHighlight", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_MouseoverHighlight", nil, 30)
     created["mouseoverHighlight"] = pane
 
     local mouseoverHighlightCheckButton = AF.CreateCheckButton(pane)
@@ -1446,7 +1446,7 @@ end
 builder["dispelHighlight"] = function(parent)
     if created["dispelHighlight"] then return created["dispelHighlight"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_DispelHighlight", nil, 80)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_DispelHighlight", nil, 80)
     created["dispelHighlight"] = pane
 
     local dispelHighlightCheckButton = AF.CreateCheckButton(pane, L["Dispel Highlight"])
@@ -1510,7 +1510,7 @@ end
 builder["frequent"] = function(parent)
     if created["frequent"] then return created["frequent"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Frequent", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Frequent", nil, 30)
     created["frequent"] = pane
 
     local frequentCheckButton = AF.CreateCheckButton(pane, L["Frequent Updates"])
@@ -1534,7 +1534,7 @@ end
 builder["style,model"] = function(parent)
     if created["style,model"] then return created["style,model"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PortraitStyle", nil, 252)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_PortraitStyle", nil, 252)
     created["style,model"] = pane
 
     local styleDropdown = AF.CreateDropdown(pane, 150)
@@ -1644,7 +1644,7 @@ end
 builder["interruptibleCheck"] = function(parent)
     if created["interruptibleCheck"] then return created["interruptibleCheck"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_InterruptibleCheck", nil, 93)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_InterruptibleCheck", nil, 93)
     created["interruptibleCheck"] = pane
 
     local enableInterruptibleCheck = AF.CreateCheckButton(pane, L["Enable Interruptible Check"])
@@ -1697,7 +1697,7 @@ end
 builder["showIcon"] = function(parent)
     if created["showIcon"] then return created["showIcon"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_ShowIcon", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_ShowIcon", nil, 30)
     created["showIcon"] = pane
 
     local showIconCheckButton = AF.CreateCheckButton(pane, L["Show Icon"])
@@ -1721,7 +1721,7 @@ end
 builder["showLatency"] = function(parent)
     if created["showLatency"] then return created["showLatency"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_ShowLatency", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_ShowLatency", nil, 30)
     created["showLatency"] = pane
 
     local showLatencyCheckButton = AF.CreateCheckButton(pane, L["Show Latency"])
@@ -1749,7 +1749,7 @@ end
 builder["fadeDuration"] = function(parent)
     if created["fadeDuration"] then return created["fadeDuration"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_FadeDuration", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_FadeDuration", nil, 55)
     created["fadeDuration"] = pane
 
     local fadeDurationSlider = AF.CreateSlider(pane, L["Fade Duration"], 150, 0, 2, 0.1, nil, true)
@@ -1773,7 +1773,7 @@ end
 builder["spark"] = function(parent)
     if created["spark"] then return created["spark"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Spark", nil, 80)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Spark", nil, 80)
     created["spark"] = pane
 
     local sparkCheckButton = AF.CreateCheckButton(pane, L["Spark"])
@@ -1816,7 +1816,7 @@ end
 builder["ticks"] = function(parent)
     if created["ticks"] then return created["ticks"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Ticks", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Ticks", nil, 55)
     created["ticks"] = pane
 
     local ticksCheckButton = AF.CreateCheckButton(pane, L["Ticks"])
@@ -1855,7 +1855,7 @@ end
 builder["castBarNameText"] = function(parent)
     if created["castBarNameText"] then return created["castBarNameText"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_CastBarNameText", nil, 246)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_CastBarNameText", nil, 246)
     created["castBarNameText"] = pane
 
     local enabledCheckButton = AF.CreateCheckButton(pane)
@@ -1987,7 +1987,7 @@ end
 builder["castBarDurationText"] = function(parent)
     if created["castBarDurationText"] then return created["castBarDurationText"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_CastBarDurationText", nil, 246)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_CastBarDurationText", nil, 246)
     created["castBarDurationText"] = pane
 
     local enabledCheckButton = AF.CreateCheckButton(pane)
@@ -2125,7 +2125,7 @@ end
 builder["hideIfHasClassPower,hideIfFull"] = function(parent)
     if created["hideIfHasClassPower,hideIfFull"] then return created["hideIfHasClassPower,hideIfFull"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HideIfHasClassPower", nil, 51)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_HideIfHasClassPower", nil, 51)
     created["hideIfHasClassPower,hideIfFull"] = pane
 
     local hideIfHasClassPowerCheckButton = AF.CreateCheckButton(pane, L["Hide When Class Power Exists"])
@@ -2157,7 +2157,7 @@ end
 builder["spacing"] = function(parent)
     if created["spacing"] then return created["spacing"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Spacing", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Spacing", nil, 55)
     created["spacing"] = pane
 
     local spacingSlider = AF.CreateSlider(pane, L["Spacing"], 150, -1, 100, 1, nil, true)
@@ -2469,7 +2469,7 @@ end
 builder["cooldownText"] = function(parent)
     if created["cooldownText"] then return created["cooldownText"] end
 
-    created["cooldownText"] = CreateFontPositionExtraPane(parent, "cooldownText", "BFI_IndicatorOption_CooldownText", L["Cooldown Text"])
+    created["cooldownText"] = CreateFontPositionExtraPane(parent, "cooldownText", "BFI_UnitFrameOption_CooldownText", L["Cooldown Text"])
     return created["cooldownText"]
 end
 
@@ -2479,7 +2479,7 @@ end
 builder["textWithFormat"] = function(parent)
     if created["textWithFormat"] then return created["textWithFormat"] end
 
-    created["textWithFormat"] = CreateFontPositionExtraPane(parent, "text", "BFI_IndicatorOption_TextWithFormat", L["Text"], true)
+    created["textWithFormat"] = CreateFontPositionExtraPane(parent, "text", "BFI_UnitFrameOption_TextWithFormat", L["Text"], true)
     return created["textWithFormat"]
 end
 
@@ -2489,7 +2489,7 @@ end
 builder["stackText"] = function(parent)
     if created["stackText"] then return created["stackText"] end
 
-    created["stackText"] = CreateFontPositionExtraPane(parent, "stackText", "BFI_IndicatorOption_StackText", AF.GetGradientText(L["Stack Text"], "BFI", "white"))
+    created["stackText"] = CreateFontPositionExtraPane(parent, "stackText", "BFI_UnitFrameOption_StackText", AF.GetGradientText(L["Stack Text"], "BFI", "white"))
     return created["stackText"]
 end
 
@@ -2499,7 +2499,7 @@ end
 builder["durationText"] = function(parent)
     if created["durationText"] then return created["durationText"] end
 
-    created["durationText"] = CreateFontPositionExtraPane(parent, "durationText", "BFI_IndicatorOption_DurationText", AF.GetGradientText(L["Duration Text"], "BFI", "white"), "duration")
+    created["durationText"] = CreateFontPositionExtraPane(parent, "durationText", "BFI_UnitFrameOption_DurationText", AF.GetGradientText(L["Duration Text"], "BFI", "white"), "duration")
     return created["durationText"]
 end
 
@@ -2509,7 +2509,7 @@ end
 builder["textLength"] = function(parent)
     if created["textLength"] then return created["textLength"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_TextLength", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_TextLength", nil, 55)
     created["textLength"] = pane
 
     local textLengthSlider = AF.CreateSlider(pane, L["Length"], 150, 0, 1, 0.05, true, true)
@@ -2533,7 +2533,7 @@ end
 builder["textFormat"] = function(parent)
     if created["textFormat"] then return created["textFormat"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_TextFormat", nil, 120)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_TextFormat", nil, 120)
     created["textFormat"] = pane
 
     local numericFormatDropdown = AF.CreateDropdown(pane, 250)
@@ -2605,7 +2605,7 @@ end
 builder["numericFormat"] = function(parent)
     if created["numericFormat"] then return created["numericFormat"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_NumericFormat", nil, 75)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_NumericFormat", nil, 75)
     created["numericFormat"] = pane
 
     local numericFormatDropdown = AF.CreateDropdown(pane, 250)
@@ -2640,7 +2640,7 @@ end
 builder["hideIfFull,hideIfEmpty"] = function(parent)
     if created["hideIfFull,hideIfEmpty"] then return created["hideIfFull,hideIfEmpty"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HideIfFullOrEmpty", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_HideIfFullOrEmpty", nil, 30)
     created["hideIfFull,hideIfEmpty"] = pane
 
     local hideIfFullCheckButton = AF.CreateCheckButton(pane, L["Hide When Full"])
@@ -2672,7 +2672,7 @@ end
 builder["hideIfFull"] = function(parent)
     if created["hideIfFull"] then return created["hideIfFull"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HideIfFull", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_HideIfFull", nil, 30)
     created["hideIfFull"] = pane
 
     local hideIfFullCheckButton = AF.CreateCheckButton(pane, L["Hide When Full"])
@@ -2696,7 +2696,7 @@ end
 builder["font,color"] = function(parent)
     if created["font,color"] then return created["font,color"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_FontColor", nil, 148)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_FontColor", nil, 148)
     created["font,color"] = pane
 
     local fontDropdown = AF.CreateDropdown(pane, 150)
@@ -2772,7 +2772,7 @@ end
 builder["font"] = function(parent)
     if created["font"] then return created["font"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Font", nil, 103)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Font", nil, 103)
     created["font"] = pane
 
     local fontDropdown = AF.CreateDropdown(pane, 150)
@@ -2824,7 +2824,7 @@ end
 builder["showTimer,useEn"] = function(parent)
     if created["showTimer,useEn"] then return created["showTimer,useEn"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_ShowTimerUseEn", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_ShowTimerUseEn", nil, 30)
     created["showTimer,useEn"] = pane
 
     local showTimerCheckButton = AF.CreateCheckButton(pane, L["Show Timer"])
@@ -2858,7 +2858,7 @@ end
 builder["damage,healing"] = function(parent)
     if created["damage,healing"] then return created["damage,healing"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_DamageHealing", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_DamageHealing", nil, 30)
     created["damage,healing"] = pane
 
     local damageCheckButton = AF.CreateCheckButton(pane)
@@ -2916,7 +2916,7 @@ end
 builder["auraBaseFilters"] = function(parent)
     if created["auraBaseFilters"] then return created["auraBaseFilters"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraBaseFilters", nil, 94)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_AuraBaseFilters", nil, 94)
     created["auraBaseFilters"] = pane
 
     local tip = AF.CreateFontString(pane, L["The aura will show if any enabled filter is met"])
@@ -2990,7 +2990,7 @@ end
 builder["auraBlackListWhitelist"] = function(parent)
     if created["auraBlackListWhitelist"] then return created["auraBlackListWhitelist"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraBlackListWhitelist", nil, 0)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_AuraBlackListWhitelist", nil, 0)
     created["auraBlackListWhitelist"] = pane
 
     local mode = AF.CreateDropdown(pane, 150)
@@ -3153,7 +3153,7 @@ end
 builder["auraTypeColor"] = function(parent)
     if created["auraTypeColor"] then return created["auraTypeColor"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraTypeColor", nil, 72)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_AuraTypeColor", nil, 72)
     created["auraTypeColor"] = pane
 
     local tip = AF.CreateFontString(pane, AF.GetGradientText(L["Border Color"], "BFI", "white") .. "\n" .. L["Priority: top to bottom"])
@@ -3209,7 +3209,7 @@ end
 builder["auraSubFrame"] = function(parent)
     if created["auraSubFrame"] then return created["auraSubFrame"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraSubFrame", nil, 125)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_AuraSubFrame", nil, 125)
     created["auraSubFrame"] = pane
 
     -- TODO: more filters and separate arrangement
@@ -3282,7 +3282,7 @@ end
 builder["auraArrangement"] = function(parent)
     if created["auraArrangement"] then return created["auraArrangement"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_AuraArrangement", nil, 203)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_AuraArrangement", nil, 203)
     created["auraArrangement"] = pane
 
     local arrangement = AF.CreateDropdown(pane, 150)
@@ -3361,7 +3361,7 @@ end
 builder["cooldownStyle"] = function(parent)
     if created["cooldownStyle"] then return created["cooldownStyle"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_CooldownStyle", nil, 54)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_CooldownStyle", nil, 54)
     created["cooldownStyle"] = pane
 
     local styleDropdown = AF.CreateDropdown(pane, 250)
@@ -3399,7 +3399,7 @@ end
 builder["tooltip"] = function(parent)
     if created["tooltip"] then return created["tooltip"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Tooltip", nil, 148)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Tooltip", nil, 148)
     created["tooltip"] = pane
 
     local enabledCheckButton = AF.CreateCheckButton(pane)
@@ -3507,7 +3507,7 @@ end
 builder["style"] = function(parent)
     if created["style"] then return created["style"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Style", nil, 54)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Style", nil, 54)
     created["style"] = pane
 
     local styleDropdown = AF.CreateDropdown(pane, 150)
@@ -3544,7 +3544,7 @@ end
 builder["hideDamager"] = function(parent)
     if created["hideDamager"] then return created["hideDamager"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_HideDamager", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_HideDamager", nil, 30)
     created["hideDamager"] = pane
 
     local hideDamagerCheckButton = AF.CreateCheckButton(pane, L["Hide Damager"])
@@ -3568,7 +3568,7 @@ end
 builder["color"] = function(parent)
     if created["color"] then return created["color"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Color", nil, 30)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Color", nil, 30)
     created["color"] = pane
 
     local colorPicker = AF.CreateColorPicker(pane, L["Color"], true)
@@ -3595,7 +3595,7 @@ end
 builder["alpha"] = function(parent)
     if created["alpha"] then return created["alpha"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_Alpha", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Alpha", nil, 55)
     created["alpha"] = pane
 
     local alphaSlider = AF.CreateSlider(pane, L["Alpha"], 150, 0, 1, 0.01, true, true)
@@ -3619,7 +3619,7 @@ end
 builder["oorAlpha"] = function(parent)
     if created["oorAlpha"] then return created["oorAlpha"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_OorAlpha", nil, 55)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_OorAlpha", nil, 55)
     created["oorAlpha"] = pane
 
     local oorAlphaSlider = AF.CreateSlider(pane, L["Out Of Range Alpha"], 150, 0, 1, 0.01, true, true)
@@ -3669,7 +3669,7 @@ end
 builder["partyArrangement"] = function(parent)
     if created["partyArrangement"] then return created["partyArrangement"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_PartyArrangement", nil, 103)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_PartyArrangement", nil, 103)
     created["partyArrangement"] = pane
 
     local arrangement = AF.CreateDropdown(pane, 150)
@@ -3776,7 +3776,7 @@ end
 builder["raidArrangement"] = function(parent)
     if created["raidArrangement"] then return created["raidArrangement"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_RaidArrangement", nil, 217)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_RaidArrangement", nil, 217)
     created["raidArrangement"] = pane
 
     local arrangement = AF.CreateDropdown(pane, 200)
@@ -3947,7 +3947,7 @@ end
 builder["groupArrangement"] = function(parent)
     if created["groupArrangement"] then return created["groupArrangement"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_IndicatorOption_GroupArrangement", nil, 103)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_GroupArrangement", nil, 103)
     created["groupArrangement"] = pane
 
     local arrangement = AF.CreateDropdown(pane, 150)
@@ -3994,7 +3994,7 @@ end
 ---------------------------------------------------------------------
 -- get
 ---------------------------------------------------------------------
-function F.GetIndicatorOptions(parent, info)
+function F.GetUnitFrameOptions(parent, info)
     for _, pane in pairs(created) do
         pane:Hide()
         AF.ClearPoints(pane)
