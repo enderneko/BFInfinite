@@ -707,10 +707,9 @@ local function ConfigMode_RefreshAuras(self)
 end
 
 local function Auras_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = Auras_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
 
     if self.enabled then
         if self.configModeTicker then

@@ -102,12 +102,12 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function TargetCounter_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = TargetCounter_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
     self:SetText(8)
+    self:SetShown(self.enabled)
 end
 
 local function TargetCounter_DisableConfigMode(self)

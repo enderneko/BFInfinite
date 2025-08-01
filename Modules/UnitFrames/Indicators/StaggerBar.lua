@@ -201,16 +201,16 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function StaggerBar_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = StaggerBar_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     UnitStagger = UF.CFG_UnitStagger
     UnitHealthMax = UF.CFG_UnitHealthMax
 
     UpdateStagger(self)
+
+    self:SetShown(self.enabled)
 end
 
 local function StaggerBar_DisableConfigMode(self)

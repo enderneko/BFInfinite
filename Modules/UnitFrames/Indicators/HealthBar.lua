@@ -541,11 +541,9 @@ end
 ---------------------------------------------------------------------
 local _UpdateHealthStates = UpdateHealthStates
 local function HealthBar_EnableConfigMode(self, isRepeatCall)
+    self:UnregisterAllEvents()
     self.Enable = HealthBar_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     UnitGetTotalAbsorbs = UF.CFG_UnitGetTotalAbsorbs
     UnitGetTotalHealAbsorbs = UF.CFG_UnitGetTotalHealAbsorbs
@@ -563,6 +561,8 @@ local function HealthBar_EnableConfigMode(self, isRepeatCall)
             HealthBar_EnableConfigMode(self, true)
         end)
     end
+
+    self:SetShown(self.enabled)
 end
 
 local function HealthBar_DisableConfigMode(self)

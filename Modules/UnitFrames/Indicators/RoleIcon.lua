@@ -49,13 +49,13 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function RoleIcon_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = RoleIcon_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
-
     G.SetGlyph(self.text, G.Role.HEALER)
+
+    self:SetShown(self.enabled)
 end
 
 local function RoleIcon_DisableConfigMode(self)

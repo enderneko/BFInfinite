@@ -173,15 +173,15 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function StatusIcon_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = StatusIcon_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     self.icon:SetVertexColor(1, 1, 1, 1)
     self.icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Rez")
     self.icon:SetTexCoord(0, 1, 0, 1)
+
+    self:SetShown(self.enabled)
 end
 
 local function StatusIcon_DisableConfigMode(self)

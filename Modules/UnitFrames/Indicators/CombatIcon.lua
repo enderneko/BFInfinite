@@ -75,10 +75,10 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function CombatIcon_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = CombatIcon_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
     if self.ticker then self.ticker:Cancel() end
     self:SetShown(self.enabled)
 end

@@ -63,11 +63,12 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function LeaderIcon_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = LeaderIcon_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
     G.SetGlyph(self.text, G.Group.leader)
+
     self:SetShown(self.enabled)
 end
 

@@ -81,11 +81,12 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function NameText_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = NameText_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
     UpdateName(self)
+
     self:SetShown(self.enabled)
 end
 

@@ -58,15 +58,15 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function RaidIcon_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = RaidIcon_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     GetRaidTargetIndex = UF.CFG_GetRaidTargetIndex
 
     RaidIcon_Update(self)
+
+    self:SetShown(self.enabled)
 end
 
 local function RaidIcon_DisableConfigMode(self)

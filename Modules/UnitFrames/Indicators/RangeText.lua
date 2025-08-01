@@ -98,15 +98,15 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function RangeText_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = RangeText_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     self:SetText("30-35")
     UpdateColor(self, 35)
     self.updater:Hide()
+
+    self:SetShown(self.enabled)
 end
 
 local function RangeText_DisableConfigMode(self)

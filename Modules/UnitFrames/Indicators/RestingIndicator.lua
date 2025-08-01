@@ -72,10 +72,10 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function RestingIndicator_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = RestingIndicator_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
     self:SetShown(self.enabled)
 end
 

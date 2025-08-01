@@ -228,11 +228,9 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function ExtraManaBar_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = ExtraManaBar_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     UnitPower = UF.CFG_UnitPower
     UnitPowerMax = UF.CFG_UnitPowerMax
@@ -241,6 +239,8 @@ local function ExtraManaBar_EnableConfigMode(self)
     UpdateManaColor(self)
     UpdateManaMax(self)
     UpdateMana(self)
+
+    self:SetShown(self.enabled)
 end
 
 local function ExtraManaBar_DisableConfigMode(self)

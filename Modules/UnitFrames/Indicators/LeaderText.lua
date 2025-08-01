@@ -82,14 +82,14 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function LeaderText_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = LeaderText_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
-
     self:SetText("L")
     UpdateColor(self)
+
+    self:SetShown(self.enabled)
 end
 
 local function LeaderText_DisableConfigMode(self)

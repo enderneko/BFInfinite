@@ -62,13 +62,13 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function ReadyCheckIcon_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = ReadyCheckIcon_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
-
     self.icon:SetTexture(READY_CHECK_STATUS.waiting)
+
+    self:SetShown(self.enabled)
 end
 
 local function ReadyCheckIcon_DisableConfigMode(self)

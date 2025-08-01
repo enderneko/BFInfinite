@@ -549,11 +549,9 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function ClassPowerBar_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = ClassPowerBar_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     class = "PALADIN"
     self.power = 3
@@ -563,6 +561,8 @@ local function ClassPowerBar_EnableConfigMode(self)
 
     SetupBars(self)
     self:UpdateBars()
+
+    self:SetShown(self.enabled)
 end
 
 local function ClassPowerBar_DisableConfigMode(self)

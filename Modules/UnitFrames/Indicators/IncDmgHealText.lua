@@ -75,14 +75,14 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function IncDmgHealText_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = IncDmgHealText_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
-
     self:SetTextColor(AF.UnpackColor(EVENT_COLORS["DAMAGE"]))
     self:SetFormattedText("%s!", self.GetNumeric(1234567))
+
+    self:SetShown(self.enabled)
 end
 
 local function IncDmgHealText_DisableConfigMode(self)

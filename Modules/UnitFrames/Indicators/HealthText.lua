@@ -268,13 +268,14 @@ local function HealthText_EnableConfigMode(self)
     self.Update = AF.noop
 
     self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     UnitHealth = UF.CFG_UnitHealth
     UnitHealthMax = UF.CFG_UnitHealthMax
     UnitGetTotalAbsorbs = UF.CFG_UnitGetTotalAbsorbs
 
     HealthText_Update(self)
+
+    self:SetShown(self.enabled)
 end
 
 local function HealthText_DisableConfigMode(self)

@@ -192,16 +192,16 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function PowerText_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = PowerText_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     UnitPower = UF.CFG_UnitPower
     UnitPowerMax = UF.CFG_UnitPowerMax
 
     PowerText_Update(self)
+
+    self:SetShown(self.enabled)
 end
 
 local function PowerText_DisableConfigMode(self)

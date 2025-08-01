@@ -56,15 +56,14 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function FactionIcon_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = FactionIcon_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     UnitFactionGroup = UF.CFG_UnitFactionGroup
 
     FactionIcon_Update(self)
+    self:SetShown(self.enabled)
 end
 
 local function FactionIcon_DisableConfigMode(self)

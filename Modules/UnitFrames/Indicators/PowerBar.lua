@@ -203,17 +203,17 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function PowerBar_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = PowerBar_EnableConfigMode
     self.Update = AF.noop
-
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
 
     UnitPower = UF.CFG_UnitPower
     UnitPowerMax = UF.CFG_UnitPowerMax
     -- UnitHasVehicleUI = UF.CFG_UnitHasVehicleUI
 
     PowerBar_Update(self)
+
+    self:SetShown(self.enabled)
 end
 
 local function PowerBar_DisableConfigMode(self)

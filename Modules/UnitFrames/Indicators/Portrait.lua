@@ -192,12 +192,13 @@ end
 -- config mode
 ---------------------------------------------------------------------
 local function Portrait_EnableConfigMode(self)
+    self:UnregisterAllEvents()
     self.Enable = Portrait_EnableConfigMode
     self.Update = AF.noop
 
-    self:UnregisterAllEvents()
-    self:SetShown(self.enabled)
     Portrait_Update(self, true)
+
+    self:SetShown(self.enabled)
 end
 
 local function Portrait_DisableConfigMode(self)
