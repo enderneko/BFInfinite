@@ -41,7 +41,6 @@ local defaults = {
         targetReticle = true,
         interruptDisplay = true,
         spellCastAnim = true,
-        -- autoAddNewSpells = true, -- TODO:
         pickUpKey = "SHIFT",
         outOfRangeColoring = "button",
         desaturateOnCooldown = true,

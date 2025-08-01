@@ -17,7 +17,7 @@ local function CreateAurasPanel()
     aurasPanel = AF.CreateFrame(BFIOptionsFrame_ContentPane, "BFIOptionsFrame_AurasPanel")
     aurasPanel:SetAllPoints()
 
-    local switch = AF.CreateSwitch(aurasPanel, 550, 20)
+    local switch = AF.CreateSwitch(aurasPanel, nil, 20)
     aurasPanel.switch = switch
     AF.SetPoint(switch, "TOPLEFT", 15, -15)
     AF.SetPoint(switch, "TOPRIGHT", -15, -15)

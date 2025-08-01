@@ -26,7 +26,7 @@ local function CreateStanceBar()
 end
 
 ---------------------------------------------------------------------
--- assign bindings
+-- bindings
 ---------------------------------------------------------------------
 local function AssignBindings()
     if InCombatLockdown() then return end
@@ -42,6 +42,11 @@ local function AssignBindings()
             end
         end
     end
+end
+
+local function RemoveBindings()
+    if InCombatLockdown() then return end
+    ClearOverrideBindings(stanceBar)
 end
 
 ---------------------------------------------------------------------
@@ -120,7 +125,7 @@ end
 ---------------------------------------------------------------------
 local function UpdateStanceBar(_, module, which)
     if module and module ~= "actionBars" then return end
-    if which and which ~= "stance" then return end
+    if which and which ~= "stancebar" then return end
 
     local enabled = AB.config.general.enabled
     local config = AB.config.barConfig.stancebar
@@ -131,12 +136,27 @@ local function UpdateStanceBar(_, module, which)
         AB:UnregisterEvent("UPDATE_SHAPESHIFT_USABLE")
         AB:UnregisterEvent("UPDATE_SHAPESHIFT_COOLDOWN")
         AB:UnregisterEvent("UPDATE_BINDINGS", AssignBindings)
+
+        if AF.isRetail then
+            AB:UnregisterEvent("PET_BATTLE_CLOSE", AssignBindings)
+            AB:UnregisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+        end
+
+        if stanceBar then
+            stanceBar.enabled = false
+            ClearOverrideBindings(stanceBar)
+            UnregisterStateDriver(stanceBar, "visibility")
+            stanceBar:Hide()
+            print("HIDE STANCE BAR")
+        end
         return
     end
 
     if not stanceBar then
         CreateStanceBar()
     end
+
+    stanceBar.enabled = true
 
     -- mover
     AF.UpdateMoverSave(stanceBar, config.position)
@@ -147,6 +167,11 @@ local function UpdateStanceBar(_, module, which)
     AB:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", UpdateStanceButtonStatus)
     AB:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", UPDATE_SHAPESHIFT_COOLDOWN)
     AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+
+    if AF.isRetail then
+        AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
+        AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+    end
 
     for i = 1, 10 do
         local b
@@ -182,7 +207,6 @@ local function UpdateStanceBar(_, module, which)
     stanceBar.alpha = config.alpha
     stanceBar:SetAlpha(config.alpha)
 
-    stanceBar.enabled = config.enabled
     stanceBar.visibility = config.visibility
 
     UpdateStanceButtons()

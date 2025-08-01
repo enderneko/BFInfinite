@@ -7,5 +7,7 @@
     <!-- <Script file="CopiedInfo.lua"/> -->
     <Script file="UnitFrames_Options.lua"/>
     <Script file="UnitFrames.lua"/>
+    <Script file="ActionBars_Options.lua"/>
+    <Script file="ActionBars.lua"/>
     <Script file="About.lua"/>
 </Ui>

@@ -149,7 +149,7 @@ local function CreateBar(name, id)
 end
 
 ---------------------------------------------------------------------
--- assign bindings
+-- bindings
 ---------------------------------------------------------------------
 local function AssignBindings()
     if InCombatLockdown() then return end
@@ -158,11 +158,13 @@ local function AssignBindings()
         local bar = AB.bars[barName]
         ClearOverrideBindings(bar)
 
-        for _, b in next, bar.buttons do
-            if b.keyBoundTarget then
-                for _, key in next, {GetBindingKey(b.keyBoundTarget)} do
-                    if key and key ~= "" then
-                        SetOverrideBindingClick(bar, false, key, b:GetName())
+        if bar.enabled then
+            for _, b in next, bar.buttons do
+                if b.keyBoundTarget then
+                    for _, key in next, {GetBindingKey(b.keyBoundTarget)} do
+                        if key and key ~= "" then
+                            SetOverrideBindingClick(bar, false, key, b:GetName())
+                        end
                     end
                 end
             end
@@ -173,7 +175,8 @@ end
 local function RemoveBindings()
     if InCombatLockdown() then return end
 
-    for _, bar in next, AB.bars do
+    for barName in next, BINDING_MAPPINGS do
+        local bar = AB.bars[barName]
         ClearOverrideBindings(bar)
     end
 end
@@ -265,8 +268,8 @@ local BAR1_PAGING_DEFAULT = format("[overridebar] %d; [vehicleui][possessbar] %d
 local function UpdateBar(bar, general, shared, specific)
     bar.enabled = specific.enabled
     if not specific.enabled then
-        bar:Hide()
         UnregisterStateDriver(bar, "visibility")
+        bar:Hide()
         return
     end
 
@@ -299,9 +302,9 @@ local function UpdateBar(bar, general, shared, specific)
 end
 
 local init
-local function UpdateMainBars(_, module, which, barName)
+local function UpdateMainBars(_, module, which)
     if module and module ~= "actionBars" then return end
-    if which and which ~= "main" then return end
+    if which and not (which:find("^bar") or which:find("^classbar")) then return end
 
     if not AB.config.general.enabled then
         LAB.UnregisterCallback(AB, "OnFlyoutSpells")
@@ -309,6 +312,16 @@ local function UpdateMainBars(_, module, which, barName)
         if AF.isRetail then
             AB:UnregisterEvent("PET_BATTLE_CLOSE", AssignBindings)
             AB:UnregisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+        end
+
+        for barName in next, BAR_MAPPINGS do
+            local bar = AB.bars[barName]
+            if bar then
+                bar.enabled = false
+                ClearOverrideBindings(bar)
+                UnregisterStateDriver(bar, "visibility")
+                bar:Hide()
+            end
         end
         return
     end
@@ -340,20 +353,20 @@ local function UpdateMainBars(_, module, which, barName)
         for name, id in pairs(BAR_MAPPINGS) do
             CreateBar(name, id)
         end
-
-        LAB.RegisterCallback(AB, "OnFlyoutSpells", ActionBar_FlyoutSpells)
-        -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
-        -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
-
-        AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
-        if AF.isRetail then
-            AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
-            AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
-        end
     end
 
-    if barName then
-        UpdateBar(AB.bars[barName], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[barName])
+    LAB.RegisterCallback(AB, "OnFlyoutSpells", ActionBar_FlyoutSpells)
+    -- LAB.RegisterCallback(AB, "OnFlyoutUpdate", ActionBar_FlyoutUpdate)
+    -- LAB.RegisterCallback(AB, "OnFlyoutButtonCreated", ActionBar_FlyoutCreated)
+
+    AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
+    if AF.isRetail then
+        AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
+        AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+    end
+
+    if which then
+        UpdateBar(AB.bars[which], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[which])
     else
         for name in pairs(BAR_MAPPINGS) do
             UpdateBar(AB.bars[name], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[name])

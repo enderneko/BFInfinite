@@ -26,11 +26,10 @@ local function CreatePetBar()
 end
 
 ---------------------------------------------------------------------
--- assign bindings
+-- bindings
 ---------------------------------------------------------------------
 local function AssignBindings()
     if InCombatLockdown() then return end
-
     ClearOverrideBindings(petBar)
 
     for i, b in next, petBar.buttons do
@@ -44,8 +43,13 @@ local function AssignBindings()
     end
 end
 
-local function DelayedAssignBindings()
-    C_Timer.After(0, AssignBindings)
+-- local function DelayedAssignBindings()
+--     C_Timer.After(0, AssignBindings)
+-- end
+
+local function RemoveBindings()
+    if InCombatLockdown() then return end
+    ClearOverrideBindings(petBar)
 end
 
 ---------------------------------------------------------------------
@@ -160,7 +164,7 @@ end
 ---------------------------------------------------------------------
 local function UpdatePetBar(_, module, which)
     if module and module ~= "actionBars" then return end
-    if which and which ~= "pet" then return end
+    if which and which ~= "petbar" then return end
 
     local enabled = AB.config.general.enabled
     local config = AB.config.barConfig.petbar
@@ -176,12 +180,26 @@ local function UpdatePetBar(_, module, which)
         AB:UnregisterEvent("PET_BAR_UPDATE")
         AB:UnregisterEvent("PET_BAR_UPDATE_COOLDOWN")
         -- AB:UnregisterEvent("UPDATE_BINDINGS", AssignBindings)
+
+        if AF.isRetail then
+            AB:UnregisterEvent("PET_BATTLE_CLOSE", AssignBindings)
+            AB:UnregisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+        end
+
+        if petBar then
+            petBar.enabled = false
+            ClearOverrideBindings(petBar)
+            UnregisterStateDriver(petBar, "visibility")
+            petBar:Hide()
+        end
         return
     end
 
     if not petBar then
         CreatePetBar()
     end
+
+    petBar.enabled = true
 
     -- mover
     AF.UpdateMoverSave(petBar, config.position)
@@ -199,7 +217,12 @@ local function UpdatePetBar(_, module, which)
     AB:RegisterEvent("PET_BAR_UPDATE_COOLDOWN", UpdatePetCooldowns)
     -- AB:RegisterEvent("UPDATE_BINDINGS", AssignBindings)
 
-    hooksecurefunc("PetBattleFrame_UpdateAbilityButtonHotKeys", DelayedAssignBindings)
+    if AF.isRetail then
+        AB:RegisterEvent("PET_BATTLE_CLOSE", AssignBindings)
+        AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
+    end
+
+    hooksecurefunc("PetBattleFrame_UpdateAbilityButtonHotKeys", AssignBindings)
 
     for i = 1, 10 do
         local b
@@ -239,14 +262,8 @@ local function UpdatePetBar(_, module, which)
     petBar.alpha = config.alpha
     petBar:SetAlpha(config.alpha)
 
-    petBar.enabled = config.enabled
-    if config.enabled then
-        RegisterStateDriver(petBar, "visibility", config.visibility)
-        petBar:Show()
-    else
-        UnregisterStateDriver(petBar, "visibility")
-        petBar:Hide()
-    end
+    RegisterStateDriver(petBar, "visibility", config.visibility)
+    petBar:Show()
 
     -- update buttons
     UpdatePetButtons()
