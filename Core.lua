@@ -90,26 +90,22 @@ function eventHandler:PLAYER_REGEN_ENABLED()
     AF.SetUIParentScale(BFIConfig.scale[BFI.vars.resolution])
 end
 
-AF.RegisterCallback("AF_PLAYER_DATA_UPDATE", function(_, isLogin)
-    AF.UnregisterCallback("AF_PLAYER_DATA_UPDATE", "BFI_Init")
+AF.RegisterCallback("AF_PLAYER_LOGIN_DELAYED", function()
+    eventHandler:RegisterEvent("UI_SCALE_CHANGED")
 
-    if isLogin then
-        eventHandler:RegisterEvent("UI_SCALE_CHANGED")
+    local res = ("%dx%d"):format(GetPhysicalScreenSize())
+    BFI.vars.resolution = res
 
-        local res = ("%dx%d"):format(GetPhysicalScreenSize())
-        BFI.vars.resolution = res
+    -- ui scale
+    if type(BFIConfig.scale[res]) ~= "number" then
+        BFIConfig.scale[res] = AF.RoundToDecimal(UIParent:GetScale(), 2)
+    else
+        AF.SetUIParentScale(BFIConfig.scale[res], true)
+    end
 
-        -- ui scale
-        if type(BFIConfig.scale[res]) ~= "number" then
-            BFIConfig.scale[res] = AF.RoundToDecimal(UIParent:GetScale(), 2)
-        else
-            AF.SetUIParentScale(BFIConfig.scale[res], true)
-        end
-
-        -- game menu scale
-        if type(BFIConfig.gameMenuScale) ~= "number" then
-            BFIConfig.gameMenuScale = 0.8
-        end
+    -- game menu scale
+    if type(BFIConfig.gameMenuScale) ~= "number" then
+        BFIConfig.gameMenuScale = 0.8
     end
 
     -- disable blizzard frames
@@ -121,4 +117,4 @@ AF.RegisterCallback("AF_PLAYER_DATA_UPDATE", function(_, isLogin)
     -- update modules
     AF.Fire("BFI_UpdateModule")
 
-end, "high", "BFI_Init")
+end, "high")
