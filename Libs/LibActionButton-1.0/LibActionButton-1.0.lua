@@ -67,6 +67,8 @@ local noop = function() end
 -- Enable custom flyouts for WoW Retail
 local UseCustomFlyout = WoWRetail or FlyoutButtonMixin
 
+---@type ActionBars
+local AB
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local KeyBound = LibStub("LibKeyBound-1.0", true)
@@ -253,6 +255,10 @@ function lib:CreateButton(id, name, header, config)
 
     if not KeyBound then
         KeyBound = LibStub("LibKeyBound-1.0", true)
+    end
+
+    if not AB then
+        AB = BFInfinite.ActionBars
     end
 
     local button = setmetatable(CreateFrame("CheckButton", name, header, "ActionButtonTemplate,SecureActionButtonTemplate"), Generic_MT)
@@ -1889,9 +1895,7 @@ function Generic:GetHotkey()
     if not key and self.config.keyBoundTarget then
         key = GetBindingKey(name)
     end
-    if key then
-        return KeyBound and KeyBound:ToShortKey(key) or key
-    end
+    return AB.GetHotkey(key)
 end
 
 local function getKeys(binding, keys)

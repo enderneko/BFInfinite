@@ -13,14 +13,41 @@ local LAB = BFI.libs.LAB
 ---------------------------------------------------------------------
 function AB.GetHotkey(key)
     if key and key ~= _G.RANGE_INDICATOR then
+        key = key:upper()
+        key = key:gsub(" ", "")
         key = key:gsub("ALT%-", "A")
         key = key:gsub("CTRL%-", "C")
         key = key:gsub("SHIFT%-", "S")
         key = key:gsub("META%-", "M")
+
         key = key:gsub("BUTTON", "B")
         key = key:gsub("MOUSEWHEELUP", "WU")
         key = key:gsub("MOUSEWHEELDOWN", "WD")
+
         key = key:gsub("NUMPAD", "N")
+        key = key:gsub("PLUS", "+")
+        key = key:gsub("MINUS", "-")
+        key = key:gsub("MULTIPLY", "*")
+        key = key:gsub("DIVIDE", "/")
+
+        key = key:gsub("BACKSPACE", "Bs")
+        key = key:gsub("SPACEBAR", "Sp")
+        key = key:gsub("SPACE", "Sp")
+        key = key:gsub("CAPSLOCK", "Cp")
+        key = key:gsub("CLEAR", "Cl")
+        key = key:gsub("DELETE", "Del")
+        key = key:gsub("END", "End")
+        key = key:gsub("HOME", "Home")
+        key = key:gsub("INSERT", "Ins")
+        key = key:gsub("SCROLLLOCK", "Sl")
+        key = key:gsub("TAB", "Tab")
+        key = key:gsub("PAGEDOWN", "PD")
+        key = key:gsub("PAGEUP", "PU")
+
+        key = key:gsub("DOWNARROW", "Dn")
+        key = key:gsub("LEFTARROW", "Lf")
+        key = key:gsub("RIGHTARROW", "Rt")
+        key = key:gsub("UPARROW", "Up")
     end
     return key or ""
 end

@@ -83,6 +83,8 @@ local function CreateContentPane()
             button.cfg = BFI.vars.profile.actionBars.barConfig[item.value]
         end
 
+        button:SetTextColor(button.cfg.enabled and "white" or "disabled")
+
         if item.value == "general" then
             button.setting = "general"
         elseif item.value:find("bar") then

@@ -118,6 +118,7 @@ builder["enabled"] = function(parent)
         else
             AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
         end
+        pane.t:SetTextColor(checked and "white" or "disabled")
     end)
 
     function pane.Load(t)
