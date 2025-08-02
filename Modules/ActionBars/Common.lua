@@ -22,7 +22,7 @@ function AB.GetHotkey(key)
         key = key:gsub("MOUSEWHEELDOWN", "WD")
         key = key:gsub("NUMPAD", "N")
     end
-    return key
+    return key or ""
 end
 
 ---------------------------------------------------------------------
@@ -369,9 +369,9 @@ function AB.CreateStanceButton(parent, id)
 
     b.checkedTexture:SetBlendMode("BLEND")
 
-    b.hotkey = AF.CreateFontString(b)
-    b.hotkey:SetShadowColor(0, 0, 0, 0)
-    b.hotkey:SetShadowOffset(0, 0)
+    b.HotKey = AF.CreateFontString(b)
+    b.HotKey:SetShadowColor(0, 0, 0, 0)
+    b.HotKey:SetShadowOffset(0, 0)
 
     AF.AddToPixelUpdater_Auto(b, nil, true)
 
@@ -391,9 +391,9 @@ function AB.CreatePetButton(parent, id)
     b:HookScript("OnEnter", AB.ActionBar_OnEnter)
     b:HookScript("OnLeave", AB.ActionBar_OnLeave)
 
-    -- b.hotkey = AF.CreateFontString(b)
-    -- b.hotkey:SetShadowColor(0, 0, 0, 0)
-    -- b.hotkey:SetShadowOffset(0, 0)
+    -- b.HotKey = AF.CreateFontString(b)
+    -- b.HotKey:SetShadowColor(0, 0, 0, 0)
+    -- b.HotKey:SetShadowOffset(0, 0)
 
     AF.AddToPixelUpdater_Auto(b, nil, true)
 

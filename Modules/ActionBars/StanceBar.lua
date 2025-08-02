@@ -36,7 +36,7 @@ local function AssignBindings()
     for i, b in ipairs(stanceBar.buttons) do
         local command = ("SHAPESHIFTBUTTON%d"):format(i)
         for _, key in next, {GetBindingKey(command)} do
-            b.hotkey:SetText(AB.GetHotkey(key) or "")
+            b.HotKey:SetText(AB.GetHotkey(key))
             if key and key ~= "" then
                 SetOverrideBindingClick(stanceBar, false, key, b:GetName())
             end
@@ -147,7 +147,6 @@ local function UpdateStanceBar(_, module, which)
             ClearOverrideBindings(stanceBar)
             UnregisterStateDriver(stanceBar, "visibility")
             stanceBar:Hide()
-            print("HIDE STANCE BAR")
         end
         return
     end
@@ -183,14 +182,14 @@ local function UpdateStanceBar(_, module, which)
         end
 
         if config.buttonConfig.hideElements.hotkey then
-            b.hotkey:Hide()
+            b.HotKey:Hide()
         else
             local t = config.buttonConfig.text.hotkey
-            b.hotkey:SetFont(t.font.font, t.font.size, t.font.flags)
-            b.hotkey:SetTextColor(unpack(t.color))
-            AF.ClearPoints(b.hotkey)
-            AF.SetPoint(b.hotkey, t.position.anchor, t.position.offsetX, t.position.offsetY)
-            b.hotkey:Show()
+            b.HotKey:SetFont(t.font.font, t.font.size, t.font.flags)
+            b.HotKey:SetTextColor(unpack(t.color))
+            AF.ClearPoints(b.HotKey)
+            AF.SetPoint(b.HotKey, t.position.anchor, t.position.offsetX, t.position.offsetY)
+            b.HotKey:Show()
         end
 
         -- tooltip
