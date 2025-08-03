@@ -33,6 +33,7 @@ local function AssignBindings()
     ClearOverrideBindings(petBar)
 
     for i, b in next, petBar.buttons do
+        b.HotKey:SetText("")
         for _, key in next, {GetBindingKey("BONUSACTIONBUTTON"..i)} do
             b.HotKey:SetText(AB.GetHotkey(key))
             if key ~= "" then

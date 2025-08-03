@@ -17,6 +17,7 @@ local options = {}
 local settings = {
     general = {
         "enabled",
+        "lock,pickUpKey",
     },
     bar = {
         "enabled",
@@ -125,6 +126,35 @@ builder["enabled"] = function(parent)
         pane.t = t
         UpdateColor(t.cfg.enabled)
         enabled:SetChecked(t.cfg.enabled)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- lock,pickUpKey
+---------------------------------------------------------------------
+builder["lock,pickUpKey"] = function(parent)
+    if created["lock,pickUpKey"] then return created["lock,pickUpKey"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_LockPickUpKey", nil, 51)
+    created["lock,pickUpKey"] = pane
+
+    local lock = AF.CreateCheckButton(pane, L["Lock"])
+    AF.SetPoint(lock, "LEFT", 15, 0)
+    lock:SetOnCheck(function(checked)
+        pane.t.sharedCfg.lock = checked
+        AF.Fire("BFI_UpdateModule", "actionBars")
+        Settings.SetValue("lockActionBars", checked)
+    end)
+
+    local pickUpKey = AF.CreateDropdown(pane, 150)
+    pickUpKey:SetLabel(L["Pick Up Key"])
+    AF.SetPoint(pickUpKey, "TOPLEFT", lock, 185, -5)
+
+    function pane.Load(t)
+        pane.t = t
+        lock:SetChecked(t.sharedCfg.lock)
     end
 
     return pane

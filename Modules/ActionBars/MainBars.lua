@@ -205,7 +205,6 @@ local function UpdateButton(bar, shared, specific)
     bar.buttonConfig.interruptDisplay = shared.interruptDisplay and bar.enabled
     bar.buttonConfig.spellCastAnim = shared.spellCastAnim and bar.enabled
     bar.buttonConfig.clickOnDown = GetCVarBool("ActionButtonUseKeyDown")
-    SetModifiedClick("PICKUPACTION", shared.pickUpKey)
     bar.buttonConfig.colors = shared.colors
     bar.buttonConfig.hideElements.equipped = shared.hideElements.equipped
     bar.buttonConfig.glow = shared.glow
@@ -326,8 +325,11 @@ local function UpdateMainBars(_, module, which)
         return
     end
 
-    -- AutoPushSpellToActionBar
+    local sharedConfig = AB.config.sharedButtonConfig
+    SetModifiedClick("PICKUPACTION", sharedConfig.pickUpKey)
+    SetCVar("lockActionBars", sharedConfig.lock)
     SetCVar("AutoPushSpellToActionBar", AB.config.general.disableAutoAddSpells and 0 or 1)
+
 
     if not init then
         init = true
@@ -366,10 +368,10 @@ local function UpdateMainBars(_, module, which)
     end
 
     if which then
-        UpdateBar(AB.bars[which], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[which])
+        UpdateBar(AB.bars[which], AB.config.general, sharedConfig, AB.config.barConfig[which])
     else
         for name in pairs(BAR_MAPPINGS) do
-            UpdateBar(AB.bars[name], AB.config.general, AB.config.sharedButtonConfig, AB.config.barConfig[name])
+            UpdateBar(AB.bars[name], AB.config.general, sharedConfig, AB.config.barConfig[name])
         end
     end
 

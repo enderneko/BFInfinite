@@ -34,6 +34,7 @@ local function AssignBindings()
     ClearOverrideBindings(stanceBar)
 
     for i, b in ipairs(stanceBar.buttons) do
+        b.HotKey:SetText("")
         local command = ("SHAPESHIFTBUTTON%d"):format(i)
         for _, key in next, {GetBindingKey(command)} do
             b.HotKey:SetText(AB.GetHotkey(key))
