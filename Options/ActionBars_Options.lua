@@ -27,6 +27,14 @@ local settings = {
     },
     bar = {
         "enabled",
+        "width,height",
+        "arrangement",
+        "alpha",
+        "showGrid",
+        "flyoutDirection",
+        "hotkey",
+        "count",
+        "macro",
     },
 }
 
@@ -291,24 +299,33 @@ builder["colors"] = function(parent)
     local equippedColorPicker = AF.CreateColorPicker(pane, L["Equipped Border Color"])
     AF.SetPoint(equippedColorPicker, "TOPLEFT", equippedCheckButton, "TOPRIGHT", 2, 0)
     equippedColorPicker:SetOnConfirm(function(r, g, b)
-        pane.t.sharedCfg.colors.equipped[1] = r
-        pane.t.sharedCfg.colors.equipped[2] = g
-        pane.t.sharedCfg.colors.equipped[3] = b
+        pane.t.sharedCfg.colors.equippedBorder[1] = r
+        pane.t.sharedCfg.colors.equippedBorder[2] = g
+        pane.t.sharedCfg.colors.equippedBorder[3] = b
         AF.Fire("BFI_UpdateModule", "actionBars", "main")
     end)
 
     equippedCheckButton:SetOnCheck(function(checked)
-        pane.t.sharedCfg.hideElements.equipped = not checked
+        pane.t.sharedCfg.hideElements.equippedBorder = not checked
         equippedColorPicker:SetEnabled(checked)
         AF.Fire("BFI_UpdateModule", "actionBars", "main")
     end)
 
+    local macroCheckButton = AF.CreateCheckButton(pane)
+    AF.SetPoint(macroCheckButton, "TOPLEFT", equippedCheckButton, "BOTTOMLEFT", 0, -7)
+
     local macroColorPicker = AF.CreateColorPicker(pane, L["Macro Border Color"])
-    AF.SetPoint(macroColorPicker, "TOPLEFT", equippedCheckButton, "BOTTOMLEFT", 0, -7)
+    AF.SetPoint(macroColorPicker, "TOPLEFT", macroCheckButton, "TOPRIGHT", 2, 0)
     macroColorPicker:SetOnConfirm(function(r, g, b)
-        pane.t.sharedCfg.colors.macro[1] = r
-        pane.t.sharedCfg.colors.macro[2] = g
-        pane.t.sharedCfg.colors.macro[3] = b
+        pane.t.sharedCfg.colors.macroBorder[1] = r
+        pane.t.sharedCfg.colors.macroBorder[2] = g
+        pane.t.sharedCfg.colors.macroBorder[3] = b
+        AF.Fire("BFI_UpdateModule", "actionBars", "main")
+    end)
+
+    macroCheckButton:SetOnCheck(function(checked)
+        pane.t.sharedCfg.hideElements.macroBorder = not checked
+        macroColorPicker:SetEnabled(checked)
         AF.Fire("BFI_UpdateModule", "actionBars", "main")
     end)
 
@@ -318,27 +335,152 @@ builder["colors"] = function(parent)
         outOfRangeColorPicker:SetColor(t.sharedCfg.colors.range)
         notUsableColorPicker:SetColor(t.sharedCfg.colors.notUsable)
         insufficientPowerColorPicker:SetColor(t.sharedCfg.colors.mana)
-        equippedCheckButton:SetChecked(not t.sharedCfg.hideElements.equipped)
-        equippedColorPicker:SetEnabled(not t.sharedCfg.hideElements.equipped)
-        equippedColorPicker:SetColor(t.sharedCfg.colors.equipped)
-        macroColorPicker:SetColor(t.sharedCfg.colors.macro)
+        equippedCheckButton:SetChecked(not t.sharedCfg.hideElements.equippedBorder)
+        equippedColorPicker:SetEnabled(not t.sharedCfg.hideElements.equippedBorder)
+        equippedColorPicker:SetColor(t.sharedCfg.colors.equippedBorder)
+        macroCheckButton:SetChecked(not t.sharedCfg.hideElements.macroBorder)
+        macroColorPicker:SetEnabled(not t.sharedCfg.hideElements.macroBorder)
+        macroColorPicker:SetColor(t.sharedCfg.colors.macroBorder)
     end
 
     return pane
 end
 
 ---------------------------------------------------------------------
--- texts
+-- text
 ---------------------------------------------------------------------
-builder["texts"] = function(parent)
-    if created["texts"] then return created["texts"] end
+local function CreateTextPane(parent, which, label)
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_Texts", nil, 130)
-    created["texts"] = pane
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_" .. AF.UpperFirst(which), nil, 198)
 
+    local font = AF.CreateDropdown(pane, 150)
+    AF.SetPoint(font, "TOPLEFT", 15, -25)
+    font:SetItems(AF.LSM_GetFontDropdownItems())
 
+    local enable = AF.CreateCheckButton(pane, AF.GetGradientText(label, "BFI", "white"))
+    AF.SetPoint(enable, "BOTTOMLEFT", font, "TOPLEFT", 0, 2)
+
+    local color = AF.CreateColorPicker(pane)
+    AF.SetPoint(color, "BOTTOMRIGHT", font, "TOPRIGHT", 0, 2)
+    color:SetOnConfirm(function(r, g, b)
+        pane.t.cfg.buttonConfig.text[which].color[1] = r
+        pane.t.cfg.buttonConfig.text[which].color[2] = g
+        pane.t.cfg.buttonConfig.text[which].color[3] = b
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local outline = AF.CreateDropdown(pane, 150)
+    outline:SetLabel(L["Outline"])
+    AF.SetPoint(outline, "TOPLEFT", font, 185, 0)
+    outline:SetItems(AF.LSM_GetFontOutlineDropdownItems())
+    outline:SetOnSelect(function(value)
+        pane.t.cfg.buttonConfig.text[which].font[3] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local size = AF.CreateSlider(pane, L["Size"], 150, 5, 50, 1, nil, true)
+    AF.SetPoint(size, "TOPLEFT", font, "BOTTOMLEFT", 0, -25)
+    size:SetAfterValueChanged(function(value)
+        pane.t.cfg.buttonConfig.text[which].font[2] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local shadow = AF.CreateCheckButton(pane, L["Shadow"])
+    AF.SetPoint(shadow, "LEFT", size, 185, 0)
+    shadow:SetOnCheck(function(checked)
+        pane.t.cfg.buttonConfig.text[which].font[4] = checked
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", size, "BOTTOMLEFT", 0, -40)
+    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.buttonConfig.text[which].position[1] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local relativePoint = AF.CreateDropdown(pane, 150)
+    relativePoint:SetLabel(L["Relative Point"])
+    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
+    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetOnSelect(function(value)
+        pane.t.cfg.buttonConfig.text[which].position[2] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -100, 100, 0.5, nil, true)
+    AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
+    xOffset:SetAfterValueChanged(function(value)
+        pane.t.cfg.buttonConfig.text[which].position[3] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -100, 100, 0.5, nil, true)
+    AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
+    yOffset:SetAfterValueChanged(function(value)
+        pane.t.cfg.buttonConfig.text[which].position[4] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local function UpdateWidgets()
+        AF.HideColorPicker()
+        AF.SetEnabled(not pane.t.cfg.buttonConfig.hideElements[which], font, size, outline, shadow,
+            anchorPoint, relativePoint, xOffset, yOffset)
+    end
+
+    enable:SetOnCheck(function(checked)
+        pane.t.cfg.buttonConfig.hideElements[which] = not checked
+        UpdateWidgets()
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+
+        enable:SetChecked(not t.cfg.buttonConfig.hideElements[which])
+        UpdateWidgets()
+        color:SetColor(t.cfg.buttonConfig.text[which].color)
+        font:SetSelectedValue(t.cfg.buttonConfig.text[which].font[1])
+        size:SetValue(t.cfg.buttonConfig.text[which].font[2])
+        outline:SetSelectedValue(t.cfg.buttonConfig.text[which].font[3])
+        shadow:SetChecked(t.cfg.buttonConfig.text[which].font[4])
+        anchorPoint:SetSelectedValue(t.cfg.buttonConfig.text[which].position[1])
+        relativePoint:SetSelectedValue(t.cfg.buttonConfig.text[which].position[2])
+        xOffset:SetValue(t.cfg.buttonConfig.text[which].position[3])
+        yOffset:SetValue(t.cfg.buttonConfig.text[which].position[4])
+    end
 
     return pane
+end
+
+builder["hotkey"] = function(parent)
+    if created["hotkey"] then return created["hotkey"] end
+    created["hotkey"] = CreateTextPane(parent, "hotkey", L["Hot Key"])
+    return created["hotkey"]
+end
+
+builder["count"] = function(parent)
+    if created["count"] then return created["count"] end
+    created["count"] = CreateTextPane(parent, "count", L["Count Text"])
+
+    created["count"].IsApplicable = function(t)
+        return t.id:find("^bar") or t.id:find("^classbar")
+    end
+
+    return created["count"]
+end
+
+builder["macro"] = function(parent)
+    if created["macro"] then return created["macro"] end
+    created["macro"] = CreateTextPane(parent, "macro", L["Macro Name"])
+
+    created["macro"].IsApplicable = function(t)
+        return t.id:find("^bar") or t.id:find("^classbar")
+    end
+
+    return created["macro"]
 end
 
 ---------------------------------------------------------------------
@@ -436,14 +578,14 @@ builder["flyoutSize"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_FlyoutSize", nil, 55)
     created["flyoutSize"] = pane
 
-    local flyoutWidth = AF.CreateSlider(pane, L["Flyout Button Width"], 150, 20, 100, 1, nil, true)
+    local flyoutWidth = AF.CreateSlider(pane, L["Flyout Button Width"], 150, 10, 100, 1, nil, true)
     AF.SetPoint(flyoutWidth, "LEFT", 15, 0)
     flyoutWidth:SetAfterValueChanged(function(value)
         pane.t.cfg.flyoutSize[1] = value
         AF.Fire("BFI_UpdateModule", "actionBars", "flyout")
     end)
 
-    local flyoutHeight = AF.CreateSlider(pane, L["Flyout Button Height"], 150, 20, 100, 1, nil, true)
+    local flyoutHeight = AF.CreateSlider(pane, L["Flyout Button Height"], 150, 10, 100, 1, nil, true)
     AF.SetPoint(flyoutHeight, "TOPLEFT", flyoutWidth, 185, 0)
     flyoutHeight:SetAfterValueChanged(function(value)
         pane.t.cfg.flyoutSize[2] = value
@@ -504,13 +646,13 @@ builder["tooltip"] = function(parent)
 
     local x = AF.CreateSlider(pane, L["X Offset"], 150, -1000, 1000, 1, nil, true)
     AF.SetPoint(x, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
-    x:SetOnValueChanged(function(value)
+    x:SetAfterValueChanged(function(value)
         pane.t.cfg.tooltip.position[3] = value
     end)
 
     local y = AF.CreateSlider(pane, L["Y Offset"], 150, -1000, 1000, 1, nil, true)
     AF.SetPoint(y, "TOPLEFT", x, 185, 0)
-    y:SetOnValueChanged(function(value)
+    y:SetAfterValueChanged(function(value)
         pane.t.cfg.tooltip.position[4] = value
     end)
 
@@ -563,6 +705,213 @@ builder["tooltip"] = function(parent)
 end
 
 ---------------------------------------------------------------------
+-- width,height
+---------------------------------------------------------------------
+builder["width,height"] = function(parent)
+    if created["width,height"] then return created["width,height"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_WidthHeight", nil, 55)
+    created["width,height"] = pane
+
+    local width = AF.CreateSlider(pane, L["Width"], 150, 10, 100, 1, nil, true)
+    AF.SetPoint(width, "LEFT", 15, 0)
+    width:SetAfterValueChanged(function(value)
+        pane.t.cfg.width = value
+        AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local height = AF.CreateSlider(pane, L["Height"], 150, 10, 100, 1, nil, true)
+    AF.SetPoint(height, "TOPLEFT", width, 185, 0)
+    height:SetAfterValueChanged(function(value)
+        pane.t.cfg.height = value
+        AF.FrameFadeInOut(pane.t.target.previewRect, nil, nil, true)
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        width:SetValue(t.cfg.width)
+        height:SetValue(t.cfg.height)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- arrangement
+---------------------------------------------------------------------
+builder["arrangement"] = function(parent)
+    if created["arrangement"] then return created["arrangement"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_Arrangement", nil, 153)
+    created["arrangement"] = pane
+
+    local arrangement = AF.CreateDropdown(pane, 200)
+    arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
+    AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
+    arrangement:SetItems({
+        {text = L["Left to Right then Top"], value = "left_to_right_then_top"},
+        {text = L["Left to Right then Bottom"], value = "left_to_right_then_bottom"},
+        {text = L["Right to Left then Top"], value = "right_to_left_then_top"},
+        {text = L["Right to Left then Bottom"], value = "right_to_left_then_bottom"},
+        {text = L["Top to Bottom then Left"], value = "top_to_bottom_then_left"},
+        {text = L["Top to Bottom then Right"], value = "top_to_bottom_then_right"},
+        {text = L["Bottom to Top then Left"], value = "bottom_to_top_then_left"},
+        {text = L["Bottom to Top then Right"], value = "bottom_to_top_then_right"},
+    })
+    arrangement:SetOnSelect(function(value)
+        pane.t.cfg.orientation = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local spacingX = AF.CreateSlider(pane, L["Spacing"] .. " X", 150, -1, 100, 1, nil, true)
+    AF.SetPoint(spacingX, "TOPLEFT", arrangement, "BOTTOMLEFT", 0, -25)
+    spacingX:SetAfterValueChanged(function(value)
+        pane.t.cfg.spacingX = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local spacingY = AF.CreateSlider(pane, L["Spacing"] .. " Y", 150, -1, 100, 1, nil, true)
+    AF.SetPoint(spacingY, "TOPLEFT", spacingX, 185, 0)
+    spacingY:SetAfterValueChanged(function(value)
+        pane.t.cfg.spacingY = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local maxButtons = AF.CreateSlider(pane, L["Max Buttons"], 150, 1, 12, 1, nil, true)
+    AF.SetPoint(maxButtons, "TOPLEFT", spacingX, "BOTTOMLEFT", 0, -40)
+
+    local buttonsPerLine = AF.CreateSlider(pane, L["Buttons Per Line"], 150, 1, 12, 1, nil, true)
+    AF.SetPoint(buttonsPerLine, "TOPLEFT", maxButtons, 185, 0)
+    buttonsPerLine:SetAfterValueChanged(function(value)
+        pane.t.cfg.buttonsPerLine = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local function UpdateMaxButtonsPerLine()
+        buttonsPerLine:SetMinMaxValues(1, pane.t.cfg.num)
+        if pane.t.cfg.buttonsPerLine > pane.t.cfg.num then
+            pane.t.cfg.buttonsPerLine = pane.t.cfg.num
+            buttonsPerLine:SetValue(pane.t.cfg.num)
+        end
+    end
+
+    maxButtons:SetAfterValueChanged(function(value)
+        pane.t.cfg.num = value
+        UpdateMaxButtonsPerLine()
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+
+        arrangement:SetSelectedValue(t.cfg.orientation)
+        spacingX:SetValue(t.cfg.spacingX)
+        spacingY:SetValue(t.cfg.spacingY)
+
+        if t.id == "petbar" or t.id == "stancebar" then
+            maxButtons:SetMinMaxValues(1, 10)
+        else
+            maxButtons:SetMinMaxValues(1, 12)
+        end
+        maxButtons:SetValue(t.cfg.num)
+
+        buttonsPerLine:SetValue(t.cfg.buttonsPerLine)
+        UpdateMaxButtonsPerLine()
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- alpha
+---------------------------------------------------------------------
+builder["alpha"] = function(parent)
+    if created["alpha"] then return created["alpha"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_Alpha", nil, 55)
+    created["alpha"] = pane
+
+    local alpha = AF.CreateSlider(pane, L["Alpha"], 150, 0, 1, 0.01, true, true)
+    AF.SetPoint(alpha, "LEFT", 15, 0)
+    alpha:SetAfterValueChanged(function(value)
+        pane.t.cfg.alpha = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        alpha:SetValue(t.cfg.alpha)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- showGrid
+---------------------------------------------------------------------
+builder["showGrid"] = function(parent)
+    if created["showGrid"] then return created["showGrid"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_ShowGrid", nil, 30)
+    created["showGrid"] = pane
+
+    local showGrid = AF.CreateCheckButton(pane, L["Show Empty Slots"])
+    AF.SetPoint(showGrid, "LEFT", 15, 0)
+    showGrid:SetOnCheck(function(checked)
+        pane.t.cfg.buttonConfig.showGrid = checked
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    function pane.IsApplicable(t)
+        return t.id:find("^bar") or t.id:find("^classbar") or t.id == "petbar"
+    end
+
+    function pane.Load(t)
+        pane.t = t
+        showGrid:SetChecked(t.cfg.buttonConfig.showGrid)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- flyoutDirection
+---------------------------------------------------------------------
+builder["flyoutDirection"] = function(parent)
+    if created["flyoutDirection"] then return created["flyoutDirection"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_FlyoutDirection", nil, 54)
+    created["flyoutDirection"] = pane
+
+    local flyoutDirection = AF.CreateDropdown(pane, 150)
+    flyoutDirection:SetLabel(L["Flyout Direction"])
+    AF.SetPoint(flyoutDirection, "TOPLEFT", 15, -25)
+    flyoutDirection:SetItems({
+        {text = L["Up"], value = "UP"},
+        {text = L["Down"], value = "DOWN"},
+        {text = L["Left"], value = "LEFT"},
+        {text = L["Right"], value = "RIGHT"},
+    })
+    flyoutDirection:SetOnSelect(function(value)
+        pane.t.cfg.buttonConfig.flyoutDirection = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    function pane.IsApplicable(t)
+        return t.id:find("^bar") or t.id:find("^classbar")
+    end
+
+    function pane.Load(t)
+        pane.t = t
+        flyoutDirection:SetSelectedValue(t.cfg.buttonConfig.flyoutDirection)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- get
 ---------------------------------------------------------------------
 function F.GetActionBarOptions(parent, info)
@@ -581,8 +930,10 @@ function F.GetActionBarOptions(parent, info)
     for _, option in pairs(settings[setting]) do
         if builder[option] then
             local pane = builder[option](parent)
-            tinsert(options, pane)
-            pane:Show()
+            if not pane.IsApplicable or pane.IsApplicable(info) then
+                tinsert(options, pane)
+                pane:Show()
+            end
         end
     end
 

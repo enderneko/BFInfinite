@@ -18,6 +18,7 @@ local function CreatePetBar()
     AB.bars[petBar.name] = petBar
 
     AF.CreateMover(petBar, "BFI: " .. L["Action Bars"], L["Pet Bar"])
+    AB.CreatePreviewRect(petBar)
 
     petBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     petBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
@@ -91,6 +92,8 @@ end
 local function UpdatePetButtons(event, unit)
     if (event == "UNIT_FLAGS" and unit ~= "pet") or (event == "UNIT_PET" and unit ~= "player") then return end
 
+    local showGrid = AB.config.barConfig.petbar.buttonConfig.showGrid
+
     for i, b in next, petBar.buttons do
         local name, texture, isToken, isActive, autoCastAllowed, autoCastEnabled, spellID = GetPetActionInfo(i)
 
@@ -153,6 +156,12 @@ local function UpdatePetButtons(event, unit)
         else
             b.icon:SetVertexColor(0.4, 0.4, 0.4)
             -- b.icon:SetDesaturated(true)
+        end
+
+        if not name and not showGrid then
+            b:SetAlpha(0)
+        else
+            b:SetAlpha(1)
         end
     end
 
@@ -248,8 +257,11 @@ local function UpdatePetBar(_, module, which)
         end
     end
 
+    config.num = AF.Clamp(config.num, 1, 10)
+    config.buttonsPerLine = AF.Clamp(config.buttonsPerLine, 1, config.num)
+
     -- load config
-    AB.ReArrange(petBar, config.size, config.spacing, config.buttonsPerLine, config.num, config.anchor, config.orientation)
+    AB.ReArrange(petBar, config.width, config.height, config.spacingX, config.spacingY, config.buttonsPerLine, config.num, config.orientation)
     AF.LoadPosition(petBar, config.position)
 
     petBar:SetFrameStrata(AB.config.general.frameStrata)

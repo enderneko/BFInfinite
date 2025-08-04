@@ -105,6 +105,9 @@ local function CreateBar(name, id)
     -- mover ----------------------------------------------------------------- --
     AF.CreateMover(bar, "BFI: " .. L["Action Bars"], moverName)
 
+    -- preview rect ---------------------------------------------------------- --
+    AB.CreatePreviewRect(bar)
+
     -- page ------------------------------------------------------------------ --
     bar:SetAttribute("_onstate-page", [[
         if newstate == "possess" or newstate == "11" then
@@ -206,7 +209,8 @@ local function UpdateButton(bar, shared, specific)
     bar.buttonConfig.spellCastAnim = shared.spellCastAnim and bar.enabled
     bar.buttonConfig.clickOnDown = GetCVarBool("ActionButtonUseKeyDown")
     bar.buttonConfig.colors = shared.colors
-    bar.buttonConfig.hideElements.equipped = shared.hideElements.equipped
+    bar.buttonConfig.hideElements.equippedBorder = shared.hideElements.equippedBorder
+    bar.buttonConfig.hideElements.macroBorder = shared.hideElements.macroBorder
     bar.buttonConfig.glow = shared.glow
     bar.buttonConfig.desaturateOnCooldown = shared.desaturateOnCooldown
 
@@ -305,7 +309,7 @@ local function UpdateBar(bar, general, shared, specific)
     AF.UpdateMoverSave(bar, specific.position)
 
     -- bar
-    AB.ReArrange(bar, specific.size, specific.spacing, specific.buttonsPerLine, specific.num, specific.anchor, specific.orientation)
+    AB.ReArrange(bar, specific.width, specific.height, specific.spacingX, specific.spacingY, specific.buttonsPerLine, specific.num, specific.orientation)
     AF.LoadPosition(bar, specific.position)
 
     bar:SetFrameStrata(general.frameStrata)

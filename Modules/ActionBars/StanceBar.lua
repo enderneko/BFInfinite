@@ -18,6 +18,7 @@ local function CreateStanceBar()
     AB.bars[stanceBar.name] = stanceBar
 
     AF.CreateMover(stanceBar, "BFI: " .. L["Action Bars"], L["Stance Bar"])
+    AB.CreatePreviewRect(stanceBar)
 
     stanceBar:SetScript("OnEnter", AB.ActionBar_OnEnter)
     stanceBar:SetScript("OnLeave", AB.ActionBar_OnLeave)
@@ -193,8 +194,11 @@ local function UpdateStanceBar(_, module, which)
         b.tooltip = AB.config.general.tooltip
     end
 
+    config.num = AF.Clamp(config.num, 1, 10)
+    config.buttonsPerLine = AF.Clamp(config.buttonsPerLine, 1, config.num)
+
     -- load config
-    AB.ReArrange(stanceBar, config.size, config.spacing, config.buttonsPerLine, config.num, config.anchor, config.orientation)
+    AB.ReArrange(stanceBar, config.width, config.height, config.spacingX, config.spacingY, config.buttonsPerLine, config.num, config.orientation)
     AF.LoadPosition(stanceBar, config.position)
 
     stanceBar:SetFrameStrata(AB.config.general.frameStrata)

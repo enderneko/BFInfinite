@@ -100,21 +100,24 @@ end
 ---------------------------------------------------------------------
 -- stylize button
 ---------------------------------------------------------------------
-local function ReCalcTexCoord(self, width, height)
+local function OnSizeChanged(self, width, height)
     self.icon:SetTexCoord(AF.Unpack8(AF.CalcTexCoordPreCrop(0.1, width / height)))
+    self.Name:SetWidth(width)
 end
 
 function AB.StylizeButton(b)
     b.MasqueSkinned = true
 
-    local name = b:GetName() or "NoName"
+    local _name = b:GetName() or "NoName"
 
-    local icon = b.icon or b.Icon or _G[name .. "Icon"]
-    local hotkey = b.HotKey or _G[name .. "HotKey"]
-    local autoCast = b.AutoCastOverlay or _G[name .. "Shine"]
-    local flash = b.Flash or _G[name .. "Flash"]
-    local border = b.Border or _G[name .. "Border"]
-    local normal = b.NormalTexture or _G[name .. "NormalTexture"]
+    local icon = b.icon or b.Icon or _G[_name .. "Icon"]
+    local hotkey = b.HotKey or _G[_name .. "HotKey"]
+    local count = b.Count or _G[_name .. "Count"]
+    local name = b.Name or _G[_name .. "Name"]
+    local autoCast = b.AutoCastOverlay or _G[_name .. "Shine"]
+    local flash = b.Flash or _G[_name .. "Flash"]
+    local border = b.Border or _G[_name .. "Border"]
+    local normal = b.NormalTexture or _G[_name .. "NormalTexture"]
     local normal2 = b:GetNormalTexture()
     local cooldown = b.cooldown or b.Cooldown
 
@@ -135,16 +138,27 @@ function AB.StylizeButton(b)
     if b.SlotBackground then b.SlotBackground:Hide() end
     if b.IconMask then b.IconMask:Hide() end
 
-    -- hotkey ---------------------------------------------------------------- --
+    -- texts ----------------------------------------------------------------- --
     if hotkey then
         hotkey:SetDrawLayer("OVERLAY")
+        hotkey:SetWidth(0)
+    end
+
+    if count then
+        count:SetDrawLayer("OVERLAY")
+        count:SetWidth(0)
+    end
+
+    if name then
+        name:SetDrawLayer("OVERLAY")
+        -- name:SetWidth(0)
     end
 
     -- icon ------------------------------------------------------------------ --
     icon:SetDrawLayer("ARTWORK", -1)
     -- icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
     AF.SetOnePixelInside(icon, b)
-    b:SetScript("OnSizeChanged", ReCalcTexCoord)
+    b:SetScript("OnSizeChanged", OnSizeChanged)
 
     -- cooldown -------------------------------------------------------------- --
     if cooldown then
@@ -229,60 +243,9 @@ end
 ---------------------------------------------------------------------
 -- arrangement
 ---------------------------------------------------------------------
-function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientation)
+function AB.ReArrange(bar, width, height, spacingX, spacingY, buttonsPerLine, num, orientation)
     -- update buttons -------------------------------------------------------- --
-    local p, rp, rp_new_line
-    local x, y, x_new_line, y_new_line
-
-    p = anchor
-
-    if orientation == "horizontal" then
-        if strfind(anchor, "^TOP") then
-            rp = "TOP"
-            rp_new_line = "BOTTOM"
-            y_new_line = -spacing
-        elseif strfind(anchor, "^BOTTOM") then
-            rp = "BOTTOM"
-            rp_new_line = "TOP"
-            y_new_line = spacing
-        end
-
-        if strfind(anchor, "LEFT$") then
-            rp = rp .. "RIGHT"
-            rp_new_line = rp_new_line .. "LEFT"
-            x = spacing
-        elseif strfind(anchor, "RIGHT$") then
-            rp = rp .. "LEFT"
-            rp_new_line = rp_new_line .. "RIGHT"
-            x = -spacing
-        end
-
-        y = 0
-        x_new_line = 0
-    else
-        if strfind(anchor, "^TOP") then
-            rp = "BOTTOM"
-            rp_new_line = "TOP"
-            y = -spacing
-        elseif strfind(anchor, "^BOTTOM") then
-            rp = "TOP"
-            rp_new_line = "BOTTOM"
-            y = spacing
-        end
-
-        if strfind(anchor, "LEFT$") then
-            rp = rp .. "LEFT"
-            rp_new_line = rp_new_line .. "RIGHT"
-            x_new_line = spacing
-        elseif strfind(anchor, "RIGHT$") then
-            rp = rp .. "RIGHT"
-            rp_new_line = rp_new_line .. "LEFT"
-            x_new_line = -spacing
-        end
-
-        x = 0
-        y_new_line = 0
-    end
+    local p, rp, rp_new_line, x, y, x_new_line, y_new_line = AF.GetAnchorPoints_Complex(orientation, spacingX, spacingY)
 
     -- shown
     for i = 1, num do
@@ -292,9 +255,10 @@ function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientati
         b:SetAttribute("statehidden", nil)
 
         -- size
-        AF.SetSize(b, size, size)
+        AF.SetSize(b, width, height)
 
         -- point
+        AF.ClearPoints(b)
         if i == 1 then
             AF.SetPoint(b, p)
         else
@@ -313,10 +277,10 @@ function AB.ReArrange(bar, size, spacing, buttonsPerLine, num, anchor, orientati
     end
 
     -- update bar ------------------------------------------------------------ --
-    if orientation == "horizontal" then
-        AF.SetGridSize(bar, size, size, spacing, spacing, min(buttonsPerLine, num), ceil(num / buttonsPerLine))
-    else
-        AF.SetGridSize(bar, size, size, spacing, spacing, ceil(num / buttonsPerLine), min(buttonsPerLine, num))
+    if orientation:find("^left") or orientation:find("^right") then -- horizontal
+        AF.SetGridSize(bar, width, height, spacingX, spacingY, min(buttonsPerLine, num), ceil(num / buttonsPerLine))
+    else -- vertical
+        AF.SetGridSize(bar, width, height, spacingX, spacingY, ceil(num / buttonsPerLine), min(buttonsPerLine, num))
     end
 end
 
@@ -394,8 +358,6 @@ function AB.CreateStanceButton(parent, id)
     b.checkedTexture:SetBlendMode("BLEND")
 
     b.HotKey = AF.CreateFontString(b)
-    b.HotKey:SetShadowColor(0, 0, 0, 0)
-    b.HotKey:SetShadowOffset(0, 0)
 
     AF.AddToPixelUpdater_Auto(b, nil, true)
 
@@ -416,10 +378,21 @@ function AB.CreatePetButton(parent, id)
     b:HookScript("OnLeave", AB.ActionBar_OnLeave)
 
     -- b.HotKey = AF.CreateFontString(b)
-    -- b.HotKey:SetShadowColor(0, 0, 0, 0)
-    -- b.HotKey:SetShadowOffset(0, 0)
 
     AF.AddToPixelUpdater_Auto(b, nil, true)
 
     return b
+end
+
+---------------------------------------------------------------------
+-- preview rect
+---------------------------------------------------------------------
+function AB.CreatePreviewRect(parent)
+    local previewRect = parent:CreateTexture(nil, "BACKGROUND")
+    previewRect:SetIgnoreParentAlpha(true)
+    previewRect:SetColorTexture(AF.GetColorRGB("BFI", 0.277))
+    previewRect:SetAlpha(0)
+    previewRect:SetAllPoints(parent)
+    previewRect:Hide()
+    parent.previewRect = previewRect
 end

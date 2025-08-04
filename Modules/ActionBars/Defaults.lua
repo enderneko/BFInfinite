@@ -48,11 +48,12 @@ local defaults = {
             range = {0.8, 0.3, 0.3},
             notUsable = {0.4, 0.4, 0.4},
             mana = {0.5, 0.5, 1.0},
-            equipped = {0.3, 0.8, 0.3},
-            macro = {0.8, 0.3, 0.8},
+            equippedBorder = {0.3, 0.8, 0.3},
+            macroBorder = {0.8, 0.3, 0.8},
         },
         hideElements = {
-            equipped = false,
+            equippedBorder = false,
+            macroBorder = false,
         },
         glow = { -- not configurable for now
             style = "proc",
@@ -95,19 +96,20 @@ do
     -- fill bar options
     local barDefaults = {
         alpha = 1,
-        anchor = "TOPLEFT",
-        orientation = "horizontal",
-        size = 33,
-        spacing = 2,
+        orientation = "left_to_right_then_bottom",
+        width = 33,
+        height = 33,
+        spacingX = 2,
+        spacingY = 2,
         num = 12,
         buttonsPerLine = 12,
         buttonConfig = {
             showGrid = true,
             flyoutDirection = "UP",
             hideElements = {
-                macro = false,
                 hotkey = false,
                 count = false,
+                macro = false,
             },
             text = {
                 hotkey = {
@@ -123,7 +125,7 @@ do
                 macro = {
                     font = {"BFI", 10, "outline", false},
                     color = {1, 1, 1},
-                    position = {"BOTTOMLEFT", "BOTTOMLEFT", -2, 0},
+                    position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 1},
                 },
             },
         },
@@ -159,22 +161,21 @@ do
         if bar == "bar4" then
             t.alpha = 0.75
             t.buttonsPerLine = 4
-            t.size = 28
+            t.width, t.height = 28, 28
         elseif bar == "bar5" then
             t.alpha = 0.75
             t.buttonsPerLine = 4
-            t.size = 28
+            t.width, t.height = 28, 28
         elseif bar == "bar6" then
             t.alpha = 0.75
             t.buttonsPerLine = 4
-            t.size = 28
+            t.width, t.height = 28, 28
         elseif bar == "bar7" then
             t.num = 3
-            -- t.size = 28
         elseif bar == "stancebar" then
             t.num = 7
             t.buttonsPerLine = 10
-            t.size = 26
+            t.width, t.height = 26, 26
             t.buttonConfig = {
                 hideElements = {
                     hotkey = false,
@@ -190,7 +191,20 @@ do
         elseif bar == "petbar" then
             t.num = 10
             t.buttonsPerLine = 5
-            t.size = 22
+            t.width, t.height = 22, 22
+            t.buttonConfig = {
+                showGrid = true,
+                hideElements = {
+                    hotkey = false,
+                },
+                text = {
+                    hotkey = {
+                        font = {"BFI", 10, "outline", false},
+                        color = {1, 1, 1},
+                        position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
+                    },
+                },
+            }
         end
     end
 end

@@ -174,14 +174,15 @@ local DefaultConfig = {
     colors = {
         range = {0.8, 0.3, 0.3},
         mana = {0.5, 0.5, 1.0},
-        equipped = {0.3, 0.8, 0.3},
-        macro = {0.8, 0.3, 0.8},
         notUsable = {0.4, 0.4, 0.4},
+        equippedBorder = {0.3, 0.8, 0.3},
+        macroBorder = {0.8, 0.3, 0.8},
     },
     hideElements = {
         macro = false, -- name
         hotkey = false,
-        equipped = false, -- border
+        macroBorder = false, -- border
+        equippedBorder = false, -- border
         -- border = false,
         -- borderIfEmpty = false,
     },
@@ -1952,13 +1953,12 @@ function Update(self, which)
         end
     end
 
-    -- Add a green border if button is an equipped item
     if self.SetBackdropBorderColor then
-        if self:IsEquipped() and not self.config.hideElements.equipped then
-            self:SetBackdropBorderColor(unpack(self.config.colors.equipped))
+        if self:IsEquipped() and not self.config.hideElements.equippedBorder then
+            self:SetBackdropBorderColor(unpack(self.config.colors.equippedBorder))
         elseif not self:IsConsumableOrStackable() then
-            if self:GetActionText() and self:GetActionText() ~= "" then
-                self:SetBackdropBorderColor(unpack(self.config.colors.macro))
+            if self:GetActionText() and self:GetActionText() ~= "" and not self.config.hideElements.macroBorder then
+                self:SetBackdropBorderColor(unpack(self.config.colors.macroBorder))
             else
                 self:SetBackdropBorderColor(0, 0, 0, 1)
             end

@@ -149,10 +149,10 @@ local function UpdateParty(_, module, which, skipIndicatorUpdates)
     end
 
     -- header
-    local _, rp, _, x, y, _, _, hp = AF.GetAnchorPoints_Simple(config.general.anchor, config.general.orientation, config.general.spacing)
+    local p, _, x, y = AF.GetAnchorPoints_Simple(config.general.orientation, config.general.spacing)
     header:ClearAllPoints()
     header:SetPoint(config.general.anchor, party)
-    header:SetAttribute("point", hp)
+    header:SetAttribute("point", p)
     header:SetAttribute("xOffset", x)
     header:SetAttribute("yOffset", y)
     header:SetAttribute("buttonWidth", AF.ConvertPixelsForRegion(config.general.width, party))

@@ -138,7 +138,7 @@ local function UpdateAddonButtons()
     end
 
     -- re-arrange
-    local p, rp, np, x, y, nx, ny = AF.GetAnchorPoints_Simple(addonButtonHolder.buttonAnchor, addonButtonHolder.config.orientation, addonButtonHolder.config.spacing)
+    local p, rp, np, x, y, nx, ny = AF.GetAnchorPoints_Complex(addonButtonHolder.config.orientation, addonButtonHolder.config.spacing)
     for i, b in pairs(addonButtonHolder.shownButtons) do
         AF.ClearPoints(b)
         AF.SetSize(b, addonButtonHolder.config.width, addonButtonHolder.config.height)
@@ -689,7 +689,6 @@ local function UpdateMinimap(_, module, which)
         AF.SetSize(addonButtonHolder, config.addonButtonHolder.width, config.addonButtonHolder.height)
 
         local p, rp, x, y = GetPositionArgs_HolderFrame()
-        addonButtonHolder.buttonAnchor = p
         AF.ClearPoints(addonButtonHolder.frame)
         AF.SetPoint(addonButtonHolder.frame, p, addonButtonHolder, rp, x, y)
         addonButtonHolder.frame.texture:SetColorTexture(AF.UnpackColor(config.addonButtonHolder.bgColor))

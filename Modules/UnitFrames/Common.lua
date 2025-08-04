@@ -297,7 +297,7 @@ function UF.SetupUnitGroup(group, config, indicators, skipIndicatorUpdates)
     end
 
     -- arrangement & size
-    local p, rp, _, x, y = AF.GetAnchorPoints_Simple("BOTTOMLEFT", config.general.orientation, config.general.spacing)
+    local p, rp, x, y = AF.GetAnchorPoints_Simple(config.general.orientation, config.general.spacing)
 
     local last
     for _, b in ipairs(group) do

@@ -80,6 +80,7 @@ local function CreateContentPane()
             button.cfg = BFI.vars.profile.actionBars.general
             button.sharedCfg = BFI.vars.profile.actionBars.sharedButtonConfig
         else
+            button.target = BFI.ActionBars.bars[item.value]
             button.cfg = BFI.vars.profile.actionBars.barConfig[item.value]
         end
 
