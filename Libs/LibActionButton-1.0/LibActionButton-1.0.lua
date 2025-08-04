@@ -26,13 +26,15 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 ]]
 
---! Some extra features are forked from ElvUI and Blizzard
+--[[
+Modified by enderneko for BFInfinite
+Some extra features are forked from ElvUI/Blizzard
+]]
 
 local MAJOR_VERSION = "LibActionButton-1.0-BFI"
-local MINOR_VERSION = 124
+local MINOR_VERSION = 124 -- the original version of this library
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -71,9 +73,8 @@ local UseCustomFlyout = WoWRetail or FlyoutButtonMixin
 local AB
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local KeyBound = LibStub("LibKeyBound-1.0", true)
+-- local KeyBound = LibStub("LibKeyBound-1.0", true)
 local CBH = LibStub("CallbackHandler-1.0")
-local LCG = LibStub("LibCustomGlow-1.0", true)
 local Masque = LibStub("Masque", true)
 
 local SetCVar = C_CVar.SetCVar
@@ -169,7 +170,7 @@ local DefaultConfig = {
     targetReticle = true,
     interruptDisplay = true,
     spellCastAnim = true,
-    desaturateOnCooldown = true,
+    -- desaturateOnCooldown = true,
     colors = {
         range = {0.8, 0.3, 0.3},
         mana = {0.5, 0.5, 1.0},
@@ -178,11 +179,11 @@ local DefaultConfig = {
         notUsable = {0.4, 0.4, 0.4},
     },
     hideElements = {
-        macro = false,
+        macro = false, -- name
         hotkey = false,
-        equipped = false,
-        border = false,
-        borderIfEmpty = false,
+        equipped = false, -- border
+        -- border = false,
+        -- borderIfEmpty = false,
     },
     keyBoundTarget = false,
     keyBoundClickButton = "LeftButton",
@@ -191,52 +192,20 @@ local DefaultConfig = {
     hideCountDownNumbers = false, -- BFI
     text = {
         hotkey = {
-            font = {
-                font = false, -- "Fonts\\ARIALN.TTF",
-                size = WoWRetail and 14 or 13,
-                flags = "OUTLINE",
-                shadow = false,
-            },
-            color = { 0.75, 0.75, 0.75 },
-            position = {
-                anchor = "TOPRIGHT",
-                relAnchor = "TOPRIGHT",
-                offsetX = -2,
-                offsetY = -4,
-            },
-            justifyH = "RIGHT",
+            font = {"BFI", 10, "outline", false},
+            color = {1, 1, 1},
+            position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
         },
         count = {
-            font = {
-                font = false, -- "Fonts\\ARIALN.TTF",
-                size = 16,
-                flags = "OUTLINE",
-                shadow = false,
-            },
-            color = { 1, 1, 1 },
-            position = {
-                anchor = "BOTTOMRIGHT",
-                relAnchor = "BOTTOMRIGHT",
-                offsetX = -2,
-                offsetY = 4,
-            },
+            font = {"BFI", 10, "outline", false},
+            color = {1, 1, 1},
+            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 1},
             justifyH = "RIGHT",
         },
         macro = {
-            font = {
-                font = false, -- "Fonts\\FRIZQT__.TTF",
-                size = 10,
-                flags = "OUTLINE",
-                shadow = false,
-            },
-            color = { 1, 1, 1 },
-            position = {
-                anchor = "BOTTOMLEFT",
-                relAnchor = "BOTTOMLEFT",
-                offsetX = 0,
-                offsetY = 2,
-            },
-            justifyH = "CENTER",
+            font = {"BFI", 10, "outline", false},
+            color = {1, 1, 1},
+            position = {"BOTTOMLEFT", "BOTTOMLEFT", -2, 0},
         },
     },
 }
@@ -253,9 +222,9 @@ function lib:CreateButton(id, name, header, config)
         error("Usage: CreateButton(id, name, header): Buttons without a secure header are not yet supported!", 2)
     end
 
-    if not KeyBound then
-        KeyBound = LibStub("LibKeyBound-1.0", true)
-    end
+    -- if not KeyBound then
+    --     KeyBound = LibStub("LibKeyBound-1.0", true)
+    -- end
 
     if not AB then
         AB = BFInfinite.ActionBars
@@ -594,7 +563,6 @@ end
 ---------------------------------------------------------------------
 -- animations
 function Generic:PlaySpellInterruptedAnim(spellID)
-    self:StopSpellCastAnim(self.actionButtonCastType, spellID)
     if self.abilityID == spellID then
         if self.InterruptDisplay:IsShown() then
             self.InterruptDisplay:Hide()
@@ -709,11 +677,11 @@ function Generic:OnButtonEvent(event, key, down, spellID, castComplete)
         self:StopSpellCastAnim(ActionButtonCastType.Cast, spellID)
         self:StopTargettingReticleAnim(spellID)
     elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
+        self:StopSpellCastAnim(self.actionButtonCastType, spellID)
         self:PlaySpellInterruptedAnim(spellID)
     elseif event == "UNIT_SPELLCAST_EMPOWER_STOP" then
-        if castComplete then
-            self:StopSpellCastAnim(ActionButtonCastType.Empowered, spellID)
-        else
+        self:StopSpellCastAnim(ActionButtonCastType.Empowered, spellID)
+        if not castComplete and self.config.interruptDisplay then
             self:PlaySpellInterruptedAnim(spellID)
         end
     elseif event == "UNIT_SPELLCAST_START" then
@@ -1144,8 +1112,12 @@ if UseCustomFlyout then
     end
 
     local function FlyoutOnShowHide(self)
-        if self:GetParent() and self:GetParent().UpdateFlyout then
-            self:GetParent():UpdateFlyout()
+        local parent = self:GetParent()
+        if parent and parent.UpdateFlyout then
+            parent:UpdateFlyout()
+            parent:UpdateArrowTexture()
+            parent:UpdateArrowRotation()
+            parent:UpdateArrowPosition()
         end
     end
 
@@ -1329,9 +1301,9 @@ function Generic:OnEnter()
     if self.config.tooltip ~= "disabled" and (self.config.tooltip ~= "nocombat" or not InCombatLockdown()) then
         UpdateTooltip(self)
     end
-    if KeyBound then
-        KeyBound:Set(self)
-    end
+    -- if KeyBound then
+    --     KeyBound:Set(self)
+    -- end
 
     if self._state_type == "action" and self.NewActionTexture then
         ClearNewActionHighlight(self._state_action, false, false)
@@ -1445,27 +1417,10 @@ local function merge(target, source, default)
     return target
 end
 
-local function UpdateTextElement(element, config, defaultFont)
-    element:SetFont(config.font.font or defaultFont, config.font.size, config.font.flags or "")
-    element:SetJustifyH(config.justifyH)
-    element:ClearAllPoints()
-    element:SetPoint(config.position.anchor, element:GetParent(), config.position.relAnchor or config.position.anchor, config.position.offsetX or 0, config.position.offsetY or 0)
-
-    element:SetVertexColor(unpack(config.color))
-
-    if config.font.shadow then
-        element:SetShadowOffset(1, -1)
-        element:SetShadowColor(0, 0, 0, 1)
-    else
-        element:SetShadowOffset(0, 0)
-        element:SetShadowColor(0, 0, 0, 0)
-    end
-end
-
 local function UpdateTextElements(button)
-    UpdateTextElement(button.HotKey, button.config.text.hotkey, NumberFontNormalSmallGray:GetFont())
-    UpdateTextElement(button.Count, button.config.text.count, NumberFontNormal:GetFont())
-    UpdateTextElement(button.Name, button.config.text.macro, GameFontHighlightSmallOutline:GetFont())
+    AB.ApplyTextConfig(button.HotKey, button.config.text.hotkey)
+    AB.ApplyTextConfig(button.Count, button.config.text.count)
+    AB.ApplyTextConfig(button.Name, button.config.text.macro)
 end
 
 function Generic:UpdateConfig(config)
@@ -1515,17 +1470,19 @@ function Generic:UpdateConfig(config)
             self.TargetReticleAnimFrame:Hide()
         end
 
-        if not self.config.interruptDisplay then
+        if self.config.interruptDisplay then
+            self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+        else
+            self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
             self.InterruptDisplay:Hide()
         end
 
         if self.config.interruptDisplay or self.config.spellCastAnim then
-            self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
             self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
-            self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
         end
 
         if self.config.spellCastAnim then
+            self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
             self:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
             self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player")
             self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
@@ -1537,7 +1494,6 @@ function Generic:UpdateConfig(config)
         end
 
         if not (self.config.interruptDisplay or self.config.spellCastAnim) then
-            self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
             self:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
         end
     else
@@ -2184,9 +2140,9 @@ function UpdateUsable(self, isUsable, notEnoughMana)
 
     if WoWRetail and self._state_type == "action" then
         local isLevelLinkLocked = C_LevelLink.IsActionLocked(self._state_action)
-        if not self.icon:IsDesaturated() then
+        -- if not self.icon:IsDesaturated() then
             self.icon:SetDesaturated(isLevelLinkLocked)
-        end
+        -- end
 
         if self.LevelLinkLockIcon then
             self.LevelLinkLockIcon:SetShown(isLevelLinkLocked)
@@ -2303,11 +2259,11 @@ function UpdateCooldown(self)
     local hasLocCooldown = locStart and locDuration and locStart > 0 and locDuration > 0
     local hasCooldown = enable and enable ~= 0 and start and duration and start > 0 and duration > 0
 
-    if self.config.desaturateOnCooldown then
-        self.icon:SetDesaturated(hasCooldown and duration > 1.875)
-    else
-        self.icon:SetDesaturated(false)
-    end
+    -- if self.config.desaturateOnCooldown and hasCooldown and duration > 1.875 then
+    --     self.icon:SetDesaturated(true)
+    -- else
+    --     self.icon:SetDesaturated(false)
+    -- end
 
     if hasLocCooldown and ((not hasCooldown) or ((locStart + locDuration) > (start + duration))) then
         if self.cooldown.currentCooldownType ~= COOLDOWN_TYPE_LOSS_OF_CONTROL then
@@ -2401,11 +2357,11 @@ function UpdateHotkeys(self)
 end
 
 function ShowButtonGlow(self)
-    LCG.ShowButtonGlow(self)
+    AB.ShowButtonGlow(self)
 end
 
 function HideButtonGlow(self)
-    LCG.HideButtonGlow(self)
+    AB.HideButtonGlow(self)
 end
 
 function UpdateOverlayGlow(self)

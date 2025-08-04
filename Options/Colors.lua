@@ -181,7 +181,7 @@ local function CreateAurasPane()
     local bleedColorPicker = AF.CreateColorPicker(aurasPane, L["Bleed"], true)
     AF.SetPoint(bleedColorPicker, "TOPLEFT", poisonColorPicker, "BOTTOMLEFT", 0, -7)
 
-    local noneColorPicker = AF.CreateColorPicker(aurasPane, L["None"], true)
+    local noneColorPicker = AF.CreateColorPicker(aurasPane, _G.NONE, true)
     AF.SetPoint(noneColorPicker, "TOPLEFT", bleedColorPicker, "BOTTOMLEFT", 0, -7)
 
     local castByMeColorPicker = AF.CreateColorPicker(aurasPane, L["Cast By Me"], true)

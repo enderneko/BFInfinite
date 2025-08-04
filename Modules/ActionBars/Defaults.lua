@@ -9,14 +9,14 @@ local defaults = {
         enabled = true,
         frameLevel = 1,
         frameStrata = "LOW",
-        flyoutSize = 32,
+        flyoutSize = {32, 16},
         disableAutoAddSpells = true,
         tooltip = {
             enabled = true,
             hideInCombat = false,
             anchorTo = "self_adaptive", -- self / self_adaptive / default
             position = {"BOTTOMLEFT", "TOPLEFT", 0, 1},
-            supportsItemComparison = false,
+            supportsItemComparison = false, -- not configurable for now
         },
     },
     barConfig = {
@@ -38,32 +38,32 @@ local defaults = {
     },
     sharedButtonConfig = {
         lock = true,
+        pickUpKey = "SHIFT",
         targetReticle = true,
         interruptDisplay = true,
         spellCastAnim = true,
-        pickUpKey = "SHIFT",
+        -- desaturateOnCooldown = true,
         outOfRangeColoring = "button",
-        desaturateOnCooldown = true,
         colors = {
             range = {0.8, 0.3, 0.3},
+            notUsable = {0.4, 0.4, 0.4},
             mana = {0.5, 0.5, 1.0},
             equipped = {0.3, 0.8, 0.3},
             macro = {0.8, 0.3, 0.8},
-            notUsable = {0.4, 0.4, 0.4},
         },
         hideElements = {
             equipped = false,
         },
-        glow = {
+        glow = { -- not configurable for now
             style = "proc",
             color = nil,
             duration = 1,
             startAnim = true,
         },
-        casting = {
-            self = {true, GetCVarBool("autoSelfCast")}, -- checkselfcast, GetCVarBool("autoSelfCast")
-            mouseover = {GetCVarBool("enableMouseoverCast"), Settings.GetValue("MOUSEOVERCAST")}, -- checkmouseovercast, Settings.GetValue("MOUSEOVERCAST")
-            -- focus = {false, "ALT"}, -- FIXME: invalid
+        cast = {
+            self = true, -- checkselfcast, SetCVar("autoSelfCast"), no change for ModifiedClick "SELFCAST"
+            mouseover = {false, "NONE"}, -- checkmouseovercast, SetCVar("enableMouseoverCast"), ModifiedClick "MOUSEOVERCAST"
+            focus = {false, "CTRL"}, -- checkfocuscast, ModifiedClick "FOCUSCAST"
         },
     },
     vehicleExitButton = {
@@ -83,10 +83,9 @@ local defaults = {
             scale = 0.8,
             hideTexture = false,
             hotkey = {
-                font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 12, flags = "OUTLINE", shadow = false},
+                font = {"BFI", 12, "outline", false},
                 color = {1, 1, 1},
-                position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0},
-                justifyH = "RIGHT",
+                position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
             },
         },
     },
@@ -112,22 +111,19 @@ do
             },
             text = {
                 hotkey = {
-                    font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE", shadow = false},
+                    font = {"BFI", 10, "outline", false},
                     color = {1, 1, 1},
-                    position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0},
-                    justifyH = "RIGHT",
+                    position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
                 },
                 count = {
-                    font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE", shadow = false},
+                    font = {"BFI", 10, "outline", false},
                     color = {1, 1, 1},
-                    position = {anchor = "BOTTOMRIGHT", relAnchor = "BOTTOMRIGHT", offsetX = 0, offsetY = 1},
-                    justifyH = "RIGHT",
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 1},
                 },
                 macro = {
-                    font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE", shadow = false},
+                    font = {"BFI", 10, "outline", false},
                     color = {1, 1, 1},
-                    position = {anchor = "BOTTOMLEFT", relAnchor = "BOTTOMLEFT", offsetX = -2, offsetY = 0},
-                    justifyH = "CENTER",
+                    position = {"BOTTOMLEFT", "BOTTOMLEFT", -2, 0},
                 },
             },
         },
@@ -185,9 +181,9 @@ do
                 },
                 text = {
                     hotkey = {
-                        font = {font = AF.GetFont("Noto_AP_SC", BFI.name), size = 10, flags = "OUTLINE"},
+                        font = {"BFI", 10, "outline", false},
                         color = {1, 1, 1},
-                        position = {anchor = "TOPRIGHT", relAnchor = "TOPRIGHT", offsetX = 0, offsetY = 0}
+                        position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
                     },
                 },
             }

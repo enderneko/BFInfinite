@@ -330,18 +330,18 @@ local function GetFormatItems(which)
 
     if which == "staggerBar" or which == "powerText" then
         numeric = {
-            {text = L["None"], value = "none"},
+            {text = _G.NONE, value = "none"},
             {text = L["Current"], value = "current"},
             {text = L["Current (Short)"], value = "current_short"},
         }
         percent = {
-            {text = L["None"], value = "none"},
+            {text = _G.NONE, value = "none"},
             {text = L["Current"], value = "current"},
             {text = L["Current (Decimal)"], value = "current_decimal"},
         }
     elseif which == "healthText" then
         numeric = {
-            {text = L["None"], value = "none"},
+            {text = _G.NONE, value = "none"},
             {text = L["Current"], value = "current"},
             {text = L["Current (Short)"], value = "current_short"},
             {text = L["Current + Absorbs"], value = "current_absorbs"},
@@ -350,7 +350,7 @@ local function GetFormatItems(which)
             {text = L["Effective (Short)"], value = "current_absorbs_short_sum"},
         }
         percent = {
-            {text = L["None"], value = "none"},
+            {text = _G.NONE, value = "none"},
             {text = L["Current"], value = "current"},
             {text = L["Current (Decimal)"], value = "current_decimal"},
             {text = L["Current + Absorbs"], value = "current_absorbs"},
@@ -3370,7 +3370,7 @@ builder["cooldownStyle"] = function(parent)
 
     -- none, vertical, block_vertical, clock(_with_leading_edge), block_clock(_with_leading_edge)
     styleDropdown:SetItems({
-        {text = L["None"], value = "none"},
+        {text = _G.NONE, value = "none"},
         {text = L["Vertical"], value = "vertical"},
         {text = L["Block Vertical"], value = "block_vertical"},
         {text = L["Clock"], value = "clock"},

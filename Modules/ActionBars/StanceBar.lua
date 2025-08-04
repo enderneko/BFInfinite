@@ -185,11 +185,7 @@ local function UpdateStanceBar(_, module, which)
         if config.buttonConfig.hideElements.hotkey then
             b.HotKey:Hide()
         else
-            local t = config.buttonConfig.text.hotkey
-            b.HotKey:SetFont(t.font.font, t.font.size, t.font.flags)
-            b.HotKey:SetTextColor(unpack(t.color))
-            AF.ClearPoints(b.HotKey)
-            AF.SetPoint(b.HotKey, t.position.anchor, t.position.offsetX, t.position.offsetY)
+            AB.ApplyTextConfig(b.HotKey, config.buttonConfig.text.hotkey)
             b.HotKey:Show()
         end
 

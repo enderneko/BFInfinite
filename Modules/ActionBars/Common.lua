@@ -59,7 +59,7 @@ local LCG = AF.Libs.LCG
 local hiders = {}
 local proc = {xOffset = 3, yOffset = 3}
 
-function LCG.ShowButtonGlow(b)
+function AB.ShowButtonGlow(b)
     local config = AB.config and AB.config.sharedButtonConfig.glow
     if not config or b.glowing then return end
 
@@ -83,7 +83,7 @@ function LCG.ShowButtonGlow(b)
     end
 end
 
-function LCG.HideButtonGlow(b)
+function AB.HideButtonGlow(b)
     if hiders[b] then
         hiders[b](b)
         hiders[b] = nil
@@ -100,6 +100,10 @@ end
 ---------------------------------------------------------------------
 -- stylize button
 ---------------------------------------------------------------------
+local function ReCalcTexCoord(self, width, height)
+    self.icon:SetTexCoord(AF.Unpack8(AF.CalcTexCoordPreCrop(0.1, width / height)))
+end
+
 function AB.StylizeButton(b)
     b.MasqueSkinned = true
 
@@ -138,8 +142,9 @@ function AB.StylizeButton(b)
 
     -- icon ------------------------------------------------------------------ --
     icon:SetDrawLayer("ARTWORK", -1)
-    icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+    -- icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
     AF.SetOnePixelInside(icon, b)
+    b:SetScript("OnSizeChanged", ReCalcTexCoord)
 
     -- cooldown -------------------------------------------------------------- --
     if cooldown then
@@ -203,16 +208,8 @@ end
 -- update text
 ---------------------------------------------------------------------
 function AB.ApplyTextConfig(fs, config)
-    fs:SetFont(config.font.font, config.font.size, config.font.flags)
-    if config.font.shadow then
-        fs:SetShadowOffset(1, -1)
-        fs:SetShadowColor(0, 0, 0, 1)
-    else
-        fs:SetShadowOffset(0, 0)
-        fs:SetShadowColor(0, 0, 0, 0)
-    end
-    fs:SetJustifyH(config.justifyH)
-    fs:SetPoint(config.position.anchor, fs:GetParent(), config.position.relAnchor, config.position.offsetX, config.position.offsetY)
+    AF.SetFont(fs, unpack(config.font))
+    AF.LoadTextPosition(fs, config.position)
     fs:SetTextColor(AF.UnpackColor(config.color))
 end
 

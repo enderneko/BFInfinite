@@ -56,7 +56,7 @@ local function HandleFlyoutButton(b)
     end
 
     if not InCombatLockdown() then
-        AF.SetSize(b, AB.config.general.flyoutSize, AB.config.general.flyoutSize)
+        AF.SetSize(b, AB.config.general.flyoutSize[1], AB.config.general.flyoutSize[2])
     end
 
     b.MasqueSkinned = true -- skip LAB styling
@@ -244,11 +244,38 @@ local function UpdateButton(bar, shared, specific)
         bar.buttonConfig.keyBoundTarget = format(BINDING_MAPPINGS[bar.name], i)
         b.keyBoundTarget = bar.buttonConfig.keyBoundTarget
 
-        -- attribute
+        -- lock
         b:SetAttribute("buttonlock", shared.lock)
-        b:SetAttribute("checkselfcast", shared.casting.self[1])
-        b:SetAttribute("checkmouseovercast", shared.casting.mouseover[1])
-        -- b:SetAttribute("checkfocuscast", true)
+
+        -- auto self cast
+        if shared.cast.self then
+            b:SetAttribute("checkselfcast", true)
+            SetCVar("autoSelfCast", 1)
+        else
+            b:SetAttribute("checkselfcast", false)
+            SetCVar("autoSelfCast", 0)
+        end
+        SetModifiedClick("SELFCAST", "NONE")
+
+        -- mouseover cast
+        if shared.cast.mouseover[1] then
+            b:SetAttribute("checkmouseovercast", true)
+            SetCVar("enableMouseoverCast", 1)
+            SetModifiedClick("MOUSEOVERCAST", shared.cast.mouseover[2])
+        else
+            b:SetAttribute("checkmouseovercast", false)
+            SetCVar("enableMouseoverCast", 0)
+            SetModifiedClick("MOUSEOVERCAST", "NONE")
+        end
+
+        -- focus cast - FIXME: seems only CTRL works, ALT and SHIFT do not work
+        if shared.cast.focus[1] then
+            b:SetAttribute("checkfocuscast", true)
+            SetModifiedClick("FOCUSCAST", shared.cast.focus[2])
+        else
+            b:SetAttribute("checkfocuscast", false)
+            SetModifiedClick("FOCUSCAST", "NONE")
+        end
 
         b:UpdateConfig(bar.buttonConfig)
 
@@ -303,7 +330,7 @@ end
 local init
 local function UpdateMainBars(_, module, which)
     if module and module ~= "actionBars" then return end
-    if which and not (which:find("^bar") or which:find("^classbar")) then return end
+    if which and not (which == "main" or which:find("^bar") or which:find("^classbar")) then return end
 
     if not AB.config.general.enabled then
         LAB.UnregisterCallback(AB, "OnFlyoutSpells")
@@ -367,7 +394,7 @@ local function UpdateMainBars(_, module, which)
         AB:RegisterEvent("PET_BATTLE_OPENING_DONE", RemoveBindings)
     end
 
-    if which then
+    if which and which ~= "main" then
         UpdateBar(AB.bars[which], AB.config.general, sharedConfig, AB.config.barConfig[which])
     else
         for name in pairs(BAR_MAPPINGS) do
@@ -382,3 +409,10 @@ local function UpdateMainBars(_, module, which)
     end
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateMainBars)
+
+
+AF.RegisterCallback("BFI_UpdateModule", function(_, module, which)
+    if module ~= "actionBars" then return end
+    if which ~= "flyout" then return end
+    ActionBar_FlyoutSpells()
+end)
