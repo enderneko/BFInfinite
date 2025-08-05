@@ -403,17 +403,6 @@ local function UpdateAnchorToItems(t, items)
     end
 end
 
-local function GetAnchorPointItems(noCenter)
-    local items = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT", "LEFT", "RIGHT", "TOP", "BOTTOM"}
-    if not noCenter then
-        tinsert(items, "CENTER")
-    end
-    for i, item in next, items do
-        items[i] = {text = L[item], value = item}
-    end
-    return items
-end
-
 local function GetParentItems()
     local validParents = {
         "root",  "healthBar", "powerBar", "portrait"
@@ -588,7 +577,7 @@ builder["copy,paste,reset"] = function(parent)
         end)
     end)
 
-    local resetTooltips = {L["Reset"], L["Hold %s while clicking to reset all settings for this unit frame"]:format(AF.WrapTextInColor("Shift", "BFI"))}
+    local resetTooltips = {_G.RESET, L["Hold %s while clicking to reset all settings for this unit frame"]:format(AF.WrapTextInColor("Shift", "BFI"))}
     reset._tooltipOwner = BFIOptionsFrame_UnitFramesPanel
     reset:HookOnEnter(function()
         if pane.t.id:find("^general") then
@@ -768,7 +757,7 @@ builder["position,anchorTo"] = function(parent)
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", relativeTo, 0, -45)
-    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.position[1] = value
         LoadIndicatorPosition(pane.t)
@@ -777,7 +766,7 @@ builder["position,anchorTo"] = function(parent)
     local relativePoint = AF.CreateDropdown(pane, 150)
     relativePoint:SetLabel(L["Relative Point"])
     AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
-    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg.position[2] = value
         LoadIndicatorPosition(pane.t)
@@ -845,7 +834,7 @@ builder["position,anchorTo,parent"] = function(parent)
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", relativeTo, 0, -45)
-    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.position[1] = value
         LoadIndicatorPosition(pane.t)
@@ -854,7 +843,7 @@ builder["position,anchorTo,parent"] = function(parent)
     local relativePoint = AF.CreateDropdown(pane, 150)
     relativePoint:SetLabel(L["Relative Point"])
     AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
-    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg.position[2] = value
         LoadIndicatorPosition(pane.t)
@@ -1919,7 +1908,7 @@ builder["castBarNameText"] = function(parent)
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, -40)
-    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.nameText.position[1] = value
         LoadIndicatorConfig(pane.t)
@@ -1928,7 +1917,7 @@ builder["castBarNameText"] = function(parent)
     local relativePoint = AF.CreateDropdown(pane, 150)
     relativePoint:SetLabel(L["Relative Point"])
     AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
-    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg.nameText.position[2] = value
         LoadIndicatorConfig(pane.t)
@@ -2057,7 +2046,7 @@ builder["castBarDurationText"] = function(parent)
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, -40)
-    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.durationText.position[1] = value
         LoadIndicatorConfig(pane.t)
@@ -2066,7 +2055,7 @@ builder["castBarDurationText"] = function(parent)
     local relativePoint = AF.CreateDropdown(pane, 150)
     relativePoint:SetLabel(L["Relative Point"])
     AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
-    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg.durationText.position[2] = value
         LoadIndicatorConfig(pane.t)
@@ -2236,7 +2225,7 @@ local function CreateFontPositionExtraPane(parent, textType, frameName, label, e
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, -40)
-    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg[textType].position[1] = value
         LoadIndicatorConfig(pane.t)
@@ -2245,7 +2234,7 @@ local function CreateFontPositionExtraPane(parent, textType, frameName, label, e
     local relativePoint = AF.CreateDropdown(pane, 150)
     relativePoint:SetLabel(L["Relative Point"])
     AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
-    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg[textType].position[2] = value
         LoadIndicatorConfig(pane.t)
@@ -3288,12 +3277,7 @@ builder["auraArrangement"] = function(parent)
     local arrangement = AF.CreateDropdown(pane, 150)
     arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
-    arrangement:SetItems({
-        {text = L["Left to Right"], value = "left_to_right"},
-        {text = L["Right to Left"], value = "right_to_left"},
-        {text = L["Top to Bottom"], value = "top_to_bottom"},
-        {text = L["Bottom to Top"], value = "bottom_to_top"},
-    })
+    arrangement:SetItems(AF.GetDropdownItems_SimpleOrientation())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.orientation = value
         LoadIndicatorConfig(pane.t)
@@ -3432,7 +3416,7 @@ builder["tooltip"] = function(parent)
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", enabledCheckButton, 0, -45)
-    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.tooltip.position[1] = value
     end)
@@ -3440,7 +3424,7 @@ builder["tooltip"] = function(parent)
     local relativePoint = AF.CreateDropdown(pane, 150)
     relativePoint:SetLabel(L["Relative Point"])
     AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
-    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg.tooltip.position[2] = value
     end)
@@ -3675,12 +3659,7 @@ builder["partyArrangement"] = function(parent)
     local arrangement = AF.CreateDropdown(pane, 150)
     arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
-    arrangement:SetItems({
-        {text = L["Left to Right"], value = "left_to_right"},
-        {text = L["Right to Left"], value = "right_to_left"},
-        {text = L["Top to Bottom"], value = "top_to_bottom"},
-        {text = L["Bottom to Top"], value = "bottom_to_top"},
-    })
+    arrangement:SetItems(AF.GetDropdownItems_SimpleOrientation())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.orientation = value
         AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
@@ -3689,7 +3668,7 @@ builder["partyArrangement"] = function(parent)
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", arrangement, 185, 0)
-    anchorPoint:SetItems(GetAnchorPointItems(true))
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint(true))
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.anchor = value
         AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
@@ -3782,16 +3761,7 @@ builder["raidArrangement"] = function(parent)
     local arrangement = AF.CreateDropdown(pane, 200)
     arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
-    arrangement:SetItems({
-        {text = L["Left to Right then Top"], value = "left_to_right_then_top"},
-        {text = L["Left to Right then Bottom"], value = "left_to_right_then_bottom"},
-        {text = L["Right to Left then Top"], value = "right_to_left_then_top"},
-        {text = L["Right to Left then Bottom"], value = "right_to_left_then_bottom"},
-        {text = L["Top to Bottom then Left"], value = "top_to_bottom_then_left"},
-        {text = L["Top to Bottom then Right"], value = "top_to_bottom_then_right"},
-        {text = L["Bottom to Top then Left"], value = "bottom_to_top_then_left"},
-        {text = L["Bottom to Top then Right"], value = "bottom_to_top_then_right"},
-    })
+    arrangement:SetItems(AF.GetDropdownItems_ComplexOrientation())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.orientation = value
         AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
@@ -3800,7 +3770,7 @@ builder["raidArrangement"] = function(parent)
     local anchorPoint = AF.CreateDropdown(pane, 120)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", arrangement, 215, 0)
-    anchorPoint:SetItems(GetAnchorPointItems(true))
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint(true))
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.anchor = value
         AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
@@ -3953,12 +3923,7 @@ builder["groupArrangement"] = function(parent)
     local arrangement = AF.CreateDropdown(pane, 150)
     arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
-    arrangement:SetItems({
-        {text = L["Left to Right"], value = "left_to_right"},
-        {text = L["Right to Left"], value = "right_to_left"},
-        {text = L["Top to Bottom"], value = "top_to_bottom"},
-        {text = L["Bottom to Top"], value = "bottom_to_top"},
-    })
+    arrangement:SetItems(AF.GetDropdownItems_SimpleOrientation())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.orientation = value
         AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
@@ -3968,7 +3933,7 @@ builder["groupArrangement"] = function(parent)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", arrangement, 185, 0)
     anchorPoint:SetEnabled(false) -- TODO: add auto-sized header
-    anchorPoint:SetItems(GetAnchorPointItems(true))
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint(true))
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.anchor = value
         AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)

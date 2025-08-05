@@ -73,7 +73,6 @@ local function CreateContentPane()
         button:SetTextJustifyH("LEFT")
 
         button.id = item.value -- for button group & BFI_UpdateModule
-        button.actionBarPage = item.page
         button.ownerName = item.text
 
         if item.value == "general" then
@@ -92,6 +91,11 @@ local function CreateContentPane()
             button.setting = "bar"
         else
             button.setting = item.value
+        end
+
+        if item.page then
+            button.page = AF.CreateFontString(button, "[" .. item.page .. "]", "disabled")
+            AF.SetPoint(button.page, "RIGHT", -5, 0)
         end
     end
     list:SetWidgets(widgets)

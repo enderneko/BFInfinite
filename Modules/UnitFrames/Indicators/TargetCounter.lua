@@ -38,7 +38,7 @@ local function UpdateCounter(self)
     local unit = self.root.displayedUnit
 
     local n = 0
-    for member in AF.GroupPlayersIterator() do
+    for member in AF.IterateGroupPlayers() do
         if UnitIsUnit(member.."target", unit) then
             n = n + 1
         end

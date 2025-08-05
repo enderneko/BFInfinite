@@ -763,9 +763,9 @@ local function UpdatePixels(_, region, remaining, total)
     region:UpdatePixels()
     -- print("BFIStyled: ", AF.RoundToDecimal((total - remaining) / total, 2))
 end
-local pixelUpdateExecutor = AF.BuildOnUpdateExecutor(UpdatePixels, function()
-    AF.Debug("AF_PIXEL_UPDATE: BFIStyled group updated", AF.RoundToDecimal(GetTimePreciseSec() - start, 3))
-end, 5)
+local pixelUpdateExecutor = AF.BuildOnUpdateExecutor(UpdatePixels, function(_, num)
+    AF.Debug("Updated pixels for BFIStyled group", num, AF.RoundToDecimal(GetTimePreciseSec() - start, 3))
+end, 10)
 
 AF.RegisterCallback("AF_PIXEL_UPDATE", function()
     pixelUpdateExecutor:Clear()

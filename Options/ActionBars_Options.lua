@@ -35,31 +35,10 @@ local settings = {
         "hotkey",
         "count",
         "macro",
+        "visibility",
+        "paging",
     },
 }
-
----------------------------------------------------------------------
--- shared
----------------------------------------------------------------------
-local function GetModifierItems()
-    return {
-        {text = "Alt", value = "ALT"},
-        {text = "Ctrl", value = "CTRL"},
-        {text = "Shift", value = "SHIFT"},
-        {text = _G.NONE, value = "NONE"},
-    }
-end
-
-local function GetAnchorPointItems(noCenter)
-    local items = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT", "LEFT", "RIGHT", "TOP", "BOTTOM"}
-    if not noCenter then
-        tinsert(items, "CENTER")
-    end
-    for i, item in next, items do
-        items[i] = {text = L[item], value = item}
-    end
-    return items
-end
 
 ---------------------------------------------------------------------
 -- copy,paste,reset
@@ -183,7 +162,7 @@ builder["lock,pickUpKey"] = function(parent)
     local pickUpKey = AF.CreateDropdown(pane, 150)
     pickUpKey:SetLabel(L["Pick Up Key"])
     AF.SetPoint(pickUpKey, "TOPLEFT", lock, 185, -5)
-    pickUpKey:SetItems(GetModifierItems())
+    pickUpKey:SetItems(AF.GetDropdownItems_Modifier())
     pickUpKey:SetOnSelect(function(value)
         pane.t.sharedCfg.pickUpKey = value
         AF.Fire("BFI_UpdateModule", "actionBars")
@@ -350,15 +329,19 @@ end
 -- text
 ---------------------------------------------------------------------
 local function CreateTextPane(parent, which, label)
-
     local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_" .. AF.UpperFirst(which), nil, 198)
 
     local font = AF.CreateDropdown(pane, 150)
     AF.SetPoint(font, "TOPLEFT", 15, -25)
     font:SetItems(AF.LSM_GetFontDropdownItems())
 
-    local enable = AF.CreateCheckButton(pane, AF.GetGradientText(label, "BFI", "white"))
+    label = AF.GetGradientText(label, "BFI", "white")
+
+    local enable = AF.CreateCheckButton(pane, label)
     AF.SetPoint(enable, "BOTTOMLEFT", font, "TOPLEFT", 0, 2)
+
+    local title = AF.CreateFontString(pane, label)
+    AF.SetPoint(title, "BOTTOMLEFT", font, "TOPLEFT", 0, 2)
 
     local color = AF.CreateColorPicker(pane)
     AF.SetPoint(color, "BOTTOMRIGHT", font, "TOPRIGHT", 0, 2)
@@ -395,7 +378,7 @@ local function CreateTextPane(parent, which, label)
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", size, "BOTTOMLEFT", 0, -40)
-    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.buttonConfig.text[which].position[1] = value
         AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
@@ -404,7 +387,7 @@ local function CreateTextPane(parent, which, label)
     local relativePoint = AF.CreateDropdown(pane, 150)
     relativePoint:SetLabel(L["Relative Point"])
     AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
-    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg.buttonConfig.text[which].position[2] = value
         AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
@@ -439,7 +422,15 @@ local function CreateTextPane(parent, which, label)
     function pane.Load(t)
         pane.t = t
 
-        enable:SetChecked(not t.cfg.buttonConfig.hideElements[which])
+        if which == "count" then
+            enable:Hide()
+            title:Show()
+        else
+            enable:SetChecked(not t.cfg.buttonConfig.hideElements[which])
+            enable:Show()
+            title:Hide()
+        end
+
         UpdateWidgets()
         color:SetColor(t.cfg.buttonConfig.text[which].color)
         font:SetSelectedValue(t.cfg.buttonConfig.text[which].font[1])
@@ -501,7 +492,7 @@ builder["cast"] = function(parent)
 
     local mouseoverCastDropdown = AF.CreateDropdown(pane, 150)
     AF.SetPoint(mouseoverCastDropdown, "TOPLEFT", selfCast, "BOTTOMLEFT", 0, -25)
-    mouseoverCastDropdown:SetItems(GetModifierItems())
+    mouseoverCastDropdown:SetItems(AF.GetDropdownItems_Modifier())
     mouseoverCastDropdown:SetOnSelect(function(value)
         pane.t.sharedCfg.cast.mouseover[2] = value
         AF.Fire("BFI_UpdateModule", "actionBars", "main")
@@ -517,7 +508,7 @@ builder["cast"] = function(parent)
 
     local focusCastDropdown = AF.CreateDropdown(pane, 150)
     AF.SetPoint(focusCastDropdown, "TOPLEFT", mouseoverCastDropdown, 185, 0)
-    focusCastDropdown:SetItems(GetModifierItems())
+    focusCastDropdown:SetItems(AF.GetDropdownItems_Modifier())
     focusCastDropdown:SetOnSelect(function(value)
         pane.t.sharedCfg.cast.focus[2] = value
         AF.Fire("BFI_UpdateModule", "actionBars", "main")
@@ -631,7 +622,7 @@ builder["tooltip"] = function(parent)
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
     AF.SetPoint(anchorPoint, "TOPLEFT", tooltipDropdown, "BOTTOMLEFT", 0, -25)
-    anchorPoint:SetItems(GetAnchorPointItems())
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.tooltip.position[1] = value
     end)
@@ -639,7 +630,7 @@ builder["tooltip"] = function(parent)
     local relativePoint = AF.CreateDropdown(pane, 150)
     relativePoint:SetLabel(L["Relative Point"])
     AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
-    relativePoint:SetItems(GetAnchorPointItems())
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     relativePoint:SetOnSelect(function(value)
         pane.t.cfg.tooltip.position[2] = value
     end)
@@ -750,16 +741,7 @@ builder["arrangement"] = function(parent)
     local arrangement = AF.CreateDropdown(pane, 200)
     arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
-    arrangement:SetItems({
-        {text = L["Left to Right then Top"], value = "left_to_right_then_top"},
-        {text = L["Left to Right then Bottom"], value = "left_to_right_then_bottom"},
-        {text = L["Right to Left then Top"], value = "right_to_left_then_top"},
-        {text = L["Right to Left then Bottom"], value = "right_to_left_then_bottom"},
-        {text = L["Top to Bottom then Left"], value = "top_to_bottom_then_left"},
-        {text = L["Top to Bottom then Right"], value = "top_to_bottom_then_right"},
-        {text = L["Bottom to Top then Left"], value = "bottom_to_top_then_left"},
-        {text = L["Bottom to Top then Right"], value = "bottom_to_top_then_right"},
-    })
+    arrangement:SetItems(AF.GetDropdownItems_ComplexOrientation())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.orientation = value
         AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
@@ -906,6 +888,110 @@ builder["flyoutDirection"] = function(parent)
     function pane.Load(t)
         pane.t = t
         flyoutDirection:SetSelectedValue(t.cfg.buttonConfig.flyoutDirection)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- visibility
+---------------------------------------------------------------------
+builder["visibility"] = function(parent)
+    if created["visibility"] then return created["visibility"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_Visibility", nil, 105)
+    created["visibility"] = pane
+
+    local visibility = AF.CreateScrollEditBox(pane, nil, nil, 335, 65)
+    AF.SetPoint(visibility, "TOPLEFT", 15, -25)
+    visibility:SetMaxLetters(256)
+
+    local confirm = visibility:SetConfirmButton(function(value)
+        if AF.IsBlank(value) then
+            pane.t.cfg.visibility = nil
+        else
+            pane.t.cfg.visibility = value
+        end
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end, nil, "NONE")
+    AF.SetPoint(confirm, "BOTTOMLEFT", visibility, "BOTTOMRIGHT", -1, 0)
+
+    local title = AF.CreateFontString(pane, L["Visibility"])
+    AF.SetPoint(title, "BOTTOMLEFT", visibility, "TOPLEFT", 2, 2)
+
+    local reset = AF.CreateButton(pane, _G.RESET, "red_hover", 50, 18)
+    AF.SetPoint(reset, "BOTTOMRIGHT", visibility, "TOPRIGHT", 0, 2)
+    reset:SetOnClick(function()
+        pane.t.cfg.visibility = AB.GetDefaultVisibility(pane.t.id)
+        visibility:SetText(pane.t.cfg.visibility or "")
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        visibility:SetText(t.cfg.visibility or "")
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- paging
+---------------------------------------------------------------------
+builder["paging"] = function(parent)
+    if created["paging"] then return created["paging"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_Paging", nil, 105)
+    created["paging"] = pane
+
+    local paging = AF.CreateScrollEditBox(pane, nil, nil, 335, 65)
+    AF.SetPoint(paging, "TOPLEFT", 15, -25)
+    paging:SetMaxLetters(256)
+
+    local selected = AF.player.class
+
+    local confirm = paging:SetConfirmButton(function(value)
+        if AF.IsBlank(value) then
+            pane.t.cfg.paging[selected] = nil
+        else
+            pane.t.cfg.paging[selected] = value
+        end
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end, nil, "NONE")
+    AF.SetPoint(confirm, "BOTTOMLEFT", paging, "BOTTOMRIGHT", -1, 0)
+
+    local title = AF.CreateFontString(pane, L["Paging"])
+    AF.SetPoint(title, "BOTTOMLEFT", paging, "TOPLEFT", 2, 2)
+
+    local reset = AF.CreateButton(pane, _G.RESET, "red_hover", 50, 18)
+    AF.SetPoint(reset, "BOTTOMRIGHT", paging, "TOPRIGHT", 0, 2)
+    reset:SetOnClick(function()
+        pane.t.cfg.paging[selected] = AB.GetDefaultPaging(pane.t.id, selected)
+        paging:SetText(pane.t.cfg.paging[selected] or "")
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    local class = AF.CreateDropdown(pane, 120, nil, "vertical")
+    AF.SetHeight(class, 18)
+    AF.SetPoint(class, "BOTTOMRIGHT", reset, "BOTTOMLEFT", -2, 0)
+    class:SetItems(AF.GetDropdownItems_Class())
+    class:SetOnSelect(function(value)
+        selected = value
+        paging:SetText(pane.t.cfg.paging[selected] or "")
+    end)
+
+    local tips = AF.CreateTipsButton(pane)
+    AF.SetPoint(tips, "TOPLEFT", paging, "TOPRIGHT", 0, 0)
+    tips:SetTips(L["Action Bar Index"], L["The index of each action bar is shown in square brackets on the right side of the list"])
+
+    function pane.IsApplicable(t)
+        return t.id:find("^bar") or t.id:find("^classbar")
+    end
+
+    function pane.Load(t)
+        pane.t = t
+        paging:SetText(t.cfg.paging[selected] or "")
+        class:SetSelectedValue(selected)
     end
 
     return pane

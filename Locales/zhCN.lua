@@ -65,3 +65,9 @@ L["A separate UI scale is saved for each resolution"] = "不同分辨率下会�
 -- options: unit frames
 ---------------------------------------------------------------------
 L["Hold %s while clicking to copy all settings for this unit frame"] = "按住 %s 并点击以复制此单位框体的所有设置"
+
+---------------------------------------------------------------------
+-- options: action bars
+---------------------------------------------------------------------
+L["Action Bar Index"] = "动作条索引"
+L["The index of each action bar is shown in square brackets on the right side of the list"] = "每个动作条的索引显示在列表右侧的方括号中"

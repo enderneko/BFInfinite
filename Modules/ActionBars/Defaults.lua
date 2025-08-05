@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+---@class ActionBars
 local AB = BFI.ActionBars
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -108,7 +109,6 @@ do
             flyoutDirection = "UP",
             hideElements = {
                 hotkey = false,
-                count = false,
                 macro = false,
             },
             text = {
@@ -218,4 +218,12 @@ end)
 
 function AB.GetDefaults()
     return AF.Copy(defaults)
+end
+
+function AB.GetDefaultVisibility(bar)
+    return defaults.barConfig[bar].visibility
+end
+
+function AB.GetDefaultPaging(bar, class)
+    return defaults.barConfig[bar].paging[class]
 end

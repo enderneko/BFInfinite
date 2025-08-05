@@ -511,7 +511,7 @@ local lineFormatters = {
 
         local name
         if config.includeSelf then
-            for member in AF.GroupPlayersIterator() do
+            for member in AF.IterateGroupPlayers() do
                 name = AF.TruncateStringByLength(UnitName(member), config.enChars, config.nonEnChars)
                 if name and UnitIsUnit(member .. "target", unit) then
                     if UnitIsUnit(member, "player") then
@@ -522,7 +522,7 @@ local lineFormatters = {
                 end
             end
         else
-            for member in AF.GroupPlayersIterator() do
+            for member in AF.IterateGroupPlayers() do
                 name = AF.TruncateStringByLength(UnitName(member), config.enChars, config.nonEnChars)
                 if name and UnitIsUnit(member .. "target", unit) and not UnitIsUnit(member, "player") then
                     tinsert(targetedBy, AF.WrapTextInColor(name, AF.UnitClassBase(member) or "white"))

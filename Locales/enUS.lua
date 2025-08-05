@@ -35,15 +35,6 @@ select(2, ...).L = setmetatable({
     ["targetCounter"] = "Target Counter",
     ["targetHighlight"] = "Target Highlight",
     ["threatGlow"] = "Threat Glow",
-    ["TOPLEFT"] = "Top Left",
-    ["TOPRIGHT"] = "Top Right",
-    ["BOTTOMLEFT"] = "Bottom Left",
-    ["BOTTOMRIGHT"] = "Bottom Right",
-    ["CENTER"] = "Center",
-    ["LEFT"] = "Left",
-    ["RIGHT"] = "Right",
-    ["TOP"] = "Top",
-    ["BOTTOM"] = "Bottom",
 }, {
     __index = function(self, Key)
         if (Key ~= nil) then

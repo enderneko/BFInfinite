@@ -116,7 +116,7 @@ function CacheGroup(_, event)
         return
     end
 
-    for unit in AF.GroupPlayersIterator() do
+    for unit in AF.IterateGroupPlayers() do
         local name = AF.UnitFullName(unit)
         if name then
             local class = UnitClassBase(unit)
