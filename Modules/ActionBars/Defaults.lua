@@ -220,10 +220,27 @@ function AB.GetDefaults()
     return AF.Copy(defaults)
 end
 
-function AB.GetDefaultVisibility(bar)
-    return defaults.barConfig[bar].visibility
+function AB.Reset()
+    BFI.vars.profile.actionBars = AF.Copy(defaults)
+    AB.config = BFI.vars.profile.actionBars
 end
 
-function AB.GetDefaultPaging(bar, class)
-    return defaults.barConfig[bar].paging[class]
+function AB.ResetGeneralAndShared()
+    wipe(AB.config.general)
+    wipe(AB.config.sharedButtonConfig)
+    AF.Merge(AB.config.general, AF.Copy(defaults.general))
+    AF.Merge(AB.config.sharedButtonConfig, AF.Copy(defaults.sharedButtonConfig))
+end
+
+function AB.ResetBar(bar)
+    wipe(AB.config.barConfig[bar])
+    AF.Merge(AB.config.barConfig[bar], AF.Copy(defaults.barConfig[bar]))
+end
+
+function AB.ResetVisibility(bar)
+    AB.config.barConfig[bar].visibility = defaults.barConfig[bar].visibility
+end
+
+function AB.ResetPaging(bar, class)
+    AB.config.barConfig[bar].paging[class] = defaults.barConfig[bar].paging[class]
 end

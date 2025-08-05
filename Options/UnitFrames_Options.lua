@@ -537,7 +537,7 @@ builder["copy,paste,reset"] = function(parent)
                 LoadIndicatorConfig(pane.t)
             end
 
-            AF.Fire("BFI_RefreshOptionsList", pane.t.module)
+            AF.Fire("BFI_RefreshOptions", pane.t.module)
         end)
     end)
 
@@ -573,7 +573,7 @@ builder["copy,paste,reset"] = function(parent)
                 LoadIndicatorConfig(pane.t)
             end
 
-            AF.Fire("BFI_RefreshOptionsList", pane.t.module) -- and reload option panes
+            AF.Fire("BFI_RefreshOptions", pane.t.module) -- and reload option panes
         end)
     end)
 

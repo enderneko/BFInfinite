@@ -50,7 +50,7 @@ builder["copy,paste,reset"] = function(parent)
     created["copy,paste,reset"] = pane
     pane:Hide()
 
-    local copiedId, copiedOwnerName, copiedTime, copiedCfg
+    local copiedSetting, copiedOwnerName, copiedTime, copiedCfg
 
     local copy = AF.CreateButton(pane, L["Copy"], "BFI_hover", 107, 20)
     AF.SetPoint(copy, "LEFT", 15, 0)
@@ -63,8 +63,11 @@ builder["copy,paste,reset"] = function(parent)
     AF.SetPoint(paste, "TOPLEFT", copy, "TOPRIGHT", 7, 0)
 
     copy:SetOnClick(function()
-        copiedId = pane.t.id
+        copiedSetting = pane.t.setting
         copiedCfg = AF.Copy(pane.t.cfg)
+        copiedCfg.position = nil
+        copiedCfg.paging = nil
+        copiedCfg.visibility = nil
         copiedOwnerName = pane.t.ownerName
         copiedTime = time()
         AF.FrameFadeInOut(copy.tick, 0.15)
@@ -76,11 +79,24 @@ builder["copy,paste,reset"] = function(parent)
             .. copiedOwnerName .. AF.WrapTextInColor(" -> ", "darkgray") .. pane.t.ownerName .. "\n"
             .. AF.WrapTextInColor(AF.FormatRelativeTime(copiedTime), "darkgray")
 
-        local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
+        local dialog = AF.GetDialog(BFIOptionsFrame_ActionBarsPanel, text, 250)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
-            AF.MergeExistingKeys(pane.t.cfg, copiedCfg)
+            for k, v in next, copiedCfg do
+                if k == "buttonConfig" then
+                    for k2, v2 in next, v do
+                        if k2 == "text" then
+                            AF.MergeExistingKeys(pane.t.cfg.buttonConfig.text, v2)
+                        else
+                            pane.t.cfg.buttonConfig[k2] = v2
+                        end
+                    end
+                else
+                    pane.t.cfg[k] = v
+                end
+            end
             AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+            AF.Fire("BFI_RefreshOptions", "actionBars")
         end)
     end)
 
@@ -88,20 +104,41 @@ builder["copy,paste,reset"] = function(parent)
     local reset = AF.CreateButton(pane, _G.RESET, "red_hover", 107, 20)
     AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 7, 0)
     reset:SetOnClick(function()
-        local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n" .. pane.t.ownerName
+        local isResetAll = IsShiftKeyDown()
+        local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n" .. (isResetAll and L["All Settings"] or pane.t.ownerName)
 
-        local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
+        local dialog = AF.GetDialog(BFIOptionsFrame_ActionBarsPanel, text, 250)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
-            -- TODO:
-            -- wipe(pane.t.cfg)
+            if isResetAll then
+                AB.Reset()
+                AF.Fire("BFI_UpdateModule", "actionBars")
+            else
+                if pane.t.id == "general" then
+                    AB.ResetGeneralAndShared()
+                    AF.Fire("BFI_UpdateModule", "actionBars")
+                else
+                    AB.ResetBar(pane.t.id)
+                    AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+                end
+            end
+            AF.Fire("BFI_RefreshOptions", "actionBars")
         end)
     end)
+
+    local resetTooltips = {_G.RESET, L["Hold %s while clicking to reset all settings"]:format(AF.WrapTextInColor("Shift", "BFI"))}
+    reset._tooltipOwner = BFIOptionsFrame_ActionBarsPanel
+    reset:HookOnEnter(function()
+        if pane.t.id == "general" then
+            AF.ShowTooltip(reset, "TOPLEFT", 0, 2, resetTooltips)
+        end
+    end)
+    reset:HookOnLeave(AF.HideTooltip)
 
     function pane.Load(t)
         pane.t = t
         copy:SetEnabled(t.id ~= "general")
-        paste:SetEnabled(t.id ~= "general" and copiedId == t.id)
+        paste:SetEnabled(t.id ~= "general" and t.id ~= "button" and copiedSetting == t.setting)
     end
 
     return pane
@@ -922,7 +959,7 @@ builder["visibility"] = function(parent)
     local reset = AF.CreateButton(pane, _G.RESET, "red_hover", 50, 18)
     AF.SetPoint(reset, "BOTTOMRIGHT", visibility, "TOPRIGHT", 0, 2)
     reset:SetOnClick(function()
-        pane.t.cfg.visibility = AB.GetDefaultVisibility(pane.t.id)
+        AB.ResetVisibility(pane.t.id)
         visibility:SetText(pane.t.cfg.visibility or "")
         AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
     end)
@@ -966,7 +1003,7 @@ builder["paging"] = function(parent)
     local reset = AF.CreateButton(pane, _G.RESET, "red_hover", 50, 18)
     AF.SetPoint(reset, "BOTTOMRIGHT", paging, "TOPRIGHT", 0, 2)
     reset:SetOnClick(function()
-        pane.t.cfg.paging[selected] = AB.GetDefaultPaging(pane.t.id, selected)
+        AB.ResetPaging(pane.t.id, selected)
         paging:SetText(pane.t.cfg.paging[selected] or "")
         AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
     end)

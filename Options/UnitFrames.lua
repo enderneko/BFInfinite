@@ -447,7 +447,7 @@ LoadList = function(main, sub)
     listItems[1]:SilentClick()
 end
 
-AF.RegisterCallback("BFI_RefreshOptionsList", function(_, which)
+AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
     if which ~= "unitFrames" or not contentPane then return end
     lastScroll = contentPane.indicatorList:GetScroll()
     LoadList(curMain, curSub) -- will load lastIndicator

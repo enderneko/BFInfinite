@@ -76,11 +76,11 @@ local function CreateContentPane()
         button.ownerName = item.text
 
         if item.value == "general" then
-            button.cfg = BFI.vars.profile.actionBars.general
-            button.sharedCfg = BFI.vars.profile.actionBars.sharedButtonConfig
+            button.cfg = AB.config.general
+            button.sharedCfg = AB.config.sharedButtonConfig
         else
-            button.target = BFI.ActionBars.bars[item.value]
-            button.cfg = BFI.vars.profile.actionBars.barConfig[item.value]
+            button.target = AB.bars[item.value]
+            button.cfg = AB.config.barConfig[item.value]
         end
 
         button:SetTextColor(button.cfg.enabled and "white" or "disabled")
@@ -108,7 +108,11 @@ end
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
+local lastSelf
+
 LoadOptions = function(self)
+    lastSelf = self
+
     local scroll = contentPane.scrollSettings
     local options = F.GetActionBarOptions(scroll.scrollContent, self)
 
@@ -150,6 +154,22 @@ LoadOptions = function(self)
         end
     end)
 end
+
+AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
+    if which ~= "actionBars" or not contentPane then return end
+    for _, button in next, contentPane.list:GetWidgets() do
+        -- refresh cfg
+        if button.id == "general" then
+            button.cfg = AB.config.general
+            button.sharedCfg = AB.config.sharedButtonConfig
+        else
+            button.cfg = AB.config.barConfig[button.id]
+        end
+        button:SetTextColor(button.cfg.enabled and "white" or "disabled")
+    end
+    LoadOptions(lastSelf)
+end)
+
 
 ---------------------------------------------------------------------
 -- show
