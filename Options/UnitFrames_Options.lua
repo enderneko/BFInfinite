@@ -455,7 +455,7 @@ builder["copy,paste,reset"] = function(parent)
     created["copy,paste,reset"] = pane
     pane:Hide()
 
-    local copiedModule, copiedId, copiedOwnerName, copiedTime, copiedCfg, isWholeCfg
+    local copiedId, copiedOwnerName, copiedTime, copiedCfg, isWholeCfg
 
     local copy = AF.CreateButton(pane, L["Copy"], "BFI_hover", 107, 20)
     AF.SetPoint(copy, "LEFT", 15, 0)
@@ -470,13 +470,16 @@ builder["copy,paste,reset"] = function(parent)
     copy:SetOnClick(function()
         if pane.t.id:find("^general") and IsShiftKeyDown() then
             isWholeCfg = true
-            copiedCfg = AF.Copy(BFI.vars.profile[pane.t.module][pane.t.owner])
+            copiedCfg = AF.Copy(UF.config[pane.t.owner])
+            copiedCfg.general.position = nil
         else
             isWholeCfg = false
             copiedId = pane.t.id
             copiedCfg = AF.Copy(pane.t.cfg)
+            if pane.t.id:find("^general") then
+                copiedCfg.position = nil
+            end
         end
-        copiedModule = pane.t.module
         copiedOwnerName = pane.t.ownerName
         copiedTime = time()
         AF.FrameFadeInOut(copy.tick, 0.15)
@@ -508,18 +511,16 @@ builder["copy,paste,reset"] = function(parent)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
             if pane.t.id:find("^general") then
-                local pos = pane.t.cfg.position
                 if isWholeCfg then
-                    AF.MergeExistingKeys(BFI.vars.profile[pane.t.module][pane.t.owner].general, copiedCfg.general)
-                    for k, t in next, BFI.vars.profile[pane.t.module][pane.t.owner].indicators do
+                    AF.MergeExistingKeys(UF.config[pane.t.owner].general, copiedCfg.general)
+                    for k, t in next, UF.config[pane.t.owner].indicators do
                         if copiedCfg.indicators[k] then
-                            AF.MergeExistingKeys(BFI.vars.profile[pane.t.module][pane.t.owner].indicators[k], copiedCfg.indicators[k])
+                            AF.MergeExistingKeys(UF.config[pane.t.owner].indicators[k], copiedCfg.indicators[k])
                         else
-                            BFI.vars.profile[pane.t.module][pane.t.owner].indicators[k].enabled = false
+                            UF.config[pane.t.owner].indicators[k].enabled = false
                         end
                     end
-                    pane.t.cfg.position = pos -- restore position
-                    AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner)
+                    AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner)
                 else
                     -- NOTE: special "groupBy" handling
                     if pane.t.cfg.groupingOrder and not pane.t.cfg.groupBy then
@@ -529,15 +530,14 @@ builder["copy,paste,reset"] = function(parent)
                     if pane.t.cfg.groupBy == "nil" then
                         pane.t.cfg.groupBy = nil
                     end
-                    pane.t.cfg.position = pos -- restore position
-                    AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+                    AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
                 end
             else
                 AF.MergeExistingKeys(pane.t.cfg, copiedCfg)
                 LoadIndicatorConfig(pane.t)
             end
 
-            AF.Fire("BFI_RefreshOptions", pane.t.module)
+            AF.Fire("BFI_RefreshOptions", "unitFrames")
         end)
     end)
 
@@ -561,19 +561,19 @@ builder["copy,paste,reset"] = function(parent)
             wipe(pane.t.cfg)
 
             if pane.t.id:find("^general") then
-                AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "general"))
                 if which == "All Settings" then
-                    AF.Merge(BFI.vars.profile[pane.t.module][pane.t.owner].indicators, UF.GetFrameDefaults(pane.t.owner, "indicator"))
-                    AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner)
+                    UF.ResetFrame(pane.t.owner)
+                    AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner)
                 else
-                    AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+                    UF.ResetFrame(pane.t.owner, "general")
+                    AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
                 end
             else
-                AF.Merge(pane.t.cfg, UF.GetFrameDefaults(pane.t.owner, "indicator", pane.t.id))
+                UF.ResetFrame(pane.t.owner, pane.t.id)
                 LoadIndicatorConfig(pane.t)
             end
 
-            AF.Fire("BFI_RefreshOptions", pane.t.module) -- and reload option panes
+            AF.Fire("BFI_RefreshOptions", "unitFrames") -- and reload option panes
         end)
     end)
 
@@ -588,7 +588,7 @@ builder["copy,paste,reset"] = function(parent)
 
     function pane.Load(t)
         pane.t = t
-        paste:SetEnabled(t.module == copiedModule and t.id == copiedId)
+        paste:SetEnabled(t.id == copiedId)
 
         if t.id:find("^general") then
             AF.ApplyCombatProtectionToFrame(parent, 0, 0, 0, 0)
@@ -625,7 +625,7 @@ builder["enabled"] = function(parent)
         UpdateColor(checked)
         -- pane.t is list button that carries info
         if pane.t.id:find("^general") then
-            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner)
+            AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner)
         else
             pane.t:SetTextColor(checked and "white" or "disabled")
             LoadIndicatorConfig(pane.t)
@@ -674,7 +674,7 @@ builder["width,height"] = function(parent)
         pane.t.cfg.width = value
         if pane.t.id:find("^general") then
             ShowPreviewRect()
-            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+            AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
         else
             LoadIndicatorConfig(pane.t)
         end
@@ -686,7 +686,7 @@ builder["width,height"] = function(parent)
         pane.t.cfg.height = value
         if pane.t.id:find("^general") then
             ShowPreviewRect()
-            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+            AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
         else
             LoadIndicatorConfig(pane.t)
         end
@@ -1137,7 +1137,7 @@ builder["bgColor,borderColor"] = function(parent)
         pane.t.cfg.bgColor[3] = b
         pane.t.cfg.bgColor[4] = a
         if pane.t.id:find("^general") then
-            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+            AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
         else
             LoadIndicatorConfig(pane.t)
         end
@@ -1151,7 +1151,7 @@ builder["bgColor,borderColor"] = function(parent)
         pane.t.cfg.borderColor[3] = b
         pane.t.cfg.borderColor[4] = a
         if pane.t.id:find("^general") then
-            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+            AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
         else
             LoadIndicatorConfig(pane.t)
         end
@@ -3610,7 +3610,7 @@ builder["oorAlpha"] = function(parent)
     AF.SetPoint(oorAlphaSlider, "LEFT", 15, 0)
     oorAlphaSlider:SetAfterValueChanged(function(value)
         pane.t.cfg.oorAlpha = value
-        -- AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        -- AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
         if pane.t.id == "general_single" then
             pane.t.target.oorAlpha = value
             pane.t.target.states.wasInRange = nil
@@ -3662,7 +3662,7 @@ builder["partyArrangement"] = function(parent)
     arrangement:SetItems(AF.GetDropdownItems_SimpleOrientation())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.orientation = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local anchorPoint = AF.CreateDropdown(pane, 150)
@@ -3671,21 +3671,21 @@ builder["partyArrangement"] = function(parent)
     anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint(true))
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.anchor = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local spacing = AF.CreateSlider(pane, L["Spacing"], 150, -1, 100, 1, nil, true)
     AF.SetPoint(spacing, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
     spacing:SetOnValueChanged(function(value)
         pane.t.cfg.spacing = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local showPlayer = AF.CreateCheckButton(pane, L["Show Player"])
     AF.SetPoint(showPlayer, "TOPLEFT", arrangement, "BOTTOMLEFT", 0, -10)
     showPlayer:SetOnCheck(function(checked)
         pane.t.cfg.showPlayer = checked
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local sortByRole = AF.CreateCheckButton(pane, L["Sort By Role"])
@@ -3708,7 +3708,7 @@ builder["partyArrangement"] = function(parent)
 
     local function callback(t)
         pane.t.cfg.groupingOrder = AF.TableToString(t, ",")
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end
     sorter:SetCallback(callback)
 
@@ -3727,7 +3727,7 @@ builder["partyArrangement"] = function(parent)
             sortByRole:SetText(L["Sort By Role"])
             sorter:Hide()
         end
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     function pane.Load(t)
@@ -3764,7 +3764,7 @@ builder["raidArrangement"] = function(parent)
     arrangement:SetItems(AF.GetDropdownItems_ComplexOrientation())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.orientation = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local anchorPoint = AF.CreateDropdown(pane, 120)
@@ -3773,7 +3773,7 @@ builder["raidArrangement"] = function(parent)
     anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint(true))
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.anchor = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local sortByRole = AF.CreateCheckButton(pane, L["Sort By Role"])
@@ -3818,7 +3818,7 @@ builder["raidArrangement"] = function(parent)
             end
             UpdateGroupButtons()
             pane.t.cfg.groupFilter = AF.TableToString(pane.groupFilter, ",", true)
-            AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+            AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
         end)
 
         if i == 1 then
@@ -3832,14 +3832,14 @@ builder["raidArrangement"] = function(parent)
     AF.SetPoint(spacingX, "TOPLEFT", groups[1], "BOTTOMLEFT", 0, -25)
     spacingX:SetOnValueChanged(function(value)
         pane.t.cfg.spacingX = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local spacingY = AF.CreateSlider(pane, L["Spacing"] .. " Y", 150, -1, 100, 1, nil, true)
     AF.SetPoint(spacingY, "TOPLEFT", spacingX, 185, 0)
     spacingY:SetOnValueChanged(function(value)
         pane.t.cfg.spacingY = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local maxColumns = AF.CreateSlider(pane, L["Max Columns"], 150, 1, 8, 1, nil, true)
@@ -3849,7 +3849,7 @@ builder["raidArrangement"] = function(parent)
     AF.SetPoint(unitsPerColumn, "TOPLEFT", maxColumns, 185, 0)
     unitsPerColumn:SetOnValueChanged(function(value)
         pane.t.cfg.unitsPerColumn = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     maxColumns:SetOnValueChanged(function(value)
@@ -3860,12 +3860,12 @@ builder["raidArrangement"] = function(parent)
             pane.t.cfg.unitsPerColumn = maxUnitsPerColumn
             unitsPerColumn:SetValue(maxUnitsPerColumn)
         end
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local function callback(t)
         pane.t.cfg.groupingOrder = AF.TableToString(t, ",")
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end
     sorter:SetCallback(callback)
 
@@ -3882,7 +3882,7 @@ builder["raidArrangement"] = function(parent)
             pane.t.cfg.groupingOrder = ""
             sorter:Hide()
         end
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     function pane.Load(t)
@@ -3926,7 +3926,7 @@ builder["groupArrangement"] = function(parent)
     arrangement:SetItems(AF.GetDropdownItems_SimpleOrientation())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.orientation = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local anchorPoint = AF.CreateDropdown(pane, 150)
@@ -3936,14 +3936,14 @@ builder["groupArrangement"] = function(parent)
     anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint(true))
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.anchor = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     local spacing = AF.CreateSlider(pane, L["Spacing"], 150, -1, 100, 1, nil, true)
     AF.SetPoint(spacing, "TOPLEFT", arrangement, "BOTTOMLEFT", 0, -25)
     spacing:SetOnValueChanged(function(value)
         pane.t.cfg.spacing = value
-        AF.Fire("BFI_UpdateModule", pane.t.module, pane.t.owner, true)
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
     function pane.Load(t)

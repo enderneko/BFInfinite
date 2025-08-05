@@ -344,7 +344,6 @@ end
 
 local function ListItem_LoadOptions(self)
     -- button carries frame/indicator/config data
-    -- AF.Fire("BFI_CheckCopiedInfo", self.module, self.id, self.ownerName, self.cfg)
 
     lastIndicator = self.id
 
@@ -419,7 +418,6 @@ LoadList = function(main, sub)
             button:SetTextColor(button.cfg.enabled and "white" or "disabled")
         end
 
-        button.module = "unitFrames"
         button.id = setting
         button.ownerName = L[owner]
         button.owner = lowerSub

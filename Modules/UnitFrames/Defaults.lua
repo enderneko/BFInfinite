@@ -6331,35 +6331,40 @@ function UF.GetDefaults()
     return AF.Copy(defaults, style1)
 end
 
-function UF.GetFrameDefaults(which, config, indicator)
-    if config == "indicator" then
-        local t
+function UF.Reset()
+    BFI.vars.profile.unitFrames = AF.Copy(defaults, style1)
+    UF.config = BFI.vars.profile.unitFrames
+end
 
-        if which == "party" or which == "raid" or which == "boss" then
-            t = defaults[which]["indicators"]
+function UF.ResetFrame(frame, config)
+    if config == "general" then
+        wipe(UF.config[frame]["general"])
+        if defaults[frame] then
+            AF.Merge(UF.config[frame]["general"], AF.Copy(defaults[frame]["general"]))
         else
-            t = style1[which]["indicators"]
+            AF.Merge(UF.config[frame]["general"], AF.Copy(style1[frame]["general"]))
         end
-
-        if indicator then
-            return AF.Copy(t[indicator])
+    elseif config then -- indicator
+        wipe(UF.config[frame]["indicators"][config])
+        if defaults[frame] then
+            AF.Merge(UF.config[frame]["indicators"][config], AF.Copy(defaults[frame]["indicators"][config]))
         else
-            return AF.Copy(t)
+            AF.Merge(UF.config[frame]["indicators"][config], AF.Copy(style1[frame]["indicators"][config]))
         end
-
-    elseif config == "general" then
-        if which == "party" or which == "raid" or which == "boss" then
-            return AF.Copy(defaults[which]["general"])
+    else -- all
+        wipe(UF.config[frame])
+        if defaults[frame] then
+            AF.Merge(UF.config[frame], AF.Copy(defaults[frame]))
         else
-            return AF.Copy(style1[which]["general"])
+            AF.Merge(UF.config[frame], AF.Copy(style1[frame]))
         end
     end
 end
 
-function UF.GetStyleDefaults(style)
-    if style == "style1" then
-        return AF.Copy(style1)
-    elseif style == "style2" then
-        return AF.Copy(style2)
-    end
-end
+-- function UF.GetStyleDefaults(style)
+--     if style == "style1" then
+--         return AF.Copy(style1)
+--     elseif style == "style2" then
+--         return AF.Copy(style2)
+--     end
+-- end
