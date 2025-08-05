@@ -38,6 +38,15 @@ local settings = {
         "visibility",
         "paging",
     },
+    vehicle = {
+        "enabled",
+        "size",
+    },
+    extra = {
+        "enabled",
+        "zoneAbility",
+        "extraAction",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -104,41 +113,47 @@ builder["copy,paste,reset"] = function(parent)
     local reset = AF.CreateButton(pane, _G.RESET, "red_hover", 107, 20)
     AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 7, 0)
     reset:SetOnClick(function()
-        local isResetAll = IsShiftKeyDown()
+        local isResetAll -- = IsShiftKeyDown()
         local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n" .. (isResetAll and L["All Settings"] or pane.t.ownerName)
 
         local dialog = AF.GetDialog(BFIOptionsFrame_ActionBarsPanel, text, 250)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
-            if isResetAll then
-                AB.Reset()
-                AF.Fire("BFI_UpdateModule", "actionBars")
-            else
+            -- if isResetAll then
+            --     AB.Reset()
+            --     AF.Fire("BFI_UpdateModule", "actionBars")
+            -- else
                 if pane.t.id == "general" then
                     AB.ResetGeneralAndShared()
                     AF.Fire("BFI_UpdateModule", "actionBars")
+                elseif pane.t.id == "vehicle" then
+                    AB.ResetVehicle()
+                    AF.Fire("BFI_UpdateModule", "actionBars", "vehicle")
+                elseif pane.t.id == "extra" then
+                    AB.ResetExtra()
+                    AF.Fire("BFI_UpdateModule", "actionBars", "extra")
                 else
                     AB.ResetBar(pane.t.id)
                     AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
                 end
-            end
+            -- end
             AF.Fire("BFI_RefreshOptions", "actionBars")
         end)
     end)
 
-    local resetTooltips = {_G.RESET, L["Hold %s while clicking to reset all settings"]:format(AF.WrapTextInColor("Shift", "BFI"))}
-    reset._tooltipOwner = BFIOptionsFrame_ActionBarsPanel
-    reset:HookOnEnter(function()
-        if pane.t.id == "general" then
-            AF.ShowTooltip(reset, "TOPLEFT", 0, 2, resetTooltips)
-        end
-    end)
-    reset:HookOnLeave(AF.HideTooltip)
+    -- local resetTooltips = {_G.RESET, L["Hold %s while clicking to reset all settings"]:format(AF.WrapTextInColor("Shift", "BFI"))}
+    -- reset._tooltipOwner = BFIOptionsFrame_ActionBarsPanel
+    -- reset:HookOnEnter(function()
+    --     if pane.t.id == "general" then
+    --         AF.ShowTooltip(reset, "TOPLEFT", 0, 2, resetTooltips)
+    --     end
+    -- end)
+    -- reset:HookOnLeave(AF.HideTooltip)
 
     function pane.Load(t)
         pane.t = t
         copy:SetEnabled(t.id ~= "general")
-        paste:SetEnabled(t.id ~= "general" and t.id ~= "button" and copiedSetting == t.setting)
+        paste:SetEnabled(t.id ~= "general" and copiedSetting == t.setting)
     end
 
     return pane
@@ -371,6 +386,10 @@ local function CreateTextPane(parent, which, label)
     local font = AF.CreateDropdown(pane, 150)
     AF.SetPoint(font, "TOPLEFT", 15, -25)
     font:SetItems(AF.LSM_GetFontDropdownItems())
+    font:SetOnSelect(function(value)
+        pane.t.cfg.buttonConfig.text[which].font[1] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
 
     label = AF.GetGradientText(label, "BFI", "white")
 
@@ -767,6 +786,30 @@ builder["width,height"] = function(parent)
 end
 
 ---------------------------------------------------------------------
+-- size
+---------------------------------------------------------------------
+builder["size"] = function(parent)
+    if created["size"] then return created["size"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_Size", nil, 55)
+    created["size"] = pane
+
+    local size = AF.CreateSlider(pane, L["Button Size"], 150, 10, 100, 1, nil, true)
+    AF.SetPoint(size, "LEFT", 15, 0)
+    size:SetAfterValueChanged(function(value)
+        pane.t.cfg.size = value
+        AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        size:SetValue(t.cfg.size)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- arrangement
 ---------------------------------------------------------------------
 builder["arrangement"] = function(parent)
@@ -1029,6 +1072,158 @@ builder["paging"] = function(parent)
         pane.t = t
         paging:SetText(t.cfg.paging[selected] or "")
         class:SetSelectedValue(selected)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- zoneAbility
+---------------------------------------------------------------------
+builder["zoneAbility"] = function(parent)
+    if created["zoneAbility"] then return created["zoneAbility"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_ZoneAbility", nil, 63)
+    created["zoneAbility"] = pane
+
+    local title = AF.CreateFontString(pane, AF.GetGradientText(L["Zone Ability"], "BFI", "white"))
+    AF.SetPoint(title, "TOPLEFT", 15, -8)
+
+    local hideTexture = AF.CreateCheckButton(pane, L["Hide Texture"])
+    AF.SetPoint(hideTexture, "TOPLEFT", 15, -30)
+    hideTexture:SetOnCheck(function(checked)
+        pane.t.cfg.zoneAbility.hideTexture = checked
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local scale = AF.CreateSlider(pane, L["Scale"], 150, 0.1, 2, 0.01, true, true)
+    AF.SetPoint(scale, "TOPLEFT", hideTexture, 185, 0)
+    scale:SetAfterValueChanged(function(value)
+        pane.t.cfg.zoneAbility.scale = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        scale:SetValue(t.cfg.zoneAbility.scale)
+        hideTexture:SetChecked(t.cfg.zoneAbility.hideTexture)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- extraAction
+---------------------------------------------------------------------
+builder["extraAction"] = function(parent)
+    if created["extraAction"] then return created["extraAction"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_ExtraAction", nil, 257)
+    created["extraAction"] = pane
+
+    local title = AF.CreateFontString(pane, AF.GetGradientText(L["Extra Action"], "BFI", "white"))
+    AF.SetPoint(title, "TOPLEFT", 15, -8)
+
+    local hideTexture = AF.CreateCheckButton(pane, L["Hide Texture"])
+    AF.SetPoint(hideTexture, "TOPLEFT", 15, -30)
+    hideTexture:SetOnCheck(function(checked)
+        pane.t.cfg.extraAction.hideTexture = checked
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local scale = AF.CreateSlider(pane, L["Scale"], 150, 0.1, 2, 0.01, true, true)
+    AF.SetPoint(scale, "TOPLEFT", hideTexture, 185, 0)
+    scale:SetAfterValueChanged(function(value)
+        pane.t.cfg.extraAction.scale = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local font = AF.CreateDropdown(pane, 150)
+    AF.SetPoint(font, "TOPLEFT", hideTexture, "BOTTOMLEFT", 0, -40)
+    font:SetLabel(L["Hot Key"])
+    font:SetItems(AF.LSM_GetFontDropdownItems())
+    font:SetOnSelect(function(value)
+        pane.t.cfg.extraAction.hotkey.font[1] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local color = AF.CreateColorPicker(pane)
+    AF.SetPoint(color, "BOTTOMRIGHT", font, "TOPRIGHT", 0, 2)
+    color:SetOnConfirm(function(r, g, b)
+        pane.t.cfg.extraAction.hotkey.color[1] = r
+        pane.t.cfg.extraAction.hotkey.color[2] = g
+        pane.t.cfg.extraAction.hotkey.color[3] = b
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local outline = AF.CreateDropdown(pane, 150)
+    outline:SetLabel(L["Outline"])
+    AF.SetPoint(outline, "TOPLEFT", font, 185, 0)
+    outline:SetItems(AF.LSM_GetFontOutlineDropdownItems())
+    outline:SetOnSelect(function(value)
+        pane.t.cfg.extraAction.hotkey.font[3] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local size = AF.CreateSlider(pane, L["Size"], 150, 5, 50, 1, nil, true)
+    AF.SetPoint(size, "TOPLEFT", font, "BOTTOMLEFT", 0, -25)
+    size:SetAfterValueChanged(function(value)
+        pane.t.cfg.extraAction.hotkey.font[2] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local shadow = AF.CreateCheckButton(pane, L["Shadow"])
+    AF.SetPoint(shadow, "LEFT", size, 185, 0)
+    shadow:SetOnCheck(function(checked)
+        pane.t.cfg.extraAction.hotkey.font[4] = checked
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", size, "BOTTOMLEFT", 0, -40)
+    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
+    anchorPoint:SetOnSelect(function(value)
+        pane.t.cfg.extraAction.hotkey.position[1] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local relativePoint = AF.CreateDropdown(pane, 150)
+    relativePoint:SetLabel(L["Relative Point"])
+    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
+    relativePoint:SetOnSelect(function(value)
+        pane.t.cfg.extraAction.hotkey.position[2] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -100, 100, 0.5, nil, true)
+    AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
+    xOffset:SetAfterValueChanged(function(value)
+        pane.t.cfg.extraAction.hotkey.position[3] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -100, 100, 0.5, nil, true)
+    AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
+    yOffset:SetAfterValueChanged(function(value)
+        pane.t.cfg.extraAction.hotkey.position[4] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        scale:SetValue(t.cfg.extraAction.scale)
+        hideTexture:SetChecked(t.cfg.extraAction.hideTexture)
+        font:SetSelectedValue(t.cfg.extraAction.hotkey.font[1])
+        color:SetColor(t.cfg.extraAction.hotkey.color)
+        size:SetValue(t.cfg.extraAction.hotkey.font[2])
+        outline:SetSelectedValue(t.cfg.extraAction.hotkey.font[3])
+        shadow:SetChecked(t.cfg.extraAction.hotkey.font[4])
+        anchorPoint:SetSelectedValue(t.cfg.extraAction.hotkey.position[1])
+        relativePoint:SetSelectedValue(t.cfg.extraAction.hotkey.position[2])
+        xOffset:SetValue(t.cfg.extraAction.hotkey.position[3])
+        yOffset:SetValue(t.cfg.extraAction.hotkey.position[4])
     end
 
     return pane

@@ -63,6 +63,8 @@ local function CreateContentPane()
         {text = L["Class Bar"] .. " 4", value = "classbar4", page = 10},
         {text = L["Pet Bar"], value = "petbar"},
         {text = L["Stance Bar"], value = "stancebar"},
+        {text = L["Vehicle Exit Button"], value = "vehicle"},
+        {text = L["Extra Ability Buttons"], value = "extra"},
     }
 
     local widgets = {}
@@ -76,22 +78,22 @@ local function CreateContentPane()
         button.ownerName = item.text
 
         if item.value == "general" then
+            button.setting = "general"
             button.cfg = AB.config.general
             button.sharedCfg = AB.config.sharedButtonConfig
+        elseif item.value == "vehicle" then
+            button.setting = "vehicle"
+            button.cfg = AB.config.vehicleExitButton
+        elseif item.value == "extra" then
+            button.setting = "extra"
+            button.cfg = AB.config.extraAbilityButtons
         else
+            button.setting = "bar"
             button.target = AB.bars[item.value]
             button.cfg = AB.config.barConfig[item.value]
         end
 
         button:SetTextColor(button.cfg.enabled and "white" or "disabled")
-
-        if item.value == "general" then
-            button.setting = "general"
-        elseif item.value:find("bar") then
-            button.setting = "bar"
-        else
-            button.setting = item.value
-        end
 
         if item.page then
             button.page = AF.CreateFontString(button, "[" .. item.page .. "]", "disabled")
@@ -162,6 +164,10 @@ AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
         if button.id == "general" then
             button.cfg = AB.config.general
             button.sharedCfg = AB.config.sharedButtonConfig
+        elseif button.id == "vehicle" then
+            button.cfg = AB.config.vehicleExitButton
+        elseif button.id == "extra" then
+            button.cfg = AB.config.extraAbilityButtons
         else
             button.cfg = AB.config.barConfig[button.id]
         end

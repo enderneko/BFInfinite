@@ -95,7 +95,7 @@ local extraButtons = {}
 
 local function CreateExtraActionHolder()
     extraActionHolder = CreateFrame("Frame", "BFI_ExtraActionHolder", AF.UIParent)
-    AF.CreateMover(extraActionHolder, "BFI: " .. L["Action Bars"], ExtraAbilityContainer.systemNameString)
+    AF.CreateMover(extraActionHolder, "BFI: " .. L["Action Bars"], L["Extra Action"])
 
     ExtraActionBarFrame:SetParent(extraActionHolder)
     ExtraActionBarFrame:ClearAllPoints()
@@ -138,7 +138,7 @@ function ExtraAction_UpdateAbility(_, frame)
         -- button:ClearAllPoints()
         -- button:SetAllPoints()
 
-        AB.ApplyTextConfig(button.HotKey, extraActionHolder.font)
+        AB.ApplyTextConfig(button.HotKey, extraActionHolder.hotkey)
         button.HotKey:SetText(AB.GetHotkey(GetBindingKey(button.commandName)))
 
         AF.AddToPixelUpdater_Auto(button, nil, true)
@@ -161,6 +161,14 @@ local function UpdateButton(_, module, which)
     local extraActionConfig = AB.config.extraAbilityButtons.extraAction
 
     if not (enabled and extraAbilityEnabled) then
+        if zoneAbilityHolder then
+            zoneAbilityHolder:Hide()
+            zoneAbilityHolder.enabled = false
+        end
+        if extraActionHolder then
+            extraActionHolder:Hide()
+            extraActionHolder.enabled = false
+        end
         return
     end
 
@@ -176,6 +184,7 @@ local function UpdateButton(_, module, which)
     if not zoneAbilityHolder then
         CreateZoneAbilityHolder()
     end
+    zoneAbilityHolder.enabled = true
 
     AF.UpdateMoverSave(zoneAbilityHolder, zoneAbilityConfig.position)
     AF.LoadPosition(zoneAbilityHolder, zoneAbilityConfig.position)
@@ -193,13 +202,14 @@ local function UpdateButton(_, module, which)
     if not extraActionHolder then
         CreateExtraActionHolder()
     end
+    extraActionHolder.enabled = true
 
     AF.UpdateMoverSave(extraActionHolder, extraActionConfig.position)
     AF.LoadPosition(extraActionHolder, extraActionConfig.position)
     extraActionHolder:SetFrameStrata(AB.config.general.frameStrata)
     extraActionHolder:SetFrameLevel(AB.config.general.frameLevel)
 
-    extraActionHolder.font = extraActionConfig.hotkey
+    extraActionHolder.hotkey = extraActionConfig.hotkey
 
     extraActionHolder.scale = extraActionConfig.scale
     extraActionHolder:SetSize(size * extraActionConfig.scale, size * extraActionConfig.scale)

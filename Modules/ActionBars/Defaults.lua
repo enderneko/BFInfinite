@@ -237,6 +237,16 @@ function AB.ResetBar(bar)
     AF.Merge(AB.config.barConfig[bar], AF.Copy(defaults.barConfig[bar]))
 end
 
+function AB.ResetVehicle()
+    wipe(AB.config.vehicleExitButton)
+    AF.Merge(AB.config.vehicleExitButton, AF.Copy(defaults.vehicleExitButton))
+end
+
+function AB.ResetExtra()
+    wipe(AB.config.extraAbilityButtons)
+    AF.Merge(AB.config.extraAbilityButtons, AF.Copy(defaults.extraAbilityButtons))
+end
+
 function AB.ResetVisibility(bar)
     AB.config.barConfig[bar].visibility = defaults.barConfig[bar].visibility
 end

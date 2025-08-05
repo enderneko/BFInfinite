@@ -87,12 +87,18 @@ local function UpdateButton(_, module, which)
     local config = AB.config.vehicleExitButton
 
     if not (enabled and config.enabled) then
+        if vehicleExitHolder then
+            vehicleExitHolder:Hide()
+            vehicleExitHolder.enabled = false
+        end
         return
     end
 
     if not vehicleExitHolder then
         CreateButton()
     end
+
+    vehicleExitHolder.enabled = true
 
     -- mover
     AF.UpdateMoverSave(vehicleExitHolder, config.position)

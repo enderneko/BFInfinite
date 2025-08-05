@@ -27,6 +27,7 @@ local list = {
     "Chat",
     "-Tooltip",
     "SEPARATOR",
+    "-Profiles",
     "About",
 }
 
