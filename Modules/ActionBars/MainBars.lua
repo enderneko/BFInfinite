@@ -11,6 +11,14 @@ local RegisterStateDriver = RegisterStateDriver
 local UnregisterStateDriver = UnregisterStateDriver
 local SetModifiedClick = SetModifiedClick
 local SetOverrideBindingClick = SetOverrideBindingClick
+local ClearOverrideBindings = ClearOverrideBindings
+local GetVehicleBarIndex = GetVehicleBarIndex
+local GetTempShapeshiftBarIndex = GetTempShapeshiftBarIndex
+local GetOverrideBarIndex = GetOverrideBarIndex
+local UnitExists = UnitExists
+local VehicleExit = VehicleExit
+local PetDismiss = PetDismiss
+local NUM_ACTIONBAR_BUTTONS = NUM_ACTIONBAR_BUTTONS or 12
 
 local BAR_MAPPINGS = {
     bar1 = 1,
@@ -189,10 +197,14 @@ end
 ---------------------------------------------------------------------
 local customExitButton = {
     func = function(button)
-        VehicleExit()
+        if UnitExists("vehicle") then
+            VehicleExit()
+        else
+            PetDismiss()
+        end
     end,
     texture = AF.GetTexture("Exit", BFI.name),
-    tooltip = LEAVE_VEHICLE,
+    tooltip = _G.LEAVE_VEHICLE,
 }
 
 local function UpdateButton(bar, shared, specific)
@@ -235,10 +247,9 @@ local function UpdateButton(bar, shared, specific)
         if i == NUM_ACTIONBAR_BUTTONS then
             if AF.isRetail then
                 b:SetState(GetVehicleBarIndex(), "custom", customExitButton) -- 16
-                b:SetState(GetTempShapeshiftBarIndex(), "custom", customExitButton) -- 17
-                b:SetState(GetOverrideBarIndex(), "custom", customExitButton) -- 18
+                -- b:SetState(GetTempShapeshiftBarIndex(), "custom", customExitButton) -- 17
+                -- b:SetState(GetOverrideBarIndex(), "custom", customExitButton) -- 18
             -- else
-            --     -- FIXME:
             --     b:SetState(11, "custom", customExitButton)
             --     b:SetState(12, "custom", customExitButton)
             end

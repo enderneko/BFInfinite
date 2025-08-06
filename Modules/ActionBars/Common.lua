@@ -101,8 +101,15 @@ end
 -- stylize button
 ---------------------------------------------------------------------
 local function OnSizeChanged(self, width, height)
-    self.icon:SetTexCoord(AF.Unpack8(AF.CalcTexCoordPreCrop(0.1, width / height)))
-    self.Name:SetWidth(width)
+    local _name = self:GetName() or "NoName"
+
+    local icon = self.icon or self.Icon or _G[_name .. "Icon"]
+    icon:SetTexCoord(AF.Unpack8(AF.CalcTexCoordPreCrop(0.1, width / height)))
+
+    local name = self.Name or _G[_name .. "Name"]
+    if name then
+        name:SetWidth(width)
+    end
 end
 
 function AB.StylizeButton(b)
@@ -156,7 +163,7 @@ function AB.StylizeButton(b)
 
     -- icon ------------------------------------------------------------------ --
     icon:SetDrawLayer("ARTWORK", -1)
-    -- icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+    icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
     AF.SetOnePixelInside(icon, b)
     b:SetScript("OnSizeChanged", OnSizeChanged)
 
