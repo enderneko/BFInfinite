@@ -56,4 +56,4 @@ local function StyleBlizzard()
         popup.ItemFrame.NameFrame:SetAlpha(0) -- name background texture
     end
 end
--- AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
+AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)

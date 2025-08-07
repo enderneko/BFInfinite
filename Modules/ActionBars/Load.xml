@@ -6,5 +6,6 @@
     <Script file="StanceBar.lua"/>
     <Script file="PetBar.lua"/>
     <Script file="VehicleExitButton.lua"/>
-    <Script file="ExtraAbilitityButtons.lua"/>
+    <Script file="ExtraAbilityButtons.lua"/>
+    <Script file="KeybindMode.lua"/>
 </Ui>

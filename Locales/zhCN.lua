@@ -77,3 +77,6 @@ L["Hold %s while clicking to reset all settings for this unit frame"] = "按住 
 ---------------------------------------------------------------------
 L["Action Bar Index"] = "动作条索引"
 L["The index of each action bar is shown in square brackets on the right side of the list"] = "每个动作条的索引显示在列表右侧的方括号中"
+L["Mouse over a button and press the desired key to set the binding for that button or press ESC to unbind"] = "将鼠标移到按钮上，按下你想要的按键为其设置快捷键，或按 ESC 清除快捷键"
+L["Bindings will only be saved after clicking %s"] = "只有点击 %s 按钮后，键位绑定才会被保存"
+L["This option takes effect immediately"] = "此选项会立即生效"

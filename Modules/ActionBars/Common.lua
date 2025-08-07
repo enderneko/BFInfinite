@@ -6,6 +6,7 @@ local AF = _G.AbstractFramework
 local AB = BFI.ActionBars
 local U = BFI.utils
 
+local GetBindingKey = GetBindingKey
 local LAB = BFI.libs.LAB
 
 ---------------------------------------------------------------------
@@ -294,10 +295,22 @@ end
 ---------------------------------------------------------------------
 -- main button
 ---------------------------------------------------------------------
+local function Button_GetHotKeys(self)
+    if not self.keyBoundTarget then
+        return "", ""
+    end
+
+    local key1, key2 = GetBindingKey(self.keyBoundTarget)
+    return AB.GetHotkey(key1), AB.GetHotkey(key2)
+end
+
 function AB.CreateButton(parent, id, name)
     local b = LAB:CreateButton(id, name, parent)
 
     AB.StylizeButton(b)
+    AB.CreateKeybindOverlay(b)
+
+    b.GetHotKeys = Button_GetHotKeys
 
     -- TargetReticleAnimFrame ------------------------------------------------ --
     if b.TargetReticleAnimFrame then
@@ -352,19 +365,26 @@ end
 ---------------------------------------------------------------------
 -- stance button
 ---------------------------------------------------------------------
+local function StanceButton_GetHotKeys(self)
+    local command = ("SHAPESHIFTBUTTON%d"):format(self:GetID())
+    local key1, key2 = GetBindingKey(command)
+    return AB.GetHotkey(key1), AB.GetHotkey(key2)
+end
+
 function AB.CreateStanceButton(parent, id)
     local b = CreateFrame("CheckButton", "BFI_StanceBarButton" .. id, parent, "StanceButtonTemplate")
 
     b:SetID(id)
     AB.StylizeButton(b)
+    AB.CreateKeybindOverlay(b, "SHAPESHIFTBUTTON" .. id)
 
     b.header = parent
     b:HookScript("OnEnter", AB.ActionBar_OnEnter)
     b:HookScript("OnLeave", AB.ActionBar_OnLeave)
 
     b.checkedTexture:SetBlendMode("BLEND")
-
     b.HotKey = AF.CreateFontString(b)
+    b.GetHotKeys = StanceButton_GetHotKeys
 
     AF.AddToPixelUpdater_Auto(b, nil, true)
 
@@ -374,17 +394,25 @@ end
 ---------------------------------------------------------------------
 -- pet button
 ---------------------------------------------------------------------
+local function PetButton_GetHotKeys(self)
+    local command = ("BONUSACTIONBUTTON%d"):format(self:GetID())
+    local key1, key2 = GetBindingKey(command)
+    return AB.GetHotkey(key1), AB.GetHotkey(key2)
+end
+
 function AB.CreatePetButton(parent, id)
     local b = CreateFrame("CheckButton", "BFI_PetBarButton" .. id, parent, "PetActionButtonTemplate")
 
     b:SetID(id)
     AB.StylizeButton(b)
+    AB.CreateKeybindOverlay(b, "BONUSACTIONBUTTON" .. id)
 
     b.header = parent
     b:HookScript("OnEnter", AB.ActionBar_OnEnter)
     b:HookScript("OnLeave", AB.ActionBar_OnLeave)
 
     -- b.HotKey = AF.CreateFontString(b)
+    b.GetHotKeys = PetButton_GetHotKeys
 
     AF.AddToPixelUpdater_Auto(b, nil, true)
 

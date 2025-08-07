@@ -73,7 +73,6 @@ local UseCustomFlyout = WoWRetail or FlyoutButtonMixin
 local AB
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
--- local KeyBound = LibStub("LibKeyBound-1.0", true)
 local CBH = LibStub("CallbackHandler-1.0")
 local Masque = LibStub("Masque", true)
 
@@ -222,10 +221,6 @@ function lib:CreateButton(id, name, header, config)
     if not header then
         error("Usage: CreateButton(id, name, header): Buttons without a secure header are not yet supported!", 2)
     end
-
-    -- if not KeyBound then
-    --     KeyBound = LibStub("LibKeyBound-1.0", true)
-    -- end
 
     if not AB then
         AB = BFInfinite.ActionBars
@@ -1299,12 +1294,7 @@ local function PickupAny(kind, target, detail, ...)
 end
 
 function Generic:OnEnter()
-    if self.config.tooltip ~= "disabled" and (self.config.tooltip ~= "nocombat" or not InCombatLockdown()) then
-        UpdateTooltip(self)
-    end
-    -- if KeyBound then
-    --     KeyBound:Set(self)
-    -- end
+    UpdateTooltip(self)
 
     if self._state_type == "action" and self.NewActionTexture then
         ClearNewActionHighlight(self._state_action, false, false)
@@ -2333,11 +2323,11 @@ end
 
 function UpdateTooltip(self)
     if GameTooltip:IsForbidden() then return end
-    if (GetCVar("UberTooltips") == "1") then
+    -- if (GetCVar("UberTooltips") == "1") then
         GameTooltip_SetDefaultAnchor(GameTooltip, self)
-    else
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    end
+    -- else
+    --     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    -- end
     if self:SetTooltip() then
         self.UpdateTooltip = UpdateTooltip
     else

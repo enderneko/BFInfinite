@@ -97,6 +97,12 @@ local function CreateExtraActionHolder()
     extraActionHolder = CreateFrame("Frame", "BFI_ExtraActionHolder", AF.UIParent)
     AF.CreateMover(extraActionHolder, "BFI: " .. L["Action Bars"], L["Extra Action"])
 
+    AB.CreateKeybindOverlay(extraActionHolder, "EXTRAACTIONBUTTON1")
+    function extraActionHolder:GetHotKeys()
+        local key1, key2 = GetBindingKey("EXTRAACTIONBUTTON1")
+        return AB.GetHotkey(key1), AB.GetHotkey(key2)
+    end
+
     ExtraActionBarFrame:SetParent(extraActionHolder)
     ExtraActionBarFrame:ClearAllPoints()
     ExtraActionBarFrame:SetAllPoints(extraActionHolder)
