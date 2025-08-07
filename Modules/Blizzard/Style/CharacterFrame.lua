@@ -53,25 +53,47 @@ end
 ---------------------------------------------------------------------
 -- flyout
 ---------------------------------------------------------------------
-local function EquipmentFlyout_UpdateItems()
-    for _, button in next, EquipmentFlyoutFrame.buttons do
-        if not button._BFIStyled then
-            button._BFIStyled = true
+-- local function EquipmentFlyout_UpdateItems()
+--     for _, button in next, EquipmentFlyoutFrame.buttons do
+--         if not button._BFIStyled then
+--             button._BFIStyled = true
 
-            button:SetNormalTexture(AF.GetEmptyTexture())
-            button:SetPushedTexture(AF.GetEmptyTexture())
-            -- texplore(button)
+--             button:SetNormalTexture(AF.GetEmptyTexture())
+--             button:SetPushedTexture(AF.GetEmptyTexture())
+--             -- texplore(button)
 
-            S.CreateBackdrop(button, true, nil, 1)
-            S.StyleIcon(button.icon)
-            S.StyleIconBorder(button.IconBorder)
-            button.HighlightTexture:SetColorTexture(AF.GetColorRGB("button_highlight"))
-        end
+--             S.CreateBackdrop(button, true, nil, 1)
+--             S.StyleIcon(button.icon)
+--             S.StyleIconBorder(button.IconBorder)
+--             button.HighlightTexture:SetColorTexture(AF.GetColorRGB("button_highlight"))
+--         end
 
-        if button.location >= _G.EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
-            button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
-        end
+--         if button.location >= _G.EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+--             button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+--         end
+--     end
+-- end
+
+local function EquipmentFlyout_DisplayButton(button)
+    if not button._BFIStyled then
+        button._BFIStyled = true
+
+        button:SetNormalTexture(AF.GetEmptyTexture())
+        button:SetPushedTexture(AF.GetEmptyTexture())
+        -- texplore(button)
+
+        S.CreateBackdrop(button, true, nil, 1)
+        S.StyleIcon(button.icon)
+        S.StyleIconBorder(button.IconBorder)
+        AF.RemoveFromPixelUpdater(button.BFIBackdrop)
+        button.HighlightTexture:SetColorTexture(AF.GetColorRGB("button_highlight"))
     end
+
+    if button.location and button.location >= _G.EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+        button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+    end
+
+    AF.DefaultUpdatePixels(button.BFIBackdrop)
 end
 
 local function StyleFlyout()
@@ -83,14 +105,15 @@ local function StyleFlyout()
 	EquipmentFlyoutFrameButtons:DisableDrawLayer("ARTWORK")
 
     AF.ApplyDefaultBackdropWithColors(EquipmentFlyoutFrame, "none", "BFI")
-    AF.AddToPixelUpdater_CustomGroup("BFIStyled", EquipmentFlyoutFrame)
+    -- AF.AddToPixelUpdater_CustomGroup("BFIStyled", EquipmentFlyoutFrame)
 
     hooksecurefunc("EquipmentFlyout_Show", function(b)
+        AF.ReBorder(EquipmentFlyoutFrame)
         AF.SetOutside(EquipmentFlyoutFrame, b, 2, 2)
     end)
 
-    hooksecurefunc("EquipmentFlyout_UpdateItems", EquipmentFlyout_UpdateItems)
-    -- hooksecurefunc("EquipmentFlyout_DisplayButton", EquipmentFlyout_DisplayButton) -- won't work well, why?
+    -- hooksecurefunc("EquipmentFlyout_UpdateItems", EquipmentFlyout_UpdateItems)
+    hooksecurefunc("EquipmentFlyout_DisplayButton", EquipmentFlyout_DisplayButton)
 end
 
 ---------------------------------------------------------------------
