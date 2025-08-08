@@ -48,6 +48,7 @@ local function CreateContentPane()
     -- fill list
     local items = {
         {text = L["General"], value = "general"},
+        {text = L["Cooldown"], value = "cooldown"},
         {text = L["Action Bar"] .. " 1", value = "bar1", page = 1},
         {text = L["Action Bar"] .. " 2", value = "bar2", page = 6},
         {text = L["Action Bar"] .. " 3", value = "bar3", page = 5},
@@ -81,6 +82,11 @@ local function CreateContentPane()
             button.setting = "general"
             button.cfg = AB.config.general
             button.sharedCfg = AB.config.sharedButtonConfig
+        elseif item.value == "cooldown" then
+            -- TODO:
+            button.setting = "cooldown"
+            button.cfg = {}
+            button:SetEnabled(false)
         elseif item.value == "vehicle" then
             button.setting = "vehicle"
             button.cfg = AB.config.vehicleExitButton
