@@ -34,7 +34,7 @@ Some extra features are forked from ElvUI/Blizzard
 ]]
 
 local MAJOR_VERSION = "LibActionButton-1.0-BFI"
-local MINOR_VERSION = 124 -- the original version of this library
+local MINOR_VERSION = 130 -- the original version of this library
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -51,7 +51,6 @@ local WoWBCC = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 local WoWWrath = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
 local WoWCata = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
 
-local ATTACK_BUTTON_FLASH_TIME = ATTACK_BUTTON_FLASH_TIME
 local ATTACK_BUTTON_FLASH_TIME = ATTACK_BUTTON_FLASH_TIME
 local COOLDOWN_TYPE_LOSS_OF_CONTROL = COOLDOWN_TYPE_LOSS_OF_CONTROL
 local COOLDOWN_TYPE_NORMAL = COOLDOWN_TYPE_NORMAL
@@ -144,7 +143,7 @@ local type_meta_map = {
 
 local ButtonRegistry, ActiveButtons, ActionButtons, NonActionButtons = lib.buttonRegistry, lib.activeButtons, lib.actionButtons, lib.nonActionButtons
 
-local Update, UpdateButtonState, UpdateUsable, UpdateCount, UpdateCooldown, UpdateTooltip, UpdateNewAction, UpdateSpellHighlight, ClearNewActionHighlight
+local Update, UpdateButtonState, UpdateUsable, UpdateCount, UpdateCooldown, UpdateTooltip, UpdateNewAction, UpdateSpellHighlight, ClearNewActionHighlight, UpdateAssistedCombatRotationFrame, UpdatedAssistedHighlightFrame
 local StartFlash, StopFlash, UpdateFlash, UpdateHotkeys, UpdateRangeTimer, UpdateOverlayGlow
 local UpdateFlyout, ShowGrid, HideGrid, UpdateGrid, SetupSecureSnippets, WrapOnClick
 local UpdateRange
@@ -189,7 +188,8 @@ local DefaultConfig = {
     keyBoundClickButton = "LeftButton",
     clickOnDown = true,
     flyoutDirection = "UP",
-    hideCountDownNumbers = false, -- BFI
+    hideCountDownNumbers = false, -- TODO: BFI
+    assistedHighlight = true,
     text = {
         hotkey = {
             font = {"BFI", 10, "outline", false},
@@ -1570,6 +1570,21 @@ function InitializeEventHandler()
     if UseCustomFlyout and IsLoggedIn() then
         DiscoverFlyoutSpells()
     end
+
+    if EventRegistry and AssistedCombatManager then
+        EventRegistry:RegisterCallback("AssistedCombatManager.OnSetActionSpell", function(o)
+            -- May not be the best way, but it is a unique string which is what the event system cares about
+            OnEvent(lib.eventFrame, "AssistedCombatManager.OnSetActionSpell")
+        end, lib.eventFrame)
+
+        EventRegistry:RegisterCallback("AssistedCombatManager.OnAssistedHighlightSpellChange", function(o)
+            OnEvent(lib.eventFrame, "AssistedCombatManager.OnAssistedHighlightSpellChange")
+        end, lib.eventFrame)
+
+        EventRegistry:RegisterCallback("AssistedCombatManager.OnSetUseAssistedHighlight", function(o)
+            OnEvent(lib.eventFrame, "AssistedCombatManager.OnAssistedHighlightSpellChange")
+        end, lib.eventFrame)
+    end
 end
 
 local _lastFormUpdate = GetTime()
@@ -1766,6 +1781,16 @@ function OnEvent(frame, event, arg1, ...)
         end
     elseif event == "SPELL_UPDATE_ICON" then
         ForAllButtons(Update, true, event)
+    elseif event == "AssistedCombatManager.OnSetActionSpell" then
+        for button in next, ActiveButtons do
+            if button._state_type == "action" then
+                UpdateAssistedCombatRotationFrame(button)
+            end
+        end
+    elseif event == "AssistedCombatManager.OnAssistedHighlightSpellChange" then
+        for button in next, ActiveButtons do
+            UpdatedAssistedHighlightFrame(button)
+        end
     end
 end
 
@@ -1905,6 +1930,13 @@ function Generic:UpdateAction(force)
             self._state_type = action_type
         end
         self._state_action = action
+
+        -- set action attribute for action buttons
+        self.action = self._state_type == "action" and action or 0
+        -- if self.config.actionButtonUI then
+            SetActionUIButton(self, self.action, self.cooldown)
+        -- end
+
         Update(self)
     end
 end
@@ -2065,7 +2097,9 @@ function Update(self, which)
 
     UpdateSpellHighlight(self)
 
-    -- UpdateRegisterClicks(self)
+    UpdateAssistedCombatRotationFrame(self)
+
+    UpdatedAssistedHighlightFrame(self)
 
     if GameTooltip_GetOwnerForbidden() == self then
         UpdateTooltip(self)
@@ -2453,6 +2487,105 @@ function UpdateSpellHighlight(self)
     else
         self.SpellHighlightTexture:Hide()
         self.SpellHighlightAnim:Stop()
+    end
+end
+
+function UpdateAssistedCombatRotationFrame(self)
+    if not (C_ActionBar and C_ActionBar.IsAssistedCombatAction) then return end
+    local show = self._state_type == "action" and C_ActionBar.IsAssistedCombatAction(self._state_action)
+    local assistedCombatRotationFrame = self.AssistedCombatRotationFrame
+
+    if show and not assistedCombatRotationFrame then
+        -- ActionBarButtonAssistedCombatRotationFrameMixin
+        assistedCombatRotationFrame = CreateFrame("Frame", nil, self, "ActionBarButtonAssistedCombatRotationTemplate")
+        self.AssistedCombatRotationFrame = assistedCombatRotationFrame
+        assistedCombatRotationFrame:SetFrameLevel(self:GetFrameLevel() + 15)
+        assistedCombatRotationFrame:Hide()
+
+        assistedCombatRotationFrame.InactiveTexture:Hide()
+        assistedCombatRotationFrame.ActiveFrame:Hide()
+        assistedCombatRotationFrame.ActiveFrame.GlowAnim:Stop()
+
+        local function UpdateSize()
+            local size = self:GetWidth() * 0.75
+            assistedCombatRotationFrame:SetSize(size, size)
+            assistedCombatRotationFrame:SetPoint("BOTTOM", 0, -size * 0.15)
+        end
+        self:HookScript("OnSizeChanged", UpdateSize)
+        UpdateSize()
+
+        local tex = assistedCombatRotationFrame:CreateTexture(nil, "ARTWORK")
+        tex:SetAllPoints()
+        tex:SetTexture(AF.GetTexture("Nyan_Cat", "BFInfinite"))
+        tex:SetParentKey("Flipbook")
+
+        local ag = assistedCombatRotationFrame:CreateAnimationGroup()
+        ag:SetLooping("REPEAT")
+
+        local flip = ag:CreateAnimation("FlipBook")
+        flip:SetDuration(0.42)
+        flip:SetFlipBookColumns(2)
+        flip:SetFlipBookRows(4)
+        flip:SetFlipBookFrames(6)
+        flip:SetChildKey("Flipbook")
+
+        assistedCombatRotationFrame.UpdateGlow = function()
+            ag:Play()
+            if not UnitAffectingCombat("player") then
+                ag:Pause()
+            end
+        end
+    end
+
+    if assistedCombatRotationFrame then
+        assistedCombatRotationFrame:UpdateState()
+    end
+end
+
+function UpdatedAssistedHighlightFrame(self)
+    if not AssistedCombatManager then return end
+    local spellID = AssistedCombatManager.lastNextCastSpellID
+    local shown = self.config.assistedHighlight and spellID and self:GetSpellId() == spellID
+
+    local highlightFrame = self.AssistedCombatHighlightFrame
+    if shown then
+        if not highlightFrame then
+            highlightFrame = CreateFrame("FRAME", nil, self, "ActionBarButtonAssistedCombatHighlightTemplate")
+            self.AssistedCombatHighlightFrame = highlightFrame
+            -- highlightFrame.Flipbook:SetAtlas("RotationHelper-ProcLoopBlue-Flipbook-2x")
+            highlightFrame.Flipbook:SetAtlas("RotationHelper_Ants_Flipbook_2x")
+            highlightFrame:SetAllPoints(self)
+            highlightFrame:SetFrameLevel(self:GetFrameLevel() + 10)
+            highlightFrame.Flipbook.Anim:Play()
+            highlightFrame.Flipbook.Anim:Stop()
+
+            local function UpdateHighlightSize()
+                local w, h = self:GetSize()
+                local scaleX = w / 45
+                local scaleY = h / 45
+                local flipbookW = 66 * scaleX
+                local flipbookH = 66 * scaleY
+                local offsetX = (w - flipbookW) / 2 - 1
+                local offsetY = (h - flipbookH) / 2 - 1
+
+                highlightFrame.Flipbook:ClearAllPoints()
+                highlightFrame.Flipbook:SetPoint("TOPLEFT", highlightFrame, offsetX, -offsetY)
+                highlightFrame.Flipbook:SetPoint("BOTTOMRIGHT", highlightFrame, -offsetX, offsetY)
+            end
+
+            self:HookScript("OnSizeChanged", UpdateHighlightSize)
+            UpdateHighlightSize()
+        end
+
+        if AssistedCombatManager.affectingCombat then
+            highlightFrame.Flipbook.Anim:Play()
+        else
+            highlightFrame.Flipbook.Anim:Stop()
+        end
+
+        highlightFrame:Show()
+    elseif highlightFrame then
+        highlightFrame:Hide()
     end
 end
 
