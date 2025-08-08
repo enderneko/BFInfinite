@@ -302,7 +302,7 @@ local function OnClick()
 end
 
 local function Modify(self, category)
-    if category.name ~= "Keybindings" then return end
+    if category.name ~= _G.SETTINGS_KEYBINDINGS_LABEL then return end
     -- texplore(self:GetSettingsList())
     local layout = _G.SettingsPanel:GetLayout(category)
 
