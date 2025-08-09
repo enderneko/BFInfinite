@@ -20,6 +20,12 @@ local defaults = {
             supportsItemComparison = false, -- not configurable for now
         },
     },
+    assistant = {
+        highlight = true,
+        style = "Nyan_Cat",
+        position = "default",
+        size = 0.8,
+    },
     barConfig = {
         bar1 = {enabled = true, position = {"BOTTOM", 0, 8}},
         bar2 = {enabled = true, position =  {"BOTTOM", 0, 43}},

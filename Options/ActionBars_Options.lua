@@ -25,6 +25,13 @@ local settings = {
         "flyoutSize",
         "tooltip"
     },
+    cooldown = {
+
+    },
+    assistant = {
+        "assistedHighlight",
+        "assistedAnimation",
+    },
     bar = {
         "enabled",
         "width,height",
@@ -1224,6 +1231,170 @@ builder["extraAction"] = function(parent)
         relativePoint:SetSelectedValue(t.cfg.extraAction.hotkey.position[2])
         xOffset:SetValue(t.cfg.extraAction.hotkey.position[3])
         yOffset:SetValue(t.cfg.extraAction.hotkey.position[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- assistedHighlight
+---------------------------------------------------------------------
+builder["assistedHighlight"] = function(parent)
+    if created["assistedHighlight"] then return created["assistedHighlight"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_AssistedHighlight", nil, 30)
+    created["assistedHighlight"] = pane
+
+    local assistedHighlight = AF.CreateCheckButton(pane, L["Assisted Highlight"])
+    AF.SetPoint(assistedHighlight, "LEFT", 15, 0)
+    assistedHighlight:SetOnCheck(function(checked)
+        pane.t.cfg.highlight = checked
+        SetCVar("assistedCombatHighlight", checked)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        assistedHighlight:SetChecked(t.cfg.highlight)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- assistedAnimation
+---------------------------------------------------------------------
+builder["assistedAnimation"] = function(parent)
+    if created["assistedAnimation"] then return created["assistedAnimation"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_AssistedAnimation", nil, 173)
+    created["assistedAnimation"] = pane
+
+    local tip = AF.CreateFontString(pane, L["Animation options for Single-Button Assistant"])
+    AF.SetPoint(tip, "TOPLEFT", 15, -8)
+    tip:SetColor("tip")
+
+    local styles = {}
+    local function CreateStyleButton(style, info)
+        local b = AF.CreateButton(pane, nil, {"widget", "widget_highlight"}, 35, 35)
+        tinsert(styles, b)
+        b.id = style
+        b._borderColor = AF.GetColorTable("border")
+        b._hoverBorderColor = AF.GetColorTable("BFI")
+
+        local flip = AF.CreateFlipBookFrame(b)
+        AF.SetInside(flip, b, 3, 3)
+        flip:SetTexture(AF.GetTexture(style, "BFInfinite"))
+        flip:SetFlipBookInfo(unpack(info))
+        flip:Play()
+    end
+
+    CreateStyleButton("Nyan_Cat", {0.42, 4, 2, 6})
+    CreateStyleButton("Bug_Cat", {0.98, 4, 4, 14})
+    for i, b in pairs(styles) do
+        if i == 1 then
+            AF.SetPoint(b, "TOPLEFT", 15, -30)
+        else
+            AF.SetPoint(b, "TOPLEFT", styles[i - 1], "TOPRIGHT", 7, 0)
+        end
+    end
+    local Highlight = AF.CreateButtonGroup(styles, function(_, style)
+        pane.t.cfg.style = style
+        AF.Fire("BFI_UpdateModule", "actionBars", "main")
+    end)
+
+    local size = AF.CreateSlider(pane, L["Size"], 150, 10, 100, 1, nil, true)
+    AF.SetPoint(size, "LEFT", styles[1], 185, 0)
+    size:SetAfterValueChanged(function(value)
+        pane.t.cfg.size = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "main")
+    end)
+
+    local anchorPoint = AF.CreateDropdown(pane, 150)
+    anchorPoint:SetLabel(L["Anchor Point"])
+    AF.SetPoint(anchorPoint, "TOPLEFT", styles[1], "BOTTOMLEFT", 0, -25)
+
+    local items = AF.GetDropdownItems_AnchorPoint()
+    tinsert(items, 1, {text = _G.DEFAULT, value = "default"})
+    anchorPoint:SetItems(items)
+
+    local relativePoint = AF.CreateDropdown(pane, 150)
+    relativePoint:SetLabel(L["Relative Point"])
+    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, 185, 0)
+    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
+    relativePoint:SetOnSelect(function(value)
+        pane.t.cfg.position[2] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "main")
+    end)
+
+    local xOffset = AF.CreateSlider(pane, L["X Offset"], 150, -100, 100, 1, nil, true)
+    AF.SetPoint(xOffset, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -25)
+    xOffset:SetAfterValueChanged(function(value)
+        pane.t.cfg.position[3] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "main")
+    end)
+
+    local yOffset = AF.CreateSlider(pane, L["Y Offset"], 150, -100, 100, 1, nil, true)
+    AF.SetPoint(yOffset, "TOPLEFT", xOffset, 185, 0)
+    yOffset:SetAfterValueChanged(function(value)
+        pane.t.cfg.position[4] = value
+        AF.Fire("BFI_UpdateModule", "actionBars", "main")
+    end)
+
+    anchorPoint:SetOnSelect(function(value)
+        if value == "default" then
+            AF.SetEnabled(false, relativePoint, xOffset, yOffset)
+            if pane.t.cfg.position ~= "default" then
+                pane.t.cfg.size = 0.8
+                size:SetStep(0.05)
+                size:SetMinMaxValues(0.1, 3)
+                size:SetPercentage(true)
+                size:SetValue(pane.t.cfg.size)
+            end
+            pane.t.cfg.position = "default"
+        else
+            AF.SetEnabled(true, relativePoint, xOffset, yOffset)
+            if type(pane.t.cfg.position) ~= "table" then
+                pane.t.cfg.position = {
+                    value,
+                    relativePoint:GetSelected(),
+                    xOffset:GetValue(),
+                    yOffset:GetValue(),
+                }
+                pane.t.cfg.size = 32
+                size:SetStep(1)
+                size:SetMinMaxValues(10, 100)
+                size:SetPercentage(false)
+                size:SetValue(pane.t.cfg.size)
+            else
+                pane.t.cfg.position[1] = value
+            end
+        end
+        AF.Fire("BFI_UpdateModule", "actionBars", "main")
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        Highlight(t.cfg.style)
+        if t.cfg.position == "default" then
+            size:SetStep(0.05)
+            size:SetMinMaxValues(0.1, 3)
+            size:SetPercentage(true)
+            anchorPoint:SetSelectedValue("default")
+            relativePoint:SetSelectedValue("CENTER")
+            xOffset:SetValue(0)
+            yOffset:SetValue(0)
+            AF.SetEnabled(false, relativePoint, xOffset, yOffset)
+        else
+            size:SetStep(1)
+            size:SetMinMaxValues(10, 100)
+            size:SetPercentage(false)
+            anchorPoint:SetSelectedValue(t.cfg.position[1])
+            relativePoint:SetSelectedValue(t.cfg.position[2])
+            xOffset:SetValue(t.cfg.position[3])
+            yOffset:SetValue(t.cfg.position[4])
+            AF.SetEnabled(true, relativePoint, xOffset, yOffset)
+        end
+        size:SetValue(t.cfg.size)
     end
 
     return pane

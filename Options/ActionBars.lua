@@ -48,6 +48,7 @@ local function CreateContentPane()
     -- fill list
     local items = {
         {text = L["General"], value = "general"},
+        {text = _G.ASSISTED_COMBAT_LABEL, value = "assistant", enabled = true},
         {text = L["Cooldown"], value = "cooldown"},
         {text = L["Action Bar"] .. " 1", value = "bar1", page = 1},
         {text = L["Action Bar"] .. " 2", value = "bar2", page = 6},
@@ -87,6 +88,9 @@ local function CreateContentPane()
             button.setting = "cooldown"
             button.cfg = {}
             button:SetEnabled(false)
+        elseif item.value == "assistant" then
+            button.setting = "assistant"
+            button.cfg = AB.config.assistant
         elseif item.value == "vehicle" then
             button.setting = "vehicle"
             button.cfg = AB.config.vehicleExitButton
@@ -99,7 +103,7 @@ local function CreateContentPane()
             button.cfg = AB.config.barConfig[item.value]
         end
 
-        button:SetTextColor(button.cfg.enabled and "white" or "disabled")
+        button:SetTextColor((button.cfg.enabled or item.enabled) and "white" or "disabled")
 
         if item.page then
             button.page = AF.CreateFontString(button, "[" .. item.page .. "]", "disabled")

@@ -60,6 +60,7 @@ local GameFontHighlightSmallOutline = GameFontHighlightSmallOutline
 local NumberFontNormalSmallGray = NumberFontNormalSmallGray
 local NumberFontNormal = NumberFontNormal
 
+local UnitAffectingCombat = UnitAffectingCombat
 local GetSpellName = C_Spell.GetSpellName
 local EnableActionRangeCheck = C_ActionBar.EnableActionRangeCheck
 local IsPressHoldReleaseSpell = C_Spell.IsPressHoldReleaseSpell
@@ -189,7 +190,11 @@ local DefaultConfig = {
     clickOnDown = true,
     flyoutDirection = "UP",
     hideCountDownNumbers = false, -- TODO: BFI
-    assistedHighlight = true,
+    assistant = {
+        style = "Nyan_Cat",
+        position = "default",
+        size = 0.8,
+    },
     text = {
         hotkey = {
             font = {"BFI", 10, "outline", false},
@@ -2097,7 +2102,7 @@ function Update(self, which)
 
     UpdateSpellHighlight(self)
 
-    UpdateAssistedCombatRotationFrame(self)
+    UpdateAssistedCombatRotationFrame(self, which == "config")
 
     UpdatedAssistedHighlightFrame(self)
 
@@ -2490,14 +2495,14 @@ function UpdateSpellHighlight(self)
     end
 end
 
-function UpdateAssistedCombatRotationFrame(self)
+function UpdateAssistedCombatRotationFrame(self, isConfigUpdate)
     if not (C_ActionBar and C_ActionBar.IsAssistedCombatAction) then return end
     local show = self._state_type == "action" and C_ActionBar.IsAssistedCombatAction(self._state_action)
     local assistedCombatRotationFrame = self.AssistedCombatRotationFrame
 
     if show and not assistedCombatRotationFrame then
         -- ActionBarButtonAssistedCombatRotationFrameMixin
-        assistedCombatRotationFrame = CreateFrame("Frame", nil, self, "ActionBarButtonAssistedCombatRotationTemplate")
+        assistedCombatRotationFrame = AF.CreateFlipBookFrame(self, nil, "ActionBarButtonAssistedCombatRotationTemplate")
         self.AssistedCombatRotationFrame = assistedCombatRotationFrame
         assistedCombatRotationFrame:SetFrameLevel(self:GetFrameLevel() + 15)
         assistedCombatRotationFrame:Hide()
@@ -2506,38 +2511,51 @@ function UpdateAssistedCombatRotationFrame(self)
         assistedCombatRotationFrame.ActiveFrame:Hide()
         assistedCombatRotationFrame.ActiveFrame.GlowAnim:Stop()
 
-        local function UpdateSize()
-            local size = self:GetWidth() * 0.75
-            assistedCombatRotationFrame:SetSize(size, size)
-            assistedCombatRotationFrame:SetPoint("BOTTOM", 0, -size * 0.15)
-        end
-        self:HookScript("OnSizeChanged", UpdateSize)
-        UpdateSize()
-
-        local tex = assistedCombatRotationFrame:CreateTexture(nil, "ARTWORK")
-        tex:SetAllPoints()
-        tex:SetTexture(AF.GetTexture("Nyan_Cat", "BFInfinite"))
-        tex:SetParentKey("Flipbook")
-
-        local ag = assistedCombatRotationFrame:CreateAnimationGroup()
-        ag:SetLooping("REPEAT")
-
-        local flip = ag:CreateAnimation("FlipBook")
-        flip:SetDuration(0.42)
-        flip:SetFlipBookColumns(2)
-        flip:SetFlipBookRows(4)
-        flip:SetFlipBookFrames(6)
-        flip:SetChildKey("Flipbook")
-
         assistedCombatRotationFrame.UpdateGlow = function()
-            ag:Play()
+            if not assistedCombatRotationFrame:IsPlaying() then
+                assistedCombatRotationFrame:Play()
+            end
             if not UnitAffectingCombat("player") then
-                ag:Pause()
+                assistedCombatRotationFrame:Pause()
             end
         end
+
+        local function UpdateSizeAndPosition()
+            if self.config.assistant.position ~= "default" then return end
+
+            local size = self:GetWidth() * self.config.assistant.size
+            assistedCombatRotationFrame._width = nil
+            assistedCombatRotationFrame._height = nil
+            assistedCombatRotationFrame:SetSize(size, size)
+
+            AF.ClearPoints(assistedCombatRotationFrame)
+            assistedCombatRotationFrame:SetPoint("BOTTOM", 0, -size * 0.15)
+        end
+        self:HookScript("OnSizeChanged", UpdateSizeAndPosition)
+
+        function assistedCombatRotationFrame.UpdateConfig()
+            if self.config.assistant.position == "default" then
+                UpdateSizeAndPosition()
+            else
+                AF.SetSize(assistedCombatRotationFrame, self.config.assistant.size, self.config.assistant.size)
+                AF.LoadWidgetPosition(assistedCombatRotationFrame, self.config.assistant.position)
+            end
+
+            if self.config.assistant.style == "Bug_Cat" then
+                assistedCombatRotationFrame:SetFlipBookInfo(0.98, 4, 4, 14)
+                assistedCombatRotationFrame:SetTexture(AF.GetTexture("Bug_Cat", "BFInfinite"))
+            else
+                assistedCombatRotationFrame:SetFlipBookInfo(0.42, 4, 2, 6)
+                assistedCombatRotationFrame:SetTexture(AF.GetTexture("Nyan_Cat", "BFInfinite"))
+            end
+        end
+        assistedCombatRotationFrame.UpdateConfig()
     end
 
     if assistedCombatRotationFrame then
+        if isConfigUpdate then
+            assistedCombatRotationFrame.UpdateConfig()
+        end
         assistedCombatRotationFrame:UpdateState()
     end
 end
@@ -2545,7 +2563,7 @@ end
 function UpdatedAssistedHighlightFrame(self)
     if not AssistedCombatManager then return end
     local spellID = AssistedCombatManager.lastNextCastSpellID
-    local shown = self.config.assistedHighlight and spellID and self:GetSpellId() == spellID
+    local shown = spellID and self:GetSpellId() == spellID
 
     local highlightFrame = self.AssistedCombatHighlightFrame
     if shown then

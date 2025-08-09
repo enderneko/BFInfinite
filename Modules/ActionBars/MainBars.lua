@@ -207,14 +207,18 @@ local customExitButton = {
     tooltip = _G.LEAVE_VEHICLE,
 }
 
-local function UpdateButton(bar, shared, specific)
+local function UpdateButton(bar, config)
     if not bar.buttonConfig then
         bar.buttonConfig = {
             hideElements = {},
         }
     end
 
+    -- assistant
+    bar.buttonConfig.assistant = AB.config.assistant
+
     -- shared
+    local shared = AB.config.sharedButtonConfig
     bar.buttonConfig.outOfRangeColoring = shared.outOfRangeColoring
     bar.buttonConfig.targetReticle = shared.targetReticle and bar.enabled
     bar.buttonConfig.interruptDisplay = shared.interruptDisplay and bar.enabled
@@ -227,14 +231,14 @@ local function UpdateButton(bar, shared, specific)
     bar.buttonConfig.desaturateOnCooldown = shared.desaturateOnCooldown
 
     -- specific bar
-    bar.buttonConfig.showGrid = specific.showGrid
-    bar.buttonConfig.flyoutDirection = specific.flyoutDirection
-    bar.buttonConfig.hideElements.count = specific.hideElements.count
-    bar.buttonConfig.hideElements.macro = specific.hideElements.macro
-    bar.buttonConfig.hideElements.hotkey = specific.hideElements.hotkey
+    bar.buttonConfig.showGrid = config.showGrid
+    bar.buttonConfig.flyoutDirection = config.flyoutDirection
+    bar.buttonConfig.hideElements.count = config.hideElements.count
+    bar.buttonConfig.hideElements.macro = config.hideElements.macro
+    bar.buttonConfig.hideElements.hotkey = config.hideElements.hotkey
 
     -- text
-    bar.buttonConfig.text = specific.text
+    bar.buttonConfig.text = config.text
 
     -- apply
     for i, b in pairs(bar.buttons) do
@@ -306,7 +310,7 @@ end
 local BAR1_PAGING_DEFAULT = format("[overridebar] %d; [vehicleui][possessbar] %d; [shapeshift] %d; [bonusbar:5] 11;", GetOverrideBarIndex(), GetVehicleBarIndex(), GetTempShapeshiftBarIndex())
 -- 18, 16, 17
 
-local function UpdateBar(bar, general, shared, specific)
+local function UpdateBar(bar, general, specific)
     bar.enabled = specific.enabled
     if not specific.enabled then
         UnregisterStateDriver(bar, "visibility")
@@ -339,7 +343,7 @@ local function UpdateBar(bar, general, shared, specific)
     RegisterStateDriver(bar, "page", page)
 
     -- button
-    UpdateButton(bar, shared, specific.buttonConfig)
+    UpdateButton(bar, specific.buttonConfig)
 end
 
 local init
@@ -367,11 +371,14 @@ local function UpdateMainBars(_, module, which)
         return
     end
 
+    -- assistant
+    SetCVar("assistedCombatHighlight", AB.config.assistant.highlight)
+
+    -- shared
     local sharedConfig = AB.config.sharedButtonConfig
     SetModifiedClick("PICKUPACTION", sharedConfig.pickUpKey)
     SetCVar("lockActionBars", sharedConfig.lock)
     SetCVar("AutoPushSpellToActionBar", AB.config.general.disableAutoAddSpells and 0 or 1)
-
 
     if not init then
         init = true
@@ -410,10 +417,10 @@ local function UpdateMainBars(_, module, which)
     end
 
     if which and which ~= "main" then
-        UpdateBar(AB.bars[which], AB.config.general, sharedConfig, AB.config.barConfig[which])
+        UpdateBar(AB.bars[which], AB.config.general, AB.config.barConfig[which])
     else
         for name in pairs(BAR_MAPPINGS) do
-            UpdateBar(AB.bars[name], AB.config.general, sharedConfig, AB.config.barConfig[name])
+            UpdateBar(AB.bars[name], AB.config.general, AB.config.barConfig[name])
         end
     end
 
@@ -425,9 +432,9 @@ local function UpdateMainBars(_, module, which)
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateMainBars)
 
-
 AF.RegisterCallback("BFI_UpdateModule", function(_, module, which)
     if module ~= "actionBars" then return end
-    if which ~= "flyout" then return end
-    ActionBar_FlyoutSpells()
+    if which == "flyout" then
+        ActionBar_FlyoutSpells()
+    end
 end)
