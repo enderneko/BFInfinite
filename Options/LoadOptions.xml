@@ -8,5 +8,6 @@
     <Script file="UnitFrames.lua"/>
     <Script file="ActionBars_Options.lua"/>
     <Script file="ActionBars.lua"/>
+    <Script file="Chat.lua"/>
     <Script file="About.lua"/>
 </Ui>

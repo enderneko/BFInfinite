@@ -31,7 +31,7 @@ local function CreateCastsPane()
     local colorPickers = {}
 
     colorPickers.normal = AF.CreateColorPicker(castsPane, L["Normal"], true)
-    AF.SetPoint(colorPickers.normal, "TOPLEFT", 15, -25)
+    AF.SetPoint(colorPickers.normal, "TOPLEFT", 10, -25)
 
     colorPickers.failed = AF.CreateColorPicker(castsPane, L["Failed"], true)
     AF.SetPoint(colorPickers.failed, "TOPLEFT", colorPickers.normal, "BOTTOMLEFT", 0, -7)
@@ -92,7 +92,7 @@ local function CreateEmpoweredCastsPane()
     local colorPickers = {}
 
     colorPickers.stage1 = AF.CreateColorPicker(empoweredCastsPane, L["Stage 1"])
-    AF.SetPoint(colorPickers.stage1, "TOPLEFT", 15, -25)
+    AF.SetPoint(colorPickers.stage1, "TOPLEFT", 10, -25)
 
     colorPickers.stage2 = AF.CreateColorPicker(empoweredCastsPane, L["Stage 2"])
     AF.SetPoint(colorPickers.stage2, "TOPLEFT", colorPickers.stage1, "BOTTOMLEFT", 0, -7)
@@ -131,7 +131,7 @@ local function CreateUnitReactionsPane()
     AF.ShowMask(unitReactionsPane, AF.L.WIP_WITH_ICON, 0, 0, 0, 0)
 
     local friendlyColorPicker = AF.CreateColorPicker(unitReactionsPane, L["Friendly"], true)
-    AF.SetPoint(friendlyColorPicker, "TOPLEFT", 15, -25)
+    AF.SetPoint(friendlyColorPicker, "TOPLEFT", 10, -25)
 
     local hostileColorPicker = AF.CreateColorPicker(unitReactionsPane, L["Hostile"], true)
     AF.SetPoint(hostileColorPicker, "TOPLEFT", friendlyColorPicker, "BOTTOMLEFT", 0, -7)
@@ -167,7 +167,7 @@ local function CreateAurasPane()
     AF.ShowMask(aurasPane, AF.L.WIP_WITH_ICON, 0, 0, 0, 0)
 
     local curseColorPicker = AF.CreateColorPicker(aurasPane, L["Curse"], true)
-    AF.SetPoint(curseColorPicker, "TOPLEFT", 15, -25)
+    AF.SetPoint(curseColorPicker, "TOPLEFT", 10, -25)
 
     local diseaseColorPicker = AF.CreateColorPicker(aurasPane, L["Disease"], true)
     AF.SetPoint(diseaseColorPicker, "TOPLEFT", curseColorPicker, "BOTTOMLEFT", 0, -7)
@@ -211,7 +211,7 @@ local function CreateThreatPane()
     AF.ShowMask(threatPane, AF.L.WIP_WITH_ICON, 0, 0, 0, 0)
 
     local lowColorPicker = AF.CreateColorPicker(threatPane, L["Low"], true)
-    AF.SetPoint(lowColorPicker, "TOPLEFT", 15, -25)
+    AF.SetPoint(lowColorPicker, "TOPLEFT", 10, -25)
 
     local mediumColorPicker = AF.CreateColorPicker(threatPane, L["Medium"], true)
     AF.SetPoint(mediumColorPicker, "TOPLEFT", lowColorPicker, "BOTTOMLEFT", 0, -7)

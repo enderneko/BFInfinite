@@ -21,7 +21,7 @@ local defaults = {
         },
     },
     assistant = {
-        highlight = true,
+        highlight = GetCVarBool("assistedCombatHighlight"),
         style = "Nyan_Cat",
         position = "default",
         size = 0.8,

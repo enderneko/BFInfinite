@@ -81,3 +81,8 @@ L["Mouse over a button and press the desired key to set the binding for that but
 L["Bindings will only be saved after clicking %s"] = "只有点击 %s 按钮后，键位绑定才会被保存"
 L["This option takes effect immediately"] = "此选项会立即生效"
 L["Animation options for Single-Button Assistant"] = "一键辅助按钮的动画设置"
+
+---------------------------------------------------------------------
+-- options: chat
+---------------------------------------------------------------------
+L["Text Fade Time"] = "消息淡出时间"

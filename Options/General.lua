@@ -41,7 +41,7 @@ local function CreateBFIPane()
     -- accent color
     local accentColorDropdown = AF.CreateDropdown(bfiPane, 150)
     bfiPane.accentColorDropdown = accentColorDropdown
-    AF.SetPoint(accentColorDropdown, "TOPLEFT", bfiPane, 15, -45)
+    AF.SetPoint(accentColorDropdown, "TOPLEFT", bfiPane, 10, -45)
     accentColorDropdown:SetLabel("BFI " .. AF.L["Accent Color"])
 
     accentColorDropdown:SetItems({
@@ -133,7 +133,7 @@ local function CreateAFPane()
     -- accent color
     local accentColorDropdown = AF.CreateDropdown(afPane, 150)
     afPane.accentColorDropdown = accentColorDropdown
-    AF.SetPoint(accentColorDropdown, "TOPLEFT", afPane, 15, -45)
+    AF.SetPoint(accentColorDropdown, "TOPLEFT", afPane, 10, -45)
     accentColorDropdown:SetLabel("AF " .. AF.L["Accent Color"])
 
     accentColorDropdown:SetItems({

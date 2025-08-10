@@ -2,6 +2,7 @@
 local BFI = select(2, ...)
 local U = BFI.utils
 local S = BFI.Style
+local L = BFI.L
 ---@class Chat
 local C = BFI.Chat
 ---@type AbstractFramework
@@ -35,7 +36,7 @@ local chatContainer
 local function CreateChatContainer()
     chatContainer = AF.CreateBorderedFrame(AF.UIParent, "BFI_ChatContainer")
     chatContainer:SetFrameStrata("LOW")
-    AF.CreateMover(chatContainer, "BFI: " .. _G.OTHER, _G.HUD_EDIT_MODE_CHAT_FRAME_LABEL)
+    AF.CreateMover(chatContainer, "BFI: " .. _G.OTHER, L["Chat Frame"]) -- _G.HUD_EDIT_MODE_CHAT_FRAME_LABEL
 end
 
 ---------------------------------------------------------------------
@@ -215,7 +216,7 @@ local function GetTab(frame)
         hooksecurefunc(tab, "SetAlpha", FixTabAlpha)
 
         tab.underline = AF.CreateSeparator(tab, nil, 1, BFI.name)
-        AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -3)
+        AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -1)
         tab.underline:Hide()
         tab:HookScript("OnClick", HideChatCopyFrame)
     end
@@ -269,6 +270,8 @@ local function SetupChat()
         local tab = GetTab(frame)
         AF.SetFont(tab.Text, unpack(C.config.tabFont))
         tab.Text:ClearAllPoints()
+        tab.Text:SetWidth(0)
+        tab.Text:SetHeight(0)
         tab.Text:SetPoint("CENTER", 0, -5)
         tab.Text:SetJustifyH("CENTER")
         tab:SetPushedTextOffset(0, -1)
@@ -295,17 +298,16 @@ local function SetupChat()
         UpdateFrameDocked(frame, frame.isDocked)
 
         -- editBox
-        if frame.editBox and not frame.editBox.skinned then
+        if frame.editBox then
             local editBox = frame.editBox
+            if not frame.editBox.skinned then
             editBox.skinned = true
             editBox:SetAltArrowKeyMode(false)
-            -- position
-            editBox:ClearAllPoints()
+                S.StyleEditBox(editBox)
+            end
             AF.SetHeight(editBox, 24)
             AF.SetWidth(editBox, C.config.width)
             AF.LoadWidgetPosition(editBox, C.config.editBoxPosition, frame)
-            -- style
-            S.StyleEditBox(editBox)
             editBox.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("background"))
         end
 
@@ -461,7 +463,7 @@ local function UpdateTabUnderline(frame, name)
     end
     -- tab.Text:SetText(frame.name)
 
-    C_Timer.After(0, function()
+    C_Timer.After(0.1, function()
         tab.underline:SetWidth(tab.Text:GetStringWidth() + 2)
     end)
 end
@@ -611,7 +613,8 @@ local function UpdateChat(_, module)
     C:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", SetupChat)
     C:RegisterEvent("FIRST_FRAME_RENDERED", UpdateAllTabUnderlines)
 
-    AF.SetFont(chatCopyFrame.scroll.eb, unpack(C.config.font))
+    UpdateAllTabUnderlines()
+    AF.SetFont(chatCopyFrame.scroll.eb, unpack(config.font))
 
     AF.UpdateMoverSave(chatContainer, config.position)
     AF.LoadPosition(chatContainer, config.position)
