@@ -460,6 +460,7 @@ function S.StyleEditBox(box, tlx, tly, brx, bry)
     box._BFIStyled = true
 
     S.RemoveRegions(box)
+    S.RemoveNineSliceAndBackground(box)
     S.CreateBackdrop(box)
     box.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
     AF.ClearPoints(box.BFIBackdrop)

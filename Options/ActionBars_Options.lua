@@ -1245,7 +1245,7 @@ builder["assistedHighlight"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_AssistedHighlight", nil, 30)
     created["assistedHighlight"] = pane
 
-    local assistedHighlight = AF.CreateCheckButton(pane, L["Assisted Highlight"])
+    local assistedHighlight = AF.CreateCheckButton(pane, _G.ASSISTED_COMBAT_HIGHLIGHT_LABEL)
     AF.SetPoint(assistedHighlight, "LEFT", 15, 0)
     assistedHighlight:SetOnCheck(function(checked)
         pane.t.cfg.highlight = checked

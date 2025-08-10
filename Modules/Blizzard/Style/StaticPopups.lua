@@ -10,6 +10,7 @@ local AF = _G.AbstractFramework
 local function StyleBlizzard()
     for i = 1, 4 do
         local popup = _G["StaticPopup" .. i]
+        popup:SetParent(UIParent)
         S.RemoveBackground(popup)
         S.CreateBackdrop(popup)
         AF.SetPoint(popup.BFIBackdrop, "TOPLEFT", popup, 5, -2)
@@ -41,15 +42,15 @@ local function StyleBlizzard()
         end
 
         -- editbox
-        S.StyleEditBox(popup.EditBox, -2, -5, 2, 5)
+        S.StyleEditBox(popup.EditBox)
 
         -- dropdown
         S.StyleDropdownButton(popup.Dropdown)
 
         -- moneyInputFrame
-        S.StyleEditBox(popup.MoneyInputFrame.copper, -2, nil, -11)
-        S.StyleEditBox(popup.MoneyInputFrame.silver, -2, nil, -11)
-        S.StyleEditBox(popup.MoneyInputFrame.gold, -2)
+        S.StyleEditBox(popup.MoneyInputFrame.copper, -4)
+        S.StyleEditBox(popup.MoneyInputFrame.silver, -4)
+        S.StyleEditBox(popup.MoneyInputFrame.gold, -4)
 
         -- ItemFrame (BlackMarket, Purchase, Upgrade, Refund ...)
         S.StyleItemButton(popup.ItemFrame.Item)
