@@ -39,10 +39,10 @@ local function CreateUnitFramesPanel()
     AF.SetPoint(subSwitch, "RIGHT", unitFramesPanel, -15, 0)
 
     mainSwitch:SetLabels({
-        {text = "Unit", value = "unit"},
-        {text = "Target", value = "target"},
-        {text = "Group", value = "group"},
-        {text = "Extra", value = "extra", disabled = true},
+        {text = L["Unit"], value = "unit"},
+        {text = L["Target"], value = "target"},
+        {text = L["Group"], value = "group"},
+        {text = L["Extra"], value = "extra", disabled = true},
     })
 
     mainSwitch:SetOnSelect(function(value)

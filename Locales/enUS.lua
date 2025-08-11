@@ -36,10 +36,5 @@ select(2, ...).L = setmetatable({
     ["targetHighlight"] = "Target Highlight",
     ["threatGlow"] = "Threat Glow",
 }, {
-    __index = function(self, Key)
-        if (Key ~= nil) then
-            rawset(self, Key, Key)
-            return Key
-        end
-    end
+    __index = AbstractFramework.L
 })

@@ -73,7 +73,7 @@ local function CreateButton()
         highlight:SetColorTexture(AF.GetColorRGB("white", 0.25))
     end)
 
-    AF.CreateMover(vehicleExitHolder, "BFI: " .. L["Action Bars"], vehicleExitHolder.button.systemNameString)
+    AF.CreateMover(vehicleExitHolder, "BFI: " .. L["Action Bars"], _G.HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL)
 end
 
 ---------------------------------------------------------------------

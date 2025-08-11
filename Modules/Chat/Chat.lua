@@ -589,11 +589,12 @@ local function UpdateChat(_, module)
     if module and module ~= "chat" then return end
 
     local config = C.config
-    if chatContainer then
-        chatContainer.enabled = config.enabled -- for mover
-    end
     if not config.enabled then
         C:UnregisterAllEvents()
+        if chatContainer then
+            chatContainer.enabled = false
+            chatContainer:Hide()
+        end
         return
     end
 
@@ -606,6 +607,9 @@ local function UpdateChat(_, module)
         SetupDefaultChatFrame()
         InitHooks()
     end
+
+    chatContainer.enabled = true
+    chatContainer:Show()
 
     SetupChat()
     UpdateCombatLog()

@@ -26,6 +26,14 @@ local function CreateChatFramePane()
 
     local enabled = AF.CreateCheckButton(chatFramePane, L["Enabled"])
     AF.SetPoint(enabled, "TOPLEFT", chatFramePane, 10, -30)
+    enabled:SetOnCheck(function(checked)
+        C.config.enabled = checked
+        AF.Fire("BFI_UpdateModule", "chat")
+
+        local dialog = AF.GetDialog(chatPanel, L["A UI reload is required\nDo it now?"])
+        AF.SetPoint(dialog, "TOP", 0, -50)
+        dialog:SetOnConfirm(ReloadUI)
+    end)
 
     local bgColor = AF.CreateColorPicker(chatFramePane, L["Background Color"], true)
     AF.SetPoint(bgColor, "TOPLEFT", enabled, "BOTTOMLEFT", 0, -15)

@@ -49,23 +49,23 @@ local function CreateContentPane()
     local items = {
         {text = L["General"], value = "general"},
         {text = _G.ASSISTED_COMBAT_LABEL, value = "assistant", enabled = true},
-        {text = L["Cooldown"], value = "cooldown"},
-        {text = L["Action Bar"] .. " 1", value = "bar1", page = 1},
-        {text = L["Action Bar"] .. " 2", value = "bar2", page = 6},
-        {text = L["Action Bar"] .. " 3", value = "bar3", page = 5},
-        {text = L["Action Bar"] .. " 4", value = "bar4", page = 3},
-        {text = L["Action Bar"] .. " 5", value = "bar5", page = 4},
-        {text = L["Action Bar"] .. " 6", value = "bar6", page = 13},
-        {text = L["Action Bar"] .. " 7", value = "bar7", page = 14},
-        {text = L["Action Bar"] .. " 8", value = "bar8", page = 15},
-        {text = L["Action Bar"] .. " 9", value = "bar9", page = 2},
-        {text = L["Class Bar"] .. " 1", value = "classbar1", page = 7},
-        {text = L["Class Bar"] .. " 2", value = "classbar2", page = 8},
-        {text = L["Class Bar"] .. " 3", value = "classbar3", page = 9},
-        {text = L["Class Bar"] .. " 4", value = "classbar4", page = 10},
+        {text = L["Cooldowns"], value = "cooldowns"},
+        {text = L["Action Bar %d"]:format(1), value = "bar1", page = 1},
+        {text = L["Action Bar %d"]:format(2), value = "bar2", page = 6},
+        {text = L["Action Bar %d"]:format(3), value = "bar3", page = 5},
+        {text = L["Action Bar %d"]:format(4), value = "bar4", page = 3},
+        {text = L["Action Bar %d"]:format(5), value = "bar5", page = 4},
+        {text = L["Action Bar %d"]:format(6), value = "bar6", page = 13},
+        {text = L["Action Bar %d"]:format(7), value = "bar7", page = 14},
+        {text = L["Action Bar %d"]:format(8), value = "bar8", page = 15},
+        {text = L["Action Bar %d"]:format(9), value = "bar9", page = 2},
+        {text = L["Class Bar %d"]:format(1), value = "classbar1", page = 7},
+        {text = L["Class Bar %d"]:format(2), value = "classbar2", page = 8},
+        {text = L["Class Bar %d"]:format(3), value = "classbar3", page = 9},
+        {text = L["Class Bar %d"]:format(4), value = "classbar4", page = 10},
         {text = L["Pet Bar"], value = "petbar"},
         {text = L["Stance Bar"], value = "stancebar"},
-        {text = L["Vehicle Exit Button"], value = "vehicle"},
+        {text = _G.HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL, value = "vehicle"},
         {text = L["Extra Ability Buttons"], value = "extra"},
     }
 
@@ -83,9 +83,9 @@ local function CreateContentPane()
             button.setting = "general"
             button.cfg = AB.config.general
             button.sharedCfg = AB.config.sharedButtonConfig
-        elseif item.value == "cooldown" then
+        elseif item.value == "cooldowns" then
             -- TODO:
-            button.setting = "cooldown"
+            button.setting = "cooldowns"
             button.cfg = {}
             button:SetEnabled(false)
         elseif item.value == "assistant" then

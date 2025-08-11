@@ -344,8 +344,8 @@ local function GetFormatItems(which)
             {text = _G.NONE, value = "none"},
             {text = L["Current"], value = "current"},
             {text = L["Current (Short)"], value = "current_short"},
-            {text = L["Current + Absorbs"], value = "current_absorbs"},
-            {text = L["Current + Absorbs (Short)"], value = "current_absorbs_short"},
+            {text = L["Current + Shields"], value = "current_absorbs"},
+            {text = L["Current + Shields (Short)"], value = "current_absorbs_short"},
             {text = L["Effective"], value = "current_absorbs_sum"},
             {text = L["Effective (Short)"], value = "current_absorbs_short_sum"},
         }
@@ -353,8 +353,8 @@ local function GetFormatItems(which)
             {text = _G.NONE, value = "none"},
             {text = L["Current"], value = "current"},
             {text = L["Current (Decimal)"], value = "current_decimal"},
-            {text = L["Current + Absorbs"], value = "current_absorbs"},
-            {text = L["Current + Absorbs (Decimal)"], value = "current_absorbs_decimal"},
+            {text = L["Current + Shields"], value = "current_absorbs"},
+            {text = L["Current + Shields (Decimal)"], value = "current_absorbs_decimal"},
             {text = L["Effective"], value = "current_absorbs_sum"},
             {text = L["Effective (Decimal)"], value = "current_absorbs_sum_decimal"},
         }
@@ -1850,7 +1850,7 @@ builder["castBarNameText"] = function(parent)
     local enabledCheckButton = AF.CreateCheckButton(pane)
     AF.SetPoint(enabledCheckButton, "TOPLEFT", 15, -8)
 
-    local colorPicker = AF.CreateColorPicker(pane, L["Name Text"])
+    local colorPicker = AF.CreateColorPicker(pane, AF.GetGradientText(L["Name Text"], "BFI", "white"))
     AF.SetPoint(colorPicker, "TOPLEFT", enabledCheckButton, "TOPRIGHT", 2, 0)
     colorPicker:SetOnChange(function(r, g, b)
         pane.t.cfg.nameText.color[1] = r
@@ -1982,7 +1982,7 @@ builder["castBarDurationText"] = function(parent)
     local enabledCheckButton = AF.CreateCheckButton(pane)
     AF.SetPoint(enabledCheckButton, "TOPLEFT", 15, -8)
 
-    local colorPicker = AF.CreateColorPicker(pane, L["Duration Text"])
+    local colorPicker = AF.CreateColorPicker(pane, AF.GetGradientText(L["Duration Text"], "BFI", "white"))
     AF.SetPoint(colorPicker, "TOPLEFT", enabledCheckButton, "TOPRIGHT", 2, 0)
     colorPicker:SetOnChange(function(r, g, b)
         pane.t.cfg.durationText.color[1] = r
@@ -3297,28 +3297,28 @@ builder["auraArrangement"] = function(parent)
         LoadIndicatorConfig(pane.t)
     end)
 
-    local spacingX = AF.CreateSlider(pane, L["Spacing"] .. " X", 150, -1, 50, 1, nil, true)
+    local spacingX = AF.CreateSlider(pane, L["X Spacing"], 150, -1, 50, 1, nil, true)
     AF.SetPoint(spacingX, "TOPLEFT", width, "BOTTOMLEFT", 0, -40)
     spacingX:SetOnValueChanged(function(value)
         pane.t.cfg.spacingX = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    local spacingY = AF.CreateSlider(pane, L["Spacing"] .. " Y", 150, -1, 50, 1, nil, true)
+    local spacingY = AF.CreateSlider(pane, L["Y Spacing"], 150, -1, 50, 1, nil, true)
     AF.SetPoint(spacingY, "TOPLEFT", spacingX, 185, 0)
     spacingY:SetOnValueChanged(function(value)
         pane.t.cfg.spacingY = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    local numPerLine = AF.CreateSlider(pane, L["Num Per Line"], 150, 2, 50, 1, nil, true)
+    local numPerLine = AF.CreateSlider(pane, L["Displayed Per Line"], 150, 2, 50, 1, nil, true)
     AF.SetPoint(numPerLine, "TOPLEFT", spacingX, "BOTTOMLEFT", 0, -40)
     numPerLine:SetOnValueChanged(function(value)
         pane.t.cfg.numPerLine = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    local numTotal = AF.CreateSlider(pane, L["Num Total"], 150, 1, 100, 1, nil, true)
+    local numTotal = AF.CreateSlider(pane, L["Max Displayed"], 150, 1, 100, 1, nil, true)
     AF.SetPoint(numTotal, "TOPLEFT", numPerLine, 185, 0)
     numTotal:SetOnValueChanged(function(value)
         pane.t.cfg.numTotal = value
@@ -3762,10 +3762,6 @@ builder["raidArrangement"] = function(parent)
     arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
     arrangement:SetItems(AF.GetDropdownItems_ComplexOrientation())
-    arrangement:SetOnSelect(function(value)
-        pane.t.cfg.orientation = value
-        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
-    end)
 
     local anchorPoint = AF.CreateDropdown(pane, 120)
     anchorPoint:SetLabel(L["Anchor Point"])
@@ -3828,14 +3824,14 @@ builder["raidArrangement"] = function(parent)
         end
     end
 
-    local spacingX = AF.CreateSlider(pane, L["Spacing"] .. " X", 150, -1, 100, 1, nil, true)
+    local spacingX = AF.CreateSlider(pane, L["X Spacing"], 150, -1, 100, 1, nil, true)
     AF.SetPoint(spacingX, "TOPLEFT", groups[1], "BOTTOMLEFT", 0, -25)
     spacingX:SetOnValueChanged(function(value)
         pane.t.cfg.spacingX = value
         AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
     end)
 
-    local spacingY = AF.CreateSlider(pane, L["Spacing"] .. " Y", 150, -1, 100, 1, nil, true)
+    local spacingY = AF.CreateSlider(pane, L["Y Spacing"], 150, -1, 100, 1, nil, true)
     AF.SetPoint(spacingY, "TOPLEFT", spacingX, 185, 0)
     spacingY:SetOnValueChanged(function(value)
         pane.t.cfg.spacingY = value
@@ -3861,6 +3857,18 @@ builder["raidArrangement"] = function(parent)
             unitsPerColumn:SetValue(maxUnitsPerColumn)
         end
         AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
+    end)
+
+    arrangement:SetOnSelect(function(value)
+        pane.t.cfg.orientation = value
+        AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
+        if value:find("^left") or value:find("^right") then
+            maxColumns:SetLabel(L["Max Rows"])
+            unitsPerColumn:SetLabel(L["Units Per Row"])
+        else
+            maxColumns:SetLabel(L["Max Columns"])
+            unitsPerColumn:SetLabel(L["Units Per Column"])
+        end
     end)
 
     local function callback(t)
@@ -3897,6 +3905,13 @@ builder["raidArrangement"] = function(parent)
         unitsPerColumn:SetMinMaxValues(1, maxUnitsPerColumn)
         maxColumns:SetValue(t.cfg.maxColumns)
         unitsPerColumn:SetValue(t.cfg.unitsPerColumn)
+        if t.cfg.orientation:find("^left") or t.cfg.orientation:find("^right") then
+            maxColumns:SetLabel(L["Max Rows"])
+            unitsPerColumn:SetLabel(L["Units Per Row"])
+        else
+            maxColumns:SetLabel(L["Max Columns"])
+            unitsPerColumn:SetLabel(L["Units Per Column"])
+        end
 
         sortByRole:SetChecked(t.cfg.groupBy == "ASSIGNEDROLE")
         sorter:SetShown(t.cfg.groupBy == "ASSIGNEDROLE")

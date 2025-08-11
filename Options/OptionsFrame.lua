@@ -15,8 +15,8 @@ local optionsFrame
 ---------------------------------------------------------------------
 local list = {
     "General",
-    "-Tweaks",
-    -- "Social,
+    "-Enhancements",
+    -- "Social",
     "SEPARATOR",
     "Colors",
     "Auras",
@@ -27,7 +27,7 @@ local list = {
     "-Buffs & Debuffs",
     "-Tooltip",
     "-UI Widgets",
-    -- "Data Bars",
+    "-Data Bars",
     -- "Data Broker",
     "Chat",
     "SEPARATOR",

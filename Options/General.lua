@@ -7,7 +7,7 @@ local AF = _G.AbstractFramework
 local generalPanel
 
 local function ShowReloadPopup()
-    local dialog = AF.GetDialog(generalPanel, AF.L["A UI reload is required.\nDo it now?"])
+    local dialog = AF.GetDialog(generalPanel, L["A UI reload is required\nDo it now?"])
     AF.SetPoint(dialog, "TOP", 0, -50)
     dialog:SetOnConfirm(ReloadUI)
 end

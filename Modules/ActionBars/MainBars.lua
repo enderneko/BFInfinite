@@ -96,10 +96,10 @@ local function CreateBar(name, id)
 
     if global == "bar" then
         global = "BFI_ActionBar" .. index
-        moverName = L["Action Bar"].." "..index
+        moverName = L["Action Bar %d"]:format(index)
     elseif global == "classbar" then
         global = "BFI_ClassBar" .. index
-        moverName = L["Class Bar"].." "..index
+        moverName = L["Class Bar %d"]:format(index)
     end
 
     local bar = CreateFrame("Frame", global, AF.UIParent, "SecureHandlerStateTemplate")
@@ -387,13 +387,13 @@ local function UpdateMainBars(_, module, which)
         _G.BINDING_HEADER_BFI = AF.WrapTextInColor(BFI.name, "BFI")
 
         -- bar9
-        local text = L["Action Bar"].." 9 "..L["Button"].." %d"
+        local text = L["Action Bar %d"]:format(9) .. " " .. L["Button"] .. " %d"
         for slot = 1, NUM_ACTIONBAR_BUTTONS do
             _G[format("BINDING_NAME_BFIACTIONBAR9BUTTON%d", slot)] = format(text, slot)
         end
 
         -- class bar
-        text = L["Class Bar"].." %d "..L["Button"].." %d"
+        text = L["Class Bar %d"] .. " " .. L["Button"] .. " %d"
         for bar = 1, 4 do
             for slot = 1, NUM_ACTIONBAR_BUTTONS do
                 _G[format("BINDING_NAME_BFICLASSBAR%dBUTTON%d", bar, slot)] = format(text, bar, slot)

@@ -51,7 +51,7 @@ local function CreateCastsPane()
     colorPickers.spark = AF.CreateColorPicker(castsPane, L["Spark"], true)
     AF.SetPoint(colorPickers.spark, "TOPLEFT", colorPickers.uninterruptible_texture, "BOTTOMLEFT", 0, -7)
 
-    colorPickers.tick = AF.CreateColorPicker(castsPane, L["Tick"], true)
+    colorPickers.tick = AF.CreateColorPicker(castsPane, L["Ticks"], true)
     AF.SetPoint(colorPickers.tick, "TOPLEFT", colorPickers.spark, "BOTTOMLEFT", 0, -7)
 
     colorPickers.latency = AF.CreateColorPicker(castsPane, L["Latency"], true)
@@ -123,32 +123,32 @@ local function CreateEmpoweredCastsPane()
 end
 
 ---------------------------------------------------------------------
--- unit reactions
+-- units
 ---------------------------------------------------------------------
-local unitReactionsPane
-local function CreateUnitReactionsPane()
-    unitReactionsPane = AF.CreateTitledPane(colorsPanel, L["Unit Reactions"])
-    AF.ShowMask(unitReactionsPane, AF.L.WIP_WITH_ICON, 0, 0, 0, 0)
+local unitsPane
+local function CreateUnitsPane()
+    unitsPane = AF.CreateTitledPane(colorsPanel, L["Units"])
+    AF.ShowMask(unitsPane, AF.L.WIP_WITH_ICON, 0, 0, 0, 0)
 
-    local friendlyColorPicker = AF.CreateColorPicker(unitReactionsPane, L["Friendly"], true)
+    local friendlyColorPicker = AF.CreateColorPicker(unitsPane, L["Friendly"], true)
     AF.SetPoint(friendlyColorPicker, "TOPLEFT", 10, -25)
 
-    local hostileColorPicker = AF.CreateColorPicker(unitReactionsPane, L["Hostile"], true)
+    local hostileColorPicker = AF.CreateColorPicker(unitsPane, L["Hostile"], true)
     AF.SetPoint(hostileColorPicker, "TOPLEFT", friendlyColorPicker, "BOTTOMLEFT", 0, -7)
 
-    local neutralColorPicker = AF.CreateColorPicker(unitReactionsPane, L["Neutral"], true)
+    local neutralColorPicker = AF.CreateColorPicker(unitsPane, L["Neutral"], true)
     AF.SetPoint(neutralColorPicker, "TOPLEFT", hostileColorPicker, "BOTTOMLEFT", 0, -7)
 
-    local offlineColorPicker = AF.CreateColorPicker(unitReactionsPane, L["Offline"], true)
+    local offlineColorPicker = AF.CreateColorPicker(unitsPane, L["Offline"], true)
     AF.SetPoint(offlineColorPicker, "TOPLEFT", neutralColorPicker, "BOTTOMLEFT", 0, -7)
 
-    local charmedColorPicker = AF.CreateColorPicker(unitReactionsPane, L["Charmed"], true)
+    local charmedColorPicker = AF.CreateColorPicker(unitsPane, L["Charmed"], true)
     AF.SetPoint(charmedColorPicker, "TOPLEFT", offlineColorPicker, "BOTTOMLEFT", 0, -7)
 
-    local tapDeniedColorPicker = AF.CreateColorPicker(unitReactionsPane, L["Tap Denied"], true)
+    local tapDeniedColorPicker = AF.CreateColorPicker(unitsPane, L["Tap Denied"], true)
     AF.SetPoint(tapDeniedColorPicker, "TOPLEFT", charmedColorPicker, "BOTTOMLEFT", 0, -7)
 
-    function unitReactionsPane.Load()
+    function unitsPane.Load()
         friendlyColorPicker:SetColor(C.config.unit.FRIENDLY)
         hostileColorPicker:SetColor(C.config.unit.HOSTILE)
         neutralColorPicker:SetColor(C.config.unit.NEUTRAL)
@@ -236,7 +236,7 @@ end
 local function Load()
     castsPane.Load()
     empoweredCastsPane.Load()
-    unitReactionsPane.Load()
+    unitsPane.Load()
     aurasPane.Load()
     threatPane.Load()
 end
@@ -250,13 +250,13 @@ AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
             CreateColorsPanel()
             CreateCastsPane()
             CreateEmpoweredCastsPane()
-            CreateUnitReactionsPane()
+            CreateUnitsPane()
             CreateAurasPane()
             CreateThreatPane()
             colorsPanel.scroll:SetWidgets({
                 castsPane,
                 empoweredCastsPane,
-                unitReactionsPane,
+                unitsPane,
                 aurasPane,
                 threatPane,
             })

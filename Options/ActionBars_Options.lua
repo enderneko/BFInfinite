@@ -25,7 +25,7 @@ local settings = {
         "flyoutSize",
         "tooltip"
     },
-    cooldown = {
+    cooldowns = {
 
     },
     assistant = {
@@ -159,7 +159,7 @@ builder["copy,paste,reset"] = function(parent)
 
     function pane.Load(t)
         pane.t = t
-        copy:SetEnabled(t.id ~= "general")
+        copy:SetEnabled(t.id ~= "general" and t.id ~= "assistant" and t.id ~= "cooldowns")
         paste:SetEnabled(t.id ~= "general" and copiedSetting == t.setting)
     end
 
@@ -546,7 +546,7 @@ builder["cast"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_Cast", nil, 75)
     created["cast"] = pane
 
-    local selfCast = AF.CreateCheckButton(pane, L["Auto Self Cast"])
+    local selfCast = AF.CreateCheckButton(pane, _G.AUTO_SELF_CAST_TEXT)
     AF.SetPoint(selfCast, "TOPLEFT", 15, -8)
     selfCast:SetOnCheck(function(checked)
         pane.t.sharedCfg.cast.self = checked
@@ -801,7 +801,7 @@ builder["size"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_Size", nil, 55)
     created["size"] = pane
 
-    local size = AF.CreateSlider(pane, L["Button Size"], 150, 10, 100, 1, nil, true)
+    local size = AF.CreateSlider(pane, L["Size"], 150, 10, 100, 1, nil, true)
     AF.SetPoint(size, "LEFT", 15, 0)
     size:SetAfterValueChanged(function(value)
         pane.t.cfg.size = value
@@ -834,14 +834,14 @@ builder["arrangement"] = function(parent)
         AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
     end)
 
-    local spacingX = AF.CreateSlider(pane, L["Spacing"] .. " X", 150, -1, 100, 1, nil, true)
+    local spacingX = AF.CreateSlider(pane, L["X Spacing"], 150, -1, 100, 1, nil, true)
     AF.SetPoint(spacingX, "TOPLEFT", arrangement, "BOTTOMLEFT", 0, -25)
     spacingX:SetAfterValueChanged(function(value)
         pane.t.cfg.spacingX = value
         AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)
     end)
 
-    local spacingY = AF.CreateSlider(pane, L["Spacing"] .. " Y", 150, -1, 100, 1, nil, true)
+    local spacingY = AF.CreateSlider(pane, L["Y Spacing"], 150, -1, 100, 1, nil, true)
     AF.SetPoint(spacingY, "TOPLEFT", spacingX, 185, 0)
     spacingY:SetAfterValueChanged(function(value)
         pane.t.cfg.spacingY = value
