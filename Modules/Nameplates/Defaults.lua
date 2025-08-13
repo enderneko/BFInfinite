@@ -24,6 +24,7 @@ local CVAR_DEFAULTS = {
     nameplateLargerScale = 1.0,
     NamePlateHorizontalScale = 1.0,
     NamePlateVerticalScale = 1.0,
+    NamePlateClassificationScale = 1.0,
     nameplateMaxScale = 1.0,
     nameplateMinScale = 1.0,
     nameplateSelectedScale = 1.0,

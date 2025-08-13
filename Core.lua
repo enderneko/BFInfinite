@@ -18,12 +18,13 @@ function eventHandler:ADDON_LOADED(arg)
             -- init some cvar
             SetCVar("fstack_preferParentKeys", 0)
             SetCVar("screenshotQuality", 10)
-            SetCVar("cameraDistanceMaxZoomFactor", 2.6)
+            -- SetCVar("cameraDistanceMaxZoomFactor", 2.6)
             SetCVar("CameraReduceUnexpectedMovement", 1)
-            SetCVar("ResampleAlwaysSharpen", 1)
+            -- SetCVar("ResampleAlwaysSharpen", 1)
             SetCVar("ActionButtonUseKeyDown", 1)
             SetCVar("chatMouseScroll", 1)
-            SetCVar("threatWarning", 0)
+            SetCVar("removeChatDelay", 1)
+            -- SetCVar("threatWarning", 0)
             SetCVar("statusText", 1)
             SetCVar("statusTextDisplay", "NUMERIC") -- NONE,NUMERIC,PERCENT,BOTH
         end
