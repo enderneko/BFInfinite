@@ -138,7 +138,7 @@ local function CreateAFPane()
     AF.SetPoint(afPane, "TOPRIGHT", -15, -15)
     -- AF.SetPoint(afPane, "TOPRIGHT", generalPanel.bfiPane, "BOTTOMRIGHT", 0, -15)
 
-    afPane:SetTips("AbstractFramework", L["These settings may affect all addons using AbstractFramework"])
+    afPane:SetTips("AbstractFramework", L["Changing these settings affects all addons that use AbstractFramework"])
 
     -- accent color
     local accentColorDropdown = AF.CreateDropdown(afPane, 150)
