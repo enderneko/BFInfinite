@@ -442,6 +442,8 @@ local function CreateCVarPane()
     generalPanel.cvarPane = cvarPane
     AF.SetPoint(cvarPane, "TOPRIGHT", generalPanel.afPane, "BOTTOMRIGHT", 0, -30)
 
+    cvarPane:SetTips("CVars", L["You can use the mouse wheel on sliders to adjust values"])
+
     local list = AF.CreateScrollList(cvarPane, nil, 0, 5, 11, 20, 6, "none", "none")
     cvarPane.list = list
     AF.SetPoint(list, "TOPLEFT", cvarPane, 5, -30)
