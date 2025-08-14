@@ -84,6 +84,9 @@ L["Camera Occlusion Tolerance"] = "镜头遮挡容忍度"
 L["Allow minor occlusion before the camera moves closer"] = "允许出现轻微遮挡后再将镜头拉近"
 L["Camera Occlusion Offset"] = "镜头遮挡偏移量"
 L["Offset used when avoiding occlusion (1 = most sensitive, 10 = least)"] = "用于避开遮挡的偏移量（1 = 最敏感，10 = 最不敏感）"
+L["Override AF Font"] = "替换AF字体"
+L["Override Blizzard Font"] = "替换暴雪字体"
+L["Blizzard Font Size"] = "暴雪字体大小"
 
 ---------------------------------------------------------------------
 -- options: colors

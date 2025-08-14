@@ -54,6 +54,17 @@ function eventHandler:ADDON_LOADED(arg)
         -- end
         -- AF.Fire("BFI_UpdateLocale", BFIConfig.locale)
 
+        -- font
+        if type(BFIConfig.font) ~= "table" then
+            BFIConfig.font = {
+                name = "BFI",
+                overrideAF = true,
+                overrideBlizzard = true,
+                blizzardFontSizeDelta = 0,
+            }
+        end
+        AF.Fire("BFI_UpdateFont")
+
         if type(BFIProfile) ~= "table" then BFIProfile = {} end
 
         -- default profile

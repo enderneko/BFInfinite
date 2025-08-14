@@ -235,8 +235,12 @@ local PAPERDOLL_STATINFO = {
 local function StyleStatsPaneCategory(frame)
     S.RemoveTextures(frame)
     AF.ApplyDefaultBackdropWithColors(frame)
-    AF.SetSize(frame, 177, 17)
+    AF.SetSize(frame, 177, 19)
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame)
+
+    frame.Title:ClearAllPoints()
+    frame.Title:SetPoint("CENTER")
+    AF.UpdateFont(frame.Title, nil, 13)
 
     hooksecurefunc(frame, "SetPoint", function(_, point, anchorTo, relativePoint, xOffset, yOffset, fix)
         if not fix then
@@ -281,6 +285,17 @@ local function PaperDollFrame_SetLabelAndText(statFrame, label, text, isPercenta
             statFrame.Value:SetFormattedText("%.2f%%/%.2f%%", numericValue, numericValue / 2)
         else
             statFrame.Value:SetFormattedText("%.2f%%", numericValue)
+        end
+    end
+
+    -- font
+    if not statFrame._fontSizeUpdated then
+        statFrame._fontSizeUpdated = true
+        if label == _G.STAT_AVERAGE_ITEM_LEVEL then
+            AF.UpdateFont(statFrame.Value, nil, 20 + BFI.vars.blizzardFontSizeDelta)
+        else
+            AF.UpdateFont(statFrame.Label, nil, 12 + BFI.vars.blizzardFontSizeDelta, "")
+            AF.UpdateFont(statFrame.Value, nil, 12 + BFI.vars.blizzardFontSizeDelta, "")
         end
     end
 end
@@ -387,7 +402,7 @@ local function StyleCharacterFrameInsetRight()
 
     S.RemoveTextures(CharacterStatsPane)
     S.RemoveTextures(CharacterStatsPane.ItemLevelFrame)
-    CharacterStatsPane.ItemLevelFrame:SetHeight(22)
+    CharacterStatsPane.ItemLevelFrame:SetHeight(30)
 
     hooksecurefunc("PaperDollFrame_UpdateStats", PaperDollFrame_UpdateStats)
     hooksecurefunc("PaperDollFrame_SetLabelAndText", PaperDollFrame_SetLabelAndText)
@@ -408,30 +423,34 @@ end
 ---------------------------------------------------------------------
 -- name & level
 ---------------------------------------------------------------------
--- local function StyleNameAndLevel()
---     local nameText = CharacterFrame.TitleContainer.TitleText
---     nameText:ClearAllPoints()
---     nameText:SetPoint("LEFT", CharacterFrame.BFIHeader, 5, 0)
+local function StyleNameAndLevel()
+    local nameText = CharacterFrame.TitleContainer.TitleText
+    AF.UpdateFont(nameText, nil, 14 + BFI.vars.blizzardFontSizeDelta)
 
---     local levelText = _G.CharacterLevelText
---     levelText:SetParent(CharacterFrame.BFIHeader)
---     levelText:SetWidth(0)
---     levelText:SetHeight(0)
+    -- nameText:ClearAllPoints()
+    -- nameText:SetPoint("LEFT", CharacterFrame.BFIHeader, 5, 0)
 
---     hooksecurefunc(levelText, "SetPoint", function(_, _, anchorTo)
---         if anchorTo ~= nameText then
---             levelText:ClearAllPoints()
---             levelText:SetPoint("BOTTOMLEFT", nameText, "BOTTOMRIGHT", 10, 0)
---         end
---     end)
+    local levelText = _G.CharacterLevelText
+    AF.UpdateFont(levelText, nil, 13 + BFI.vars.blizzardFontSizeDelta)
 
---     local errorText = _G.CharacterTrialLevelErrorText
---     errorText:SetParent(CharacterFrame.BFIHeader)
---     errorText:SetWidth(0)
---     errorText:SetHeight(0)
---     errorText:ClearAllPoints()
---     errorText:SetPoint("BOTTOMLEFT", levelText, "BOTTOMRIGHT", 10, 0)
--- end
+    -- levelText:SetParent(CharacterFrame.BFIHeader)
+    -- levelText:SetWidth(0)
+    -- levelText:SetHeight(0)
+
+    -- hooksecurefunc(levelText, "SetPoint", function(_, _, anchorTo)
+    --     if anchorTo ~= nameText then
+    --         levelText:ClearAllPoints()
+    --         levelText:SetPoint("BOTTOMLEFT", nameText, "BOTTOMRIGHT", 10, 0)
+    --     end
+    -- end)
+
+    -- local errorText = _G.CharacterTrialLevelErrorText
+    -- errorText:SetParent(CharacterFrame.BFIHeader)
+    -- errorText:SetWidth(0)
+    -- errorText:SetHeight(0)
+    -- errorText:ClearAllPoints()
+    -- errorText:SetPoint("BOTTOMLEFT", levelText, "BOTTOMRIGHT", 10, 0)
+end
 
 ---------------------------------------------------------------------
 -- header
@@ -643,7 +662,7 @@ local function StyleBlizzard()
     StyleFlyout()
     StyleCharacterFrameInset()
     StyleCharacterFrameInsetRight()
-    -- StyleNameAndLevel()
+    StyleNameAndLevel()
     StyleReputationFrame()
     StyleTokenFrame()
     StyleTransferLog()

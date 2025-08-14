@@ -111,6 +111,6 @@ BFI.media = {}
 BFI.media.bar = AF.GetTexture("Bar_AF")
 -- AF.Libs.LSM:Register("statusbar", "BFI", AF.GetTexture("StatusBar", BFI.name))
 -- AF.Libs.LSM:Register("statusbar", "BFI Plain", AF.GetPlainTexture())
-AF.Libs.LSM:Register("font", "BFI", AF.GetFont("Noto_AP_SC", BFI.name), 255)
+AF.Libs.LSM:Register("font", "BFI", AF.GetFont("NotoSansSC_AP", BFI.name), 255)
 
 AF.CreateFont("BFI", "BFI_FONT", AF.GetFont("CloseAndOpen", BFI.name), 25, "OUTLINE")

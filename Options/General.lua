@@ -10,7 +10,7 @@ local generalPanel
 
 local function ShowReloadPopup()
     local dialog = AF.GetDialog(generalPanel, L["A UI reload is required\nDo it now?"])
-    AF.SetPoint(dialog, "TOP", 0, -50)
+    AF.SetPoint(dialog, "TOP", 0, -200)
     dialog:SetOnConfirm(ReloadUI)
 end
 
@@ -103,7 +103,7 @@ local function CreateBFIPane()
         AF.UpdatePixelsForRegionAndChildren(_G.GameMenuFrame)
     end)
 
-    -- auto repair
+    -- TODO: move to enhancements
     -- local autoRepairDropdown = AF.CreateDropdown(bfiPane, 150)
     -- bfiPane.autoRepairDropdown = autoRepairDropdown
     -- AF.SetPoint(autoRepairDropdown, "TOPLEFT", scaleSlider, 0, -55)
@@ -117,6 +117,14 @@ local function CreateBFIPane()
     -- end)
     -- autoRepairDropdown:SetSelectedValue("disabled")
     -- autoRepairDropdown:SetEnabled(false)
+
+    function bfiPane.Load()
+        accentColorDropdown:SetSelectedValue(BFIConfig.accentColor.type)
+        accentColorPicker:SetColor(BFIConfig.accentColor.color)
+        accentColorPicker:SetShown(BFIConfig.accentColor.type == "custom")
+        scaleSlider:SetValue(BFIConfig.scale[BFI.vars.resolution])
+        gameMenuScaleSlider:SetValue(BFIConfig.gameMenuScale)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -171,9 +179,17 @@ local function CreateAFPane()
     afPane.fontSizeSlider = fontSizeSlider
     AF.SetPoint(fontSizeSlider, "TOPLEFT", scaleSlider, "BOTTOMLEFT", 0, -45)
     fontSizeSlider:SetAfterValueChanged(function(value)
-        AFConfig.fontSizeOffset = value
+        AFConfig.fontSizeDelta = value
         AF.UpdateFontSize(value)
     end)
+
+    function afPane.Load()
+        accentColorDropdown:SetSelectedValue(AFConfig.accentColor.type)
+        accentColorPicker:SetColor(AFConfig.accentColor.color.t)
+        accentColorPicker:SetShown(AFConfig.accentColor.type == "custom")
+        scaleSlider:SetValue(AFConfig.scale)
+        fontSizeSlider:SetValue(AFConfig.fontSizeDelta)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -182,13 +198,49 @@ end
 local fontPane
 
 local function CreateFontPane()
-    fontPane = AF.CreateTitledPane(generalPanel, "Fonts", 180, 200)
+    fontPane = AF.CreateTitledPane(generalPanel, L["Fonts"], 180, 200)
     generalPanel.fontPane = fontPane
     AF.SetPoint(fontPane, "TOPLEFT", generalPanel.bfiPane, "BOTTOMLEFT", 0, -30)
 
-    local dropdown = AF.CreateDropdown(fontPane, 150)
-    dropdown:SetLabel("Dropdown")
-    AF.SetPoint(dropdown, "TOPLEFT", fontPane, 10, -45)
+    local font = AF.CreateDropdown(fontPane, 150)
+    font:SetLabel(L["Font"])
+    AF.SetPoint(font, "TOPLEFT", fontPane, 10, -45)
+    font:SetItems(AF.LSM_GetFontDropdownItems())
+    font:SetOnSelect(function(value)
+        BFIConfig.font.name = value
+        ShowReloadPopup()
+    end)
+
+    local overrideAF = AF.CreateCheckButton(fontPane, L["Override AF Font"])
+    AF.SetPoint(overrideAF, "TOPLEFT", font, "BOTTOMLEFT", 0, -20)
+    overrideAF:SetOnCheck(function(checked)
+        BFIConfig.font.overrideAF = checked
+        ShowReloadPopup()
+    end)
+
+    local overrideBlizzard = AF.CreateCheckButton(fontPane, L["Override Blizzard Font"])
+    AF.SetPoint(overrideBlizzard, "TOPLEFT", overrideAF, "BOTTOMLEFT", 0, -20)
+
+    local blizzardFontSizeDelta = AF.CreateSlider(fontPane, L["Blizzard Font Size"], 150, -5, 5, 1, nil, true)
+    AF.SetPoint(blizzardFontSizeDelta, "TOPLEFT", overrideBlizzard, "BOTTOMLEFT", 0, -35)
+    blizzardFontSizeDelta:SetAfterValueChanged(function(value)
+        BFIConfig.font.blizzardFontSizeDelta = value
+        ShowReloadPopup()
+    end)
+
+    overrideBlizzard:SetOnCheck(function(checked)
+        BFIConfig.font.overrideBlizzard = checked
+        blizzardFontSizeDelta:SetEnabled(checked)
+        ShowReloadPopup()
+    end)
+
+    function fontPane.Load()
+        font:SetSelectedValue(BFIConfig.font.name)
+        overrideAF:SetChecked(BFIConfig.font.overrideAF)
+        overrideBlizzard:SetChecked(BFIConfig.font.overrideBlizzard)
+        blizzardFontSizeDelta:SetEnabled(BFIConfig.font.overrideBlizzard)
+        blizzardFontSizeDelta:SetValue(BFIConfig.font.blizzardFontSizeDelta)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -402,31 +454,24 @@ local function CreateCVarPane()
     end
     list:SetWidgets(cvarWidgets)
 
-    cvarPane:SetOnShow(function()
+    -- REVIEW: floatingCombatTextSpellMechanics, SHOW_TARGET_EFFECTS, OPTION_TOOLTIP_SHOW_TARGET_EFFECTS
+    -- REVIEW: floatingCombatTextSpellMechanicsOther, SHOW_OTHER_TARGET_EFFECTS, OPTION_TOOLTIP_SHOW_OTHER_TARGET_EFFECTS
+
+    function cvarPane.Load()
         for _, widget in next, cvarWidgets do
             widget.Load()
         end
-    end)
-
-    -- REVIEW: floatingCombatTextSpellMechanics, SHOW_TARGET_EFFECTS, OPTION_TOOLTIP_SHOW_TARGET_EFFECTS
-    -- REVIEW: floatingCombatTextSpellMechanicsOther, SHOW_OTHER_TARGET_EFFECTS, OPTION_TOOLTIP_SHOW_OTHER_TARGET_EFFECTS
+    end
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
 local function Load()
-    bfiPane.scaleSlider:SetValue(BFIConfig.scale[BFI.vars.resolution])
-    bfiPane.gameMenuScaleSlider:SetValue(BFIConfig.gameMenuScale)
-    bfiPane.accentColorDropdown:SetSelectedValue(BFIConfig.accentColor.type)
-    bfiPane.accentColorPicker:SetColor(BFIConfig.accentColor.color)
-    bfiPane.accentColorPicker:SetShown(BFIConfig.accentColor.type == "custom")
-
-    afPane.accentColorDropdown:SetSelectedValue(AFConfig.accentColor.type)
-    afPane.accentColorPicker:SetColor(AFConfig.accentColor.color.t)
-    afPane.accentColorPicker:SetShown(AFConfig.accentColor.type == "custom")
-    afPane.scaleSlider:SetValue(AFConfig.scale)
-    afPane.fontSizeSlider:SetValue(AFConfig.fontSizeOffset)
+    bfiPane.Load()
+    afPane.Load()
+    fontPane.Load()
+    cvarPane.Load()
 end
 
 ---------------------------------------------------------------------
