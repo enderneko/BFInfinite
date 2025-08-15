@@ -1,5 +1,5 @@
-Noto_AP_SC 字体由 Noto_Sans_SC 和 Accidental_Presidency 两种字体组合而成。
-The Noto_AP_SC font is a combination of Noto_Sans_SC and Accidental_Presidency.
+The NotoSansCJKsc_AP font is a combination of NotoSansCJKsc and Accidental_Presidency.
+NotoSansCJKsc_AP 字体由 NotoSansCJKsc 和 Accidental_Presidency 两种字体组合而成。
 
 -----------------------------------------------------------
 The following is the original license content
