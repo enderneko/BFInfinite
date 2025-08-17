@@ -1997,6 +1997,7 @@ function Update(self, which)
     -- Update Action Text
     if not self:IsConsumableOrStackable() then
         self.Name:SetText(self:GetActionText())
+        AF.TruncateFontStringByWidth(self.Name, self:GetWidth())
     else
         self.Name:SetText("")
     end

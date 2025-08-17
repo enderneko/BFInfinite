@@ -234,6 +234,8 @@ local function CreateFontPane()
         ShowReloadPopup()
     end)
 
+    local overrideCombatText
+
     function fontPane.Load()
         font:SetSelectedValue(BFIConfig.font.name)
         overrideAF:SetChecked(BFIConfig.font.overrideAF)

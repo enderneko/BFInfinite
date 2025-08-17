@@ -339,12 +339,30 @@ local fonts = {
     "ObjectiveTrackerFont22",
     "ObjectiveTrackerLineFont",
     "ObjectiveTrackerHeaderFont",
+
+    "ChatBubbleFont",
 }
 
 local fontSizeOverrides = {
     GameFontNormalSmall = 12,
     SystemFont_Shadow_Small2 = 12,
     SystemFont_Shadow_Small2_Outline = 12,
+
+    ObjectiveTrackerHeaderFont = 14,
+    ObjectiveTrackerLineFont = 13,
+    ObjectiveTrackerFont12 = 12,
+    ObjectiveTrackerFont13 = 13,
+    ObjectiveTrackerFont14 = 14,
+    ObjectiveTrackerFont15 = 15,
+    ObjectiveTrackerFont16 = 16,
+    ObjectiveTrackerFont17 = 17,
+    ObjectiveTrackerFont18 = 18,
+    ObjectiveTrackerFont19 = 19,
+    ObjectiveTrackerFont20 = 20,
+    ObjectiveTrackerFont21 = 21,
+    ObjectiveTrackerFont22 = 22,
+
+    ChatBubbleFont = 13,
 
     -- NOTE: these fonts inherit GameFontNormalSmall
     -- GameFontNormalSmallLeft = 12,
