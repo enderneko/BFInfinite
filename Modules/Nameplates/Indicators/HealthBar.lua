@@ -26,6 +26,7 @@ local UnitPlayerOrPetInRaid = UnitPlayerOrPetInRaid
 local UnitClassBase = AF.UnitClassBase
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitIsTapDenied = UnitIsTapDenied
+local IsInInstance = AF.IsInInstance
 
 ---------------------------------------------------------------------
 -- color
@@ -142,7 +143,7 @@ local function UpdateThreat(self, event, unitId)
     local status = UnitThreatSituation("player", unit)
 
     if not status then
-        if BFI.vars.inInstance and UnitAffectingCombat(unit) then
+        if IsInInstance() and UnitAffectingCombat(unit) then
             local target = unit .. "target"
             if UnitExists(target) then
                 if UnitIsUnit(target, "player") or UnitIsUnit(target, "vehicle") then
@@ -158,7 +159,7 @@ local function UpdateThreat(self, event, unitId)
         status = threatSituations[status]
 
         -- check if is offtanked
-        if BFI.vars.inInstance and status == "low" and IsTank("player") then
+        if IsInInstance() and status == "low" and IsTank("player") then
             if IsOffTank(unit .. "target") then
                 status = "offtank"
             end
