@@ -97,7 +97,7 @@ function eventHandler:UI_SCALE_CHANGED()
     BFI.vars.resolution = res
 
     if type(BFIConfig.scale[res]) ~= "number" then
-        BFIConfig.scale[res] = AF.RoundToDecimal(UIParent:GetScale(), 2)
+        BFIConfig.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
     else
         if InCombatLockdown() then
             eventHandler:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -120,7 +120,7 @@ AF.RegisterCallback("AF_PLAYER_LOGIN_DELAYED", function()
 
     -- ui scale
     if type(BFIConfig.scale[res]) ~= "number" then
-        BFIConfig.scale[res] = AF.RoundToDecimal(UIParent:GetScale(), 2)
+        BFIConfig.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
     else
         AF.SetUIParentScale(BFIConfig.scale[res], true)
     end
