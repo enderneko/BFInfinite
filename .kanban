@@ -131,6 +131,21 @@
           "comments": []
         }
       ]
+    },
+    {
+      "id": "d15e3181-79d7-4c55-b2e0-5ca0541d76e5",
+      "title": "Minimap",
+      "cards": [
+        {
+          "id": "1eb1cc39-2251-4e41-b9d6-969f778082c8",
+          "listId": "d15e3181-79d7-4c55-b2e0-5ca0541d76e5",
+          "title": "pos coord text (always/hover)",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        }
+      ]
     }
   ],
   "archive": {
