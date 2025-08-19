@@ -201,47 +201,87 @@ local function CreateFontPane()
     fontPane = AF.CreateTitledPane(generalPanel, L["Fonts"], 180, 200)
     generalPanel.fontPane = fontPane
     AF.SetPoint(fontPane, "TOPLEFT", generalPanel.bfiPane, "BOTTOMLEFT", 0, -30)
+    fontPane:SetTips(L["Fonts"], L["FONT_TIP"],
+        AF.WrapTextInColor("BFI: NotoSansCJKsc + Accidental Presidency", "gray"),
+        AF.WrapTextInColor("BFI Combat: NotoSansCJKsc + Dolphin", "gray")
+    )
 
     local font = AF.CreateDropdown(fontPane, 150)
     font:SetLabel(L["Font"])
     AF.SetPoint(font, "TOPLEFT", fontPane, 10, -45)
     font:SetItems(AF.LSM_GetFontDropdownItems())
     font:SetOnSelect(function(value)
-        BFIConfig.font.name = value
+        BFIConfig.font.common.font = value
         ShowReloadPopup()
     end)
 
     local overrideAF = AF.CreateCheckButton(fontPane, L["Override AF Font"])
-    AF.SetPoint(overrideAF, "TOPLEFT", font, "BOTTOMLEFT", 0, -20)
+    AF.SetPoint(overrideAF, "TOPLEFT", font, "BOTTOMLEFT", 0, -15)
     overrideAF:SetOnCheck(function(checked)
-        BFIConfig.font.overrideAF = checked
+        BFIConfig.font.common.overrideAF = checked
         ShowReloadPopup()
     end)
 
     local overrideBlizzard = AF.CreateCheckButton(fontPane, L["Override Blizzard Font"])
-    AF.SetPoint(overrideBlizzard, "TOPLEFT", overrideAF, "BOTTOMLEFT", 0, -20)
+    AF.SetPoint(overrideBlizzard, "TOPLEFT", overrideAF, "BOTTOMLEFT", 0, -15)
 
     local blizzardFontSizeDelta = AF.CreateSlider(fontPane, L["Blizzard Font Size"], 150, -5, 5, 1, nil, true)
-    AF.SetPoint(blizzardFontSizeDelta, "TOPLEFT", overrideBlizzard, "BOTTOMLEFT", 0, -35)
+    AF.SetPoint(blizzardFontSizeDelta, "TOPLEFT", overrideBlizzard, "BOTTOMLEFT", 0, -30)
     blizzardFontSizeDelta:SetAfterValueChanged(function(value)
-        BFIConfig.font.blizzardFontSizeDelta = value
+        BFIConfig.font.common.blizzardFontSizeDelta = value
         ShowReloadPopup()
     end)
 
     overrideBlizzard:SetOnCheck(function(checked)
-        BFIConfig.font.overrideBlizzard = checked
+        BFIConfig.font.common.overrideBlizzard = checked
         blizzardFontSizeDelta:SetEnabled(checked)
         ShowReloadPopup()
     end)
 
-    local overrideCombatText
+    local overrideCombatTextFont = AF.CreateDropdown(fontPane, 150)
+    AF.SetPoint(overrideCombatTextFont, "TOPLEFT", blizzardFontSizeDelta, "BOTTOMLEFT", 0, -50)
+    overrideCombatTextFont:SetItems(AF.LSM_GetFontDropdownItems())
+    overrideCombatTextFont:SetOnSelect(function(value)
+        BFIConfig.font.combatText.font = value
+    end)
+
+    local overrideCombatText = AF.CreateCheckButton(fontPane, L["Override Combat Text"])
+    AF.SetPoint(overrideCombatText, "BOTTOMLEFT", overrideCombatTextFont, "TOPLEFT", 0, 2)
+    overrideCombatText:SetTooltip(L["Requires relog or restart to take effect"])
+    overrideCombatText:SetOnCheck(function(checked)
+        BFIConfig.font.combatText.override = checked
+        overrideCombatTextFont:SetEnabled(checked)
+    end)
+
+    local overrideNameTextFont = AF.CreateDropdown(fontPane, 150)
+    AF.SetPoint(overrideNameTextFont, "TOPLEFT", overrideCombatTextFont, "BOTTOMLEFT", 0, -40)
+    overrideNameTextFont:SetItems(AF.LSM_GetFontDropdownItems())
+    overrideNameTextFont:SetOnSelect(function(value)
+        BFIConfig.font.nameText.font = value
+    end)
+
+    local overrideNameText = AF.CreateCheckButton(fontPane, L["Override Name Text"])
+    AF.SetPoint(overrideNameText, "BOTTOMLEFT", overrideNameTextFont, "TOPLEFT", 0, 2)
+    overrideNameText:SetTooltip(L["Requires relog or restart to take effect"])
+    overrideNameText:SetOnCheck(function(checked)
+        BFIConfig.font.nameText.override = checked
+        overrideNameTextFont:SetEnabled(checked)
+    end)
 
     function fontPane.Load()
-        font:SetSelectedValue(BFIConfig.font.name)
-        overrideAF:SetChecked(BFIConfig.font.overrideAF)
-        overrideBlizzard:SetChecked(BFIConfig.font.overrideBlizzard)
-        blizzardFontSizeDelta:SetEnabled(BFIConfig.font.overrideBlizzard)
-        blizzardFontSizeDelta:SetValue(BFIConfig.font.blizzardFontSizeDelta)
+        font:SetSelectedValue(BFIConfig.font.common.font)
+        overrideAF:SetChecked(BFIConfig.font.common.overrideAF)
+        overrideBlizzard:SetChecked(BFIConfig.font.common.overrideBlizzard)
+        blizzardFontSizeDelta:SetEnabled(BFIConfig.font.common.overrideBlizzard)
+        blizzardFontSizeDelta:SetValue(BFIConfig.font.common.blizzardFontSizeDelta)
+
+        overrideCombatText:SetChecked(BFIConfig.font.combatText.override)
+        overrideCombatTextFont:SetSelectedValue(BFIConfig.font.combatText.font)
+        overrideCombatTextFont:SetEnabled(BFIConfig.font.combatText.override)
+
+        overrideNameText:SetChecked(BFIConfig.font.nameText.override)
+        overrideNameTextFont:SetSelectedValue(BFIConfig.font.nameText.font)
+        overrideNameTextFont:SetEnabled(BFIConfig.font.nameText.override)
     end
 end
 

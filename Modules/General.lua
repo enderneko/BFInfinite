@@ -377,17 +377,17 @@ BFI.vars.blizzardFontSizeDelta = 0
 
 local function UpdateFont()
     local config = BFIConfig.font
-    local userSetFont = config.name
+    local commonFont = config.common.font
 
-    if config.overrideAF then
-        AF.UpdateBaseFont(AF.LSM_GetFont(userSetFont))
+    if config.common.overrideAF then
+        AF.UpdateBaseFont(AF.LSM_GetFont(commonFont))
     end
 
-    if config.overrideBlizzard then
-        _G.STANDARD_TEXT_FONT = AF.LSM_GetFont(userSetFont)
+    if config.common.overrideBlizzard then
+        _G.STANDARD_TEXT_FONT = AF.LSM_GetFont(commonFont)
 
-        local userSetDelta = config.blizzardFontSizeDelta
-        BFI.vars.blizzardFontSizeDelta = userSetDelta
+        local delta = config.common.blizzardFontSizeDelta
+        BFI.vars.blizzardFontSizeDelta = delta
 
         for _, font in next, fonts do
             local fontObj = _G[font]
@@ -395,8 +395,16 @@ local function UpdateFont()
             local hasShadow = fontObj:GetShadowOffset() ~= 0
             -- local delta = fontSizeDeltas[font] or 0
             size = fontSizeOverrides[font] or size
-            AF.SetFont(fontObj, userSetFont, size + userSetDelta, outline, hasShadow)
+            AF.SetFont(fontObj, commonFont, size + delta, outline, hasShadow)
         end
+    end
+
+    if config.combatText.override then
+        _G.DAMAGE_TEXT_FONT = AF.LSM_GetFont(config.combatText.font)
+    end
+
+    if config.nameText.override then
+        _G.UNIT_NAME_FONT = AF.LSM_GetFont(config.nameText.font)
     end
 end
 AF.RegisterCallback("BFI_UpdateFont", UpdateFont)

@@ -57,10 +57,20 @@ function eventHandler:ADDON_LOADED(arg)
         -- font
         if type(BFIConfig.font) ~= "table" then
             BFIConfig.font = {
-                name = "BFI",
-                overrideAF = true,
-                overrideBlizzard = true,
-                blizzardFontSizeDelta = 0,
+                common = {
+                    font = "BFI",
+                    overrideAF = false,
+                    overrideBlizzard = false,
+                    blizzardFontSizeDelta = 0,
+                },
+                combatText = {
+                    override = false,
+                    font = "BFI Combat",
+                },
+                nameText = {
+                    override = false,
+                    font = "BFI",
+                },
             }
         end
         AF.Fire("BFI_UpdateFont")

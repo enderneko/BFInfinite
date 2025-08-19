@@ -35,6 +35,7 @@ select(2, ...).L = setmetatable({
     ["targetCounter"] = "Target Counter",
     ["targetHighlight"] = "Target Highlight",
     ["threatGlow"] = "Threat Glow",
+    ["FONT_TIP"] = "The \"BFI\" and \"BFI Combat\" fonts mainly support English and Simplified Chinese",
 }, {
     __index = AbstractFramework.L
 })
