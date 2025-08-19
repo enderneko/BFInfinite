@@ -109,7 +109,7 @@ local function OnSizeChanged(self, width, height)
 
     local name = self.Name or _G[_name .. "Name"]
     if name then
-        name:SetWidth(width)
+        AF.TruncateFontStringByWidth(self.Name, self:GetWidth() + 5)
     end
 end
 
@@ -159,7 +159,7 @@ function AB.StylizeButton(b)
 
     if name then
         name:SetDrawLayer("OVERLAY")
-        -- name:SetWidth(0)
+        name:SetWidth(0)
     end
 
     -- icon ------------------------------------------------------------------ --
