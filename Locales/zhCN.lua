@@ -62,6 +62,7 @@ L["Buffs & Debuffs"] = "增益与减益"
 L["Action Bars"] = "动作条"
 L["Chat"] = "聊天"
 L["Hold %s while clicking to reset all settings"] = "按住 %s 并点击以重置所有设置"
+L["Keybind Mode"] = "快捷键绑定模式"
 
 ---------------------------------------------------------------------
 -- options: general
@@ -86,6 +87,7 @@ L["Allow minor occlusion before the camera moves closer"] = "允许出现轻微�
 L["Camera Occlusion Offset"] = "镜头遮挡偏移量"
 L["Offset used when avoiding occlusion (1 = most sensitive, 10 = least)"] = "用于避开遮挡的偏移量（1 = 最敏感，10 = 最不敏感）"
 L["You can use the mouse wheel on sliders to adjust values"] = "鼠标滚轮也可以调整滑动条的数值"
+L["Default Value: %s"] = "默认值：%s"
 L["FONT_TIP"] = "“BFI”与“BFI Combat”字体主要支持英文和简体中文"
 L["Override AF Font"] = "替换AF字体"
 L["Override Blizzard Font"] = "替换暴雪字体"
