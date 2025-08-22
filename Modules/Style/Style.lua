@@ -364,7 +364,7 @@ function S.StyleItemButton(button)
 
     S.CreateBackdrop(button, true, nil, 1)
 
-    local iconTexture = name and _G[name .. "IconTexture"] or button.IconTexture
+    local iconTexture = name and _G[name .. "IconTexture"] or button.IconTexture or button.Icon
     if iconTexture then
         S.StyleIcon(iconTexture)
         -- AF.SetOnePixelInside(iconTexture, button.BFIBackdrop)
@@ -380,13 +380,13 @@ function S.StyleItemButton(button)
         normalTexture:SetAlpha(0)
     end
 
-    local highlightTexture = button:GetHighlightTexture()
+    local highlightTexture = button.GetHighlightTexture and button:GetHighlightTexture()
     if highlightTexture then
         AF.SetOnePixelInside(highlightTexture, button.BFIBackdrop)
         highlightTexture:SetColorTexture(AF.GetColorRGB("white", 0.25))
     end
 
-    local pushedTexture = button:GetPushedTexture()
+    local pushedTexture = button.GetPushedTexture and button:GetPushedTexture()
     if pushedTexture then
         AF.SetOnePixelInside(pushedTexture, button.BFIBackdrop)
         pushedTexture:SetColorTexture(AF.GetColorRGB("yellow", 0.25))
