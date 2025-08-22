@@ -18,5 +18,6 @@
     <Script file="Style\Menu.lua"/>
     <Script file="Style\GameMenu.lua"/>
     <Script file="Style\StaticPopups.lua"/>
+    <Script file="Style\WeeklyRewardsFrame.lua"/>
     <Script file="Style\Misc.lua"/>
 </Ui>

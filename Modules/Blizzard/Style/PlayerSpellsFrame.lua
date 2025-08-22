@@ -13,5 +13,5 @@ local function StyleBlizzard()
 
     S.StyleTitledFrame(_G.PlayerSpellsFrame)
 end
-AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
+-- AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
 AF.RegisterAddonLoaded("Blizzard_PlayerSpells", StyleBlizzard)
