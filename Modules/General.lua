@@ -397,6 +397,9 @@ local function UpdateFont()
             size = fontSizeOverrides[font] or size
             AF.SetFont(fontObj, commonFont, size + delta, outline, hasShadow)
         end
+
+        -- update default LSM font
+        AF.Libs.LSM:SetDefault("font", commonFont)
     end
 
     if config.combatText.override then
