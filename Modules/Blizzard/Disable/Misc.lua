@@ -26,6 +26,7 @@ local function DisableBlizzard()
     -- castBar
     if config.castBar then
         DB.DisableFrame(_G.PlayerCastingBarFrame)
+        DB.DisableFrame(_G.PetCastingBarFrame)
     end
 
     -- auras
