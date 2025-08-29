@@ -13,6 +13,7 @@ Locales\LoadLocales.xml
 
 Libs\LoadLibs.xml
 Init.lua
+Revise.lua
 Debug.lua
 Utils.lua
 

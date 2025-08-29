@@ -1,7 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
 _G.BFInfinite = BFI
-_G.BFI = BFI
 
 BFI.prefix = "BFI"
 BFI.name = "BFInfinite"
@@ -27,7 +26,6 @@ BFI.name = "BFInfinite"
 ---@field Tooltip Tooltip
 ---@field UIWidgets UIWidgets
 ---@field UnitFrames UnitFrames
------@field General General
 
 ---------------------------------------------------------------------
 -- AbstractFramework
@@ -49,20 +47,11 @@ AF.AddEventHandler(BFI.utils)
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
-BFI.General = {}
-AF.AddEventHandler(BFI.General)
-
 BFI.Colors = {}
 AF.AddEventHandler(BFI.Colors)
 
 BFI.Auras = {}
 AF.AddEventHandler(BFI.Auras)
-
-BFI.Misc = {}
-AF.AddEventHandler(BFI.Misc)
-
-BFI.DisableBlizzard = {}
-AF.AddEventHandler(BFI.DisableBlizzard)
 
 BFI.UIWidgets = {}
 AF.AddEventHandler(BFI.UIWidgets)
@@ -91,8 +80,15 @@ AF.AddEventHandler(BFI.Chat)
 BFI.Tooltip = {}
 AF.AddEventHandler(BFI.Tooltip)
 
+-- these 3 below are not part of Profile
 BFI.Style = {}
 AF.AddEventHandler(BFI.Style)
+
+BFI.Misc = {}
+AF.AddEventHandler(BFI.Misc)
+
+BFI.DisableBlizzard = {}
+AF.AddEventHandler(BFI.DisableBlizzard)
 
 ---------------------------------------------------------------------
 -- libs

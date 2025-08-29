@@ -1,10 +1,16 @@
 ---@class BFI
 local BFI = select(2, ...)
+---@class Funcs
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local GetNumSpecializationsForClassID = C_SpecializationInfo.GetNumSpecializationsForClassID
 local eventHandler = AF.CreateSimpleEventHandler("ADDON_LOADED")
 
+---------------------------------------------------------------------
+-- ADDON_LOADED
+---------------------------------------------------------------------
 function eventHandler:ADDON_LOADED(arg)
     if arg == BFI.name then
         eventHandler:UnregisterEvent("ADDON_LOADED")
@@ -75,22 +81,49 @@ function eventHandler:ADDON_LOADED(arg)
         end
         AF.Fire("BFI_UpdateFont")
 
+        --------------------------------------------------
+        -- revise
+        --------------------------------------------------
+        for _, t in next, BFIProfile or {} do
+            BFI.funcs.Revise(t)
+        end
+
+        --------------------------------------------------
+        -- profile
+        --------------------------------------------------
         if type(BFIProfile) ~= "table" then BFIProfile = {} end
 
         -- default profile
         if type(BFIProfile.default) ~= "table" then
-            BFIProfile.default = {}
+            BFIProfile.default = {
+                -- version = BFI.version,
+                -- versionNum = BFI.versionNum,
+                -- pAuthor = (string),
+                -- pVersion = (string),
+                -- pURL = (string),
+                -- pDescription = (string),
+            }
         end
 
-        -- profile
-        AF.Fire("BFI_UpdateProfile", BFIProfile.default, "default")
-
-        -- TODO:
-        BFI.vars.profileName = "default"
-        BFI.vars.profile = BFIProfile.default
+        -- profile assignment
+        if type(BFIConfig.profileAssignment) ~= "table" then
+            BFIConfig.profileAssignment = {
+                role = {
+                    TANK = "default",
+                    HEALER = "default",
+                    DAMAGER = "default",
+                },
+                spec = {},
+                character = {},
+            }
+        end
     end
 end
 
+---------------------------------------------------------------------
+-- UI_SCALE_CHANGED
+---------------------------------------------------------------------
+local uiScaleUpdateRequired
 function eventHandler:UI_SCALE_CHANGED()
     local res = ("%dx%d"):format(GetPhysicalScreenSize())
     if res == BFI.vars.resolution then return end
@@ -100,6 +133,7 @@ function eventHandler:UI_SCALE_CHANGED()
         BFIConfig.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
     else
         if InCombatLockdown() then
+            uiScaleUpdateRequired = true
             eventHandler:RegisterEvent("PLAYER_REGEN_ENABLED")
         else
             AF.SetUIParentScale(BFIConfig.scale[res])
@@ -107,18 +141,67 @@ function eventHandler:UI_SCALE_CHANGED()
     end
 end
 
-function eventHandler:PLAYER_REGEN_ENABLED()
-    eventHandler:UnregisterEvent("PLAYER_REGEN_ENABLED")
-    AF.SetUIParentScale(BFIConfig.scale[BFI.vars.resolution])
+---------------------------------------------------------------------
+-- profile
+---------------------------------------------------------------------
+local lastProfile
+local function PreloadProfile()
+    if BFIConfig.profileAssignment.character[AF.player.fullName] then
+        BFI.vars.profileName = BFIConfig.profileAssignment.character[AF.player.fullName]
+        BFI.vars.profileTypeName = "character"
+        BFI.vars.profileTypeValue = AF.player.fullName
+    elseif BFIConfig.profileAssignment.spec[AF.player.specID] then
+        BFI.vars.profileName = BFIConfig.profileAssignment.spec[AF.player.specID]
+        BFI.vars.profileTypeName = "spec"
+        BFI.vars.profileTypeValue = AF.player.specID
+    else
+        BFI.vars.profileName = BFIConfig.profileAssignment.role[AF.player.specRole]
+        BFI.vars.profileTypeName = "role"
+        BFI.vars.profileTypeValue = AF.player.specRole
+    end
+
+    BFI.vars.profileName = BFI.vars.profileName or "default"
+    BFI.vars.profile = BFIProfile[BFI.vars.profileName]
+
+    if not BFI.vars.profile then
+        BFI.vars.profile = BFIProfile.default
+        BFI.vars.profileName = "default"
+    end
+
+    if lastProfile == BFI.vars.profile then
+        AF.Debug("Profile not changed:", BFI.vars.profileName)
+        return false
+    end
+
+    AF.Fire("BFI_UpdateProfile", BFI.vars.profile, BFI.vars.profileName)
+
+    lastProfile = BFI.vars.profile
+    return true
 end
 
-AF.RegisterCallback("AF_PLAYER_LOGIN_DELAYED", function()
-    eventHandler:RegisterEvent("UI_SCALE_CHANGED")
+local profileLoadRequired
+function F.LoadProfile()
+    if InCombatLockdown() then
+        profileLoadRequired = true
+        eventHandler:RegisterEvent("PLAYER_REGEN_ENABLED")
+        return
+    end
+    if PreloadProfile() then
+        AF.Fire("BFI_UpdateModule")
+    end
+end
 
+local function AF_PLAYER_SPEC_UPDATE(_, specID, lastSpecID)
+    if specID and specID == lastSpecID then return end
+    F.LoadProfile()
+end
+
+local function AF_PLAYER_LOGIN_DELAYED()
+    -- ui scale
+    eventHandler:RegisterEvent("UI_SCALE_CHANGED")
     local res = ("%dx%d"):format(GetPhysicalScreenSize())
     BFI.vars.resolution = res
 
-    -- ui scale
     if type(BFIConfig.scale[res]) ~= "number" then
         BFIConfig.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
     else
@@ -130,6 +213,10 @@ AF.RegisterCallback("AF_PLAYER_LOGIN_DELAYED", function()
         BFIConfig.gameMenuScale = 0.8
     end
 
+    -- profile
+    PreloadProfile()
+    AF.RegisterCallback("AF_PLAYER_SPEC_UPDATE", AF_PLAYER_SPEC_UPDATE)
+
     -- disable blizzard frames
     AF.Fire("BFI_DisableBlizzard")
     -- restyle blizzard frames
@@ -138,5 +225,20 @@ AF.RegisterCallback("AF_PLAYER_LOGIN_DELAYED", function()
     AF.Fire("BFI_UpdateConfig")
     -- update modules
     AF.Fire("BFI_UpdateModule")
+end
+AF.RegisterCallback("AF_PLAYER_LOGIN_DELAYED", AF_PLAYER_LOGIN_DELAYED, "high")
 
-end, "high")
+---------------------------------------------------------------------
+-- PLAYER_REGEN_ENABLED
+---------------------------------------------------------------------
+function eventHandler:PLAYER_REGEN_ENABLED()
+    eventHandler:UnregisterEvent("PLAYER_REGEN_ENABLED")
+    if uiScaleUpdateRequired then
+        uiScaleUpdateRequired = nil
+        AF.SetUIParentScale(BFIConfig.scale[BFI.vars.resolution])
+    end
+    if profileLoadRequired then
+        profileLoadRequired = nil
+        F.LoadProfile()
+    end
+end

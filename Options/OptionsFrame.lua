@@ -31,7 +31,7 @@ local list = {
     -- "Data Broker",
     "Chat",
     "SEPARATOR",
-    "-Profiles",
+    "Profiles",
     "About",
 }
 

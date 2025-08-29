@@ -537,7 +537,7 @@ local function UpdateCombatLog()
     bar:SetAlpha(0.75)
     AF.SetOnePixelInside(bar, _G.CombatLogQuickButtonFrame_Custom)
 end
-AF.RegisterAddonLoaded("Blizzard_CombatLog", UpdateCombatLog)
+-- AF.RegisterAddonLoaded("Blizzard_CombatLog", UpdateCombatLog)
 
 local ChatTypeInfo = _G.ChatTypeInfo
 local function UpdateEditBox(editbox)
