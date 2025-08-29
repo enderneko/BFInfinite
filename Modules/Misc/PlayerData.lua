@@ -122,7 +122,7 @@ function CacheGroup(_, event)
             local class = UnitClassBase(unit)
             nameToClass[name] = class
 
-            -- BFIPlayer
+            -- BFIPlayer, only save if guild member or friend
             if BFIPlayer[name] then
                 BFIPlayer[name]["class"] = class
                 BFIPlayer[name]["level"] = UnitLevel(unit)
