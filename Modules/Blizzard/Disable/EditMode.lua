@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-local DB = BFI.DisableBlizzard
+local DB = BFI.modules.DisableBlizzard
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

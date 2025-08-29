@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
-local T = BFI.Tooltip
+local T = BFI.modules.Tooltip
 local L = BFI.L
-local M = BFI.Misc
+local M = BFI.modules.Misc
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 local IL = AF.ItemLevel

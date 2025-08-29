@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local NP = BFI.NamePlates
-local M = BFI.Misc
+local NP = BFI.modules.NamePlates
+local M = BFI.modules.Misc
 
 local strfind = string.find
 local UnitCastingInfo = UnitCastingInfo

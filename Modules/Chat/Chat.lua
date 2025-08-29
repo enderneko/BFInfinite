@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
 local U = BFI.utils
-local S = BFI.Style
+local S = BFI.modules.Style
 local L = BFI.L
 ---@class Chat
-local C = BFI.Chat
+local C = BFI.modules.Chat
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

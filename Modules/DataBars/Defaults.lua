@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 ---@class DataBars
-local DB = BFI.DataBars
+local DB = BFI.modules.DataBars
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local L = BFI.L
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local NP = BFI.NamePlates
+local NP = BFI.modules.NamePlates
 
 ---------------------------------------------------------------------
 -- local functions

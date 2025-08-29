@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 local L = BFI.L
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local UF = BFI.UnitFrames
+local UF = BFI.modules.UnitFrames
 
 ---------------------------------------------------------------------
 -- local functions

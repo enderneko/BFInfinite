@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 ---@class Auras
-local A = BFI.Auras
+local A = BFI.modules.Auras
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

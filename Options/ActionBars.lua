@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local F = BFI.funcs
 local L = BFI.L
-local AB = BFI.ActionBars
+local AB = BFI.modules.ActionBars
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

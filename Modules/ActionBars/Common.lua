@@ -3,7 +3,7 @@ local BFI = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 ---@class ActionBars
-local AB = BFI.ActionBars
+local AB = BFI.modules.ActionBars
 local U = BFI.utils
 
 local GetBindingKey = GetBindingKey

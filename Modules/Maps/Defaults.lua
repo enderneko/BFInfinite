@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 ---@class Maps
-local M = BFI.Maps
+local M = BFI.modules.Maps
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

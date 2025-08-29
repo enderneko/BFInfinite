@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local UI = BFI.UIWidgets
+local UI = BFI.modules.UIWidgets
 local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework

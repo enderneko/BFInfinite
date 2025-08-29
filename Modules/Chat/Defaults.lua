@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 ---@class Chat
-local C = BFI.Chat
+local C = BFI.modules.Chat
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

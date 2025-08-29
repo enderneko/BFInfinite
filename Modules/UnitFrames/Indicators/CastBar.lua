@@ -4,8 +4,8 @@ local U = BFI.utils
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 ---@class UnitFrames
-local UF = BFI.UnitFrames
-local M = BFI.Misc
+local UF = BFI.modules.UnitFrames
+local M = BFI.modules.Misc
 
 local strfind = string.find
 local UnitCastingInfo = UnitCastingInfo

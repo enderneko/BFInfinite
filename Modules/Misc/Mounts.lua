@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 ---@class Misc
-local M = BFI.Misc
+local M = BFI.modules.Misc
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

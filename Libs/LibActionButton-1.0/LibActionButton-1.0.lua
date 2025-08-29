@@ -228,7 +228,7 @@ function lib:CreateButton(id, name, header, config)
     end
 
     if not AB then
-        AB = BFInfinite.ActionBars
+        AB = BFInfinite.modules.ActionBars
     end
 
     local button = setmetatable(CreateFrame("CheckButton", name, header, "ActionButtonTemplate,SecureActionButtonTemplate"), Generic_MT)

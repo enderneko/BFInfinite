@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
-local NP = BFI.NamePlates
-local DB = BFI.DisableBlizzard
+local NP = BFI.modules.NamePlates
+local DB = BFI.modules.DisableBlizzard
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

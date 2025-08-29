@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-local S = BFI.Style
+local S = BFI.modules.Style
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

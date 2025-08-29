@@ -191,7 +191,7 @@ local function CreateOptionsFrame()
     AF.ApplyCombatProtectionToWidget(keybindModeButton)
     keybindModeButton:SetOnClick(function()
         optionsFrame:Hide()
-        BFI.ActionBars.ActivateKeybindMode()
+        BFI.modules.ActionBars.ActivateKeybindMode()
     end)
 
     -- edit mode button

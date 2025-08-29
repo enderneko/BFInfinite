@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 ---@class BuffsDebuffs
-local BD = BFI.BuffsDebuffs
+local BD = BFI.modules.BuffsDebuffs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
