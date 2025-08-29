@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
+local F = BFI.funcs
 local S = BFI.modules.Style
 local L = BFI.L
 ---@class Chat
@@ -248,7 +248,7 @@ local function SetupChat()
         -- local id = frame:GetID() -- 2:combatlog, 3:voice
 
         -- scorll to bottom
-        U.Hide(frame.ScrollToBottomButton)
+        F.Hide(frame.ScrollToBottomButton)
         if not frame.BFIScrollToBottomButton then
             CreateScrollToBottomButton(frame)
         end
@@ -264,7 +264,7 @@ local function SetupChat()
             local f = _G[name .. tex]
             f:Hide()
         end
-        U.Hide(frame.ScrollBar)
+        F.Hide(frame.ScrollBar)
 
         -- tab
         local tab = GetTab(frame)
@@ -339,8 +339,8 @@ local function SetupDefaultChatFrame()
     Update()
 
     -- editmode
-    U.DisableEditMode(DEFAULT_CHAT_FRAME)
-    U.Hide(DEFAULT_CHAT_FRAME.EditModeResizeButton)
+    F.DisableEditMode(DEFAULT_CHAT_FRAME)
+    F.Hide(DEFAULT_CHAT_FRAME.EditModeResizeButton)
     hooksecurefunc(EditModeManagerFrame, "UpdateLayoutInfo", Update)
 
     -- TextToSpeechButtonFrame

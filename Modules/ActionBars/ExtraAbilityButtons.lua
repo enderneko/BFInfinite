@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
+local F = BFI.funcs
 local AB = BFI.modules.ActionBars
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -178,7 +178,7 @@ local function UpdateButton(_, module, which)
         return
     end
 
-    U.DisableEditMode(ExtraAbilityContainer)
+    F.DisableEditMode(ExtraAbilityContainer)
     ExtraAbilityContainer:SetScript("OnShow", nil)
     ExtraAbilityContainer:SetScript("OnUpdate", nil)
     ExtraAbilityContainer.OnUpdate = nil

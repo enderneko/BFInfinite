@@ -1,14 +1,14 @@
 ---@class BFI
 local BFI = select(2, ...)
----@class Utils
-local U = BFI.utils
+---@class Funcs
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- hide frame
 ---------------------------------------------------------------------
-function U.Hide(region)
+function F.Hide(region)
     if not region then return end
     if region.UnregisterAllEvents then
         region:UnregisterAllEvents()
@@ -22,7 +22,7 @@ end
 ---------------------------------------------------------------------
 -- disable edit mode
 ---------------------------------------------------------------------
-function U.DisableEditMode(region)
+function F.DisableEditMode(region)
     region.HighlightSystem = AF.noop
     region.ClearHighlight = AF.noop
 end
@@ -30,7 +30,7 @@ end
 ---------------------------------------------------------------------
 -- loot spec
 ---------------------------------------------------------------------
-function U.GetLootSpecInfo()
+function F.GetLootSpecInfo()
     local id = GetLootSpecialization()
     if id == 0 then
         -- current spec

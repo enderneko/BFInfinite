@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 ---@class UnitFrames
@@ -669,7 +669,7 @@ local function CastStart(self, event, unitId, castGUID, castSpellID)
 
     -- the great vault
     if castSpellID == 449976 then
-        name, texture = select(2, U.GetLootSpecInfo())
+        name, texture = select(2, F.GetLootSpecInfo())
     end
 
     if self.showName then

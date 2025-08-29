@@ -7,25 +7,27 @@ BFI.name = "BFInfinite"
 
 ---@class BFI
 ---@field L table
----@field libs table
----@field vars table
----@field media table
 ---@field funcs Funcs
----@field utils Utils
----@field Auras Auras
----@field Colors Colors
+---@field libs table
+---@field media table
+---@field modules Modules
+---@field vars table
+
+---@class Modules
 ---@field ActionBars ActionBars
+---@field Auras Auras
 ---@field BuffsDebuffs BuffsDebuffs
 ---@field Chat Chat
+---@field Colors Colors
 ---@field DataBars DataBars
----@field DisableBlizzard DisableBlizzard
 ---@field Maps Maps
----@field Misc Misc
 ---@field NamePlates NamePlates
----@field Style Style
 ---@field Tooltip Tooltip
 ---@field UIWidgets UIWidgets
 ---@field UnitFrames UnitFrames
+---@field DisableBlizzard DisableBlizzard
+---@field Misc Misc
+---@field Style Style
 
 ---------------------------------------------------------------------
 -- AbstractFramework
@@ -39,56 +41,76 @@ AF.RegisterAddon(BFI.name, "BFI")
 ---------------------------------------------------------------------
 BFI.vars = {} -- vars
 BFI.funcs = {} -- functions
+BFI.modules = {}
 BFI.libs = {}
-
-BFI.utils = {} -- utils
-AF.AddEventHandler(BFI.utils)
 
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
-BFI.Colors = {}
-AF.AddEventHandler(BFI.Colors)
+BFI.modules.Colors = {}
+AF.AddEventHandler(BFI.modules.Colors)
 
-BFI.Auras = {}
-AF.AddEventHandler(BFI.Auras)
+BFI.modules.Auras = {}
+AF.AddEventHandler(BFI.modules.Auras)
 
-BFI.UIWidgets = {}
-AF.AddEventHandler(BFI.UIWidgets)
+BFI.modules.UIWidgets = {}
+AF.AddEventHandler(BFI.modules.UIWidgets)
 
-BFI.BuffsDebuffs = {}
-AF.AddEventHandler(BFI.BuffsDebuffs)
+BFI.modules.BuffsDebuffs = {}
+AF.AddEventHandler(BFI.modules.BuffsDebuffs)
 
-BFI.ActionBars = {["bars"] = {}}
-AF.AddEventHandler(BFI.ActionBars)
+BFI.modules.ActionBars = {["bars"] = {}}
+AF.AddEventHandler(BFI.modules.ActionBars)
 
-BFI.UnitFrames = {}
-AF.AddEventHandler(BFI.UnitFrames)
+BFI.modules.UnitFrames = {}
+AF.AddEventHandler(BFI.modules.UnitFrames)
 
-BFI.NamePlates = {}
-AF.AddEventHandler(BFI.NamePlates)
+BFI.modules.NamePlates = {}
+AF.AddEventHandler(BFI.modules.NamePlates)
 
-BFI.Maps = {}
-AF.AddEventHandler(BFI.Maps)
+BFI.modules.Maps = {}
+AF.AddEventHandler(BFI.modules.Maps)
 
-BFI.DataBars = {}
-AF.AddEventHandler(BFI.DataBars)
+BFI.modules.DataBars = {}
+AF.AddEventHandler(BFI.modules.DataBars)
 
-BFI.Chat = {}
-AF.AddEventHandler(BFI.Chat)
+BFI.modules.Chat = {}
+AF.AddEventHandler(BFI.modules.Chat)
 
-BFI.Tooltip = {}
-AF.AddEventHandler(BFI.Tooltip)
+BFI.modules.Tooltip = {}
+AF.AddEventHandler(BFI.modules.Tooltip)
 
 -- these 3 below are not part of Profile
-BFI.Style = {}
-AF.AddEventHandler(BFI.Style)
+BFI.modules.DisableBlizzard = {}
+AF.AddEventHandler(BFI.modules.DisableBlizzard)
 
-BFI.Misc = {}
-AF.AddEventHandler(BFI.Misc)
+BFI.modules.Style = {}
+AF.AddEventHandler(BFI.modules.Style)
 
-BFI.DisableBlizzard = {}
-AF.AddEventHandler(BFI.DisableBlizzard)
+BFI.modules.Misc = {}
+AF.AddEventHandler(BFI.modules.Misc)
+
+function BFI.funcs.GetModuleNames()
+    return {
+        "ActionBars",
+        "Auras",
+        "BuffsDebuffs",
+        "Chat",
+        "Colors",
+        "DataBars",
+        -- "DisableBlizzard",
+        "Maps",
+        -- "Misc",
+        "NamePlates",
+        -- "Style"
+        "Tooltip",
+        "UIWidgets",
+        "UnitFrames",
+    }
+end
+
+function BFI.funcs.GetModuleDefaults(module)
+end
 
 ---------------------------------------------------------------------
 -- libs

@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local U = BFI.utils
+local F = BFI.funcs
 local AB = BFI.modules.ActionBars
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -36,7 +36,7 @@ local function CreateButton()
     highlight:SetBlendMode("ADD")
     highlight:SetColorTexture(AF.GetColorRGB("white", 0.25))
 
-    U.DisableEditMode(vehicleExitHolder.button)
+    F.DisableEditMode(vehicleExitHolder.button)
     vehicleExitHolder.button:SetScript("OnShow", nil)
     vehicleExitHolder.button:SetScript("OnHide", nil)
 

@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
+local F = BFI.funcs
 local M = BFI.modules.Maps
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -510,7 +510,7 @@ end
 
 local function InitMinimap()
     -- MinimapCluster
-    U.DisableEditMode(MinimapCluster)
+    F.DisableEditMode(MinimapCluster)
     MinimapCluster:EnableMouse(false)
 
     -- minimapContainer
@@ -541,7 +541,7 @@ local function InitMinimap()
     }
 
     for _, f in pairs(frames) do
-        U.Hide(f)
+        F.Hide(f)
     end
 
     -- expansion minimap button

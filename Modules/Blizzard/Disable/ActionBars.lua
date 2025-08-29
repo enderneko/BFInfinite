@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-local U = BFI.utils
+local F = BFI.funcs
 local DB = BFI.modules.DisableBlizzard
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -103,12 +103,12 @@ local function DisableBlizzard()
     _G.ActionBarButtonEventsFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN") -- needed for cooldowns of them both
 
     if AF.isRetail then
-        U.Hide(_G.StatusTrackingBarManager)
+        F.Hide(_G.StatusTrackingBarManager)
         _G.ActionBarController:RegisterEvent("SETTINGS_LOADED") -- this is needed for page controller to spawn properly
         _G.ActionBarController:RegisterEvent("UPDATE_EXTRA_ACTIONBAR") -- this is needed to let the ExtraActionBar show
 
         -- take encounter bar out of edit mode
-        U.DisableEditMode(_G.EncounterBar)
+        F.DisableEditMode(_G.EncounterBar)
 
         -- lets only keep ExtraActionButtons in here
         hooksecurefunc(_G.ActionBarButtonEventsFrame, "RegisterFrame", ButtonEventsRegisterFrame)

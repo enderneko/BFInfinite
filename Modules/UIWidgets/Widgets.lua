@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local L = BFI.L
 local UI = BFI.modules.UIWidgets
-local U = BFI.utils
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -22,7 +22,7 @@ local function UpdateWidget(frame, name, anchor, width, height, config)
         hooksecurefunc(frame, "SetPoint", SetPoint)
 
         AF.CreateMover(frame._container, "BFI: " .. L["UI Widgets"], name)
-        U.DisableEditMode(frame)
+        F.DisableEditMode(frame)
     end
 
     AF.SetSize(frame._container, width * config.scale, height * config.scale)

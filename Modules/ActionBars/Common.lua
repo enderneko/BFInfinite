@@ -1,10 +1,10 @@
 ---@class BFI
 local BFI = select(2, ...)
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 ---@class ActionBars
 local AB = BFI.modules.ActionBars
-local U = BFI.utils
 
 local GetBindingKey = GetBindingKey
 local LAB = BFI.libs.LAB
@@ -140,7 +140,7 @@ function AB.StylizeButton(b)
         normal2:Hide()
         normal2:SetAlpha(0)
     end
-    U.Hide(border)
+    F.Hide(border)
     if b.NewActionTexture then b.NewActionTexture:SetAlpha(0) end
     if b.HighlightTexture then b.HighlightTexture:SetAlpha(0) end
     if b.SlotBackground then b.SlotBackground:Hide() end
