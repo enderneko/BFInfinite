@@ -343,8 +343,59 @@ local function ShowDeleteProfileDialog()
             F.LoadProfile()
         end
 
-        managementPane.Load()
         managementPane.ClearProfileInfo()
+        LoadAll()
+    end)
+end
+
+local renameProfileFrame
+local function ShowRenameProfileDialog()
+    if not renameProfileFrame then
+        renameProfileFrame = AF.CreateFrame(profilesPanel)
+        renameProfileFrame:Hide()
+
+        local nameEditBox = AF.CreateEditBox(renameProfileFrame, nil, 160, 20, "trim")
+        renameProfileFrame.nameEditBox = nameEditBox
+        AF.SetPoint(nameEditBox, "TOPLEFT", 60, 0)
+        nameEditBox:SetMaxLetters(50)
+        nameEditBox:SetOnTextChanged(function(name, userChanged)
+            if not userChanged then return end
+            renameProfileFrame.dialog:EnableYes(not AF.IsBlank(name) and name ~= "default" and not BFIProfile[name])
+        end)
+
+        local nameText = AF.CreateFontString(renameProfileFrame, L["Name"], "gray")
+        AF.SetPoint(nameText, "RIGHT", nameEditBox, "LEFT", -5, 0)
+
+        renameProfileFrame:SetOnShow(function()
+            nameEditBox:Clear()
+        end)
+    end
+
+    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Rename Profile"], "BFI") .. "\n" .. selectedProfile, 270)
+    dialog:SetToOkayCancel()
+    AF.SetPoint(dialog, "CENTER", profilesPanel)
+    dialog:EnableYes(false)
+    dialog:SetContent(renameProfileFrame, 25)
+    dialog:SetOnConfirm(function()
+        local name = renameProfileFrame.nameEditBox:GetValue()
+        BFIProfile[name] = BFIProfile[selectedProfile]
+        BFIProfile[selectedProfile] = nil
+
+        -- update profileAssignment
+        for type, t in next, BFIConfig.profileAssignment do
+            for k, v in next, t do
+                if v == selectedProfile then
+                    t[k] = name
+                end
+            end
+        end
+
+        if BFI.vars.profileName == selectedProfile then
+            BFI.vars.profileName = name
+        end
+
+        selectedProfile = name
+        managementPane.list:Select(selectedProfile, true)
         LoadAll()
     end)
 end
@@ -361,6 +412,7 @@ local function CreateManagementPane()
 
     -- list
     local list = AF.CreateScrollList(managementPane, nil, 0, 0, 9, 20, -1)
+    managementPane.list = list
     AF.SetPoint(list, "TOPLEFT", managementPane, 10, -27)
     AF.SetPoint(list, "TOPRIGHT", managementPane, -10, -27)
 
@@ -441,6 +493,7 @@ local function CreateManagementPane()
     rename:SetTexture(AF.GetIcon("Rename"))
     rename:SetTooltip(L["Rename"])
     rename:SetEnabled(false)
+    rename:SetOnClick(ShowRenameProfileDialog)
 
     local import = AF.CreateButton(managementPane, L["Import"], "BFI_hover", nil, 20)
     AF.SetPoint(import, "TOPLEFT", new, "BOTTOMLEFT", 0, -5)
