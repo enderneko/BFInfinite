@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
----@ class NamePlates
+local F = BFI.funcs
+---@class NamePlates
 local NP = BFI.modules.NamePlates
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -32,7 +33,7 @@ local CVAR_DEFAULTS = {
     nameplateOverlapH = 0.5,
     nameplateOverlapV = 0.5,
     -- motion
-    nameplateMotion = 0, -- 0:Overlapping 1:Stacking
+    nameplateMotion = F.GetCVarNumber("nameplateMotion"), -- 0:Overlapping 1:Stacking
     nameplateMotionSpeed = 0.025,
     -- distance
     nameplateMaxDistance = 45,
