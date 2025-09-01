@@ -27,7 +27,7 @@ function F.GetModuleNames()
         "DisableBlizzard",
         "Maps",
         -- "Misc",
-        "NamePlates",
+        "Nameplates",
         -- "Style"
         "Tooltip",
         "UIWidgets",

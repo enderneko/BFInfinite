@@ -1,8 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local F = BFI.funcs
----@class NamePlates
-local NP = BFI.modules.NamePlates
+---@class Nameplates
+local NP = BFI.modules.Nameplates
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

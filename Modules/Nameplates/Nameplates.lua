@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-local NP = BFI.modules.NamePlates
+local NP = BFI.modules.Nameplates
 local DB = BFI.modules.DisableBlizzard
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -55,7 +55,7 @@ function NP.ToggleClickableArea()
     end
 end
 
-function NP.IterateAllVisibleNamePlates(func, type)
+function NP.IterateAllVisibleNameplates(func, type)
     for _, np in next, NP.created do
         if not type or type == np.type then
             if np:IsVisible() then

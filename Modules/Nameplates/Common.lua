@@ -2,8 +2,8 @@
 local BFI = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
----@class NamePlates
-local NP = BFI.modules.NamePlates
+---@class Nameplates
+local NP = BFI.modules.Nameplates
 
 local builders = {
     healthBar = NP.CreateHealthBar,

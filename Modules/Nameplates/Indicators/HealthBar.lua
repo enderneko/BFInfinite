@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local C = BFI.modules.Colors
-local NP = BFI.modules.NamePlates
+local NP = BFI.modules.Nameplates
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 

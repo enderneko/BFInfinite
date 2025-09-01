@@ -21,7 +21,7 @@ BFI.name = "BFInfinite"
 ---@field Colors Colors
 ---@field DataBars DataBars
 ---@field Maps Maps
----@field NamePlates NamePlates
+---@field Nameplates Nameplates
 ---@field Tooltip Tooltip
 ---@field UIWidgets UIWidgets
 ---@field UnitFrames UnitFrames
@@ -65,8 +65,8 @@ AF.AddEventHandler(BFI.modules.ActionBars)
 BFI.modules.UnitFrames = {}
 AF.AddEventHandler(BFI.modules.UnitFrames)
 
-BFI.modules.NamePlates = {}
-AF.AddEventHandler(BFI.modules.NamePlates)
+BFI.modules.Nameplates = {}
+AF.AddEventHandler(BFI.modules.Nameplates)
 
 BFI.modules.Maps = {}
 AF.AddEventHandler(BFI.modules.Maps)

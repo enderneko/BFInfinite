@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-local NP = BFI.modules.NamePlates
+local NP = BFI.modules.Nameplates
 
 ---------------------------------------------------------------------
 -- local functions
@@ -79,7 +79,7 @@ local function UpdateQuests(_, event, unit)
     end
 
     -- texplore(quests)
-    NP.IterateAllVisibleNamePlates(UpdateQuestIndicator, "hostile_npc")
+    NP.IterateAllVisibleNameplates(UpdateQuestIndicator, "hostile_npc")
 end
 
 local timer

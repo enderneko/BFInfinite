@@ -86,6 +86,10 @@ function eventHandler:ADDON_LOADED(arg)
         --------------------------------------------------
         for _, t in next, BFIProfile or {} do
             BFI.funcs.Revise(t)
+            -- if AF.IsBlank(t.pAuthor) then t.pAuthor = nil end
+            -- if AF.IsBlank(t.pVersion) then t.pVersion = nil end
+            -- if AF.IsBlank(t.pURL) then t.pURL = nil end
+            -- if AF.IsBlank(t.pDescription) then t.pDescription = nil end
         end
 
         --------------------------------------------------
@@ -96,8 +100,8 @@ function eventHandler:ADDON_LOADED(arg)
         -- default profile
         if type(BFIProfile.default) ~= "table" then
             BFIProfile.default = {
-                -- version = BFI.version,
-                -- versionNum = BFI.versionNum,
+                version = BFI.version,
+                versionNum = BFI.versionNum,
                 -- pAuthor = (string),
                 -- pVersion = (string),
                 -- pURL = (string),
