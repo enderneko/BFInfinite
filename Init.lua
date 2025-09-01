@@ -80,37 +80,15 @@ AF.AddEventHandler(BFI.modules.Chat)
 BFI.modules.Tooltip = {}
 AF.AddEventHandler(BFI.modules.Tooltip)
 
--- these 3 below are not part of Profile
 BFI.modules.DisableBlizzard = {}
 AF.AddEventHandler(BFI.modules.DisableBlizzard)
 
+-- these below are not part of Profile
 BFI.modules.Style = {}
 AF.AddEventHandler(BFI.modules.Style)
 
 BFI.modules.Misc = {}
 AF.AddEventHandler(BFI.modules.Misc)
-
-function BFI.funcs.GetModuleNames()
-    return {
-        "ActionBars",
-        "Auras",
-        "BuffsDebuffs",
-        "Chat",
-        "Colors",
-        "DataBars",
-        -- "DisableBlizzard",
-        "Maps",
-        -- "Misc",
-        "NamePlates",
-        -- "Style"
-        "Tooltip",
-        "UIWidgets",
-        "UnitFrames",
-    }
-end
-
-function BFI.funcs.GetModuleDefaults(module)
-end
 
 ---------------------------------------------------------------------
 -- libs

@@ -117,6 +117,8 @@ function eventHandler:ADDON_LOADED(arg)
                 character = {},
             }
         end
+
+        F.CheckProfileAssignments()
     end
 end
 
@@ -188,6 +190,30 @@ function F.LoadProfile()
     end
     if PreloadProfile() then
         AF.Fire("BFI_UpdateModule")
+    end
+end
+
+function F.CheckProfileAssignments()
+    for type, t in next, BFIConfig.profileAssignment do
+        for k, v in next, t do
+            if not BFIProfile[v] then
+                if type == "role" then
+                    t[k] = "default"
+                else
+                    t[k] = nil
+                end
+            end
+        end
+    end
+
+    if not BFIConfig.profileAssignment.role.TANK then
+        BFIConfig.profileAssignment.role.TANK = "default"
+    end
+    if not BFIConfig.profileAssignment.role.HEALER then
+        BFIConfig.profileAssignment.role.HEALER = "default"
+    end
+    if not BFIConfig.profileAssignment.role.DAMAGER then
+        BFIConfig.profileAssignment.role.DAMAGER = "default"
     end
 end
 

@@ -7,7 +7,8 @@ local AF = _G.AbstractFramework
 
 local profilesPanel
 local rolePane, specPane, characterPane, managementPane
-local profilesChanged, assignmentFrame
+local selectedProfile, selectedHighlight, assignmentFrame
+local LoadAll
 
 ---------------------------------------------------------------------
 -- create
@@ -21,6 +22,8 @@ end
 ---------------------------------------------------------------------
 -- profile button
 ---------------------------------------------------------------------
+local profileButtons = {}
+
 local function ProfileButton_SetText(self, text)
     if text == "default" then
         text = _G.DEFAULT
@@ -43,11 +46,15 @@ local function ProfileButton_OnClick(self)
 
     if BFI.vars.profileTypeValue == self.typeValue then
         F.LoadProfile()
+        LoadAll()
     end
 end
 
 local function CreateProfileButton(parent, typeName, typeValue, icon)
     local button = AF.CreateButton(parent, nil, "BFI_hover", 155, 20)
+
+    profileButtons[typeName] = profileButtons[typeName] or {}
+    profileButtons[typeName][typeValue] = button
 
     button._isProfileReceiver = true
     button.typeName = typeName
@@ -211,7 +218,6 @@ local function CreateAssignmentFrame()
     assignmentFrame.label:SetJustifyH("LEFT")
     AF.SetFrameLevel(assignmentFrame, 50)
     AF.SetPoint(assignmentFrame.label, "LEFT", 5, 0)
-    AF.SetPoint(assignmentFrame.label, "RIGHT", -5, 0)
 
     assignmentFrame.line = assignmentFrame:CreateLine(nil, "BACKGROUND", nil, -7)
     assignmentFrame.line:SetTexture(AF.GetTexture("Checkerboard"), "REPEAT", "REPEAT")
@@ -231,9 +237,13 @@ local function CreateAssignmentFrame()
     end)
 
     assignmentFrame:SetScript("OnEvent", function()
-        local f = GetMouseFoci()[1]
-        if f and f._isProfileReceiver then
+        local b = GetMouseFoci()[1]
+        if b and b._isProfileReceiver then
+            BFIConfig.profileAssignment[b.typeName][b.typeValue] = assignmentFrame.profileID
+            b:SetText(assignmentFrame.profileName)
 
+            F.LoadProfile() -- let PreloadProfile decide whether to actually perform profile loading
+            LoadAll()
         else
             assignmentFrame:Hide()
         end
@@ -252,6 +262,9 @@ local function Profile_ActiveAssignmentMode(b)
 
     assignmentFrame.line:SetStartPoint("RIGHT", assignmentFrame)
     assignmentFrame.line:SetEndPoint("LEFT", b)
+
+    assignmentFrame.profileName = b:GetText()
+    assignmentFrame.profileID = b.id
 end
 
 local newProfileFrame
@@ -301,8 +314,45 @@ local function ShowNewProfileDialog()
     dialog:SetContent(newProfileFrame, 55)
     dialog:SetOnConfirm(function()
         local name = newProfileFrame.nameEditBox:GetValue()
-        local inherit = newProfileFrame.inheritDropdown:GetSelectedValue()
+        local inherit = newProfileFrame.inheritDropdown:GetSelected()
+
+        if inherit == "none" then
+            BFIProfile[name] = {}
+            for _, module in next, F.GetModuleNames() do
+                local defaults = F.GetModuleDefaults(module)
+                if defaults then
+                    BFIProfile[name][AF.LowerFirst(module)] = defaults
+                end
+            end
+        end
+
+        managementPane.Load()
     end)
+end
+
+local function ShowDeleteProfileDialog()
+    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Delete Profile"], "BFI") .. "\n" .. selectedProfile, 270)
+    AF.SetPoint(dialog, "CENTER", profilesPanel)
+
+    dialog:SetOnConfirm(function()
+        BFIProfile[selectedProfile] = nil
+
+        if BFI.vars.profileName == selectedProfile then
+            BFIConfig.profileAssignment[BFI.vars.profileTypeName][BFI.vars.profileTypeValue] = nil
+            F.CheckProfileAssignments()
+            F.LoadProfile()
+        end
+
+        managementPane.Load()
+        managementPane.ClearProfileInfo()
+        LoadAll()
+    end)
+end
+
+local function UpdateProfileInfo(value, userChanged, eb)
+    if not userChanged then return end
+    if AF.IsBlank(value) then value = nil end
+    BFIProfile[selectedProfile][eb.key] = value
 end
 
 local function CreateManagementPane()
@@ -346,18 +396,30 @@ local function CreateManagementPane()
     local author = AF.CreateEditBox(managementPane, L["Author"], nil, 20)
     AF.SetPoint(author, "TOPLEFT", list, "BOTTOMLEFT", 0, -15)
     AF.SetPoint(author, "RIGHT", list)
+    author.key = "pAuthor"
+    author:SetOnTextChanged(UpdateProfileInfo)
+    author:SetEnabled(false)
 
     local version = AF.CreateEditBox(managementPane, L["Version"], nil, 20)
     AF.SetPoint(version, "TOPLEFT", author, "BOTTOMLEFT", 0, -5)
     AF.SetPoint(version, "RIGHT", list)
+    version.key = "pVersion"
+    version:SetOnTextChanged(UpdateProfileInfo)
+    version:SetEnabled(false)
 
     local url = AF.CreateEditBox(managementPane, "URL", nil, 20)
     AF.SetPoint(url, "TOPLEFT", version, "BOTTOMLEFT", 0, -5)
     AF.SetPoint(url, "RIGHT", list)
+    url.key = "pURL"
+    url:SetOnTextChanged(UpdateProfileInfo)
+    url:SetEnabled(false)
 
     local description = AF.CreateScrollEditBox(managementPane, nil, L["Description"], nil, 160)
     AF.SetPoint(description, "TOPLEFT", url, "BOTTOMLEFT", 0, -5)
     AF.SetPoint(description, "RIGHT", list)
+    description.eb.key = "pDescription"
+    description:SetOnTextChanged(UpdateProfileInfo)
+    description:SetEnabled(false)
 
     -- buttons
     local new = AF.CreateButton(managementPane, nil, "BFI_hover", 50, 20)
@@ -370,12 +432,15 @@ local function CreateManagementPane()
     AF.SetPoint(delete, "TOPRIGHT", description, "BOTTOMRIGHT", 0, -15)
     delete:SetTexture(AF.GetIcon("Trash"))
     delete:SetTooltip(L["Delete"])
+    delete:SetEnabled(false)
+    delete:SetOnClick(ShowDeleteProfileDialog)
 
     local rename = AF.CreateButton(managementPane, nil, "BFI_hover")
     AF.SetPoint(rename, "TOPLEFT", new, "TOPRIGHT", 5, 0)
     AF.SetPoint(rename, "BOTTOMRIGHT", delete, "BOTTOMLEFT", -5, 0)
     rename:SetTexture(AF.GetIcon("Rename"))
     rename:SetTooltip(L["Rename"])
+    rename:SetEnabled(false)
 
     local import = AF.CreateButton(managementPane, L["Import"], "BFI_hover", nil, 20)
     AF.SetPoint(import, "TOPLEFT", new, "BOTTOMLEFT", 0, -5)
@@ -386,25 +451,22 @@ local function CreateManagementPane()
     AF.SetPoint(export, "TOPLEFT", import, "BOTTOMLEFT", 0, -5)
     AF.SetPoint(export, "TOPRIGHT", import, "BOTTOMRIGHT", 0, -5)
     export:SetTexture(AF.GetIcon("Export1"), nil, {"LEFT", 5, 0})
+    export:SetEnabled(false)
 
     -- load
     local profiles = {}
-    profilesChanged = true
 
     function managementPane.Load()
-        if not profilesChanged then return end
-        profilesChanged = nil
-
         wipe(profiles)
 
         for name, t in next, BFIProfile do
             if name ~= "default" then
                 tinsert(profiles, {
                     text = name,
-                    pAuthor = t.pAuthor,
-                    pVersion = t.pVersion,
-                    pURL = t.pURL,
-                    pDescription = t.pDescription
+                    -- pAuthor = t.pAuthor,
+                    -- pVersion = t.pVersion,
+                    -- pURL = t.pURL,
+                    -- pDescription = t.pDescription
                 })
             end
         end
@@ -413,23 +475,55 @@ local function CreateManagementPane()
         list:SetData(profiles)
     end
 
-    function managementPane.LoadProfileInfo(profile)
+    function managementPane.LoadProfileInfo(b)
+        selectedProfile = b.id
+
+        local profile = BFIProfile[selectedProfile]
         author:SetText(profile.pAuthor or "")
         version:SetText(profile.pVersion or "")
         url:SetText(profile.pURL or "")
         description:SetText(profile.pDescription or "")
+
+        -- update buttons
+        AF.SetEnabled(selectedProfile ~= "default", delete, rename)
+        AF.SetEnabled(true, export, author, version, url, description)
+    end
+
+    function managementPane.ClearProfileInfo()
+        selectedProfile = nil
+
+        list:Select(nil, true)
+
+        author:Clear()
+        version:Clear()
+        url:Clear()
+        description:Clear()
+        AF.SetEnabled(false, delete, rename, export, author, version, url, description)
     end
 end
 
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
-local function Load()
+LoadAll = function()
     rolePane.Load()
     specPane.Load()
     characterPane.Load()
     managementPane.Load()
+
+    if not selectedHighlight then
+        selectedHighlight = AF.CreateBorderedFrame(profilesPanel, nil, nil, nil, "none", "BFI")
+        AF.SetFrameLevel(selectedHighlight, 30)
+    end
+
+    selectedHighlight:SetAllPoints(profileButtons[BFI.vars.profileTypeName][BFI.vars.profileTypeValue])
 end
+
+AF.RegisterCallback("BFI_UpdateProfile", function()
+    if selectedHighlight then
+        selectedHighlight:SetAllPoints(profileButtons[BFI.vars.profileTypeName][BFI.vars.profileTypeValue])
+    end
+end)
 
 ---------------------------------------------------------------------
 -- show
@@ -443,7 +537,7 @@ AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
             CreateCharacterPane()
             CreateManagementPane()
         end
-        Load()
+        LoadAll()
         profilesPanel:Show()
     elseif profilesPanel then
         profilesPanel:Hide()

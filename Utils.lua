@@ -6,6 +6,35 @@ local F = BFI.funcs
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
+-- module
+---------------------------------------------------------------------
+function F.GetModuleNames()
+    return {
+        "ActionBars",
+        "Auras",
+        "BuffsDebuffs",
+        "Chat",
+        "Colors",
+        "DataBars",
+        "DisableBlizzard",
+        "Maps",
+        -- "Misc",
+        "NamePlates",
+        -- "Style"
+        "Tooltip",
+        "UIWidgets",
+        "UnitFrames",
+    }
+end
+
+function F.GetModuleDefaults(module)
+    module = module and BFI.modules[module]
+    if module and module.GetDefaults then
+        return module.GetDefaults()
+    end
+end
+
+---------------------------------------------------------------------
 -- hide frame
 ---------------------------------------------------------------------
 function F.Hide(region)
