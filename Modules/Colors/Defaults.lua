@@ -60,16 +60,16 @@ local defaults = {
     },
 }
 
-AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
-    if not t["colors"] then
-        t["colors"] = AF.Copy(defaults)
+AF.RegisterCallback("BFI_UpdateConfig", function()
+    if not BFIConfig.colors then
+        BFIConfig.colors = AF.Copy(defaults)
     end
     -- add / overwrite colors
-    for _, st in pairs(t["colors"]) do
+    for _, st in next, BFIConfig.colors do
         AF.AddColors(st)
     end
-    C.config = t["colors"]
-end, "high")
+    C.config = BFIConfig.colors
+end)
 
 function C.GetDefaults()
     return AF.Copy(defaults)
@@ -77,12 +77,12 @@ end
 
 function C.ResetToDefaults(which)
     if not which then
-        BFI.vars.profile["colors"] = AF.Copy(defaults)
+        BFIConfig["colors"] = AF.Copy(defaults)
     else
-        BFI.vars.profile["colors"][which] = AF.Copy(defaults[which])
+        BFIConfig["colors"][which] = AF.Copy(defaults[which])
     end
 
-    for _, t in pairs(BFI.vars.profile["colors"]) do
+    for _, t in next, BFIConfig["colors"] do
         AF.AddColors(t)
     end
 

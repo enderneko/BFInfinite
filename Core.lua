@@ -251,7 +251,7 @@ local function AF_PLAYER_LOGIN_DELAYED()
     AF.Fire("BFI_DisableBlizzard")
     -- restyle blizzard frames
     AF.Fire("BFI_StyleBlizzard")
-    -- update general config
+    -- update shared configs
     AF.Fire("BFI_UpdateConfig")
     -- update modules
     AF.Fire("BFI_UpdateModule")
