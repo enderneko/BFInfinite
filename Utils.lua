@@ -6,6 +6,14 @@ local F = BFI.funcs
 local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
+-- cvar
+---------------------------------------------------------------------
+local GetCVar = GetCVar
+function F.GetCVarNumber(name)
+    return tonumber(GetCVar(name)) or 0
+end
+
+---------------------------------------------------------------------
 -- module
 ---------------------------------------------------------------------
 function F.GetModuleNames()

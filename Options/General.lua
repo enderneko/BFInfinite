@@ -296,10 +296,6 @@ local SetCVar = SetCVar
 local _GetCVarDefault = GetCVarDefault
 local _GetCVarBool = GetCVarBool
 
-local function GetCVarNumber(cvar)
-    return tonumber(GetCVar(cvar)) or 0
-end
-
 local function GetCVarBool(cvar)
     if type(cvar) == "table" then
         for _, c in next, cvar do
@@ -389,7 +385,7 @@ local cvarOptions = {
         RegisterParent(holder, info.parent)
 
         function holder.Load()
-            local value = GetCVarNumber(info.name)
+            local value = F.GetCVarNumber(info.name)
             current:SetText(AF.RoundToNearestMultiple(value, info.step))
             slider:SetValue(value)
 
