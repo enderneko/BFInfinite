@@ -942,42 +942,50 @@ end
 -- BFI_UpdateColor
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_UpdateColor", function(_, group, which)
-    if group == "casts" then
-        if which == "spark" then
+    if not group or group == "casts" then
+        if not which or which == "spark" then
             for _, frame in next, BFI.vars.unitButtons do
                 local castBar = UF.GetIndicator(frame, "castBar")
                 if castBar then
                     castBar.spark:SetVertexColor(AF.GetColorRGB("cast_spark"))
                 end
             end
-        elseif which == "tick" then
+        end
+
+        if not which or which == "tick" then
             local castBar = UF.GetIndicator(BFI_Player, "castBar")
             if castBar and castBar.ticks then
                 for _, tick in next, castBar.ticks do
                     tick:SetColorTexture(AF.GetColorRGB("cast_tick"))
                 end
             end
-        elseif which == "latency" then
+        end
+
+        if not which or which == "latency" then
             local castBar = UF.GetIndicator(BFI_Player, "castBar")
             if castBar then
                 castBar.latency:SetColorTexture(AF.GetColorRGB("cast_latency"))
             end
-        elseif which == "uninterruptible_texture" then
+        end
+
+        if not which or which == "uninterruptible_texture" then
             for _, frame in next, BFI.vars.unitButtons do
                 local castBar = UF.GetIndicator(frame, "castBar")
                 if castBar then
                     castBar.uninterruptible:SetVertexColor(AF.GetColorRGB("cast_uninterruptible_texture"))
                 end
             end
-        else
-            for _, frame in next, BFI.vars.unitButtons do
-                local castBar = UF.GetIndicator(frame, "castBar")
-                if castBar and castBar:IsVisible() then
-                    CastBar_Update(castBar)
-                end
+        end
+
+        for _, frame in next, BFI.vars.unitButtons do
+            local castBar = UF.GetIndicator(frame, "castBar")
+            if castBar and castBar:IsVisible() then
+                CastBar_Update(castBar)
             end
         end
-    elseif group == "empowerStages" then
+    end
+
+    if not group or group == "empowerStages" then
         for _, frame in next, BFI.vars.unitButtons do
             local castBar = UF.GetIndicator(frame, "castBar")
             if castBar then

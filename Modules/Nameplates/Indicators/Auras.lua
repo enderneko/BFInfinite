@@ -310,7 +310,7 @@ end
 -- BFI_UpdateAuras
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_UpdateAuras", function(_, which)
-    if which == "blacklist" or which == "priorities" then
+    if not which or which == "blacklist" or which == "priorities" then
         for _, frame in next, NP.created do
             if frame:IsVisible() then
                 local buffs = NP.GetIndicator(frame, "buffs")

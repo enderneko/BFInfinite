@@ -576,30 +576,34 @@ end
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_UpdateColor", function(_, group, which)
     if not NP.config.enabled then return end
-    if group == "casts" then
-        if which == "spark" then
+    if not group or group == "casts" then
+        if not which or which == "spark" then
             for _, frame in next, NP.created do
                 local castBar = NP.GetIndicator(frame, "castBar")
                 if castBar then
                     castBar.spark:SetVertexColor(AF.GetColorRGB("cast_spark"))
                 end
             end
-        elseif which == "uninterruptible_texture" then
+        end
+
+        if not which or which == "uninterruptible_texture" then
             for _, frame in next, NP.created do
                 local castBar = NP.GetIndicator(frame, "castBar")
                 if castBar then
                     castBar.uninterruptible:SetVertexColor(AF.GetColorRGB("cast_uninterruptible_texture"))
                 end
             end
-        else
-            for _, frame in next, NP.created do
-                local castBar = NP.GetIndicator(frame, "castBar")
-                if castBar and castBar:IsVisible() then
-                    CastBar_Update(castBar)
-                end
+        end
+
+        for _, frame in next, NP.created do
+            local castBar = NP.GetIndicator(frame, "castBar")
+            if castBar and castBar:IsVisible() then
+                CastBar_Update(castBar)
             end
         end
-    elseif group == "empower" then
+    end
+
+    if not group or group == "empowerStages" then
         for _, frame in next, NP.created do
             local castBar = NP.GetIndicator(frame, "castBar")
             if castBar then

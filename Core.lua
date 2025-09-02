@@ -92,17 +92,6 @@ function eventHandler:ADDON_LOADED(arg)
         AF.Fire("BFI_UpdateFont")
 
         --------------------------------------------------
-        -- revise
-        --------------------------------------------------
-        for _, t in next, BFIProfile or {} do
-            BFI.funcs.Revise(t)
-            -- if AF.IsBlank(t.pAuthor) then t.pAuthor = nil end
-            -- if AF.IsBlank(t.pVersion) then t.pVersion = nil end
-            -- if AF.IsBlank(t.pURL) then t.pURL = nil end
-            -- if AF.IsBlank(t.pDescription) then t.pDescription = nil end
-        end
-
-        --------------------------------------------------
         -- profile
         --------------------------------------------------
         if type(BFIProfile) ~= "table" then BFIProfile = {} end
@@ -110,8 +99,7 @@ function eventHandler:ADDON_LOADED(arg)
         -- default profile
         if type(BFIProfile.default) ~= "table" then
             BFIProfile.default = {
-                version = BFI.version,
-                versionNum = BFI.versionNum,
+                revision = BFI.versionNum,
                 -- pAuthor = (string),
                 -- pVersion = (string),
                 -- pURL = (string),
@@ -133,6 +121,19 @@ function eventHandler:ADDON_LOADED(arg)
         end
 
         F.CheckProfileAssignments()
+
+        --------------------------------------------------
+        -- revise
+        --------------------------------------------------
+        F.ReviseCommon()
+
+        for _, t in next, BFIProfile or {} do
+            F.ReviseProfile(t)
+            -- if AF.IsBlank(t.pAuthor) then t.pAuthor = nil end
+            -- if AF.IsBlank(t.pVersion) then t.pVersion = nil end
+            -- if AF.IsBlank(t.pURL) then t.pURL = nil end
+            -- if AF.IsBlank(t.pDescription) then t.pDescription = nil end
+        end
     end
 end
 
