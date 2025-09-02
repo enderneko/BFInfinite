@@ -376,7 +376,7 @@ local fontSizeOverrides = {
 BFI.vars.blizzardFontSizeDelta = 0
 
 local function UpdateFont()
-    local config = BFIConfig.font
+    local config = BFIConfig.general.font
     local commonFont = config.common.font
 
     if config.common.overrideAF then
@@ -416,7 +416,7 @@ AF.RegisterCallback("BFI_UpdateFont", UpdateFont)
 -- update config
 ---------------------------------------------------------------------
 local function UpdateConfig()
-    local config = BFIConfig
+    local config = BFIConfig.general
 
     -- GameMenuFrame scale
     local GameMenuFrame = _G.GameMenuFrame

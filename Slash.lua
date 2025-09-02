@@ -14,6 +14,8 @@ function SlashCmdList.BFI(msg, editbox)
     elseif command == "reset" then
         BFIConfig = nil
         BFIProfile = nil
+        BFIPlayer = nil
+        BFIGuild = nil
         ReloadUI()
     else
         BFI.ToggleOptionsFrame()

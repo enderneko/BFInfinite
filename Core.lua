@@ -35,34 +35,44 @@ function eventHandler:ADDON_LOADED(arg)
             SetCVar("statusTextDisplay", "NUMERIC") -- NONE,NUMERIC,PERCENT,BOTH
         end
 
-        -- scales
-        if type(BFIConfig.scale) ~= "table" then
-            BFIConfig.scale = {}
+        -- general
+        if type(BFIConfig.general) ~= "table" then
+            BFIConfig.general = {}
+        end
+
+        -- general.gameMenuScale
+        if type(BFIConfig.general.gameMenuScale) ~= "number" then
+            BFIConfig.general.gameMenuScale = 0.8
+        end
+
+        -- general.scale
+        if type(BFIConfig.general.scale) ~= "table" then
+            BFIConfig.general.scale = {}
         end
 
         -- accent color
-        if type(BFIConfig.accentColor) ~= "table" then
-            BFIConfig.accentColor = {
+        if type(BFIConfig.general.accentColor) ~= "table" then
+            BFIConfig.general.accentColor = {
                 type = "default",
                 color = AF.GetColorTable("hotpink"),
             }
         end
 
-        if BFIConfig.accentColor.type == "custom" then
-            AF.SetAddonAccentColor(BFI.name, BFIConfig.accentColor.color)
+        if BFIConfig.general.accentColor.type == "custom" then
+            AF.SetAddonAccentColor(BFI.name, BFIConfig.general.accentColor.color)
         else
             AF.SetAddonAccentColor(BFI.name, "blazing_tangerine")
         end
 
-        -- language
-        -- if type(BFIConfig.locale) ~= "string" then
-        --     BFIConfig.locale = GetLocale()
+        -- general.language
+        -- if type(BFIConfig.general.locale) ~= "string" then
+        --     BFIConfig.general.locale = GetLocale()
         -- end
-        -- AF.Fire("BFI_UpdateLocale", BFIConfig.locale)
+        -- AF.Fire("BFI_UpdateLocale", BFIConfig.general.locale)
 
-        -- font
-        if type(BFIConfig.font) ~= "table" then
-            BFIConfig.font = {
+        -- general.font
+        if type(BFIConfig.general.font) ~= "table" then
+            BFIConfig.general.font = {
                 common = {
                     font = "BFI",
                     overrideAF = false,
@@ -135,14 +145,14 @@ function eventHandler:UI_SCALE_CHANGED()
     if res == BFI.vars.resolution then return end
     BFI.vars.resolution = res
 
-    if type(BFIConfig.scale[res]) ~= "number" then
-        BFIConfig.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
+    if type(BFIConfig.general.scale[res]) ~= "number" then
+        BFIConfig.general.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
     else
         if InCombatLockdown() then
             uiScaleUpdateRequired = true
             eventHandler:RegisterEvent("PLAYER_REGEN_ENABLED")
         else
-            AF.SetUIParentScale(BFIConfig.scale[res])
+            AF.SetUIParentScale(BFIConfig.general.scale[res])
         end
     end
 end
@@ -232,15 +242,10 @@ local function AF_PLAYER_LOGIN_DELAYED()
     local res = ("%dx%d"):format(GetPhysicalScreenSize())
     BFI.vars.resolution = res
 
-    if type(BFIConfig.scale[res]) ~= "number" then
-        BFIConfig.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
+    if type(BFIConfig.general.scale[res]) ~= "number" then
+        BFIConfig.general.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
     else
-        AF.SetUIParentScale(BFIConfig.scale[res], true)
-    end
-
-    -- game menu scale
-    if type(BFIConfig.gameMenuScale) ~= "number" then
-        BFIConfig.gameMenuScale = 0.8
+        AF.SetUIParentScale(BFIConfig.general.scale[res], true)
     end
 
     -- profile
@@ -265,7 +270,7 @@ function eventHandler:PLAYER_REGEN_ENABLED()
     eventHandler:UnregisterEvent("PLAYER_REGEN_ENABLED")
     if uiScaleUpdateRequired then
         uiScaleUpdateRequired = nil
-        AF.SetUIParentScale(BFIConfig.scale[BFI.vars.resolution])
+        AF.SetUIParentScale(BFIConfig.general.scale[BFI.vars.resolution])
     end
     if profileLoadRequired then
         profileLoadRequired = nil

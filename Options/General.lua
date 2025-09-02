@@ -53,15 +53,15 @@ local function CreateBFIPane()
     })
 
     accentColorDropdown:SetOnSelect(function(value)
-        BFIConfig.accentColor.type = value
+        BFIConfig.general.accentColor.type = value
         bfiPane.accentColorPicker:SetShown(value == "custom")
         ShowReloadPopup()
     end)
 
     local accentColorPicker = AF.CreateColorPicker(accentColorDropdown, nil, nil, nil, function(r, g, b)
-        BFIConfig.accentColor.color[1] = r
-        BFIConfig.accentColor.color[2] = g
-        BFIConfig.accentColor.color[3] = b
+        BFIConfig.general.accentColor.color[1] = r
+        BFIConfig.general.accentColor.color[2] = g
+        BFIConfig.general.accentColor.color[3] = b
         ShowReloadPopup()
     end)
     bfiPane.accentColorPicker = accentColorPicker
@@ -72,7 +72,7 @@ local function CreateBFIPane()
     bfiPane.scaleSlider = scaleSlider
     AF.SetPoint(scaleSlider, "TOPLEFT", accentColorDropdown, "BOTTOMLEFT", 0, -30)
     scaleSlider:SetAfterValueChanged(function(value)
-        BFIConfig.scale[BFI.vars.resolution] = value
+        BFIConfig.general.scale[BFI.vars.resolution] = value
         AF.SetUIParentScale(value, true)
         ShowReloadPopup()
     end)
@@ -86,8 +86,8 @@ local function CreateBFIPane()
     recommendedScaleButton:SetTooltip(L["Auto Scale"])
     recommendedScaleButton:SetOnClick(function()
         local bestScale = AF.GetBestScale()
-        if BFIConfig.scale[BFI.vars.resolution] == bestScale then return end
-        BFIConfig.scale[BFI.vars.resolution] = bestScale
+        if BFIConfig.general.scale[BFI.vars.resolution] == bestScale then return end
+        BFIConfig.general.scale[BFI.vars.resolution] = bestScale
         scaleSlider:SetValue(bestScale)
         AF.SetUIParentScale(bestScale, true)
         ShowReloadPopup()
@@ -98,8 +98,8 @@ local function CreateBFIPane()
     bfiPane.gameMenuScaleSlider = gameMenuScaleSlider
     AF.SetPoint(gameMenuScaleSlider, "TOPLEFT", scaleSlider, "BOTTOMLEFT", 0, -45)
     gameMenuScaleSlider:SetAfterValueChanged(function(value)
-        BFIConfig.gameMenuScale = value
-        _G.GameMenuFrame:SetScale(BFIConfig.gameMenuScale)
+        BFIConfig.general.gameMenuScale = value
+        _G.GameMenuFrame:SetScale(BFIConfig.general.gameMenuScale)
         AF.UpdatePixelsForRegionAndChildren(_G.GameMenuFrame)
     end)
 
@@ -119,11 +119,11 @@ local function CreateBFIPane()
     -- autoRepairDropdown:SetEnabled(false)
 
     function bfiPane.Load()
-        accentColorDropdown:SetSelectedValue(BFIConfig.accentColor.type)
-        accentColorPicker:SetColor(BFIConfig.accentColor.color)
-        accentColorPicker:SetShown(BFIConfig.accentColor.type == "custom")
-        scaleSlider:SetValue(BFIConfig.scale[BFI.vars.resolution])
-        gameMenuScaleSlider:SetValue(BFIConfig.gameMenuScale)
+        accentColorDropdown:SetSelectedValue(BFIConfig.general.accentColor.type)
+        accentColorPicker:SetColor(BFIConfig.general.accentColor.color)
+        accentColorPicker:SetShown(BFIConfig.general.accentColor.type == "custom")
+        scaleSlider:SetValue(BFIConfig.general.scale[BFI.vars.resolution])
+        gameMenuScaleSlider:SetValue(BFIConfig.general.gameMenuScale)
     end
 end
 
@@ -211,14 +211,14 @@ local function CreateFontPane()
     AF.SetPoint(font, "TOPLEFT", fontPane, 10, -45)
     font:SetItems(AF.LSM_GetFontDropdownItems())
     font:SetOnSelect(function(value)
-        BFIConfig.font.common.font = value
+        BFIConfig.general.font.common.font = value
         ShowReloadPopup()
     end)
 
     local overrideAF = AF.CreateCheckButton(fontPane, L["Override AF Font"])
     AF.SetPoint(overrideAF, "TOPLEFT", font, "BOTTOMLEFT", 0, -15)
     overrideAF:SetOnCheck(function(checked)
-        BFIConfig.font.common.overrideAF = checked
+        BFIConfig.general.font.common.overrideAF = checked
         ShowReloadPopup()
     end)
 
@@ -228,12 +228,12 @@ local function CreateFontPane()
     local blizzardFontSizeDelta = AF.CreateSlider(fontPane, L["Blizzard Font Size"], 150, -5, 5, 1, nil, true)
     AF.SetPoint(blizzardFontSizeDelta, "TOPLEFT", overrideBlizzard, "BOTTOMLEFT", 0, -30)
     blizzardFontSizeDelta:SetAfterValueChanged(function(value)
-        BFIConfig.font.common.blizzardFontSizeDelta = value
+        BFIConfig.general.font.common.blizzardFontSizeDelta = value
         ShowReloadPopup()
     end)
 
     overrideBlizzard:SetOnCheck(function(checked)
-        BFIConfig.font.common.overrideBlizzard = checked
+        BFIConfig.general.font.common.overrideBlizzard = checked
         blizzardFontSizeDelta:SetEnabled(checked)
         ShowReloadPopup()
     end)
@@ -242,14 +242,14 @@ local function CreateFontPane()
     AF.SetPoint(overrideCombatTextFont, "TOPLEFT", blizzardFontSizeDelta, "BOTTOMLEFT", 0, -50)
     overrideCombatTextFont:SetItems(AF.LSM_GetFontDropdownItems())
     overrideCombatTextFont:SetOnSelect(function(value)
-        BFIConfig.font.combatText.font = value
+        BFIConfig.general.font.combatText.font = value
     end)
 
     local overrideCombatText = AF.CreateCheckButton(fontPane, L["Override Combat Text"])
     AF.SetPoint(overrideCombatText, "BOTTOMLEFT", overrideCombatTextFont, "TOPLEFT", 0, 2)
     overrideCombatText:SetTooltip(L["Requires relog or restart to take effect"])
     overrideCombatText:SetOnCheck(function(checked)
-        BFIConfig.font.combatText.override = checked
+        BFIConfig.general.font.combatText.override = checked
         overrideCombatTextFont:SetEnabled(checked)
     end)
 
@@ -257,31 +257,31 @@ local function CreateFontPane()
     AF.SetPoint(overrideNameTextFont, "TOPLEFT", overrideCombatTextFont, "BOTTOMLEFT", 0, -40)
     overrideNameTextFont:SetItems(AF.LSM_GetFontDropdownItems())
     overrideNameTextFont:SetOnSelect(function(value)
-        BFIConfig.font.nameText.font = value
+        BFIConfig.general.font.nameText.font = value
     end)
 
     local overrideNameText = AF.CreateCheckButton(fontPane, L["Override Name Text"])
     AF.SetPoint(overrideNameText, "BOTTOMLEFT", overrideNameTextFont, "TOPLEFT", 0, 2)
     overrideNameText:SetTooltip(L["Requires relog or restart to take effect"])
     overrideNameText:SetOnCheck(function(checked)
-        BFIConfig.font.nameText.override = checked
+        BFIConfig.general.font.nameText.override = checked
         overrideNameTextFont:SetEnabled(checked)
     end)
 
     function fontPane.Load()
-        font:SetSelectedValue(BFIConfig.font.common.font)
-        overrideAF:SetChecked(BFIConfig.font.common.overrideAF)
-        overrideBlizzard:SetChecked(BFIConfig.font.common.overrideBlizzard)
-        blizzardFontSizeDelta:SetEnabled(BFIConfig.font.common.overrideBlizzard)
-        blizzardFontSizeDelta:SetValue(BFIConfig.font.common.blizzardFontSizeDelta)
+        font:SetSelectedValue(BFIConfig.general.font.common.font)
+        overrideAF:SetChecked(BFIConfig.general.font.common.overrideAF)
+        overrideBlizzard:SetChecked(BFIConfig.general.font.common.overrideBlizzard)
+        blizzardFontSizeDelta:SetEnabled(BFIConfig.general.font.common.overrideBlizzard)
+        blizzardFontSizeDelta:SetValue(BFIConfig.general.font.common.blizzardFontSizeDelta)
 
-        overrideCombatText:SetChecked(BFIConfig.font.combatText.override)
-        overrideCombatTextFont:SetSelectedValue(BFIConfig.font.combatText.font)
-        overrideCombatTextFont:SetEnabled(BFIConfig.font.combatText.override)
+        overrideCombatText:SetChecked(BFIConfig.general.font.combatText.override)
+        overrideCombatTextFont:SetSelectedValue(BFIConfig.general.font.combatText.font)
+        overrideCombatTextFont:SetEnabled(BFIConfig.general.font.combatText.override)
 
-        overrideNameText:SetChecked(BFIConfig.font.nameText.override)
-        overrideNameTextFont:SetSelectedValue(BFIConfig.font.nameText.font)
-        overrideNameTextFont:SetEnabled(BFIConfig.font.nameText.override)
+        overrideNameText:SetChecked(BFIConfig.general.font.nameText.override)
+        overrideNameTextFont:SetSelectedValue(BFIConfig.general.font.nameText.font)
+        overrideNameTextFont:SetEnabled(BFIConfig.general.font.nameText.override)
     end
 end
 
