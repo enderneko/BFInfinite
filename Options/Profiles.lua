@@ -210,7 +210,7 @@ local function CreateCharacterPane()
 end
 
 ---------------------------------------------------------------------
--- profile management pane
+-- assignment frame
 ---------------------------------------------------------------------
 local function CreateAssignmentFrame()
     assignmentFrame = AF.CreateBorderedFrame(profilesPanel, "BFIProfileAssignmentFrame", 150, 20, nil, "BFI")
@@ -256,6 +256,7 @@ local function Profile_ActiveAssignmentMode(b)
         CreateAssignmentFrame()
     end
     b = b:GetParent()
+    b:SilentClick()
 
     AF.AttachToCursor(assignmentFrame, "BOTTOMLEFT", 5, 0)
     AF.TruncateFontStringByWidth(assignmentFrame.label, 150, nil, true, b.text:GetText())
@@ -268,6 +269,9 @@ local function Profile_ActiveAssignmentMode(b)
     assignmentFrame.profileID = b.id
 end
 
+---------------------------------------------------------------------
+-- new profile
+---------------------------------------------------------------------
 local newProfileFrame
 local function ShowNewProfileDialog()
     if not newProfileFrame then
@@ -335,6 +339,9 @@ local function ShowNewProfileDialog()
     end)
 end
 
+---------------------------------------------------------------------
+-- delete profile
+---------------------------------------------------------------------
 local function ShowDeleteProfileDialog()
     local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Delete Profile"], "BFI") .. "\n" .. selectedProfile, 270)
     AF.SetPoint(dialog, "CENTER", profilesPanel)
@@ -353,6 +360,9 @@ local function ShowDeleteProfileDialog()
     end)
 end
 
+---------------------------------------------------------------------
+-- rename profile
+---------------------------------------------------------------------
 local renameProfileFrame
 local function ShowRenameProfileDialog()
     if not renameProfileFrame then
@@ -406,6 +416,9 @@ local function ShowRenameProfileDialog()
     end)
 end
 
+---------------------------------------------------------------------
+-- import / export
+---------------------------------------------------------------------
 local importExportProfileFrame
 local function CreateImportExportFrame()
     importExportProfileFrame = AF.CreateFrame(profilesPanel, nil, 340, 300)
@@ -820,6 +833,9 @@ local function ShowCommonExportDialog()
     importExportProfileFrame:SetMode("export_common")
 end
 
+---------------------------------------------------------------------
+-- profile management pane
+---------------------------------------------------------------------
 local function UpdateProfileInfo(value, userChanged, eb)
     if not userChanged then return end
     if AF.IsBlank(value) then value = nil end
