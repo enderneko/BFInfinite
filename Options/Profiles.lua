@@ -845,6 +845,14 @@ end
 local function CreateManagementPane()
     managementPane = AF.CreateTitledPane(profilesPanel, L["Profile Management"], 180, 400)
     AF.SetPoint(managementPane, "TOPRIGHT", -15, -15)
+    managementPane:SetTips(
+        L["Assignment Mode"],
+        L["Click %s on the right side of a list item to enter assignment mode; click blank area to exit"]:format(AF.GetIconString("Link")),
+        " ",
+        AF.WrapTextInColor(L["Assignment Area (Left)"], "BFI"),
+        L["Left-click: Assign profile"],
+        L["Right-click: Remove profile"]
+    )
 
     -- list
     local list = AF.CreateScrollList(managementPane, nil, 0, 0, 7, 20, -1)
@@ -861,7 +869,7 @@ local function CreateManagementPane()
 
         b:RegisterForDrag("LeftButton")
 
-        b.assignButton = AF.CreateIconButton(b, AF.GetIcon("Link", BFI.name), 16, 16, nil, "gray", nil, nil, true)
+        b.assignButton = AF.CreateIconButton(b, AF.GetIcon("Link"), 16, 16, nil, "gray", nil, nil, true)
         b.assignButton:Hide()
         AF.SetPoint(b.assignButton, "RIGHT", -5, 0)
         b.assignButton:HookOnEnter(b:GetOnEnter())
