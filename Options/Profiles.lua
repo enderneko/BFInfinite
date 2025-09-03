@@ -540,6 +540,9 @@ local function CreateImportExportFrame()
     local function DoCommonImport()
         if importExportProfileFrame.general:GetChecked() then
             BFIConfig.general = data.config.general
+            AFConfig.accentColor = data.afConfig.accentColor
+            AFConfig.fontSizeDelta = data.afConfig.fontSizeDelta
+            AFConfig.scale = data.afConfig.scale
         end
         -- TODO:
         -- if importExportProfileFrame.enhancements:GetChecked() then
@@ -643,6 +646,11 @@ local function CreateImportExportFrame()
         data = {}
         data.config = AF.Copy(BFIConfig)
         wipe(data.config.profileAssignment.character)
+        data.afConfig = {
+            accentColor = AF.Copy(AFConfig.accentColor),
+            fontSizeDelta = AFConfig.fontSizeDelta,
+            scale = AFConfig.scale
+        }
     end
 
     local function UpdateExportString()
@@ -737,7 +745,7 @@ local function CreateImportExportFrame()
     local general = AF.CreateCheckButton(importExportProfileFrame, L["General"], ValidateCheckBoxes)
     importExportProfileFrame.general = general
     AF.SetPoint(general, "TOPLEFT", importTip, "BOTTOMLEFT", 0, -15)
-    general:SetTooltip(L["General"], L["AbstractFramework settings are not included"])
+    general:SetTooltip(L["General"], L["CVar settings are not included"])
 
     local enhancements = AF.CreateCheckButton(importExportProfileFrame, L["Enhancements"], ValidateCheckBoxes)
     importExportProfileFrame.enhancements = enhancements
