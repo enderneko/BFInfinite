@@ -372,7 +372,8 @@ local function ShowRenameProfileDialog()
         AF.SetPoint(nameText, "RIGHT", nameEditBox, "LEFT", -5, 0)
 
         renameProfileFrame:SetOnShow(function()
-            nameEditBox:Clear()
+            nameEditBox:SetText(selectedProfile)
+            nameEditBox:SetCursorPosition(0)
         end)
     end
 
@@ -412,19 +413,15 @@ local function CreateImportExportFrame()
     local data
 
     -- box
-    local box = AF.CreateScrollEditBox(importExportProfileFrame, nil, L["Paste string here"], nil, 100)
+    local box = AF.CreateScrollEditBox(importExportProfileFrame, nil, L["Paste string here"], nil, 109)
     importExportProfileFrame.box = box
     box:SetPoint("TOPLEFT")
     box:SetPoint("TOPRIGHT")
+    box.eb:SetOnMouseUp(function()
+        box.eb:HighlightText()
+    end)
 
-    -- masks
-    local importMask = AF.ShowMask(importExportProfileFrame)
-    importMask:Hide()
-    importMask:SetBackdropColor(AF.GetColorRGB("mask", 0.85))
-    AF.ClearPoints(importMask)
-    AF.SetPoint(importMask, "TOPLEFT", box, "BOTTOMLEFT", 0, -10)
-    AF.SetPoint(importMask, "BOTTOMRIGHT")
-
+    -- mask
     local exportMask = AF.ShowMask(box, L["Generating string..."], 0, 0, 0, 0)
     exportMask:SetAlpha(0)
     exportMask:Hide()
@@ -436,7 +433,7 @@ local function CreateImportExportFrame()
         self:SetValue(self:GetValue() + elapsed)
     end)
 
-    -- editbox update & clear
+    -- widget updates
     local function UpdateEditBoxes()
         if importExportProfileFrame.mode == "import" then
             importExportProfileFrame.name:SetText(data.name or "")
@@ -462,44 +459,74 @@ local function CreateImportExportFrame()
         importExportProfileFrame.description:Clear()
     end
 
-    -- import
-    local function PrepareImportData()
-        local version, rest = box:GetText():match("^!BFI:(%d+)!(.+)$")
-        if not version or not rest then
-            ClearEditBoxes()
-            importExportProfileFrame.dialog:EnableYes(false)
-            importMask.text:SetText(L["Invalid string"])
-            importMask:Show()
-            return
-        end
-
-        data = AF.Deserialize(rest)
-        if not data then
-            ClearEditBoxes()
-            importExportProfileFrame.dialog:EnableYes(false)
-            importMask.text:SetText(L["Error parsing string"])
-            importMask:Show()
-            return
-        end
-
-        importExportProfileFrame.dialog:EnableYes(true)
-        importMask:Hide()
-
-        UpdateEditBoxes()
-        importExportProfileFrame.privateImport:SetEnabled(data.player and true or false)
+    local function HideWidgets()
+        AF.Hide(
+            importExportProfileFrame.name,
+            importExportProfileFrame.author,
+            importExportProfileFrame.version,
+            importExportProfileFrame.url,
+            importExportProfileFrame.description,
+            importExportProfileFrame.exportPrivate,
+            importExportProfileFrame.errorText,
+            importExportProfileFrame.importTip,
+            importExportProfileFrame.general,
+            importExportProfileFrame.enhancements,
+            importExportProfileFrame.colors,
+            importExportProfileFrame.auras,
+            importExportProfileFrame.profileAssignment,
+            importExportProfileFrame.importPrivate
+        )
     end
 
-    box:SetOnTextChanged(function(value, userChanged)
-        if importExportProfileFrame.mode == "export" or not userChanged then return end
-        PrepareImportData()
-    end)
+    local function ShowProfileImportWidgets()
+        AF.Show(
+            importExportProfileFrame.name,
+            importExportProfileFrame.author,
+            importExportProfileFrame.version,
+            importExportProfileFrame.url,
+            importExportProfileFrame.description
+        )
+    end
 
-    local function DoImport()
-        local commonConfigImported
+    local function ShowCommonImportWidgets()
+        AF.Show(
+            importExportProfileFrame.importTip,
+            importExportProfileFrame.general,
+            importExportProfileFrame.enhancements,
+            importExportProfileFrame.colors,
+            importExportProfileFrame.auras,
+            importExportProfileFrame.profileAssignment,
+            importExportProfileFrame.importPrivate
+        )
+        AF.SetChecked(false,
+            importExportProfileFrame.general,
+            importExportProfileFrame.enhancements,
+            importExportProfileFrame.colors,
+            importExportProfileFrame.auras,
+            importExportProfileFrame.profileAssignment,
+            importExportProfileFrame.importPrivate
+        )
+    end
 
+    -- import
+    local errorText = AF.CreateFontString(importExportProfileFrame, nil, "firebrick")
+    importExportProfileFrame.errorText = errorText
+    AF.SetPoint(errorText, "TOP", box, "BOTTOM", 0, -5)
+
+    local function ValidateCheckBoxes()
+        importExportProfileFrame.dialog:EnableYes(
+            importExportProfileFrame.general:GetChecked() or
+            importExportProfileFrame.enhancements:GetChecked() or
+            importExportProfileFrame.colors:GetChecked() or
+            importExportProfileFrame.auras:GetChecked() or
+            importExportProfileFrame.profileAssignment:GetChecked() or
+            importExportProfileFrame.importPrivate:GetChecked()
+        )
+    end
+
+    local function DoCommonImport()
         if importExportProfileFrame.general:GetChecked() then
             BFIConfig.general = data.config.general
-            commonConfigImported = true
         end
         -- TODO:
         -- if importExportProfileFrame.enhancements:GetChecked() then
@@ -509,26 +536,26 @@ local function CreateImportExportFrame()
         if importExportProfileFrame.colors:GetChecked() then
             BFIConfig.colors = data.config.colors
             -- AF.Fire("BFI_UpdateColor")
-            commonConfigImported = true
         end
         if importExportProfileFrame.auras:GetChecked() then
             BFIConfig.auras = data.config.auras
             -- AF.Fire("BFI_UpdateAuras")
-            commonConfigImported = true
         end
         if importExportProfileFrame.profileAssignment:GetChecked() then
             BFIConfig.profileAssignment = data.config.profileAssignment
-            commonConfigImported = true
         end
-        if importExportProfileFrame.privateImport:GetChecked() then
+        if importExportProfileFrame.importPrivate:GetChecked() then
             BFIPlayer = data.player
             -- TODO: blacklist ...
         end
-        if importExportProfileFrame.profileAssignment:GetChecked() and importExportProfileFrame.privateImport:GetChecked() then
+        if importExportProfileFrame.profileAssignment:GetChecked() and importExportProfileFrame.importPrivate:GetChecked() then
             BFIConfig.profileAssignment.character = data.config.profileAssignment.character
-            commonConfigImported = true
         end
 
+        ReloadUI()
+    end
+
+    local function DoProfileImport()
         local i = 1
         while BFIProfile[data.name] do
             data.name = data.name .. " (" .. i .. ")"
@@ -537,25 +564,72 @@ local function CreateImportExportFrame()
         BFIProfile[data.name] = data.profile
 
         LoadAll()
+    end
 
-        if commonConfigImported then
-            C_Timer.After(0.5, function()
-                local dialog = AF.GetDialog(profilesPanel, L["A UI reload is required\nDo it now?"])
-                dialog:SetPoint("CENTER")
-                dialog:SetOnConfirm(ReloadUI)
+    local function PrepareImportData()
+        importExportProfileFrame.dialog._height = nil -- use GetHeight()
+
+        local version, rest = box:GetText():match("^!BFI:(%d+)!(.+)$")
+        if not version or not rest then
+            importExportProfileFrame.dialog:EnableYes(false)
+            HideWidgets()
+            AF.AnimatedResize(importExportProfileFrame.dialog, nil, 190, nil, 3, nil, function()
+                errorText:SetText(L["Invalid string"])
+                errorText:Show()
+            end)
+            return
+        end
+
+        data = AF.Deserialize(rest)
+        if not data then
+            importExportProfileFrame.dialog:EnableYes(false)
+            HideWidgets()
+            AF.AnimatedResize(importExportProfileFrame.dialog, nil, 190, nil, 3, nil, function()
+                errorText:SetText(L["Error parsing string"])
+                errorText:Show()
+            end)
+            return
+        end
+
+        errorText:Hide()
+        ClearEditBoxes()
+
+        if data.config then -- common
+            AF.AnimatedResize(importExportProfileFrame.dialog, nil, 330, nil, 5, nil, function()
+                HideWidgets()
+                ShowCommonImportWidgets()
+                importExportProfileFrame.importPrivate:SetEnabled(data.player and true or false)
+                importExportProfileFrame.dialog:SetOnConfirm(DoCommonImport)
+                importExportProfileFrame.dialog:EnableYes(false)
+            end)
+        else -- profile
+            AF.AnimatedResize(importExportProfileFrame.dialog, nil, 300, nil, 5, nil, function()
+                HideWidgets()
+                ShowProfileImportWidgets()
+                UpdateEditBoxes()
+                importExportProfileFrame.dialog:SetOnConfirm(DoProfileImport)
+                importExportProfileFrame.dialog:EnableYes(true)
             end)
         end
     end
 
+    box:SetOnTextChanged(function(value, userChanged)
+        if importExportProfileFrame.mode == "export" or not userChanged then return end
+        PrepareImportData()
+    end)
+
     -- export
-    local function PrepareExportData()
+    local function PrepareProfileExportData()
         data = {}
         data.name = selectedProfile
         data.profile = AF.Copy(BFIProfile[selectedProfile])
+    end
+
+    local function PrepareCommonExportData()
+        data = {}
         data.config = AF.Copy(BFIConfig)
         wipe(data.config.profileAssignment.character)
     end
-
 
     local function UpdateExportString()
         box:SetText("!BFI:" .. BFI.versionNum .. "!" .. AF.Serialize(data))
@@ -622,11 +696,11 @@ local function CreateImportExportFrame()
     end)
 
     -- export check button
-    local privateExport = AF.CreateCheckButton(importExportProfileFrame, L["Include Private Data"])
-    importExportProfileFrame.privateExport = privateExport
-    AF.SetPoint(privateExport, "TOPLEFT", description, "BOTTOMLEFT", 0, -15)
-    privateExport:SetTooltip(L["Include Private Data"], L["Friends, blacklist, and other personal data"])
-    privateExport:SetOnCheck(function(checked)
+    local exportPrivate = AF.CreateCheckButton(importExportProfileFrame, L["Include Private Data"])
+    importExportProfileFrame.exportPrivate = exportPrivate
+    AF.SetPoint(exportPrivate, "TOPLEFT", box, "BOTTOMLEFT", 0, -10)
+    exportPrivate:SetTooltip(L["Include Private Data"], L["Friends, blacklist, and other personal data"])
+    exportPrivate:SetOnCheck(function(checked)
         if checked then
             data.player = AF.Copy(BFIPlayer)
             data.config.profileAssignment.character = AF.Copy(BFIConfig.profileAssignment.character)
@@ -634,41 +708,43 @@ local function CreateImportExportFrame()
             data.player = nil
             wipe(data.config.profileAssignment.character)
         end
-        DelayedUpdateExportString()
+        UpdateExportString()
     end)
 
     -- import check buttons
-    local importTip = AF.CreateFontString(importExportProfileFrame, L["The following options are global. If checked, the corresponding data will be immediately overwritten upon import and cannot be undone."], "firebrick")
-    AF.SetPoint(importTip, "TOPLEFT", description, "BOTTOMLEFT", 0, -15)
-    AF.SetPoint(importTip, "TOPRIGHT", description, "BOTTOMRIGHT", 0, -15)
+    local importTip = AF.CreateFontString(importExportProfileFrame, L["The following options are global. If checked, the corresponding data will be immediately overwritten upon import and cannot be undone (The UI will reload automatically)."], "firebrick")
+    importExportProfileFrame.importTip = importTip
+    AF.SetPoint(importTip, "TOPLEFT", box, "BOTTOMLEFT", 0, -15)
+    AF.SetPoint(importTip, "TOPRIGHT", box, "BOTTOMRIGHT", 0, -15)
     importTip:SetJustifyH("LEFT")
     importTip:SetSpacing(5)
+    importTip:SetWordWrap(true)
 
-    local general = AF.CreateCheckButton(importExportProfileFrame, L["General"])
+    local general = AF.CreateCheckButton(importExportProfileFrame, L["General"], ValidateCheckBoxes)
     importExportProfileFrame.general = general
     AF.SetPoint(general, "TOPLEFT", importTip, "BOTTOMLEFT", 0, -15)
     general:SetTooltip(L["General"], L["AbstractFramework settings are not included"])
 
-    local enhancements = AF.CreateCheckButton(importExportProfileFrame, L["Enhancements"])
+    local enhancements = AF.CreateCheckButton(importExportProfileFrame, L["Enhancements"], ValidateCheckBoxes)
     importExportProfileFrame.enhancements = enhancements
     AF.SetPoint(enhancements, "TOPLEFT", importTip, "BOTTOMRIGHT", -160, -15)
     enhancements:SetEnabled(false)
 
-    local colors = AF.CreateCheckButton(importExportProfileFrame, L["Colors"])
+    local colors = AF.CreateCheckButton(importExportProfileFrame, L["Colors"], ValidateCheckBoxes)
     importExportProfileFrame.colors = colors
     AF.SetPoint(colors, "TOPRIGHT", general, "BOTTOMRIGHT", 0, -7)
 
-    local auras = AF.CreateCheckButton(importExportProfileFrame, L["Auras"])
+    local auras = AF.CreateCheckButton(importExportProfileFrame, L["Auras"], ValidateCheckBoxes)
     importExportProfileFrame.auras = auras
     AF.SetPoint(auras, "TOPLEFT", enhancements, "BOTTOMLEFT", 0, -7)
 
-    local profileAssignment = AF.CreateCheckButton(importExportProfileFrame, L["Profile Assignment"])
+    local profileAssignment = AF.CreateCheckButton(importExportProfileFrame, L["Profile Assignment"], ValidateCheckBoxes)
     importExportProfileFrame.profileAssignment = profileAssignment
     AF.SetPoint(profileAssignment, "TOPLEFT", colors, "BOTTOMLEFT", 0, -7)
 
-    local privateImport = AF.CreateCheckButton(importExportProfileFrame, L["Private Data"])
-    importExportProfileFrame.privateImport = privateImport
-    AF.SetPoint(privateImport, "TOPLEFT", auras, "BOTTOMLEFT", 0, -7)
+    local importPrivate = AF.CreateCheckButton(importExportProfileFrame, L["Private Data"], ValidateCheckBoxes)
+    importExportProfileFrame.importPrivate = importPrivate
+    AF.SetPoint(importPrivate, "TOPLEFT", auras, "BOTTOMLEFT", 0, -7)
 
     -- SetMode
     function importExportProfileFrame:SetMode(mode)
@@ -678,57 +754,69 @@ local function CreateImportExportFrame()
         AF.HideMask(box)
 
         if mode == "export" then
-            importMask:Hide()
-
             box:SetNotUserChangable(true)
 
-            privateExport:Show()
-            privateExport:SetChecked(false)
-            AF.Hide(importTip, general, enhancements, colors, auras, profileAssignment, privateImport)
+            HideWidgets()
+            ShowProfileImportWidgets()
 
-            PrepareExportData()
+            PrepareProfileExportData()
             UpdateExportString()
             UpdateEditBoxes()
             importExportProfileFrame.dialog:SetOnConfirm(nil)
-        else
-            importMask:Show()
-            importMask.text:SetText("")
+        elseif mode == "export_common" then
+            box:SetNotUserChangable(true)
 
+            HideWidgets()
+            exportPrivate:Show()
+            exportPrivate:SetChecked(false)
+
+            PrepareCommonExportData()
+            UpdateExportString()
+            importExportProfileFrame.dialog:SetOnConfirm(nil)
+        else
             box:SetNotUserChangable(false)
             box:Clear()
 
-            privateExport:Hide()
-            AF.Show(importTip, general, enhancements, colors, auras, profileAssignment, privateImport)
-            AF.SetChecked(false, general, enhancements, colors, auras, profileAssignment, privateImport)
-
-            ClearEditBoxes()
-            importExportProfileFrame.dialog:SetOnConfirm(DoImport)
+            HideWidgets()
+            importExportProfileFrame.dialog:SetOnConfirm(nil)
         end
     end
 end
 
-local function ShowImportProfileDialog()
+local function ShowProfileImportDialog()
     if not importExportProfileFrame then CreateImportExportFrame() end
 
     local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Import Profile"], "BFI"), 353)
     dialog:SetToOkayCancel()
-    dialog:SetContent(importExportProfileFrame, 375)
+    dialog:SetContent(importExportProfileFrame, 120)
     dialog:SetPoint("CENTER", profilesPanel)
     dialog:EnableYes(false)
 
     importExportProfileFrame:SetMode("import")
 end
 
-local function ShowExportProfileDialog()
+local function ShowProfileExportDialog()
     if not importExportProfileFrame then CreateImportExportFrame() end
 
     local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Export Profile"], "BFI"), 353)
     dialog:SetToOkayCancel()
-    dialog:SetContent(importExportProfileFrame, 255)
+    dialog:SetContent(importExportProfileFrame, 245)
     dialog:SetPoint("CENTER", profilesPanel)
     dialog:EnableYes(true)
 
     importExportProfileFrame:SetMode("export")
+end
+
+local function ShowCommonExportDialog()
+    if not importExportProfileFrame then CreateImportExportFrame() end
+
+    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Export Common Settings"], "BFI"), 353)
+    dialog:SetToOkayCancel()
+    dialog:SetContent(importExportProfileFrame, 135)
+    dialog:SetPoint("CENTER", profilesPanel)
+    dialog:EnableYes(true)
+
+    importExportProfileFrame:SetMode("export_common")
 end
 
 local function UpdateProfileInfo(value, userChanged, eb)
@@ -742,7 +830,7 @@ local function CreateManagementPane()
     AF.SetPoint(managementPane, "TOPRIGHT", -15, -15)
 
     -- list
-    local list = AF.CreateScrollList(managementPane, nil, 0, 0, 9, 20, -1)
+    local list = AF.CreateScrollList(managementPane, nil, 0, 0, 7, 20, -1)
     managementPane.list = list
     AF.SetPoint(list, "TOPLEFT", managementPane, 10, -27)
     AF.SetPoint(list, "TOPRIGHT", managementPane, -10, -27)
@@ -806,7 +894,7 @@ local function CreateManagementPane()
     url:SetOnTextChanged(UpdateProfileInfo)
     url:SetEnabled(false)
 
-    local description = AF.CreateScrollEditBox(managementPane, nil, L["Description"], nil, 160)
+    local description = AF.CreateScrollEditBox(managementPane, nil, L["Description"], nil, 140)
     AF.SetPoint(description, "TOPLEFT", url, "BOTTOMLEFT", 0, -5)
     AF.SetPoint(description, "RIGHT", list)
     description.eb.key = "pDescription"
@@ -814,39 +902,51 @@ local function CreateManagementPane()
     description:SetEnabled(false)
 
     -- buttons
-    local new = AF.CreateButton(managementPane, nil, "BFI_hover", 50, 20)
+    local new = AF.CreateButton(managementPane, L["New"], "BFI_hover", 78, 20)
     AF.SetPoint(new, "TOPLEFT", description, "BOTTOMLEFT", 0, -15)
-    new:SetTexture(AF.GetIcon("Create_Square"))
-    new:SetTooltip(L["New"])
+    new:SetTexture(AF.GetIcon("Create_Square"), nil, {"LEFT", 2, 0})
+    new:SetTextPadding(0)
     new:SetOnClick(ShowNewProfileDialog)
 
-    local delete = AF.CreateButton(managementPane, nil, "BFI_hover", 50, 20)
-    AF.SetPoint(delete, "TOPRIGHT", description, "BOTTOMRIGHT", 0, -15)
-    delete:SetTexture(AF.GetIcon("Trash"))
-    delete:SetTooltip(L["Delete"])
-    delete:SetEnabled(false)
-    delete:SetOnClick(ShowDeleteProfileDialog)
-
-    local rename = AF.CreateButton(managementPane, nil, "BFI_hover")
+    local rename = AF.CreateButton(managementPane, L["Rename"], "BFI_hover", nil, 20)
     AF.SetPoint(rename, "TOPLEFT", new, "TOPRIGHT", 5, 0)
-    AF.SetPoint(rename, "BOTTOMRIGHT", delete, "BOTTOMLEFT", -5, 0)
-    rename:SetTexture(AF.GetIcon("Rename"))
-    rename:SetTooltip(L["Rename"])
+    AF.SetPoint(rename, "RIGHT", list)
+    rename:SetTexture(AF.GetIcon("Rename"), nil, {"LEFT", 2, 0})
+    rename:SetTextPadding(0)
     rename:SetEnabled(false)
     rename:SetOnClick(ShowRenameProfileDialog)
 
-    local import = AF.CreateButton(managementPane, L["Import"], "BFI_hover", nil, 20)
-    AF.SetPoint(import, "TOPLEFT", new, "BOTTOMLEFT", 0, -5)
-    AF.SetPoint(import, "TOPRIGHT", delete, "BOTTOMRIGHT", 0, -5)
-    import:SetTexture(AF.GetIcon("Import1"), nil, {"LEFT", 5, 0})
-    import:SetOnClick(ShowImportProfileDialog)
+    local copy = AF.CreateButton(managementPane, L["Copy"], "BFI_hover", 78, 20)
+    AF.SetPoint(copy, "TOPLEFT", new, "BOTTOMLEFT", 0, -5)
+    copy:SetTexture(AF.GetIcon("Transfer"), nil, {"LEFT", 2, 0})
+    copy:SetTextPadding(0)
 
-    local export = AF.CreateButton(managementPane, L["Export"], "BFI_hover", nil, 20)
+    local delete = AF.CreateButton(managementPane, L["Delete"], "red_hover", nil, 20)
+    AF.SetPoint(delete, "TOPLEFT", copy, "TOPRIGHT", 5, 0)
+    AF.SetPoint(delete, "RIGHT", list)
+    delete:SetTexture(AF.GetIcon("Trash"), nil, {"LEFT", 2, 0})
+    delete:SetTextPadding(0)
+    delete:SetEnabled(false)
+    delete:SetOnClick(ShowDeleteProfileDialog)
+
+    local import = AF.CreateButton(managementPane, L["Import"], "BFI_hover", 68, 20)
+    AF.SetPoint(import, "TOPLEFT", copy, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(import, "TOPRIGHT", delete, "BOTTOMRIGHT", 0, -5)
+    import:SetTexture(AF.GetIcon("Import1"), nil, {"LEFT", 2, 0})
+    import:SetOnClick(ShowProfileImportDialog)
+
+    local export = AF.CreateButton(managementPane, L["Export Profile"], "BFI_hover", nil, 20)
     AF.SetPoint(export, "TOPLEFT", import, "BOTTOMLEFT", 0, -5)
     AF.SetPoint(export, "TOPRIGHT", import, "BOTTOMRIGHT", 0, -5)
-    export:SetTexture(AF.GetIcon("Export1"), nil, {"LEFT", 5, 0})
+    export:SetTexture(AF.GetIcon("Export1"), nil, {"LEFT", 2, 0})
     export:SetEnabled(false)
-    export:SetOnClick(ShowExportProfileDialog)
+    export:SetOnClick(ShowProfileExportDialog)
+
+    local exportCommon = AF.CreateButton(managementPane, L["Export Common"], "BFI_hover", nil, 20)
+    AF.SetPoint(exportCommon, "TOPLEFT", export, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(exportCommon, "TOPRIGHT", export, "BOTTOMRIGHT", 0, -5)
+    exportCommon:SetTexture(AF.GetIcon("Export1"), nil, {"LEFT", 2, 0})
+    exportCommon:SetOnClick(ShowCommonExportDialog)
 
     -- load
     local profiles = {}
@@ -854,7 +954,7 @@ local function CreateManagementPane()
     function managementPane.Load()
         wipe(profiles)
 
-        for name, t in next, BFIProfile do
+        for name in next, BFIProfile do
             if name ~= "default" then
                 tinsert(profiles, {
                     text = name,
@@ -865,6 +965,8 @@ local function CreateManagementPane()
                 })
             end
         end
+
+        AF.Sort(profiles, "text", "ascending")
         tinsert(profiles, 1, {text = _G.DEFAULT, id = "default"})
 
         list:SetData(profiles)
