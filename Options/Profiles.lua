@@ -614,8 +614,9 @@ local function CreateImportExportFrame()
     end
 
     box:SetOnTextChanged(function(value, userChanged)
-        if importExportProfileFrame.mode == "export" or not userChanged then return end
-        PrepareImportData()
+        if importExportProfileFrame.mode == "import" and userChanged then
+            PrepareImportData()
+        end
     end)
 
     -- export
@@ -786,7 +787,7 @@ end
 local function ShowProfileImportDialog()
     if not importExportProfileFrame then CreateImportExportFrame() end
 
-    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Import Profile"], "BFI"), 353)
+    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Import"], "BFI"), 353)
     dialog:SetToOkayCancel()
     dialog:SetContent(importExportProfileFrame, 120)
     dialog:SetPoint("CENTER", profilesPanel)
@@ -798,7 +799,7 @@ end
 local function ShowProfileExportDialog()
     if not importExportProfileFrame then CreateImportExportFrame() end
 
-    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Export Profile"], "BFI"), 353)
+    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Export"], "BFI"), 353)
     dialog:SetToOkayCancel()
     dialog:SetContent(importExportProfileFrame, 245)
     dialog:SetPoint("CENTER", profilesPanel)
@@ -810,7 +811,7 @@ end
 local function ShowCommonExportDialog()
     if not importExportProfileFrame then CreateImportExportFrame() end
 
-    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Export Common Settings"], "BFI"), 353)
+    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Export"], "BFI"), 353)
     dialog:SetToOkayCancel()
     dialog:SetContent(importExportProfileFrame, 135)
     dialog:SetPoint("CENTER", profilesPanel)
@@ -942,11 +943,11 @@ local function CreateManagementPane()
     export:SetEnabled(false)
     export:SetOnClick(ShowProfileExportDialog)
 
-    local exportCommon = AF.CreateButton(managementPane, L["Export Common"], "BFI_hover", nil, 20)
-    AF.SetPoint(exportCommon, "TOPLEFT", export, "BOTTOMLEFT", 0, -5)
-    AF.SetPoint(exportCommon, "TOPRIGHT", export, "BOTTOMRIGHT", 0, -5)
-    exportCommon:SetTexture(AF.GetIcon("Export1"), nil, {"LEFT", 2, 0})
-    exportCommon:SetOnClick(ShowCommonExportDialog)
+    local exportGlobal = AF.CreateButton(managementPane, L["Export Global"], "BFI_hover", nil, 20)
+    AF.SetPoint(exportGlobal, "TOPLEFT", export, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(exportGlobal, "TOPRIGHT", export, "BOTTOMRIGHT", 0, -5)
+    exportGlobal:SetTexture(AF.GetIcon("Export1"), nil, {"LEFT", 2, 0})
+    exportGlobal:SetOnClick(ShowCommonExportDialog)
 
     -- load
     local profiles = {}
