@@ -8,7 +8,23 @@ local AF = _G.AbstractFramework
 local profilesPanel
 local rolePane, specPane, characterPane, managementPane
 local selectedProfile, selectedHighlight, assignmentFrame
+local profileUpdateTime
 local LoadAll
+
+---------------------------------------------------------------------
+-- shared
+---------------------------------------------------------------------
+local function GetProfileItems()
+    local t = {}
+    for name in next, BFIProfile do
+        if name ~= "default" then
+            tinsert(t, {text = name})
+        end
+    end
+    AF.Sort(t, "text", "ascending")
+    tinsert(t, 1, {text = _G.DEFAULT, value = "default", id = "default"})
+    return t
+end
 
 ---------------------------------------------------------------------
 -- create
@@ -299,15 +315,10 @@ local function ShowNewProfileDialog()
 
         newProfileFrame:SetOnShow(function()
             nameEditBox:Clear()
-            inheritDropdown:ClearItems()
-            for name in next, BFIProfile do
-                if name == "default" then
-                    inheritDropdown:AddItem({text = L["Default"], value = name}, 1)
-                else
-                    inheritDropdown:AddItem({text = name, value = name})
-                end
-            end
-            inheritDropdown:AddItem({text = L["None"], value = "none"}, 1)
+
+            local items = GetProfileItems()
+            tinsert(items, 1, {text = L["None"], value = "none"})
+            inheritDropdown:SetItems(items)
             inheritDropdown:SetSelectedValue("none")
         end)
     end
@@ -842,6 +853,86 @@ local function ShowCommonExportDialog()
 end
 
 ---------------------------------------------------------------------
+-- copy modules
+---------------------------------------------------------------------
+local moduleCopyFrame
+
+local function CreateModuleCopyFrame()
+    moduleCopyFrame = AF.CreateFrame(profilesPanel, nil, 340, 300)
+    moduleCopyFrame:Hide()
+
+    local fromDropdown = AF.CreateDropdown(moduleCopyFrame, 160)
+    AF.SetPoint(fromDropdown, "TOPLEFT", 60, 0)
+
+    local fromText = AF.CreateFontString(moduleCopyFrame, L["From"], "gray")
+    AF.SetPoint(fromText, "RIGHT", fromDropdown, "LEFT", -5, 0)
+
+    local toDropdown = AF.CreateDropdown(moduleCopyFrame, 160)
+    AF.SetPoint(toDropdown, "TOPLEFT", fromDropdown, "BOTTOMLEFT", 0, -10)
+
+    local toText = AF.CreateFontString(moduleCopyFrame, L["To"], "gray")
+    AF.SetPoint(toText, "RIGHT", toDropdown, "LEFT", -5, 0)
+
+    local list = AF.CreateScrollList(moduleCopyFrame, nil, 0, 0, 8, 20, -1)
+    AF.SetPoint(list, "TOPLEFT", toDropdown, "BOTTOMLEFT", 0, -15)
+    AF.SetPoint(list, "TOPRIGHT", toDropdown, "BOTTOMRIGHT", 0, -15)
+
+    local listText = AF.CreateFontString(moduleCopyFrame, L["Modules"], "gray")
+    AF.SetPoint(listText, "TOPRIGHT", list, "TOPLEFT", -5, -2)
+
+    list:SetupButtonGroup("BFI_transparent")
+    list:SetMultiSelect(true)
+
+    local from, to
+    local data = {
+        {text = L["Unit Frames"], id = "unitFrames"},
+        {text = L["Nameplates"], id = "nameplates"},
+        {text = L["Action Bars"], id = "actionBars"},
+        {text = L["Buffs & Debuffs"], id = "buffsDebuffs"},
+        {text = L["Tooltip"], id = "tooltip"},
+        {text = L["UI Widgets"], id = "uiWidgets"},
+        {text = L["Data Bars"], id = "dataBars"},
+        {text = L["Chat"], id = "chat"},
+    }
+
+    local function CheckFromTo()
+        from = fromDropdown:GetSelected()
+        to = toDropdown:GetSelected()
+
+        if AF.IsBlank(from) or AF.IsBlank(to) or from == to then
+            moduleCopyFrame.dialog:EnableYes(false)
+            list:Reset(data)
+            return
+        end
+
+        moduleCopyFrame.dialog:EnableYes(true)
+        list:SetData(data)
+    end
+
+    fromDropdown:SetOnSelect(CheckFromTo)
+    toDropdown:SetOnSelect(CheckFromTo)
+
+    moduleCopyFrame:SetOnShow(function()
+        fromDropdown:ClearSelected()
+        toDropdown:ClearSelected()
+        list:Reset()
+
+        fromDropdown:SetItems(GetProfileItems())
+        toDropdown:SetItems(GetProfileItems())
+    end)
+end
+
+local function ShowModuleCopyDialog()
+    if not moduleCopyFrame then CreateModuleCopyFrame() end
+
+    local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Copy Module Settings"], "BFI"), 270)
+    dialog:SetToOkayCancel()
+    dialog:SetContent(moduleCopyFrame, 300)
+    dialog:SetPoint("CENTER", profilesPanel)
+    dialog:EnableYes(false)
+end
+
+---------------------------------------------------------------------
 -- profile management pane
 ---------------------------------------------------------------------
 local function UpdateProfileInfo(value, userChanged, eb)
@@ -868,41 +959,33 @@ local function CreateManagementPane()
     AF.SetPoint(list, "TOPLEFT", managementPane, 10, -27)
     AF.SetPoint(list, "TOPRIGHT", managementPane, -10, -27)
 
-    list:SetupButtonGroup("BFI_transparent", function(b)
+    list:SetupButtonGroup("BFI_transparent", function(b) -- onSelect
         managementPane.LoadProfileInfo(b)
-    end, nil, nil, nil, function(b)
-        -- onLoad
+    end, nil, function(b) -- onEnter
+        b.assignButton:SetAlpha(1) --! NOTE: if use Show here will cause BIG problems!
+        AF.ClearPoints(b.text)
+        AF.SetPoint(b.text, "LEFT", 5, 0)
+        AF.SetPoint(b.text, "RIGHT", b.assignButton, "LEFT", -5, 0)
+
+        if b.text:IsTruncated() then
+            AF.ShowTooltip(b, "RIGHT", 2, 0, {b.text:GetText()})
+        end
+    end, function(b) -- onLeave
+        b.assignButton:SetAlpha(0) --! NOTE: if use Hide here will cause BIG problems!
+        AF.ClearPoints(b.text)
+        AF.SetPoint(b.text, "LEFT", 5, 0)
+        AF.SetPoint(b.text, "RIGHT", -5, 0)
+        AF.HideTooltip()
+    end, function(b) -- onLoad
         if b._inited then return end
         b._inited = true
 
-        b:RegisterForDrag("LeftButton")
-
         b.assignButton = AF.CreateIconButton(b, AF.GetIcon("Link"), 16, 16, nil, "gray", nil, nil, true)
-        b.assignButton:Hide()
-        AF.SetPoint(b.assignButton, "RIGHT", -5, 0)
+        b.assignButton:SetAlpha(0)
+        AF.SetPoint(b.assignButton, "RIGHT", -2, 0)
         b.assignButton:HookOnEnter(b:GetOnEnter())
         b.assignButton:HookOnLeave(b:GetOnLeave())
         b.assignButton:SetOnClick(Profile_ActiveAssignmentMode)
-
-        b:HookOnEnter(function()
-            b.assignButton:Show()
-            AF.ClearPoints(b.text)
-            AF.SetPoint(b.text, "LEFT", 5, 0)
-            AF.SetPoint(b.text, "RIGHT", b.assignButton, "LEFT", -5, 0)
-
-            if b.text:IsTruncated() then
-                AF.ShowTooltip(b, "RIGHT", 2, 0, {b.text:GetText()})
-            end
-        end)
-
-        b:HookOnLeave(function()
-            b.assignButton:Hide()
-            AF.ClearPoints(b.text)
-            AF.SetPoint(b.text, "LEFT", 5, 0)
-            AF.SetPoint(b.text, "RIGHT", -5, 0)
-
-            AF.HideTooltip()
-        end)
     end)
 
     -- info boxes
@@ -953,6 +1036,7 @@ local function CreateManagementPane()
     AF.SetPoint(copy, "TOPLEFT", new, "BOTTOMLEFT", 0, -5)
     copy:SetTexture(AF.GetIcon("Transfer"), nil, {"LEFT", 2, 0})
     copy:SetTextPadding(0)
+    copy:SetOnClick(ShowModuleCopyDialog)
 
     local delete = AF.CreateButton(managementPane, L["Delete"], "red_hover", nil, 20)
     AF.SetPoint(delete, "TOPLEFT", copy, "TOPRIGHT", 5, 0)
@@ -982,27 +1066,10 @@ local function CreateManagementPane()
     exportGlobal:SetOnClick(ShowCommonExportDialog)
 
     -- load
-    local profiles = {}
-
     function managementPane.Load()
-        wipe(profiles)
-
-        for name in next, BFIProfile do
-            if name ~= "default" then
-                tinsert(profiles, {
-                    text = name,
-                    -- pAuthor = t.pAuthor,
-                    -- pVersion = t.pVersion,
-                    -- pURL = t.pURL,
-                    -- pDescription = t.pDescription
-                })
-            end
-        end
-
-        AF.Sort(profiles, "text", "ascending")
-        tinsert(profiles, 1, {text = _G.DEFAULT, id = "default"})
-
-        list:SetData(profiles)
+        list:SetData(GetProfileItems())
+        list:ScrollToID(selectedProfile)
+        list:Select(selectedProfile, true)
     end
 
     function managementPane.LoadProfileInfo(b)
@@ -1066,6 +1133,7 @@ AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
             CreateSpecPane()
             CreateCharacterPane()
             CreateManagementPane()
+            profileUpdateTime = GetTime()
         end
         LoadAll()
         profilesPanel:Show()
