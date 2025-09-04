@@ -407,6 +407,9 @@ local function StyleCharacterFrameInsetRight()
     hooksecurefunc("PaperDollFrame_UpdateStats", PaperDollFrame_UpdateStats)
     hooksecurefunc("PaperDollFrame_SetLabelAndText", PaperDollFrame_SetLabelAndText)
 
+    -- movement speed
+    tinsert(_G.PAPERDOLL_STATCATEGORIES[1].stats, {stat = "MOVESPEED"})
+
     -- title
     hooksecurefunc(PaperDollFrame.TitleManagerPane.ScrollBox, "Update", TitleManagerPane_Update)
     S.StyleScrollBar(PaperDollFrame.TitleManagerPane.ScrollBar)
