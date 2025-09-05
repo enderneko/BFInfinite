@@ -15,11 +15,11 @@ local optionsFrame
 ---------------------------------------------------------------------
 local list = {
     "General",
-    "-Enhancements",
-    -- "Social",
     "SEPARATOR",
+    "-Enhancements",
     "Colors",
     "Auras",
+    -- "Social",
     "SEPARATOR",
     "Unit Frames",
     "-Nameplates",

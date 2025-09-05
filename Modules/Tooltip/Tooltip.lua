@@ -575,6 +575,8 @@ local lineFormatters = {
         if not (isPlayer and IsAltKeyDown()) then return end
         if InCombatLockdown() then return end
 
+        -- print(C_PaperDollInfo.GetInspectItemLevel(unit))
+
         local itemLevel, elapsed = IL.GetCache(UnitGUID(unit))
         if itemLevel and elapsed < 120 then
             tooltip:AddLine(format(CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, itemLevel))

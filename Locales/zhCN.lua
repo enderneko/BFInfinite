@@ -17,8 +17,8 @@
 if not LOCALE_zhCN then return end
 local L = select(2, ...).L
 
-L["DEAD"] = "死亡"
-L["GHOST"] = "鬼魂"
+L["Are you sure you want to reset all BFI settings?"] = "你确定要重置所有 BFI 设置吗？"
+L["This action cannot be undone."] = "此操作无法撤消。"
 
 ---------------------------------------------------------------------
 -- mover
@@ -355,3 +355,21 @@ L["Chat Input Box"] = "聊天输入框"
 L["Max Lines"] = "消息保留行数"
 L["Text Fade Time"] = "消息淡出时间"
 L["Tab Font"] = "标签字体"
+
+---------------------------------------------------------------------
+-- options: profiles
+---------------------------------------------------------------------
+L["Assignment Mode"] = "分配模式"
+L["Click %s on the right side of a list item to enter assignment mode; click blank area to exit"] = "点击列表项右侧的 %s 进入分配模式，点击空白处退出"
+L["Assignment Area (Left)"] = "左侧分配区域"
+L["Left-click: Assign profile"] = "左键点击：分配配置"
+L["Right-click: Remove profile"] = "右键点击：移除配置"
+L["Export Profile"] = "导出配置"
+L["Export Global"] = "导出全局"
+L["Include Private Data"] = "包含隐私数据"
+L["Friends, blacklist, and other personal data"] = "好友、黑名单等个人数据"
+L["The following options are global. If checked, the corresponding data will be immediately overwritten upon import and cannot be undone (The UI will reload automatically)."] = "以下选项为全局设置，勾选后对应数据将在导入时被立即覆盖且无法撤销（将自动重载界面）。"
+L["Error parsing string"] = "无法解析字符串"
+L["Invalid string"] = "无效字符串"
+L["CVar settings are not included"] = "不包含 CVar 设置"
+L["Copy Module Settings"] = "模块设置复制"

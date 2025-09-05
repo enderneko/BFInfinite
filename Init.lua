@@ -14,11 +14,14 @@ BFI.name = "BFInfinite"
 ---@field vars table
 
 ---@class Modules
----@field ActionBars ActionBars
+---@field Enhancements Enhancements
+---@field Colors Colors
 ---@field Auras Auras
+---@field Misc Misc
+---@field Style Style
+---@field ActionBars ActionBars
 ---@field BuffsDebuffs BuffsDebuffs
 ---@field Chat Chat
----@field Colors Colors
 ---@field DataBars DataBars
 ---@field Maps Maps
 ---@field Nameplates Nameplates
@@ -26,8 +29,6 @@ BFI.name = "BFInfinite"
 ---@field UIWidgets UIWidgets
 ---@field UnitFrames UnitFrames
 ---@field DisableBlizzard DisableBlizzard
----@field Misc Misc
----@field Style Style
 
 ---------------------------------------------------------------------
 -- AbstractFramework
@@ -47,12 +48,8 @@ BFI.libs = {}
 ---------------------------------------------------------------------
 -- modules
 ---------------------------------------------------------------------
-BFI.modules.Colors = {}
-AF.AddEventHandler(BFI.modules.Colors)
 
-BFI.modules.Auras = {}
-AF.AddEventHandler(BFI.modules.Auras)
-
+-- profile
 BFI.modules.UIWidgets = {}
 AF.AddEventHandler(BFI.modules.UIWidgets)
 
@@ -83,7 +80,16 @@ AF.AddEventHandler(BFI.modules.Tooltip)
 BFI.modules.DisableBlizzard = {}
 AF.AddEventHandler(BFI.modules.DisableBlizzard)
 
--- these below are not part of Profile
+-- global
+BFI.modules.Enhancements = {}
+AF.AddEventHandler(BFI.modules.Enhancements)
+
+BFI.modules.Colors = {}
+AF.AddEventHandler(BFI.modules.Colors)
+
+BFI.modules.Auras = {}
+AF.AddEventHandler(BFI.modules.Auras)
+
 BFI.modules.Style = {}
 AF.AddEventHandler(BFI.modules.Style)
 

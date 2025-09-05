@@ -19,6 +19,9 @@ function eventHandler:ADDON_LOADED(arg)
 
         if type(BFIConfig) ~= "table" then BFIConfig = {} end
 
+        --------------------------------------------------
+        -- cvars
+        --------------------------------------------------
         if not BFIConfig.cvarInited then
             BFIConfig.cvarInited = true
             -- init some cvar
@@ -35,7 +38,9 @@ function eventHandler:ADDON_LOADED(arg)
             SetCVar("statusTextDisplay", "NUMERIC") -- NONE,NUMERIC,PERCENT,BOTH
         end
 
+        --------------------------------------------------
         -- general
+        --------------------------------------------------
         if type(BFIConfig.general) ~= "table" then
             BFIConfig.general = {}
         end
