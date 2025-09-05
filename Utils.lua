@@ -16,22 +16,18 @@ end
 ---------------------------------------------------------------------
 -- module
 ---------------------------------------------------------------------
-function F.GetModuleNames()
+function F.GetProfileModuleNames()
     return {
         "ActionBars",
-        "Auras",
         "BuffsDebuffs",
         "Chat",
-        "Colors",
         "DataBars",
-        "DisableBlizzard",
         "Maps",
-        -- "Misc",
         "Nameplates",
-        -- "Style"
         "Tooltip",
         "UIWidgets",
         "UnitFrames",
+        "DisableBlizzard",
     }
 end
 

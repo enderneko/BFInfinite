@@ -29,6 +29,7 @@ local list = {
     "-UI Widgets",
     "-Data Bars",
     -- "Data Broker",
+    "-Maps",
     "Chat",
     "SEPARATOR",
     "Profiles",

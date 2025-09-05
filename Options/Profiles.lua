@@ -336,7 +336,7 @@ local function ShowNewProfileDialog()
             BFIProfile[name] = {
                 revision = BFI.versionNum,
             }
-            for _, module in next, F.GetModuleNames() do
+            for _, module in next, F.GetProfileModuleNames() do
                 local defaults = F.GetModuleDefaults(module)
                 if defaults then
                     BFIProfile[name][AF.LowerFirst(module)] = defaults
@@ -873,14 +873,18 @@ local function CreateModuleCopyFrame()
     local toText = AF.CreateFontString(moduleCopyFrame, L["To"], "gray")
     AF.SetPoint(toText, "RIGHT", toDropdown, "LEFT", -5, 0)
 
-    local list = AF.CreateScrollList(moduleCopyFrame, nil, 0, 0, 8, 20, -1)
+    local list = AF.CreateScrollList(moduleCopyFrame, nil, 0, 0, 9, 20, -1)
     AF.SetPoint(list, "TOPLEFT", toDropdown, "BOTTOMLEFT", 0, -15)
     AF.SetPoint(list, "TOPRIGHT", toDropdown, "BOTTOMRIGHT", 0, -15)
 
     local listText = AF.CreateFontString(moduleCopyFrame, L["Modules"], "gray")
     AF.SetPoint(listText, "TOPRIGHT", list, "TOPLEFT", -5, -2)
 
-    list:SetupButtonGroup("BFI_transparent")
+    local modules
+    list:SetupButtonGroup("BFI_transparent", function()
+        modules = AF.GetKeys(list:GetSelected())
+        moduleCopyFrame.dialog:EnableYes(#modules ~= 0)
+    end)
     list:SetMultiSelect(true)
 
     local from, to
@@ -892,6 +896,7 @@ local function CreateModuleCopyFrame()
         {text = L["Tooltip"], id = "tooltip"},
         {text = L["UI Widgets"], id = "uiWidgets"},
         {text = L["Data Bars"], id = "dataBars"},
+        {text = L["Maps"], id = "maps"},
         {text = L["Chat"], id = "chat"},
     }
 
@@ -900,25 +905,43 @@ local function CreateModuleCopyFrame()
         to = toDropdown:GetSelected()
 
         if AF.IsBlank(from) or AF.IsBlank(to) or from == to then
-            moduleCopyFrame.dialog:EnableYes(false)
-            list:Reset(data)
-            return
+            list:Reset()
+        else
+            list:SetData(data)
         end
-
-        moduleCopyFrame.dialog:EnableYes(true)
-        list:SetData(data)
+        moduleCopyFrame.dialog:EnableYes(false)
     end
 
     fromDropdown:SetOnSelect(CheckFromTo)
     toDropdown:SetOnSelect(CheckFromTo)
+
+    local function DoCopy()
+        if from == "addon_default" then
+            for _, module in next, modules do
+                AF.MergeExistingKeys(BFIProfile[to][module], F.GetModuleDefaults(AF.UpperFirst(module)))
+            end
+        else
+            for _, module in next, modules do
+                AF.MergeExistingKeys(BFIProfile[to][module], BFIProfile[from][module])
+            end
+        end
+
+        AF.Fire("BFI_UpdateModule")
+    end
+
+    local addon_default = {text = AF.GetGradientText(L["Addon Default"], "BFI", "white"), value = "addon_default"}
 
     moduleCopyFrame:SetOnShow(function()
         fromDropdown:ClearSelected()
         toDropdown:ClearSelected()
         list:Reset()
 
-        fromDropdown:SetItems(GetProfileItems())
+        local fromItems = GetProfileItems()
+        tinsert(fromItems, 1, addon_default)
+        fromDropdown:SetItems(fromItems)
         toDropdown:SetItems(GetProfileItems())
+
+        moduleCopyFrame.dialog:SetOnConfirm(DoCopy)
     end)
 end
 
@@ -927,7 +950,7 @@ local function ShowModuleCopyDialog()
 
     local dialog = AF.GetDialog(profilesPanel, AF.WrapTextInColor(L["Copy Module Settings"], "BFI"), 270)
     dialog:SetToOkayCancel()
-    dialog:SetContent(moduleCopyFrame, 300)
+    dialog:SetContent(moduleCopyFrame, 250)
     dialog:SetPoint("CENTER", profilesPanel)
     dialog:EnableYes(false)
 end

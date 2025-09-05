@@ -146,6 +146,21 @@
           "comments": []
         }
       ]
+    },
+    {
+      "id": "e201c138-4115-42a0-b5e7-5943f614de21",
+      "title": "DisableBlizzard",
+      "cards": [
+        {
+          "id": "f4c0e7c7-2b8c-42e0-b963-350c87313f95",
+          "listId": "e201c138-4115-42a0-b5e7-5943f614de21",
+          "title": "Change to global config? or hardcoded?",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        }
+      ]
     }
   ],
   "archive": {
