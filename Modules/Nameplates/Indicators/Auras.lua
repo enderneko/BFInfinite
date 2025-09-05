@@ -307,9 +307,11 @@ local function Auras_Disable(self)
 end
 
 ---------------------------------------------------------------------
--- BFI_UpdateAuras
+-- BFI_UpdateConfig
 ---------------------------------------------------------------------
-AF.RegisterCallback("BFI_UpdateAuras", function(_, which)
+AF.RegisterCallback("BFI_UpdateConfig", function(_, module, which)
+    if module ~= "auras" then return end
+
     if not which or which == "blacklist" or which == "priorities" then
         for _, frame in next, NP.created do
             if frame:IsVisible() then

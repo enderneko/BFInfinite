@@ -65,7 +65,7 @@ local function CreateCastsPane()
             C.config.casts[k][3] = b
             C.config.casts[k][4] = a
             AF.AddColor(k, C.config.casts[k])
-            AF.Fire("BFI_UpdateColor", "casts", which)
+            AF.Fire("BFI_UpdateConfig", "colors", "casts", which)
         end)
     end
 
@@ -110,7 +110,7 @@ local function CreateEmpoweredCastsPane()
             C.config.empowerStages[k][2] = g
             C.config.empowerStages[k][3] = b
             AF.AddColor(k, C.config.empowerStages[k])
-            AF.Fire("BFI_UpdateColor", "empowerStages", which)
+            AF.Fire("BFI_UpdateConfig", "colors", "empowerStages", which)
         end)
     end
 

@@ -562,11 +562,9 @@ local function CreateImportExportFrame()
         -- end
         if importExportProfileFrame.colors:GetChecked() then
             BFIConfig.colors = data.config.colors
-            -- AF.Fire("BFI_UpdateColor")
         end
         if importExportProfileFrame.auras:GetChecked() then
             BFIConfig.auras = data.config.auras
-            -- AF.Fire("BFI_UpdateAuras")
         end
         if importExportProfileFrame.profileAssignment:GetChecked() then
             BFIConfig.profileAssignment = data.config.profileAssignment

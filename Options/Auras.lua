@@ -87,7 +87,7 @@ local function ShowInputBox(owner)
             end
         end
         LoadList(currentList)
-        AF.Fire("BFI_UpdateAuras", currentList)
+        AF.Fire("BFI_UpdateConfig", "auras", currentList)
     end)
 
     inputBox:SetText(owner.spell or "")
@@ -128,7 +128,7 @@ local function CreateContentPane()
             wipe(A.config[currentList])
             AF.Merge(A.config[currentList], A.GetDefaults(currentList))
             LoadList(currentList)
-            AF.Fire("BFI_UpdateAuras", currentList)
+            AF.Fire("BFI_UpdateConfig", "auras", currentList)
         end)
     end)
 
@@ -177,7 +177,7 @@ pools.blacklist = AF.CreateObjectPool(function()
             ShowInputBox(b)
         elseif button == "RightButton" then
             DeleteItem(b)
-            AF.Fire("BFI_UpdateAuras", currentList)
+            AF.Fire("BFI_UpdateConfig", "auras", currentList)
         end
     end)
 
@@ -221,7 +221,7 @@ pools.priorities = AF.CreateObjectPool(function()
         end
         t[b.spell] = value
         LoadList(currentList)
-        AF.Fire("BFI_UpdateAuras", currentList)
+        AF.Fire("BFI_UpdateConfig", "auras", currentList)
     end)
 
     b.idText = AF.CreateFontString(b)
@@ -241,7 +241,7 @@ pools.priorities = AF.CreateObjectPool(function()
             ShowInputBox(b)
         elseif button == "RightButton" then
             DeleteItem(b)
-            AF.Fire("BFI_UpdateAuras", currentList)
+            AF.Fire("BFI_UpdateConfig", "auras", currentList)
         end
     end)
 
@@ -281,7 +281,7 @@ pools.colors = AF.CreateObjectPool(function()
         t[b.spell][2] = _g
         t[b.spell][3] = _b
         t[b.spell][4] = _a
-        AF.Fire("BFI_UpdateAuras", currentList)
+        AF.Fire("BFI_UpdateConfig", "auras", currentList)
     end)
 
     b.idText = AF.CreateFontString(b)
@@ -301,7 +301,7 @@ pools.colors = AF.CreateObjectPool(function()
             ShowInputBox(b)
         elseif button == "RightButton" then
             DeleteItem(b)
-            AF.Fire("BFI_UpdateAuras", currentList)
+            AF.Fire("BFI_UpdateConfig", "auras", currentList)
         end
     end)
 

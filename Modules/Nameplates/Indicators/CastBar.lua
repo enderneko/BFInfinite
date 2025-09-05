@@ -572,10 +572,12 @@ local function CastBar_LoadConfig(self, config)
 end
 
 ---------------------------------------------------------------------
--- BFI_UpdateColor
+-- BFI_UpdateConfig
 ---------------------------------------------------------------------
-AF.RegisterCallback("BFI_UpdateColor", function(_, group, which)
+AF.RegisterCallback("BFI_UpdateConfig", function(_, module, group, which)
+    if module ~= "colors" then return end
     if not NP.config.enabled then return end
+
     if not group or group == "casts" then
         if not which or which == "spark" then
             for _, frame in next, NP.created do

@@ -6,8 +6,6 @@ local AF = _G.AbstractFramework
 -- AFConfig.debug.BFInfinite needs to be true to enable debug events
 AF.DEBUG_EVENTS["BFI_UpdateConfig"] = "skyblue"
 AF.DEBUG_EVENTS["BFI_UpdateProfile"] = "orange"
-AF.DEBUG_EVENTS["BFI_UpdateColor"] = "darkgray"
-AF.DEBUG_EVENTS["BFI_UpdateAuras"] = "darkgray"
 AF.DEBUG_EVENTS["BFI_RefreshOptions"] = "gray"
 AF.DEBUG_EVENTS["BFI_ConfigMode"] = "lightblue"
 AF.DEBUG_EVENTS["BFI_IncorrectAnchor"] = "red"

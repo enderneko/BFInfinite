@@ -353,9 +353,11 @@ local function Auras_Disable(self)
 end
 
 ---------------------------------------------------------------------
--- BFI_UpdateAuras
+-- BFI_UpdateConfig
 ---------------------------------------------------------------------
-AF.RegisterCallback("BFI_UpdateAuras", function()
+AF.RegisterCallback("BFI_UpdateConfig", function(_, module)
+    if module ~= "auras" then return end
+
     for _, frame in next, BFI.vars.unitButtons do
         if frame:IsVisible() then
             local buffs = UF.GetIndicator(frame, "buffs")
