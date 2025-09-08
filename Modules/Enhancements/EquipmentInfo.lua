@@ -424,6 +424,7 @@ end
 -- UpdateFlyout
 ---------------------------------------------------------------------
 local function UpdateFlyout(button, paperDollItemSlot)
+    if not (E.config.equipmentInfo.enabled and E.config.equipmentInfo.itemLevel.enabled) then return end
     GetOverlay(nil, nil, button):UpdateItemLevel()
 end
 
@@ -432,6 +433,18 @@ end
 ---------------------------------------------------------------------
 local function UpdateConfig(_, module, which)
     if module ~= "enhancements" and which ~= "equipmentInfo" then return end
+
+    if not E.config.equipmentInfo.enabled then
+        for _, overlay in pairs(overlays) do
+            overlay:Hide()
+        end
+        return
+    end
+
+    for _, overlay in pairs(overlays) do
+        overlay:Show()
+        overlay:LoadConfig()
+    end
 end
 AF.RegisterCallback("BFI_UpdateConfig", UpdateConfig)
 
@@ -440,15 +453,17 @@ AF.RegisterCallback("BFI_UpdateConfig", UpdateConfig)
 ---------------------------------------------------------------------
 local function Init()
     E:UnregisterEvent("PLAYER_ENTERING_WORLD", Init)
-    if not E.config.equipmentInfo.enabled then return end
+    -- if not E.config.equipmentInfo.enabled then return end
 
     _G.CharacterFrame:HookScript("OnShow", function()
+        if not E.config.equipmentInfo.enabled then return end
         E:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", UpdatePlayer, UpdateDurability)
         E:RegisterEvent("UPDATE_INVENTORY_DURABILITY", DelayedUpdateDurability)
         AF.DelayedInvoke(0.1, UpdateAll)
     end)
 
     _G.CharacterFrame:HookScript("OnHide", function()
+        if not E.config.equipmentInfo.enabled then return end
         E:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED", UpdatePlayer, UpdateDurability)
         E:UnregisterEvent("UPDATE_INVENTORY_DURABILITY", DelayedUpdateDurability)
     end)
@@ -460,15 +475,17 @@ E:RegisterEvent("PLAYER_ENTERING_WORLD", Init)
 
 local function InspectLoaded()
     AF.UnregisterAddonLoaded("Blizzard_InspectUI", InspectLoaded)
-    if not E.config.equipmentInfo.enabled then return end
+    -- if not E.config.equipmentInfo.enabled then return end
 
     _G.InspectFrame:HookScript("OnShow", function()
+        if not E.config.equipmentInfo.enabled then return end
         E:RegisterEvent("UNIT_INVENTORY_CHANGED", DelayedUpdateInspect)
         ClearInspect()
         AF.DelayedInvoke(0.5, UpdateInspect)
     end)
 
     _G.InspectFrame:HookScript("OnHide", function()
+        if not E.config.equipmentInfo.enabled then return end
         E:UnregisterEvent("UNIT_INVENTORY_CHANGED", DelayedUpdateInspect)
     end)
 end

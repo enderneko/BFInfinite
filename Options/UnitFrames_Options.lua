@@ -551,7 +551,7 @@ builder["copy,paste,reset"] = function(parent)
         else
             which = pane.t.id
         end
-        local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n"
+        local text = AF.WrapTextInColor(L["Reset to default settings?"], "BFI") .. "\n"
             .. AF.WrapTextInColor("[" .. L[which] .. "]", "softlime") .. "\n"
             .. pane.t.ownerName
 

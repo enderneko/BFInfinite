@@ -555,11 +555,9 @@ local function CreateImportExportFrame()
             AFConfig.fontSizeDelta = data.afConfig.fontSizeDelta
             AFConfig.scale = data.afConfig.scale
         end
-        -- TODO:
-        -- if importExportProfileFrame.enhancements:GetChecked() then
-        --     BFIConfig.enhancements = data.config.enhancements
-        --     commonConfigImported = true
-        -- end
+        if importExportProfileFrame.enhancements:GetChecked() then
+            BFIConfig.enhancements = data.config.enhancements
+        end
         if importExportProfileFrame.colors:GetChecked() then
             BFIConfig.colors = data.config.colors
         end
@@ -759,7 +757,6 @@ local function CreateImportExportFrame()
     local enhancements = AF.CreateCheckButton(importExportProfileFrame, L["Enhancements"], ValidateCheckBoxes)
     importExportProfileFrame.enhancements = enhancements
     AF.SetPoint(enhancements, "TOPLEFT", importTip, "BOTTOMRIGHT", -160, -15)
-    enhancements:SetEnabled(false)
 
     local colors = AF.CreateCheckButton(importExportProfileFrame, L["Colors"], ValidateCheckBoxes)
     importExportProfileFrame.colors = colors

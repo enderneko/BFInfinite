@@ -121,7 +121,7 @@ builder["copy,paste,reset"] = function(parent)
     AF.SetPoint(reset, "TOPLEFT", paste, "TOPRIGHT", 7, 0)
     reset:SetOnClick(function()
         local isResetAll -- = IsShiftKeyDown()
-        local text = AF.WrapTextInColor(L["Reset to default config?"], "BFI") .. "\n" .. (isResetAll and L["All Settings"] or pane.t.ownerName)
+        local text = AF.WrapTextInColor(L["Reset to default settings?"], "BFI") .. "\n" .. (isResetAll and L["All Settings"] or pane.t.ownerName)
 
         local dialog = AF.GetDialog(BFIOptionsFrame_ActionBarsPanel, text, 250)
         dialog:SetPoint("TOP", pane, "BOTTOM")

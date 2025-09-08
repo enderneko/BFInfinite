@@ -134,7 +134,7 @@ LoadOptions = function(self)
     for i, pane in next, options do
         pane.index = i
 
-        -- FIXME: seems cause weird issues that option values are not loaded properly (visible)
+        -- FIXME: seems cause weird issues that option values are not loaded properly (invisible)
         -- maybe should set parent when creating the pane?
         -- pane:SetParent(scroll.scrollContent)
 

@@ -50,8 +50,8 @@ end
 
 function E.ResetToDefaults(which)
     if not which then
-        BFIConfig["enhancements"] = AF.Copy(defaults)
+        AF.MergeExistingKeys(BFIConfig["enhancements"], defaults)
     else
-        BFIConfig["enhancements"][which] = AF.Copy(defaults[which])
+        AF.MergeExistingKeys(BFIConfig["enhancements"][which], defaults[which])
     end
 end

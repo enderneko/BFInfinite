@@ -16,7 +16,7 @@ local optionsFrame
 local list = {
     "General",
     "SEPARATOR",
-    "-Enhancements",
+    "Enhancements",
     "Colors",
     "Auras",
     -- "Social",

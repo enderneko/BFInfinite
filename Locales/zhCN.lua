@@ -97,6 +97,15 @@ L["Override Name Text"] = "替换名字字体"
 L["Requires relog or restart to take effect"] = "需要重新登录或重启游戏才能生效"
 
 ---------------------------------------------------------------------
+-- options: enhancements
+---------------------------------------------------------------------
+L["Equipment Info"] = "装备信息"
+L["Show Item Level"] = "显示物品等级"
+L["Show Durability"] = "显示耐久度"
+L["Hide At Full Durability"] = "满耐久时隐藏"
+L["Show Missing Enchantment and Gems"] = "显示缺失的附魔和宝石"
+
+---------------------------------------------------------------------
 -- options: colors
 ---------------------------------------------------------------------
 L["Casts"] = "施法"
@@ -141,7 +150,7 @@ L["Reset %s?"] = "重置%s？"
 L["Hold %s while clicking to copy all settings for this unit frame"] = "按住 %s 并点击以复制此单位框体的所有设置"
 L["Hold %s while clicking to reset all settings for this unit frame"] = "按住 %s 并点击以重置此单位框体的所有设置"
 L["Overwrite with copied config?"] = "用复制的配置覆盖？"
-L["Reset to default config?"] = "重置为默认配置？"
+L["Reset to default settings?"] = "重置为默认设置？"
 L["Unit Frame"] = "单位框体"
 L["Unit"] = "单位"
 L["Group"] = "群组"
