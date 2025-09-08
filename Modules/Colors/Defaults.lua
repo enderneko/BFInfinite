@@ -60,7 +60,9 @@ local defaults = {
     },
 }
 
-AF.RegisterCallback("BFI_UpdateConfig", function()
+AF.RegisterCallback("BFI_UpdateConfig", , function(_, module)
+    if module then return end -- init
+
     if not BFIConfig.colors then
         BFIConfig.colors = AF.Copy(defaults)
     end

@@ -415,7 +415,9 @@ AF.RegisterCallback("BFI_UpdateFont", UpdateFont)
 ---------------------------------------------------------------------
 -- update config
 ---------------------------------------------------------------------
-local function UpdateConfig()
+local function UpdateConfig(_, module)
+    if module then return end -- init
+
     local config = BFIConfig.general
 
     -- GameMenuFrame scale
