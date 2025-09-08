@@ -19,5 +19,6 @@ Utils.lua
 
 Core.lua
 Slash.lua
+VersionCheck.lua
 Modules\LoadModules.xml
 Options\LoadOptions.xml
