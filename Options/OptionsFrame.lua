@@ -227,12 +227,35 @@ local function CreateOptionsFrame()
 end
 
 ---------------------------------------------------------------------
+-- alpha notice
+---------------------------------------------------------------------
+local function ShowAlphaNotice()
+    local f = AF.CreateFrame(optionsFrame, nil, nil, 20)
+    f:SetPoint("TOPLEFT", optionsFrame, "BOTTOMLEFT")
+
+    local tex = AF.CreateGradientTexture(f, "HORIZONTAL", "background", "none")
+    tex:SetAllPoints()
+
+    local str
+    if LOCALE_zhCN then
+        str = "BFI 仍处于早期（Alpha）开发阶段，其功能、API 和架构可能频繁变动"
+    else
+        str = "BFI is still in early (alpha) development stage. Its features, APIs, and overall structure may change frequently"
+    end
+
+    local text = AF.CreateFontString(f, str, "gray")
+    AF.SetPoint(text, "LEFT", 5, 0)
+    AF.ResizeToFitText(f, text, 5)
+end
+
+---------------------------------------------------------------------
 -- show
 ---------------------------------------------------------------------
 function BFI.ToggleOptionsFrame()
     if not optionsFrame then
         CreateOptionsFrame()
         BuildList()
+        ShowAlphaNotice()
     end
     optionsFrame:Toggle()
 end
