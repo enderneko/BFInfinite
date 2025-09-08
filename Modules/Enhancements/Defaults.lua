@@ -25,6 +25,7 @@ local defaults = {
                 low = AF.GetColorTable("red"),
             },
             hideAtFull = true,
+            glowBelow = 0.25,
         },
         missingEnhance = { -- missing enchantments and gems
             enabled = true,

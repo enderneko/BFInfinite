@@ -122,12 +122,20 @@ local function Overlay_UpdateDurability(overlay)
         overlay.durability:SetSmoothedValue(current)
 
         local color = E.config.equipmentInfo.durability.color
-        local r, g, b = AF.ColorGradient(current / maximum,
+
+        local p = current / maximum
+        local r, g, b = AF.ColorGradient(p,
             color.low[1], color.low[2], color.low[3],
             color.medium[1], color.medium[2], color.medium[3],
             color.high[1], color.high[2], color.high[3]
         )
         overlay.durability:SetStatusBarColor(r, g, b)
+
+        if p <= E.config.equipmentInfo.durability.glowBelow then
+            AF.ShowNormalGlow(overlay.durability, {r, g, b})
+        else
+            AF.HideNormalGlow(overlay.durability)
+        end
 
         if current == maximum and E.config.equipmentInfo.durability.hideAtFull then
             overlay.durability:SetAlpha(0)
@@ -268,9 +276,14 @@ local function CreateOverlay(slot, isInspect, flyout)
     AF.SetFrameLevel(overlay, 5)
 
     overlay.itemLevel = AF.CreateFontString(overlay)
+
     if not (isInspect or flyout) then
         overlay.durability = AF.CreateBlizzardStatusBar(overlay)
+        AF.ShowNormalGlow(overlay.durability, "red")
+        AF.CreateBlinkAnimation(overlay.durability.normalGlow, 0.5, true)
+        AF.HideNormalGlow(overlay.durability)
     end
+
     if not flyout then
         overlay.missingEnhance = AF.CreateFrame(overlay)
 
