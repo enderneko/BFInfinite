@@ -5,6 +5,7 @@
 -- key - A key in the table (cannot be nil) (value)
 -- value - New value to set for the key (value)
 select(2, ...).L = setmetatable({
+    ["ABOUT"] = "BFInfinite is a World of Warcraft addon suite inspired by ElvUI, featuring unit frames, action bars, nameplates, UI enhancements, and more.\nWith a highly customizable and minimalist design, it aims to provide players with an unprecedented experience.\nMore features will continue to be added in the future to meet the personalized needs of different players.",
     ["buffs"] = "Buffs",
     ["castBar"] = "Cast Bar",
     ["classPowerBar"] = "Class Power Bar",
