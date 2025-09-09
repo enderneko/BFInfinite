@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
-local UI = BFI.modules.UIWidgets
+local W = BFI.modules.UIWidgets
 local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -38,7 +38,7 @@ local function UpdateWidgets(_, module, which)
     if module and module ~= "uiWidgets" then return end
     if which and which ~= "widgets" then return end
 
-    local config = UI.config
+    local config = W.config
 
     UpdateWidget(_G.UIWidgetPowerBarContainerFrame, L["Power Bar Widget"], "CENTER", 150, 30, config.powerBarWidget)
     UpdateWidget(_G.VehicleSeatIndicator, _G.HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL, "CENTER", 128, 128, config.vehicleSeats)

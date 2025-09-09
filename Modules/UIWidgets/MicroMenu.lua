@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local L = BFI.L
 ---@class UIWidgets
-local UI = BFI.modules.UIWidgets
+local W = BFI.modules.UIWidgets
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -171,7 +171,7 @@ local function UpdateMicroMenu(_, module, which)
         AF.AddToPixelUpdater_Auto(microMenu, UpdatePixels)
     end
 
-    local config = UI.config.microMenu
+    local config = W.config.microMenu
 
     microMenu.enabled = config.enabled
 

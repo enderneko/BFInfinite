@@ -1,6 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
-local UI = BFI.modules.UIWidgets
+local W = BFI.modules.UIWidgets
 local L = BFI.L
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -55,7 +55,7 @@ local function SetupToast(toast)
     AF.SetHeight(toast, 22)
 
     -- font
-    AF.SetFont(toast.Text, unpack(UI.config.quickJoinToast.font))
+    AF.SetFont(toast.Text, unpack(W.config.quickJoinToast.font))
 
     -- style
     toast.Line:Hide()
@@ -101,7 +101,7 @@ local function UpdateQuickJoinToast(_, module, which)
     if module and module ~= "uiWidgets" then return end
     if which and which ~= "quickjoin" then return end
 
-    local config = UI.config.quickJoinToast
+    local config = W.config.quickJoinToast
 
     if not config.enabled then
         if quickJoinToastHolder then

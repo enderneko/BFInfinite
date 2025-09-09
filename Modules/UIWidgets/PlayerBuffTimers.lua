@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local L = BFI.L
 ---@class UIWidgets
-local UI = BFI.modules.UIWidgets
+local W = BFI.modules.UIWidgets
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -27,7 +27,7 @@ UpdateTimers = function(self)
         _G.BuffTimer1:ClearAllPoints()
         _G.BuffTimer1:SetPoint("BOTTOM", buffTimerHolder)
 
-        local scale = UI.config.buffTimer.scale
+        local scale = W.config.buffTimer.scale
         local index = 1
         local timer = _G["BuffTimer" .. index]
         while timer do
@@ -45,7 +45,7 @@ local function UpdateConfig(_, module, which)
     if module and module ~= "uiWidgets" then return end
     if which and which ~= "bufftimer" then return end
 
-    local config = UI.config.buffTimer
+    local config = W.config.buffTimer
 
     if not buffTimerHolder then
         InitBuffTimerHolder()

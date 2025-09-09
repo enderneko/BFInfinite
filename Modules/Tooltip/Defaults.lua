@@ -9,9 +9,9 @@ local defaults = {
     enabled = true,
     position = {"BOTTOMRIGHT", -10, 10},
     cursorAnchor = {
-        type = "ANCHOR_CURSOR_LEFT", -- false, "ANCHOR_CURSOR", "ANCHOR_CURSOR_RIGHT"
-        x = -5,
-        y = 0,
+        type = "ANCHOR_CURSOR_RIGHT", -- false, "ANCHOR_CURSOR", "ANCHOR_CURSOR_LEFT", "ANCHOR_CURSOR_RIGHT"
+        x = 10,
+        y = -5,
     },
     combatModifierKey = false,
     healthBar = {

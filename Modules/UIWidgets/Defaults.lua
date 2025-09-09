@@ -1,7 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 ---@class UIWidgets
-local UI = BFI.modules.UIWidgets
+local W = BFI.modules.UIWidgets
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -69,9 +69,9 @@ AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     if not t["uiWidgets"] then
         t["uiWidgets"] = AF.Copy(defaults)
     end
-    UI.config = t["uiWidgets"]
+    W.config = t["uiWidgets"]
 end)
 
-function UI.GetDefaults()
+function W.GetDefaults()
     return AF.Copy(defaults)
 end

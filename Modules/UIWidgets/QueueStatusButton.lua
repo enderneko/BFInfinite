@@ -2,7 +2,7 @@
 local BFI = select(2, ...)
 local L = BFI.L
 ---@class UIWidgets
-local UI = BFI.modules.UIWidgets
+local W = BFI.modules.UIWidgets
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -58,7 +58,7 @@ local function UpdateQueueStatus(_, module, which)
     if module and module ~= "uiWidgets" then return end
     if which and which ~= "queue" then return end
 
-    local config = UI.config.queueStatus
+    local config = W.config.queueStatus
 
     if not queueStatusHolder then
         CreateQueueStatusHolder()
