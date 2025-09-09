@@ -63,6 +63,18 @@ local defaults = {
         position = {"BOTTOMLEFT", 1, 212},
         font = {"BFI", 12, "none", true},
     },
+    readyCheck = {
+        enabled = true,
+        position = {"BOTTOM", 243, 100},
+        arrangement = "top_to_bottom",
+        ready = "",
+        pull = "",
+        countdown = 7,
+        width = 60,
+        height = 17,
+        spacing = 3,
+        -- restrictPingsTo = C_PartyInfo.GetRestrictPings(),
+    },
 }
 
 AF.RegisterCallback("BFI_UpdateProfile", function(_, t)

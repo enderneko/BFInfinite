@@ -7,4 +7,5 @@
     <Script file="PlayerBuffTimers.lua"/>
     <Script file="QueueStatusButton.lua"/>
     <Script file="QuickJoinToast.lua"/>
+    <Script file="ReadyCheck.lua"/>
 </Ui>
