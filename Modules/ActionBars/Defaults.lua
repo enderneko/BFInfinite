@@ -76,8 +76,8 @@ local defaults = {
     },
     vehicleExitButton = {
         enabled = true,
-        position =  {"BOTTOM", 88, 117},
-        size = 33,
+        position =  {"BOTTOM", 233, 101},
+        size = 39,
     },
     extraAbilityButtons = {
         enabled = true,

@@ -65,8 +65,8 @@ local defaults = {
     },
     readyCheck = {
         enabled = true,
-        position = {"BOTTOM", 243, 100},
-        arrangement = "top_to_bottom",
+        position = {"BOTTOM", 392, 145},
+        arrangement = "left_to_right",
         ready = "",
         pull = "",
         countdown = 7,
@@ -75,6 +75,18 @@ local defaults = {
         spacing = 3,
         -- restrictPingsTo = C_PartyInfo.GetRestrictPings(),
     },
+    markers = {
+        enabled = true,
+        position = {"BOTTOM", 355, 99},
+        targetMarkers = true,
+        worldMarkers = true,
+        width = 20,
+        height = 20,
+        spacingBetweenLines = 3,
+        spacingWithinLine = 2,
+        arrangement = "left_to_right_then_top",
+        showIfSolo = true,
+    }
 }
 
 AF.RegisterCallback("BFI_UpdateProfile", function(_, t)

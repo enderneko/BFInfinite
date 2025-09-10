@@ -8,4 +8,5 @@
     <Script file="QueueStatusButton.lua"/>
     <Script file="QuickJoinToast.lua"/>
     <Script file="ReadyCheck.lua"/>
+    <Script file="Markers.lua"/>
 </Ui>
