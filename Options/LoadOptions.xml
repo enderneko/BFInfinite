@@ -10,6 +10,8 @@
     <Script file="UnitFrames.lua"/>
     <Script file="ActionBars_Options.lua"/>
     <Script file="ActionBars.lua"/>
+    <Script file="UIWidgets_Options.lua"/>
+    <Script file="UIWidgets.lua"/>
     <Script file="Chat.lua"/>
     <Script file="Profiles.lua"/>
     <Script file="About.lua"/>

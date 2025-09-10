@@ -66,6 +66,7 @@ local defaults = {
     readyCheck = {
         enabled = true,
         position = {"BOTTOM", 392, 145},
+        font = {"BFI", 12, "none", true},
         arrangement = "left_to_right",
         ready = "",
         pull = "",

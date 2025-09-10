@@ -180,6 +180,9 @@ local function SetupReadyCheckFrame(config)
     readyCheckButton:SetText(AF.IsBlank(config.ready) and L["Ready"] or config.ready)
     countdownButton:SetText(AF.IsBlank(config.pull) and L["Pull"] or config.pull)
 
+    AF.SetFont(readyCheckButton.text, config.font)
+    AF.SetFont(countdownButton.text, config.font)
+
     if config.arrangement:find("^[tb]") then
         AF.SetWidth(readyCheckFrame, config.width)
         AF.SetListHeight(readyCheckFrame, 2, config.height, config.spacing)
