@@ -103,7 +103,7 @@ end
 ---------------------------------------------------------------------
 local function UpdateAltPowerBar(_, module, which)
     if module and module ~= "uiWidgets" then return end
-    if which and which ~= "altpower" then return end
+    if which and which ~= "altPowerBar" then return end
 
     local config = W.config.altPowerBar
 

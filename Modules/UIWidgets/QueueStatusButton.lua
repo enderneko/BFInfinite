@@ -56,7 +56,7 @@ end
 local init
 local function UpdateQueueStatus(_, module, which)
     if module and module ~= "uiWidgets" then return end
-    if which and which ~= "queue" then return end
+    if which and which ~= "queueStatus" then return end
 
     local config = W.config.queueStatus
 

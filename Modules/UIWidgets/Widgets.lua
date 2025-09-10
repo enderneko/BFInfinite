@@ -36,15 +36,24 @@ end
 ---------------------------------------------------------------------
 local function UpdateWidgets(_, module, which)
     if module and module ~= "uiWidgets" then return end
-    if which and which ~= "widgets" then return end
 
     local config = W.config
 
-    UpdateWidget(_G.UIWidgetPowerBarContainerFrame, L["Power Bar Widget"], "CENTER", 150, 30, config.powerBarWidget)
-    UpdateWidget(_G.VehicleSeatIndicator, _G.HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL, "CENTER", 128, 128, config.vehicleSeats)
-    UpdateWidget(_G.DurabilityFrame, _G.HUD_EDIT_MODE_DURABILITY_FRAME_LABEL, "CENTER", 90, 75, config.durability)
-    UpdateWidget(_G.BNToastFrame, _G.SHOW_BATTLENET_TOASTS, "CENTER", 250, 50, config.battlenetToast)
+    if not which or which == "powerBarWidget" then
+        UpdateWidget(_G.UIWidgetPowerBarContainerFrame, L["Power Bar Widget"], "CENTER", 150, 30, config.powerBarWidget)
+        _G.UIWidgetPowerBarContainerFrame._container:SetShown(config.powerBarWidget.enabled)
+    end
 
-    _G.UIWidgetPowerBarContainerFrame._container:SetShown(config.powerBarWidget.enabled)
+    if not which or which == "vehicleSeats" then
+        UpdateWidget(_G.VehicleSeatIndicator, _G.HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL, "CENTER", 128, 128, config.vehicleSeats)
+    end
+
+    if not which or which == "durability" then
+        UpdateWidget(_G.DurabilityFrame, _G.HUD_EDIT_MODE_DURABILITY_FRAME_LABEL, "CENTER", 90, 75, config.durability)
+    end
+
+    if not which or which == "battlenetToast" then
+        UpdateWidget(_G.BNToastFrame, _G.SHOW_BATTLENET_TOASTS, "CENTER", 250, 50, config.battlenetToast)
+    end
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateWidgets)

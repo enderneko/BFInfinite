@@ -99,3 +99,11 @@ end)
 function W.GetDefaults()
     return AF.Copy(defaults)
 end
+
+function W.ResetToDefaults(which)
+    if not which then
+        AF.MergeExistingKeys(BFIConfig["uiWidgets"], defaults)
+    else
+        AF.MergeExistingKeys(BFIConfig["uiWidgets"][which], defaults[which])
+    end
+end

@@ -43,7 +43,7 @@ end
 ---------------------------------------------------------------------
 local function UpdateConfig(_, module, which)
     if module and module ~= "uiWidgets" then return end
-    if which and which ~= "bufftimer" then return end
+    if which and which ~= "buffTimer" then return end
 
     local config = W.config.buffTimer
 

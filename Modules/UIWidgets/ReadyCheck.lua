@@ -202,7 +202,7 @@ end
 ---------------------------------------------------------------------
 local function UpdateReadyCheck(_, module, which)
     if module and module ~= "uiWidgets" then return end
-    if which and which ~= "readycheck" then return end
+    if which and which ~= "readyCheck" then return end
 
     local config = W.config.readyCheck
 
