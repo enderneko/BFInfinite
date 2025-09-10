@@ -84,6 +84,12 @@ local function ReadyCheckStart(_, _, initiatorName, readyCheckTimeLeft)
 end
 
 local function ReadyCheckUpdate(_, _, unitTarget, isReady)
+    if IsInRaid() then
+        if not unitTarget:find("^raid") then return end
+    else -- party
+        if not unitTarget:find("^party") and unitTarget ~= "player" then return end
+    end
+
     local button = readyCheckFrame.readyCheckButton
 
     if isReady then
@@ -163,7 +169,9 @@ local function SetupReadyCheckFrame(config)
     local countdownButton = readyCheckFrame.countdownButton
 
     local p, rp, x, y = AF.GetAnchorPoints_Simple(config.arrangement, config.spacing)
+    AF.ClearPoints(readyCheckButton)
     AF.SetPoint(readyCheckButton, p)
+    AF.ClearPoints(countdownButton)
     AF.SetPoint(countdownButton, p, readyCheckButton, rp, x, y)
 
     AF.SetSize(readyCheckButton, config.width, config.height)
@@ -179,6 +187,14 @@ local function SetupReadyCheckFrame(config)
         AF.SetHeight(readyCheckFrame, config.height)
         AF.SetListWidth(readyCheckFrame, 2, config.width, config.spacing)
     end
+end
+
+---------------------------------------------------------------------
+-- check permission
+---------------------------------------------------------------------
+local function CheckPermission()
+    if not readyCheckFrame or not readyCheckFrame.enabled then return end
+    readyCheckFrame:SetShown(AF.HasGroupPermission())
 end
 
 ---------------------------------------------------------------------
@@ -202,7 +218,6 @@ local function UpdateReadyCheck(_, module, which)
     if not readyCheckFrame then
         CreateReadyCheckFrame()
     end
-    readyCheckFrame:Show()
     readyCheckFrame.enabled = true
 
     SetupReadyCheckFrame(config)
@@ -215,5 +230,7 @@ local function UpdateReadyCheck(_, module, which)
     AF.UpdateMoverSave(readyCheckFrame, config.position)
     AF.LoadPosition(readyCheckFrame, config.position)
 
+    CheckPermission()
+    AF.RegisterCallback("AF_GROUP_PERMISSION_CHANGED", CheckPermission)
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateReadyCheck)
