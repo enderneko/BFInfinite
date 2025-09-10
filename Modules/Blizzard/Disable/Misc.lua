@@ -18,9 +18,8 @@ local function DisableBlizzard()
 
     -- manager
     if config.manager then
-        -- TODO:
-        -- DB.DisableFrame(_G.CompactRaidFrameManager)
-        -- CompactRaidFrameManager_SetSetting("IsShown", "0")
+        DB.DisableFrame(_G.CompactRaidFrameManager)
+        CompactRaidFrameManager_SetSetting("IsShown", "0")
     end
 
     -- castBar

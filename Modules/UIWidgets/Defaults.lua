@@ -85,7 +85,7 @@ local defaults = {
         spacingBetweenLines = 3,
         spacingWithinLine = 2,
         arrangement = "left_to_right_then_top",
-        showIfSolo = true,
+        showIfSolo = false,
     }
 }
 

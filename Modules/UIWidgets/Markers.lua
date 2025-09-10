@@ -44,7 +44,9 @@ local function LockTargetMarkers()
     for i, name in next, lockedTargetMarkers do
         local unit = AF.UnitTokenFromName(name)
         if unit then
-            SetRaidTarget(unit, i)
+            if GetRaidTargetIndex(unit) ~= i then
+                SetRaidTarget(unit, i)
+            end
         else
             lockedTargetMarkers[i] = nil
             targetMarkers[i].gradient:ShowUp(false)
