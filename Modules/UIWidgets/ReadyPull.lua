@@ -69,7 +69,7 @@ local function CreateReadyPullFrame()
 
     pullButton:SetOnClick(function(self, button)
         if button == "LeftButton" then
-            DoCountdown(W.config.readyCheck.countdown)
+            DoCountdown(W.config.readyPull.countdown)
         elseif countdownTicker then
             DoCountdown(0)
         end
@@ -204,7 +204,9 @@ local function SetupReadyPullFrame(config)
     pullButton:SetText(AF.IsBlank(config.pull) and L["Pull"] or config.pull)
 
     AF.SetFont(readyButton.text, config.font)
+    AF.SetFont(readyButton.bar.progressText, config.font)
     AF.SetFont(pullButton.text, config.font)
+    AF.SetFont(pullButton.bar.progressText, config.font)
 
     if config.arrangement:find("^[tb]") then
         AF.SetWidth(readyPullFrame, config.width)
