@@ -74,7 +74,7 @@ local defaults = {
         width = 60,
         height = 17,
         spacing = 3,
-        -- restrictPingsTo = C_PartyInfo.GetRestrictPings(),
+        showTooltips = true,
     },
     markers = {
         enabled = true,
@@ -103,8 +103,10 @@ end
 
 function W.ResetToDefaults(which)
     if not which then
-        AF.MergeExistingKeys(BFIConfig["uiWidgets"], defaults)
+        wipe(W.config)
+        AF.Merge(W.config, defaults)
     else
-        AF.MergeExistingKeys(BFIConfig["uiWidgets"][which], defaults[which])
+        wipe(W.config[which])
+        AF.Merge(W.config[which], defaults[which])
     end
 end

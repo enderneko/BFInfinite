@@ -16,9 +16,10 @@ local options = {}
 ---------------------------------------------------------------------
 local settings = {
     readyCheck = {
+        "showTooltips",
         "width,height",
+        "arrangement_simple",
         "spacing",
-        "arrangement",
         "countdown",
         "font",
         "ready,pull",
@@ -38,10 +39,12 @@ builder["reset"] = function(parent)
     local reset = AF.CreateButton(pane, _G.RESET, "red_hover", 110, 20)
     AF.SetPoint(reset, "LEFT", 15, 0)
     reset:SetOnClick(function()
-        local dialog = AF.GetDialog(BFIOptionsFrame_EnhancementsPanel, AF.WrapTextInColor(L["Reset to default settings?"], "BFI") .. "\n" .. pane.t.ownerName, 250)
+        local dialog = AF.GetDialog(BFIOptionsFrame_UIWidgetsPanel, AF.WrapTextInColor(L["Reset to default settings?"], "BFI") .. "\n" .. pane.t.ownerName, 250)
         dialog:SetPoint("TOP", pane, "BOTTOM")
         dialog:SetOnConfirm(function()
             W.ResetToDefaults(pane.t.id)
+            AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+            AF.Fire("BFI_RefreshOptions", "uiWidgets")
         end)
     end)
 
@@ -83,6 +86,31 @@ builder["enabled"] = function(parent)
         pane.t = t
         UpdateColor(t.cfg.enabled)
         enabled:SetChecked(t.cfg.enabled)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- showTooltips
+---------------------------------------------------------------------
+builder["showTooltips"] = function(parent)
+    if created["showTooltips"] then return created["showTooltips"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_ShowTooltips", nil, 30)
+    created["showTooltips"] = pane
+
+    local showTooltips = AF.CreateCheckButton(pane, L["Show Tooltips"])
+    AF.SetPoint(showTooltips, "LEFT", 15, 0)
+
+    showTooltips:SetOnCheck(function(checked)
+        pane.t.cfg.showTooltips = checked
+        -- AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        showTooltips:SetChecked(t.cfg.showTooltips)
     end
 
     return pane
@@ -159,6 +187,108 @@ builder["width,height"] = function(parent)
 end
 
 ---------------------------------------------------------------------
+-- spacing
+---------------------------------------------------------------------
+builder["spacing"] = function(parent)
+    if created["spacing"] then return created["spacing"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_Spacing", nil, 55)
+    created["spacing"] = pane
+
+    local spacing = AF.CreateSlider(pane, L["Spacing"], 150, -1, 50, 1, nil, true)
+    AF.SetPoint(spacing, "LEFT", 15, 0)
+    spacing:SetAfterValueChanged(function(value)
+        pane.t.cfg.spacing = value
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        spacing:SetValue(t.cfg.spacing)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- countdown
+---------------------------------------------------------------------
+builder["countdown"] = function(parent)
+    if created["countdown"] then return created["countdown"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_Countdown", nil, 55)
+    created["countdown"] = pane
+
+    local countdown = AF.CreateSlider(pane, _G.COUNTDOWN, 150, 1, 30, 1, nil, true)
+    AF.SetPoint(countdown, "LEFT", 15, 0)
+    countdown:SetAfterValueChanged(function(value)
+        pane.t.cfg.countdown = value
+        -- AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        countdown:SetValue(t.cfg.countdown)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- arrangement_complex
+---------------------------------------------------------------------
+builder["arrangement_complex"] = function(parent)
+    if created["arrangement_complex"] then return created["arrangement_complex"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_ArrangementComplex", nil, 54)
+    created["arrangement_complex"] = pane
+
+    local arrangement = AF.CreateDropdown(pane, 200)
+    arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
+    AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
+    arrangement:SetItems(AF.GetDropdownItems_ComplexOrientation())
+
+    arrangement:SetOnSelect(function(value)
+        pane.t.cfg.arrangement = value
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        arrangement:SetSelectedValue(t.cfg.arrangement)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- arrangement_simple
+---------------------------------------------------------------------
+builder["arrangement_simple"] = function(parent)
+    if created["arrangement_simple"] then return created["arrangement_simple"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_ArrangementSimple", nil, 54)
+    created["arrangement_simple"] = pane
+
+    local arrangement = AF.CreateDropdown(pane, 150)
+    arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
+    AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
+    arrangement:SetItems(AF.GetDropdownItems_SimpleOrientation())
+
+    arrangement:SetOnSelect(function(value)
+        pane.t.cfg.arrangement = value
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        arrangement:SetSelectedValue(t.cfg.arrangement)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
 -- font
 ---------------------------------------------------------------------
 builder["font"] = function(parent)
@@ -205,6 +335,42 @@ builder["font"] = function(parent)
         fontSizeSlider:SetValue(t.cfg.font[2])
         fontOutlineDropdown:SetSelectedValue(t.cfg.font[3])
         shadowCheckButton:SetChecked(t.cfg.font[4])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- ready,pull
+---------------------------------------------------------------------
+builder["ready,pull"] = function(parent)
+    if created["ready,pull"] then return created["ready,pull"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_ReadyPull", nil, 54)
+    created["ready,pull"] = pane
+
+    local ready = AF.CreateEditBox(pane, L["Use default if empty"], 150, 20)
+    ready:SetLabelAlt(L["Ready"])
+    AF.SetPoint(ready, "TOPLEFT", 15, -25)
+    ready:SetOnTextChanged(function(text, userChanged)
+        if not userChanged then return end
+        pane.t.cfg.ready = text
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    local pull = AF.CreateEditBox(pane, L["Use default if empty"], 150, 20)
+    pull:SetLabelAlt(L["Pull"])
+    AF.SetPoint(pull, "TOPLEFT", ready, 185, 0)
+    pull:SetOnTextChanged(function(text, userChanged)
+        if not userChanged then return end
+        pane.t.cfg.pull = text
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        ready:SetText(t.cfg.ready)
+        pull:SetText(t.cfg.pull)
     end
 
     return pane

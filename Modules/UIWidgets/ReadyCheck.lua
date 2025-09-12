@@ -7,6 +7,7 @@ local AF = _G.AbstractFramework
 
 local ceil = math.ceil
 local DoReadyCheck = DoReadyCheck
+local InitiateRolePoll = InitiateRolePoll
 local DoCountdown = C_PartyInfo.DoCountdown
 local GetNumGroupMembers = GetNumGroupMembers
 
@@ -22,13 +23,14 @@ local function CreateReadyCheckFrame()
     AF.AddEventHandler(readyCheckFrame)
 
     -- mover
-    AF.CreateMover(readyCheckFrame, "BFI: " .. L["UI Widgets"], _G.READY_CHECK)
+    AF.CreateMover(readyCheckFrame, "BFI: " .. L["UI Widgets"], L["Ready"] .. " & " .. L["Pull"])
 
     -- ready check & role poll
     local readyCheckButton = AF.CreateButton(readyCheckFrame, L["Ready"], "static")
     readyCheckFrame.readyCheckButton = readyCheckButton
     readyCheckButton:SetTextHighlightColor("BFI")
     readyCheckButton:SetBorderHighlightColor("BFI")
+    readyCheckButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
     readyCheckButton.bar = AF.CreateBlizzardStatusBar(readyCheckButton, nil, nil, nil, nil, "BFI", nil, "current_value")
     AF.SetOnePixelInside(readyCheckButton.bar)
@@ -36,7 +38,33 @@ local function CreateReadyCheckFrame()
     readyCheckButton.bar:ClearBackdrop()
     readyCheckButton.bar:SetScript("OnValueChanged", nil)
 
-    readyCheckButton:SetOnClick(DoReadyCheck)
+    readyCheckButton:SetOnClick(function(self, button)
+        if button == "LeftButton" then
+            DoReadyCheck()
+        elseif button == "RightButton" then
+            InitiateRolePoll()
+        end
+    end)
+
+    local readyCheckTips = {
+        L["Ready"],
+        AF.WrapTextInColor(L["Left-click: "], "tip") .. _G.READY_CHECK,
+        AF.WrapTextInColor(L["Right-click: "], "tip") .. _G.ROLE_POLL,
+    }
+
+    readyCheckButton:HookOnEnter(function(self)
+        AF.SetFrameLevel(readyCheckButton, 2)
+        if W.config.readyCheck.showTooltips then
+            AF.ShowTooltip(self, "TOPLEFT", 0, 2, readyCheckTips)
+        end
+    end)
+
+    readyCheckButton:HookOnLeave(function(self)
+        AF.SetFrameLevel(readyCheckButton, 1)
+        if W.config.readyCheck.showTooltips then
+            AF.HideTooltip()
+        end
+    end)
 
     -- countdown
     local countdownButton = AF.CreateButton(readyCheckFrame, L["Pull"], "static")
@@ -56,6 +84,25 @@ local function CreateReadyCheckFrame()
             DoCountdown(W.config.readyCheck.countdown)
         elseif countdownTicker then
             DoCountdown(0)
+        end
+    end)
+
+    local countdownTips = {
+        L["Pull"],
+        AF.WrapTextInColor(L["Left-click: "], "tip") .. L["Start countdown"],
+        AF.WrapTextInColor(L["Right-click: "], "tip") .. L["Cancel countdown"],
+    }
+
+    countdownButton:HookOnEnter(function(self)
+        AF.SetFrameLevel(countdownButton, 2)
+        if W.config.readyCheck.showTooltips then
+            AF.ShowTooltip(self, "TOPLEFT", 0, 2, countdownTips)
+        end
+    end)
+    countdownButton:HookOnLeave(function(self)
+        AF.SetFrameLevel(countdownButton, 1)
+        if W.config.readyCheck.showTooltips then
+            AF.HideTooltip()
         end
     end)
 end
