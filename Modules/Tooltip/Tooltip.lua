@@ -77,20 +77,20 @@ local function GetTooltipAnchorPoint(owner)
 
     if y >= (height * 2 / 3) then
         point, anchorPoint = "TOP", "BOTTOM"
-        y = -1
+        y = -2
     else
         point, anchorPoint = "BOTTOM", "TOP"
-        y = 1
+        y = 2
     end
 
     if x >= (width * 2 / 3) then
         point = point .. "RIGHT"
         anchorPoint = anchorPoint .. "RIGHT"
-        x = -1
+        x = 0
     else
         point = point .. "LEFT"
         anchorPoint = anchorPoint .. "LEFT"
-        x = 1
+        x = 0
     end
 
     return point, anchorPoint, x, y
@@ -100,16 +100,14 @@ end
 -- update anchor
 ---------------------------------------------------------------------
 local function UpdateAnchor(tooltip, parent)
-    if not T.config.enabled or tooltip:IsForbidden() or tooltip:GetAnchorType() ~= "ANCHOR_NONE" then
-        return
-    end
-
-    tooltip:ClearAllPoints()
+    if tooltip:IsForbidden() then return end
 
     if parent.tooltip then
         --! use module settings
         local cfg = parent.tooltip
         if cfg.enabled and not (cfg.hideInCombat and InCombatLockdown()) then
+            tooltip:ClearAllPoints()
+
             if tooltip == GameTooltip and type(cfg.supportsItemComparison) == "boolean" then
                 tooltip.supportsItemComparison = cfg.supportsItemComparison
             end
@@ -133,8 +131,9 @@ local function UpdateAnchor(tooltip, parent)
             tooltip:Hide()
         end
 
-    else
-        --! use tooltip settings
+    elseif T.config.enabled and tooltip:GetAnchorType() == "ANCHOR_NONE" then
+        tooltip:ClearAllPoints()
+
         if InCombatLockdown() and IsWorldUnitTooltip() and not IsModifierKeyDown() then
             return
         end
@@ -826,11 +825,17 @@ end
 ---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
-local function InitTooltip()
+local function InitTooltipAnchor()
     tooltipAnchor = CreateFrame("Frame", "BFI_TooltipAnchor", AF.UIParent)
     AF.SetSize(tooltipAnchor, 150, 30)
     AF.CreateMover(tooltipAnchor, "BFI: " .. _G.OTHER, L["Tooltip"])
+    tooltipAnchor.enabled = true
 
+    GameTooltip:HookScript("OnTooltipCleared", OnTooltipCleared)
+    hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
+end
+
+local function InitTooltip()
     -- statusBar
     GameTooltipStatusBar:HookScript("OnValueChanged", UpdateStatusBarText)
 
@@ -851,9 +856,6 @@ local function InitTooltip()
     AddTooltipPostCall(Enum.TooltipDataType.Item, OnTooltipSetItem)
 
     -- hooks
-    GameTooltip:HookScript("OnTooltipCleared", OnTooltipCleared)
-    hooksecurefunc("GameTooltip_SetDefaultAnchor", UpdateAnchor)
-
     hooksecurefunc(GameTooltip, "RefreshData", GameTooltip_RefreshData)
     hooksecurefunc(GameTooltip, "SetUnitAura", GameTooltip_SetUnitAura)
     hooksecurefunc(GameTooltip, "SetUnitBuff", GameTooltip_SetUnitAura) -- classic?
@@ -871,9 +873,12 @@ local function UpdateTooltip(_, module, which)
 
     local config = T.config
 
-    if tooltipAnchor then
-        tooltipAnchor.enabled = config.enabled
+    -- tooltipAnchor
+    if not tooltipAnchor then
+        InitTooltipAnchor()
     end
+    AF.UpdateMoverSave(tooltipAnchor, config.position)
+    AF.LoadPosition(tooltipAnchor, config.position)
 
     if not config.enabled then
         T:UnregisterAllEvents()
@@ -884,10 +889,6 @@ local function UpdateTooltip(_, module, which)
         init = true
         InitTooltip()
     end
-
-    -- position
-    AF.UpdateMoverSave(tooltipAnchor, config.position)
-    AF.LoadPosition(tooltipAnchor, config.position)
 
     -- modifier keys
     T:RegisterEvent("MODIFIER_STATE_CHANGED", MODIFIER_STATE_CHANGED)

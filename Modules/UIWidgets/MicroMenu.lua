@@ -111,6 +111,14 @@ local function UpdateButton(b)
     if b.Emblem then
         b.Emblem:SetScale(microMenu.guildEmblemScale)
         b.HighlightEmblem:SetScale(microMenu.guildEmblemScale)
+
+        if not b.EmblemMask then
+            b.EmblemMask = b:CreateMaskTexture()
+            b.EmblemMask:SetTexture(AF.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+            AF.SetOnePixelInside(b.EmblemMask, b)
+            b.Emblem:AddMaskTexture(b.EmblemMask)
+            b.HighlightEmblem:AddMaskTexture(b.EmblemMask)
+        end
     end
 
     -- hide unused
@@ -144,8 +152,14 @@ local function UpdatePortrait(b)
     b.PortraitMask:Hide()
 end
 
+local function UpdateTooltipPosition(b)
+    GameTooltip:ClearAllPoints()
+    GameTooltip:SetPoint("BOTTOMLEFT", b, "TOPLEFT", 0, 2)
+end
+
 local function ButtonOnEnter(b)
     b:GetNormalTexture():SetAlpha(1)
+    UpdateTooltipPosition(b)
 end
 
 local function UpdatePixels()
@@ -159,6 +173,31 @@ local function UpdatePixels()
     end
 end
 
+local function InitButton(b)
+    if b._inited then return end
+    b._inited = true
+
+    AF.ApplyDefaultBackdropWithColors(b)
+
+    if b:GetName() == "CharacterMicroButton" then
+        hooksecurefunc(b, "SetPushed", UpdatePortrait)
+        hooksecurefunc(b, "SetNormal", UpdatePortrait)
+        b:HookScript("OnEnter", UpdateTooltipPosition)
+    else
+        hooksecurefunc(b, "SetHighlightAtlas", UpdateButton)
+        hooksecurefunc(b, "SetPushed", UpdateButton)
+        hooksecurefunc(b, "SetNormal", UpdateButton)
+        b:HookScript("OnEnter", ButtonOnEnter)
+    end
+
+    if b:GetName() == "MainMenuMicroButton" then
+        b.tooltip = {
+            enabled = true,
+            anchorTo = "self_adaptive",
+        }
+    end
+end
+
 ---------------------------------------------------------------------
 -- update bar
 ---------------------------------------------------------------------
@@ -169,6 +208,16 @@ local function UpdateMicroMenu(_, module, which)
     if not microMenu then
         CreateMicroMenu()
         AF.AddToPixelUpdater_Auto(microMenu, UpdatePixels)
+
+        -- MainMenuBarPerformanceBar
+        local mainMenuButton = _G.MainMenuMicroButton
+        local performanceBar = mainMenuButton.MainMenuBarPerformanceBar
+        performanceBar:SetTexture(AF.GetPlainTexture())
+        AF.ClearPoints(performanceBar)
+        AF.SetPoint(performanceBar, "BOTTOMLEFT", mainMenuButton, 1, 1)
+        AF.SetPoint(performanceBar, "BOTTOMRIGHT", mainMenuButton, -1, 1)
+        AF.SetHeight(performanceBar, 1)
+        performanceBar:SetAlpha(0.75)
     end
 
     local config = W.config.microMenu
@@ -192,23 +241,14 @@ local function UpdateMicroMenu(_, module, which)
         AF.SetSize(b, config.width, config.height)
 
         -- style
-        AF.ApplyDefaultBackdropWithColors(b)
-        if b:GetName() == "CharacterMicroButton" then
-            hooksecurefunc(b, "SetPushed", UpdatePortrait)
-            hooksecurefunc(b, "SetNormal", UpdatePortrait)
-        else
-            hooksecurefunc(b, "SetHighlightAtlas", UpdateButton)
-            hooksecurefunc(b, "SetPushed", UpdateButton)
-            hooksecurefunc(b, "SetNormal", UpdateButton)
-            b:HookScript("OnEnter", ButtonOnEnter)
-        end
+        InitButton(b)
 
         -- arrangement
         AF.ClearPoints(b)
         if i == 1 then
             AF.SetPoint(b, "TOPLEFT")
         else
-            if i % config.buttonsPerRow == 1 then
+            if config.buttonsPerRow == 1 or i % config.buttonsPerRow == 1 then
                 AF.SetPoint(b, "TOPLEFT", microMenu.buttons[i - config.buttonsPerRow], "BOTTOMLEFT", 0, -config.spacing)
             else
                 AF.SetPoint(b, "TOPLEFT", microMenu.buttons[i - 1], "TOPRIGHT", config.spacing, 0)
@@ -227,6 +267,9 @@ local function UpdateMicroMenu(_, module, which)
     else
         RegisterStateDriver(microMenu.visibility, "visibility", "hide")
     end
+
+    -- update texcoords
+    UpdatePixels()
 
     -- mover
     AF.UpdateMoverSave(microMenu, config.position)

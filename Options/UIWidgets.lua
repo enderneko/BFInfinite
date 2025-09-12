@@ -41,6 +41,7 @@ local function CreateContentPane()
         b.combatProtect = data.combatProtect
     end)
     list:SetData({
+        {text = L["Micro Menu"], id = "microMenu"},
         {text = L["Ready"] .. " & " .. L["Pull"], id = "readyPull"},
         {text = L["Markers"], id = "markers", combatProtect = true},
     })
@@ -121,7 +122,7 @@ AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
         if not uiWidgetsPanel then
             CreateUIWidgetsPanel()
             CreateContentPane()
-            contentPane.list:Select("readyPull")
+            contentPane.list:Select("microMenu")
         end
         uiWidgetsPanel:Show()
     elseif uiWidgetsPanel then

@@ -15,6 +15,12 @@ local options = {}
 -- settings
 ---------------------------------------------------------------------
 local settings = {
+    microMenu = {
+        "width,height",
+        "alpha",
+        "buttonsPerRow",
+        "spacing",
+    },
     readyPull = {
         {
             AF.WrapTextInColor(L["Ready"], "BFI"),
@@ -264,6 +270,54 @@ builder["spacing"] = function(parent)
     function pane.Load(t)
         pane.t = t
         spacing:SetValue(t.cfg.spacing)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- alpha
+---------------------------------------------------------------------
+builder["alpha"] = function(parent)
+    if created["alpha"] then return created["alpha"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_Alpha", nil, 55)
+    created["alpha"] = pane
+
+    local alpha = AF.CreateSlider(pane, L["Alpha"], 150, 0, 1, 0.01, true, true)
+    AF.SetPoint(alpha, "LEFT", 15, 0)
+    alpha:SetOnValueChanged(function(value)
+        pane.t.cfg.alpha = value
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        alpha:SetValue(t.cfg.alpha)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- buttonsPerRow
+---------------------------------------------------------------------
+builder["buttonsPerRow"] = function(parent)
+    if created["buttonsPerRow"] then return created["buttonsPerRow"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_ButtonsPerRow", nil, 55)
+    created["buttonsPerRow"] = pane
+
+    local buttonsPerRow = AF.CreateSlider(pane, L["Buttons Per Row"], 150, 1, 11, 1, nil, true)
+    AF.SetPoint(buttonsPerRow, "LEFT", 15, 0)
+    buttonsPerRow:SetOnValueChanged(function(value)
+        pane.t.cfg.buttonsPerRow = value
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        buttonsPerRow:SetValue(t.cfg.buttonsPerRow)
     end
 
     return pane
