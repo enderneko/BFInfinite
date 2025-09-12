@@ -370,9 +370,12 @@ L["Cancel countdown"] = "取消倒计时"
 L["Target Markers"] = "目标标记"
 L["World Markers"] = "世界标记"
 L["Toggle marker"] = "设置/取消标记"
-L["Lock/unlock marker (only for group players)"] = "锁定/解锁标记（仅限队内玩家）"
+L["Lock/unlock marker (only for players in your group)"] = "锁定/解锁标记（仅限队内玩家）"
 L["Place marker"] = "放置标记"
 L["Clear marker"] = "清除标记"
+L["Group Spacing"] = "组间距"
+L["Marker Spacing"] = "标记间距"
+L["Show If Solo"] = "单人时显示"
 
 ---------------------------------------------------------------------
 -- options: chat

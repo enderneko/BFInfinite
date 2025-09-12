@@ -82,8 +82,8 @@ local defaults = {
         worldMarkers = true,
         width = 20,
         height = 20,
-        spacingBetweenLines = 2,
-        spacingWithinLine = 2,
+        groupSpacing = 2,
+        markerSpacing = 2,
         arrangement = "left_to_right_then_top",
         showIfSolo = false,
     }

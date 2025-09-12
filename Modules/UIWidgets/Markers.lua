@@ -192,10 +192,10 @@ end
 local function SetupMarkersFrame(config)
     local spacingX, spacingY
     if config.arrangement:find("^[tb]") then -- vertical
-        spacingX, spacingY = config.spacingBetweenLines, config.spacingWithinLine
+        spacingX, spacingY = config.groupSpacing, config.markerSpacing
         AF.SetGridSize(markersFrame, config.width, config.height, spacingX, spacingY, 2, 9)
     else -- horizontal
-        spacingX, spacingY = config.spacingWithinLine, config.spacingBetweenLines
+        spacingX, spacingY = config.markerSpacing, config.groupSpacing
         AF.SetGridSize(markersFrame, config.width, config.height, spacingX, spacingY, 9, 2)
     end
 
@@ -254,11 +254,11 @@ local function CheckPermission()
     local groupType = AF.GetGroupType()
 
     if groupType == "solo" and W.config.markers.showIfSolo then
-        AF.ShowProtectedFrame(markersFrame.targetMarkerParent)
+        AF.SetProtectedFrameShown(markersFrame.targetMarkerParent, W.config.markers.targetMarkers)
         AF.HideProtectedFrame(markersFrame.worldMarkerParent)
     elseif groupType ~= "solo" and AF.HasMarkerPermission() then
-        AF.ShowProtectedFrame(markersFrame.targetMarkerParent)
-        AF.ShowProtectedFrame(markersFrame.worldMarkerParent)
+        AF.SetProtectedFrameShown(markersFrame.targetMarkerParent, W.config.markers.targetMarkers)
+        AF.SetProtectedFrameShown(markersFrame.worldMarkerParent, W.config.markers.worldMarkers)
     else
         AF.HideProtectedFrame(markersFrame.targetMarkerParent)
         AF.HideProtectedFrame(markersFrame.worldMarkerParent)

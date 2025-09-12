@@ -25,23 +25,27 @@ local settings = {
             AF.WrapTextInColor(L["Left-click: "], "tip") .. L["Start countdown"],
             AF.WrapTextInColor(L["Right-click: "], "tip") .. L["Cancel countdown"],
         },
+        "countdown",
         "width,height",
         "arrangement_simple",
         "spacing",
-        "countdown",
-        "font",
         "ready,pull",
+        "font",
     },
     markers = {
         {
             AF.WrapTextInColor(L["Target Markers"], "BFI"),
             AF.WrapTextInColor(L["Left-click: "], "tip") .. L["Toggle marker"],
-            AF.WrapTextInColor(L["Right-click: "], "tip") .. L["Lock/unlock marker (only for group players)"],
+            AF.WrapTextInColor(L["Right-click: "], "tip") .. L["Lock/unlock marker (only for players in your group)"],
             "",
             AF.WrapTextInColor(L["World Markers"], "BFI"),
             AF.WrapTextInColor(L["Left-click: "], "tip") .. L["Place marker"],
             AF.WrapTextInColor(L["Right-click: "], "tip") .. L["Clear marker"],
         },
+        "markerOptions",
+        "width,height",
+        "arrangement_complex",
+        "markerSpacing",
     }
 }
 
@@ -252,7 +256,7 @@ builder["spacing"] = function(parent)
 
     local spacing = AF.CreateSlider(pane, L["Spacing"], 150, -1, 50, 1, nil, true)
     AF.SetPoint(spacing, "LEFT", 15, 0)
-    spacing:SetAfterValueChanged(function(value)
+    spacing:SetOnValueChanged(function(value)
         pane.t.cfg.spacing = value
         AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
     end)
@@ -260,6 +264,38 @@ builder["spacing"] = function(parent)
     function pane.Load(t)
         pane.t = t
         spacing:SetValue(t.cfg.spacing)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- markerSpacing
+---------------------------------------------------------------------
+builder["markerSpacing"] = function(parent)
+    if created["markerSpacing"] then return created["markerSpacing"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_MarkerSpacing", nil, 55)
+    created["markerSpacing"] = pane
+
+    local groupSpacing = AF.CreateSlider(pane, L["Group Spacing"], 150, -1, 50, 1, nil, true)
+    AF.SetPoint(groupSpacing, "LEFT", 15, 0)
+    groupSpacing:SetOnValueChanged(function(value)
+        pane.t.cfg.groupSpacing = value
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    local markerSpacing = AF.CreateSlider(pane, L["Marker Spacing"], 150, -1, 50, 1, nil, true)
+    AF.SetPoint(markerSpacing, "TOPLEFT", groupSpacing, 185, 0)
+    markerSpacing:SetOnValueChanged(function(value)
+        pane.t.cfg.markerSpacing = value
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        groupSpacing:SetValue(t.cfg.groupSpacing)
+        markerSpacing:SetValue(t.cfg.markerSpacing)
     end
 
     return pane
@@ -426,6 +462,49 @@ builder["ready,pull"] = function(parent)
         pane.t = t
         ready:SetText(t.cfg.ready)
         pull:SetText(t.cfg.pull)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- markerOptions
+---------------------------------------------------------------------
+builder["markerOptions"] = function(parent)
+    if created["markerOptions"] then return created["markerOptions"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_MarkerOptions", nil, 51)
+    created["markerOptions"] = pane
+
+    local targetMarkers = AF.CreateCheckButton(pane, L["Target Markers"])
+    AF.SetPoint(targetMarkers, "TOPLEFT", 15, -8)
+
+    local worldMarkers = AF.CreateCheckButton(pane, L["World Markers"])
+    AF.SetPoint(worldMarkers, "TOPLEFT", targetMarkers, 185, 0)
+    worldMarkers:SetOnCheck(function(checked)
+        pane.t.cfg.worldMarkers = checked
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    local showIfSolo = AF.CreateCheckButton(pane, L["Show If Solo"])
+    AF.SetPoint(showIfSolo, "TOPLEFT", targetMarkers, "BOTTOMLEFT", 0, -7)
+    showIfSolo:SetOnCheck(function(checked)
+        pane.t.cfg.showIfSolo = checked
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    targetMarkers:SetOnCheck(function(checked)
+        pane.t.cfg.targetMarkers = checked
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+        showIfSolo:SetEnabled(checked)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        targetMarkers:SetChecked(t.cfg.targetMarkers)
+        worldMarkers:SetChecked(t.cfg.worldMarkers)
+        showIfSolo:SetChecked(t.cfg.showIfSolo)
+        showIfSolo:SetEnabled(t.cfg.targetMarkers)
     end
 
     return pane
