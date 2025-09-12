@@ -161,6 +161,21 @@
           "comments": []
         }
       ]
+    },
+    {
+      "id": "ba7ac5e0-c824-4814-a51f-984b189f9afb",
+      "title": "DataBroker",
+      "cards": [
+        {
+          "id": "da9c6407-d547-486b-994a-b39c3978e151",
+          "listId": "ba7ac5e0-c824-4814-a51f-984b189f9afb",
+          "title": "restrictPingsTo",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        }
+      ]
     }
   ],
   "archive": {

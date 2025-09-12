@@ -360,6 +360,11 @@ L["Visibility"] = "可见性"
 L["Paging"] = "翻页"
 
 ---------------------------------------------------------------------
+-- options: ui widgets
+---------------------------------------------------------------------
+L["Use default if empty"] = "留空则使用默认"
+
+---------------------------------------------------------------------
 -- options: chat
 ---------------------------------------------------------------------
 L["Chat Frame"] = "聊天框"
@@ -374,8 +379,8 @@ L["Tab Font"] = "标签字体"
 L["Assignment Mode"] = "分配模式"
 L["Click %s on the right side of a list item to enter assignment mode; click blank area to exit"] = "点击列表项右侧的 %s 进入分配模式，点击空白处退出"
 L["Assignment Area (Left)"] = "左侧分配区域"
-L["Left-click: Assign profile"] = "左键点击：分配配置"
-L["Right-click: Remove profile"] = "右键点击：移除配置"
+L["Assign profile"] = "指定配置"
+L["Remove profile"] = "移除配置"
 L["Export Profile"] = "导出配置"
 L["Export Global"] = "导出全局"
 L["Include Private Data"] = "包含隐私数据"

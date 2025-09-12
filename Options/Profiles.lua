@@ -913,7 +913,8 @@ local function CreateModuleCopyFrame()
     local function DoCopy()
         if from == "addon_default" then
             for _, module in next, modules do
-                AF.MergeExistingKeys(BFIProfile[to][module], F.GetModuleDefaults(AF.UpperFirst(module)))
+                wipe(BFIProfile[to][module])
+                AF.Merge(BFIProfile[to][module], F.GetModuleDefaults(AF.UpperFirst(module)))
             end
         else
             for _, module in next, modules do
@@ -967,8 +968,8 @@ local function CreateManagementPane()
         L["Click %s on the right side of a list item to enter assignment mode; click blank area to exit"]:format(AF.GetIconString("Link")),
         " ",
         AF.WrapTextInColor(L["Assignment Area (Left)"], "BFI"),
-        L["Left-click: Assign profile"],
-        L["Right-click: Remove profile"]
+        AF.WrapTextInColor(L["Left-click: "], "tip") .. L["Assign profile"],
+        AF.WrapTextInColor(L["Right-click: "], "tip") .. L["Remove profile"]
     )
 
     -- list
