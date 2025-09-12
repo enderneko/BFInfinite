@@ -153,13 +153,13 @@ function eventHandler:UI_SCALE_CHANGED()
 
     if type(BFIConfig.general.scale[res]) ~= "number" then
         BFIConfig.general.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
+    end
+
+    if InCombatLockdown() then
+        uiScaleUpdateRequired = true
+        eventHandler:RegisterEvent("PLAYER_REGEN_ENABLED")
     else
-        if InCombatLockdown() then
-            uiScaleUpdateRequired = true
-            eventHandler:RegisterEvent("PLAYER_REGEN_ENABLED")
-        else
-            AF.SetUIParentScale(BFIConfig.general.scale[res])
-        end
+        AF.SetUIParentScale(BFIConfig.general.scale[res])
     end
 end
 
@@ -250,9 +250,8 @@ local function AF_PLAYER_LOGIN_DELAYED()
 
     if type(BFIConfig.general.scale[res]) ~= "number" then
         BFIConfig.general.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
-    else
-        AF.SetUIParentScale(BFIConfig.general.scale[res], true)
     end
+    AF.SetUIParentScale(BFIConfig.general.scale[res], true)
 
     -- profile
     PreloadProfile()
