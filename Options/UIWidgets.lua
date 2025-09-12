@@ -41,7 +41,7 @@ local function CreateContentPane()
         b.combatProtect = data.combatProtect
     end)
     list:SetData({
-        {text = L["Ready Check"], id = "readyCheck"},
+        {text = L["Ready"] .. " & " .. L["Pull"], id = "readyPull"},
         {text = L["Markers"], id = "markers", combatProtect = true},
     })
 
@@ -86,7 +86,7 @@ LoadOptions = function(self)
         AF.SetPoint(pane, "RIGHT", scroll.scrollContent)
 
         last = pane
-        tinsert(heights, pane._height or 0)
+        tinsert(heights, pane._height or tostring(pane:GetHeight()))
     end
 
     scroll:SetContentHeights(heights, 10)
@@ -121,7 +121,7 @@ AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
         if not uiWidgetsPanel then
             CreateUIWidgetsPanel()
             CreateContentPane()
-            contentPane.list:Select("readyCheck")
+            contentPane.list:Select("readyPull")
         end
         uiWidgetsPanel:Show()
     elseif uiWidgetsPanel then

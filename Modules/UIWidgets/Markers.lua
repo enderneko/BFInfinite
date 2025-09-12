@@ -180,6 +180,8 @@ local function CreateMarkersFrame()
 
             marker:SetAttribute("type", "worldmarker")
             marker:SetAttribute("marker", WORLD_MARKER_INDEX_MAP[i])
+            marker:SetAttribute("action1", "set")
+            marker:SetAttribute("action2", "clear")
         end
     end
 end

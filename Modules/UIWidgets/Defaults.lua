@@ -63,7 +63,7 @@ local defaults = {
         position = {"BOTTOMLEFT", 1, 212},
         font = {"BFI", 12, "none", true},
     },
-    readyCheck = {
+    readyPull = {
         enabled = true,
         position = {"BOTTOM", 392, 145},
         font = {"BFI", 12, "none", true},
@@ -73,8 +73,7 @@ local defaults = {
         countdown = 7,
         width = 60,
         height = 17,
-        spacing = 3,
-        showTooltips = true,
+        spacing = 2,
     },
     markers = {
         enabled = true,
@@ -83,7 +82,7 @@ local defaults = {
         worldMarkers = true,
         width = 20,
         height = 20,
-        spacingBetweenLines = 3,
+        spacingBetweenLines = 2,
         spacingWithinLine = 2,
         arrangement = "left_to_right_then_top",
         showIfSolo = false,

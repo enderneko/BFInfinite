@@ -268,7 +268,6 @@ L["Enable Aura Tooltip"] = "启用光环鼠标提示"
 L["Icon"] = "图标"
 L["Icon (Adaptive)"] = "图标（自适应）"
 L["Auras"] = "光环"
-L["Arrangement"] = "排列方式"
 L["Show Player"] = "显示自己"
 L["Sort By Role"] = "按职责排序"
 L["Order"] = "顺序"
@@ -362,7 +361,18 @@ L["Paging"] = "翻页"
 ---------------------------------------------------------------------
 -- options: ui widgets
 ---------------------------------------------------------------------
+L["Ready"] = "就位"
+L["Pull"] = "倒数"
+L["Countdown"] = "倒计时"
 L["Use default if empty"] = "留空则使用默认"
+L["Start countdown"] = "开始倒计时"
+L["Cancel countdown"] = "取消倒计时"
+L["Target Markers"] = "目标标记"
+L["World Markers"] = "世界标记"
+L["Toggle marker"] = "设置/取消标记"
+L["Lock/unlock marker (only for group players)"] = "锁定/解锁标记（仅限队内玩家）"
+L["Place marker"] = "放置标记"
+L["Clear marker"] = "清除标记"
 
 ---------------------------------------------------------------------
 -- options: chat

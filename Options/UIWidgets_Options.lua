@@ -15,8 +15,16 @@ local options = {}
 -- settings
 ---------------------------------------------------------------------
 local settings = {
-    readyCheck = {
-        "showTooltips",
+    readyPull = {
+        {
+            AF.WrapTextInColor(L["Ready"], "BFI"),
+            AF.WrapTextInColor(L["Left-click: "], "tip") .. _G.READY_CHECK,
+            AF.WrapTextInColor(L["Right-click: "], "tip") .. _G.ROLE_POLL,
+            "",
+            AF.WrapTextInColor(L["Pull"], "BFI"),
+            AF.WrapTextInColor(L["Left-click: "], "tip") .. L["Start countdown"],
+            AF.WrapTextInColor(L["Right-click: "], "tip") .. L["Cancel countdown"],
+        },
         "width,height",
         "arrangement_simple",
         "spacing",
@@ -24,6 +32,17 @@ local settings = {
         "font",
         "ready,pull",
     },
+    markers = {
+        {
+            AF.WrapTextInColor(L["Target Markers"], "BFI"),
+            AF.WrapTextInColor(L["Left-click: "], "tip") .. L["Toggle marker"],
+            AF.WrapTextInColor(L["Right-click: "], "tip") .. L["Lock/unlock marker (only for group players)"],
+            "",
+            AF.WrapTextInColor(L["World Markers"], "BFI"),
+            AF.WrapTextInColor(L["Left-click: "], "tip") .. L["Place marker"],
+            AF.WrapTextInColor(L["Right-click: "], "tip") .. L["Clear marker"],
+        },
+    }
 }
 
 ---------------------------------------------------------------------
@@ -92,29 +111,65 @@ builder["enabled"] = function(parent)
 end
 
 ---------------------------------------------------------------------
--- showTooltips
+-- tips
 ---------------------------------------------------------------------
-builder["showTooltips"] = function(parent)
-    if created["showTooltips"] then return created["showTooltips"] end
+builder["tips"] = function(parent)
+    if created["tips"] then return created["tips"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_ShowTooltips", nil, 30)
-    created["showTooltips"] = pane
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_Tips")
+    created["tips"] = pane
+    pane:SetBorderColor("BFI")
 
-    local showTooltips = AF.CreateCheckButton(pane, L["Show Tooltips"])
-    AF.SetPoint(showTooltips, "LEFT", 15, 0)
+    local tips = AF.CreateFontString(pane)
+    AF.SetPoint(tips, "TOPLEFT", 15, -9)
+    AF.SetPoint(tips, "RIGHT", -15, 0)
+    tips:SetSpacing(5)
+    tips:SetJustifyH("LEFT")
+    tips:SetJustifyV("TOP")
 
-    showTooltips:SetOnCheck(function(checked)
-        pane.t.cfg.showTooltips = checked
-        -- AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
-    end)
+    local function UpdateHeight()
+        pane:SetHeight(tips:GetStringHeight() + 20)
 
-    function pane.Load(t)
-        pane.t = t
-        showTooltips:SetChecked(t.cfg.showTooltips)
+        if parent._contentHeights then
+            parent._contentHeights[pane.index] = tostring(pane:GetHeight()) -- update height
+            AF.ReSize(parent) -- call AF.SetScrollContentHeight
+        end
     end
+
+    function pane.SetTips(text)
+        tips:SetText(text)
+        C_Timer.After(0, UpdateHeight)
+    end
+
+    pane.Load = AF.noop
 
     return pane
 end
+
+---------------------------------------------------------------------
+-- showTooltips
+---------------------------------------------------------------------
+-- builder["showTooltips"] = function(parent)
+--     if created["showTooltips"] then return created["showTooltips"] end
+
+--     local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_ShowTooltips", nil, 30)
+--     created["showTooltips"] = pane
+
+--     local showTooltips = AF.CreateCheckButton(pane, L["Show Tooltips"])
+--     AF.SetPoint(showTooltips, "LEFT", 15, 0)
+
+--     showTooltips:SetOnCheck(function(checked)
+--         pane.t.cfg.showTooltips = checked
+--         -- AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+--     end)
+
+--     function pane.Load(t)
+--         pane.t = t
+--         showTooltips:SetChecked(t.cfg.showTooltips)
+--     end
+
+--     return pane
+-- end
 
 ---------------------------------------------------------------------
 -- restrictPingsTo
@@ -244,7 +299,7 @@ builder["arrangement_complex"] = function(parent)
     created["arrangement_complex"] = pane
 
     local arrangement = AF.CreateDropdown(pane, 200)
-    arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
+    arrangement:SetLabel(L["Arrangement"])
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
     arrangement:SetItems(AF.GetDropdownItems_ComplexOrientation())
 
@@ -271,7 +326,7 @@ builder["arrangement_simple"] = function(parent)
     created["arrangement_simple"] = pane
 
     local arrangement = AF.CreateDropdown(pane, 150)
-    arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
+    arrangement:SetLabel(L["Arrangement"])
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
     arrangement:SetItems(AF.GetDropdownItems_SimpleOrientation())
 
@@ -395,7 +450,12 @@ function F.GetUIWidgetOptions(parent, info)
     if not settings[setting] then return options end
 
     for _, option in pairs(settings[setting]) do
-        if builder[option] then
+        if type(option) == "table" then
+            local pane = builder["tips"](parent)
+            tinsert(options, pane)
+            pane:Show()
+            pane.SetTips(AF.TableToString(option, "\n"))
+        elseif builder[option] then
             local pane = builder[option](parent)
             tinsert(options, pane)
             pane:Show()
