@@ -37,7 +37,7 @@ local function CreateContentPane()
     list:SetupButtonGroup("BFI_transparent", LoadOptions, nil, nil, nil, function(b, data)
         b.ownerName = data.text
         b.cfg = E.config[data.id]
-        b:SetTextColor(b.cfg.enabled and "white" or "gray")
+        b:SetTextColor(b.cfg.enabled and "white" or "disabled")
     end)
     list:SetData({
         {text = L["Equipment Info"], id = "equipmentInfo"},
