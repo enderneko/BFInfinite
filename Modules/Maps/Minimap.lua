@@ -13,8 +13,7 @@ local minimapContainer
 
 local GameTime_GetTime = GameTime_GetTime
 local GetMinimapZoneText = GetMinimapZoneText
-local UIFrameFlash = UIFrameFlash
-local UIFrameFlashStop = UIFrameFlashStop
+
 local IsInInstance = IsInInstance
 local InGuildParty = InGuildParty
 local GetInstanceInfo = GetInstanceInfo
@@ -23,10 +22,14 @@ local GetLFGDungeonInfo = GetLFGDungeonInfo
 local GetDifficultyInfo = GetDifficultyInfo
 local GetPersonalOrdersInfo = C_CraftingOrders.GetPersonalOrdersInfo
 
+local ToggleCalendar = ToggleCalendar
+local GetCurrentCalendarTime = C_DateAndTime.GetCurrentCalendarTime
+local GetNumPendingInvites = C_Calendar.GetNumPendingInvites
+
 ---------------------------------------------------------------------
 -- expansion button
 ---------------------------------------------------------------------
-local function UpdateExpansionButton()
+local function UpdateExpansionButton(_, forceUpdateButton)
     local config = M.config.minimap.expansionButton
     if not config.enabled then
         ExpansionButton:Hide()
@@ -34,10 +37,13 @@ local function UpdateExpansionButton()
     end
 
     ExpansionButton:SetParent(Minimap)
+    if forceUpdateButton then
+        ExpansionButton:RefreshButton(true)
+    end
 
     AF.ClearPoints(ExpansionButton)
     AF.LoadWidgetPosition(ExpansionButton, config.position, minimapContainer)
-    AF.SetSize(ExpansionButton, config.width, config.height)
+    AF.SetSize(ExpansionButton, config.size, config.size)
 end
 
 ---------------------------------------------------------------------
@@ -54,7 +60,12 @@ local function UpdateMinimapWidgets(widget, config, shouldShow)
 
     AF.ClearPoints(widget)
     AF.LoadWidgetPosition(widget, config.position, minimapContainer)
-    AF.SetSize(widget, config.width, config.height)
+
+    if config.size then
+        AF.SetSize(widget, config.size, config.size)
+    elseif config.scale then
+        widget:SetScale(config.scale)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -213,30 +224,31 @@ end
 -- zone text
 ---------------------------------------------------------------------
 local function UpdateZoneText()
-    AF.SetText(Minimap.zoneText, GetMinimapZoneText(), Minimap.zoneText.length)
-    Minimap.zoneText:SetTextColor(MinimapZoneText:GetTextColor())
+    local zoneText = Minimap.zoneText
+    -- AF.SetText(Minimap.zoneText, GetMinimapZoneText(), Minimap.zoneText.length)
+    zoneText:SetText(GetMinimapZoneText())
+    zoneText:SetTextColor(MinimapZoneText:GetTextColor())
 end
 
 local function CreateZoneText()
-    -- zoneText
-    Minimap.zoneText = Minimap:CreateFontString(nil, "OVERLAY")
-    Minimap.zoneText:Hide()
-    AF.CreateFadeInOutAnimation(Minimap.zoneText, 0.25)
+    local zoneText = Minimap:CreateFontString(nil, "OVERLAY")
+    Minimap.zoneText = zoneText
+    zoneText:Hide()
+    zoneText:SetWordWrap(true)
+    zoneText:SetSpacing(5)
 
-    Minimap.onEnter = function()
-        if Minimap.zoneText.enabled then
-            Minimap.zoneText:FadeIn()
+    AF.CreateFadeInOutAnimation(zoneText, 0.25)
+
+    Minimap:HookScript("OnEnter", function()
+        if zoneText.enabled then
+            zoneText:FadeIn()
         end
-    end
-
-    Minimap.onLeave = function()
-        if Minimap.zoneText.enabled then
-            Minimap.zoneText:FadeOut()
+    end)
+    Minimap:HookScript("OnLeave", function()
+        if zoneText.enabled then
+            zoneText:FadeOut()
         end
-    end
-
-    Minimap:HookScript("OnEnter", Minimap.onEnter)
-    Minimap:HookScript("OnLeave", Minimap.onLeave)
+    end)
 end
 
 ---------------------------------------------------------------------
@@ -252,7 +264,7 @@ end
 
 local function UpdateClockSize()
     local w, h = AF.GetStringSize("00:00", unpack(M.config.minimap.clock.font))
-    Minimap.clockButton:SetSize(w + 2, h + 2)
+    Minimap.clockButton:SetSize(w + 4, h + 4)
 end
 
 local function CreateClockButton()
@@ -276,10 +288,10 @@ local function CreateClockButton()
 
     -- hook alarm
     hooksecurefunc("TimeManager_FireAlarm", function()
-        UIFrameFlash(flash, 0.5, 0.5, -1)
+        AF.FrameFlashStart(flash)
     end)
     hooksecurefunc("TimeManager_TurnOffAlarm", function()
-        UIFrameFlashStop(flash)
+        AF.FrameFlashStop(flash)
     end)
 
     -- text
@@ -491,6 +503,79 @@ local function CreateInstanceDifficulty()
 end
 
 ---------------------------------------------------------------------
+-- calendar
+---------------------------------------------------------------------
+local function CreateCalendarButton()
+    local calendar = AF.CreateIconButton(Minimap, AF.GetEmptyTexture(), nil, nil, nil, "gray", "white")
+    Minimap.calendarButton = calendar
+    AF.RemoveFromPixelUpdater(calendar)
+
+    calendar:SetOnClick(function()
+        ToggleCalendar()
+        AF.FrameFlashStop(calendar.flash)
+    end)
+
+    calendar:HookOnEnter(function()
+        if GetNumPendingInvites() ~= 0 then
+            local _, p, mult = AF.GetAutoVerticalAnchor(calendar)
+            AF.ShowTooltip(calendar, p, 0, mult * 2, {_G.GAMETIME_TOOLTIP_CALENDAR_INVITES})
+        end
+    end)
+    calendar:HookOnLeave(AF.HideTooltip)
+
+    -- shadow
+    calendar.shadow = calendar:CreateTexture(nil, "BORDER")
+    AF.SetPoint(calendar.shadow, "TOPLEFT", calendar.icon, 1, -1)
+    AF.SetPoint(calendar.shadow, "BOTTOMRIGHT", calendar.icon, 1, -1)
+    calendar.shadow:SetTexture(AF.GetEmptyTexture())
+    calendar.shadow:SetVertexColor(AF.GetColorRGB("background"))
+
+    -- flash
+    calendar.flash = calendar:CreateTexture(nil, "OVERLAY")
+    calendar.flash:SetAllPoints(calendar.icon)
+    calendar.flash:SetTexture(AF.GetEmptyTexture())
+    calendar.flash:SetVertexColor(AF.GetColorRGB("BFI"))
+    calendar.flash:Hide()
+
+    hooksecurefunc(calendar.icon, "SetTexture", function(_, ...)
+        calendar.shadow:SetTexture(...)
+        calendar.flash:SetTexture(...)
+    end)
+
+    function calendar:UpdatePixels()
+        AF.ReSize(self)
+        AF.RePoint(self)
+        AF.RePoint(self.icon)
+        AF.RePoint(self.shadow)
+        AF.RePoint(self.flash)
+    end
+
+    -- CVarCallbackRegistry:RegisterCallback("restrictCalendarInvites", UpdateCalendar, calendar)
+end
+
+local function UpdateCalendar()
+    local d = GetCurrentCalendarTime()
+    Minimap.calendarButton:SetIcon(AF.GetCalendarIcon("day", d.monthDay))
+end
+
+local function UpdateCalendarInvites()
+    local n = GetNumPendingInvites()
+    if n ~= 0 then
+        AF.FrameFlashStart(Minimap.calendarButton.flash, 1)
+    else
+        AF.FrameFlashStop(Minimap.calendarButton.flash)
+    end
+end
+
+local scheduler
+local function ScheduleCalendarUpdate()
+    M:UnregisterEvent("PLAYER_ENTERING_WORLD", ScheduleCalendarUpdate)
+    UpdateCalendar()
+    if scheduler then scheduler:Cancel() end
+    scheduler = C_Timer.NewTimer(AF.GetNextDaySeconds(true), ScheduleCalendarUpdate)
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function UpdatePixels()
@@ -506,6 +591,7 @@ local function UpdatePixels()
     AF.DefaultUpdatePixels(Minimap.clockButton)
     AF.DefaultUpdatePixels(Minimap.instanceDifficultyFrame)
     UpdateClockSize()
+    Minimap.calendarButton:UpdatePixels()
 end
 
 local function InitMinimap()
@@ -523,8 +609,7 @@ local function InitMinimap()
     Minimap.Layout = AF.noop -- MinimapCluster.IndicatorFrame
     Minimap:SetMaskTexture(AF.GetPlainTexture())
     Minimap:SetParent(minimapContainer)
-    AF.SetPoint(Minimap, "TOPLEFT", 1, -1)
-    AF.SetPoint(Minimap, "BOTTOMRIGHT", -1, 1)
+    AF.SetOnePixelInside(Minimap)
 
     -- Minimap frames
     local frames = {
@@ -564,10 +649,10 @@ local function UpdateMinimap(_, module, which)
     local config = M.config.minimap
 
     if minimapContainer then
-        minimapContainer.enabled = config.enabled -- for mover
+        minimapContainer.enabled = config.general.enabled -- for mover
     end
 
-    if not config.enabled then return end
+    if not config.general.enabled then return end
 
     if not init then
         init = true
@@ -576,24 +661,37 @@ local function UpdateMinimap(_, module, which)
         CreateZoneText()
         CreateClockButton()
         CreateInstanceDifficulty()
+        CreateCalendarButton()
     end
 
-    AF.UpdateMoverSave(minimapContainer, config.position)
+    AF.UpdateMoverSave(minimapContainer, config.general.position)
 
     -- minimap
     AF.ClearPoints(minimapContainer)
-    AF.LoadPosition(minimapContainer, config.position)
-    AF.SetSize(minimapContainer, config.width, config.height)
+    AF.LoadPosition(minimapContainer, config.general.position)
+    AF.SetSize(minimapContainer, config.general.size, config.general.size)
     Minimap:SetSize(Minimap:GetSize()) --! for ping
+    Minimap:SetZoom(0)
 
     -- expansion button
-    UpdateExpansionButton()
+    UpdateExpansionButton(nil, true)
 
     -- tracking button
     UpdateMinimapWidgets(MinimapCluster.Tracking, config.trackingButton, true)
 
     -- calendar
-    UpdateMinimapWidgets(GameTimeFrame, config.calendar, true)
+    -- UpdateMinimapWidgets(GameTimeFrame, config.calendar2, true)
+    UpdateMinimapWidgets(Minimap.calendarButton, config.calendar, true)
+    if config.calendar.enabled then
+        UpdateCalendarInvites()
+        ScheduleCalendarUpdate()
+        M:RegisterEvent("PLAYER_ENTERING_WORLD", ScheduleCalendarUpdate, UpdateCalendarInvites)
+        M:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES", UpdateCalendarInvites)
+    else
+        M:UnregisterEvent("PLAYER_ENTERING_WORLD", ScheduleCalendarUpdate, UpdateCalendarInvites)
+        M:UnregisterEvent("CALENDAR_UPDATE_PENDING_INVITES", UpdateCalendarInvites)
+        AF.FrameFlashStop(Minimap.calendarButton.flash)
+    end
 
     -- clock
     if config.clock.enabled then
@@ -614,11 +712,12 @@ local function UpdateMinimap(_, module, which)
         end
 
         Minimap.clockButton:Show()
-        M:RegisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
-        UpdateClockSize()
+        -- M:RegisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
+        RunNextFrame(UpdateClockSize)
+        -- UpdateClockSize()
     else
         Minimap.clockButton:Hide()
-        M:UnregisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
+        -- M:UnregisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
     end
 
     -- mail frame
@@ -635,9 +734,9 @@ local function UpdateMinimap(_, module, which)
     -- zone text
     Minimap.zoneText.enabled = config.zoneText.enabled
     if config.zoneText.enabled then
-        Minimap.zoneText.length = config.zoneText.length
         AF.SetFont(Minimap.zoneText, unpack(config.zoneText.font))
         AF.LoadTextPosition(Minimap.zoneText, config.zoneText.position)
+        AF.SetWidth(Minimap.zoneText, config.general.size * config.zoneText.length)
         M:RegisterEvent("PLAYER_ENTERING_WORLD", UpdateZoneText)
         M:RegisterEvent("ZONE_CHANGED_NEW_AREA", UpdateZoneText)
         M:RegisterEvent("ZONE_CHANGED_INDOORS", UpdateZoneText)

@@ -12,6 +12,8 @@
     <Script file="ActionBars.lua"/>
     <Script file="UIWidgets_Options.lua"/>
     <Script file="UIWidgets.lua"/>
+    <Script file="Maps_Options.lua"/>
+    <Script file="Maps.lua"/>
     <Script file="Chat.lua"/>
     <Script file="Profiles.lua"/>
     <Script file="About.lua"/>

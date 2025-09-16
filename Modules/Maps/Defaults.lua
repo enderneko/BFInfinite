@@ -7,34 +7,35 @@ local AF = _G.AbstractFramework
 
 local defaults = {
     minimap = {
-        enabled = true,
-        position = {"BOTTOM", -410, 1},
-        width = 150,
-        height = 150,
+        general = {
+            enabled = true,
+            position = {"BOTTOM", -410, 1},
+            size = 150,
+        },
         expansionButton = {
             enabled = true,
             position = {"BOTTOMLEFT", "BOTTOMLEFT", -2, -2},
-            scale = 1,
-            width = 35,
-            height = 35,
+            size = 35,
         },
         trackingButton = {
             enabled = true,
-            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0},
-            width = 20,
-            height = 20,
+            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 20},
+            scale = 1,
         },
         mailFrame = {
             enabled = true,
-            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -20, 0},
-            width = 20,
-            height = 20,
+            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 40},
+            scale = 1,
         },
         craftingOrderFrame = {
             enabled = true,
-            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 20},
-            width = 20,
-            height = 20,
+            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 60},
+            scale = 1,
+        },
+        calendar = {
+            enabled = true,
+            position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0},
+            size = 19,
         },
         zoneText = {
             enabled = true,
@@ -53,12 +54,6 @@ local defaults = {
             anchor = "TOPLEFT",
             bgColor = AF.GetColorTable("black", 0.27),
             fadeOut = true,
-        },
-        calendar = {
-            enabled = true,
-            position = {"RIGHT", "RIGHT", 0, 0},
-            width = 19,
-            height = 18,
         },
         clock = {
             enabled = true,
@@ -97,4 +92,17 @@ end)
 
 function M.GetDefaults()
     return AF.Copy(defaults)
+end
+
+function M.ResetToDefaults(which, sub)
+    if not which then
+        wipe(M.config)
+        AF.Merge(M.config, defaults)
+    elseif not sub then
+        wipe(M.config[which])
+        AF.Merge(M.config[which], defaults[which])
+    else
+        wipe(M.config[which][sub])
+        AF.Merge(M.config[which][sub], defaults[which][sub])
+    end
 end
