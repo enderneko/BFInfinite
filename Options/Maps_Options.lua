@@ -440,7 +440,7 @@ builder["arrangement"] = function(parent)
         AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
     end)
 
-    local spacing = AF.CreateSlider(pane, L["Y Spacing"], 150, -1, 50, 1, nil, true)
+    local spacing = AF.CreateSlider(pane, L["Spacing"], 150, -1, 50, 1, nil, true)
     AF.SetPoint(spacing, "TOPLEFT", arrangement, "BOTTOMLEFT", 0, -25)
     spacing:SetAfterValueChanged(function(value)
         pane.t.cfg.spacing = value
