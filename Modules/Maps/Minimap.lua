@@ -5,6 +5,7 @@ local M = BFI.modules.Maps
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local GameTooltip = _G.GameTooltip
 local MinimapCluster = _G.MinimapCluster
 local Minimap = _G.Minimap
 local ExpansionButton = _G.ExpansionLandingPageMinimapButton
@@ -12,7 +13,11 @@ local GameTimeFrame = _G.GameTimeFrame
 local minimapContainer
 
 local GameTime_GetTime = GameTime_GetTime
+
+local GetDifficultyName = DifficultyUtil.GetDifficultyName
+
 local GetMinimapZoneText = GetMinimapZoneText
+local GetZonePVPInfo = C_PvP.GetZonePVPInfo
 
 local IsInInstance = IsInInstance
 local InGuildParty = InGuildParty
@@ -72,12 +77,12 @@ end
 -- minimap addon buttons
 ---------------------------------------------------------------------
 -- TODO: AddonCompartmentFrame
-local addonButtonHolder
+local addonButtonTray
 
-local function GetPositionArgs_HolderFrame()
+local function GetPositionArgs_TrayFrame()
     local p, x, y
-    local anchor = addonButtonHolder.config.anchor
-    local spacing = addonButtonHolder.config.spacing
+    local anchor = M.config.minimap.addonButtonTray.anchor
+    local spacing = M.config.minimap.addonButtonTray.spacing
 
     if anchor == "TOPLEFT" then
         p = "BOTTOMLEFT"
@@ -109,7 +114,7 @@ local function GetPositionArgs_HolderFrame()
 end
 
 local function UpdateAddonButtons()
-    if not addonButtonHolder.init then return end
+    if not addonButtonTray.init then return end
 
     -- create
     local name
@@ -118,7 +123,7 @@ local function UpdateAddonButtons()
         if name and strfind(name, "^LibDBIcon10_") then
             if not child.isHandled then
                 child.isHandled = true
-                tinsert(addonButtonHolder.buttons, child)
+                tinsert(addonButtonTray.buttons, child)
 
                 for _, obj in pairs({child:GetRegions()}) do
                     if obj ~= child.icon then
@@ -128,7 +133,7 @@ local function UpdateAddonButtons()
 
                 child:SetScript("OnDragStart", nil)
                 child:SetScript("OnDragStop", nil)
-                child:SetParent(addonButtonHolder.frame)
+                child:SetParent(addonButtonTray.frame)
                 child:RegisterForDrag()
                 AF.SetOnePixelInside(child.icon, child)
                 AF.ApplyDefaultBackdropWithColors(child)
@@ -141,62 +146,71 @@ local function UpdateAddonButtons()
     end
 
     -- check visibility
-    wipe(addonButtonHolder.shownButtons)
-    for _, b in pairs(addonButtonHolder.buttons) do
+    wipe(addonButtonTray.shownButtons)
+    for _, b in pairs(addonButtonTray.buttons) do
         if b:IsShown() then
-            tinsert(addonButtonHolder.shownButtons, b)
+            tinsert(addonButtonTray.shownButtons, b)
         end
     end
 
     -- re-arrange
-    local p, rp, np, x, y, nx, ny = AF.GetAnchorPoints_Complex(addonButtonHolder.config.orientation, addonButtonHolder.config.spacing)
-    for i, b in pairs(addonButtonHolder.shownButtons) do
+    local config = M.config.minimap.addonButtonTray
+    local p, rp, np, x, y, nx, ny = AF.GetAnchorPoints_Complex(config.arrangement, config.spacing)
+    for i, b in pairs(addonButtonTray.shownButtons) do
         AF.ClearPoints(b)
-        AF.SetSize(b, addonButtonHolder.config.width, addonButtonHolder.config.height)
+        AF.SetSize(b, config.size, config.size)
 
         if i == 1 then
             AF.SetPoint(b, p)
-        elseif i % addonButtonHolder.config.numPerLine == 1 then
-            AF.SetPoint(b, p, addonButtonHolder.shownButtons[i - addonButtonHolder.config.numPerLine], np, nx, ny)
+        elseif config.numPerLine == 1 or i % config.numPerLine == 1 then
+            AF.SetPoint(b, p, addonButtonTray.shownButtons[i - config.numPerLine], np, nx, ny)
         else
-            AF.SetPoint(b, p, addonButtonHolder.shownButtons[i - 1], rp, x, y)
+            AF.SetPoint(b, p, addonButtonTray.shownButtons[i - 1], rp, x, y)
         end
     end
 
-    local num = #addonButtonHolder.shownButtons
-    AF.SetGridSize(addonButtonHolder.frame, addonButtonHolder.config.width, addonButtonHolder.config.height,
-        addonButtonHolder.config.spacing, addonButtonHolder.config.spacing,
-        min(addonButtonHolder.config.numPerLine, num), ceil(num / addonButtonHolder.config.numPerLine)
+    local num = #addonButtonTray.shownButtons
+    AF.SetGridSize(addonButtonTray.frame, config.size, config.size,
+        config.spacing, config.spacing,
+        min(config.numPerLine, num), ceil(num / config.numPerLine)
     )
 end
 
-local function CreateAddonButtonHolder()
+local function CreateAddonButtonTray()
     local lib = LibStub("LibDBIcon-1.0", true)
     if not lib then return end
 
     lib:RegisterCallback("LibDBIcon_IconCreated", UpdateAddonButtons)
 
     -- button
-    addonButtonHolder = AF.CreateButton(Minimap, "", "BFI_hover", 20, 20)
-    -- addonButtonHolder:Hide()
-    addonButtonHolder:SetTexture(AF.GetIcon("Menu", BFI.name), {20, 20})
-    AF.RemoveFromPixelUpdater(addonButtonHolder)
-    AF.CreateFadeInOutAnimation(addonButtonHolder, 0.25, true)
+    addonButtonTray = AF.CreateButton(Minimap, "", "BFI_hover", 20, 20)
+    AF.RemoveFromPixelUpdater(addonButtonTray)
+    AF.CreateFadeInOutAnimation(addonButtonTray, 0.25, true)
 
-    addonButtonHolder.buttons = {}
-    addonButtonHolder.shownButtons = {}
+    addonButtonTray:SetTexture(AF.GetIcon("Menu3"))
+    addonButtonTray:EnablePushEffect(false)
+    AF.SetOnePixelInside(addonButtonTray.texture, addonButtonTray)
+    -- addonButtonTray:SetOnMouseDown(function()
+    --     AF.SetSize(addonButtonTray.texture, M.config.minimap.addonButtonTray.size - 2, M.config.minimap.addonButtonTray.size - 2)
+    -- end)
+    -- addonButtonTray:SetOnMouseUp(function()
+    --     AF.SetSize(addonButtonTray.texture, M.config.minimap.addonButtonTray.size, M.config.minimap.addonButtonTray.size)
+    -- end)
+
+    addonButtonTray.buttons = {}
+    addonButtonTray.shownButtons = {}
 
     -- container frame
-    local frame = CreateFrame("Frame", nil, addonButtonHolder)
-    addonButtonHolder.frame = frame
-    AF.SetPoint(frame, "BOTTOMLEFT", addonButtonHolder, "TOPLEFT", 0, 1)
+    local frame = CreateFrame("Frame", nil, addonButtonTray)
+    addonButtonTray.frame = frame
+    AF.SetPoint(frame, "BOTTOMLEFT", addonButtonTray, "TOPLEFT", 0, 1)
     frame:Hide()
 
     frame.texture = frame:CreateTexture(nil, "ARTWORK")
     frame.texture:SetAllPoints()
 
     -- scripts
-    addonButtonHolder:SetScript("OnClick", function()
+    addonButtonTray:SetScript("OnClick", function()
         if frame:IsShown() then
             frame:Hide()
         else
@@ -205,29 +219,48 @@ local function CreateAddonButtonHolder()
         end
     end)
 
-    addonButtonHolder:HookScript("OnEnter", function()
-        if not frame:IsShown() and addonButtonHolder.FadeIn and addonButtonHolder.config.fadeOut then
-            addonButtonHolder:FadeIn()
+    addonButtonTray:HookScript("OnEnter", function()
+        if M.config.minimap.addonButtonTray.enabled and not frame:IsShown() and not M.config.minimap.addonButtonTray.alwaysShow then
+            addonButtonTray:FadeIn()
         end
     end)
 
-    addonButtonHolder:HookScript("OnLeave", function()
-        if not frame:IsShown() and addonButtonHolder.config.fadeOut then
-            addonButtonHolder:FadeOut()
+    addonButtonTray:HookScript("OnLeave", function()
+        if M.config.minimap.addonButtonTray.enabled and not frame:IsShown() and not M.config.minimap.addonButtonTray.alwaysShow then
+            addonButtonTray:FadeOut()
         end
     end)
 
-    addonButtonHolder.init = true
+    addonButtonTray.init = true
 end
 
 ---------------------------------------------------------------------
 -- zone text
 ---------------------------------------------------------------------
+-- Minimap_Update: Interface\AddOns\Blizzard_Minimap\Mainline\Minimap.lua
+local function GetZoneTextColor()
+    local pvpType = GetZonePVPInfo()
+    if pvpType == "sanctuary" then
+        return 0.41, 0.8, 0.94
+    elseif pvpType == "arena" then
+        return 1.0, 0.1, 0.1
+    elseif pvpType == "friendly" then
+        return 0.1, 1.0, 0.1
+    elseif pvpType == "hostile" then
+        return 1.0, 0.1, 0.1
+    elseif pvpType == "contested" then
+        return 1.0, 0.7, 0.0
+    else
+        return NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b
+    end
+end
+
 local function UpdateZoneText()
     local zoneText = Minimap.zoneText
     -- AF.SetText(Minimap.zoneText, GetMinimapZoneText(), Minimap.zoneText.length)
     zoneText:SetText(GetMinimapZoneText())
-    zoneText:SetTextColor(MinimapZoneText:GetTextColor())
+    -- zoneText:SetTextColor(MinimapZoneText:GetTextColor()) -- not reliable
+    zoneText:SetTextColor(GetZoneTextColor())
 end
 
 local function CreateZoneText()
@@ -236,16 +269,16 @@ local function CreateZoneText()
     zoneText:Hide()
     zoneText:SetWordWrap(true)
     zoneText:SetSpacing(5)
-
     AF.CreateFadeInOutAnimation(zoneText, 0.25)
 
+
     Minimap:HookScript("OnEnter", function()
-        if zoneText.enabled then
+        if M.config.minimap.zoneText.enabled and not M.config.minimap.zoneText.alwaysShow then
             zoneText:FadeIn()
         end
     end)
     Minimap:HookScript("OnLeave", function()
-        if zoneText.enabled then
+        if M.config.minimap.zoneText.enabled and not M.config.minimap.zoneText.alwaysShow then
             zoneText:FadeOut()
         end
     end)
@@ -342,13 +375,13 @@ local DIFFICULTY_INFO = {
     [4] = "normal", -- 25 Player, raid
     [5] = "heroic", -- 10 Player (Heroic), raid
     [6] = "heroic", -- 25 Player (Heroic), raid
-    [7] = "lookingForRaid", -- Looking For Raid, raid
-    [8] = "mythicKeystone", -- Mythic Keystone, party
+    [7] = "raidFinder", -- Looking For Raid, raid
+    [8] = "mythicPlus", -- Mythic Keystone, party
     [9] = "normal", -- 40 Player, raid
     [14] = "normal", -- Normal, raid
     [15] = "heroic", -- Heroic, raid
     [16] = "mythic", -- Mythic, raid
-    [17] = "lookingForRaid", -- Looking For Raid, raid
+    [17] = "raidFinder", -- Looking For Raid, raid
     [18] = "event", -- Event, raid
     [19] = "event", -- Event, party
     [20] = "event", -- Event Scenario, scenario
@@ -357,8 +390,9 @@ local DIFFICULTY_INFO = {
     [30] = "event", -- Event, scenario
     [33] = "timewalking", -- Timewalking, raid
     [151] = "timewalking", -- Looking For Raid, Timewalking, raid
-    [205] = "normal", -- ?
+    [205] = "followerDungeon",
     [208] = "delve",
+    [220] = "raidStory",
 }
 
 local function UpdateInstanceDifficulty(_, event, arg)
@@ -370,7 +404,7 @@ local function UpdateInstanceDifficulty(_, event, arg)
     if IsInInstance() then
         local _, instanceType, difficulty, _, _, _, _, _, groupSize = GetInstanceInfo()
 
-        local config = Minimap.instanceDifficultyFrame.config
+        local config = M.config.minimap.instanceDifficulty
 
         if difficulty and DIFFICULTY_INFO[difficulty] then
             groupSize = GetString(Minimap.instanceDifficultyFrame.isGuildGroup and config.guildColor or config.normalColor, groupSize)
@@ -390,40 +424,6 @@ local function UpdateInstanceDifficulty(_, event, arg)
         else
             Minimap.instanceDifficultyFrame:Hide()
         end
-
-        -- if difficulty == 1 or difficulty == 3 or difficulty == 4 or difficulty == 9 or difficulty == 12 or difficulty == 14 or difficulty == 205 then
-        --     -- Normal
-        --     difficulty = GetString(config.types.normal)
-        -- elseif difficulty == 2 or difficulty == 5 or difficulty == 6 or difficulty == 11 or difficulty == 15 then
-        --     -- Heroic
-        --     difficulty = GetString(config.types.heroic)
-        -- elseif difficulty == 16 or difficulty == 23 then
-        --     -- Mythic
-        --     difficulty = GetString(config.types.mythic)
-        -- elseif difficulty == 7 or difficulty == 17 then
-        --     -- Looking For Raid
-        --     difficulty = GetString(config.types.lookingForRaid)
-        -- elseif difficulty == 8 then
-        --     -- Mythic Keystone
-        --     difficulty = GetString(config.types.mythicKeystone)
-        -- elseif difficulty == 24 then
-        --     -- Timewalking
-        --     difficulty = GetString(config.types.timewalking)
-        -- elseif difficulty == 18 or difficulty == 19 or difficulty == 20 then
-        --     -- Event
-        --     difficulty = GetString(config.types.event)
-        -- else
-        --     -- TODO: delves
-        --     groupSize = nil
-        --     difficulty = nil
-        -- end
-
-        -- if groupSize and difficulty then
-        --     Minimap.instanceDifficultyFrame.text:SetText(groupSize .. difficulty)
-        --     Minimap.instanceDifficultyFrame:Show()
-        -- else
-        --     Minimap.instanceDifficultyFrame:Hide()
-        -- end
     else
         Minimap.instanceDifficultyFrame:Hide()
     end
@@ -440,6 +440,13 @@ local function UpdateGuild()
     end
 end
 
+local DUNGEON_DIFFICULTY_BANNER_TOOLTIP = _G.DUNGEON_DIFFICULTY_BANNER_TOOLTIP
+local GUILD_GROUP = _G.GUILD_GROUP
+local GUILD_ACHIEVEMENTS_ELIGIBLE_MINXP = _G.GUILD_ACHIEVEMENTS_ELIGIBLE_MINXP
+local GUILD_ACHIEVEMENTS_ELIGIBLE_MAXXP = _G.GUILD_ACHIEVEMENTS_ELIGIBLE_MAXXP
+local GUILD_ACHIEVEMENTS_ELIGIBLE = _G.GUILD_ACHIEVEMENTS_ELIGIBLE
+local PLAYER_DIFFICULTY3 = _G.PLAYER_DIFFICULTY3
+
 local function CreateInstanceDifficulty()
     local instanceDifficultyFrame = CreateFrame("Frame", "BFI_InstanceDifficultyFrame", Minimap)
     Minimap.instanceDifficultyFrame = instanceDifficultyFrame
@@ -448,31 +455,32 @@ local function CreateInstanceDifficulty()
     instanceDifficultyFrame.text = instanceDifficultyFrame:CreateFontString(nil, "OVERLAY")
     instanceDifficultyFrame.text:SetPoint("CENTER")
 
-    local classcolor = "|c" .. RAID_CLASS_COLORS[UnitClassBase("player")].colorStr
+    instanceDifficultyFrame.tooltip = {
+        enabled = true,
+        anchorTo = "self_adaptive",
+    }
 
     -- NOTE: GuildInstanceDifficultyMixin.OnEnter
     -- instanceDifficultyFrame:SetScript("OnEnter", GuildInstanceDifficultyMixin.OnEnter)
     instanceDifficultyFrame:SetScript("OnEnter", function(self)
-        local instanceName, instanceType, difficulty, _, maxPlayers, _, _, _, instanceGroupSize, lfgID = GetInstanceInfo()
+        local instanceName, instanceType, difficulty, difficultyName, maxPlayers, _, _, _, instanceGroupSize, lfgID = GetInstanceInfo()
         if instanceType ~= "party" and instanceType ~= "raid" then return end
 
-        local difficultyName = DifficultyUtil.GetDifficultyName(difficulty)
-        if not difficultyName then return end
-
+        difficultyName = GetDifficultyName(difficulty) or difficultyName
         local isLFR = select(8, GetDifficultyInfo(difficulty))
 
-        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 3)
+        GameTooltip_SetDefaultAnchor(GameTooltip, self)
 
         if isLFR and lfgID then
             local name = GetLFGDungeonInfo(lfgID)
-            GameTooltip_SetTitle(GameTooltip, RAID_FINDER)
+            GameTooltip_SetTitle(GameTooltip, PLAYER_DIFFICULTY3)
             GameTooltip_AddNormalLine(GameTooltip, name)
-            -- GameTooltip_AddNormalLine(GameTooltip, DUNGEON_DIFFICULTY_BANNER_TOOLTIP_PLAYER_COUNT:format(instanceGroupSize, maxPlayers))
+            -- GameTooltip_AddNormalLine(GameTooltip, _G.DUNGEON_DIFFICULTY_BANNER_TOOLTIP_PLAYER_COUNT:format(instanceGroupSize, maxPlayers))
 
-        else
+        elseif difficultyName then
             GameTooltip_SetTitle(GameTooltip, DUNGEON_DIFFICULTY_BANNER_TOOLTIP:format(difficultyName))
             GameTooltip_AddNormalLine(GameTooltip, instanceName)
-            -- GameTooltip_AddNormalLine(GameTooltip, DUNGEON_DIFFICULTY_BANNER_TOOLTIP_PLAYER_COUNT:format(instanceGroupSize, maxPlayers))
+            -- GameTooltip_AddNormalLine(GameTooltip, _G.DUNGEON_DIFFICULTY_BANNER_TOOLTIP_PLAYER_COUNT:format(instanceGroupSize, maxPlayers))
 
             if self.isGuildGroup then
                 local guildName = GetGuildInfo("player")
@@ -583,9 +591,9 @@ local function UpdatePixels()
     AF.DefaultUpdatePixels(Minimap)
     AF.DefaultUpdatePixels(ExpansionButton)
     AF.DefaultUpdatePixels(MinimapCluster.Tracking)
-    AF.DefaultUpdatePixels(addonButtonHolder)
-    AF.DefaultUpdatePixels(addonButtonHolder.frame)
-    for _, b in pairs(addonButtonHolder.buttons) do
+    AF.DefaultUpdatePixels(addonButtonTray)
+    AF.DefaultUpdatePixels(addonButtonTray.frame)
+    for _, b in pairs(addonButtonTray.buttons) do
         AF.DefaultUpdatePixels(b)
     end
     AF.DefaultUpdatePixels(Minimap.clockButton)
@@ -657,7 +665,7 @@ local function UpdateMinimap(_, module, which)
     if not init then
         init = true
         InitMinimap()
-        CreateAddonButtonHolder()
+        CreateAddonButtonTray()
         CreateZoneText()
         CreateClockButton()
         CreateInstanceDifficulty()
@@ -695,17 +703,18 @@ local function UpdateMinimap(_, module, which)
 
     -- clock
     if config.clock.enabled then
-        AF.SetFont(Minimap.clockButton.text, unpack(config.clock.font))
+        AF.SetFont(Minimap.clockButton.text, config.clock.font)
         AF.LoadWidgetPosition(Minimap.clockButton, config.clock.position)
+        Minimap.clockButton.text:SetTextColor(AF.UnpackColor(config.clock.color))
 
         -- flash
         local anchor = config.clock.position[1]
         local flashTexture = Minimap.clockButton.flash.texture
-        if strfind(anchor, "^TOP") then
+        if anchor:find("^TOP") then
             flashTexture:SetGradient("VERTICAL", CreateColor(AF.GetColorRGB("none")), CreateColor(AF.GetColorRGB("BFI")))
-        elseif strfind(anchor, "LEFT$") then
+        elseif anchor:find("LEFT$") then
             flashTexture:SetGradient("HORIZONTAL", CreateColor(AF.GetColorRGB("BFI")), CreateColor(AF.GetColorRGB("none")))
-        elseif strfind(anchor, "RIGHT$") then
+        elseif anchor:find("RIGHT$") then
             flashTexture:SetGradient("HORIZONTAL", CreateColor(AF.GetColorRGB("none")), CreateColor(AF.GetColorRGB("BFI")))
         else -- BOTTOM / CENTER
             flashTexture:SetGradient("VERTICAL", CreateColor(AF.GetColorRGB("BFI")), CreateColor(AF.GetColorRGB("none")))
@@ -732,10 +741,9 @@ local function UpdateMinimap(_, module, which)
     MiniMapCraftingOrderIcon:SetPoint("CENTER")
 
     -- zone text
-    Minimap.zoneText.enabled = config.zoneText.enabled
     if config.zoneText.enabled then
-        AF.SetFont(Minimap.zoneText, unpack(config.zoneText.font))
-        AF.LoadTextPosition(Minimap.zoneText, config.zoneText.position)
+        AF.SetFont(Minimap.zoneText, config.zoneText.font)
+        AF.LoadTextPosition(Minimap.zoneText, config.zoneText.position, Minimap)
         AF.SetWidth(Minimap.zoneText, config.general.size * config.zoneText.length)
         M:RegisterEvent("PLAYER_ENTERING_WORLD", UpdateZoneText)
         M:RegisterEvent("ZONE_CHANGED_NEW_AREA", UpdateZoneText)
@@ -743,7 +751,11 @@ local function UpdateMinimap(_, module, which)
         M:RegisterEvent("ZONE_CHANGED", UpdateZoneText)
         UpdateZoneText()
         Minimap.zoneText:Show()
-        Minimap.zoneText:FadeOut()
+        if config.zoneText.alwaysShow then
+            Minimap.zoneText:FadeIn()
+        else
+            Minimap.zoneText:FadeOut()
+        end
     else
         M:UnregisterEvent("PLAYER_ENTERING_WORLD", UpdateZoneText)
         M:UnregisterEvent("ZONE_CHANGED_NEW_AREA", UpdateZoneText)
@@ -754,15 +766,15 @@ local function UpdateMinimap(_, module, which)
 
     -- dungeon difficulty
     if config.instanceDifficulty.enabled then
-        Minimap.instanceDifficultyFrame.config = config.instanceDifficulty
         AF.LoadWidgetPosition(Minimap.instanceDifficultyFrame, config.instanceDifficulty.position)
-        AF.SetFont(Minimap.instanceDifficultyFrame.text, unpack(config.instanceDifficulty.font))
+        AF.SetFont(Minimap.instanceDifficultyFrame.text, config.instanceDifficulty.font)
         M:RegisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty)
         M:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", UpdateInstanceDifficulty)
         M:RegisterEvent("INSTANCE_GROUP_SIZE_CHANGED", UpdateInstanceDifficulty)
         M:RegisterEvent("UPDATE_INSTANCE_INFO", UpdateInstanceDifficulty)
         M:RegisterEvent("PLAYER_GUILD_UPDATE", UpdateGuild)
         Minimap.instanceDifficultyFrame:Show()
+        UpdateInstanceDifficulty()
     else
         M:UnregisterEvent("GUILD_PARTY_STATE_UPDATED", UpdateInstanceDifficulty)
         M:UnregisterEvent("PLAYER_DIFFICULTY_CHANGED", UpdateInstanceDifficulty)
@@ -772,29 +784,30 @@ local function UpdateMinimap(_, module, which)
         Minimap.instanceDifficultyFrame:Hide()
     end
 
-    -- minimap button holder
-    addonButtonHolder.enabled = config.addonButtonHolder.enabled
-    if config.addonButtonHolder.enabled then
-        addonButtonHolder.config = config.addonButtonHolder
-
-        addonButtonHolder:Show()
-        if addonButtonHolder.config.fadeOut then
-            addonButtonHolder:FadeOut()
-        else
-            addonButtonHolder:FadeIn()
+    -- minimap button tray
+    addonButtonTray.enabled = config.addonButtonTray.enabled
+    if config.addonButtonTray.enabled then
+        addonButtonTray:Show()
+        if not addonButtonTray.frame:IsShown() then
+            if config.addonButtonTray.alwaysShow then
+                addonButtonTray:FadeIn()
+            else
+                addonButtonTray:FadeOut()
+            end
         end
 
-        AF.LoadWidgetPosition(addonButtonHolder, config.addonButtonHolder.position, Minimap)
-        AF.SetSize(addonButtonHolder, config.addonButtonHolder.width, config.addonButtonHolder.height)
+        AF.LoadWidgetPosition(addonButtonTray, config.addonButtonTray.position, Minimap)
+        AF.SetSize(addonButtonTray, config.addonButtonTray.size, config.addonButtonTray.size)
+        -- AF.SetSize(addonButtonTray.texture, config.addonButtonTray.size, config.addonButtonTray.size)
 
-        local p, rp, x, y = GetPositionArgs_HolderFrame()
-        AF.ClearPoints(addonButtonHolder.frame)
-        AF.SetPoint(addonButtonHolder.frame, p, addonButtonHolder, rp, x, y)
-        addonButtonHolder.frame.texture:SetColorTexture(AF.UnpackColor(config.addonButtonHolder.bgColor))
+        local p, rp, x, y = GetPositionArgs_TrayFrame()
+        AF.ClearPoints(addonButtonTray.frame)
+        AF.SetPoint(addonButtonTray.frame, p, addonButtonTray, rp, x, y)
+        addonButtonTray.frame.texture:SetColorTexture(AF.UnpackColor(config.addonButtonTray.bgColor))
 
         UpdateAddonButtons()
     else
-        addonButtonHolder:Hide()
+        addonButtonTray:Hide()
     end
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateMinimap)

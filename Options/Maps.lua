@@ -41,7 +41,7 @@ local function CreateContentPane()
     AF.SetPoint(contentPane, "BOTTOMRIGHT", -15, 15)
 
     -- list
-    local list = AF.CreateScrollList(contentPane, nil, 0, 0, 28, 20, -1)
+    local list = AF.CreateScrollList(contentPane, nil, 0, 0, 26, 20, -1)
     contentPane.list = list
     list:SetPoint("TOPLEFT")
     AF.SetWidth(list, 150)
@@ -79,12 +79,15 @@ LoadList = function(which)
     if which == "minimap" then
         list:SetData({
             {text = L["General"], id = "general_minimap"},
-            {text = L["Expansion Button"], id = "expansionButton"},
-            {text = L["Tracking Button"], id = "trackingButton"},
             {text = _G.MAIL_LABEL, id = "mailFrame"},
             {text = L["Crafting Order"], id = "craftingOrderFrame"},
             {text = L["Calendar"], id = "calendar"},
+            {text = _G.TIMEMANAGER_TITLE, id = "clock"},
             {text = L["Zone Text"], id = "zoneText"},
+            {text = L["Instance Difficulty"], id = "instanceDifficulty"},
+            {text = L["Expansion Button"], id = "expansionButton"},
+            {text = L["Tracking Button"], id = "trackingButton"},
+            {text = L["Addon Button Tray"], id = "addonButtonTray"},
         })
         list:Select(minimapLast or "general_minimap")
     else

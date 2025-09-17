@@ -39,10 +39,27 @@ local settings = {
         "position",
     },
     zoneText = {
+        "alwaysShow",
         "length",
         "position",
         "font",
-    }
+    },
+    clock = {
+        "position",
+        "font",
+    },
+    addonButtonTray = {
+        "alwaysShow",
+        "bgColor",
+        "size",
+        "position",
+        "arrangement",
+    },
+    instanceDifficulty = {
+        "position",
+        "font",
+        "difficultyColors",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -132,6 +149,59 @@ builder["enabled"] = function(parent)
         pane.t = t
         UpdateColor(t.cfg.enabled)
         enabled:SetChecked(t.cfg.enabled)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- alwaysShow
+---------------------------------------------------------------------
+builder["alwaysShow"] = function(parent)
+    if created["alwaysShow"] then return created["alwaysShow"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_MapOption_AlwaysShow", nil, 30)
+    created["alwaysShow"] = pane
+
+    local alwaysShow = AF.CreateCheckButton(pane, L["Always Show"])
+    AF.SetPoint(alwaysShow, "LEFT", 15, 0)
+
+    alwaysShow:SetOnCheck(function(checked)
+        pane.t.cfg.alwaysShow = checked
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        alwaysShow:SetChecked(t.cfg.alwaysShow)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- bgColor
+---------------------------------------------------------------------
+builder["bgColor"] = function(parent)
+    if created["bgColor"] then return created["bgColor"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_MapOption_bgColor", nil, 30)
+    created["bgColor"] = pane
+
+    local bgColor = AF.CreateColorPicker(pane, L["Background Color"], true)
+    AF.SetPoint(bgColor, "LEFT", 15, 0)
+
+    bgColor:SetOnConfirm(function(r, g, b, a)
+        pane.t.cfg.bgColor[1] = r
+        pane.t.cfg.bgColor[2] = g
+        pane.t.cfg.bgColor[3] = b
+        pane.t.cfg.bgColor[4] = a
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        bgColor:SetColor(t.cfg.bgColor)
     end
 
     return pane
@@ -345,51 +415,54 @@ builder["alpha"] = function(parent)
 end
 
 ---------------------------------------------------------------------
--- buttonsPerRow
----------------------------------------------------------------------
-builder["buttonsPerRow"] = function(parent)
-    if created["buttonsPerRow"] then return created["buttonsPerRow"] end
-
-    local pane = AF.CreateBorderedFrame(parent, "BFI_MapOption_ButtonsPerRow", nil, 55)
-    created["buttonsPerRow"] = pane
-
-    local buttonsPerRow = AF.CreateSlider(pane, L["Buttons Per Row"], 150, 1, 11, 1, nil, true)
-    AF.SetPoint(buttonsPerRow, "LEFT", 15, 0)
-    buttonsPerRow:SetOnValueChanged(function(value)
-        pane.t.cfg.buttonsPerRow = value
-        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
-    end)
-
-    function pane.Load(t)
-        pane.t = t
-        buttonsPerRow:SetValue(t.cfg.buttonsPerRow)
-    end
-
-    return pane
-end
-
----------------------------------------------------------------------
 -- arrangement
 ---------------------------------------------------------------------
 builder["arrangement"] = function(parent)
     if created["arrangement"] then return created["arrangement"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_MapOption_Arrangement", nil, 54)
+    local pane = AF.CreateBorderedFrame(parent, "BFI_MapOption_Arrangement", nil, 103)
     created["arrangement"] = pane
 
     local arrangement = AF.CreateDropdown(pane, 200)
     arrangement:SetLabel(L["Arrangement"])
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
     arrangement:SetItems(AF.GetDropdownItems_ComplexOrientation())
-
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.arrangement = value
         AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
     end)
 
+    local anchor = AF.CreateDropdown(pane, 120)
+    anchor:SetLabel(L["Anchor Point"])
+    anchor:SetItems(AF.GetDropdownItems_AnchorPoint(true))
+    anchor:SetOnSelect(function(value)
+        pane.t.cfg.anchor = value
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
+    local spacing = AF.CreateSlider(pane, L["Y Spacing"], 150, -1, 50, 1, nil, true)
+    AF.SetPoint(spacing, "TOPLEFT", arrangement, "BOTTOMLEFT", 0, -25)
+    spacing:SetAfterValueChanged(function(value)
+        pane.t.cfg.spacing = value
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
+    local numPerLine = AF.CreateSlider(pane, L["Displayed Per Line"], 150, 1, 50, 1, nil, true)
+    AF.SetPoint(numPerLine, "TOPLEFT", spacing, 185, 0)
+    numPerLine:SetAfterValueChanged(function(value)
+        pane.t.cfg.numPerLine = value
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
+    AF.SetPoint(anchor, "TOP", arrangement)
+    AF.SetPoint(anchor, "RIGHT", numPerLine)
+
     function pane.Load(t)
         pane.t = t
         arrangement:SetSelectedValue(t.cfg.arrangement)
+        anchor:SetSelectedValue(t.cfg.anchor)
+        spacing:SetValue(t.cfg.spacing)
+        numPerLine:SetValue(t.cfg.numPerLine)
     end
 
     return pane
@@ -410,6 +483,15 @@ builder["font"] = function(parent)
     fontDropdown:SetItems(AF.LSM_GetFontDropdownItems())
     fontDropdown:SetOnSelect(function(value)
         pane.t.cfg.font[1] = value
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
+    local fontColorPicker = AF.CreateColorPicker(pane)
+    AF.SetPoint(fontColorPicker, "BOTTOMRIGHT", fontDropdown, "TOPRIGHT", 0, 2)
+    fontColorPicker:SetOnConfirm(function(r, g, b)
+        pane.t.cfg.color[1] = r
+        pane.t.cfg.color[2] = g
+        pane.t.cfg.color[3] = b
         AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
     end)
 
@@ -442,6 +524,98 @@ builder["font"] = function(parent)
         fontSizeSlider:SetValue(t.cfg.font[2])
         fontOutlineDropdown:SetSelectedValue(t.cfg.font[3])
         shadowCheckButton:SetChecked(t.cfg.font[4])
+        if t.cfg.color then
+            fontColorPicker:Show()
+            fontColorPicker:SetColor(t.cfg.color)
+        else
+            fontColorPicker:Hide()
+        end
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- difficultyColors
+---------------------------------------------------------------------
+builder["difficultyColors"] = function(parent)
+    if created["difficultyColors"] then return created["difficultyColors"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_MapOption_DifficultyColors", nil, 333)
+    created["difficultyColors"] = pane
+
+    local guildGroup = AF.CreateColorPicker(pane, L["Guild Group"])
+    AF.SetPoint(guildGroup, "TOPLEFT", 15, -8)
+    guildGroup:SetOnConfirm(function(r, g, b)
+        pane.t.cfg.guildColor[1] = r
+        pane.t.cfg.guildColor[2] = g
+        pane.t.cfg.guildColor[3] = b
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
+    local nonGuildGroup = AF.CreateColorPicker(pane, L["Non-Guild Group"])
+    AF.SetPoint(nonGuildGroup, "TOPLEFT", guildGroup, 185, 0)
+    nonGuildGroup:SetOnConfirm(function(r, g, b)
+        pane.t.cfg.normalColor[1] = r
+        pane.t.cfg.normalColor[2] = g
+        pane.t.cfg.normalColor[3] = b
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
+    local types = {
+        {label = _G.PLAYER_DIFFICULTY1, key = "normal"},
+        {label = _G.PLAYER_DIFFICULTY2, key = "heroic"},
+        {label = _G.PLAYER_DIFFICULTY6, key = "mythic"},
+        {label = _G.PLAYER_DIFFICULTY_MYTHIC_PLUS, key = "mythicPlus"},
+        {label = _G.PLAYER_DIFFICULTY3, key = "raidFinder"},
+        {label = _G.PLAYER_DIFFICULTY_STORY_RAID, key = "raidStory"},
+        {label = _G.PLAYER_DIFFICULTY_TIMEWALKER, key = "timewalking"},
+        {label = _G.LFG_TYPE_FOLLOWER_DUNGEON, key = "followerDungeon"},
+        {label = _G.DELVE_LABEL, key = "delve"},
+        {label = _G.GUILD_CHALLENGE_TYPE4, key = "scenario"},
+        {label = _G.MAP_LEGEND_EVENT, key = "event"},
+        {label = _G.PVP, key = "pvp"},
+    }
+
+    local colorPickers = {}
+
+    for i, info in next, types do
+        local cp = AF.CreateColorPicker(pane, info.label)
+        cp.key = info.key
+        tinsert(colorPickers, cp)
+
+        local eb = AF.CreateEditBox(cp, nil, 100, 20, "trim")
+        cp.eb = eb
+        AF.SetPoint(eb, "TOPLEFT", cp, "BOTTOMRIGHT", 5, -3)
+        eb:SetConfirmButton(function(text)
+            pane.t.cfg.types[info.key].text = text
+            AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+        end, nil, "RIGHT_OUTSIDE")
+
+        if i == 1 then
+            AF.SetPoint(cp, "TOPLEFT", guildGroup, "BOTTOMLEFT", 0, -20)
+        elseif i % 2 == 1 then
+            AF.SetPoint(cp, "TOPLEFT", colorPickers[i - 2], "BOTTOMLEFT", 0, -35)
+        else
+            AF.SetPoint(cp, "TOPLEFT", colorPickers[i - 1], 185, 0)
+        end
+
+        cp:SetOnConfirm(function(r, g, b)
+            pane.t.cfg.types[info.key].color[1] = r
+            pane.t.cfg.types[info.key].color[2] = g
+            pane.t.cfg.types[info.key].color[3] = b
+            AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+        end)
+    end
+
+    function pane.Load(t)
+        pane.t = t
+        guildGroup:SetColor(t.cfg.guildColor)
+        nonGuildGroup:SetColor(t.cfg.normalColor)
+        for _, cp in next, colorPickers do
+            cp:SetColor(t.cfg.types[cp.key].color)
+            cp.eb:SetText(t.cfg.types[cp.key].text)
+        end
     end
 
     return pane
