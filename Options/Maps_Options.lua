@@ -283,38 +283,6 @@ builder["length"] = function(parent)
 end
 
 ---------------------------------------------------------------------
--- width,height
----------------------------------------------------------------------
-builder["width,height"] = function(parent)
-    if created["width,height"] then return created["width,height"] end
-
-    local pane = AF.CreateBorderedFrame(parent, "BFI_MapOption_WidthHeight", nil, 55)
-    created["width,height"] = pane
-
-    local width = AF.CreateSlider(pane, L["Width"], 150, 10, 200, 1, nil, true)
-    AF.SetPoint(width, "LEFT", 15, 0)
-    width:SetOnValueChanged(function(value)
-        pane.t.cfg.width = value
-        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
-    end)
-
-    local height = AF.CreateSlider(pane, L["Height"], 150, 10, 200, 1, nil, true)
-    AF.SetPoint(height, "TOPLEFT", width, 185, 0)
-    height:SetOnValueChanged(function(value)
-        pane.t.cfg.height = value
-        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
-    end)
-
-    function pane.Load(t)
-        pane.t = t
-        width:SetValue(t.cfg.width)
-        height:SetValue(t.cfg.height)
-    end
-
-    return pane
-end
-
----------------------------------------------------------------------
 -- position
 ---------------------------------------------------------------------
 builder["position"] = function(parent)

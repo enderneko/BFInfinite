@@ -15,16 +15,17 @@ local defaults = {
         hideAtMaxLevel = true,
         texts = {
             enabled = true,
-            showOnHover = true,
+            alwaysShow = false,
             font = {"BFI", 10, "outline", false},
             leftFormat = "[level]",
             centerFormat = "[remaining]",
             rightFormat = "[percent]",
+            yOffset = 2,
         },
         borderColor = AF.GetColorTable("border"),
         bgColor = AF.GetColorTable("background"),
-        normalColor = {useGradient = true, startColor = AF.GetColorTable("exp_normal_start"), endColor = AF.GetColorTable("exp_normal_end")},
-        completeQuests = {enabled = true, color = AF.GetColorTable("exp_complete")},
+        color = {type = "gradient", startAlpha = 1, endAlpha = 1, startColor = AF.GetColorTable("exp_normal_start"), endColor = AF.GetColorTable("exp_normal_end")},
+        completedQuests = {enabled = true, color = AF.GetColorTable("exp_complete")},
         incompleteQuests = {enabled = false, color = AF.GetColorTable("exp_incomplete")},
         rested = {enabled = true, color = AF.GetColorTable("exp_rested")},
     },
@@ -37,14 +38,16 @@ local defaults = {
         hideBelowMaxLevel = false,
         texts = {
             enabled = true,
-            showOnHover = true,
+            alwaysShow = false,
             font = {"BFI", 10, "outline", false},
             leftFormat = "[name]",
             centerFormat = "[progress]",
             rightFormat = "[standing]",
+            yOffset = 2,
         },
         borderColor = AF.GetColorTable("border"),
         bgColor = AF.GetColorTable("background"),
+        color = {type = "gradient", startAlpha = 1, endAlpha = 1, startColor = nil, endColor = AF.GetColorTable("white")},
     },
     honorBar = {
         enabled = true,
@@ -55,15 +58,16 @@ local defaults = {
         hideBelowMaxLevel = true,
         texts = {
             enabled = true,
-            showOnHover = true,
+            alwaysShow = false,
             font = {"BFI", 10, "outline", false},
             leftFormat = "[level]",
             centerFormat = "",
             rightFormat = "[progress]",
+            yOffset = 2,
         },
         borderColor = AF.GetColorTable("border"),
         bgColor = AF.GetColorTable("background"),
-        color = AF.GetColorTable("honor"),
+        color = {type = "gradient", startAlpha = 1, endAlpha = 1, startColor = AF.GetColorTable("honor_start"), endColor = AF.GetColorTable("honor_end")},
     },
     threats = {
         enabled = true,
@@ -87,4 +91,14 @@ end)
 
 function DB.GetDefaults()
     return AF.Copy(defaults)
+end
+
+function DB.ResetToDefaults(which)
+    if not which then
+        wipe(DB.config)
+        AF.Merge(DB.config, defaults)
+    else
+        wipe(DB.config[which])
+        AF.Merge(DB.config[which], defaults[which])
+    end
 end

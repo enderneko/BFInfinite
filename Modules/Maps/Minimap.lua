@@ -296,8 +296,9 @@ local function UpdateClockTime(self, elapsed)
 end
 
 local function UpdateClockSize()
-    local w, h = AF.GetStringSize("00:00", unpack(M.config.minimap.clock.font))
-    Minimap.clockButton:SetSize(w + 4, h + 4)
+    -- local w, h = AF.GetStringSize("00:00", unpack(M.config.minimap.clock.font))
+    -- Minimap.clockButton:SetSize(w + 4, h + 4)
+    AF.ResizeToFitText(Minimap.clockButton, Minimap.clockButton.hiddenText, 2, 2)
 end
 
 local function CreateClockButton()
@@ -333,6 +334,13 @@ local function CreateClockButton()
     text:SetPoint("CENTER")
     text:SetJustifyH("CENTER")
     text:SetJustifyV("MIDDLE")
+
+    local hiddenText = clockButton:CreateFontString(nil, "OVERLAY")
+    Minimap.clockButton.hiddenText = hiddenText
+    hiddenText:SetPoint("CENTER")
+    hiddenText:SetJustifyH("CENTER")
+    hiddenText:SetJustifyV("MIDDLE")
+    hiddenText:SetAlpha(0)
 
     -- OnClick
     clockButton:SetScript("OnClick", function()
@@ -722,8 +730,11 @@ local function UpdateMinimap(_, module, which)
 
         Minimap.clockButton:Show()
         -- M:RegisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)
-        RunNextFrame(UpdateClockSize)
         -- UpdateClockSize()
+
+        AF.SetFont(Minimap.clockButton.hiddenText, config.clock.font)
+        Minimap.clockButton.hiddenText:SetText("00:00")
+        RunNextFrame(UpdateClockSize)
     else
         Minimap.clockButton:Hide()
         -- M:UnregisterEvent("FIRST_FRAME_RENDERED", UpdateClockSize)

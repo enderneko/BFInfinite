@@ -27,7 +27,7 @@ local list = {
     "-Buffs & Debuffs",
     "-Tooltip",
     "UI Widgets",
-    "-Data Bars",
+    "Data Bars",
     -- "Data Broker",
     "Maps",
     "Chat",

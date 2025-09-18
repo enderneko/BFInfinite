@@ -65,15 +65,15 @@ local function HideText()
     reputationBar.textFrame:Hide()
 end
 
-local function UpdateTextVisibility(showOnHover)
-    if showOnHover == true then
-        reputationBar.textFrame:Hide()
-        reputationBar:SetScript("OnEnter", ShowText)
-        reputationBar:SetScript("OnLeave", HideText)
-    elseif showOnHover == false then
+local function UpdateTextVisibility(alwaysShow)
+    if alwaysShow == true then
         reputationBar.textFrame:Show()
         reputationBar:SetScript("OnEnter", nil)
         reputationBar:SetScript("OnLeave", nil)
+    elseif alwaysShow == false then
+        reputationBar.textFrame:Hide()
+        reputationBar:SetScript("OnEnter", ShowText)
+        reputationBar:SetScript("OnLeave", HideText)
     else
         reputationBar.textFrame:Hide()
         reputationBar:SetScript("OnEnter", nil)
@@ -156,7 +156,15 @@ local function UpdateRep(self)
 
     -- color
     local color = FACTION_COLORS[reaction]
-    self:SetColor(color.r, color.g, color.b)
+    local config = DB.config.reputationBar.color
+    if config.type == "gradient" then
+        self:SetGradientColor(nil,
+            color.r, color.g, color.b, config.startAlpha,
+            config.endColor[1], config.endColor[2], config.endColor[3], config.endAlpha
+        )
+    else
+        self:SetColor(color.r, color.g, color.b, config.endAlpha)
+    end
 
     -- text
     if not standingLabel then
@@ -207,17 +215,14 @@ local function CreateReputationBar()
     -- left text
     local leftText = textFrame:CreateFontString(nil, "OVERLAY")
     reputationBar.leftText = leftText
-    AF.LoadTextPosition(leftText, {"LEFT", "LEFT", 5, 0})
 
     -- right text
     local centerText = textFrame:CreateFontString(nil, "OVERLAY")
     reputationBar.centerText = centerText
-    AF.LoadTextPosition(centerText, {"CENTER", "CENTER", 0, 0})
 
     -- right text
     local rightText = textFrame:CreateFontString(nil, "OVERLAY")
     reputationBar.rightText = rightText
-    AF.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
 
     -- events
     AF.AddEventHandler(reputationBar)
@@ -229,7 +234,7 @@ end
 local init
 local function UpdateReputationBar(_, module, which)
     if module and module ~= "dataBars" then return end
-    if which and which ~= "reputation" then return end
+    if which and which ~= "reputationBar" then return end
 
     local config = DB.config.reputationBar
     if not config.enabled then
@@ -259,13 +264,19 @@ local function UpdateReputationBar(_, module, which)
     -- text
     reputationBar.textEnabled = config.texts.enabled
     if config.texts.enabled then
-        AF.SetFont(reputationBar.leftText, unpack(config.texts.font))
+        AF.SetFont(reputationBar.leftText, config.texts.font)
+        AF.LoadTextPosition(reputationBar.leftText, {"LEFT", "LEFT", 5, config.texts.yOffset})
         reputationBar.leftFormat = config.texts.leftFormat
-        AF.SetFont(reputationBar.centerText, unpack(config.texts.font))
+
+        AF.SetFont(reputationBar.centerText, config.texts.font)
+        AF.LoadTextPosition(reputationBar.centerText, {"CENTER", "CENTER", 0, config.texts.yOffset})
         reputationBar.centerFormat = config.texts.centerFormat
-        AF.SetFont(reputationBar.rightText, unpack(config.texts.font))
+
+        AF.SetFont(reputationBar.rightText, config.texts.font)
+        AF.LoadTextPosition(reputationBar.rightText, {"RIGHT", "RIGHT", -5, config.texts.yOffset})
         reputationBar.rightFormat = config.texts.rightFormat
-        UpdateTextVisibility(config.texts.showOnHover)
+
+        UpdateTextVisibility(config.texts.alwaysShow)
     else
         UpdateTextVisibility()
     end

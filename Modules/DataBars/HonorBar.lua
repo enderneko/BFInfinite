@@ -49,15 +49,15 @@ local function HideText()
     honorBar.textFrame:Hide()
 end
 
-local function UpdateTextVisibility(showOnHover)
-    if showOnHover == true then
-        honorBar.textFrame:Hide()
-        honorBar:SetScript("OnEnter", ShowText)
-        honorBar:SetScript("OnLeave", HideText)
-    elseif showOnHover == false then
+local function UpdateTextVisibility(alwaysShow)
+    if alwaysShow == true then
         honorBar.textFrame:Show()
         honorBar:SetScript("OnEnter", nil)
         honorBar:SetScript("OnLeave", nil)
+    elseif alwaysShow == false then
+        honorBar.textFrame:Hide()
+        honorBar:SetScript("OnEnter", ShowText)
+        honorBar:SetScript("OnLeave", HideText)
     else
         honorBar.textFrame:Hide()
         honorBar:SetScript("OnEnter", nil)
@@ -121,17 +121,14 @@ local function CreateHonorBar()
     -- left text
     local leftText = textFrame:CreateFontString(nil, "OVERLAY")
     honorBar.leftText = leftText
-    AF.LoadTextPosition(leftText, {"LEFT", "LEFT", 5, 0})
 
     -- right text
     local centerText = textFrame:CreateFontString(nil, "OVERLAY")
     honorBar.centerText = centerText
-    AF.LoadTextPosition(centerText, {"CENTER", "CENTER", 0, 0})
 
     -- right text
     local rightText = textFrame:CreateFontString(nil, "OVERLAY")
     honorBar.rightText = rightText
-    AF.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
 
     -- events
     AF.AddEventHandler(honorBar)
@@ -143,7 +140,7 @@ end
 local init
 local function UpdateHonorBar(_, module, which)
     if module and module ~= "dataBars" then return end
-    if which and which ~= "honor" then return end
+    if which and which ~= "honorBar" then return end
 
     local config = DB.config.honorBar
     if not config.enabled then
@@ -167,7 +164,14 @@ local function UpdateHonorBar(_, module, which)
     AF.LoadPosition(honorBar, config.position)
     AF.SetSize(honorBar, config.width, config.height)
 
-    honorBar:SetColor(AF.UnpackColor(config.color))
+    if config.color.type == "gradient" then
+        honorBar:SetGradientColor(nil,
+            config.color.startColor[1], config.color.startColor[2], config.color.startColor[3], config.color.startAlpha,
+            config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha
+        )
+    else -- solid
+        honorBar:SetColor(config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha)
+    end
     honorBar:SetBorderColor(AF.UnpackColor(config.borderColor))
     honorBar:SetBackgroundColor(AF.UnpackColor(config.bgColor))
     honorBar:SetTexture(AF.LSM_GetBarTexture(config.texture))
@@ -175,13 +179,19 @@ local function UpdateHonorBar(_, module, which)
     -- text
     honorBar.textEnabled = config.texts.enabled
     if config.texts.enabled then
-        AF.SetFont(honorBar.leftText, unpack(config.texts.font))
+        AF.SetFont(honorBar.leftText, config.texts.font)
+        AF.LoadTextPosition(honorBar.leftText, {"LEFT", "LEFT", 5, config.texts.yOffset})
         honorBar.leftFormat = config.texts.leftFormat
-        AF.SetFont(honorBar.centerText, unpack(config.texts.font))
+
+        AF.SetFont(honorBar.centerText, config.texts.font)
+        AF.LoadTextPosition(honorBar.centerText, {"CENTER", "CENTER", 0, config.texts.yOffset})
         honorBar.centerFormat = config.texts.centerFormat
-        AF.SetFont(honorBar.rightText, unpack(config.texts.font))
+
+        AF.SetFont(honorBar.rightText, config.texts.font)
+        AF.LoadTextPosition(honorBar.rightText, {"RIGHT", "RIGHT", -5, config.texts.yOffset})
         honorBar.rightFormat = config.texts.rightFormat
-        UpdateTextVisibility(config.texts.showOnHover)
+
+        UpdateTextVisibility(config.texts.alwaysShow)
     else
         UpdateTextVisibility()
     end

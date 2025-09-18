@@ -479,8 +479,7 @@ local function MouseoverHighlight_OnLeave(self)
 end
 
 local function HealthBar_SetTexture(self, texture)
-    self.fg:SetTexture(texture)
-    self.loss:SetTexture(texture)
+    self:SetTexture(texture)
     self.healPrediction:SetTexture(texture)
     self.dispelHighlight:SetTexture(texture)
 end

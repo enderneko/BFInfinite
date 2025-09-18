@@ -38,8 +38,8 @@ local formatter = {
     remaining = function()
         return BreakUpLargeNumbers(experienceBar.maxXP - experienceBar.currentXP)
     end,
-    complete = function()
-        return BreakUpLargeNumbers(experienceBar.completeXP)
+    completed = function()
+        return BreakUpLargeNumbers(experienceBar.completedXP)
     end,
     incomplete = function()
         return BreakUpLargeNumbers(experienceBar.incompleteXP)
@@ -67,15 +67,15 @@ local function HideText()
     experienceBar.textFrame:Hide()
 end
 
-local function UpdateTextVisibility(showOnHover)
-    if showOnHover == true then
-        experienceBar.textFrame:Hide()
-        experienceBar:SetScript("OnEnter", ShowText)
-        experienceBar:SetScript("OnLeave", HideText)
-    elseif showOnHover == false then
+local function UpdateTextVisibility(alwaysShow)
+    if alwaysShow == true then
         experienceBar.textFrame:Show()
         experienceBar:SetScript("OnEnter", nil)
         experienceBar:SetScript("OnLeave", nil)
+    elseif alwaysShow == false then
+        experienceBar.textFrame:Hide()
+        experienceBar:SetScript("OnEnter", ShowText)
+        experienceBar:SetScript("OnLeave", HideText)
     else
         experienceBar.textFrame:Hide()
         experienceBar:SetScript("OnEnter", nil)
@@ -91,11 +91,11 @@ local function UpdateBarAndText(self)
 
     local remainingXP = self.maxXP - self.currentXP
 
-    -- complete
+    -- completed
     if self.completeEnabled then
-        -- print("completeTexture:", AF.Clamp(self.completeXP, 0.001, remainingXP))
-        self.completeTexture:SetWidth(AF.Clamp(self.completeXP, 0.001, remainingXP) / self.maxXP * width)
-        remainingXP = remainingXP - self.completeXP
+        -- print("completeTexture:", AF.Clamp(self.completedXP, 0.001, remainingXP))
+        self.completeTexture:SetWidth(AF.Clamp(self.completedXP, 0.001, remainingXP) / self.maxXP * width)
+        remainingXP = remainingXP - self.completedXP
     end
 
     -- incomplete
@@ -123,7 +123,7 @@ end
 -- quest xp
 ---------------------------------------------------------------------
 function UpdateQuestXP(self)
-    self.completeXP, self.incompleteXP = 0, 0
+    self.completedXP, self.incompleteXP = 0, 0
 
     if AF.IsMaxLevel() then return end
 
@@ -135,7 +135,7 @@ function UpdateQuestXP(self)
 
             if rewardXP then
                 if IsQuestComplete(questID) or ReadyForTurnIn(questID) then
-                    self.completeXP = self.completeXP + rewardXP
+                    self.completedXP = self.completedXP + rewardXP
                 else
                     self.incompleteXP = self.incompleteXP + rewardXP
                 end
@@ -199,7 +199,7 @@ local function CreateExperienceBar()
     disabledTexture:SetVertTile(true)
     disabledTexture:SetVertexColor(AF.GetColorRGB("disabled", 0.75))
 
-    -- complete
+    -- completed
     local completeTexture = experienceBar:CreateTexture(nil, "ARTWORK")
     experienceBar.completeTexture = completeTexture
 
@@ -219,17 +219,14 @@ local function CreateExperienceBar()
     -- left text
     local leftText = textFrame:CreateFontString(nil, "OVERLAY")
     experienceBar.leftText = leftText
-    AF.LoadTextPosition(leftText, {"LEFT", "LEFT", 5, 0})
 
     -- center text
     local centerText = textFrame:CreateFontString(nil, "OVERLAY")
     experienceBar.centerText = centerText
-    AF.LoadTextPosition(centerText, {"CENTER", "CENTER", 0, 0})
 
     -- right text
     local rightText = textFrame:CreateFontString(nil, "OVERLAY")
     experienceBar.rightText = rightText
-    AF.LoadTextPosition(rightText, {"RIGHT", "RIGHT", -5, 0})
 
     -- events
     AF.AddEventHandler(experienceBar)
@@ -255,7 +252,7 @@ local function CreateExperienceBar()
     -- init
     experienceBar.currentXP = 0
     experienceBar.maxXP = 1
-    experienceBar.completeXP = 0
+    experienceBar.completedXP = 0
     experienceBar.incompleteXP = 0
     experienceBar.restedXP = 0
 end
@@ -263,9 +260,9 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateXPerienceBar(_, module, which)
+local function UpdateExperienceBar(_, module, which)
     if module and module ~= "dataBars" then return end
-    if which and which ~= "experience" then return end
+    if which and which ~= "experienceBar" then return end
 
     local config = DB.config.experienceBar
     if not config.enabled then
@@ -294,19 +291,22 @@ local function UpdateXPerienceBar(_, module, which)
 
     -- main
     experienceBar:SetTexture(texture)
-    if config.normalColor.useGradient then
-        experienceBar:SetGradientColor(nil, config.normalColor.startColor, config.normalColor.endColor)
-    else
-        experienceBar:SetColor(AF.UnpackColor(config.normalColor.startColor))
+    if config.color.type == "gradient" then
+        experienceBar:SetGradientColor(nil,
+            config.color.startColor[1], config.color.startColor[2], config.color.startColor[3], config.color.startAlpha,
+            config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha
+        )
+    else -- solid
+        experienceBar:SetColor(config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha)
     end
 
     local anchorTo = experienceBar.fg.mask
 
-    -- complete
-    experienceBar.completeEnabled = config.completeQuests.enabled
-    if config.completeQuests.enabled then
+    -- completed
+    experienceBar.completeEnabled = config.completedQuests.enabled
+    if config.completedQuests.enabled then
         experienceBar.completeTexture:SetTexture(texture)
-        experienceBar.completeTexture:SetVertexColor(AF.UnpackColor(config.completeQuests.color))
+        experienceBar.completeTexture:SetVertexColor(AF.UnpackColor(config.completedQuests.color))
         experienceBar.completeTexture:SetPoint("TOPLEFT", anchorTo, "TOPRIGHT")
         experienceBar.completeTexture:SetPoint("BOTTOMLEFT", anchorTo, "BOTTOMRIGHT")
         experienceBar.completeTexture:Show()
@@ -343,13 +343,19 @@ local function UpdateXPerienceBar(_, module, which)
     -- text
     experienceBar.textEnabled = config.texts.enabled
     if config.texts.enabled then
-        AF.SetFont(experienceBar.leftText, unpack(config.texts.font))
+        AF.SetFont(experienceBar.leftText, config.texts.font)
+        AF.LoadTextPosition(experienceBar.leftText, {"LEFT", "LEFT", 5, config.texts.yOffset})
         experienceBar.leftFormat = config.texts.leftFormat
-        AF.SetFont(experienceBar.centerText, unpack(config.texts.font))
+
+        AF.SetFont(experienceBar.centerText, config.texts.font)
+        AF.LoadTextPosition(experienceBar.centerText, {"CENTER", "CENTER", 0, config.texts.yOffset})
         experienceBar.centerFormat = config.texts.centerFormat
-        AF.SetFont(experienceBar.rightText, unpack(config.texts.font))
+
+        AF.SetFont(experienceBar.rightText, config.texts.font)
+        AF.LoadTextPosition(experienceBar.rightText, {"RIGHT", "RIGHT", -5, config.texts.yOffset})
         experienceBar.rightFormat = config.texts.rightFormat
-        UpdateTextVisibility(config.texts.showOnHover)
+
+        UpdateTextVisibility(config.texts.alwaysShow)
     else
         UpdateTextVisibility()
     end
@@ -359,4 +365,4 @@ local function UpdateXPerienceBar(_, module, which)
     experienceBar:Show()
     UpdateAll(experienceBar)
 end
-AF.RegisterCallback("BFI_UpdateModule", UpdateXPerienceBar)
+AF.RegisterCallback("BFI_UpdateModule", UpdateExperienceBar)

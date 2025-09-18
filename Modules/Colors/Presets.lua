@@ -48,7 +48,8 @@ local uf_colors = {
     exp_incomplete = {1, 0.82, 0.31, 1},
     exp_rested = {0.31, 0.56, 1, 0.35},
 
-    honor = {1, 0.3, 0.14, 1},
+    honor_start = {0.95, 0.15, 0.07, 1},
+    honor_end = {0.96, 0.69, 0.1, 1},
 
     button_highlight = {1, 1, 1, 0.25},
 }
