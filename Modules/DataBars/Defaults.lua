@@ -47,7 +47,7 @@ local defaults = {
         },
         borderColor = AF.GetColorTable("border"),
         bgColor = AF.GetColorTable("background"),
-        color = {type = "gradient", startAlpha = 1, endAlpha = 1, startColor = nil, endColor = AF.GetColorTable("white")},
+        color = {type = "gradient", startAlpha = 1, endAlpha = 1, startColor = nil, endColor = AF.GetColorTable("rep_end")},
     },
     honorBar = {
         enabled = true,
