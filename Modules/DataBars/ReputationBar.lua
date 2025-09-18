@@ -118,7 +118,18 @@ local function UpdateRep(self)
         -- AF.Debug("[friendship]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
     end
 
-    --! paragon (Legion)
+    --! renown
+    if factionID and IsMajorFaction(factionID) then
+        reaction = 10
+        local data = GetMajorFactionData(factionID)
+        standingLabel = _G.RENOWN_LEVEL_LABEL:format(data.renownLevel)
+        currentReactionThreshold = 0
+        nextReactionThreshold = data.renownLevelThreshold
+        currentStanding = HasMaximumRenown(factionID) and data.renownLevelThreshold or data.renownReputationEarned or 0
+        -- AF.Debug("[renown]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
+    end
+
+    --! paragon
     if factionID and IsFactionParagon(factionID) then
         local current, threshold
         current, threshold, _, hasRewardPending = GetFactionParagonInfo(factionID)
@@ -131,17 +142,6 @@ local function UpdateRep(self)
             reaction = 9
         end
         -- AF.Debug("[paragon]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
-    end
-
-    --! renown
-    if factionID and IsMajorFaction(factionID) then
-        reaction = 10
-        local data = GetMajorFactionData(factionID)
-        standingLabel = _G.RENOWN_LEVEL_LABEL:format(data.renownLevel)
-        currentReactionThreshold = 0
-        nextReactionThreshold = data.renownLevelThreshold
-        currentStanding = HasMaximumRenown(factionID) and data.renownLevelThreshold or data.renownReputationEarned or 0
-        -- AF.Debug("[renown]", "currentStanding:", currentStanding, "standingLabel:", standingLabel, "current:", currentReactionThreshold, "next:", nextReactionThreshold)
     end
 
     -- bar
