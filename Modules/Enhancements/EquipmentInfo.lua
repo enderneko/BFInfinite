@@ -119,6 +119,17 @@ local function Overlay_UpdateDurability(overlay)
     end
 
     local current, maximum =  GetInventoryItemDurability(overlay.slot)
+
+    -- if not overlay.test then
+    --     overlay.test = true
+    --     current, maximum = 50, 100
+    --     C_Timer.After(3, function()
+    --         Overlay_UpdateDurability(overlay)
+    --     end)
+    -- else
+    --     current, maximum =  100, 100
+    -- end
+
     if current and maximum then
         overlay.durability:SetMinMaxSmoothedValue(0, maximum)
         overlay.durability:SetSmoothedValue(current)
@@ -140,9 +151,11 @@ local function Overlay_UpdateDurability(overlay)
         end
 
         if current == maximum and E.config.equipmentInfo.durability.hideAtFull then
-            overlay.durability:SetAlpha(0)
+            C_Timer.After(0.5, function()
+                AF.FrameFadeOut(overlay.durability)
+            end)
         else
-            overlay.durability:SetAlpha(1)
+            AF.FrameFadeIn(overlay.durability)
         end
     else
         overlay.durability:SetAlpha(0)
