@@ -533,7 +533,7 @@ local function CreateCalendarButton()
 
     calendar:HookOnEnter(function()
         if GetNumPendingInvites() ~= 0 then
-            local _, p, mult = AF.GetAutoVerticalAnchor(calendar)
+            local _, p, mult = AF.GetAdaptiveAnchor_Vertical(calendar)
             AF.ShowTooltip(calendar, p, 0, mult * 2, {_G.GAMETIME_TOOLTIP_CALENDAR_INVITES})
         end
     end)
