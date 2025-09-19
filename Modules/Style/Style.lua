@@ -216,6 +216,7 @@ function S.StyleIconBorder(border, backdrop)
     -- apply color immediately
     local r, g, b, a = border:GetVertexColor()
     if r then
+        -- TODO: fix 1, 1, 1, 1
         backdrop:SetBackdropBorderColor(r, g, b, a)
     end
 

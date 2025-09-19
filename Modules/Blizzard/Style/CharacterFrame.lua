@@ -8,6 +8,7 @@ local _G = _G
 local PANEL_INSET_BOTTOM_OFFSET = _G.PANEL_INSET_BOTTOM_OFFSET
 local MIN_PLAYER_LEVEL_FOR_ITEM_LEVEL_DISPLAY = _G.MIN_PLAYER_LEVEL_FOR_ITEM_LEVEL_DISPLAY
 local PAPERDOLL_STATINFO = _G.PAPERDOLL_STATINFO
+local EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION = _G.EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION
 
 local CharacterFrame = _G.CharacterFrame
 local CharacterFrameInset = _G.CharacterFrameInset
@@ -53,48 +54,51 @@ end
 ---------------------------------------------------------------------
 -- flyout
 ---------------------------------------------------------------------
--- local function EquipmentFlyout_UpdateItems()
---     for _, button in next, EquipmentFlyoutFrame.buttons do
---         if not button._BFIStyled then
---             button._BFIStyled = true
+local function EquipmentFlyout_UpdateItems()
+    for _, button in next, EquipmentFlyoutFrame.buttons do
+        if not button._BFIStyled then
+            button._BFIStyled = true
 
---             button:SetNormalTexture(AF.GetEmptyTexture())
---             button:SetPushedTexture(AF.GetEmptyTexture())
---             -- texplore(button)
+            button:SetNormalTexture(AF.GetEmptyTexture())
+            button:SetPushedTexture(AF.GetEmptyTexture())
+            -- texplore(button)
 
---             S.CreateBackdrop(button, true, nil, 1)
---             S.StyleIcon(button.icon)
---             S.StyleIconBorder(button.IconBorder)
---             button.HighlightTexture:SetColorTexture(AF.GetColorRGB("button_highlight"))
---         end
+            S.CreateBackdrop(button, true, nil, 1)
+            S.StyleIcon(button.icon)
+            S.StyleIconBorder(button.IconBorder)
+            button.HighlightTexture:SetColorTexture(AF.GetColorRGB("button_highlight"))
+        end
 
---         if button.location >= _G.EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
---             button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
---         end
---     end
--- end
+        -- button.location == _G.EQUIPMENTFLYOUT_IGNORESLOT_LOCATION or button.location == _G.EQUIPMENTFLYOUT_UNIGNORESLOT_LOCATION or button.location == _G.EQUIPMENTFLYOUT_PLACEINBAGS_LOCATION then
+        if type(button.location) == "number" and button.location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+            button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+        end
 
-local function EquipmentFlyout_DisplayButton(button)
-    if not button._BFIStyled then
-        button._BFIStyled = true
-
-        button:SetNormalTexture(AF.GetEmptyTexture())
-        button:SetPushedTexture(AF.GetEmptyTexture())
-        -- texplore(button)
-
-        S.CreateBackdrop(button, true, nil, 1)
-        S.StyleIcon(button.icon)
-        S.StyleIconBorder(button.IconBorder)
-        AF.RemoveFromPixelUpdater(button.BFIBackdrop)
-        button.HighlightTexture:SetColorTexture(AF.GetColorRGB("button_highlight"))
+        AF.DefaultUpdatePixels(button.BFIBackdrop)
     end
-
-    if button.location and button.location >= _G.EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
-        button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
-    end
-
-    AF.DefaultUpdatePixels(button.BFIBackdrop)
 end
+
+-- local function EquipmentFlyout_DisplayButton(button)
+--     if not button._BFIStyled then
+--         button._BFIStyled = true
+
+--         button:SetNormalTexture(AF.GetEmptyTexture())
+--         button:SetPushedTexture(AF.GetEmptyTexture())
+--         -- texplore(button)
+
+--         S.CreateBackdrop(button, true, nil, 1)
+--         S.StyleIcon(button.icon)
+--         S.StyleIconBorder(button.IconBorder)
+--         AF.RemoveFromPixelUpdater(button.BFIBackdrop)
+--         button.HighlightTexture:SetColorTexture(AF.GetColorRGB("button_highlight"))
+--     end
+
+--     if button.location and button.location >= _G.EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+--         button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+--     end
+
+--     AF.DefaultUpdatePixels(button.BFIBackdrop)
+-- end
 
 local function StyleFlyout()
     -- flyout
@@ -112,8 +116,8 @@ local function StyleFlyout()
         AF.SetOutside(EquipmentFlyoutFrame, b, 2, 2)
     end)
 
-    -- hooksecurefunc("EquipmentFlyout_UpdateItems", EquipmentFlyout_UpdateItems)
-    hooksecurefunc("EquipmentFlyout_DisplayButton", EquipmentFlyout_DisplayButton)
+    hooksecurefunc("EquipmentFlyout_UpdateItems", EquipmentFlyout_UpdateItems)
+    -- hooksecurefunc("EquipmentFlyout_DisplayButton", EquipmentFlyout_DisplayButton)
 end
 
 ---------------------------------------------------------------------

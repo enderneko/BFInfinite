@@ -14,6 +14,8 @@ local GetItemQualityColor = C_Item.GetItemQualityColor
 local GetContainerItemLink = C_Container.GetContainerItemLink
 local GetItemStats = C_Item.GetItemStats
 local EquipmentManager_GetLocationData = EquipmentManager_GetLocationData
+local EquipmentFlyoutFrame = _G.EquipmentFlyoutFrame
+local EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION = _G.EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION
 
 local strsplit = strsplit
 
@@ -328,11 +330,27 @@ local function GetOverlay(id, isInspect, flyout)
     end
 
     if flyout then
-        local data = EquipmentManager_GetLocationData(flyout.location)
-        if data.bag and data.slot then
-            overlay.itemLink = GetContainerItemLink(data.bag, data.slot)
-        else
-            overlay.itemLink = GetInventoryItemLink("player", data.slot)
+        local flyoutSettings = EquipmentFlyoutFrame.button:GetParent().flyoutSettings
+        if flyoutSettings.useItemLocation then -- type(flyout.location) == "table"
+            -- flyout:GetItemLocation()
+            if flyout.location:IsBagAndSlot() then
+                local bag, slot = flyout.location:GetBagAndSlot()
+                overlay.itemLink = GetContainerItemLink(bag, slot)
+            elseif flyout.location:IsEquipmentSlot() then
+                local slot = flyout.location:GetEquipmentSlot()
+                overlay.itemLink = GetInventoryItemLink("player", slot)
+            end
+        else -- type(flyout.location) == "number"
+            if flyout.location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+                overlay.itemLink = nil
+            else
+                local data = EquipmentManager_GetLocationData(flyout.location)
+                if data.bag and data.slot then
+                    overlay.itemLink = GetContainerItemLink(data.bag, data.slot)
+                else
+                    overlay.itemLink = GetInventoryItemLink("player", data.slot)
+                end
+            end
         end
     else
         overlay.itemLink = GetInventoryItemLink(isInspect and "target" or "player", id)
@@ -469,7 +487,14 @@ local function Init()
     end)
 
     -- Interface\AddOns\Blizzard_FrameXML\EquipmentFlyout.lua
-    hooksecurefunc("EquipmentFlyout_DisplayButton", UpdateFlyout)
+    -- hooksecurefunc("EquipmentFlyout_DisplayButton", UpdateFlyout)
+    hooksecurefunc("EquipmentFlyout_UpdateItems", function()
+        for i, button in next, EquipmentFlyoutFrame.buttons do
+            if button:IsShown() then
+                UpdateFlyout(button)
+            end
+        end
+    end)
 end
 E:RegisterEvent("PLAYER_ENTERING_WORLD", Init)
 
