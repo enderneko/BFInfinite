@@ -22,53 +22,10 @@ L["Toggle BFI options"] = "显示/隐藏 BFI 选项"
 L["Reset all settings"] = "重置所有设置"
 L["Are you sure you want to reset all BFI settings?"] = "你确定要重置所有 BFI 设置吗？"
 L["This action cannot be undone."] = "此操作无法撤消。"
-
----------------------------------------------------------------------
--- mover
----------------------------------------------------------------------
-L["Action Bar %d"] = "动作条 %d"
-L["Class Bar %d"] = "职业动作条 %d"
-L["Stance Bar"] = "姿态条"
-L["Pet Bar"] = "宠物动作条"
-L["Power Bar Widget"] = "能量条组件"
-L["Alt Power Bar"] = "额外能量条"
-L["UI Widgets"] = "界面组件"
-L["Micro Menu"] = "微型主菜单"
-L["Queue Status"] = "队列状态"
-L["Zone Ability"] = "区域技能"
-L["Special Power Timer"] = "特殊能量计时器"
-L["Tooltip"] = "鼠标提示"
-
----------------------------------------------------------------------
--- data bars
----------------------------------------------------------------------
-L["Data Bars"] = "数据条"
-L["Experience Bar"] = "经验条"
-L["Reputation Bar"] = "声望条"
-L["Honor Bar"] = "荣誉条"
-L["Paragon"] = "巅峰"
-
----------------------------------------------------------------------
--- tooltip
----------------------------------------------------------------------
-L["Targeted By"] = "选为目标"
-L["Calculating..."] = "正在计算…"
-
----------------------------------------------------------------------
--- options
----------------------------------------------------------------------
-L["Enhancements"] = "增强功能"
-L["Auras"] = "光环"
-L["Unit Frames"] = "单位框体"
-L["Nameplates"] = "姓名板"
-L["Buffs & Debuffs"] = "增益与减益"
-L["Action Bars"] = "动作条"
-L["Chat"] = "聊天"
 L["Hold %s while clicking to reset all settings"] = "按住 %s 并点击以重置所有设置"
-L["Keybind Mode"] = "快捷键绑定模式"
 
 ---------------------------------------------------------------------
--- options: general
+-- general
 ---------------------------------------------------------------------
 L["Auto Scale"] = "自动缩放"
 L["Current resolution: %dx%d"] = "当前分辨率：%dx%d"
@@ -100,8 +57,9 @@ L["Override Name Text"] = "替换名字字体"
 L["Requires relog or restart to take effect"] = "需要重新登录或重启游戏才能生效"
 
 ---------------------------------------------------------------------
--- options: enhancements
+-- enhancements
 ---------------------------------------------------------------------
+L["Enhancements"] = "增强功能"
 L["Equipment Info"] = "装备信息"
 L["Show Item Level"] = "显示物品等级"
 L["Show Durability"] = "显示耐久度"
@@ -109,7 +67,7 @@ L["Hide At Full Durability"] = "满耐久时隐藏"
 L["Show Missing Enchantment and Gems"] = "显示缺失的附魔和宝石"
 
 ---------------------------------------------------------------------
--- options: colors
+-- colors
 ---------------------------------------------------------------------
 L["Casts"] = "施法"
 L["Failed"] = "失败"
@@ -138,8 +96,9 @@ L["High"] = "高"
 L["Offtank"] = "副坦克"
 
 ---------------------------------------------------------------------
--- options: auras
+-- auras
 ---------------------------------------------------------------------
+L["Auras"] = "光环"
 L["Global Blacklist"] = "全局黑名单"
 L["Global Priorities"] = "全局优先级"
 L["Global Colors"] = "全局颜色"
@@ -148,8 +107,9 @@ L["Input Spell ID"] = "输入法术ID"
 L["Reset %s?"] = "重置%s？"
 
 ---------------------------------------------------------------------
--- options: unit frames
+-- unit frames
 ---------------------------------------------------------------------
+L["Unit Frames"] = "单位框体"
 L["Hold %s while clicking to copy all settings for this unit frame"] = "按住 %s 并点击以复制此单位框体的所有设置"
 L["Hold %s while clicking to reset all settings for this unit frame"] = "按住 %s 并点击以重置此单位框体的所有设置"
 L["Overwrite with copied config?"] = "用复制的配置覆盖？"
@@ -319,8 +279,20 @@ L["Damage"] = "伤害"
 L["Healing"] = "治疗"
 
 ---------------------------------------------------------------------
--- options: action bars
+-- nameplates
 ---------------------------------------------------------------------
+L["Nameplates"] = "姓名板"
+
+---------------------------------------------------------------------
+-- action bars
+---------------------------------------------------------------------
+L["Action Bars"] = "动作条"
+L["Action Bar %d"] = "动作条 %d"
+L["Class Bar %d"] = "职业动作条 %d"
+L["Stance Bar"] = "姿态条"
+L["Pet Bar"] = "宠物动作条"
+L["Zone Ability"] = "区域技能"
+L["Keybind Mode"] = "快捷键绑定模式"
 L["Action Bar Index"] = "动作条索引"
 L["The index of each action bar is shown in square brackets on the right side of the list"] = "每个动作条的索引显示在列表右侧的方括号中"
 L["Mouse over a button and press the desired key to set the binding for that button or press ESC to unbind"] = "将鼠标移到按钮上，按下你想要的按键为其设置快捷键，或按 ESC 清除快捷键"
@@ -359,8 +331,26 @@ L["Visibility"] = "可见性"
 L["Paging"] = "翻页"
 
 ---------------------------------------------------------------------
--- options: ui widgets
+-- buffs debuffs
 ---------------------------------------------------------------------
+L["Buffs & Debuffs"] = "增益与减益"
+
+---------------------------------------------------------------------
+-- tooltip
+---------------------------------------------------------------------
+L["Tooltip"] = "鼠标提示"
+L["Targeted By"] = "选为目标"
+L["Calculating..."] = "正在计算…"
+
+---------------------------------------------------------------------
+-- ui widgets
+---------------------------------------------------------------------
+L["UI Widgets"] = "界面组件"
+L["Power Bar Widget"] = "能量条组件"
+L["Alt Power Bar"] = "额外能量条"
+L["Micro Menu"] = "微型主菜单"
+L["Queue Status"] = "队列状态"
+L["Special Power Timer"] = "特殊能量计时器"
 L["Buttons Per Row"] = "每行按钮数"
 L["Ready"] = "就位"
 L["Pull"] = "倒数"
@@ -377,24 +367,45 @@ L["Clear marker"] = "清除标记"
 L["Group Spacing"] = "组间距"
 L["Marker Spacing"] = "标记间距"
 L["Show If Solo"] = "单人时显示"
+L["Markers"] = "标记"
 
 ---------------------------------------------------------------------
--- options: data bars
+-- data bars
 ---------------------------------------------------------------------
+L["Data Bars"] = "数据条"
+L["Experience Bar"] = "经验条"
+L["Reputation Bar"] = "声望条"
+L["Honor Bar"] = "荣誉条"
+L["Paragon"] = "巅峰"
 L["Completed Quests"] = "已完成的任务"
 L["Incomplete Quests"] = "未完成的任务"
+L["Hide At Max Level"] = "满级时隐藏"
+L["Hide Below Max Level"] = "未满级时隐藏"
+L["Enable Texts"] = "启用文本"
+L["Always Show Texts"] = "始终显示文本"
+L["Left Text Format"] = "左侧文本格式"
+L["Right Text Format"] = "右侧文本格式"
+L["Center Text Format"] = "中间文本格式"
+L["Available Tags"] = "可用标签"
 
 ---------------------------------------------------------------------
--- options: maps
+-- maps
 ---------------------------------------------------------------------
 L["Hold %s while clicking to reset all settings for this map"] = "按住 %s 并点击以重置此地图的所有设置"
 L["Addon Button Tray"] = "插件按钮托盘"
 L["Guild Group"] = "公会队伍"
 L["Non-Guild Group"] = "非公会队伍"
+L["Crafting Order"] = "制造订单"
+L["Calendar"] = "日历"
+L["Zone Text"] = "区域文本"
+L["Instance Difficulty"] = "副本难度"
+L["Expansion Button"] = "资料片按钮"
+L["Tracking Button"] = "追踪按钮"
 
 ---------------------------------------------------------------------
--- options: chat
+-- chat
 ---------------------------------------------------------------------
+L["Chat"] = "聊天"
 L["Chat Frame"] = "聊天框"
 L["Chat Input Box"] = "聊天输入框"
 L["Max Lines"] = "消息保留行数"
@@ -402,7 +413,7 @@ L["Text Fade Time"] = "消息淡出时间"
 L["Tab Font"] = "标签字体"
 
 ---------------------------------------------------------------------
--- options: profiles
+-- profiles
 ---------------------------------------------------------------------
 L["Assignment Mode"] = "分配模式"
 L["Click %s on the right side of a list item to enter assignment mode; click blank area to exit"] = "点击列表项右侧的 %s 进入分配模式，点击空白处退出"
@@ -418,3 +429,18 @@ L["Error parsing string"] = "无法解析字符串"
 L["Invalid string"] = "无效字符串"
 L["CVar settings are not included"] = "不包含 CVar 设置"
 L["Copy Module Settings"] = "模块设置复制"
+L["Spec Role Profiles"] = "职责配置"
+L["Spec Profiles"] = "专精配置"
+L["Character-Specific Profile"] = "角色专用配置"
+L["lowest priority"] = "最低优先级"
+L["medium priority"] = "中等优先级"
+L["highest priority"] = "最高优先级"
+L["URL"] = "网址"
+L["Profile Management"] = "配置管理"
+L["Base"] = "基于"
+L["New Profile"] = "新建配置"
+L["Rename Profile"] = "重命名配置"
+L["Delete Profile"] = "删除配置"
+L["Profile Assignment"] = "配置分配"
+L["Private Data"] = "隐私数据"
+L["Paste string here"] = "在此粘贴字符串"

@@ -37,6 +37,7 @@ select(2, ...).L = setmetatable({
     ["targetHighlight"] = "Target Highlight",
     ["threatGlow"] = "Threat Glow",
     ["FONT_TIP"] = "The \"BFI\" and \"BFI Combat\" fonts mainly support English and Simplified Chinese",
+    ["Maps"] = _G.BRAWL_TOOLTIP_MAPS,
 }, {
     __index = AbstractFramework.L
 })
