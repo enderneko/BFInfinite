@@ -466,7 +466,7 @@ end
 -- BFI_UpdateConfig
 ---------------------------------------------------------------------
 local function UpdateConfig(_, module, which)
-    if module ~= "enhancements" and which ~= "equipmentInfo" then return end
+    if module ~= "enhancements" or (which and which ~= "equipmentInfo") then return end
 
     if not E.config.equipmentInfo.enabled then
         for _, overlay in pairs(overlays) do
@@ -475,9 +475,18 @@ local function UpdateConfig(_, module, which)
         return
     end
 
-    for _, overlay in pairs(overlays) do
-        overlay:Show()
-        overlay:LoadConfig()
+    if next(overlays) then
+        for _, overlay in pairs(overlays) do
+            overlay:Show()
+            overlay:LoadConfig()
+        end
+    else
+        if _G.CharacterFrame:IsShown() then
+            UpdateAll()
+        end
+        if _G.InspectFrame and _G.InspectFrame:IsShown() then
+            UpdateInspect()
+        end
     end
 end
 AF.RegisterCallback("BFI_UpdateConfig", UpdateConfig)

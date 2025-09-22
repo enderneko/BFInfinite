@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local F = BFI.funcs
 local S = BFI.modules.Style
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -65,7 +66,7 @@ local function CreateBFIButton()
         if InCombatLockdown() then
             UIErrorsFrame:AddMessage(ERR_NOT_IN_COMBAT, 1.0, 0.1, 0.1, 1.0)
         else
-            BFI.ToggleOptionsFrame()
+            F.ToggleOptionsFrame()
             HideUIPanel(GameMenuFrame)
         end
     end)

@@ -1,6 +1,8 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
+---@class Funcs
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -175,18 +177,29 @@ local function CreateOptionsFrame()
 
     -- close button
     local closeButton = AF.CreateCloseButton(headerPane, optionsFrame, 35, 21, 15)
+    headerPane.closeButton = closeButton
     AF.SetPoint(closeButton, "RIGHT", headerPane, -7, 0)
 
     -- reload button
     local reloadButton = AF.CreateButton(headerPane, nil, "BFI", 35, 21)
+    headerPane.reloadButton = reloadButton
     AF.SetPoint(reloadButton, "BOTTOMRIGHT", closeButton, "BOTTOMLEFT", -7, 0)
     reloadButton:SetTexture(AF.GetIcon("Refresh"))
     reloadButton:SetTooltip(_G.RELOADUI)
     reloadButton:SetOnClick(_G.ReloadUI)
 
-    -- keybind mode
+    -- module reset button
+    local resetButton = AF.CreateButton(headerPane, nil, "BFI", 35, 21)
+    headerPane.resetButton = resetButton
+    AF.SetPoint(resetButton, "BOTTOMRIGHT", reloadButton, "BOTTOMLEFT", -7, 0)
+    resetButton:SetTexture(AF.GetIcon("Erase"))
+    resetButton:SetTooltip(L["Reset Current Module"])
+    resetButton:SetOnClick(F.ToggleModuleResetFrame)
+
+    -- keybind mode button
     local keybindModeButton = AF.CreateButton(headerPane, nil, "BFI", 35, 21)
-    AF.SetPoint(keybindModeButton, "BOTTOMRIGHT", reloadButton, "BOTTOMLEFT", -7, 0)
+    headerPane.keybindModeButton = keybindModeButton
+    AF.SetPoint(keybindModeButton, "BOTTOMRIGHT", resetButton, "BOTTOMLEFT", -7, 0)
     keybindModeButton:SetTexture(AF.GetIcon("Keyboard", BFI.name))
     keybindModeButton:SetTooltip(L["Keybind Mode"])
     AF.ApplyCombatProtectionToWidget(keybindModeButton)
@@ -197,6 +210,7 @@ local function CreateOptionsFrame()
 
     -- edit mode button
     local editModeButton = AF.CreateButton(headerPane, nil, "BFI", 35, 21)
+    headerPane.editModeButton = editModeButton
     AF.SetPoint(editModeButton, "BOTTOMRIGHT", keybindModeButton, "BOTTOMLEFT", -7, 0)
     editModeButton:SetTexture(AF.GetIcon("Layers"))
     editModeButton:SetTooltip(_G.HUD_EDIT_MODE_MENU)
@@ -251,7 +265,7 @@ end
 ---------------------------------------------------------------------
 -- show
 ---------------------------------------------------------------------
-function BFI.ToggleOptionsFrame()
+function F.ToggleOptionsFrame()
     if not optionsFrame then
         CreateOptionsFrame()
         BuildList()

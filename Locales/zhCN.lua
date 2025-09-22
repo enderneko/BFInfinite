@@ -20,9 +20,11 @@ local L = select(2, ...).L
 L["ABOUT"] = "BFI 是一款为魔兽世界设计的插件套件，灵感来源于 ElvUI，集成了单位框体、动作条、姓名版、界面美化等多种功能。\n插件采用高度自定义和简洁的设计理念，旨在为玩家带来前所未有的插件体验。\n未来还将不断加入更多实用功能，满足不同玩家的个性化需求。"
 L["Toggle BFI options"] = "显示/隐藏 BFI 选项"
 L["Reset all settings"] = "重置所有设置"
-L["Are you sure you want to reset all BFI settings?"] = "你确定要重置所有 BFI 设置吗？"
-L["This action cannot be undone."] = "此操作无法撤消。"
+L["This action cannot be undone"] = "此操作无法撤消"
+L["Are you sure you want to reset all BFI settings?"] = "确定要重置所有 BFI 设置吗？"
 L["Hold %s while clicking to reset all settings"] = "按住 %s 并点击以重置所有设置"
+L["Are you sure you want to reset the current module?"] = "确定要重置当前模块吗？"
+L["Reset Current Module"] = "重置当前模块"
 
 ---------------------------------------------------------------------
 -- general

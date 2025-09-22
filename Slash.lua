@@ -1,6 +1,7 @@
 ---@class BFI
 local BFI = select(2, ...)
 local L = BFI.L
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -13,7 +14,7 @@ function SlashCmdList.BFI(msg, editbox)
     if command == "mover" then
         AF.ToggleMovers()
     elseif command == "reset" then
-        AF.ShowGlobalDialog(L["Are you sure you want to reset all BFI settings?"] .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone."], "firebrick"), function()
+        AF.ShowGlobalDialog(L["Are you sure you want to reset all BFI settings?"] .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick"), function()
             -- reset BFI
             BFIConfig = nil
             BFIProfile = nil
@@ -27,6 +28,6 @@ function SlashCmdList.BFI(msg, editbox)
             ReloadUI()
         end, nil, true)
     else
-        BFI.ToggleOptionsFrame()
+        F.ToggleOptionsFrame()
     end
 end
