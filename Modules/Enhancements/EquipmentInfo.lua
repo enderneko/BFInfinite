@@ -213,16 +213,16 @@ local function Overlay_UpdateMissingEnhance(overlay, clear)
         AF.ClearPoints(overlay.missingGem)
 
         if missingEnchant and missingGem then
-            AF.SetPoint(overlay.missingEnchant, "BOTTOMLEFT")
-            AF.SetPoint(overlay.missingGem, "BOTTOMLEFT", overlay.missingEnchant, "BOTTOMRIGHT", 1, 0)
             AF.SetHeight(overlay.missingEnhance, size)
             AF.SetListWidth(overlay.missingEnhance, 2, size, 1)
-        elseif missingEnchant then
             AF.SetPoint(overlay.missingEnchant, "BOTTOMLEFT")
+            AF.SetPoint(overlay.missingGem, "BOTTOMLEFT", overlay.missingEnchant, "BOTTOMRIGHT", 1, 0)
+        elseif missingEnchant then
             AF.SetSize(overlay.missingEnhance, size, size)
+            AF.SetPoint(overlay.missingEnchant, "BOTTOMLEFT")
         elseif missingGem then
+            AF.SetSize(overlay.missingEnhance, size, size)
             AF.SetPoint(overlay.missingGem, "BOTTOMLEFT")
-            AF.SetSize(overlay.missingGem, size, size)
         end
     else
         overlay.missingEnhance:SetAlpha(0)
@@ -397,11 +397,10 @@ end
 ---------------------------------------------------------------------
 -- inspect
 ---------------------------------------------------------------------
-local function UpdateInspect(_, _, unit)
+local function UpdateInspect()
     local itemLevelEnabled = E.config.equipmentInfo.itemLevel.enabled
     local missingEnhanceEnabled = E.config.equipmentInfo.missingEnhance.enabled
 
-    if unit and unit ~= "target" then return end
     for slot in next, SLOTS do
         local overlay = GetOverlay(slot, true)
         if itemLevelEnabled then overlay:UpdateItemLevel() end
@@ -451,6 +450,10 @@ local function UpdateAll()
     UpdateDurability()
 end
 
+local function DelayedUpdateAll()
+    AF.DelayedInvoke(0.1, UpdateAll)
+end
+
 ---------------------------------------------------------------------
 -- UpdateFlyout
 ---------------------------------------------------------------------
@@ -488,14 +491,16 @@ local function Init()
 
     _G.CharacterFrame:HookScript("OnShow", function()
         if not E.config.equipmentInfo.enabled then return end
-        E:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", UpdatePlayer, UpdateDurability)
+        E:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", UpdateAll)
+        E:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player", DelayedUpdateAll)
         E:RegisterEvent("UPDATE_INVENTORY_DURABILITY", DelayedUpdateDurability)
-        AF.DelayedInvoke(0.1, UpdateAll)
+        DelayedUpdateAll()
     end)
 
     _G.CharacterFrame:HookScript("OnHide", function()
         if not E.config.equipmentInfo.enabled then return end
-        E:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED", UpdatePlayer, UpdateDurability)
+        E:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED", UpdateAll)
+        E:UnregisterEvent("UNIT_INVENTORY_CHANGED", DelayedUpdateAll) -- enchantments
         E:UnregisterEvent("UPDATE_INVENTORY_DURABILITY", DelayedUpdateDurability)
     end)
 
@@ -517,9 +522,9 @@ local function InspectLoaded()
 
     _G.InspectFrame:HookScript("OnShow", function()
         if not E.config.equipmentInfo.enabled then return end
-        E:RegisterEvent("UNIT_INVENTORY_CHANGED", DelayedUpdateInspect)
+        E:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "target", DelayedUpdateInspect)
         ClearInspect()
-        AF.DelayedInvoke(0.5, UpdateInspect)
+        DelayedUpdateInspect()
     end)
 
     _G.InspectFrame:HookScript("OnHide", function()
