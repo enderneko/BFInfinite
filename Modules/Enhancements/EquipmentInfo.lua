@@ -500,7 +500,7 @@ local function Init()
     _G.CharacterFrame:HookScript("OnHide", function()
         if not E.config.equipmentInfo.enabled then return end
         E:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED", UpdateAll)
-        E:UnregisterEvent("UNIT_INVENTORY_CHANGED", DelayedUpdateAll) -- enchantments
+        E:UnregisterEvent("UNIT_INVENTORY_CHANGED", DelayedUpdateAll) -- enchantments, gems
         E:UnregisterEvent("UPDATE_INVENTORY_DURABILITY", DelayedUpdateDurability)
     end)
 
