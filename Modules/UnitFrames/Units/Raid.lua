@@ -30,10 +30,10 @@ local indicators = {
 -- bottom_to_top_then_right
 -- top_to_bottom_then_left
 -- top_to_bottom_then_right
--- left_to_right_then_bottom
--- left_to_right_then_top
--- right_to_left_then_bottom
--- right_to_left_then_top
+-- left_to_right_then_down
+-- left_to_right_then_up
+-- right_to_left_then_down
+-- right_to_left_then_up
 
 ---------------------------------------------------------------------
 -- create

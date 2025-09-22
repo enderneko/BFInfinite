@@ -84,7 +84,7 @@ local defaults = {
         height = 20,
         groupSpacing = 2,
         markerSpacing = 2,
-        arrangement = "left_to_right_then_top",
+        arrangement = "left_to_right_then_up",
         showIfSolo = false,
     }
 }

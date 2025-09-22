@@ -103,7 +103,7 @@ do
     -- fill bar options
     local barDefaults = {
         alpha = 1,
-        orientation = "left_to_right_then_bottom",
+        orientation = "left_to_right_then_down",
         width = 33,
         height = 33,
         spacingX = 2,

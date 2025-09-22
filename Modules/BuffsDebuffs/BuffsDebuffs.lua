@@ -180,16 +180,16 @@ local function GetAttributes(config)
     elseif config.orientation == "top_to_bottom_then_right" then
         y = y - config.height
         wrapX = wrapX + config.width
-    elseif config.orientation == "left_to_right_then_bottom" then
+    elseif config.orientation == "left_to_right_then_down" then
         x = x + config.width
         wrapY = wrapY - config.height
-    elseif config.orientation == "left_to_right_then_top" then
+    elseif config.orientation == "left_to_right_then_up" then
         x = x + config.width
         wrapY = wrapY + config.height
-    elseif config.orientation == "right_to_left_then_bottom" then
+    elseif config.orientation == "right_to_left_then_down" then
         x = x - config.width
         wrapY = wrapY - config.height
-    elseif config.orientation == "right_to_left_then_top" then
+    elseif config.orientation == "right_to_left_then_up" then
         x = x - config.width
         wrapY = wrapY + config.height
     end
