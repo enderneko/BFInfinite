@@ -50,6 +50,10 @@ local settings = {
         "position",
         "font",
     },
+    ping = {
+        "position",
+        "font",
+    },
     clock = {
         "position",
         "font",

@@ -85,6 +85,7 @@ LoadList = function(which)
             {text = _G.TIMEMANAGER_TITLE, id = "clock"},
             {text = L["Zone Text"], id = "zoneText"},
             {text = L["Coordinates"], id = "coordinates"},
+            {text = L["Ping"], id = "ping"},
             {text = L["Instance Difficulty"], id = "instanceDifficulty"},
             {text = L["Expansion Button"], id = "expansionButton"},
             {text = L["Tracking Button"], id = "trackingButton"},

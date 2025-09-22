@@ -34,6 +34,9 @@ local GetNumPendingInvites = C_Calendar.GetNumPendingInvites
 local GetBestMapForUnit = C_Map.GetBestMapForUnit
 local GetPlayerMapPosition = C_Map.GetPlayerMapPosition
 
+local UnitName = UnitName
+local UnitClassBase = AF.UnitClassBase
+
 ---------------------------------------------------------------------
 -- expansion button
 ---------------------------------------------------------------------
@@ -722,7 +725,7 @@ end
 ---------------------------------------------------------------------
 local coordsFrame
 
-local function CreateCoordinates()
+local function CreateCoordsFrame()
     coordsFrame = CreateFrame("Frame", nil, Minimap)
     Minimap.coordsFrame = coordsFrame
 
@@ -805,6 +808,42 @@ local function LoadCoordsFrameConfig(config)
         end
     else
         coordsFrame:Hide()
+    end
+end
+
+---------------------------------------------------------------------
+-- pingText
+---------------------------------------------------------------------
+local pingText
+
+local function CreatePingText()
+    pingText = Minimap:CreateFontString(nil, "OVERLAY")
+    Minimap.pingText = pingText
+    pingText:Hide()
+    AF.CreateContinualFadeInOutAnimation(pingText, nil, 3)
+end
+
+local function UpdatePingText(_, _, unit)
+    local name, server = UnitName(unit)
+    if not name then return end
+
+    local class = UnitClassBase(unit)
+    if server and server ~= "" then
+        name = name .. "*"
+    end
+    pingText:SetText(name)
+    pingText:SetTextColor(AF.GetClassColor(class))
+    pingText:FadeInOut()
+end
+
+local function LoadPingTextConfig(config)
+    if config.enabled then
+        AF.SetFont(pingText, config.font)
+        AF.LoadTextPosition(pingText, config.position, Minimap)
+        M:RegisterEvent("MINIMAP_PING", UpdatePingText)
+    else
+        M:UnregisterEvent("MINIMAP_PING", UpdatePingText)
+        pingText:Hide()
     end
 end
 
@@ -895,7 +934,8 @@ local function UpdateMinimap(_, module, which)
         CreateClockButton()
         CreateInstanceDifficulty()
         CreateCalendarButton()
-        CreateCoordinates()
+        CreateCoordsFrame()
+        CreatePingText()
     end
 
     AF.UpdateMoverSave(minimapContainer, config.general.position)
@@ -931,5 +971,6 @@ local function UpdateMinimap(_, module, which)
     LoadInstanceDifficultyFrameConfig(config.instanceDifficulty)
     LoadAddonButtonTrayConfig(config.addonButtonTray)
     LoadCoordsFrameConfig(config.coordinates)
+    LoadPingTextConfig(config.ping)
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateMinimap)

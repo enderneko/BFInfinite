@@ -402,6 +402,7 @@ L["Instance Difficulty"] = "副本难度"
 L["Expansion Button"] = "资料片按钮"
 L["Tracking Button"] = "追踪按钮"
 L["Coordinates"] = "坐标"
+L["Ping"] = "小地图信号"
 
 ---------------------------------------------------------------------
 -- chat

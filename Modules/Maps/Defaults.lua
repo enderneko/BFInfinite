@@ -53,6 +53,11 @@ local defaults = {
             format = "1decimal", -- "integer", "1decimal", "2decimals"
             alwaysShow = false,
         },
+        ping = {
+            enabled = true,
+            position = {"BOTTOM", "BOTTOM", 0, 20},
+            font = {"BFI", 12, "outline", false},
+        },
         addonButtonTray = {
             enabled = true,
             position = {"LEFT", "LEFT", -1, 0},
