@@ -44,6 +44,15 @@ local defaults = {
             font = {"BFI", 12, "outline", false},
             alwaysShow = false,
         },
+        coordinates = {
+            enabled = true,
+            relativeTo = "zoneText", -- "zoneText" or "minimap"
+            position = {"TOPLEFT", "BOTTOMLEFT", 0, -3},
+            font = {"BFI", 12, "outline", false},
+            color = AF.GetColorTable("gray"),
+            format = "1decimal", -- "integer", "1decimal", "2decimals"
+            alwaysShow = false,
+        },
         addonButtonTray = {
             enabled = true,
             position = {"LEFT", "LEFT", -1, 0},

@@ -44,6 +44,12 @@ local settings = {
         "position",
         "font",
     },
+    coordinates = {
+        "alwaysShow",
+        "format",
+        "position",
+        "font",
+    },
     clock = {
         "position",
         "font",
@@ -291,9 +297,20 @@ builder["position"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_MapOption_Position", nil, 104)
     created["position"] = pane
 
+    local relativeTo = AF.CreateDropdown(pane, 150)
+    relativeTo:SetLabel(L["Relative To"])
+    AF.SetPoint(relativeTo, "TOPLEFT", 15, -25)
+    relativeTo:SetItems({
+        {text = _G.MINIMAP_LABEL, value = "minimap"},
+        {text = L["Zone Text"], value = "zoneText"},
+    })
+    relativeTo:SetOnSelect(function(value)
+        pane.t.cfg.relativeTo = value
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
     local anchorPoint = AF.CreateDropdown(pane, 150)
     anchorPoint:SetLabel(L["Anchor Point"])
-    AF.SetPoint(anchorPoint, "TOPLEFT", 15, -25)
     anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
     anchorPoint:SetOnSelect(function(value)
         pane.t.cfg.position[1] = value
@@ -329,6 +346,22 @@ builder["position"] = function(parent)
         relativePoint:SetSelectedValue(t.cfg.position[2])
         x:SetValue(t.cfg.position[3])
         y:SetValue(t.cfg.position[4])
+
+        if t.cfg.relativeTo then
+            relativeTo:SetSelectedValue(t.cfg.relativeTo)
+            relativeTo:Show()
+            AF.SetPoint(anchorPoint, "TOPLEFT", relativeTo, "BOTTOMLEFT", 0, -25)
+            parent._contentHeights[pane.index] = 149
+            AF.SetHeight(pane, 149)
+        else
+            relativeTo:SetSelectedValue("zoneText")
+            relativeTo:Hide()
+            AF.SetPoint(anchorPoint, "TOPLEFT", 15, -25)
+            parent._contentHeights[pane.index] = 104
+            AF.SetHeight(pane, 104)
+        end
+
+        AF.ReSize(parent) -- call AF.SetScrollContentHeight
     end
 
     return pane
@@ -584,6 +617,36 @@ builder["difficultyColors"] = function(parent)
             cp:SetColor(t.cfg.types[cp.key].color)
             cp.eb:SetText(t.cfg.types[cp.key].text)
         end
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- format
+---------------------------------------------------------------------
+builder["format"] = function(parent)
+    if created["format"] then return created["format"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_MapOption_Format", nil, 54)
+    created["format"] = pane
+
+    local format = AF.CreateDropdown(pane, 150)
+    format:SetLabel(L["Format"])
+    AF.SetPoint(format, "TOPLEFT", 15, -25)
+    format:SetItems({
+        {text = "27, 27", value = "integer"},
+        {text = "27.7, 27.7", value = "1decimal"},
+        {text = "27.79, 27.79", value = "2decimals"},
+    })
+    format:SetOnSelect(function(value)
+        pane.t.cfg.format = value
+        AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        format:SetSelectedValue(t.cfg.format)
     end
 
     return pane

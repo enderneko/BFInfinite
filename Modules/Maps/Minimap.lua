@@ -31,6 +31,9 @@ local ToggleCalendar = ToggleCalendar
 local GetCurrentCalendarTime = C_DateAndTime.GetCurrentCalendarTime
 local GetNumPendingInvites = C_Calendar.GetNumPendingInvites
 
+local GetBestMapForUnit = C_Map.GetBestMapForUnit
+local GetPlayerMapPosition = C_Map.GetPlayerMapPosition
+
 ---------------------------------------------------------------------
 -- expansion button
 ---------------------------------------------------------------------
@@ -296,7 +299,7 @@ local function CreateZoneText()
     Minimap.zoneText = zoneText
     zoneText:Hide()
     zoneText:SetWordWrap(true)
-    zoneText:SetSpacing(5)
+    -- zoneText:SetSpacing(5)
     AF.CreateFadeInOutAnimation(zoneText, 0.25)
 
 
@@ -715,6 +718,97 @@ local function LoadCalendarButtonConfig(config)
 end
 
 ---------------------------------------------------------------------
+-- coordsFrame
+---------------------------------------------------------------------
+local coordsFrame
+
+local function CreateCoordinates()
+    coordsFrame = CreateFrame("Frame", nil, Minimap)
+    Minimap.coordsFrame = coordsFrame
+
+    coordsFrame:SetSize(1, 1)
+    coordsFrame:Hide()
+    AF.CreateFadeInOutAnimation(coordsFrame, 0.25)
+
+    local text = coordsFrame:CreateFontString(nil, "OVERLAY")
+    coordsFrame.text = text
+    text:SetWordWrap(true)
+    -- text:SetSpacing(5)
+
+    coordsFrame:SetScript("OnUpdate", function(self, elapsed)
+        self.elapsed = (self.elapsed or 0) + elapsed
+        if self.elapsed >= 0.1 then
+            self.elapsed = 0
+
+            local success
+            local map = GetBestMapForUnit("player")
+            if map then
+                local pos = GetPlayerMapPosition(map, "player")
+                if pos then
+                    local x, y = pos:GetXY()
+                    if x and y then
+                        self.text:SetFormattedText(self.format, x * 100, y * 100)
+                        success = true
+                    end
+                end
+            end
+
+            if not success then
+                self.text:SetText("")
+            end
+        end
+    end)
+
+    Minimap:HookScript("OnEnter", function()
+        if M.config.minimap.coordinates.enabled and not M.config.minimap.coordinates.alwaysShow then
+            coordsFrame.elapsed = 1
+            coordsFrame:FadeIn()
+        end
+    end)
+    Minimap:HookScript("OnLeave", function()
+        if M.config.minimap.coordinates.enabled and not M.config.minimap.coordinates.alwaysShow then
+            coordsFrame:FadeOut()
+        end
+    end)
+end
+
+local function LoadCoordsFrameConfig(config)
+    if config.enabled then
+        AF.SetFont(coordsFrame.text, config.font)
+        coordsFrame.text:SetTextColor(AF.UnpackColor(config.color))
+
+        if config.relativeTo == "zoneText" then
+            AF.LoadTextPosition(coordsFrame.text, config.position, zoneText)
+        else
+            AF.LoadTextPosition(coordsFrame.text, config.position, Minimap)
+        end
+
+        if config.format == "integer" then
+            coordsFrame.format = "%d, %d"
+        elseif config.format == "1decimal" then
+            coordsFrame.format = "%.1f, %.1f"
+        else
+            coordsFrame.format = "%.2f, %.2f"
+        end
+
+        -- if config.twoLines then
+        --     coordsFrame.sep = "\n"
+        -- else
+        --     coordsFrame.sep = ", "
+        -- end
+
+        coordsFrame:Show()
+        if config.alwaysShow then
+            coordsFrame:FadeIn()
+        else
+            coordsFrame:FadeOut()
+        end
+    else
+        coordsFrame:Hide()
+    end
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function UpdatePixels()
@@ -836,5 +930,6 @@ local function UpdateMinimap(_, module, which)
     LoadZoneTextConfig(config.zoneText, config.general.size)
     LoadInstanceDifficultyFrameConfig(config.instanceDifficulty)
     LoadAddonButtonTrayConfig(config.addonButtonTray)
+    LoadCoordsFrameConfig(config.coordinates)
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateMinimap)

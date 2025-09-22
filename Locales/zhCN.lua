@@ -401,6 +401,7 @@ L["Zone Text"] = "区域文本"
 L["Instance Difficulty"] = "副本难度"
 L["Expansion Button"] = "资料片按钮"
 L["Tracking Button"] = "追踪按钮"
+L["Coordinates"] = "坐标"
 
 ---------------------------------------------------------------------
 -- chat
