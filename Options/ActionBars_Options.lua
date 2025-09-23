@@ -23,6 +23,7 @@ local settings = {
         "animationOverlays",
         "colors",
         "flyoutSize",
+        "frameStrata",
         "tooltip"
     },
     cooldowns = {
@@ -279,6 +280,40 @@ builder["animationOverlays"] = function(parent)
         targetReticle:SetChecked(t.sharedCfg.targetReticle)
         spellCastAnim:SetChecked(t.sharedCfg.spellCastAnim)
         interruptDisplay:SetChecked(t.sharedCfg.interruptDisplay)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- frameStrata
+---------------------------------------------------------------------
+builder["frameStrata"] = function(parent)
+    if created["frameStrata"] then return created["frameStrata"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_ActionBarOption_FrameStrata", nil, 58)
+    created["frameStrata"] = pane
+
+    local frameStrata = AF.CreateDropdown(pane, 150)
+    AF.SetPoint(frameStrata, "TOPLEFT", 15, -25)
+    frameStrata:SetLabel(L["Frame Strata"])
+    frameStrata:SetItems(AF.GetDropdownItems_FrameStrata())
+    frameStrata:SetOnSelect(function(value)
+        pane.t.cfg.frameStrata = value
+        AF.Fire("BFI_UpdateModule", "actionBars")
+    end)
+
+    local frameLevel = AF.CreateSlider(pane, L["Frame Level"], 150, 0, 100, 1, nil, true)
+    AF.SetPoint(frameLevel, "TOPLEFT", frameStrata, 185, 0)
+    frameLevel:SetAfterValueChanged(function(value)
+        pane.t.cfg.frameLevel = value
+        AF.Fire("BFI_UpdateModule", "actionBars")
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        frameStrata:SetSelectedValue(t.cfg.frameStrata)
+        frameLevel:SetValue(t.cfg.frameLevel)
     end
 
     return pane
