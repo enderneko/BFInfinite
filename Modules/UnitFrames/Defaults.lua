@@ -6331,9 +6331,24 @@ function UF.GetDefaults()
     return AF.Copy(defaults, style1)
 end
 
-function UF.Reset()
-    BFI.vars.profile.unitFrames = AF.Copy(defaults, style1)
-    UF.config = BFI.vars.profile.unitFrames
+function UF.ResetToDefaults()
+    local t = UF.GetDefaults()
+
+    -- general
+    wipe(UF.config.general)
+    AF.Merge(UF.config.general, t.general)
+    t.general = nil
+
+    for k, v in next, t do
+        -- general
+        wipe(UF.config[k].general)
+        AF.Merge(UF.config[k].general, v.general)
+        -- indicators
+        for _k, _v in pairs(v.indicators) do
+            wipe(UF.config[k].indicators[_k])
+            AF.Merge(UF.config[k].indicators[_k], _v)
+        end
+    end
 end
 
 function UF.ResetFrame(frame, config)

@@ -336,10 +336,10 @@ local function ShowNewProfileDialog()
             BFIProfile[name] = {
                 revision = BFI.versionNum,
             }
-            for _, module in next, F.GetProfileModuleNames() do
+            for _, module in next, F.GetProfileModuleClassNames() do
                 local defaults = F.GetModuleDefaults(module)
                 if defaults then
-                    BFIProfile[name][AF.LowerFirst(module)] = defaults
+                    BFIProfile[name][F.GetModuleKey(module)] = defaults
                 end
             end
         else
@@ -1145,7 +1145,7 @@ end)
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "Profiles" then
+    if id == "profiles" then
         if not profilesPanel then
             CreateProfilesPanel()
             CreateRolePane()

@@ -155,7 +155,7 @@ end
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "About" then
+    if id == "about" then
         if not aboutPanel then
             CreateAboutPanel()
             CreateBFIPane()

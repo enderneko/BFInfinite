@@ -11,12 +11,24 @@ local ReloadUI = _G.ReloadUI
 local moduleResetFrame
 
 ---------------------------------------------------------------------
--- resetters
+-- resetter
 ---------------------------------------------------------------------
-local currentResetter
+local function ResetCommonModule(module)
+    BFI.modules[AF.UpperFirst(module)].ResetToDefaults()
+    AF.Fire("BFI_UpdateConfig", module)
+    AF.Fire("BFI_RefreshOptions", module)
+end
 
-local resetters = {
-    ["General"] = {
+local function ResetProfileModule(module)
+    BFI.modules[AF.UpperFirst(module)].ResetToDefaults()
+    AF.Fire("BFI_UpdateModule", module)
+    AF.Fire("BFI_RefreshOptions", module)
+end
+
+local currentResetter
+local resetterInfo = {
+    -- common
+    general = {
         requireReload = true,
         isCommon = true,
         func = function()
@@ -26,30 +38,20 @@ local resetters = {
             AFConfig.scale = nil
         end
     },
-    ["Enhancements"] = {
-        isCommon = true,
-        func = function()
-            BFI.modules.Enhancements.ResetToDefaults()
-            AF.Fire("BFI_UpdateConfig", "enhancements")
-            AF.Fire("BFI_RefreshOptions", "enhancements")
-        end
-    },
-    ["Colors"] = {
-        isCommon = true,
-        func = function()
-            BFI.modules.Colors.ResetToDefaults()
-            AF.Fire("BFI_UpdateConfig", "colors")
-            AF.Fire("BFI_RefreshOptions", "colors")
-        end
-    },
-    ["Auras"] = {
-        isCommon = false,
-        func = function()
-            BFI.modules.Auras.ResetToDefaults()
-            AF.Fire("BFI_UpdateConfig", "auras")
-            AF.Fire("BFI_RefreshOptions", "auras")
-        end
-    }
+    enhancements = {isCommon = true},
+    colors = {isCommon = true},
+    auras = {isCommon = true},
+
+    -- profile
+    unitFrames = {},
+    nameplates = {},
+    actionBars = {},
+    buffsDebuffs = {},
+    tooltip = {},
+    uiWidgets = {},
+    dataBars = {},
+    maps = {},
+    chat = {},
 }
 
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
@@ -60,7 +62,7 @@ AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
     local b = BFIOptionsFrame_HeaderPane.resetButton
     currentResetter = id
 
-    if resetters[id] then
+    if resetterInfo[id] then
         b:SetEnabled(true)
     else
         b:SetEnabled(false)
@@ -75,6 +77,8 @@ local function CreateModuleResetFrame()
     AF.SetFrameLevel(moduleResetFrame, 310)
     moduleResetFrame:Hide()
     AF.SetPoint(moduleResetFrame, "TOPRIGHT", BFIOptionsFrame_ContentPane, -7, -1)
+
+    AF.ApplyCombatProtectionToFrame(moduleResetFrame)
 
     -- mask
     AF.ShowMask(BFIOptionsFrame_ContentPane)
@@ -98,17 +102,28 @@ local function CreateModuleResetFrame()
     AF.SetPoint(yes, "BOTTOMLEFT", scroll)
     AF.SetPoint(yes, "BOTTOMRIGHT", scroll, "BOTTOM")
     yes:SetOnClick(function()
-        if resetters[currentResetter].requireReload then
-            resetters[currentResetter].func()
-            ReloadUI()
-            return
+        local resetter = resetterInfo[currentResetter]
+
+        local func
+        if resetter.func then
+            func = resetter.func
+        elseif resetter.isCommon then
+            func = ResetCommonModule
+        else
+            func = ResetProfileModule
         end
 
-        moduleResetFrame:ShowResetMessage()
-        C_Timer.After(1, function()
-            resetters[currentResetter].func()
-            moduleResetFrame:HideOut()
-        end)
+        if resetter.requireReload then
+            func(currentResetter)
+            ReloadUI()
+        else
+            moduleResetFrame:ShowResetMessage()
+            func(currentResetter)
+
+            C_Timer.After(1, function()
+                moduleResetFrame:HideOut()
+            end)
+        end
     end)
 
     local no = AF.CreateButton(scroll.scrollContent, L["Cancel"], "red", nil, 17)
@@ -125,15 +140,15 @@ local function CreateModuleResetFrame()
     function moduleResetFrame:ShowUp()
         moduleResetFrame:Show()
 
-        if resetters[currentResetter].isCommon then
+        if resetterInfo[currentResetter].isCommon then
             text:SetText(L["Are you sure you want to reset the current module?"]
-                .. "\n" .. module .. AF.WrapTextInColor(L[currentResetter], "softlime")
+                .. "\n" .. module .. AF.WrapTextInColor(F.GetModuleLocalizedName(currentResetter), "softlime")
                 .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")
             )
         else
             local profileName = BFI.vars.profileName == "default" and L["Default"] or BFI.vars.profileName
             text:SetText(L["Are you sure you want to reset the current module?"]
-                .. "\n" .. module .. AF.WrapTextInColor(L[currentResetter], "softlime")
+                .. "\n" .. module .. AF.WrapTextInColor(F.GetModuleLocalizedName(currentResetter), "softlime")
                 .. "\n" .. profile .. AF.WrapTextInColor(profileName, "vividblue")
                 .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")
             )

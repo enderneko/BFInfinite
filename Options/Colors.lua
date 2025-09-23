@@ -250,7 +250,7 @@ end)
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "Colors" then
+    if id == "colors" then
         if not colorsPanel then
             CreateColorsPanel()
             CreateCastsPane()

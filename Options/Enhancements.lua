@@ -109,7 +109,7 @@ end)
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "Enhancements" then
+    if id == "enhancements" then
         if not enhancementsPanel then
             CreateEnhancementsPanel()
             CreateContentPane()

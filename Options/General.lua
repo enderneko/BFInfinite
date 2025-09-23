@@ -518,7 +518,7 @@ end
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "General" then
+    if id == "general" then
         if not generalPanel then
             CreateGeneralPanel()
             CreateBFIPane()

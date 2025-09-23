@@ -118,7 +118,7 @@ end)
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "UI Widgets" then
+    if id == "uiWidgets" then
         if not uiWidgetsPanel then
             CreateUIWidgetsPanel()
             CreateContentPane()

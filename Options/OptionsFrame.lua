@@ -16,26 +16,26 @@ local optionsFrame
 -- list
 ---------------------------------------------------------------------
 local list = {
-    "General",
+    "general",
     "SEPARATOR",
-    "Enhancements",
-    "Colors",
-    "Auras",
-    -- "Social",
+    "enhancements",
+    "colors",
+    "auras",
+    -- "social",
     "SEPARATOR",
-    "Unit Frames",
-    "-Nameplates",
-    "Action Bars",
-    "-Buffs & Debuffs",
-    "-Tooltip",
-    "UI Widgets",
-    "Data Bars",
-    -- "Data Broker",
-    "Maps",
-    "Chat",
+    "unitFrames",
+    "-nameplates",
+    "actionBars",
+    "-buffsDebuffs",
+    "-tooltip",
+    "uiWidgets",
+    "dataBars",
+    -- "dataBroker",
+    "maps",
+    "chat",
     "SEPARATOR",
-    "Profiles",
-    "About",
+    "profiles",
+    "about",
 }
 
 local frameWidths = {
@@ -46,7 +46,7 @@ local function CreateButton(name)
     local disabled
     name, disabled = name:gsub("^-", "")
 
-    local button = AF.CreateButton(optionsFrame.listPane, L[name], nil, nil, 25, nil, "", "")
+    local button = AF.CreateButton(optionsFrame.listPane, F.GetModuleLocalizedName(name), nil, nil, 25, nil, "", "")
     button.id = name
     button:SetTextJustifyH("LEFT")
     button:SetTextPadding(10)

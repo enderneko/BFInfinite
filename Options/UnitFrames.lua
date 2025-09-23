@@ -455,7 +455,7 @@ end)
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "Unit Frames" then
+    if id == "unitFrames" then
         if not unitFramesPanel then
             CreateUnitFramesPanel()
             CreateConfigModeWidgets()

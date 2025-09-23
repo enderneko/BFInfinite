@@ -379,7 +379,7 @@ end)
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "Auras" then
+    if id == "auras" then
         if not aurasPanel then
             CreateAurasPanel()
             CreateContentPane()

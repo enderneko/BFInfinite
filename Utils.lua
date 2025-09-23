@@ -1,5 +1,6 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 ---@class Funcs
 local F = BFI.funcs
 ---@type AbstractFramework
@@ -16,7 +17,41 @@ end
 ---------------------------------------------------------------------
 -- module
 ---------------------------------------------------------------------
-function F.GetProfileModuleNames()
+local moduleLocalizedNames = {
+    -- common
+    general = L["General"],
+    enhancements = L["Enhancements"],
+    colors = L["Colors"],
+    auras = L["Auras"],
+    -- profile
+    actionBars = L["Action Bars"],
+    buffsDebuffs = L["Buffs & Debuffs"],
+    chat = L["Chat"],
+    dataBars = L["Data Bars"],
+    maps = L["Maps"],
+    nameplates = L["Nameplates"],
+    tooltip = L["Tooltip"],
+    uiWidgets = L["UI Widgets"],
+    unitFrames = L["Unit Frames"],
+    disableBlizzard = L["Disable Blizzard"],
+    -- special
+    profiles = L["Profiles"],
+    about = L["About"],
+}
+
+function F.GetModuleLocalizedName(moduleKey)
+    return moduleLocalizedNames[moduleKey] or moduleKey
+end
+
+function F.GetModuleClassName(moduleKey)
+    return AF.UpperFirst(moduleKey)
+end
+
+function F.GetModuleKey(moduleClassName)
+    return AF.LowerFirst(moduleClassName)
+end
+
+function F.GetProfileModuleClassNames()
     return {
         "ActionBars",
         "BuffsDebuffs",
@@ -31,8 +66,8 @@ function F.GetProfileModuleNames()
     }
 end
 
-function F.GetModuleDefaults(module)
-    module = module and BFI.modules[module]
+function F.GetModuleDefaults(moduleClassName)
+    local module = moduleClassName and BFI.modules[moduleClassName]
     if module and module.GetDefaults then
         return module.GetDefaults()
     end

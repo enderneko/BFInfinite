@@ -215,7 +215,7 @@ end
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "Chat" then
+    if id == "chat" then
         if not chatPanel then
             CreateChatPanel()
             CreateChatFramePane()

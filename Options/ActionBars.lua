@@ -191,7 +191,7 @@ end)
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "Action Bars" then
+    if id == "actionBars" then
         if not actionBarsPanel then
             CreateActionBarsPanel()
             CreateContentPane()

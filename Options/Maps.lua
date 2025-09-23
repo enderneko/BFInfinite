@@ -165,7 +165,7 @@ end)
 -- show
 ---------------------------------------------------------------------
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
-    if id == "Maps" then
+    if id == "maps" then
         if not mapsPanel then
             CreateMapsPanel()
             CreateContentPane()
