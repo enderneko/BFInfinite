@@ -58,7 +58,7 @@ local function UpdateFocus(_, module, which, skipIndicatorUpdates)
 
     local config = UF.config.focus
 
-    if not config.general.enabled then
+    if not (UF.config.general.enabled and config.general.enabled) then
         if focus then
             UF.DisableIndicators(focus)
             UnregisterUnitWatch(focus)

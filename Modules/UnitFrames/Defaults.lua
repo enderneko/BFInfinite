@@ -414,7 +414,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             readyCheckIcon = {
                 enabled = true,
@@ -839,7 +838,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -1195,7 +1193,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -1542,7 +1539,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -1884,7 +1880,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -2230,7 +2225,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             targetHighlight = {
                 enabled = false,
@@ -2564,7 +2558,6 @@ local style1 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -3011,7 +3004,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             readyCheckIcon = {
                 enabled = true,
@@ -3436,7 +3428,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -3792,7 +3783,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -4138,7 +4128,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -4480,7 +4469,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -4826,7 +4814,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             targetHighlight = {
                 enabled = false,
@@ -5159,7 +5146,6 @@ local style2 = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             roleIcon = {
                 enabled = false,
@@ -5294,7 +5280,9 @@ local style2 = {
 
 local defaults = {
     general = {
+        enabled = true,
         frameStrata = "LOW",
+        raidIconStyle = "af", -- af, blizzard
     },
     party = {
         general = {
@@ -5552,7 +5540,6 @@ local defaults = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             readyCheckIcon = {
                 enabled = true,
@@ -5847,7 +5834,6 @@ local defaults = {
                 anchorTo = "root",
                 frameLevel = 5,
                 size = 10,
-                style = "af",
             },
             readyCheckIcon = {
                 enabled = true,
@@ -6200,7 +6186,6 @@ local defaults = {
                 anchorTo = "root",
                 frameLevel = 10,
                 size = 12,
-                style = "af",
             },
             targetHighlight = {
                 enabled = true,

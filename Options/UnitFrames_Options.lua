@@ -219,7 +219,7 @@ local settings = {
     raidIcon = {
         "enabled",
         "position,anchorTo",
-        "style",
+        -- "style",
         "size",
         "frameLevel",
     },
@@ -3505,17 +3505,17 @@ builder["style"] = function(parent)
     end)
 
     function pane.Load(t)
-        if t.id == "raidIcon" then
-            styleDropdown:SetItems({
-                {text = L["Blizzard"], value = "blizzard"},
-                {text = "AF", value = "af"},
-            })
-        else
+        -- if t.id == "raidIcon" then
+        --     styleDropdown:SetItems({
+        --         {text = L["Blizzard"], value = "blizzard"},
+        --         {text = "AF", value = "af"},
+        --     })
+        -- else
             styleDropdown:SetItems({
                 {text = L["Blizzard"], value = "blizzard"},
                 {text = "BFI", value = "bfi"},
             })
-        end
+        -- end
 
         pane.t = t
         styleDropdown:SetSelectedValue(t.cfg.style)

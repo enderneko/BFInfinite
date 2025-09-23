@@ -66,7 +66,7 @@ local function UpdateTarget(_, module, which, skipIndicatorUpdates)
 
     local config = UF.config.target
 
-    if not config.general.enabled then
+    if not (UF.config.general.enabled and config.general.enabled) then
         if target then
             UF.DisableIndicators(target)
             UnregisterUnitWatch(target)

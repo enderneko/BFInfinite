@@ -55,7 +55,7 @@ local function UpdatePet(_, module, which, skipIndicatorUpdates)
 
     local config = UF.config.pet
 
-    if not config.general.enabled then
+    if not (UF.config.general.enabled and config.general.enabled) then
         if pet then
             UF.DisableIndicators(pet)
             UnregisterUnitWatch(pet)

@@ -95,7 +95,7 @@ local function UpdateRaid(_, module, which, skipIndicatorUpdates)
 
     local config = UF.config.raid
 
-    if not config.general.enabled then
+    if not (UF.config.general.enabled and config.general.enabled) then
         if raid then
             UnregisterAttributeDriver(raid)
             for i = 1, 40 do

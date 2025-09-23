@@ -69,7 +69,7 @@ local function UpdatePlayer(_, module, which, skipIndicatorUpdates)
 
     local config = UF.config.player
 
-    if not config.general.enabled then
+    if not (UF.config.general.enabled and config.general.enabled) then
         if player then
             UF.DisableIndicators(player)
             UnregisterUnitWatch(player)

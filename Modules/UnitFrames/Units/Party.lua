@@ -87,7 +87,7 @@ local function UpdateParty(_, module, which, skipIndicatorUpdates)
 
     local config = UF.config.party
 
-    if not config.general.enabled then
+    if not (UF.config.general.enabled and config.general.enabled) then
         if party then
             UnregisterAttributeDriver(party)
             for i = 1, 5 do

@@ -28,7 +28,7 @@ local function CreateUnitFramesPanel()
     local subItems = {}
     local lastSelected = {}
 
-    local mainSwitch = AF.CreateSwitch(unitFramesPanel, 300, 20)
+    local mainSwitch = AF.CreateSwitch(unitFramesPanel, 370, 20)
     unitFramesPanel.mainSwitch = mainSwitch
     AF.SetPoint(mainSwitch, "TOPLEFT", 15, -15)
     -- AF.SetPoint(mainSwitch, "TOPRIGHT")
@@ -39,6 +39,7 @@ local function CreateUnitFramesPanel()
     AF.SetPoint(subSwitch, "RIGHT", unitFramesPanel, -15, 0)
 
     mainSwitch:SetLabels({
+        {text = L["General"], value = "general"},
         {text = L["Unit"], value = "unit"},
         {text = L["Target"], value = "target"},
         {text = L["Group"], value = "group"},
@@ -46,16 +47,27 @@ local function CreateUnitFramesPanel()
     })
 
     mainSwitch:SetOnSelect(function(value)
-        if not subItems[value] then
-            for _, name in pairs(subs[value]) do
-                subItems[value] = subItems[value] or {}
-                tinsert(subItems[value], {text = L[name], value = name, disabled = name == "Arena"})
-            end
-        end
+        if value == "general" then
+            unitFramesPanel.generalOptionsPane:Show()
+            unitFramesPanel.generalOptionsPane.Load()
+            unitFramesPanel.frameOptionsPane:Hide()
+            subSwitch:Hide()
+        else
+            unitFramesPanel.generalOptionsPane:Hide()
+            unitFramesPanel.frameOptionsPane:Show()
+            subSwitch:Show()
 
-        subSwitch:SetLabels(subItems[value])
-        subSwitch:SetSelectedValue(lastSelected[value] or subs[value][1])
-        subSwitch:UpdateLabelColors()
+            if not subItems[value] then
+                for _, name in pairs(subs[value]) do
+                    subItems[value] = subItems[value] or {}
+                    tinsert(subItems[value], {text = L[name], value = name, disabled = name == "Arena"})
+                end
+            end
+
+            subSwitch:SetLabels(subItems[value])
+            subSwitch:SetSelectedValue(lastSelected[value] or subs[value][1])
+            subSwitch:UpdateLabelColors()
+        end
     end)
 
     subSwitch:SetOnSelect(function(value)
@@ -212,26 +224,88 @@ local function CreateConfigModeWidgets()
 end
 
 ---------------------------------------------------------------------
--- content pane
+-- general options pane
 ---------------------------------------------------------------------
-local contentPane
-local function CreateContentPane()
-    -- content
-    contentPane = AF.CreateFrame(unitFramesPanel)
-    unitFramesPanel.contentPane = contentPane
-    AF.SetPoint(contentPane, "TOPLEFT", unitFramesPanel.subSwitch, "BOTTOMLEFT", 0, -10)
-    AF.SetPoint(contentPane, "BOTTOMRIGHT", -15, 15)
+local generalOptionsPane
+local function CreateGeneralOptionsPane()
+    generalOptionsPane = AF.CreateFrame(unitFramesPanel)
+    unitFramesPanel.generalOptionsPane = generalOptionsPane
+    AF.SetPoint(generalOptionsPane, "TOPLEFT", unitFramesPanel.mainSwitch, "BOTTOMLEFT", 0, -15)
+    AF.SetPoint(generalOptionsPane, "BOTTOMRIGHT", -15, 15)
+
+    AF.ApplyCombatProtectionToFrame(generalOptionsPane)
+
+    -- generalFrame
+    local generalFrame = AF.CreateBorderedFrame(generalOptionsPane, nil, nil, 70)
+    generalFrame:SetPoint("TOPLEFT")
+    generalFrame:SetPoint("TOPRIGHT")
+
+    -- enabled
+    local enabled = AF.CreateCheckButton(generalFrame, L["Enabled"])
+    AF.SetPoint(enabled, "LEFT", 10, 0)
+    enabled:SetOnCheck(function(checked)
+        UF.config.general.enabled = checked
+        enabled:SetTextColor(checked and "softlime" or "firebrick")
+        AF.Fire("BFI_UpdateModule", "unitFrames")
+    end)
+
+    -- strata
+    local strata = AF.CreateDropdown(generalFrame, 150)
+    AF.SetPoint(strata, "TOPLEFT", enabled, 150, -5)
+    strata:SetLabel(L["Frame Strata"])
+    strata:SetItems(AF.GetDropdownItems_FrameStrata())
+    strata:SetOnSelect(function(value)
+        UF.config.general.frameStrata = value
+        AF.Fire("BFI_UpdateModule", "unitFrames")
+    end)
+
+    -- raidIconStyle
+    local raidIconStyle = AF.CreateDropdown(generalFrame, 150)
+    AF.SetPoint(raidIconStyle, "TOPLEFT", strata, "TOPRIGHT", 60, 0)
+    raidIconStyle:SetLabel(L["Raid Icon Style"])
+    raidIconStyle:SetItems({
+        {text = L["Blizzard"], value = "blizzard"},
+        {text = "AF", value = "af"},
+    })
+    raidIconStyle:SetOnSelect(function(value)
+        UF.config.general.raidIconStyle = value
+        AF.Fire("BFI_UpdateModule", "unitFrames")
+    end)
+
+    -- presets frame
+    local presetsFrame = AF.CreateBorderedFrame(generalOptionsPane)
+    AF.SetPoint(presetsFrame, "TOPLEFT", generalFrame, "BOTTOMLEFT", 0, -15)
+    AF.SetPoint(presetsFrame, "BOTTOMRIGHT")
+
+    -- load
+    function generalOptionsPane.Load()
+        enabled:SetChecked(UF.config.general.enabled)
+        enabled:SetTextColor(UF.config.general.enabled and "softlime" or "firebrick")
+        strata:SetSelectedValue(UF.config.general.frameStrata)
+        raidIconStyle:SetSelectedValue(UF.config.general.raidIconStyle)
+    end
+end
+
+---------------------------------------------------------------------
+-- frame options pane
+---------------------------------------------------------------------
+local frameOptionsPane
+local function CreateFrameOptionsPane()
+    frameOptionsPane = AF.CreateFrame(unitFramesPanel)
+    unitFramesPanel.frameOptionsPane = frameOptionsPane
+    AF.SetPoint(frameOptionsPane, "TOPLEFT", unitFramesPanel.subSwitch, "BOTTOMLEFT", 0, -10)
+    AF.SetPoint(frameOptionsPane, "BOTTOMRIGHT", -15, 15)
 
     -- indicator list
-    local indicatorList = AF.CreateScrollList(contentPane, nil, 0, 0, 25, 20, -1)
-    contentPane.indicatorList = indicatorList
+    local indicatorList = AF.CreateScrollList(frameOptionsPane, nil, 0, 0, 25, 20, -1)
+    frameOptionsPane.indicatorList = indicatorList
     indicatorList:SetPoint("TOPLEFT")
     AF.SetWidth(indicatorList, 150)
 
     -- scroll settings frame
-    local scrollSettings = AF.CreateScrollFrame(contentPane, nil, nil, nil, "none", "none")
+    local scrollSettings = AF.CreateScrollFrame(frameOptionsPane, nil, nil, nil, "none", "none")
     scrollSettings.scrollBar:SetBackdropBorderColor(AF.GetColorRGB("border"))
-    contentPane.scrollSettings = scrollSettings
+    frameOptionsPane.scrollSettings = scrollSettings
     AF.SetPoint(scrollSettings, "TOPLEFT", indicatorList, "TOPRIGHT", 15, 0)
     AF.SetPoint(scrollSettings, "BOTTOM", indicatorList)
     AF.SetPoint(scrollSettings, "RIGHT")
@@ -339,7 +413,7 @@ local listItems = {}
 local lastIndicator, lastScroll
 
 local itemPool = AF.CreateObjectPool(function()
-    local button = AF.CreateButton(contentPane.indicatorList, "", "BFI_transparent", nil, nil, nil, "none", "")
+    local button = AF.CreateButton(frameOptionsPane.indicatorList, "", "BFI_transparent", nil, nil, nil, "none", "")
     button:EnablePushEffect(false)
     button:SetTextJustifyH("LEFT")
 
@@ -361,7 +435,7 @@ local function ListItem_LoadOptions(self)
 
     lastIndicator = self.id
 
-    local scroll = contentPane.scrollSettings
+    local scroll = frameOptionsPane.scrollSettings
     local options = F.GetUnitFrameOptions(scroll.scrollContent, self)
 
     local heights = {}
@@ -406,7 +480,7 @@ end
 LoadList = function(main, sub)
     curMain, curSub = main, sub
 
-    local list = contentPane.indicatorList
+    local list = frameOptionsPane.indicatorList
     list:Reset()
     itemPool:ReleaseAll()
     wipe(listItems)
@@ -446,10 +520,10 @@ LoadList = function(main, sub)
             if item.id == lastIndicator then
                 item:SilentClick()
                 if lastScroll then
-                    contentPane.indicatorList:SetScroll(lastScroll)
+                    frameOptionsPane.indicatorList:SetScroll(lastScroll)
                     lastScroll = nil
                 else
-                    contentPane.indicatorList:ScrollTo(i)
+                    frameOptionsPane.indicatorList:ScrollTo(i)
                 end
                 return
             end
@@ -460,9 +534,9 @@ LoadList = function(main, sub)
 end
 
 AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
-    if which ~= "unitFrames" or not contentPane then return end
+    if which ~= "unitFrames" or not frameOptionsPane then return end
     unitFramesPanel.subSwitch:UpdateLabelColors()
-    lastScroll = contentPane.indicatorList:GetScroll()
+    lastScroll = frameOptionsPane.indicatorList:GetScroll()
     LoadList(curMain, curSub) -- will load lastIndicator
 end)
 
@@ -474,8 +548,9 @@ AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
         if not unitFramesPanel then
             CreateUnitFramesPanel()
             CreateConfigModeWidgets()
-            CreateContentPane()
-            unitFramesPanel.mainSwitch:SetSelectedValue("unit")
+            CreateGeneralOptionsPane()
+            CreateFrameOptionsPane()
+            unitFramesPanel.mainSwitch:SetSelectedValue("general")
         end
         unitFramesPanel:Show()
     elseif unitFramesPanel then
