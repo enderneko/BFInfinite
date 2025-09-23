@@ -35,6 +35,7 @@ local GetBestMapForUnit = C_Map.GetBestMapForUnit
 local GetPlayerMapPosition = C_Map.GetPlayerMapPosition
 
 local UnitName = UnitName
+local UnitIsUnit = UnitIsUnit
 local UnitClassBase = AF.UnitClassBase
 
 ---------------------------------------------------------------------
@@ -823,9 +824,17 @@ local function CreatePingText()
     AF.CreateContinualFadeInOutAnimation(pingText, nil, 3)
 end
 
+local lastUnit, lastTime
+
 local function UpdatePingText(_, _, unit)
+    if unit:find("target$") or unit:find("^soft") then return end
+
     local name, server = UnitName(unit)
     if not name then return end
+
+    if lastUnit and UnitIsUnit(unit, lastUnit) and GetTime() - lastTime < 0.4 then return end
+    lastUnit = unit
+    lastTime = GetTime()
 
     local class = UnitClassBase(unit)
     if server and server ~= "" then

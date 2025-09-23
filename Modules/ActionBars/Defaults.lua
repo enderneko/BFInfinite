@@ -10,7 +10,7 @@ local defaults = {
         enabled = true,
         frameLevel = 1,
         frameStrata = "LOW",
-        flyoutSize = {32, 16},
+        flyoutSize = {32, 32},
         disableAutoAddSpells = true,
         tooltip = {
             enabled = true,
@@ -226,31 +226,26 @@ function AB.GetDefaults()
     return AF.Copy(defaults)
 end
 
-function AB.Reset()
-    BFI.vars.profile.actionBars = AF.Copy(defaults)
-    AB.config = BFI.vars.profile.actionBars
-end
-
 function AB.ResetGeneralAndShared()
     wipe(AB.config.general)
     wipe(AB.config.sharedButtonConfig)
-    AF.Merge(AB.config.general, AF.Copy(defaults.general))
-    AF.Merge(AB.config.sharedButtonConfig, AF.Copy(defaults.sharedButtonConfig))
+    AF.Merge(AB.config.general, defaults.general)
+    AF.Merge(AB.config.sharedButtonConfig, defaults.sharedButtonConfig)
 end
 
 function AB.ResetBar(bar)
     wipe(AB.config.barConfig[bar])
-    AF.Merge(AB.config.barConfig[bar], AF.Copy(defaults.barConfig[bar]))
+    AF.Merge(AB.config.barConfig[bar], defaults.barConfig[bar])
 end
 
 function AB.ResetVehicle()
     wipe(AB.config.vehicleExitButton)
-    AF.Merge(AB.config.vehicleExitButton, AF.Copy(defaults.vehicleExitButton))
+    AF.Merge(AB.config.vehicleExitButton, defaults.vehicleExitButton)
 end
 
 function AB.ResetExtra()
     wipe(AB.config.extraAbilityButtons)
-    AF.Merge(AB.config.extraAbilityButtons, AF.Copy(defaults.extraAbilityButtons))
+    AF.Merge(AB.config.extraAbilityButtons, defaults.extraAbilityButtons)
 end
 
 function AB.ResetVisibility(bar)
@@ -259,4 +254,14 @@ end
 
 function AB.ResetPaging(bar, class)
     AB.config.barConfig[bar].paging[class] = defaults.barConfig[bar].paging[class]
+end
+
+function AB.ResetToDefaults()
+    AB.ResetGeneralAndShared()
+    AB.ResetVehicle()
+    AB.ResetExtra()
+
+    for bar in next, AB.config.barConfig do
+        AB.ResetBar(bar)
+    end
 end

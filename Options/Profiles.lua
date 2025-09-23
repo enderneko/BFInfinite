@@ -914,7 +914,7 @@ local function CreateModuleCopyFrame()
         if from == "addon_default" then
             for _, module in next, modules do
                 wipe(BFIProfile[to][module])
-                AF.Merge(BFIProfile[to][module], F.GetModuleDefaults(AF.UpperFirst(module)))
+                AF.Merge(BFIProfile[to][module], F.GetModuleDefaults(F.GetModuleClassName(module)))
             end
         else
             for _, module in next, modules do

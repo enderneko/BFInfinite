@@ -51,11 +51,11 @@ end
 function E.ResetToDefaults(which)
     if not which then
          for k, v in next, defaults do
-            wipe(BFIConfig["enhancements"][k])
-            AF.Merge(BFIConfig["enhancements"][k], defaults[k])
+            wipe(E.config[k])
+            AF.Merge(E.config[k], v)
         end
     else
-        wipe(BFIConfig["enhancements"][which])
-        AF.Merge(BFIConfig["enhancements"][which], defaults[which])
+        wipe(E.config[which])
+        AF.Merge(E.config[which], defaults[which])
     end
 end

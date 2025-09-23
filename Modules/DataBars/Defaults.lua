@@ -95,8 +95,10 @@ end
 
 function DB.ResetToDefaults(which)
     if not which then
-        wipe(DB.config)
-        AF.Merge(DB.config, defaults)
+        for k, v in next, defaults do
+            wipe(DB.config[k])
+            AF.Merge(DB.config[k], v)
+        end
     else
         wipe(DB.config[which])
         AF.Merge(DB.config[which], defaults[which])

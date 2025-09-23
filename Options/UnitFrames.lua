@@ -415,8 +415,8 @@ LoadList = function(main, sub)
         else
             button:SetText(L[setting])
             button.cfg = cfg.indicators[setting]
-            button:SetTextColor(button.cfg.enabled and "white" or "disabled")
         end
+        button:SetTextColor(button.cfg.enabled and "white" or "disabled")
 
         button.id = setting
         button.ownerName = L[owner]

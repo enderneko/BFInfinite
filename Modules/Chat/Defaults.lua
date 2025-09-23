@@ -30,3 +30,8 @@ end)
 function C.GetDefaults()
     return AF.Copy(defaults)
 end
+
+function C.ResetToDefaults()
+    wipe(C.config)
+    AF.Merge(C.config, defaults)
+end

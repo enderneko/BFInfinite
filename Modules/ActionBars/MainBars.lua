@@ -434,7 +434,6 @@ AF.RegisterCallback("BFI_UpdateModule", UpdateMainBars)
 
 AF.RegisterCallback("BFI_UpdateModule", function(_, module, which)
     if module ~= "actionBars" then return end
-    if which == "flyout" then
-        ActionBar_FlyoutSpells()
-    end
+    if which and which ~= "flyout" then return end
+    ActionBar_FlyoutSpells()
 end)

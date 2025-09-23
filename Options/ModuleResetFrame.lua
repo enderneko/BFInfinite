@@ -13,16 +13,16 @@ local moduleResetFrame
 ---------------------------------------------------------------------
 -- resetter
 ---------------------------------------------------------------------
-local function ResetCommonModule(module)
-    BFI.modules[AF.UpperFirst(module)].ResetToDefaults()
-    AF.Fire("BFI_UpdateConfig", module)
-    AF.Fire("BFI_RefreshOptions", module)
+local function ResetCommonModule(moduleKey)
+    BFI.modules[F.GetModuleClassName(moduleKey)].ResetToDefaults()
+    AF.Fire("BFI_UpdateConfig", moduleKey)
+    AF.Fire("BFI_RefreshOptions", moduleKey)
 end
 
-local function ResetProfileModule(module)
-    BFI.modules[AF.UpperFirst(module)].ResetToDefaults()
-    AF.Fire("BFI_UpdateModule", module)
-    AF.Fire("BFI_RefreshOptions", module)
+local function ResetProfileModule(moduleKey)
+    BFI.modules[F.GetModuleClassName(moduleKey)].ResetToDefaults()
+    AF.Fire("BFI_UpdateModule", moduleKey)
+    AF.Fire("BFI_RefreshOptions", moduleKey)
 end
 
 local currentResetter

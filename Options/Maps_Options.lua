@@ -153,6 +153,12 @@ builder["enabled"] = function(parent)
         UpdateColor(checked)
         AF.Fire("BFI_UpdateModule", "maps", pane.t.map)
         pane.t:SetTextColor(checked and "white" or "disabled")
+
+        if pane.t.id:find("^general") and not checked then
+            local dialog = AF.GetDialog(BFIOptionsFrame_MapsPanel, L["A UI reload is required\nDo it now?"])
+            dialog:SetPoint("TOP", pane, "BOTTOM")
+            dialog:SetOnConfirm(ReloadUI)
+        end
     end)
 
     function pane.Load(t)

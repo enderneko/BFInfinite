@@ -17,38 +17,45 @@ end
 ---------------------------------------------------------------------
 -- module
 ---------------------------------------------------------------------
-local moduleLocalizedNames = {
+local moduleNames = {
     -- common
-    general = L["General"],
-    enhancements = L["Enhancements"],
-    colors = L["Colors"],
-    auras = L["Auras"],
+    general = {localized = L["General"]},
+    enhancements = {localized = L["Enhancements"], class = "Enhancements"},
+    colors = {localized = L["Colors"], class = "Colors"},
+    auras = {localized = L["Auras"], class = "Auras"},
     -- profile
-    actionBars = L["Action Bars"],
-    buffsDebuffs = L["Buffs & Debuffs"],
-    chat = L["Chat"],
-    dataBars = L["Data Bars"],
-    maps = L["Maps"],
-    nameplates = L["Nameplates"],
-    tooltip = L["Tooltip"],
-    uiWidgets = L["UI Widgets"],
-    unitFrames = L["Unit Frames"],
-    disableBlizzard = L["Disable Blizzard"],
+    actionBars = {localized = L["Action Bars"], class = "ActionBars"},
+    buffsDebuffs = {localized = L["Buffs & Debuffs"], class = "BuffsDebuffs"},
+    chat = {localized = L["Chat"], class = "Chat"},
+    dataBars = {localized = L["Data Bars"], class = "DataBars"},
+    maps = {localized = L["Maps"], class = "Maps"},
+    nameplates = {localized = L["Nameplates"], class = "Nameplates"},
+    tooltip = {localized = L["Tooltip"], class = "Tooltip"},
+    uiWidgets = {localized = L["UI Widgets"], class = "UIWidgets"},
+    unitFrames = {localized = L["Unit Frames"], class = "UnitFrames"},
+    disableBlizzard = {localized = L["Disable Blizzard"], class = "DisableBlizzard"},
     -- special
-    profiles = L["Profiles"],
-    about = L["About"],
+    profiles = {localized = L["Profiles"]},
+    about = {localized = L["About"]},
 }
 
+local moduleClassMap = {}
+for key, info in next, moduleNames do
+    if info.class then
+        moduleClassMap[info.class] = key
+    end
+end
+
 function F.GetModuleLocalizedName(moduleKey)
-    return moduleLocalizedNames[moduleKey] or moduleKey
+    return moduleNames[moduleKey] and moduleNames[moduleKey].localized or moduleKey
 end
 
 function F.GetModuleClassName(moduleKey)
-    return AF.UpperFirst(moduleKey)
+    return moduleNames[moduleKey] and moduleNames[moduleKey].class or AF.UpperFirst(moduleKey)
 end
 
 function F.GetModuleKey(moduleClassName)
-    return AF.LowerFirst(moduleClassName)
+    return moduleClassMap[moduleClassName] or AF.LowerFirst(moduleClassName)
 end
 
 function F.GetProfileModuleClassNames()

@@ -171,16 +171,16 @@ AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
     if which ~= "actionBars" or not contentPane then return end
     for _, button in next, contentPane.list:GetWidgets() do
         -- refresh cfg
-        if button.id == "general" then
-            button.cfg = AB.config.general
-            button.sharedCfg = AB.config.sharedButtonConfig
-        elseif button.id == "vehicle" then
-            button.cfg = AB.config.vehicleExitButton
-        elseif button.id == "extra" then
-            button.cfg = AB.config.extraAbilityButtons
-        else
-            button.cfg = AB.config.barConfig[button.id]
-        end
+        -- if button.id == "general" then
+        --     button.cfg = AB.config.general
+        --     button.sharedCfg = AB.config.sharedButtonConfig
+        -- elseif button.id == "vehicle" then
+        --     button.cfg = AB.config.vehicleExitButton
+        -- elseif button.id == "extra" then
+        --     button.cfg = AB.config.extraAbilityButtons
+        -- else
+        --     button.cfg = AB.config.barConfig[button.id]
+        -- end
         button:SetTextColor(button.cfg.enabled and "white" or "disabled")
     end
     LoadOptions(lastSelf)

@@ -290,6 +290,7 @@ local settings = {
 -- shared functions
 ---------------------------------------------------------------------
 local function LoadIndicatorConfig(t)
+    AF.Debug(AF.GetColorStr("darkgray"), "LoadIndicatorConfig", t.owner, t.id)
     if t.owner == "party" then
         for i = 1, 5 do
             UF.LoadIndicatorConfig(t.target.header[i], t.id, t.cfg)
@@ -552,7 +553,7 @@ builder["copy,paste,reset"] = function(parent)
             which = pane.t.id
         end
         local text = AF.WrapTextInColor(L["Reset to default settings?"], "BFI") .. "\n"
-            .. AF.WrapTextInColor("[" .. L[which] .. "]", "softlime") .. "\n"
+            .. AF.WrapTextInColor(L[which], "softlime") .. "\n"
             .. pane.t.ownerName
 
         local dialog = AF.GetDialog(BFIOptionsFrame_UnitFramesPanel, text, 250)
@@ -624,10 +625,10 @@ builder["enabled"] = function(parent)
         pane.t.cfg.enabled = checked
         UpdateColor(checked)
         -- pane.t is list button that carries info
+        pane.t:SetTextColor(checked and "white" or "disabled")
         if pane.t.id:find("^general") then
             AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner)
         else
-            pane.t:SetTextColor(checked and "white" or "disabled")
             LoadIndicatorConfig(pane.t)
         end
     end)

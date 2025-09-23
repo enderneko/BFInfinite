@@ -102,8 +102,10 @@ end
 
 function W.ResetToDefaults(which)
     if not which then
-        wipe(W.config)
-        AF.Merge(W.config, defaults)
+        for k, v in next, defaults do
+            wipe(W.config[k])
+            AF.Merge(W.config[k], v)
+        end
     else
         wipe(W.config[which])
         AF.Merge(W.config[which], defaults[which])

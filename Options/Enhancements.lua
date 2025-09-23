@@ -101,7 +101,9 @@ end
 
 AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
     if which ~= "enhancements" or not contentPane then return end
-    lastSelf:SetTextColor(lastSelf.cfg.enabled and "white" or "disabled")
+    for _, button in next, contentPane.list:GetWidgets() do
+        button:SetTextColor(button.cfg.enabled and "white" or "disabled")
+    end
     LoadOptions(lastSelf)
 end)
 

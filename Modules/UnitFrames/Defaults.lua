@@ -6355,23 +6355,23 @@ function UF.ResetFrame(frame, config)
     if config == "general" then
         wipe(UF.config[frame]["general"])
         if defaults[frame] then
-            AF.Merge(UF.config[frame]["general"], AF.Copy(defaults[frame]["general"]))
+            AF.Merge(UF.config[frame]["general"], defaults[frame]["general"])
         else
-            AF.Merge(UF.config[frame]["general"], AF.Copy(style1[frame]["general"]))
+            AF.Merge(UF.config[frame]["general"], style1[frame]["general"])
         end
     elseif config then -- indicator
         wipe(UF.config[frame]["indicators"][config])
         if defaults[frame] then
-            AF.Merge(UF.config[frame]["indicators"][config], AF.Copy(defaults[frame]["indicators"][config]))
+            AF.Merge(UF.config[frame]["indicators"][config], defaults[frame]["indicators"][config])
         else
-            AF.Merge(UF.config[frame]["indicators"][config], AF.Copy(style1[frame]["indicators"][config]))
+            AF.Merge(UF.config[frame]["indicators"][config], style1[frame]["indicators"][config])
         end
     else -- all
         wipe(UF.config[frame])
         if defaults[frame] then
-            AF.Merge(UF.config[frame], AF.Copy(defaults[frame]))
+            AF.Merge(UF.config[frame], defaults[frame])
         else
-            AF.Merge(UF.config[frame], AF.Copy(style1[frame]))
+            AF.Merge(UF.config[frame], style1[frame])
         end
     end
 end

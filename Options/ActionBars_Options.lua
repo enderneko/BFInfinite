@@ -140,6 +140,11 @@ builder["copy,paste,reset"] = function(parent)
                 elseif pane.t.id == "extra" then
                     AB.ResetExtra()
                     AF.Fire("BFI_UpdateModule", "actionBars", "extra")
+                elseif pane.t.id == "assistant" then
+                    AB.ResetAssistant()
+                    AF.Fire("BFI_UpdateModule", "actionBars", "main")
+                elseif pane.t.id == "cooldowns" then
+                    -- TODO: AB.ResetCooldowns()
                 else
                     AB.ResetBar(pane.t.id)
                     AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)

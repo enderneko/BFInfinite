@@ -112,11 +112,17 @@ end
 
 function M.ResetToDefaults(which, sub)
     if not which then
-        wipe(M.config)
-        AF.Merge(M.config, defaults)
+        for map, t in next, defaults do
+            for k, v in next, t do
+                wipe(M.config[map][k])
+                AF.Merge(M.config[map][k], v)
+            end
+        end
     elseif not sub then
-        wipe(M.config[which])
-        AF.Merge(M.config[which], defaults[which])
+        for k, v in next, defaults[which] do
+            wipe(M.config[which][k])
+            AF.Merge(M.config[which][k], v)
+        end
     else
         wipe(M.config[which][sub])
         AF.Merge(M.config[which][sub], defaults[which][sub])
