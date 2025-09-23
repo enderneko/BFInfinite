@@ -85,44 +85,44 @@ end
 ---------------------------------------------------------------------
 -- health states
 ---------------------------------------------------------------------
-local function UnitButton_UpdateHealthStates(self)
-    local unit = self.displayedUnit
-    if not unit then return end
+-- local function UnitButton_UpdateHealthStates(self)
+--     local unit = self.displayedUnit
+--     if not unit then return end
 
-    local health = UnitHealth(unit)
-    local healthMax = UnitHealthMax(unit)
+--     local health = UnitHealth(unit)
+--     local healthMax = UnitHealthMax(unit)
 
-    self.states.health = health
-    self.states.healthMax = healthMax
-    self.states.totalAbsorbs = UnitGetTotalAbsorbs(unit)
+--     self.states.health = health
+--     self.states.healthMax = healthMax
+--     self.states.totalAbsorbs = UnitGetTotalAbsorbs(unit)
 
-    if healthMax == 0 then
-        self.states.healthPercent = 0
-    else
-        self.states.healthPercent = health / healthMax
-    end
+--     if healthMax == 0 then
+--         self.states.healthPercent = 0
+--     else
+--         self.states.healthPercent = health / healthMax
+--     end
 
-    self.states.wasDead = self.states.isDead
-    self.states.isDead = health == 0
+--     self.states.wasDead = self.states.isDead
+--     self.states.isDead = health == 0
 
-    self.states.wasDeadOrGhost = self.states.isDeadOrGhost
-    self.states.isDeadOrGhost = UnitIsDeadOrGhost(unit)
+--     self.states.wasDeadOrGhost = self.states.isDeadOrGhost
+--     self.states.isDeadOrGhost = UnitIsDeadOrGhost(unit)
 
-    if self.states.wasDead ~= self.states.isDead or self.states.wasDeadOrGhost ~= self.states.isDeadOrGhost then
-    end
-end
+--     if self.states.wasDead ~= self.states.isDead or self.states.wasDeadOrGhost ~= self.states.isDeadOrGhost then
+--     end
+-- end
 
 ---------------------------------------------------------------------
 -- power states
 ---------------------------------------------------------------------
-local function UnitButton_UpdatePowerStates(self)
-    local unit = self.displayedUnit
-    if not unit then return end
+-- local function UnitButton_UpdatePowerStates(self)
+--     local unit = self.displayedUnit
+--     if not unit then return end
 
-    self.states.power = UnitPower(unit)
-    self.states.powerMax = UnitPowerMax(unit)
-    self.states.powerType, self.states.powerTypeToken = UnitPowerType(unit)
-end
+--     self.states.power = UnitPower(unit)
+--     self.states.powerMax = UnitPowerMax(unit)
+--     self.states.powerType, self.states.powerTypeToken = UnitPowerType(unit)
+-- end
 
 ---------------------------------------------------------------------
 -- all states
@@ -215,11 +215,11 @@ local function UnitButton_OnEvent(self, event, unit, arg)
         if  event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "UNIT_CONNECTION" then
             self._updateRequired = true
 
-        elseif event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" or event == "UNIT_ABSORB_AMOUNT_CHANGED" then
-            UnitButton_UpdateHealthStates(self)
+        -- elseif event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" or event == "UNIT_ABSORB_AMOUNT_CHANGED" then
+        --     UnitButton_UpdateHealthStates(self)
 
-        elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER" or event == "UNIT_DISPLAYPOWER" then
-            UnitButton_UpdatePowerStates(self)
+        -- elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER" or event == "UNIT_DISPLAYPOWER" then
+        --     UnitButton_UpdatePowerStates(self)
         end
 
     else

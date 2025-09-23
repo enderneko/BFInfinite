@@ -100,7 +100,7 @@ local default_blacklist = {
     213213, -- 伪装 - Masquerade
 }
 
-local style1 = {
+local preset1 = {
     player = {
         general = {
             enabled = true,
@@ -2690,7 +2690,7 @@ local style1 = {
     },
 }
 
-local style2 = {
+local preset2 = {
     player = {
         general = {
             enabled = true,
@@ -6307,13 +6307,13 @@ local defaults = {
 
 AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
     if not t["unitFrames"] then
-        t["unitFrames"] = AF.Copy(defaults, style1)
+        t["unitFrames"] = AF.Copy(defaults, preset1)
     end
     UF.config = t["unitFrames"]
 end)
 
 function UF.GetDefaults()
-    return AF.Copy(defaults, style1)
+    return AF.Copy(defaults, preset1)
 end
 
 function UF.ResetToDefaults()
@@ -6342,29 +6342,37 @@ function UF.ResetFrame(frame, config)
         if defaults[frame] then
             AF.Merge(UF.config[frame]["general"], defaults[frame]["general"])
         else
-            AF.Merge(UF.config[frame]["general"], style1[frame]["general"])
+            AF.Merge(UF.config[frame]["general"], preset1[frame]["general"])
         end
     elseif config then -- indicator
         wipe(UF.config[frame]["indicators"][config])
         if defaults[frame] then
             AF.Merge(UF.config[frame]["indicators"][config], defaults[frame]["indicators"][config])
         else
-            AF.Merge(UF.config[frame]["indicators"][config], style1[frame]["indicators"][config])
+            AF.Merge(UF.config[frame]["indicators"][config], preset1[frame]["indicators"][config])
         end
     else -- all
         wipe(UF.config[frame])
         if defaults[frame] then
             AF.Merge(UF.config[frame], defaults[frame])
         else
-            AF.Merge(UF.config[frame], style1[frame])
+            AF.Merge(UF.config[frame], preset1[frame])
         end
     end
 end
 
--- function UF.GetStyleDefaults(style)
---     if style == "style1" then
---         return AF.Copy(style1)
---     elseif style == "style2" then
---         return AF.Copy(style2)
---     end
--- end
+function UF.GetPreset(preset)
+    if preset == "preset1" then
+        return AF.Copy(preset1)
+    elseif preset == "preset2" then
+        return AF.Copy(preset2)
+    end
+end
+
+function UF.GetPresetPreview(preset)
+    if preset == "preset1" then
+        return AF.Copy(preset1.player)
+    elseif preset == "preset2" then
+        return AF.Copy(preset2.player)
+    end
+end

@@ -277,6 +277,52 @@ local function CreateGeneralOptionsPane()
     AF.SetPoint(presetsFrame, "TOPLEFT", generalFrame, "BOTTOMLEFT", 0, -15)
     AF.SetPoint(presetsFrame, "BOTTOMRIGHT")
 
+    local presetsLabel = AF.CreateFontString(presetsFrame, AF.GetGradientText(L["Unit Frame Presets"], "BFI", "white")
+        .. "\n" .. AF.WrapTextInColor(L["Want to share your amazing preset here? Contact me on Discord or KOOK"], "tip")
+    )
+    AF.SetPoint(presetsLabel, "TOPLEFT", 10, -10)
+    presetsLabel:SetJustifyH("LEFT")
+    presetsLabel:SetSpacing(5)
+
+    local presetsGrid = AF.CreateScrollGrid(presetsFrame, nil, 10, 10, 2, 2, nil, nil, 10, "none", "none")
+    AF.SetPoint(presetsGrid, "TOPLEFT", 0, -50)
+    AF.SetPoint(presetsGrid, "BOTTOMRIGHT")
+
+    local presets = {
+        "preset1",
+        "preset2",
+    }
+
+    local function CreatePresetFrame(index, preset)
+        local f = CreateFrame("Frame", nil, presetsFrame)
+
+        local config = UF.GetPresetPreview(preset)
+
+        local preview = AF.CreateFrame(f, "BFI_Preview" .. index)
+        preview:SetPoint("CENTER")
+
+        preview.unit = "player"
+        preview.displayedUnit = "player"
+        preview.states = {}
+        preview.indicators = {}
+
+        -- load general
+        AF.SetSize(preview, config.general.width, config.general.height)
+        AF.ApplyDefaultBackdropWithColors(preview, config.general.bgColor, config.general.borderColor)
+
+        -- load indicators
+        UF.CreateIndicators(preview, UF.previewIndicators)
+        UF.SetupIndicators(preview, UF.previewIndicators, config)
+
+        return f
+    end
+
+    local presetFrames = {}
+    for i, preset in next, presets do
+        tinsert(presetFrames, CreatePresetFrame(i, preset))
+    end
+    presetsGrid:SetWidgets(presetFrames)
+
     -- load
     function generalOptionsPane.Load()
         enabled:SetChecked(UF.config.general.enabled)
