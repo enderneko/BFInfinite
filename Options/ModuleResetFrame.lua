@@ -18,6 +18,7 @@ local currentResetter
 local resetters = {
     ["General"] = {
         requireReload = true,
+        isCommon = true,
         func = function()
             BFIConfig.general = nil
             AFConfig.accentColor = nil
@@ -26,12 +27,29 @@ local resetters = {
         end
     },
     ["Enhancements"] = {
+        isCommon = true,
         func = function()
             BFI.modules.Enhancements.ResetToDefaults()
             AF.Fire("BFI_UpdateConfig", "enhancements")
             AF.Fire("BFI_RefreshOptions", "enhancements")
         end
     },
+    ["Colors"] = {
+        isCommon = true,
+        func = function()
+            BFI.modules.Colors.ResetToDefaults()
+            AF.Fire("BFI_UpdateConfig", "colors")
+            AF.Fire("BFI_RefreshOptions", "colors")
+        end
+    },
+    ["Auras"] = {
+        isCommon = false,
+        func = function()
+            BFI.modules.Auras.ResetToDefaults()
+            AF.Fire("BFI_UpdateConfig", "auras")
+            AF.Fire("BFI_RefreshOptions", "auras")
+        end
+    }
 }
 
 AF.RegisterCallback("BFI_ShowOptionsPanel", function(_, id)
@@ -107,10 +125,19 @@ local function CreateModuleResetFrame()
     function moduleResetFrame:ShowUp()
         moduleResetFrame:Show()
 
-        text:SetText(L["Are you sure you want to reset the current module?"]
-            .. "\n" .. module .. AF.WrapTextInColor(L[currentResetter], "softlime")
-            .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")
-        )
+        if resetters[currentResetter].isCommon then
+            text:SetText(L["Are you sure you want to reset the current module?"]
+                .. "\n" .. module .. AF.WrapTextInColor(L[currentResetter], "softlime")
+                .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")
+            )
+        else
+            local profileName = BFI.vars.profileName == "default" and L["Default"] or BFI.vars.profileName
+            text:SetText(L["Are you sure you want to reset the current module?"]
+                .. "\n" .. module .. AF.WrapTextInColor(L[currentResetter], "softlime")
+                .. "\n" .. profile .. AF.WrapTextInColor(profileName, "vividblue")
+                .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")
+            )
+        end
 
         AF.FrameFadeIn(BFIOptionsFrame_ContentPane.mask)
         AF.FrameFadeIn(text)

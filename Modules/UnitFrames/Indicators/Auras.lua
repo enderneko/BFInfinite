@@ -370,7 +370,7 @@ AF.RegisterCallback("BFI_UpdateConfig", function(_, module)
             end
         end
     end
-end)
+end, "low")
 
 ---------------------------------------------------------------------
 -- config

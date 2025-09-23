@@ -219,7 +219,7 @@ local function CreateThreatPane()
     local highColorPicker = AF.CreateColorPicker(threatPane, L["High"], true)
     AF.SetPoint(highColorPicker, "TOPLEFT", mediumColorPicker, "BOTTOMLEFT", 0, -7)
 
-    local offtankColorPicker = AF.CreateColorPicker(threatPane, L["Offtank"], true)
+    local offtankColorPicker = AF.CreateColorPicker(threatPane, L["Off Tank"], true)
     AF.SetPoint(offtankColorPicker, "TOPLEFT", highColorPicker, "BOTTOMLEFT", 0, -7)
 
     function threatPane.Load()
@@ -240,6 +240,11 @@ local function Load()
     aurasPane.Load()
     threatPane.Load()
 end
+
+AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
+    if which ~= "colors" or not colorsPanel then return end
+    Load()
+end)
 
 ---------------------------------------------------------------------
 -- show

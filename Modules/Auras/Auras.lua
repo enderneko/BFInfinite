@@ -29,7 +29,7 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateAuras(_, module, which, operation, index, value)
+local function UpdateAuras(_, module, which)
     if module and module ~= "auras" then return end
 
     local config = A.config
@@ -41,4 +41,4 @@ local function UpdateAuras(_, module, which, operation, index, value)
         return
     end
 end
-AF.RegisterCallback("BFI_UpdateModule", UpdateAuras, "high")
+AF.RegisterCallback("BFI_UpdateConfig", UpdateAuras)

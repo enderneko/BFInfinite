@@ -28,11 +28,23 @@ AF.RegisterCallback("BFI_UpdateConfig", function(_, module)
         BFIConfig.auras = AF.Copy(defaults)
     end
     A.config = BFIConfig.auras
-end)
+end, "high")
 
 function A.GetDefaults(which)
     if which then
         return AF.Copy(defaults[which])
     end
     return AF.Copy(defaults)
+end
+
+function A.ResetToDefaults(which)
+    if not which then
+        for k, v in next, BFIConfig["auras"] do
+            wipe(BFIConfig["auras"][k])
+            AF.Merge(BFIConfig["auras"][k], defaults[k])
+        end
+    else
+        wipe(BFIConfig["auras"][which])
+        AF.Merge(BFIConfig["auras"][which], defaults[which])
+    end
 end

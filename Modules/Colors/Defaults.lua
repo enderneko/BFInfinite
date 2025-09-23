@@ -79,14 +79,14 @@ end
 
 function C.ResetToDefaults(which)
     if not which then
-        BFIConfig["colors"] = AF.Copy(defaults)
+        for k, v in next, BFIConfig["colors"] do
+            wipe(BFIConfig["colors"][k])
+            AF.Merge(BFIConfig["colors"][k], defaults[k])
+            AF.AddColors(BFIConfig["colors"][k])
+        end
     else
-        BFIConfig["colors"][which] = AF.Copy(defaults[which])
+        wipe(BFIConfig["colors"][which])
+        AF.Merge(BFIConfig["colors"][which], defaults[which])
+        AF.AddColors(BFIConfig["colors"][which])
     end
-
-    for _, t in next, BFIConfig["colors"] do
-        AF.AddColors(t)
-    end
-
-    -- TODO: fire
 end

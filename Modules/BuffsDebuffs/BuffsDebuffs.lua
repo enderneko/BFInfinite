@@ -22,7 +22,7 @@ local function CreateHeader(name, moverName, filter)
     header.filter = filter
 
     header:UnregisterEvent("UNIT_AURA")
-    header:RegisterUnitEvent("UNIT_AURA", "player", "vehicle")
+    -- header:RegisterUnitEvent("UNIT_AURA", "player", "vehicle")
     header:SetAttribute("unit", "player")
     RegisterAttributeDriver(header, "unit", "[vehicleui] vehicle;player")
 
@@ -198,6 +198,8 @@ local function GetAttributes(config)
 end
 
 local function SetupHeader(header, config)
+    header:RegisterUnitEvent("UNIT_AURA", "player", "vehicle")
+
     header.config = config
 
     header:SetAttribute("separateOwn", config.separateOwn)
@@ -227,16 +229,19 @@ end
 ---------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
-local function UpdateAuras(_, module, which)
-    if module and module ~= "auras" then return end
+local function UpdateBuffsDebuffs(_, module, which)
+    if module and module ~= "buffsDebuffs" then return end
 
     local config = BD.config
 
     if not config.enabled then
-        -- A:UnregisterAllEvents()
         if buffFrame and debuffFrame then
             buffFrame.enabled = false
+            buffFrame:Hide()
+            buffFrame:UnregisterEvent("UNIT_AURA")
             debuffFrame.enabled = false
+            debuffFrame:Hide()
+            debuffFrame:UnregisterEvent("UNIT_AURA")
         end
         return
     end
@@ -254,4 +259,4 @@ local function UpdateAuras(_, module, which)
     AF.LoadPosition(buffFrame, config.buffs.position)
     AF.LoadPosition(debuffFrame, config.debuffs.position)
 end
-AF.RegisterCallback("BFI_UpdateModule", UpdateAuras)
+AF.RegisterCallback("BFI_UpdateModule", UpdateBuffsDebuffs)

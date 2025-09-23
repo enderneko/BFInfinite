@@ -326,7 +326,7 @@ AF.RegisterCallback("BFI_UpdateConfig", function(_, module, which)
             end
         end
     end
-end)
+end, "low")
 
 ---------------------------------------------------------------------
 -- siblings

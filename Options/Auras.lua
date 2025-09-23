@@ -370,6 +370,11 @@ LoadList = function(which)
     contentPane.scroll:SetWidgets(items)
 end
 
+AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
+    if which ~= "auras" or not aurasPanel then return end
+    LoadList(currentList)
+end)
+
 ---------------------------------------------------------------------
 -- show
 ---------------------------------------------------------------------
