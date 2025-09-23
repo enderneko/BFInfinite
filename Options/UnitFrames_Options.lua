@@ -628,6 +628,7 @@ builder["enabled"] = function(parent)
         pane.t:SetTextColor(checked and "white" or "disabled")
         if pane.t.id:find("^general") then
             AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner)
+            AF.Fire("BFI_RefreshOptions", "unitFrames")
         else
             LoadIndicatorConfig(pane.t)
         end

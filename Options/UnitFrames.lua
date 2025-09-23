@@ -55,12 +55,26 @@ local function CreateUnitFramesPanel()
 
         subSwitch:SetLabels(subItems[value])
         subSwitch:SetSelectedValue(lastSelected[value] or subs[value][1])
+        subSwitch:UpdateLabelColors()
     end)
 
     subSwitch:SetOnSelect(function(value)
         lastSelected[mainSwitch:GetSelectedValue()] = value
         LoadList(mainSwitch:GetSelectedValue(), value)
     end)
+
+    function subSwitch:UpdateLabelColors()
+        for _, button in next, self.buttons do
+            if button:IsEnabled() then
+                local key = button.value:gsub(" ", ""):lower()
+                if UF.config[key].general.enabled then
+                    button:SetTextColor("white")
+                else
+                    button:SetTextColor("firebrick")
+                end
+            end
+        end
+    end
 end
 
 ---------------------------------------------------------------------
@@ -447,6 +461,7 @@ end
 
 AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
     if which ~= "unitFrames" or not contentPane then return end
+    unitFramesPanel.subSwitch:UpdateLabelColors()
     lastScroll = contentPane.indicatorList:GetScroll()
     LoadList(curMain, curSub) -- will load lastIndicator
 end)
