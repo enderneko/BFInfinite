@@ -8,6 +8,8 @@ local C = BFI.modules.Chat
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local IsMacroEditBox = IsMacroEditBox
+
 local CHAT_FRAMES = _G.CHAT_FRAMES
 local DEFAULT_CHAT_FRAME = _G.DEFAULT_CHAT_FRAME
 local CHAT_FRAME_TEXTURES = _G.CHAT_FRAME_TEXTURES
@@ -541,6 +543,8 @@ end
 
 local ChatTypeInfo = _G.ChatTypeInfo
 local function UpdateEditBox(editbox)
+    if IsMacroEditBox(editbox) then return end
+
     local chatType = editbox:GetAttribute("chatType")
     if not chatType then return end
 
