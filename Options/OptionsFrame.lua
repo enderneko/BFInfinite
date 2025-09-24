@@ -53,8 +53,7 @@ local function CreateButton(name)
     button:SetBackdropColor(AF.GetColorRGB("none"))
     button:SetEnabled(disabled == 0)
 
-    -- local highlight = AF.CreateTexture(button, nil, AF.GetColorTable("BFI", 0.6), "BORDER")
-    local highlight = AF.CreateGradientTexture(button, "HORIZONTAL", "BFI", "none", nil, "BORDER")
+    local highlight = AF.CreateGradientTexture(button, "HORIZONTAL", AF.GetColorTable("BFI", 0.9), AF.GetColorTable("BFI", 0), nil, "BORDER")
     button.highlight = highlight
     highlight:Hide()
     highlight:SetPoint("TOPLEFT")
