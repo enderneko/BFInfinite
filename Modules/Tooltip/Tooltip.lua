@@ -316,6 +316,8 @@ local function SaveRequiredLines(data, isPlayer, isAI)
             requiredIndex = i
         end
 
+        -- TODO: "美酒节宴会", i = 3, fetched as NPC faction...
+
         -- if not IGNORED_UNIT_LINES[line.type] or (leftText == UNIT_SKINNABLE_BOLTS or leftText == UNIT_SKINNABLE_LEATHER) then
         if requiredIndex and i >= requiredIndex and leftText ~= PVP and leftText ~= FACTION_HORDE and leftText ~= FACTION_ALLIANCE then
             if line.type == 8 then
