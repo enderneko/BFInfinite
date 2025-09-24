@@ -206,7 +206,7 @@ end
 ---------------------------------------------------------------------
 -- empower pips
 ---------------------------------------------------------------------
-local PIP_START_ALPHA = 0.3
+local PIP_START_ALPHA = 0.4
 local PIP_HIT_ALPHA = 1
 local PIP_FADED_ALPHA = 0.7
 local PIP_FADE_TIME = 0.4
