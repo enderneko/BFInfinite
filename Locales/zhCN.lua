@@ -19,11 +19,11 @@ local L = select(2, ...).L
 
 L["ABOUT"] = "BFI 是一款为魔兽世界设计的插件套件，灵感来源于 ElvUI，集成了单位框体、动作条、姓名版、界面美化等多种功能。\n插件采用高度自定义和简洁的设计理念，旨在为玩家带来前所未有的插件体验。\n未来还将不断加入更多实用功能，满足不同玩家的个性化需求。"
 L["Toggle BFI options"] = "显示/隐藏 BFI 选项"
-L["Reset all settings"] = "重置所有设置"
 L["This action cannot be undone"] = "此操作无法撤消"
-L["Are you sure you want to reset all BFI settings?"] = "确定要重置所有 BFI 设置吗？"
 L["Hold %s while clicking to reset all settings"] = "按住 %s 并点击以重置所有设置"
-L["Are you sure you want to reset the current module?"] = "确定要重置当前模块吗？"
+L["Are you sure you want to reset all BFI settings?"] = "确定要重置所有 BFI 设置吗？"
+L["Apply this preset?"] = "要应用此预设吗？"
+L["Reset current module?"] = "要重置当前模块吗？"
 L["Reset Current Module"] = "重置当前模块"
 
 ---------------------------------------------------------------------
@@ -106,7 +106,6 @@ L["Global Priorities"] = "全局优先级"
 L["Global Colors"] = "全局颜色"
 L["Currently, these colors are only used for block-type buff indicators on Unit Frames"] = "当前，这些颜色仅用于单位框体上色块类型的增益指示器"
 L["Input Spell ID"] = "输入法术ID"
-L["Reset %s?"] = "重置%s？"
 
 ---------------------------------------------------------------------
 -- unit frames
@@ -115,7 +114,6 @@ L["Unit Frames"] = "单位框体"
 L["Hold %s while clicking to copy all settings for this unit frame"] = "按住 %s 并点击以复制此单位框体的所有设置"
 L["Hold %s while clicking to reset all settings for this unit frame"] = "按住 %s 并点击以重置此单位框体的所有设置"
 L["Overwrite with copied config?"] = "用复制的配置覆盖？"
-L["Reset to default settings?"] = "重置为默认设置？"
 L["Unit Frame"] = "单位框体"
 L["Unit"] = "单位"
 L["Group"] = "群组"

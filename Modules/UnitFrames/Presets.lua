@@ -1,10 +1,14 @@
 ---@class BFI
 local BFI = select(2, ...)
+local L = BFI.L
 ---@class UnitFrames
 local UF = BFI.modules.UnitFrames
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+---------------------------------------------------------------------
+-- built-in presets
+---------------------------------------------------------------------
 local default_whitelist = {
     -- druid
     8936, -- 愈合 - Regrowth
@@ -100,7 +104,1037 @@ local default_blacklist = {
     213213, -- 伪装 - Masquerade
 }
 
-local preset1 = {
+local default_general = {
+    general = {
+        enabled = true,
+        frameStrata = "LOW",
+        raidIconStyle = "af", -- af, blizzard
+    },
+}
+
+local default_groups = {
+        party = {
+        general = {
+            enabled = true,
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
+            position = {"BOTTOM", -550, 300},
+            anchor = "BOTTOM",
+            orientation = "bottom_to_top",
+            showPlayer = false,
+            sortMethod = "INDEX",
+            sortDir = "ASC",
+            groupBy = nil,
+            groupingOrder = "",
+            spacing = 20,
+            width = 129,
+            height = 25,
+            oorAlpha = 0.45,
+            tooltip = {
+                enabled = true,
+                anchorTo = "self",
+                position = {"LEFT", "RIGHT", 1, 0},
+            },
+        },
+        indicators = {
+            healthBar = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                anchorTo = "root",
+                frameLevel = 3,
+                -- orientation = "HORIZONTAL",
+                width = 129,
+                height = 20,
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss"), gradient = "disabled"},
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
+                texture = "AF",
+                smoothing = false,
+                mouseoverHighlight = {
+                    enabled = false,
+                    color = AF.GetColorTable("white", 0.05)
+                },
+                healPrediction = {
+                    enabled = true,
+                    useCustomColor = true,
+                    color = AF.GetColorTable("heal_prediction"),
+                },
+                shield = {
+                    enabled = true,
+                    texture = "default",
+                    color = AF.GetColorTable("shield", 0.4),
+                    reverseFill = true,
+                },
+                overshieldGlow = {
+                    enabled = true,
+                    color = AF.GetColorTable("shield", 0.9),
+                },
+                healAbsorb = {
+                    enabled = true,
+                    texture = "default",
+                    color = AF.GetColorTable("absorb", 0.7),
+                },
+                overabsorbGlow = {
+                    enabled = true,
+                    color = AF.GetColorTable("absorb"),
+                },
+                dispelHighlight = {
+                    enabled = true,
+                    alpha = 0.5,
+                    blendMode = "ADD",
+                    dispellable = true,
+                },
+            },
+            powerBar = {
+                enabled = true,
+                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0},
+                anchorTo = "root",
+                frameLevel = 5,
+                -- orientation = "HORIZONTAL",
+                width = 129,
+                height = 4,
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power"), gradient = "disabled"},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
+                texture = "AF",
+                smoothing = false,
+                frequent = false,
+            },
+            nameText = {
+                enabled = true,
+                position = {"LEFT", "LEFT", 3, 0},
+                anchorTo = "healthBar",
+                parent = "healthBar",
+                length = 0.7,
+                font = {"BFI", 12, "none", true},
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
+            },
+            healthText = {
+                enabled = true,
+                position = {"RIGHT", "RIGHT", -3, 0},
+                anchorTo = "healthBar",
+                parent = "healthBar",
+                font = {"BFI", 12, "none", true},
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
+                format = {
+                    numeric = "none",
+                    percent = "current_absorbs_sum_decimal",
+                    delimiter = " | ",
+                    showPercentSign = true,
+                    useAsianUnits = false,
+                },
+                hideIfFull = true,
+            },
+            powerText = {
+                enabled = false,
+                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
+                anchorTo = "powerBar",
+                parent = "powerBar",
+                font = {"Visitor", 9, "monochrome_outline", false},
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
+                frequent = true,
+                format = {
+                    numeric = "current_short",
+                    percent = "none",
+                    delimiter = " | ",
+                    showPercentSign = true,
+                    useAsianUnits = false,
+                },
+                hideIfFull = true,
+                hideIfEmpty = false,
+            },
+            leaderText = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 3, -0.5},
+                anchorTo = "powerBar",
+                parent = "powerBar",
+                font = {"Visitor", 9, "monochrome_outline", false},
+                color = {type = "custom_color", rgb = AF.GetColorTable("red")}, -- class/custom
+            },
+            levelText = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPRIGHT", 0, 0},
+                anchorTo = "leaderText",
+                parent = "powerBar",
+                font = {"Visitor", 9, "monochrome_outline", false},
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
+            },
+            targetCounter = {
+                enabled = false,
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
+                anchorTo = "levelText",
+                parent = "powerBar",
+                font = {"Visitor", 9, "monochrome_outline", false},
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
+            },
+            statusTimer = {
+                enabled = true,
+                position = {"TOPRIGHT", "TOPRIGHT", 0, -1},
+                anchorTo = "powerBar",
+                parent = "powerBar",
+                font = {"Visitor", 9, "monochrome_outline", false},
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
+                useEn = true,
+                showTimer = true,
+            },
+            portrait = {
+                enabled = false,
+                style = "3d", -- 3d, 2d, class_icon
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                anchorTo = "healthBar",
+                frameLevel = 1,
+                width = 129,
+                height = 20,
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
+                model = {
+                    xOffset = 0, -- [-100, 100]
+                    yOffset = 0, -- [-100, 100]
+                    rotation = 0, -- [0, 360]
+                    camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
+                },
+                -- cutaway = true, --! anchorTo == "healthBar" & style == "3d"
+            },
+            castBar = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
+                anchorTo = "root",
+                frameLevel = 5,
+                width = 129,
+                height = 4,
+                bgColor = AF.GetColorTable("background", 0.5),
+                borderColor = AF.GetColorTable("border"),
+                texture = "AF",
+                fadeDuration = 1,
+                showIcon = false,
+                interruptibleCheck = {
+                    enabled = false,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
+                nameText = {
+                    enabled = false,
+                    font = {"BFI", 12, "none", true},
+                    position = {"LEFT", "LEFT", 23, 0},
+                    color = AF.GetColorTable("white"),
+                    length = 0.5,
+                    showInterruptSource = true,
+                },
+                durationText = {
+                    enabled = false,
+                    font = {"BFI", 12, "none", true},
+                    position = {"RIGHT", "RIGHT", -3, 0},
+                    format = "%.1f",
+                    color = AF.GetColorTable("white"),
+                    showDelay = false,
+                },
+                spark = {
+                    enabled = true,
+                    texture = "plain",
+                    width = 1,
+                    height = 0,
+                },
+            },
+            combatIcon = {
+                enabled = true,
+                position = {"CENTER", "BOTTOMRIGHT", 0, 1},
+                anchorTo = "healthBar",
+                frameLevel = 10,
+                size = 8,
+            },
+            leaderIcon = {
+                enabled = false,
+                position = {"CENTER", "TOPLEFT", 2, -1},
+                anchorTo = "root",
+                frameLevel = 10,
+                size = 10,
+            },
+            statusIcon = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, 0},
+                anchorTo = "healthBar",
+                frameLevel = 15,
+                size = 16,
+            },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 1, 0},
+                anchorTo = "root",
+                frameLevel = 10,
+                size = 12,
+            },
+            readyCheckIcon = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, 0},
+                anchorTo = "healthBar",
+                frameLevel = 20,
+                size = 15,
+            },
+            roleIcon = {
+                enabled = true,
+                position = {"CENTER", "BOTTOMLEFT", 1, 1},
+                anchorTo = "healthBar",
+                frameLevel = 10,
+                size = 10,
+                hideDamager = true,
+            },
+            factionIcon = {
+                enabled = true,
+                position = {"CENTER", "TOPLEFT", 1, -1},
+                anchorTo = "root",
+                frameLevel = 10,
+                size = 13,
+            },
+            targetHighlight = {
+                enabled = true,
+                frameLevel = 1,
+                size = 1,
+                color = AF.GetColorTable("target_highlight"),
+            },
+            mouseoverHighlight = {
+                enabled = true,
+                frameLevel = 2,
+                size = 1,
+                color = AF.GetColorTable("mouseover_highlight"),
+            },
+            threatGlow = {
+                enabled = true,
+                size = 3,
+                alpha = 1,
+            },
+            buffs = {
+                enabled = true,
+                position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
+                anchorTo = "root",
+                orientation = "right_to_left",
+                cooldownStyle = "vertical",
+                width = 12,
+                height = 12,
+                spacingX = 1,
+                spacingY = 1,
+                numPerLine = 10,
+                numTotal = 10,
+                frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
+                },
+                durationText = {
+                    enabled = false,
+                    font = {"Visitor", 9, "monochrome_outline", false},
+                    position = {"TOP", "TOP", 1, 1},
+                    color = {
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"Visitor", 9, "monochrome_outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AF.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = false,
+                    castByUnit = false,
+                    castByNPC = false,
+                    isBossAura = false,
+                    dispellable = nil,
+                },
+                mode = "blacklist",
+                blacklist = {},
+                whitelist = {},
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = nil,
+                    debuffType = nil,
+                },
+            },
+            debuffs = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPRIGHT", 1, 0},
+                anchorTo = "root",
+                orientation = "left_to_right",
+                cooldownStyle = "none",
+                width = 19,
+                height = 19,
+                spacingX = 1,
+                spacingY = 1,
+                numPerLine = 3,
+                numTotal = 6,
+                frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
+                },
+                durationText = {
+                    enabled = true,
+                    font = {"BFI", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 1},
+                    color = {
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AF.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = true,
+                    castByUnit = true,
+                    castByNPC = true,
+                    isBossAura = true,
+                    dispellable = true,
+                },
+                mode = "blacklist",
+                blacklist = {},
+                whitelist = {},
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = true,
+                    debuffType = true,
+                },
+            },
+            privateAuras = {
+                enabled = false,
+            },
+        },
+    },
+    raid = {
+        general = {
+            enabled = true,
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
+            position = {"BOTTOMRIGHT", -5, 250},
+            anchor = "TOPLEFT",
+            orientation = "top_to_bottom_then_right",
+            sortMethod = "INDEX",
+            sortDir = "ASC",
+            groupBy = nil,
+            groupingOrder = "",
+            spacingY = 3,
+            spacingX = 3,
+            groupFilter = "6,2,1,3,4,5",
+            maxColumns = 6,
+            unitsPerColumn = 5,
+            width = 65,
+            height = 40,
+            oorAlpha = 0.45,
+            tooltip = {
+                enabled = true,
+                anchorTo = "parent",
+                position = {"BOTTOMLEFT", "TOPLEFT", 0, 15},
+            },
+        },
+        indicators = {
+            healthBar = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                anchorTo = "root",
+                frameLevel = 3,
+                -- orientation = "HORIZONTAL",
+                width = 65,
+                height = 40,
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss"), gradient = "disabled"},
+                bgColor = AF.GetColorTable("background", 0),
+                borderColor = AF.GetColorTable("border"),
+                texture = "AF",
+                smoothing = false,
+                mouseoverHighlight = {
+                    enabled = false,
+                    color = AF.GetColorTable("white", 0.05)
+                },
+                healPrediction = {
+                    enabled = true,
+                    useCustomColor = true,
+                    color = AF.GetColorTable("heal_prediction"),
+                },
+                shield = {
+                    enabled = true,
+                    texture = "default",
+                    color = AF.GetColorTable("shield", 0.4),
+                    reverseFill = false,
+                },
+                overshieldGlow = {
+                    enabled = true,
+                    color = AF.GetColorTable("shield", 0.9),
+                },
+                healAbsorb = {
+                    enabled = true,
+                    texture = "default",
+                    color = AF.GetColorTable("absorb", 0.7),
+                },
+                overabsorbGlow = {
+                    enabled = true,
+                    color = AF.GetColorTable("absorb"),
+                },
+                dispelHighlight = {
+                    enabled = true,
+                    alpha = 0.5,
+                    blendMode = "ADD",
+                    dispellable = true,
+                },
+            },
+            powerBar = {
+                enabled = true,
+                position = {"BOTTOM", "BOTTOM", 0, -2},
+                anchorTo = "root",
+                frameLevel = 6,
+                -- orientation = "HORIZONTAL",
+                width = 49,
+                height = 5,
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power"), gradient = "disabled"},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
+                texture = "AF",
+                smoothing = false,
+                frequent = false,
+            },
+            nameText = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, 0},
+                anchorTo = "healthBar",
+                parent = "healthBar",
+                length = 0.75,
+                font = {"BFI", 12, "none", true},
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
+            },
+            healthText = {
+                enabled = false,
+                position = {"TOP", "BOTTOM", 0, -1},
+                anchorTo = "nameText",
+                parent = "healthBar",
+                font = {"BFI", 12, "none", true},
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
+                format = {
+                    numeric = "none",
+                    percent = "current",
+                    delimiter = " | ",
+                    showPercentSign = true,
+                    useAsianUnits = false,
+                },
+                hideIfFull = true,
+            },
+            leaderIcon = {
+                enabled = true,
+                position = {"CENTER", "LEFT", 4, 1},
+                anchorTo = "healthBar",
+                frameLevel = 5,
+                size = 10,
+            },
+            statusTimer = {
+                enabled = true,
+                position = {"BOTTOM", "BOTTOM", 0, 4},
+                anchorTo = "healthBar",
+                parent = "healthBar",
+                font = {"Visitor", 9, "monochrome", true},
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
+                useEn = true,
+                showTimer = false,
+            },
+            statusIcon = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, 0},
+                anchorTo = "healthBar",
+                frameLevel = 5,
+                size = 16,
+            },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 1, -3},
+                anchorTo = "root",
+                frameLevel = 5,
+                size = 10,
+            },
+            readyCheckIcon = {
+                enabled = true,
+                position = {"CENTER", "CENTER", 0, 0},
+                anchorTo = "healthBar",
+                frameLevel = 20,
+                size = 15,
+            },
+            roleIcon = {
+                enabled = true,
+                position = {"CENTER", "TOPLEFT", 4, -4},
+                anchorTo = "healthBar",
+                frameLevel = 5,
+                size = 10,
+                hideDamager = true,
+            },
+            targetHighlight = {
+                enabled = true,
+                frameLevel = 4,
+                size = 1,
+                color = AF.GetColorTable("target_highlight"),
+            },
+            mouseoverHighlight = {
+                enabled = true,
+                frameLevel = 5,
+                size = 1,
+                color = AF.GetColorTable("mouseover_highlight"),
+            },
+            threatGlow = {
+                enabled = false,
+                size = 3,
+                alpha = 1,
+            },
+            buffs = {
+                enabled = true,
+                position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
+                anchorTo = "root",
+                orientation = "right_to_left",
+                cooldownStyle = "vertical",
+                width = 12,
+                height = 12,
+                spacingX = 0,
+                spacingY = 0,
+                numPerLine = 4,
+                numTotal = 4,
+                frameLevel = 10,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
+                },
+                durationText = {
+                    enabled = false,
+                    font = {"Visitor", 9, "monochrome_outline", false},
+                    position = {"TOP", "TOP", 1, 1},
+                    color = {
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"Visitor", 9, "monochrome_outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AF.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = false,
+                    castByUnit = false,
+                    castByNPC = false,
+                    isBossAura = false,
+                    dispellable = nil,
+                },
+                mode = "whitelist",
+                blacklist = {},
+                whitelist = AF.Copy(default_whitelist),
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = nil,
+                    debuffType = nil,
+                },
+            },
+            debuffs = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
+                anchorTo = "root",
+                orientation = "left_to_right",
+                cooldownStyle = "vertical",
+                width = 12,
+                height = 12,
+                spacingX = 0,
+                spacingY = 0,
+                numPerLine = 4,
+                numTotal = 4,
+                frameLevel = 10,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
+                },
+                durationText = {
+                    enabled = false,
+                    font = {"Visitor", 9, "monochrome_outline", false},
+                    position = {"TOP", "TOP", 1, 1},
+                    color = {
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"Visitor", 9, "monochrome_outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AF.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = true,
+                    castByUnit = true,
+                    castByNPC = true,
+                    isBossAura = true,
+                    dispellable = true,
+                },
+                mode = "blacklist",
+                blacklist = AF.Copy(default_blacklist),
+                whitelist = {},
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = true,
+                    debuffType = true,
+                },
+            },
+            privateAuras = {
+                enabled = false,
+            },
+        },
+    },
+    boss = {
+        general = {
+            enabled = true,
+            bgColor = AF.GetColorTable("none"),
+            borderColor = AF.GetColorTable("none"),
+            position = {"BOTTOM", 406, 345},
+            anchor = "BOTTOM",
+            orientation = "bottom_to_top",
+            spacing = 15,
+            width = 129,
+            height = 25,
+            oorAlpha = 0.45,
+            tooltip = {
+                enabled = false,
+                anchorTo = "self",
+                position = {"LEFT", "RIGHT", 1, 0},
+            },
+        },
+        indicators = {
+            healthBar = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                anchorTo = "root",
+                frameLevel = 3,
+                -- orientation = "HORIZONTAL",
+                width = 129,
+                height = 20,
+                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
+                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss"), gradient = "disabled"},
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
+                texture = "AF",
+                smoothing = false,
+                mouseoverHighlight = {
+                    enabled = false,
+                    color = AF.GetColorTable("white", 0.05)
+                },
+                healPrediction = {
+                    enabled = true,
+                    useCustomColor = true,
+                    color = AF.GetColorTable("heal_prediction"),
+                },
+                shield = {
+                    enabled = true,
+                    texture = "default",
+                    color = AF.GetColorTable("shield", 0.4),
+                    reverseFill = true,
+                },
+                overshieldGlow = {
+                    enabled = true,
+                    color = AF.GetColorTable("shield", 0.9),
+                },
+                healAbsorb = {
+                    enabled = true,
+                    texture = "default",
+                    color = AF.GetColorTable("absorb", 0.7),
+                },
+                overabsorbGlow = {
+                    enabled = true,
+                    color = AF.GetColorTable("absorb"),
+                },
+                dispelHighlight = {
+                    enabled = true,
+                    alpha = 0.5,
+                    blendMode = "ADD",
+                    dispellable = true,
+                },
+            },
+            powerBar = {
+                enabled = true,
+                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0},
+                anchorTo = "root",
+                frameLevel = 5,
+                -- orientation = "HORIZONTAL",
+                width = 129,
+                height = 4,
+                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power"), gradient = "disabled"},
+                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
+                texture = "AF",
+                smoothing = false,
+                frequent = false,
+            },
+            nameText = {
+                enabled = true,
+                position = {"LEFT", "LEFT", 3, 0},
+                anchorTo = "healthBar",
+                parent = "healthBar",
+                length = 0.5,
+                font = {"BFI", 12, "none", true},
+                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
+            },
+            healthText = {
+                enabled = true,
+                position = {"RIGHT", "RIGHT", -3, 0},
+                anchorTo = "healthBar",
+                parent = "healthBar",
+                font = {"BFI", 12, "none", true},
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
+                format = {
+                    numeric = "none",
+                    percent = "current_absorbs_sum_decimal",
+                    delimiter = " | ",
+                    showPercentSign = true,
+                    useAsianUnits = false,
+                },
+                hideIfFull = false,
+            },
+            powerText = {
+                enabled = true,
+                position = {"TOPRIGHT", "TOPRIGHT", -1, -0.5},
+                anchorTo = "powerBar",
+                parent = "powerBar",
+                font = {"Visitor", 9, "monochrome_outline", false},
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
+                frequent = false,
+                format = {
+                    numeric = "current_short",
+                    percent = "none",
+                    delimiter = " | ",
+                    showPercentSign = true,
+                    useAsianUnits = false,
+                },
+                hideIfFull = false,
+                hideIfEmpty = true,
+            },
+            levelText = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 3, -0.5},
+                anchorTo = "powerBar",
+                parent = "powerBar",
+                font = {"Visitor", 9, "monochrome_outline", false},
+                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
+            },
+            targetCounter = {
+                enabled = true,
+                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
+                anchorTo = "levelText",
+                parent = "powerBar",
+                font = {"Visitor", 9, "monochrome_outline", false},
+                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
+            },
+            portrait = {
+                enabled = false,
+                style = "3d", -- 3d, 2d, class_icon
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                anchorTo = "healthBar",
+                frameLevel = 1,
+                width = 129,
+                height = 20,
+                bgColor = AF.GetColorTable("background", 1),
+                borderColor = AF.GetColorTable("border"),
+                model = {
+                    xOffset = 0, -- [-100, 100]
+                    yOffset = 0, -- [-100, 100]
+                    rotation = 0, -- [0, 360]
+                    camDistanceScale = 1.75,
+                    x1Fix = 1,
+                    y1Fix = -0.5,
+                    x2Fix = -1.5,
+                    y2Fix = 2,
+                },
+                -- cutaway = true, --! anchorTo == "healthBar" & style == "3d"
+            },
+            castBar = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPLEFT", 0, 0},
+                anchorTo = "powerBar",
+                frameLevel = 10,
+                width = 129,
+                height = 15,
+                bgColor = AF.GetColorTable("background"),
+                borderColor = AF.GetColorTable("border"),
+                texture = "AF",
+                fadeDuration = 1,
+                showIcon = true,
+                interruptibleCheck = {
+                    enabled = true,
+                    requireUsable = true,
+                    showTexture = true,
+                    colorBorder = true,
+                },
+                nameText = {
+                    enabled = true,
+                    font = {"BFI", 12, "none", true},
+                    position = {"LEFT", "LEFT", 17, 0},
+                    color = AF.GetColorTable("white"),
+                    length = 0.5,
+                    showInterruptSource = true,
+                },
+                durationText = {
+                    enabled = true,
+                    font = {"BFI", 12, "none", true},
+                    position = {"RIGHT", "RIGHT", -3, 0},
+                    format = "%.1f",
+                    color = AF.GetColorTable("white"),
+                    showDelay = false,
+                },
+                spark = {
+                    enabled = true,
+                    texture = "plain",
+                    width = 1,
+                    height = 0,
+                },
+            },
+            raidIcon = {
+                enabled = true,
+                position = {"CENTER", "TOP", 1, 0},
+                anchorTo = "root",
+                frameLevel = 10,
+                size = 12,
+            },
+            targetHighlight = {
+                enabled = true,
+                frameLevel = 1,
+                size = 1,
+                color = AF.GetColorTable("target_highlight"),
+            },
+            mouseoverHighlight = {
+                enabled = true,
+                frameLevel = 2,
+                size = 1,
+                color = AF.GetColorTable("mouseover_highlight"),
+            },
+            buffs = {
+                enabled = true,
+                position = {"TOPLEFT", "TOPRIGHT", 1, 0},
+                anchorTo = "root",
+                orientation = "left_to_right",
+                cooldownStyle = "none",
+                width = 19,
+                height = 19,
+                spacingX = 1,
+                spacingY = 1,
+                numPerLine = 3,
+                numTotal = 3,
+                frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
+                },
+                durationText = {
+                    enabled = true,
+                    font = {"BFI", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 1},
+                    color = {
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AF.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = true,
+                    castByUnit = true,
+                    castByNPC = true,
+                    isBossAura = true,
+                    dispellable = nil,
+                },
+                mode = "blacklist",
+                blacklist = {},
+                whitelist = {},
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = nil,
+                    debuffType = nil,
+                },
+            },
+            debuffs = {
+                enabled = true,
+                position = {"TOPRIGHT", "TOPLEFT", -1, 0},
+                anchorTo = "root",
+                orientation = "right_to_left",
+                cooldownStyle = "none",
+                width = 19,
+                height = 19,
+                spacingX = 1,
+                spacingY = 1,
+                numPerLine = 3,
+                numTotal = 3,
+                frameLevel = 1,
+                tooltip = {
+                    enabled = true,
+                    anchorTo = "self",
+                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
+                },
+                durationText = {
+                    enabled = true,
+                    font = {"BFI", 10, "outline", false},
+                    position = {"TOP", "TOP", 1, 1},
+                    color = {
+                        normal = AF.GetColorTable("white"), -- normal
+                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
+                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
+                    },
+                },
+                stackText = {
+                    enabled = true,
+                    font = {"BFI", 10, "outline", false},
+                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
+                    color = AF.GetColorTable("white"),
+                },
+                filters = {
+                    castByMe = true,
+                    castByOthers = false,
+                    castByUnit = false,
+                    castByNPC = false,
+                    isBossAura = false,
+                    dispellable = false,
+                },
+                mode = "blacklist",
+                blacklist = {},
+                whitelist = {},
+                auraTypeColor = {
+                    castByMe = false,
+                    dispellable = true,
+                    debuffType = true,
+                },
+            },
+        },
+    },
+}
+
+local default_1 = {
     player = {
         general = {
             enabled = true,
@@ -2690,7 +3724,7 @@ local preset1 = {
     },
 }
 
-local preset2 = {
+local default_2 = {
     player = {
         general = {
             enabled = true,
@@ -5278,1053 +6312,65 @@ local preset2 = {
     },
 }
 
-local defaults = {
-    general = {
-        enabled = true,
-        frameStrata = "LOW",
-        raidIconStyle = "af", -- af, blizzard
+---------------------------------------------------------------------
+-- other presets
+---------------------------------------------------------------------
+
+---------------------------------------------------------------------
+-- presets list
+---------------------------------------------------------------------
+local presets = {
+    {
+        name = L["Default"] .. " 1",
+        id = "default1",
+        desc = L["Built-in preset"],
+        previewCfg = default_1.player,
+        get = function()
+            return AF.Copy(default_general, default_groups, default_1)
+        end,
     },
-    party = {
-        general = {
-            enabled = true,
-            bgColor = AF.GetColorTable("none"),
-            borderColor = AF.GetColorTable("none"),
-            position = {"BOTTOM", -550, 300},
-            anchor = "BOTTOM",
-            orientation = "bottom_to_top",
-            showPlayer = false,
-            sortMethod = "INDEX",
-            sortDir = "ASC",
-            groupBy = nil,
-            groupingOrder = "",
-            spacing = 20,
-            width = 129,
-            height = 25,
-            oorAlpha = 0.45,
-            tooltip = {
-                enabled = true,
-                anchorTo = "self",
-                position = {"LEFT", "RIGHT", 1, 0},
-            },
-        },
-        indicators = {
-            healthBar = {
-                enabled = true,
-                position = {"TOPLEFT", "TOPLEFT", 0, 0},
-                anchorTo = "root",
-                frameLevel = 3,
-                -- orientation = "HORIZONTAL",
-                width = 129,
-                height = 20,
-                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss"), gradient = "disabled"},
-                bgColor = AF.GetColorTable("background", 1),
-                borderColor = AF.GetColorTable("border"),
-                texture = "AF",
-                smoothing = false,
-                mouseoverHighlight = {
-                    enabled = false,
-                    color = AF.GetColorTable("white", 0.05)
-                },
-                healPrediction = {
-                    enabled = true,
-                    useCustomColor = true,
-                    color = AF.GetColorTable("heal_prediction"),
-                },
-                shield = {
-                    enabled = true,
-                    texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
-                    reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
-                },
-                healAbsorb = {
-                    enabled = true,
-                    texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
-                },
-                dispelHighlight = {
-                    enabled = true,
-                    alpha = 0.5,
-                    blendMode = "ADD",
-                    dispellable = true,
-                },
-            },
-            powerBar = {
-                enabled = true,
-                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0},
-                anchorTo = "root",
-                frameLevel = 5,
-                -- orientation = "HORIZONTAL",
-                width = 129,
-                height = 4,
-                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power"), gradient = "disabled"},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
-                bgColor = AF.GetColorTable("background"),
-                borderColor = AF.GetColorTable("border"),
-                texture = "AF",
-                smoothing = false,
-                frequent = false,
-            },
-            nameText = {
-                enabled = true,
-                position = {"LEFT", "LEFT", 3, 0},
-                anchorTo = "healthBar",
-                parent = "healthBar",
-                length = 0.7,
-                font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
-            },
-            healthText = {
-                enabled = true,
-                position = {"RIGHT", "RIGHT", -3, 0},
-                anchorTo = "healthBar",
-                parent = "healthBar",
-                font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
-                format = {
-                    numeric = "none",
-                    percent = "current_absorbs_sum_decimal",
-                    delimiter = " | ",
-                    showPercentSign = true,
-                    useAsianUnits = false,
-                },
-                hideIfFull = true,
-            },
-            powerText = {
-                enabled = false,
-                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1},
-                anchorTo = "powerBar",
-                parent = "powerBar",
-                font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
-                frequent = true,
-                format = {
-                    numeric = "current_short",
-                    percent = "none",
-                    delimiter = " | ",
-                    showPercentSign = true,
-                    useAsianUnits = false,
-                },
-                hideIfFull = true,
-                hideIfEmpty = false,
-            },
-            leaderText = {
-                enabled = true,
-                position = {"TOPLEFT", "TOPLEFT", 3, -0.5},
-                anchorTo = "powerBar",
-                parent = "powerBar",
-                font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AF.GetColorTable("red")}, -- class/custom
-            },
-            levelText = {
-                enabled = true,
-                position = {"TOPLEFT", "TOPRIGHT", 0, 0},
-                anchorTo = "leaderText",
-                parent = "powerBar",
-                font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
-            },
-            targetCounter = {
-                enabled = false,
-                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
-                anchorTo = "levelText",
-                parent = "powerBar",
-                font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
-            },
-            statusTimer = {
-                enabled = true,
-                position = {"TOPRIGHT", "TOPRIGHT", 0, -1},
-                anchorTo = "powerBar",
-                parent = "powerBar",
-                font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
-                useEn = true,
-                showTimer = true,
-            },
-            portrait = {
-                enabled = false,
-                style = "3d", -- 3d, 2d, class_icon
-                position = {"TOPLEFT", "TOPLEFT", 0, 0},
-                anchorTo = "healthBar",
-                frameLevel = 1,
-                width = 129,
-                height = 20,
-                bgColor = AF.GetColorTable("background", 1),
-                borderColor = AF.GetColorTable("border"),
-                model = {
-                    xOffset = 0, -- [-100, 100]
-                    yOffset = 0, -- [-100, 100]
-                    rotation = 0, -- [0, 360]
-                    camDistanceScale = 1.75,
-                    x1Fix = 1,
-                    y1Fix = -0.5,
-                    x2Fix = -1.5,
-                    y2Fix = 2,
-                },
-                -- cutaway = true, --! anchorTo == "healthBar" & style == "3d"
-            },
-            castBar = {
-                enabled = true,
-                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
-                anchorTo = "root",
-                frameLevel = 5,
-                width = 129,
-                height = 4,
-                bgColor = AF.GetColorTable("background", 0.5),
-                borderColor = AF.GetColorTable("border"),
-                texture = "AF",
-                fadeDuration = 1,
-                showIcon = false,
-                interruptibleCheck = {
-                    enabled = false,
-                    requireUsable = true,
-                    showTexture = true,
-                    colorBorder = true,
-                },
-                nameText = {
-                    enabled = false,
-                    font = {"BFI", 12, "none", true},
-                    position = {"LEFT", "LEFT", 23, 0},
-                    color = AF.GetColorTable("white"),
-                    length = 0.5,
-                    showInterruptSource = true,
-                },
-                durationText = {
-                    enabled = false,
-                    font = {"BFI", 12, "none", true},
-                    position = {"RIGHT", "RIGHT", -3, 0},
-                    format = "%.1f",
-                    color = AF.GetColorTable("white"),
-                    showDelay = false,
-                },
-                spark = {
-                    enabled = true,
-                    texture = "plain",
-                    width = 1,
-                    height = 0,
-                },
-            },
-            combatIcon = {
-                enabled = true,
-                position = {"CENTER", "BOTTOMRIGHT", 0, 1},
-                anchorTo = "healthBar",
-                frameLevel = 10,
-                size = 8,
-            },
-            leaderIcon = {
-                enabled = false,
-                position = {"CENTER", "TOPLEFT", 2, -1},
-                anchorTo = "root",
-                frameLevel = 10,
-                size = 10,
-            },
-            statusIcon = {
-                enabled = true,
-                position = {"CENTER", "CENTER", 0, 0},
-                anchorTo = "healthBar",
-                frameLevel = 15,
-                size = 16,
-            },
-            raidIcon = {
-                enabled = true,
-                position = {"CENTER", "TOP", 1, 0},
-                anchorTo = "root",
-                frameLevel = 10,
-                size = 12,
-            },
-            readyCheckIcon = {
-                enabled = true,
-                position = {"CENTER", "CENTER", 0, 0},
-                anchorTo = "healthBar",
-                frameLevel = 20,
-                size = 15,
-            },
-            roleIcon = {
-                enabled = true,
-                position = {"CENTER", "BOTTOMLEFT", 1, 1},
-                anchorTo = "healthBar",
-                frameLevel = 10,
-                size = 10,
-                hideDamager = true,
-            },
-            factionIcon = {
-                enabled = true,
-                position = {"CENTER", "TOPLEFT", 1, -1},
-                anchorTo = "root",
-                frameLevel = 10,
-                size = 13,
-            },
-            targetHighlight = {
-                enabled = true,
-                frameLevel = 1,
-                size = 1,
-                color = AF.GetColorTable("target_highlight"),
-            },
-            mouseoverHighlight = {
-                enabled = true,
-                frameLevel = 2,
-                size = 1,
-                color = AF.GetColorTable("mouseover_highlight"),
-            },
-            threatGlow = {
-                enabled = true,
-                size = 3,
-                alpha = 1,
-            },
-            buffs = {
-                enabled = true,
-                position = {"TOPRIGHT", "BOTTOMRIGHT", 0, -1},
-                anchorTo = "root",
-                orientation = "right_to_left",
-                cooldownStyle = "vertical",
-                width = 12,
-                height = 12,
-                spacingX = 1,
-                spacingY = 1,
-                numPerLine = 10,
-                numTotal = 10,
-                frameLevel = 1,
-                tooltip = {
-                    enabled = true,
-                    anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
-                },
-                durationText = {
-                    enabled = false,
-                    font = {"Visitor", 9, "monochrome_outline", false},
-                    position = {"TOP", "TOP", 1, 1},
-                    color = {
-                        normal = AF.GetColorTable("white"), -- normal
-                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
-                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
-                    },
-                },
-                stackText = {
-                    enabled = true,
-                    font = {"Visitor", 9, "monochrome_outline", false},
-                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AF.GetColorTable("white"),
-                },
-                filters = {
-                    castByMe = true,
-                    castByOthers = false,
-                    castByUnit = false,
-                    castByNPC = false,
-                    isBossAura = false,
-                    dispellable = nil,
-                },
-                mode = "blacklist",
-                blacklist = {},
-                whitelist = {},
-                auraTypeColor = {
-                    castByMe = false,
-                    dispellable = nil,
-                    debuffType = nil,
-                },
-            },
-            debuffs = {
-                enabled = true,
-                position = {"TOPLEFT", "TOPRIGHT", 1, 0},
-                anchorTo = "root",
-                orientation = "left_to_right",
-                cooldownStyle = "none",
-                width = 19,
-                height = 19,
-                spacingX = 1,
-                spacingY = 1,
-                numPerLine = 3,
-                numTotal = 6,
-                frameLevel = 1,
-                tooltip = {
-                    enabled = true,
-                    anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
-                },
-                durationText = {
-                    enabled = true,
-                    font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 1},
-                    color = {
-                        normal = AF.GetColorTable("white"), -- normal
-                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
-                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
-                    },
-                },
-                stackText = {
-                    enabled = true,
-                    font = {"BFI", 10, "outline", false},
-                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AF.GetColorTable("white"),
-                },
-                filters = {
-                    castByMe = true,
-                    castByOthers = true,
-                    castByUnit = true,
-                    castByNPC = true,
-                    isBossAura = true,
-                    dispellable = true,
-                },
-                mode = "blacklist",
-                blacklist = {},
-                whitelist = {},
-                auraTypeColor = {
-                    castByMe = false,
-                    dispellable = true,
-                    debuffType = true,
-                },
-            },
-            privateAuras = {
-                enabled = false,
-            },
-        },
-    },
-    raid = {
-        general = {
-            enabled = true,
-            bgColor = AF.GetColorTable("none"),
-            borderColor = AF.GetColorTable("none"),
-            position = {"BOTTOMRIGHT", -5, 250},
-            anchor = "TOPLEFT",
-            orientation = "top_to_bottom_then_right",
-            sortMethod = "INDEX",
-            sortDir = "ASC",
-            groupBy = nil,
-            groupingOrder = "",
-            spacingY = 3,
-            spacingX = 3,
-            groupFilter = "6,2,1,3,4,5",
-            maxColumns = 6,
-            unitsPerColumn = 5,
-            width = 65,
-            height = 40,
-            oorAlpha = 0.45,
-            tooltip = {
-                enabled = true,
-                anchorTo = "parent",
-                position = {"BOTTOMLEFT", "TOPLEFT", 0, 15},
-            },
-        },
-        indicators = {
-            healthBar = {
-                enabled = true,
-                position = {"TOPLEFT", "TOPLEFT", 0, 0},
-                anchorTo = "root",
-                frameLevel = 3,
-                -- orientation = "HORIZONTAL",
-                width = 65,
-                height = 40,
-                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss"), gradient = "disabled"},
-                bgColor = AF.GetColorTable("background", 0),
-                borderColor = AF.GetColorTable("border"),
-                texture = "AF",
-                smoothing = false,
-                mouseoverHighlight = {
-                    enabled = false,
-                    color = AF.GetColorTable("white", 0.05)
-                },
-                healPrediction = {
-                    enabled = true,
-                    useCustomColor = true,
-                    color = AF.GetColorTable("heal_prediction"),
-                },
-                shield = {
-                    enabled = true,
-                    texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
-                    reverseFill = false,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
-                },
-                healAbsorb = {
-                    enabled = true,
-                    texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
-                },
-                dispelHighlight = {
-                    enabled = true,
-                    alpha = 0.5,
-                    blendMode = "ADD",
-                    dispellable = true,
-                },
-            },
-            powerBar = {
-                enabled = true,
-                position = {"BOTTOM", "BOTTOM", 0, -2},
-                anchorTo = "root",
-                frameLevel = 6,
-                -- orientation = "HORIZONTAL",
-                width = 49,
-                height = 5,
-                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power"), gradient = "disabled"},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
-                bgColor = AF.GetColorTable("background"),
-                borderColor = AF.GetColorTable("border"),
-                texture = "AF",
-                smoothing = false,
-                frequent = false,
-            },
-            nameText = {
-                enabled = true,
-                position = {"CENTER", "CENTER", 0, 0},
-                anchorTo = "healthBar",
-                parent = "healthBar",
-                length = 0.75,
-                font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
-            },
-            healthText = {
-                enabled = false,
-                position = {"TOP", "BOTTOM", 0, -1},
-                anchorTo = "nameText",
-                parent = "healthBar",
-                font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
-                format = {
-                    numeric = "none",
-                    percent = "current",
-                    delimiter = " | ",
-                    showPercentSign = true,
-                    useAsianUnits = false,
-                },
-                hideIfFull = true,
-            },
-            leaderIcon = {
-                enabled = true,
-                position = {"CENTER", "LEFT", 4, 1},
-                anchorTo = "healthBar",
-                frameLevel = 5,
-                size = 10,
-            },
-            statusTimer = {
-                enabled = true,
-                position = {"BOTTOM", "BOTTOM", 0, 4},
-                anchorTo = "healthBar",
-                parent = "healthBar",
-                font = {"Visitor", 9, "monochrome", true},
-                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
-                useEn = true,
-                showTimer = false,
-            },
-            statusIcon = {
-                enabled = true,
-                position = {"CENTER", "CENTER", 0, 0},
-                anchorTo = "healthBar",
-                frameLevel = 5,
-                size = 16,
-            },
-            raidIcon = {
-                enabled = true,
-                position = {"CENTER", "TOP", 1, -3},
-                anchorTo = "root",
-                frameLevel = 5,
-                size = 10,
-            },
-            readyCheckIcon = {
-                enabled = true,
-                position = {"CENTER", "CENTER", 0, 0},
-                anchorTo = "healthBar",
-                frameLevel = 20,
-                size = 15,
-            },
-            roleIcon = {
-                enabled = true,
-                position = {"CENTER", "TOPLEFT", 4, -4},
-                anchorTo = "healthBar",
-                frameLevel = 5,
-                size = 10,
-                hideDamager = true,
-            },
-            targetHighlight = {
-                enabled = true,
-                frameLevel = 4,
-                size = 1,
-                color = AF.GetColorTable("target_highlight"),
-            },
-            mouseoverHighlight = {
-                enabled = true,
-                frameLevel = 5,
-                size = 1,
-                color = AF.GetColorTable("mouseover_highlight"),
-            },
-            threatGlow = {
-                enabled = false,
-                size = 3,
-                alpha = 1,
-            },
-            buffs = {
-                enabled = true,
-                position = {"TOPRIGHT", "TOPRIGHT", 0, 0},
-                anchorTo = "root",
-                orientation = "right_to_left",
-                cooldownStyle = "vertical",
-                width = 12,
-                height = 12,
-                spacingX = 0,
-                spacingY = 0,
-                numPerLine = 4,
-                numTotal = 4,
-                frameLevel = 10,
-                tooltip = {
-                    enabled = true,
-                    anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
-                },
-                durationText = {
-                    enabled = false,
-                    font = {"Visitor", 9, "monochrome_outline", false},
-                    position = {"TOP", "TOP", 1, 1},
-                    color = {
-                        normal = AF.GetColorTable("white"), -- normal
-                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
-                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
-                    },
-                },
-                stackText = {
-                    enabled = true,
-                    font = {"Visitor", 9, "monochrome_outline", false},
-                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AF.GetColorTable("white"),
-                },
-                filters = {
-                    castByMe = true,
-                    castByOthers = false,
-                    castByUnit = false,
-                    castByNPC = false,
-                    isBossAura = false,
-                    dispellable = nil,
-                },
-                mode = "whitelist",
-                blacklist = {},
-                whitelist = AF.Copy(default_whitelist),
-                auraTypeColor = {
-                    castByMe = false,
-                    dispellable = nil,
-                    debuffType = nil,
-                },
-            },
-            debuffs = {
-                enabled = true,
-                position = {"BOTTOMLEFT", "BOTTOMLEFT", 0, 0},
-                anchorTo = "root",
-                orientation = "left_to_right",
-                cooldownStyle = "vertical",
-                width = 12,
-                height = 12,
-                spacingX = 0,
-                spacingY = 0,
-                numPerLine = 4,
-                numTotal = 4,
-                frameLevel = 10,
-                tooltip = {
-                    enabled = true,
-                    anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
-                },
-                durationText = {
-                    enabled = false,
-                    font = {"Visitor", 9, "monochrome_outline", false},
-                    position = {"TOP", "TOP", 1, 1},
-                    color = {
-                        normal = AF.GetColorTable("white"), -- normal
-                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
-                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
-                    },
-                },
-                stackText = {
-                    enabled = true,
-                    font = {"Visitor", 9, "monochrome_outline", false},
-                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AF.GetColorTable("white"),
-                },
-                filters = {
-                    castByMe = true,
-                    castByOthers = true,
-                    castByUnit = true,
-                    castByNPC = true,
-                    isBossAura = true,
-                    dispellable = true,
-                },
-                mode = "blacklist",
-                blacklist = AF.Copy(default_blacklist),
-                whitelist = {},
-                auraTypeColor = {
-                    castByMe = false,
-                    dispellable = true,
-                    debuffType = true,
-                },
-            },
-            privateAuras = {
-                enabled = false,
-            },
-        },
-    },
-    boss = {
-        general = {
-            enabled = true,
-            bgColor = AF.GetColorTable("none"),
-            borderColor = AF.GetColorTable("none"),
-            position = {"BOTTOM", 406, 345},
-            anchor = "BOTTOM",
-            orientation = "bottom_to_top",
-            spacing = 15,
-            width = 129,
-            height = 25,
-            oorAlpha = 0.45,
-            tooltip = {
-                enabled = false,
-                anchorTo = "self",
-                position = {"LEFT", "RIGHT", 1, 0},
-            },
-        },
-        indicators = {
-            healthBar = {
-                enabled = true,
-                position = {"TOPLEFT", "TOPLEFT", 0, 0},
-                anchorTo = "root",
-                frameLevel = 3,
-                -- orientation = "HORIZONTAL",
-                width = 129,
-                height = 20,
-                color = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
-                lossColor = {type = "custom_color", alpha = 1, rgb = AF.GetColorTable("uf_loss"), gradient = "disabled"},
-                bgColor = AF.GetColorTable("background", 1),
-                borderColor = AF.GetColorTable("border"),
-                texture = "AF",
-                smoothing = false,
-                mouseoverHighlight = {
-                    enabled = false,
-                    color = AF.GetColorTable("white", 0.05)
-                },
-                healPrediction = {
-                    enabled = true,
-                    useCustomColor = true,
-                    color = AF.GetColorTable("heal_prediction"),
-                },
-                shield = {
-                    enabled = true,
-                    texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
-                    reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
-                },
-                healAbsorb = {
-                    enabled = true,
-                    texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
-                },
-                dispelHighlight = {
-                    enabled = true,
-                    alpha = 0.5,
-                    blendMode = "ADD",
-                    dispellable = true,
-                },
-            },
-            powerBar = {
-                enabled = true,
-                position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0},
-                anchorTo = "root",
-                frameLevel = 5,
-                -- orientation = "HORIZONTAL",
-                width = 129,
-                height = 4,
-                color = {type = "class_color", alpha = 1, rgb = AF.GetColorTable("uf_power"), gradient = "disabled"},
-                lossColor = {type = "class_color_dark", alpha = 1, rgb = AF.GetColorTable("uf"), gradient = "disabled"},
-                bgColor = AF.GetColorTable("background"),
-                borderColor = AF.GetColorTable("border"),
-                texture = "AF",
-                smoothing = false,
-                frequent = false,
-            },
-            nameText = {
-                enabled = true,
-                position = {"LEFT", "LEFT", 3, 0},
-                anchorTo = "healthBar",
-                parent = "healthBar",
-                length = 0.5,
-                font = {"BFI", 12, "none", true},
-                color = {type = "class_color", rgb = AF.GetColorTable("white")}, -- class/custom
-            },
-            healthText = {
-                enabled = true,
-                position = {"RIGHT", "RIGHT", -3, 0},
-                anchorTo = "healthBar",
-                parent = "healthBar",
-                font = {"BFI", 12, "none", true},
-                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
-                format = {
-                    numeric = "none",
-                    percent = "current_absorbs_sum_decimal",
-                    delimiter = " | ",
-                    showPercentSign = true,
-                    useAsianUnits = false,
-                },
-                hideIfFull = false,
-            },
-            powerText = {
-                enabled = true,
-                position = {"TOPRIGHT", "TOPRIGHT", -1, -0.5},
-                anchorTo = "powerBar",
-                parent = "powerBar",
-                font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/power/custom
-                frequent = false,
-                format = {
-                    numeric = "current_short",
-                    percent = "none",
-                    delimiter = " | ",
-                    showPercentSign = true,
-                    useAsianUnits = false,
-                },
-                hideIfFull = false,
-                hideIfEmpty = true,
-            },
-            levelText = {
-                enabled = true,
-                position = {"TOPLEFT", "TOPLEFT", 3, -0.5},
-                anchorTo = "powerBar",
-                parent = "powerBar",
-                font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "level_color", rgb = AF.GetColorTable("white")}, -- level/class/custom
-            },
-            targetCounter = {
-                enabled = true,
-                position = {"BOTTOMLEFT", "BOTTOMRIGHT", 3, 0},
-                anchorTo = "levelText",
-                parent = "powerBar",
-                font = {"Visitor", 9, "monochrome_outline", false},
-                color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
-            },
-            portrait = {
-                enabled = false,
-                style = "3d", -- 3d, 2d, class_icon
-                position = {"TOPLEFT", "TOPLEFT", 0, 0},
-                anchorTo = "healthBar",
-                frameLevel = 1,
-                width = 129,
-                height = 20,
-                bgColor = AF.GetColorTable("background", 1),
-                borderColor = AF.GetColorTable("border"),
-                model = {
-                    xOffset = 0, -- [-100, 100]
-                    yOffset = 0, -- [-100, 100]
-                    rotation = 0, -- [0, 360]
-                    camDistanceScale = 1.75,
-                    x1Fix = 1,
-                    y1Fix = -0.5,
-                    x2Fix = -1.5,
-                    y2Fix = 2,
-                },
-                -- cutaway = true, --! anchorTo == "healthBar" & style == "3d"
-            },
-            castBar = {
-                enabled = true,
-                position = {"TOPLEFT", "TOPLEFT", 0, 0},
-                anchorTo = "powerBar",
-                frameLevel = 10,
-                width = 129,
-                height = 15,
-                bgColor = AF.GetColorTable("background"),
-                borderColor = AF.GetColorTable("border"),
-                texture = "AF",
-                fadeDuration = 1,
-                showIcon = true,
-                interruptibleCheck = {
-                    enabled = true,
-                    requireUsable = true,
-                    showTexture = true,
-                    colorBorder = true,
-                },
-                nameText = {
-                    enabled = true,
-                    font = {"BFI", 12, "none", true},
-                    position = {"LEFT", "LEFT", 17, 0},
-                    color = AF.GetColorTable("white"),
-                    length = 0.5,
-                    showInterruptSource = true,
-                },
-                durationText = {
-                    enabled = true,
-                    font = {"BFI", 12, "none", true},
-                    position = {"RIGHT", "RIGHT", -3, 0},
-                    format = "%.1f",
-                    color = AF.GetColorTable("white"),
-                    showDelay = false,
-                },
-                spark = {
-                    enabled = true,
-                    texture = "plain",
-                    width = 1,
-                    height = 0,
-                },
-            },
-            raidIcon = {
-                enabled = true,
-                position = {"CENTER", "TOP", 1, 0},
-                anchorTo = "root",
-                frameLevel = 10,
-                size = 12,
-            },
-            targetHighlight = {
-                enabled = true,
-                frameLevel = 1,
-                size = 1,
-                color = AF.GetColorTable("target_highlight"),
-            },
-            mouseoverHighlight = {
-                enabled = true,
-                frameLevel = 2,
-                size = 1,
-                color = AF.GetColorTable("mouseover_highlight"),
-            },
-            buffs = {
-                enabled = true,
-                position = {"TOPLEFT", "TOPRIGHT", 1, 0},
-                anchorTo = "root",
-                orientation = "left_to_right",
-                cooldownStyle = "none",
-                width = 19,
-                height = 19,
-                spacingX = 1,
-                spacingY = 1,
-                numPerLine = 3,
-                numTotal = 3,
-                frameLevel = 1,
-                tooltip = {
-                    enabled = true,
-                    anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
-                },
-                durationText = {
-                    enabled = true,
-                    font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 1},
-                    color = {
-                        normal = AF.GetColorTable("white"), -- normal
-                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
-                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
-                    },
-                },
-                stackText = {
-                    enabled = true,
-                    font = {"BFI", 10, "outline", false},
-                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AF.GetColorTable("white"),
-                },
-                filters = {
-                    castByMe = true,
-                    castByOthers = true,
-                    castByUnit = true,
-                    castByNPC = true,
-                    isBossAura = true,
-                    dispellable = nil,
-                },
-                mode = "blacklist",
-                blacklist = {},
-                whitelist = {},
-                auraTypeColor = {
-                    castByMe = false,
-                    dispellable = nil,
-                    debuffType = nil,
-                },
-            },
-            debuffs = {
-                enabled = true,
-                position = {"TOPRIGHT", "TOPLEFT", -1, 0},
-                anchorTo = "root",
-                orientation = "right_to_left",
-                cooldownStyle = "none",
-                width = 19,
-                height = 19,
-                spacingX = 1,
-                spacingY = 1,
-                numPerLine = 3,
-                numTotal = 3,
-                frameLevel = 1,
-                tooltip = {
-                    enabled = true,
-                    anchorTo = "self",
-                    position = {"TOPLEFT", "BOTTOMRIGHT", 1, -1},
-                },
-                durationText = {
-                    enabled = true,
-                    font = {"BFI", 10, "outline", false},
-                    position = {"TOP", "TOP", 1, 1},
-                    color = {
-                        normal = AF.GetColorTable("white"), -- normal
-                        percent = {enabled = false, value = 0.5, rgb = AF.GetColorTable("aura_percent")}, -- less than 50%
-                        seconds = {enabled = true, value = 5, rgb = AF.GetColorTable("aura_seconds")}, -- less than 5sec
-                    },
-                },
-                stackText = {
-                    enabled = true,
-                    font = {"BFI", 10, "outline", false},
-                    position = {"BOTTOMRIGHT", "BOTTOMRIGHT", 3, -1},
-                    color = AF.GetColorTable("white"),
-                },
-                filters = {
-                    castByMe = true,
-                    castByOthers = false,
-                    castByUnit = false,
-                    castByNPC = false,
-                    isBossAura = false,
-                    dispellable = false,
-                },
-                mode = "blacklist",
-                blacklist = {},
-                whitelist = {},
-                auraTypeColor = {
-                    castByMe = false,
-                    dispellable = true,
-                    debuffType = true,
-                },
-            },
-        },
+    {
+        name = L["Default"] .. " 2",
+        id = "default2",
+        desc = L["Built-in preset"],
+        previewCfg = default_2.player,
+        get = function()
+            return AF.Copy(default_general, default_groups, default_2)
+        end,
     },
 }
 
-AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
-    if not t["unitFrames"] then
-        t["unitFrames"] = AF.Copy(defaults, preset1)
-    end
-    UF.config = t["unitFrames"]
-end)
-
+---------------------------------------------------------------------
+-- functions
+---------------------------------------------------------------------
 function UF.GetDefaults()
-    return AF.Copy(defaults, preset1)
+    return presets[1].get()
 end
 
-function UF.ResetToDefaults()
-    local t = UF.GetDefaults()
+function UF.GetPresets()
+    return presets
+end
+
+function UF.GetPreset(id)
+    for _, preset in next, presets do
+        if preset.id == id then
+            return preset.get()
+        end
+    end
+end
+
+function UF.ApplyPreset(preset)
+    if type(preset) == "string" then
+        preset = UF.GetPreset(preset)
+    end
+    if type(preset) ~= "table" then return end
 
     -- general
     wipe(UF.config.general)
-    AF.Merge(UF.config.general, t.general)
-    t.general = nil
+    AF.Merge(UF.config.general, preset.general)
+    preset.general = nil
 
-    for k, v in next, t do
+    for k, v in next, preset do
         -- general
         wipe(UF.config[k].general)
         AF.Merge(UF.config[k].general, v.general)
@@ -6336,43 +6382,39 @@ function UF.ResetToDefaults()
     end
 end
 
+---------------------------------------------------------------------
+-- init
+---------------------------------------------------------------------
+AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
+    if not t["unitFrames"] then
+        t["unitFrames"] = UF.GetDefaults()
+    end
+    UF.config = t["unitFrames"]
+end)
+
+---------------------------------------------------------------------
+-- reset
+---------------------------------------------------------------------
+function UF.ResetToDefaults()
+    UF.ApplyPreset(UF.GetDefaults())
+end
+
 function UF.ResetFrame(frame, config)
+    local t
+    if default_1[frame] then
+        t = default_1[frame]
+    else
+        t = default_groups[frame]
+    end
+
     if config == "general" then
         wipe(UF.config[frame]["general"])
-        if defaults[frame] then
-            AF.Merge(UF.config[frame]["general"], defaults[frame]["general"])
-        else
-            AF.Merge(UF.config[frame]["general"], preset1[frame]["general"])
-        end
+        AF.Merge(UF.config[frame]["general"], t["general"])
     elseif config then -- indicator
         wipe(UF.config[frame]["indicators"][config])
-        if defaults[frame] then
-            AF.Merge(UF.config[frame]["indicators"][config], defaults[frame]["indicators"][config])
-        else
-            AF.Merge(UF.config[frame]["indicators"][config], preset1[frame]["indicators"][config])
-        end
+        AF.Merge(UF.config[frame]["indicators"][config], t["indicators"][config])
     else -- all
         wipe(UF.config[frame])
-        if defaults[frame] then
-            AF.Merge(UF.config[frame], defaults[frame])
-        else
-            AF.Merge(UF.config[frame], preset1[frame])
-        end
-    end
-end
-
-function UF.GetPreset(preset)
-    if preset == "preset1" then
-        return AF.Copy(preset1)
-    elseif preset == "preset2" then
-        return AF.Copy(preset2)
-    end
-end
-
-function UF.GetPresetPreview(preset)
-    if preset == "preset1" then
-        return AF.Copy(preset1.player)
-    elseif preset == "preset2" then
-        return AF.Copy(preset2.player)
+        AF.Merge(UF.config[frame], t)
     end
 end

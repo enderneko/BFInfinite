@@ -591,6 +591,7 @@ function UF.CreateClassPowerBar(parent, name)
     frame.Enable = ClassPowerBar_Enable
     frame.EnableConfigMode = ClassPowerBar_EnableConfigMode
     frame.DisableConfigMode = ClassPowerBar_DisableConfigMode
+    frame.SetupBars = SetupBars
     frame.LoadConfig = ClassPowerBar_LoadConfig
 
     -- pixel perfect

@@ -141,13 +141,13 @@ local function CreateModuleResetFrame()
         moduleResetFrame:Show()
 
         if resetterInfo[currentResetter].isCommon then
-            text:SetText(L["Are you sure you want to reset the current module?"]
+            text:SetText(AF.WrapTextInColor(L["Reset current module?"], "BFI")
                 .. "\n" .. module .. AF.WrapTextInColor(F.GetModuleLocalizedName(currentResetter), "softlime")
                 .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")
             )
         else
             local profileName = BFI.vars.profileName == "default" and L["Default"] or BFI.vars.profileName
-            text:SetText(L["Are you sure you want to reset the current module?"]
+            text:SetText(AF.WrapTextInColor(L["Reset current module?"], "BFI")
                 .. "\n" .. module .. AF.WrapTextInColor(F.GetModuleLocalizedName(currentResetter), "softlime")
                 .. "\n" .. profile .. AF.WrapTextInColor(profileName, "vividblue")
                 .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")

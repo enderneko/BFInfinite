@@ -284,22 +284,227 @@ local function CreateGeneralOptionsPane()
     presetsLabel:SetJustifyH("LEFT")
     presetsLabel:SetSpacing(5)
 
-    local presetsGrid = AF.CreateScrollGrid(presetsFrame, nil, 10, 10, 2, 2, nil, nil, 10, "none", "none")
+    local presetsGrid = AF.CreateScrollGrid(presetsFrame, nil, 10, 10, 1, 2, nil, nil, 10, "none", "none")
     AF.SetPoint(presetsGrid, "TOPLEFT", 0, -50)
     AF.SetPoint(presetsGrid, "BOTTOMRIGHT")
 
-    local presets = {
-        "preset1",
-        "preset2",
+    local setters = {
+        healthBar = function(self)
+            local healthMax = UnitHealthMax("player")
+            self:SetBarMinMaxValues(0, healthMax)
+            self:SetBarValue(healthMax)
+
+            self.shield:Show()
+            self.shield:SetWidth(0.27 * self:GetBarWidth())
+            self.shield:ClearAllPoints()
+            if self.shieldReverseFill then
+                self.shield:SetPoint("TOPRIGHT", self.bg)
+                self.shield:SetPoint("BOTTOMRIGHT", self.bg)
+            else
+                self.shield:SetPoint("TOPLEFT", self.fg.mask, "TOPRIGHT")
+                self.shield:SetPoint("BOTTOMLEFT", self.fg.mask, "BOTTOMRIGHT")
+            end
+
+            self.overshieldGlow:Hide()
+            self.overshieldGlowR:Hide()
+            if self.overshieldGlowEnabled then
+                if self.shieldReverseFill then
+                    self.overshieldGlowR:Show()
+                else
+                    self.overshieldGlow:Show()
+                end
+            end
+            self.fullOvershieldGlowR:Hide()
+
+            self.healAbsorb:Hide()
+            self.overabsorbGlow:Hide()
+            self.healPrediction:Hide()
+            self.dispelHighlight:Hide()
+        end,
+
+        healthText = function(self)
+            local healthMax = UnitHealthMax("player")
+            local totalAbsorbs = healthMax * 0.27
+            self:SetFormattedText("%s%s%s",
+                self.GetNumeric(healthMax, totalAbsorbs),
+                self.delimiter,
+                self.GetPercent(healthMax, healthMax, totalAbsorbs)
+            )
+        end,
+
+        powerBar = function(self)
+            local powerMax = UnitPowerMax("player")
+            self:SetBarMinMaxValues(0, powerMax)
+            self:SetBarValue(powerMax)
+        end,
+
+        powerText = function(self)
+            local powerMax = UnitPowerMax("player")
+            self:SetFormattedText("%s%s%s",
+                self.GetNumeric(powerMax),
+                self.delimiter,
+                self.GetPercent(powerMax, powerMax)
+            )
+        end,
+
+        statusTimer = function(self)
+            self:Show()
+            self.updater:Hide()
+            self:SetFormattedText("%s %02d:%02d", self.useEn and "AFK" or L["AFK"], 0, 27)
+        end,
+
+        leaderText = function(self)
+            self:Hide()
+            self:SetText("")
+        end,
+
+        targetCounter = function(self)
+            self:Show()
+            self:SetText("5")
+        end,
+
+        incDmgHealText = function(self)
+            self:Hide()
+            self:SetText("")
+        end,
+
+        restingIndicator = function(self)
+            self:Show()
+        end,
+
+        classPowerBar = function(self)
+            self.unit = "player"
+            self.powerIndex, self.powerType, self.powerMod = UF.GetClassPowerInfo()
+            self:SetupBars()
+
+            self.power = UnitPowerMax("player", self.powerIndex)
+            if self.powerMod then
+                self.power = self.power / self.powerMod
+            end
+
+            self:UpdateBars()
+        end,
+
+        extraManaBar = function(self)
+            self:Hide()
+        end,
+
+        staggerBar = function(self)
+            self:Hide()
+        end,
+
+        castBar = function(self)
+            self:Hide()
+        end,
+
+        combatIcon = function(self)
+            self:Hide()
+        end,
+
+        leaderIcon = function(self)
+            self:Hide()
+        end,
+
+        statusIcon = function(self)
+            self:Hide()
+        end,
+
+        raidIcon = function(self)
+            self:Hide()
+        end,
+
+        readyCheckIcon = function(self)
+            self:Hide()
+        end,
+
+        roleIcon = function(self)
+            self:Hide()
+        end,
+
+        targetHighlight = function(self)
+            self:Hide()
+        end,
+
+        mouseoverHighlight = function(self)
+            self:Hide()
+            self:ClearAllPoints()
+        end,
+
+        threatGlow = function(self)
+            self:Hide()
+        end,
+
+        buffs = function(self)
+            self:Hide()
+        end,
+
+        debuffs = function(self)
+            self:Hide()
+        end,
     }
 
     local function CreatePresetFrame(index, preset)
-        local f = CreateFrame("Frame", nil, presetsFrame)
+        local f = AF.CreateBorderedFrame(presetsFrame, nil, nil, nil, "none", "border")
 
-        local config = UF.GetPresetPreview(preset)
+        -- apply
+        local apply = AF.CreateButton(f, L["Apply"], "BFI", 127, 19)
+        apply:SetPoint("BOTTOMLEFT")
+        apply:SetBorderColor("BFI")
+        AF.SetFrameLevel(apply, 10)
+        apply:Hide()
+
+        apply:SetOnClick(function()
+            local dialog = AF.GetDialog(presetsFrame,
+                AF.WrapTextInColor(L["Apply this preset?"], "BFI")
+                .. "\n" .. AF.WrapTextInColor(preset.name, "softlime")
+                .. "\n" .. AF.WrapTextInColor(L["This action cannot be undone"], "firebrick"),
+                270
+            )
+            dialog:SetPoint("CENTER", f)
+            dialog:SetOnConfirm(function()
+                UF.ApplyPreset(preset.get())
+                AF.Fire("BFI_UpdateModule", "unitFrames")
+                AF.Fire("BFI_RefreshOptions", "unitFrames")
+            end)
+        end)
+
+        -- textBg
+        local textBg = AF.CreateGradientTexture(f, "HORIZONTAL", AF.GetColorTable("BFI", 0.25), AF.GetColorTable("BFI", 0), nil, "ARTWORK")
+        AF.SetPoint(textBg, "TOPLEFT", apply, 1, 0)
+        AF.SetPoint(textBg, "BOTTOMRIGHT", -1, 1)
+
+        -- name
+        local name = AF.CreateScrollingText(f)
+        AF.SetPoint(name, "TOPLEFT", apply, 5, 0)
+        AF.SetPoint(name, "BOTTOMRIGHT", apply, -5, 0)
+        name:SetText(preset.name, "BFI")
+
+        local desc = AF.CreateScrollingText(f)
+        AF.SetPoint(desc, "TOPLEFT", apply, "TOPRIGHT", 5, 0)
+        AF.SetPoint(desc, "BOTTOMRIGHT")
+        desc:SetText(preset.desc or "", "tip")
+
+        -- onEnter/onLeave
+        f:SetOnEnter(function()
+            f:SetBorderColor("BFI")
+            f:SetBackgroundColor("widget")
+            apply:Show()
+        end)
+
+        f:SetOnLeave(function()
+            f:SetBackgroundColor("none")
+            f:SetBorderColor("border")
+            apply:Hide()
+        end)
+
+        apply:HookOnEnter(f:GetOnEnter())
+        apply:HookOnLeave(f:GetOnLeave())
+
+        -- preview
+        local config = preset.previewCfg
 
         local preview = AF.CreateFrame(f, "BFI_Preview" .. index)
-        preview:SetPoint("CENTER")
+        AF.SetPoint(preview, "CENTER", 0, 9)
 
         preview.unit = "player"
         preview.displayedUnit = "player"
@@ -314,11 +519,25 @@ local function CreateGeneralOptionsPane()
         UF.CreateIndicators(preview, UF.previewIndicators)
         UF.SetupIndicators(preview, UF.previewIndicators, config)
 
+        -- disable events
+        for _, indicator in next, preview.indicators do
+            indicator:UnregisterAllEvents()
+            if setters[indicator.indicatorName] then
+                RunNextFrame(function()
+                    setters[indicator.indicatorName](indicator)
+                end)
+            end
+        end
+
+        preview:SetScript("OnEnter", nil)
+        preview:SetScript("OnLeave", nil)
+        preview:EnableMouse(false)
+
         return f
     end
 
     local presetFrames = {}
-    for i, preset in next, presets do
+    for i, preset in next, UF.GetPresets() do
         tinsert(presetFrames, CreatePresetFrame(i, preset))
     end
     presetsGrid:SetWidgets(presetFrames)
@@ -581,9 +800,12 @@ end
 
 AF.RegisterCallback("BFI_RefreshOptions", function(_, which)
     if which ~= "unitFrames" or not frameOptionsPane then return end
-    unitFramesPanel.subSwitch:UpdateLabelColors()
-    lastScroll = frameOptionsPane.indicatorList:GetScroll()
-    LoadList(curMain, curSub) -- will load lastIndicator
+    generalOptionsPane.Load()
+    if curMain and curSub then
+        unitFramesPanel.subSwitch:UpdateLabelColors()
+        lastScroll = frameOptionsPane.indicatorList:GetScroll()
+        LoadList(curMain, curSub) -- will load lastIndicator
+    end
 end)
 
 ---------------------------------------------------------------------

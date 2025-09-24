@@ -121,7 +121,10 @@ local function CreateContentPane()
 
     reset:SetOnClick(function()
         local listName = "Global " .. currentList:gsub("^%l", string.upper)
-        dialog = AF.GetDialog(scroll, L["Reset %s?"]:format(L[listName]))
+        dialog = AF.GetDialog(scroll,
+            AF.WrapTextInColor(L["Reset to default settings?"], "BFI")
+            .. "\n" .. L[listName]
+        )
         AF.SetPoint(dialog, "TOP", 0, -30)
         dialog:SetOnConfirm(function()
             search:SetText("")
