@@ -1,6 +1,7 @@
----@class BFI
+---@type BFI
 local BFI = select(2, ...)
 local L = BFI.L
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -26,8 +27,14 @@ local function CreateBFIPane()
 
     -- changelogs
     local changelogs = AF.CreateButton(bfiPane, L["Changelogs"], "BFI", 127, 17)
+    bfiPane.changelogs = changelogs
     AF.SetPoint(changelogs, "BOTTOMRIGHT", bfiPane.line, "TOPRIGHT")
     changelogs:SetEnabled(false)
+
+    local cvarBackup = AF.CreateButton(bfiPane, L["CVar Backup"], "BFI", 127, 17)
+    bfiPane.cvarBackup = cvarBackup
+    AF.SetPoint(cvarBackup, "BOTTOMRIGHT", changelogs, "BOTTOMLEFT", 1, 0)
+    cvarBackup:SetOnClick(F.ToggleCVarBackupFrame)
 
     -- version
     local ver = strlower(L["Version"])
@@ -64,7 +71,7 @@ end
 ---------------------------------------------------------------------
 local linksPane
 local function CreateLinksPane()
-    linksPane = AF.CreateTitledPane(aboutPanel, "Links", 270, 85)
+    linksPane = AF.CreateTitledPane(aboutPanel, L["Links"], 270, 85)
     aboutPanel.linksPane = linksPane
     AF.SetPoint(linksPane, "TOPLEFT", bfiPane, "BOTTOMLEFT", 0, -20)
 
