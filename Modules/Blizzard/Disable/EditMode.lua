@@ -1,4 +1,4 @@
----@class BFI
+---@type BFI
 local BFI = select(2, ...)
 local DB = BFI.modules.DisableBlizzard
 ---@type AbstractFramework

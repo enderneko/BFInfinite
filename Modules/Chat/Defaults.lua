@@ -1,4 +1,4 @@
----@class BFI
+---@type BFI
 local BFI = select(2, ...)
 ---@class Chat
 local C = BFI.modules.Chat

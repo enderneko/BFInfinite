@@ -1,4 +1,4 @@
----@class BFI
+---@type BFI
 local BFI = select(2, ...)
 local NP = BFI.modules.Nameplates
 local A = BFI.modules.Auras

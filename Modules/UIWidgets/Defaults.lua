@@ -1,4 +1,4 @@
----@class BFI
+---@type BFI
 local BFI = select(2, ...)
 ---@class UIWidgets
 local W = BFI.modules.UIWidgets

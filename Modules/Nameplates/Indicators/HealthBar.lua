@@ -1,4 +1,4 @@
----@class BFI
+---@type BFI
 local BFI = select(2, ...)
 local C = BFI.modules.Colors
 local NP = BFI.modules.Nameplates
