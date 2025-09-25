@@ -31,6 +31,7 @@ local resetterInfo = {
     general = {
         requireReload = true,
         isCommon = true,
+        extraInfo = L["CVars will not be changed"],
         func = function()
             BFIConfig.general = nil
             AFConfig.accentColor = nil
@@ -140,19 +141,21 @@ local function CreateModuleResetFrame()
     function moduleResetFrame:ShowUp()
         moduleResetFrame:Show()
 
-        if resetterInfo[currentResetter].isCommon then
-            text:SetText(AF.WrapTextInColor(L["Reset current module?"], "BFI")
-                .. "\n" .. module .. AF.WrapTextInColor(F.GetModuleLocalizedName(currentResetter), "softlime")
-                .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")
-            )
-        else
+        local msg = AF.WrapTextInColor(L["Reset current module?"], "BFI")
+            .. "\n" .. module .. AF.WrapTextInColor(F.GetModuleLocalizedName(currentResetter), "softlime")
+
+        if not resetterInfo[currentResetter].isCommon then
             local profileName = BFI.vars.profileName == "default" and L["Default"] or BFI.vars.profileName
-            text:SetText(AF.WrapTextInColor(L["Reset current module?"], "BFI")
-                .. "\n" .. module .. AF.WrapTextInColor(F.GetModuleLocalizedName(currentResetter), "softlime")
-                .. "\n" .. profile .. AF.WrapTextInColor(profileName, "vividblue")
-                .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")
-            )
+            msg = msg .. "\n" .. profile .. AF.WrapTextInColor(profileName, "vividblue")
         end
+
+        if resetterInfo[currentResetter].extraInfo then
+            msg = msg .. "\n" .. AF.WrapTextInColor(resetterInfo[currentResetter].extraInfo, "tip")
+        end
+
+        msg = msg .. "\n" ..  AF.WrapTextInColor(L["This action cannot be undone"], "firebrick")
+
+        text:SetText(msg)
 
         AF.FrameFadeIn(BFIOptionsFrame_ContentPane.mask)
         AF.FrameFadeIn(text)

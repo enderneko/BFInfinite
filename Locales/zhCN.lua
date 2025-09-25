@@ -25,6 +25,7 @@ L["Are you sure you want to reset all BFI settings?"] = "确定要重置所有 B
 L["Apply this preset?"] = "要应用此预设吗？"
 L["Reset current module?"] = "要重置当前模块吗？"
 L["Reset Current Module"] = "重置当前模块"
+L["CVars will not be changed"] = "CVar 不会被更改"
 
 ---------------------------------------------------------------------
 -- general
