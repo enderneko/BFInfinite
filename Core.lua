@@ -5,6 +5,10 @@ local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local GetCVar = GetCVar
+local SetCVar = SetCVar
+local GetPhysicalScreenSize = GetPhysicalScreenSize
+local InCombatLockdown = InCombatLockdown
 local GetNumSpecializationsForClassID = C_SpecializationInfo.GetNumSpecializationsForClassID
 local eventHandler = AF.CreateSimpleEventHandler("ADDON_LOADED")
 
@@ -18,25 +22,6 @@ function eventHandler:ADDON_LOADED(arg)
         BFI.version, BFI.versionNum = AF.GetAddOnVersion(BFI.name)
 
         if type(BFIConfig) ~= "table" then BFIConfig = {} end
-
-        --------------------------------------------------
-        -- cvars
-        --------------------------------------------------
-        if not BFIConfig.cvarInited then
-            BFIConfig.cvarInited = true
-            -- init some cvar
-            SetCVar("fstack_preferParentKeys", 0)
-            SetCVar("screenshotQuality", 10)
-            -- SetCVar("cameraDistanceMaxZoomFactor", 2.6)
-            SetCVar("CameraReduceUnexpectedMovement", 1)
-            -- SetCVar("ResampleAlwaysSharpen", 1)
-            SetCVar("ActionButtonUseKeyDown", 1)
-            SetCVar("chatMouseScroll", 1)
-            SetCVar("removeChatDelay", 1)
-            -- SetCVar("threatWarning", 0)
-            SetCVar("statusText", 1)
-            SetCVar("statusTextDisplay", "NUMERIC") -- NONE,NUMERIC,PERCENT,BOTH
-        end
 
         --------------------------------------------------
         -- general
@@ -242,7 +227,90 @@ local function AF_PLAYER_SPEC_UPDATE(_, specID, lastSpecID)
     F.LoadProfile()
 end
 
+---------------------------------------------------------------------
+-- cvars
+---------------------------------------------------------------------
+local function InitAndBackupCVars()
+    --------------------------------------------------
+    -- backup
+    --------------------------------------------------
+    -- cvars that BFI has modified or will modify
+    local cvars = {
+        "fstack_preferParentKeys",
+        "screenshotQuality",
+        "CameraReduceUnexpectedMovement",
+        "ActionButtonUseKeyDown",
+        "chatMouseScroll",
+        "removeChatDelay",
+        "statusText",
+        "statusTextDisplay",
+        -- action bars
+        "autoSelfCast",
+        "enableMouseoverCast",
+        "assistedCombatHighlight",
+        "lockActionBars",
+        "AutoPushSpellToActionBar",
+        -- nameplates
+        "nameplateOccludedAlphaMult",
+        "nameplateShowOnlyNames",
+        "nameplateGlobalScale",
+        "nameplateLargerScale",
+        "NamePlateHorizontalScale",
+        "NamePlateVerticalScale",
+        "NamePlateClassificationScale",
+        "nameplateMaxScale",
+        "nameplateMinScale",
+        "nameplateSelectedScale",
+        "nameplateOverlapH",
+        "nameplateOverlapV",
+        "nameplateMotion",
+        "nameplateMotionSpeed",
+        "nameplateMaxDistance",
+        "nameplateTargetBehindMaxDistance",
+        "nameplateTargetRadialPosition",
+        "nameplateLargeTopInset",
+        "nameplateLargeBottomInset",
+        "nameplateOtherTopInset",
+        "nameplateOtherBottomInset",
+    }
+
+    if type(BFICVarBackup) ~= "table" then BFICVarBackup = {} end
+    if type(BFICVarBackup.cvars) ~= "table" then BFICVarBackup.cvars = {} end
+    if BFICVarBackup.battleTagMD5 ~= AF.player.battleTagMD5 then
+        wipe(BFICVarBackup.cvars)
+        BFICVarBackup.battleTagMD5 = AF.player.battleTagMD5
+        F.ShowCVarBackupNotice()
+    end
+
+    for _, cvar in next, cvars do
+        if not BFICVarBackup.cvars[cvar] then
+            BFICVarBackup.cvars[cvar] = GetCVar(cvar)
+        end
+    end
+
+    --------------------------------------------------
+    -- init
+    --------------------------------------------------
+    if BFIConfig.cvarInited ~= AF.player.battleTagMD5 then
+        BFIConfig.cvarInited = AF.player.battleTagMD5
+        -- init some cvar
+        SetCVar("fstack_preferParentKeys", 0)
+        SetCVar("screenshotQuality", 10)
+        -- SetCVar("cameraDistanceMaxZoomFactor", 2.6)
+        SetCVar("CameraReduceUnexpectedMovement", 1)
+        -- SetCVar("ResampleAlwaysSharpen", 1)
+        SetCVar("ActionButtonUseKeyDown", 1)
+        SetCVar("chatMouseScroll", 1)
+        SetCVar("removeChatDelay", 1)
+        -- SetCVar("threatWarning", 0)
+        SetCVar("statusText", 1)
+        SetCVar("statusTextDisplay", "NUMERIC") -- NONE,NUMERIC,PERCENT,BOTH
+    end
+end
+
 local function AF_PLAYER_LOGIN_DELAYED()
+    InitAndBackupCVars()
+
     -- ui scale
     eventHandler:RegisterEvent("UI_SCALE_CHANGED")
     local res = ("%dx%d"):format(GetPhysicalScreenSize())

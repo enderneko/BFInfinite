@@ -3,7 +3,7 @@
 ## Version: r1-alpha
 ## Author: enderneko (BigFootTeam)
 ## X-Flavor: Mainline
-## SavedVariables: BFIConfig, BFIProfile, BFIPlayer
+## SavedVariables: BFIConfig, BFIProfile, BFIPlayer, BFICVarBackup
 ## SavedVariablesPerCharacter: BFIGuild
 ## Dependencies: AbstractFramework
 # AddonCompartmentFunc: BFInfinite_OnAddonCompartmentClick

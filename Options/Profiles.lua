@@ -652,6 +652,7 @@ local function CreateImportExportFrame()
     local function PrepareCommonExportData()
         data = {}
         data.config = AF.Copy(BFIConfig)
+        data.config.cvarInited = nil
         wipe(data.config.profileAssignment.character)
         data.afConfig = {
             accentColor = AF.Copy(AFConfig.accentColor),
