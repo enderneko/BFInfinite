@@ -131,7 +131,8 @@ end
 -- UI_SCALE_CHANGED
 ---------------------------------------------------------------------
 local uiScaleUpdateRequired
-function eventHandler:UI_SCALE_CHANGED()
+
+local function UpdateUIParentScale(skipPixelsUpdate)
     local res = ("%dx%d"):format(GetPhysicalScreenSize())
     if res == BFI.vars.resolution then return end
     BFI.vars.resolution = res
@@ -144,8 +145,12 @@ function eventHandler:UI_SCALE_CHANGED()
         uiScaleUpdateRequired = true
         eventHandler:RegisterEvent("PLAYER_REGEN_ENABLED")
     else
-        AF.SetUIParentScale(BFIConfig.general.scale[res])
+        AF.SetUIParentScale(BFIConfig.general.scale[res], skipPixelsUpdate)
     end
+end
+
+function eventHandler:UI_SCALE_CHANGED()
+    AF.DelayedInvoke(0.5, UpdateUIParentScale)
 end
 
 ---------------------------------------------------------------------
@@ -313,13 +318,7 @@ local function AF_PLAYER_LOGIN_DELAYED()
 
     -- ui scale
     eventHandler:RegisterEvent("UI_SCALE_CHANGED")
-    local res = ("%dx%d"):format(GetPhysicalScreenSize())
-    BFI.vars.resolution = res
-
-    if type(BFIConfig.general.scale[res]) ~= "number" then
-        BFIConfig.general.scale[res] = AF.GetBestScale() -- AF.RoundToDecimal(UIParent:GetScale(), 2)
-    end
-    AF.SetUIParentScale(BFIConfig.general.scale[res], true)
+    UpdateUIParentScale(true)
 
     -- profile
     PreloadProfile()
