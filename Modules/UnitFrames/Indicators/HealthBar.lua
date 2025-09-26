@@ -208,7 +208,7 @@ local function GetReactionColor(type, unit)
     end
 end
 
-local function GetHealthColor(self, unit, colorTable)
+local function GetHealthColor(self, unit, colorTable, skipTapDeniedCheck)
     local class = UnitClassBase(unit) or "UNKNOWN"
     local inVehicle = UnitHasVehicleUI(unit)
 
@@ -231,7 +231,7 @@ local function GetHealthColor(self, unit, colorTable)
             end
         end
     else
-        if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
+        if not skipTapDeniedCheck and not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
             r1, g1, b1 = AF.GetColorRGB("TAP_DENIED")
         elseif colorTable.type == "custom_color" then
             if colorTable.gradient == "disabled" then
@@ -277,7 +277,7 @@ local function UpdateHealthColor(self, event, unitId)
     end
 
     -- lossColor
-    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor(self, unit, self.lossColor)
+    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor(self, unit, self.lossColor, true)
     if orientation then
         self:SetGradientLossColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
     else
