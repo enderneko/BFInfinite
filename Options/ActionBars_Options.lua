@@ -868,7 +868,7 @@ builder["arrangement"] = function(parent)
     local arrangement = AF.CreateDropdown(pane, 200)
     arrangement:SetLabel(AF.GetGradientText(L["Arrangement"], "BFI", "white"))
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
-    arrangement:SetItems(AF.GetDropdownItems_ComplexOrientation())
+    arrangement:SetItems(AF.GetDropdownItems_Arrangement_Complex())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.orientation = value
         AF.Fire("BFI_UpdateModule", "actionBars", pane.t.id)

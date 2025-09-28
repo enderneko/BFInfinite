@@ -437,7 +437,7 @@ builder["arrangement"] = function(parent)
     local arrangement = AF.CreateDropdown(pane, 200)
     arrangement:SetLabel(L["Arrangement"])
     AF.SetPoint(arrangement, "TOPLEFT", 15, -25)
-    arrangement:SetItems(AF.GetDropdownItems_ComplexOrientation())
+    arrangement:SetItems(AF.GetDropdownItems_Arrangement_Complex())
     arrangement:SetOnSelect(function(value)
         pane.t.cfg.arrangement = value
         AF.Fire("BFI_UpdateModule", "maps", pane.t.map)

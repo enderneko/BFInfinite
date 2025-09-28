@@ -60,7 +60,7 @@ local function CreateChatFramePane()
 
     local fadeTime = AF.CreateDropdown(chatFramePane, 150)
     AF.SetPoint(fadeTime, "TOPLEFT", bgColor, "BOTTOMLEFT", 0, -35)
-    fadeTime:SetLabel(L["Text Fade Time"])
+    fadeTime:SetLabel(L["Message Fade Time"])
     fadeTime:SetItems({
         {text = _G.NEVER, value = 0},
         {text = AF.L["%d seconds"]:format(30), value = 30},
@@ -77,7 +77,7 @@ local function CreateChatFramePane()
 
     local maxLines = AF.CreateDropdown(chatFramePane, 150)
     AF.SetPoint(maxLines, "TOPLEFT", fadeTime, 180, 0)
-    maxLines:SetLabel(L["Max Lines"])
+    maxLines:SetLabel(L["Message Lines"])
     maxLines:SetItems({
         {text = "100", value = 100},
         {text = "200", value = 200},
