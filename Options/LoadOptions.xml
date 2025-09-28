@@ -11,6 +11,7 @@
     <Script file="UnitFrames.lua"/>
     <Script file="ActionBars_Options.lua"/>
     <Script file="ActionBars.lua"/>
+    <Script file="BuffsDebuffs.lua"/>
     <Script file="UIWidgets_Options.lua"/>
     <Script file="UIWidgets.lua"/>
     <Script file="DataBars_Options.lua"/>
