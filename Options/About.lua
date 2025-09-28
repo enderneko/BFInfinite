@@ -31,10 +31,10 @@ local function CreateBFIPane()
     AF.SetPoint(changelogs, "BOTTOMRIGHT", bfiPane.line, "TOPRIGHT")
     changelogs:SetEnabled(false)
 
-    local cvarBackup = AF.CreateButton(bfiPane, L["CVar Backup"], "BFI", 127, 17)
-    bfiPane.cvarBackup = cvarBackup
-    AF.SetPoint(cvarBackup, "BOTTOMRIGHT", changelogs, "BOTTOMLEFT", 1, 0)
-    cvarBackup:SetOnClick(F.ToggleCVarBackupFrame)
+    local cvarRestore = AF.CreateButton(bfiPane, L["CVar Restore"], "BFI", 127, 17)
+    bfiPane.cvarRestore = cvarRestore
+    AF.SetPoint(cvarRestore, "BOTTOMRIGHT", changelogs, "BOTTOMLEFT", 1, 0)
+    cvarRestore:SetOnClick(F.ToggleCVarRestoreFrame)
 
     -- version
     local ver = strlower(L["Version"])

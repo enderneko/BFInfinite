@@ -9,26 +9,26 @@ local AF = _G.AbstractFramework
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
-local cvarBackupFrame
+local cvarRestoreFrame
 
-local function CreateCVarBackupFrame()
-    cvarBackupFrame = AF.CreateBorderedFrame(BFIOptionsFrame_AboutPanel, "BFIOptionsFrame_CVarBackupFrame", 350, 300, nil, "BFI")
-    AF.SetPoint(cvarBackupFrame, "TOPRIGHT", BFIOptionsFrame_AboutPanel.bfiPane.line, "BOTTOMRIGHT", 0, -1)
-    cvarBackupFrame:Hide()
+local function CreateCVarRestoreFrame()
+    cvarRestoreFrame = AF.CreateBorderedFrame(BFIOptionsFrame_AboutPanel, "BFIOptionsFrame_CVarRestoreFrame", 350, 300, nil, "BFI")
+    AF.SetPoint(cvarRestoreFrame, "TOPRIGHT", BFIOptionsFrame_AboutPanel.bfiPane.line, "BOTTOMRIGHT", 0, -1)
+    cvarRestoreFrame:Hide()
 
-    AF.SetFrameLevel(cvarBackupFrame, 110)
-    cvarBackupFrame:SetOnShow(function()
-        cvarBackupFrame:Show()
-        AF.SetFrameLevel(BFIOptionsFrame_AboutPanel.bfiPane.cvarBackup, 110)
+    AF.SetFrameLevel(cvarRestoreFrame, 110)
+    cvarRestoreFrame:SetOnShow(function()
+        cvarRestoreFrame:Show()
+        AF.SetFrameLevel(BFIOptionsFrame_AboutPanel.bfiPane.cvarRestore, 110)
         AF.ShowMask(BFIOptionsFrame_AboutPanel)
     end)
-    cvarBackupFrame:SetOnHide(function()
-        cvarBackupFrame:Hide()
-        AF.SetFrameLevel(BFIOptionsFrame_AboutPanel.bfiPane.cvarBackup, 1)
+    cvarRestoreFrame:SetOnHide(function()
+        cvarRestoreFrame:Hide()
+        AF.SetFrameLevel(BFIOptionsFrame_AboutPanel.bfiPane.cvarRestore, 1)
         AF.HideMask(BFIOptionsFrame_AboutPanel)
     end)
 
-    local restore = AF.CreateButton(cvarBackupFrame, L["Restore CVars & Disable BFI"], "red", nil, 20)
+    local restore = AF.CreateButton(cvarRestoreFrame, L["Restore CVars & Disable BFI"], "red", nil, 20)
     AF.SetPoint(restore, "BOTTOMLEFT", 10, 10)
     AF.SetPoint(restore, "BOTTOMRIGHT", -10, 10)
     restore:SetTooltip(L["Shift Click"])
@@ -43,12 +43,12 @@ local function CreateCVarBackupFrame()
         end
     end)
 
-    local box = AF.CreateScrollEditBox(cvarBackupFrame)
+    local box = AF.CreateScrollEditBox(cvarRestoreFrame)
     AF.SetPoint(box, "TOPLEFT", 10, -25)
     AF.SetPoint(box, "BOTTOMRIGHT", restore, "TOPRIGHT", 0, 10)
     box:SetNotUserChangable(true)
 
-    local label = AF.CreateFontString(cvarBackupFrame, L["BFI Modified CVars"], "BFI")
+    local label = AF.CreateFontString(cvarRestoreFrame, L["BFI Modified CVars"], "BFI")
     AF.SetPoint(label, "BOTTOMLEFT", box, "TOPLEFT", 2, 2)
 
     local pattern = AF.WrapTextInColor("\"", "darkgray") .. "%s" .. AF.WrapTextInColor("\":\"", "darkgray")
@@ -68,7 +68,7 @@ end
 function F.ShowCVarBackupNotice()
     AF.RegisterCallback("AF_POPUPS_READY", function()
         AF.ShowConfirmPopup(L["CVars that will be modified by BFI have been backed up. You can restore them in %1$s under %2$s if needed"]:format(
-            AF.WrapTextInColor(L["CVar Backup"], "BFI"),
+            AF.WrapTextInColor(L["CVar Restore"], "BFI"),
             AF.WrapTextInColor(L["About"], "BFI")
         ), nil, false)
     end)
@@ -77,9 +77,9 @@ end
 ---------------------------------------------------------------------
 -- toggle
 ---------------------------------------------------------------------
-function F.ToggleCVarBackupFrame()
-    if not cvarBackupFrame then
-        CreateCVarBackupFrame()
+function F.ToggleCVarRestoreFrame()
+    if not cvarRestoreFrame then
+        CreateCVarRestoreFrame()
     end
-    AF.Toggle(cvarBackupFrame)
+    AF.Toggle(cvarRestoreFrame)
 end

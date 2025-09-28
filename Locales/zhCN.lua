@@ -456,7 +456,7 @@ L["Paste string here"] = "在此粘贴字符串"
 ---------------------------------------------------------------------
 -- about
 ---------------------------------------------------------------------
-L["CVar Backup"] = "CVar 备份"
+L["CVar Restore"] = "CVar 恢复"
 L["BFI Modified CVars"] = "已被 BFI 修改的 CVar"
 L["Restore CVars & Disable BFI"] = "恢复 CVar 并禁用 BFI"
 L["CVars that will be modified by BFI have been backed up. You can restore them in %1$s under %2$s if needed"] = "已备份会被 BFI 修改的 CVar。如有需要，可以在 %2$s 的 %1$s 中恢复它们"
