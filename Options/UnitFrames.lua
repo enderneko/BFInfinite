@@ -755,6 +755,14 @@ LoadList = function(main, sub)
 
     local lowerSub = sub:lower()
 
+    if C_AddOns.IsAddOnLoaded("Cell") then
+        if lowerSub == "raid" then
+            AF.ShowMask(frameOptionsPane, L["Unavailable while Cell is enabled"] .. "\n\n ", 0, 0, 0, 0)
+        else
+            AF.HideMask(frameOptionsPane)
+        end
+    end
+
     local cfg = BFI.vars.profile.unitFrames[lowerSub]
 
     for i, setting in next, settings[main][lowerSub] do

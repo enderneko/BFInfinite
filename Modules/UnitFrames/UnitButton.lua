@@ -280,7 +280,6 @@ local function UnitButton_OnTick(self)
 
                 -- NOTE: only save players' names
                 if UnitIsPlayer(self.unit) then
-                    -- update Cell.vars.names
                     local name = GetUnitName(self.unit, true)
                     if (name and self.__nameRetries and self.__nameRetries >= 4) or (name and name ~= UNKNOWN and name ~= UNKNOWNOBJECT) then
                         self.__unitName = name
@@ -387,13 +386,6 @@ local function UnitButton_OnAttributeChanged(self, name, value)
             -- print(GetTime(), "UnitButton_OnAttributeChanged", self:GetName(), value)
             self.unit = value
             self.displayedUnit = value
-
-            -- for omnicd
-            -- if string.match(value, "raid%d") then
-            --     local i = string.match(value, "%d")
-            --     _G["CellRaidFrameMember"..i] = self
-            --     self.unit = value
-            -- end
         end
     end
 end

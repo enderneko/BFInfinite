@@ -27,6 +27,8 @@ L["Reset current module?"] = "要重置当前模块吗？"
 L["Reset Current Module"] = "重置当前模块"
 L["CVars will not be changed"] = "CVar 不会被更改"
 
+L["Unavailable while Cell is enabled"] = "当 Cell 启用时该功能不可用"
+
 ---------------------------------------------------------------------
 -- general
 ---------------------------------------------------------------------
