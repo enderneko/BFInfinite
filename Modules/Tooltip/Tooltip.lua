@@ -232,6 +232,7 @@ local function UpdateStatusBarText(bar, value)
     if unit then
         value = UnitHealth(unit)
         maxValue = UnitHealthMax(unit)
+        if maxValue == 0 then maxValue = value end
 
         if UnitIsGhost(unit) then
             bar.text:SetText(AF.WrapTextInColor(AF.L["Ghost"], "red"))
