@@ -23,24 +23,31 @@ More features will continue to be added in the future to meet the personalized n
 
 ## Features | 功能
 
-- TODO:
+- Built-in: Unit Frames, Nameplates, Action Bars  
+  内置功能：单位框体、姓名板、动作条
+  
+- Feature Enhancements: Tooltip, Item Level Display (more features coming soon)  
+  功能增强：鼠标提示、物品等级显示（更多功能即将推出）
+
+- UI Enhancement: Maps, XP/Honor/Rep Bars ...  
+  界面美化：地图、经验/荣誉/声望条等
 
 ## Screenshots
 
 <table>
   <tr>
     <td align="center" width="32%">
-      <img src="https://raw.githubusercontent.com/enderneko/BFInfinite/refs/heads/master/.screenshots/BFI_overview.webp?token=GHSAT0AAAAAACMQTD7HHWIWESHPIRCLXLO22EZXXBA" alt="Overview" width="100%" /><br/>
+      <img src="https://raw.githubusercontent.com/enderneko/BFInfinite/refs/heads/master/.screenshots/BFI_overview.webp" alt="Overview" width="100%" /><br/>
       <sub>Overview: Unified minimalist HUD with fully customizable unit frames, action bars, and nameplates</sub><br/>
       <sub>概览：统一极简 HUD；单位框体、动作条、姓名版全面可自定义</sub>
     </td>
     <td align="center" width="32%">
-      <img src="https://raw.githubusercontent.com/enderneko/BFInfinite/refs/heads/master/.screenshots/BFI_editmode.webp?token=GHSAT0AAAAAACMQTD7GOMZAXJBKXCVC2OL42EZXYBA" alt="Edit Mode" width="100%" /><br/>
+      <img src="https://raw.githubusercontent.com/enderneko/BFInfinite/refs/heads/master/.screenshots/BFI_editmode.webp" alt="Edit Mode" width="100%" /><br/>
       <sub>Edit Mode: Live drag-and-drop with pixel-perfect reposition, layering, and anchoring</sub><br/>
       <sub>编辑模式：实时拖拽，像素级精确定位、分层与锚点控制</sub>
     </td>
     <td align="center" width="32%">
-      <img src="https://raw.githubusercontent.com/enderneko/BFInfinite/refs/heads/master/.screenshots/BFI_options.webp?token=GHSAT0AAAAAACMQTD7HM5EQVRNNQXPLDAEA2EZXYGA" alt="Options" width="100%" /><br/>
+      <img src="https://raw.githubusercontent.com/enderneko/BFInfinite/refs/heads/master/.screenshots/BFI_options.webp" alt="Options" width="100%" /><br/>
       <sub>Options: Clean, intuitive settings focused on clarity and ease of use—quick access to style and feature settings</sub><br/>
       <sub>配置面板：简洁直观，强调易用性；快速访问样式与功能设置</sub>
     </td>
