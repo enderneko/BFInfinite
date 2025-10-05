@@ -84,9 +84,9 @@ local function CreateLinksPane()
         {text = "", value = "wago", url = "https://addons.wago.io/addons/bfinfinite"},
         {text = "", value = "discord", url = "https://discord.gg/9PSe3fKQGJ"},
         {text = "", value = "kook", url = "https://kook.vip/SPg8bl"},
-        {text = "", value = "bilibili", url = "https://space.bilibili.com/139815"},
-        -- {text = "", value = "ko-fi", url = "https://ko-fi.com/enderneko"},
-        -- {text = "", value = "afdian", url = "https://afdian.com/a/enderneko"},
+        -- {text = "", value = "bilibili", url = "https://space.bilibili.com/139815"},
+        {text = "", value = "ko-fi", url = "https://ko-fi.com/enderneko"},
+        {text = "", value = "afdian", url = "https://afdian.com/a/enderneko"},
     })
 
     for _, b in next, switch.buttons do

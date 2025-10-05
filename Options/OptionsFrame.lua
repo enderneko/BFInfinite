@@ -26,7 +26,7 @@ local list = {
     "unitFrames",
     "-nameplates",
     "actionBars",
-    "buffsDebuffs",
+    "-buffsDebuffs",
     "-tooltip",
     "uiWidgets",
     "dataBars",
