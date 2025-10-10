@@ -64,7 +64,7 @@ function eventHandler:ADDON_LOADED(arg)
         if type(BFIConfig.general.font) ~= "table" then
             BFIConfig.general.font = {
                 common = {
-                    font = "BFI",
+                    font = "BFI Default",
                     overrideAF = false,
                     overrideBlizzard = false,
                     blizzardFontSizeDelta = 0,
@@ -79,6 +79,7 @@ function eventHandler:ADDON_LOADED(arg)
                 },
             }
         end
+        AF.Libs.LSM:Register("font", "BFI", AF.Libs.LSM:Fetch("font", BFIConfig.general.font.common.font), 255)
         AF.Fire("BFI_UpdateFont")
 
         --------------------------------------------------

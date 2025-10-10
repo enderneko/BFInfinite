@@ -198,18 +198,38 @@ end
 local fontPane
 
 local function CreateFontPane()
+    local _BFI = AF.WrapTextInColor("BFI", "BFI")
+    local _BFI_DEFAULT = AF.WrapTextInColor("BFI Default", "BFI")
+    local _BFI_COMBAT = AF.WrapTextInColor("BFI Combat", "BFI")
+
     fontPane = AF.CreateTitledPane(generalPanel, L["Fonts"], 180, 200)
     generalPanel.fontPane = fontPane
     AF.SetPoint(fontPane, "TOPLEFT", generalPanel.bfiPane, "BOTTOMLEFT", 0, -30)
-    fontPane:SetTips(L["Fonts"], L["FONT_TIP"],
-        AF.WrapTextInColor("BFI: NotoSansCJKsc + Accidental Presidency", "gray"),
-        AF.WrapTextInColor("BFI Combat: NotoSansCJKsc + Dolphin", "gray")
-    )
 
     local font = AF.CreateDropdown(fontPane, 150)
-    font:SetLabel(L["Font"])
     AF.SetPoint(font, "TOPLEFT", fontPane, 10, -45)
-    font:SetItems(AF.LSM_GetFontDropdownItems())
+
+    font:SetLabel(_BFI .. " " .. L["Font"])
+    font._tooltipWordWrapMinWidth = 400
+    font:SetTooltip(_BFI .. " " .. L["Font"],
+        L["Change the actual style of the %s font"]:format(_BFI),
+        L["Select the %s font in other components' font settings to apply it universally"]:format(_BFI),
+        " ",
+        L["The %s and %s fonts mainly support English and Simplified Chinese"]:format(_BFI_DEFAULT, _BFI_COMBAT),
+        " ",
+        AF.WrapTextInColor("BFI Default: NotoSansCJKsc + Accidental Presidency", "gray"),
+        AF.WrapTextInColor("BFI Combat: NotoSansCJKsc + Dolphin", "gray")
+)
+
+    local items = AF.LSM_GetFontDropdownItems()
+    for k, v in ipairs(items) do
+        if v.text == "BFI" then
+            table.remove(items, k)
+            break
+        end
+    end
+
+    font:SetItems(items)
     font:SetOnSelect(function(value)
         BFIConfig.general.font.common.font = value
         ShowReloadPopup()
