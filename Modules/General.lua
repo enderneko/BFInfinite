@@ -173,7 +173,6 @@ local fonts = {
     "CommentatorVictoryFanfare",
     "CommentatorVictoryFanfareTeam",
     "OptionsFontSmall",
-    "OptionsFontSmallLeft",
     "OptionsFontHighlightSmall",
     "OptionsFontHighlight",
     "OptionsFontLarge",
@@ -344,7 +343,11 @@ local fonts = {
 }
 
 local fontSizeOverrides = {
+    GameFontNormal = 13,
+    GameFontNormalLeft = 13,
     GameFontNormalSmall = 12,
+    -- GameFontHighlight = 13,
+    GameFontHighlightSmall = 12,
     SystemFont_Shadow_Small2 = 12,
     SystemFont_Shadow_Small2_Outline = 12,
 
@@ -363,14 +366,6 @@ local fontSizeOverrides = {
     ObjectiveTrackerFont22 = 22,
 
     ChatBubbleFont = 13,
-
-    -- NOTE: these fonts inherit GameFontNormalSmall
-    -- GameFontNormalSmallLeft = 12,
-    -- GameFontHighlightSmall = 12,
-    -- GameFontHighlightSmallLeft = 12,
-    -- GameFontHighlightSmallLeftTop = 12,
-    -- GameFontHighlightSmallRight = 12,
-    -- GameFontHighlightSmallOutline = 12,
 }
 
 BFI.vars.blizzardFontSizeDelta = 0
@@ -391,11 +386,15 @@ local function UpdateFont()
 
         for _, font in next, fonts do
             local fontObj = _G[font]
-            local _, size, outline = fontObj:GetFont()
-            local hasShadow = fontObj:GetShadowOffset() ~= 0
-            -- local delta = fontSizeDeltas[font] or 0
-            size = fontSizeOverrides[font] or size
-            AF.SetFont(fontObj, commonFont, size + delta, outline, hasShadow)
+            if fontObj then
+                local _, size, outline = fontObj:GetFont()
+                local hasShadow = fontObj:GetShadowOffset() ~= 0
+                -- local delta = fontSizeDeltas[font] or 0
+                size = fontSizeOverrides[font] or size
+                AF.SetFont(fontObj, commonFont, AF.Clamp(size + delta, 1, 100), outline, hasShadow)
+            else
+                AF.Debug("|cffff0000Font Not Found:|r", font)
+            end
         end
 
         -- update default LSM font
