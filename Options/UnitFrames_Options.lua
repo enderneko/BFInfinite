@@ -670,7 +670,7 @@ builder["width,height"] = function(parent)
         end
     end
 
-    local width = AF.CreateSlider(pane, L["Width"], 150, 10, 1000, 1, nil, true)
+    local width = AF.CreateSlider(pane, L["Width"], 150, 3, 1000, 1, nil, true)
     AF.SetPoint(width, "LEFT", 15, 0)
     width:SetOnValueChanged(function(value)
         pane.t.cfg.width = value
@@ -682,7 +682,7 @@ builder["width,height"] = function(parent)
         end
     end)
 
-    local height = AF.CreateSlider(pane, L["Height"], 150, 10, 1000, 1, nil, true)
+    local height = AF.CreateSlider(pane, L["Height"], 150, 3, 1000, 1, nil, true)
     AF.SetPoint(height, "TOPLEFT", width, 185, 0)
     height:SetOnValueChanged(function(value)
         pane.t.cfg.height = value
