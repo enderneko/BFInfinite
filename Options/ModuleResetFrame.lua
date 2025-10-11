@@ -176,7 +176,7 @@ local function CreateModuleResetFrame()
     end
 
     function moduleResetFrame:ShowResetMessage()
-        text:SetText(L["Module %s has been reset"]:format(AF.WrapTextInColor(L[currentResetter], "softlime")))
+        text:SetText(L["Module %s has been reset"]:format(AF.WrapTextInColor(F.GetModuleLocalizedName(currentResetter), "softlime")))
         yes:Hide()
         yes:SetAlpha(0)
         no:Hide()

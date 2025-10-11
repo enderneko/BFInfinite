@@ -43,8 +43,12 @@ end
 -- create header
 ---------------------------------------------------------------------
 local buffFrame, debuffFrame
-local function CreateAuraHeaders()
+
+local function CreateBuffHeader()
     buffFrame = CreateHeader("BFIBuffFrame", _G.HUD_EDIT_MODE_BUFF_FRAME_LABEL, "HELPFUL")
+end
+
+local function CreateDebuffHeader()
     debuffFrame = CreateHeader("BFIDebuffFrame", _G.HUD_EDIT_MODE_DEBUFF_FRAME_LABEL, "HARMFUL")
 end
 
@@ -59,7 +63,8 @@ local function UpdateAura(button, index)
 end
 
 local function Button_OnEnter(button)
-    GameTooltip:SetOwner(button, "ANCHOR_BOTTOMLEFT", 0, -5)
+    -- GameTooltip:SetOwner(button, "ANCHOR_BOTTOMLEFT", 0, -5)
+    GameTooltip_SetDefaultAnchor(GameTooltip, button)
     -- button.elapsed = 1
 
     if button:GetAttribute("index") then -- normal aura
@@ -69,9 +74,9 @@ local function Button_OnEnter(button)
     end
 end
 
-local function Button_OnUpdate(button, elapsed)
+-- local function Button_OnUpdate(button, elapsed)
 
-end
+-- end
 
 local function Button_OnAttributeChanged(button, name, value)
     -- print(name, value)
@@ -122,11 +127,17 @@ function BD.InitAuraButton(button)
     -- moved to BFIAuraButtonTemplate.xml
     -- button:RegisterForClicks("RightButtonUp", "RightButtonDown")
 
+    -- tooltip
+    button.tooltip = {
+        enabled = true,
+        anchorTo = "self_adaptive",
+    }
+
     -- event
     button:SetScript("OnEnter", Button_OnEnter)
     button:SetScript("OnLeave", GameTooltip_Hide)
     button:SetScript("OnAttributeChanged", Button_OnAttributeChanged)
-    button:SetScript("OnUpdate", Button_OnUpdate)
+    -- button:SetScript("OnUpdate", Button_OnUpdate)
     button:SetScript("OnSizeChanged", AF.ReCalcTexCoordForAura)
 end
 
@@ -224,6 +235,8 @@ local function SetupHeader(header, config)
         b:SetSize(config.width, config.height)
         b:LoadConfig()
     end
+
+    header:Show()
 end
 
 ---------------------------------------------------------------------
@@ -232,31 +245,36 @@ end
 local function UpdateBuffsDebuffs(_, module, which)
     if module and module ~= "buffsDebuffs" then return end
 
-    local config = BD.config
-
-    if not config.enabled then
-        if buffFrame and debuffFrame then
+    -- buffs
+    local config = BD.config.buffs
+    if not which or which == "buffs" then
+        if config.enabled then
+            if not buffFrame then CreateBuffHeader() end
+            buffFrame.enabled = true
+            SetupHeader(buffFrame, config)
+            AF.UpdateMoverSave(buffFrame, config.position)
+            AF.LoadPosition(buffFrame, config.position)
+        elseif buffFrame then
             buffFrame.enabled = false
             buffFrame:Hide()
             buffFrame:UnregisterEvent("UNIT_AURA")
+        end
+    end
+
+    -- debuffs
+    config = BD.config.debuffs
+    if not which or which == "debuffs" then
+        if config.enabled then
+            if not debuffFrame then CreateDebuffHeader() end
+            debuffFrame.enabled = true
+            SetupHeader(debuffFrame, config)
+            AF.UpdateMoverSave(debuffFrame, config.position)
+            AF.LoadPosition(debuffFrame, config.position)
+        elseif debuffFrame then
             debuffFrame.enabled = false
             debuffFrame:Hide()
             debuffFrame:UnregisterEvent("UNIT_AURA")
         end
-        return
     end
-
-    if not (buffFrame and debuffFrame) then
-        CreateAuraHeaders()
-    end
-
-    buffFrame.enabled = true
-    debuffFrame.enabled = true
-
-    SetupHeader(buffFrame, config.buffs)
-    SetupHeader(debuffFrame, config.debuffs)
-
-    AF.LoadPosition(buffFrame, config.buffs.position)
-    AF.LoadPosition(debuffFrame, config.debuffs.position)
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateBuffsDebuffs)

@@ -6,8 +6,8 @@ local BD = BFI.modules.BuffsDebuffs
 local AF = _G.AbstractFramework
 
 local defaults = {
-    enabled = true,
     buffs = {
+        enabled = true,
         position = {"TOPRIGHT", -4, -4},
         width = 26,
         height = 26,
@@ -39,6 +39,7 @@ local defaults = {
 
     },
     debuffs = {
+        enabled = true,
         position = {"TOPRIGHT", -4, -40},
         width = 26,
         height = 26,
@@ -79,4 +80,16 @@ end)
 
 function BD.GetDefaults()
     return AF.Copy(defaults)
+end
+
+function BD.ResetToDefaults(which)
+    if not which then
+        for k, v in next, defaults do
+            wipe(BD.config[k])
+            AF.Merge(BD.config[k], v)
+        end
+    else
+        wipe(BD.config[which])
+        AF.Merge(BD.config[which], defaults[which])
+    end
 end

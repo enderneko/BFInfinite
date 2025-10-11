@@ -25,6 +25,7 @@ L["Are you sure you want to reset all BFI settings?"] = "确定要重置所有 B
 L["Apply this preset?"] = "要应用此预设吗？"
 L["Reset current module?"] = "要重置当前模块吗？"
 L["Reset Current Module"] = "重置当前模块"
+L["Module %s has been reset"] = "模块 %s 已被重置"
 L["CVars will not be changed"] = "CVar 不会被更改"
 
 L["Unavailable while Cell is enabled"] = "当 Cell 启用时该功能不可用"
@@ -342,6 +343,8 @@ L["Paging"] = "翻页"
 -- buffs debuffs
 ---------------------------------------------------------------------
 L["Buffs & Debuffs"] = "增益与减益"
+L["Show Seconds Unit"] = "显示秒数单位"
+L["Separate Own"] = "分离自己的"
 
 ---------------------------------------------------------------------
 -- tooltip
