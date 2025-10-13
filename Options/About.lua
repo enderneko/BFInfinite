@@ -53,7 +53,7 @@ local function CreateBFIPane()
 
     local authorName = AF.CreateFontString(bfiPane, "篠崎-影之哀伤 (CN)", "gray")
     authorName:SetPoint("LEFT", author, "RIGHT", 5, 0)
-    AF.SetFont(authorName, "BFI", 13 + AF.fontSizeDelta, "none", false)
+    AF.SetFont(authorName, "BFI Default", 13 + AF.fontSizeDelta, "none", true)
     AF.AddToFontSizeUpdater(authorName, 13)
 
     -- about
