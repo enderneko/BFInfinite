@@ -75,7 +75,7 @@ local function CreateNormalPane()
     AF.SetPoint(iconsPane, "TOPLEFT", 0, -5)
     AF.SetPoint(iconsPane, "TOPRIGHT", 0, -5)
 
-    local arrangement = AF.CreateDropdown(iconsPane, 200)
+    local arrangement = AF.CreateDropdown(iconsPane, 210)
     AF.SetPoint(arrangement, "TOPLEFT", iconsPane, "TOPLEFT", 10, -45)
     arrangement:SetLabel(L["Arrangement"])
     arrangement:SetItems(AF.GetDropdownItems_Arrangement_Complex())
@@ -171,7 +171,7 @@ local function CreateNormalPane()
     AF.SetPoint(textsPane, "TOPLEFT", iconsPane, "BOTTOMLEFT", 0, -30)
     AF.SetPoint(textsPane, "TOPRIGHT", iconsPane, "BOTTOMRIGHT", 0, -30)
 
-    local textSwitch = AF.CreateSwitch(textsPane, 200, 20)
+    local textSwitch = AF.CreateSwitch(textsPane, 210, 20)
     AF.SetPoint(textSwitch, "BOTTOMRIGHT", textsPane.line, "BOTTOMRIGHT", 0, -1)
     textSwitch:SetLabels({
         {text = L["Stack Text"], value = "stack"},
@@ -283,7 +283,7 @@ local function CreateNormalPane()
         AF.Fire("BFI_UpdateModule", "buffsDebuffs", selected)
     end)
 
-    local percentColor = AF.CreateColorPicker(textsPane, L["Remaining Time"] .. " <")
+    local percentColor = AF.CreateColorPicker(textsPane, L["Remaining Time"])
     AF.SetPoint(percentColor, "TOPLEFT", percentCheckButton, "TOPRIGHT", 2, 0)
     percentColor:SetOnChange(function(r, g, b)
         currentTextConfig.color.percent.rgb[1] = r
@@ -292,8 +292,11 @@ local function CreateNormalPane()
         AF.Fire("BFI_UpdateModule", "buffsDebuffs", selected)
     end)
 
+    percentColor.label2 = AF.CreateFontString(percentColor, "<")
+    AF.SetPoint(percentColor.label2, "TOPLEFT", percentColor.label, "BOTTOMLEFT", 0, -7)
+
     local percentDropdown = AF.CreateDropdown(textsPane, 45, nil, "vertical")
-    AF.SetPoint(percentDropdown, "LEFT", percentColor.label, "RIGHT", 5, 0)
+    AF.SetPoint(percentDropdown, "LEFT", percentColor.label2, "RIGHT", 5, 0)
     percentDropdown:SetItems({
         {text = "90%", value = 0.9},
         {text = "80%", value = 0.8},
@@ -311,14 +314,15 @@ local function CreateNormalPane()
     end)
 
     local secondsCheckButton = AF.CreateCheckButton(textsPane)
-    AF.SetPoint(secondsCheckButton, "TOPLEFT", percentCheckButton, "BOTTOMLEFT", 0, -7)
+    AF.SetPoint(secondsCheckButton, "LEFT", percentCheckButton)
+    AF.SetPoint(secondsCheckButton, "TOP", percentDropdown, "BOTTOM", 0, -7)
     secondsCheckButton:SetOnCheck(function(checked)
         currentTextConfig.color.seconds.enabled = checked
         textsPane.UpdateWidgets()
         AF.Fire("BFI_UpdateModule", "buffsDebuffs", selected)
     end)
 
-    local secondsColor = AF.CreateColorPicker(textsPane, L["Remaining Time"] .. " <")
+    local secondsColor = AF.CreateColorPicker(textsPane, L["Remaining Time"])
     AF.SetPoint(secondsColor, "TOPLEFT", secondsCheckButton, "TOPRIGHT", 2, 0)
     secondsColor:SetOnChange(function(r, g, b)
         currentTextConfig.color.seconds.rgb[1] = r
@@ -327,8 +331,11 @@ local function CreateNormalPane()
         AF.Fire("BFI_UpdateModule", "buffsDebuffs", selected)
     end)
 
+    secondsColor.label2 = AF.CreateFontString(secondsColor, "<")
+    AF.SetPoint(secondsColor.label2, "TOPLEFT", secondsColor.label, "BOTTOMLEFT", 0, -7)
+
     local secondsEditBox = AF.CreateEditBox(textsPane, nil, 45, 20, "number")
-    AF.SetPoint(secondsEditBox, "LEFT", secondsColor.label, "RIGHT", 5, 0)
+    AF.SetPoint(secondsEditBox, "LEFT", secondsColor.label2, "RIGHT", 5, 0)
     secondsEditBox:SetMaxLetters(3)
     secondsEditBox:SetConfirmButton(function(value)
         currentTextConfig.color.seconds.value = value
@@ -344,9 +351,11 @@ local function CreateNormalPane()
     function textsPane.UpdateWidgets()
         AF.SetEnabled(currentConfig.enabled, enabled)
         AF.SetEnabled(currentConfig.enabled and currentTextConfig.enabled, font, size, outline, shadow, anchorPoint, relativePoint, xOffset, yOffset, normalColor)
-        AF.SetEnabled(currentConfig.enabled and currentTextConfig.enabled and textSwitch:GetSelectedValue() == "duration", showSecondsUnit, percentCheckButton, secondsCheckButton)
-        AF.SetEnabled(currentConfig.enabled and currentTextConfig.enabled and textSwitch:GetSelectedValue() == "duration" and currentTextConfig.color.percent.enabled, percentColor, percentDropdown)
-        AF.SetEnabled(currentConfig.enabled and currentTextConfig.enabled and textSwitch:GetSelectedValue() == "duration" and currentTextConfig.color.seconds.enabled, secondsColor, secondsEditBox, sec)
+
+        local durationEnabled = currentConfig.enabled and currentTextConfig.enabled and textSwitch:GetSelectedValue() == "duration"
+        AF.SetEnabled(durationEnabled, showSecondsUnit, percentCheckButton, secondsCheckButton)
+        AF.SetEnabled(durationEnabled and currentTextConfig.color.percent.enabled, percentColor, percentColor.label2, percentDropdown)
+        AF.SetEnabled(durationEnabled and currentTextConfig.color.seconds.enabled, secondsColor, secondsColor.label2, secondsEditBox, sec)
     end
 
     function textsPane.Load(which)
