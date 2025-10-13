@@ -1,9 +1,3 @@
--- self == L
--- rawset(t, key, value)
--- Sets the value associated with a key in a table without invoking any metamethods
--- t - A table (table)
--- key - A key in the table (cannot be nil) (value)
--- value - New value to set for the key (value)
 select(2, ...).L = setmetatable({
     ["ABOUT"] = "BFInfinite is a World of Warcraft addon suite inspired by ElvUI, featuring unit frames, action bars, nameplates, UI enhancements, and more.\nWith a highly customizable and minimalist design, it aims to provide players with an unprecedented experience.\nMore features will continue to be added in the future to meet the personalized needs of different players.",
     ["buffs"] = "Buffs",
@@ -38,5 +32,5 @@ select(2, ...).L = setmetatable({
     ["threatGlow"] = "Threat Glow",
     ["Maps"] = _G.BRAWL_TOOLTIP_MAPS,
 }, {
-    __index = AbstractFramework.L
+    __index = _G.AbstractFramework.L
 })
