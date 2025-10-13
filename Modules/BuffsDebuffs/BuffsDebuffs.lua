@@ -176,8 +176,13 @@ local function GetAttributes(config)
     local point, x, y, wrapX, wrapY, minWidth, minHeight, _
     point, _, _, x, y, wrapX, wrapY = AF.GetAnchorPoints_Complex(config.orientation, config.spacingX, config.spacingY)
 
-    minWidth = config.width * config.wrapAfter + config.spacingX * (config.wrapAfter - 1)
-    minHeight = config.height * config.maxWraps + config.spacingY * (config.maxWraps - 1)
+    if config.orientation:find("^[lr]") then
+        minWidth = config.width * config.wrapAfter + config.spacingX * (config.wrapAfter - 1)
+        minHeight = config.height * config.maxWraps + config.spacingY * (config.maxWraps - 1)
+    else
+        minWidth = config.width * config.maxWraps + config.spacingX * (config.maxWraps - 1)
+        minHeight = config.height * config.wrapAfter + config.spacingY * (config.wrapAfter - 1)
+    end
 
     if config.orientation == "bottom_to_top_then_left" then
         y = y + config.height
