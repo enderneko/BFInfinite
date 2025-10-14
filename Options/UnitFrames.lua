@@ -373,6 +373,11 @@ local function CreateGeneralOptionsPane()
         end,
 
         classPowerBar = function(self)
+            if not UF.ShouldShowClassPowerForPreview() then
+                self:Hide()
+                return
+            end
+
             self.unit = "player"
             self.powerIndex, self.powerType, self.powerMod = UF.GetClassPowerInfo()
             self:SetupBars()
@@ -383,6 +388,7 @@ local function CreateGeneralOptionsPane()
             end
 
             self:UpdateBars()
+            self:Show()
         end,
 
         extraManaBar = function(self)

@@ -79,6 +79,12 @@ function UF.ShouldShowClassPower()
     end
 end
 
+function UF.ShouldShowClassPowerForPreview()
+    if should_show_class_power[class] then
+        return should_show_class_power[class]()
+    end
+end
+
 ---------------------------------------------------------------------
 -- GetClassPowerInfo
 ---------------------------------------------------------------------
