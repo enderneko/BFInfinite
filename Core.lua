@@ -5,6 +5,8 @@ local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local REQUIRED_AF_VERSION = 15
+
 local GetCVar = GetCVar
 local SetCVar = SetCVar
 local GetPhysicalScreenSize = GetPhysicalScreenSize
@@ -55,6 +57,9 @@ function eventHandler:ADDON_LOADED(arg)
         else
             AF.SetAddonAccentColor(BFI.name, "blazing_tangerine")
         end
+
+        -- check AF version
+        AF.RequireVersion(REQUIRED_AF_VERSION)
 
         -- general.language
         -- if type(BFIConfig.general.locale) ~= "string" then
