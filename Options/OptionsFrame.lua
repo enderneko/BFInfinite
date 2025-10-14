@@ -164,7 +164,7 @@ local function CreateOptionsFrame()
     AF.SetDraggable(headerPane, optionsFrame, true, nil, ReAnchor)
 
     -- logo
-    local color2 = BFIConfig.general.accentColor.type == "custom" and {AF.InvertColor(AF.GetColorRGB("BFI"))} or "vivid_raspberry"
+    local color2 = BFIConfig.general.accentColor.type == "default" and "vivid_raspberry" or {AF.InvertColor(AF.GetColorRGB("BFI"))}
     local logo = AF.CreateGradientTexture(headerPane, "HORIZONTAL", "BFI", color2, AF.GetIcon("BFI_64_W", BFI.name))
     AF.SetSize(logo, 40, 40)
     AF.SetPoint(logo, "LEFT", headerPane, 7, 0)

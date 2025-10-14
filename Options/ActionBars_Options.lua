@@ -719,7 +719,7 @@ builder["tooltip"] = function(parent)
     relativeTo:SetItems({
         {text = L["Button"], value = "self"},
         {text = L["Button (Adaptive)"], value = "self_adaptive"},
-        {text = _G.DEFAULT, value = "default"},
+        {text = L["Default"], value = "default"},
     })
 
     local anchorPoint = AF.CreateDropdown(pane, 150)
@@ -1354,7 +1354,7 @@ builder["assistedAnimation"] = function(parent)
     AF.SetPoint(anchorPoint, "TOPLEFT", styles[1], "BOTTOMLEFT", 0, -25)
 
     local items = AF.GetDropdownItems_AnchorPoint()
-    tinsert(items, 1, {text = _G.DEFAULT, value = "default"})
+    tinsert(items, 1, {text = L["Default"], value = "default"})
     anchorPoint:SetItems(items)
 
     local relativePoint = AF.CreateDropdown(pane, 150)

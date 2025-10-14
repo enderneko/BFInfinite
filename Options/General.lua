@@ -47,9 +47,9 @@ local function CreateBFIPane()
     accentColorDropdown:SetLabel("BFI " .. AF.L["Accent Color"])
 
     accentColorDropdown:SetItems({
-        {text = _G.DEFAULT, value = "default"},
-        -- {text = CLASS, value = "class", disabled = true},
-        {text = _G.CUSTOM, value = "custom"},
+        {text = L["Default"], value = "default"},
+        {text = L["Class"], value = "class"},
+        {text = L["Custom"], value = "custom"},
     })
 
     accentColorDropdown:SetOnSelect(function(value)
@@ -147,8 +147,9 @@ local function CreateAFPane()
     accentColorDropdown:SetLabel("AF " .. AF.L["Accent Color"])
 
     accentColorDropdown:SetItems({
-        {text = _G.DEFAULT, value = "default"},
-        {text = _G.CUSTOM, value = "custom"},
+        {text = L["Default"], value = "default"},
+        {text = L["Class"], value = "class"},
+        {text = L["Custom"], value = "custom"},
     })
 
     accentColorDropdown:SetOnSelect(function(value)

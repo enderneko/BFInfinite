@@ -442,7 +442,7 @@ local function GetColorItems(which)
         tinsert(items, {text = L["Level"], value = "level_color"})
     end
 
-    tinsert(items, {text = _G.CUSTOM, value = "custom_color"})
+    tinsert(items, {text = L["Custom"], value = "custom_color"})
     return items
 end
 
@@ -1237,7 +1237,7 @@ builder["shield,overshieldGlow"] = function(parent)
     local shieldDropdown = AF.CreateDropdown(pane, 150)
     AF.SetPoint(shieldDropdown, "TOPLEFT", 15, -25)
     local items = AF.LSM_GetBarTextureDropdownItems()
-    tinsert(items, 1, {text = _G.DEFAULT, value = "default"})
+    tinsert(items, 1, {text = L["Default"], value = "default"})
     shieldDropdown:SetItems(items)
 
     local shieldCheckButton = AF.CreateCheckButton(pane, L["Shield"])
@@ -1325,7 +1325,7 @@ builder["healAbsorb,overabsorbGlow"] = function(parent)
     local absorbDropdown = AF.CreateDropdown(pane, 150)
     AF.SetPoint(absorbDropdown, "TOPLEFT", 15, -25)
     local items = AF.LSM_GetBarTextureDropdownItems()
-    tinsert(items, 1, {text = _G.DEFAULT, value = "default"})
+    tinsert(items, 1, {text = L["Default"], value = "default"})
     absorbDropdown:SetItems(items)
 
     local absorbCheckButton = AF.CreateCheckButton(pane, L["Heal Absorb"])
@@ -3398,13 +3398,13 @@ builder["tooltip"] = function(parent)
 
     local singleItems = {
         {text = L["Unit Frame"], value = "self"},
-        {text = _G.DEFAULT, value = "default"},
+        {text = L["Default"], value = "default"},
     }
 
     local groupItems = {
         {text = L["Unit Frame"], value = "self"},
         {text = L["Group"], value = "parent"},
-        {text = _G.DEFAULT, value = "default"},
+        {text = L["Default"], value = "default"},
     }
 
     local auraItems = {
@@ -3412,7 +3412,7 @@ builder["tooltip"] = function(parent)
         {text = L["Icon"], value = "self"},
         {text = L["Icon (Adaptive)"], value = "self_adaptive"},
         {text = L["Group"], value = "parent"},
-        {text = _G.DEFAULT, value = "default"},
+        {text = L["Default"], value = "default"},
     }
 
     local anchorPoint = AF.CreateDropdown(pane, 150)

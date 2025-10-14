@@ -22,7 +22,7 @@ local function GetProfileItems()
         end
     end
     AF.Sort(t, "text", "ascending")
-    tinsert(t, 1, {text = _G.DEFAULT, value = "default", id = "default"})
+    tinsert(t, 1, {text = L["Default"], value = "default", id = "default"})
     return t
 end
 
@@ -42,7 +42,7 @@ local profileButtons = {}
 
 local function ProfileButton_SetText(self, text)
     if text == "default" then
-        text = _G.DEFAULT
+        text = L["Default"]
     end
     self.text:SetText(text)
 end

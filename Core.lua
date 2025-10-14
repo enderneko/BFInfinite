@@ -50,6 +50,8 @@ function eventHandler:ADDON_LOADED(arg)
 
         if BFIConfig.general.accentColor.type == "custom" then
             AF.SetAddonAccentColor(BFI.name, BFIConfig.general.accentColor.color)
+        elseif BFIConfig.general.accentColor.type == "class" then
+            AF.SetAddonAccentColor(BFI.name, AF.player.class)
         else
             AF.SetAddonAccentColor(BFI.name, "blazing_tangerine")
         end
