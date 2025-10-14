@@ -6,5 +6,6 @@ Libs/*
 
 # excluded
 !.release/release.sh
+!.release/generate_changelog.sh
 !Libs/LoadLibs.xml
 !Libs/LibActionButton-1.0

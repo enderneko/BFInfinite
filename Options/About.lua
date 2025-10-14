@@ -29,7 +29,7 @@ local function CreateBFIPane()
     local changelogs = AF.CreateButton(bfiPane, L["Changelogs"], "BFI", 127, 17)
     bfiPane.changelogs = changelogs
     AF.SetPoint(changelogs, "BOTTOMRIGHT", bfiPane.line, "TOPRIGHT")
-    changelogs:SetEnabled(false)
+    changelogs:SetOnClick(F.ToggleChangelogsFrame)
 
     local cvarRestore = AF.CreateButton(bfiPane, L["CVar Restore"], "BFI", 127, 17)
     bfiPane.cvarRestore = cvarRestore
@@ -134,7 +134,7 @@ local function CreateSlashCommandsPane()
         if i ~= 1 then
             text:AppendText("\n")
         end
-        text:AppendText(AF.WrapTextInColor(info.cmd, "accent") .. " - " .. info.desc)
+        text:AppendText(AF.WrapTextInColor(info.cmd, "BFI") .. " - " .. info.desc)
     end
 end
 

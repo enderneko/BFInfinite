@@ -1,7 +1,10 @@
 ---@type BFI
 local BFI = select(2, ...)
+local L = BFI.L
 ---@class Funcs
 local F = BFI.funcs
+---@type AbstractFramework
+local AF = _G.AbstractFramework
 
 ---------------------------------------------------------------------
 -- common revisions
@@ -22,6 +25,16 @@ function F.ReviseCommon()
                 revise.fn(BFIConfig)
             end
         end
+    end
+
+    if BFIConfig.revision and BFIConfig.revision ~= BFI.versionNum then
+        AF.ShowNotificationPopup(
+            L["BFI has been updated to version %s\nClick here to view the changelog"]:format(AF.WrapTextInColor(BFI.version, "BFI")),
+            27,
+            "!" .. AF.GetIcon("BFI_64", BFI.name),
+            nil, nil, "LEFT",
+            F.ToggleChangelogsFrame
+        )
     end
 
     BFIConfig.revision = BFI.versionNum

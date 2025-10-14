@@ -27,6 +27,7 @@ L["Reset current module?"] = "要重置当前模块吗？"
 L["Reset Current Module"] = "重置当前模块"
 L["Module %s has been reset"] = "模块 %s 已被重置"
 L["CVars will not be changed"] = "CVar 不会被更改"
+L["BFI has been updated to version %s\nClick here to view the changelog"] = "BFI 已更新至版本 %s\n点击此处查看更新日志"
 
 L["Unavailable while Cell is enabled"] = "当 Cell 启用时该功能不可用"
 
