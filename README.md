@@ -10,7 +10,7 @@
 
 [![Discord](https://img.shields.io/discord/1122747237546610760?label=Discord&color=5865F2)](https://discord.gg/9PSe3fKQGJ)
 [![Curseforge](https://img.shields.io/curseforge/dt/1325150?label=CurseForge&color=F16436)](https://www.curseforge.com/wow/addons/bfinfinite)
-[![Wago](https://img.shields.io/badge/Wago-AbstractFramework-ad1319)](https://addons.wago.io/addons/bfinfinite)
+[![Wago](https://img.shields.io/badge/Wago-BFInfinite-ad1319)](https://addons.wago.io/addons/bfinfinite)
 
 ## Introduction | 简介
 
@@ -25,8 +25,8 @@ More features will continue to be added in the future to meet the personalized n
 ## Features | 功能
 
 - Built-in: Unit Frames, Nameplates, Action Bars  
-  内置功能：单位框体、姓名板、动作条
-  
+  内置功能：单位框体、姓名板、动作条  
+
 - Feature Enhancements: Tooltip, Item Level Display (more features coming soon)  
   功能增强：鼠标提示、物品等级显示（更多功能即将推出）
 
