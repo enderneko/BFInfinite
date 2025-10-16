@@ -7,6 +7,8 @@ local AF = _G.AbstractFramework
 
 local GameMenuFrame = _G.GameMenuFrame
 local IsStoreEnabled = C_StorePublic.IsEnabled
+local HasExternalEventURL = C_ExternalEventURL.HasURL
+local GAMEMENU_EXTERNALEVENT = _G.GAMEMENU_EXTERNALEVENT
 local GAMEMENU_OPTIONS = _G.GAMEMENU_OPTIONS
 local BLIZZARD_STORE = _G.BLIZZARD_STORE
 local LOG_OUT = _G.LOG_OUT
@@ -50,7 +52,7 @@ local function ReArrangeButtons()
             button:AdjustPointsOffset(0, -35)
         elseif text == RETURN_TO_GAME then
             button:AdjustPointsOffset(0, -28)
-        elseif text ~= BLIZZARD_STORE and text ~= GAMEMENU_OPTIONS then
+        elseif text ~= BLIZZARD_STORE and text ~= GAMEMENU_OPTIONS and text ~= GAMEMENU_EXTERNALEVENT then
             button:AdjustPointsOffset(0, -42)
         end
     end
@@ -107,11 +109,6 @@ local function StyleBlizzard()
                 hooksecurefunc(button, "SetScript", ReHook)
             end
         end
-
-        -- if menu.ElvUI and not menu.ElvUI.IsSkinned then
-        --     S:HandleButton(menu.ElvUI, nil, nil, nil, true)
-        --     menu.ElvUI.backdrop:SetInside(nil, 1, 1)
-        -- end
     end)
 
     UpdateHeader()
