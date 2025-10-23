@@ -173,7 +173,7 @@ local default_groups = {
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = true,
@@ -579,7 +579,7 @@ local default_groups = {
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = true,
@@ -858,7 +858,7 @@ local default_groups = {
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = true,
@@ -1187,7 +1187,7 @@ local default_1 = {
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = true,
@@ -1670,7 +1670,7 @@ local default_1 = {
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = true,
@@ -2071,7 +2071,7 @@ local default_1 = {
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = false,
@@ -2409,7 +2409,7 @@ local default_1 = {
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = true,
@@ -2758,7 +2758,7 @@ local default_1 = {
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = false,
@@ -3096,7 +3096,7 @@ local default_1 = {
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = false,
@@ -3436,7 +3436,7 @@ local default_1 = {
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = false,
@@ -3777,7 +3777,7 @@ local default_2 = {
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = true,
@@ -4260,7 +4260,7 @@ local default_2 = {
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = true,
@@ -4661,7 +4661,7 @@ local default_2 = {
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = false,
@@ -4999,7 +4999,7 @@ local default_2 = {
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = true,
@@ -5347,7 +5347,7 @@ local default_2 = {
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = false,
@@ -5685,7 +5685,7 @@ local default_2 = {
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = false,
@@ -6025,7 +6025,7 @@ local default_2 = {
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.7),
+                    color = AF.GetColorTable("absorb", 0.5),
                 },
                 overabsorbGlow = {
                     enabled = false,
