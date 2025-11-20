@@ -1,4 +1,4 @@
-## Interface: 110205,110207
+## Interface: 110207,120000
 ## Title: |cFFFF5F00BFInfinite|r
 ## Version: r2-alpha
 ## Author: enderneko

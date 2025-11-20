@@ -254,7 +254,7 @@ local function InitAndBackupCVars()
         "CameraReduceUnexpectedMovement",
         "ActionButtonUseKeyDown",
         "chatMouseScroll",
-        "removeChatDelay",
+        "removeChatDelay", -- removed in 12.0
         "statusText",
         "statusTextDisplay",
         -- action bars
@@ -314,7 +314,7 @@ local function InitAndBackupCVars()
         -- SetCVar("ResampleAlwaysSharpen", 1)
         SetCVar("ActionButtonUseKeyDown", 1)
         SetCVar("chatMouseScroll", 1)
-        SetCVar("removeChatDelay", 1)
+        SetCVar("removeChatDelay", 1) -- removed in 12.0
         -- SetCVar("threatWarning", 0)
         SetCVar("statusText", 1)
         SetCVar("statusTextDisplay", "NUMERIC") -- NONE,NUMERIC,PERCENT,BOTH

@@ -250,6 +250,7 @@ local function CreateAssignmentFrame()
     assignmentFrame:SetOnHide(function()
         assignmentFrame:UnregisterEvent("GLOBAL_MOUSE_DOWN")
         assignmentFrame.line:ClearAllPoints() --! otherwise the option frame's points will be lost, why??
+        assignmentFrame.label:SetText("")
         assignmentFrame:Hide()
     end)
 
@@ -275,8 +276,10 @@ local function Profile_ActiveAssignmentMode(b)
     b:SilentClick()
 
     AF.AttachToCursor(assignmentFrame, "BOTTOMLEFT", 5, 0)
-    AF.TruncateFontStringByWidth(assignmentFrame.label, 150, nil, true, b.text:GetText())
-    AF.ResizeToFitText(assignmentFrame, assignmentFrame.label, 5)
+    RunNextFrame(function()
+        AF.TruncateFontStringByWidth(assignmentFrame.label, 150, nil, true, b.text:GetText())
+        AF.ResizeToFitText(assignmentFrame, assignmentFrame.label, 5)
+    end)
 
     assignmentFrame.line:SetStartPoint("RIGHT", assignmentFrame)
     assignmentFrame.line:SetEndPoint("LEFT", b)

@@ -104,7 +104,7 @@ local function AddLib(name, major, silent)
 end
 
 AddLib("LAB", "LibActionButton-1.0-BFI")
-AddLib("LRC", "LibRangeCheck-3.0")
+-- AddLib("LRC", "LibRangeCheck-3.0")
 
 ---------------------------------------------------------------------
 -- media
