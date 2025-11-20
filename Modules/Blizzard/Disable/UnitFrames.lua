@@ -100,12 +100,18 @@ function DB.DisableFrame(frame, doNotReparent)
     end
 end
 
-local allowedFuncs = {
-    [_G.DefaultCompactUnitFrameSetup] = true,
-    [_G.DefaultCompactNamePlateEnemyFrameSetup] = true,
-    [_G.DefaultCompactNamePlateFriendlyFrameSetup] = true,
-    [_G.DefaultCompactNamePlatePlayerFrameSetup] = true,
-}
+local allowedFuncs
+if AF.isRetail then
+    allowedFuncs = {
+        [_G.DefaultCompactUnitFrameSetup] = true,
+    }
+else
+    allowedFuncs = {
+        [_G.DefaultCompactNamePlateEnemyFrameSetup] = true,
+        [_G.DefaultCompactNamePlateFriendlyFrameSetup] = true,
+        [_G.DefaultCompactNamePlatePlayerFrameSetup] = true,
+    }
+end
 
 local frame_SetUp = {}
 local frame_SetUnit = {}
