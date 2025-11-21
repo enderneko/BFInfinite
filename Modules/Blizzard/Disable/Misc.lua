@@ -2,6 +2,7 @@
 ---@type BFI
 local BFI = select(2, ...)
 local DB = BFI.modules.DisableBlizzard
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -18,21 +19,26 @@ local function DisableBlizzard()
 
     -- manager
     if config.manager then
-        DB.DisableFrame(_G.CompactRaidFrameManager)
+        F.DisableFrame(_G.CompactRaidFrameManager)
         CompactRaidFrameManager_SetSetting("IsShown", "0")
     end
 
     -- castBar
     if config.castBar then
-        DB.DisableFrame(_G.PlayerCastingBarFrame)
-        DB.DisableFrame(_G.PetCastingBarFrame)
+        F.DisableFrame(_G.PlayerCastingBarFrame)
+        F.DisableFrame(_G.PetCastingBarFrame)
     end
 
     -- auras
     if config.auras then
-        DB.DisableFrame(_G.BuffFrame)
+        F.DisableFrame(_G.BuffFrame)
         _G.BuffFrame.numHideableBuffs = 0
-        DB.DisableFrame(_G.DebuffFrame)
+        F.DisableFrame(_G.DebuffFrame)
     end
+
+    F.DisableEditMode(_G.EncounterBar)
+
+    -- exp, rep, pvp
+    F.Hide(_G.StatusTrackingBarManager)
 end
 AF.RegisterCallback("BFI_DisableBlizzard", DisableBlizzard)

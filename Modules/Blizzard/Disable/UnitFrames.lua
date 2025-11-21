@@ -1,18 +1,10 @@
 ---@type BFI
 local BFI = select(2, ...)
+local F = BFI.funcs
 ---@class DisableBlizzard
 local DB = BFI.modules.DisableBlizzard
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
-
--- forked from ElvUI
-local hookedFrames = {}
-
-local function Reparent(self, parent)
-    if parent ~= AF.hiddenParent then
-        self:SetParent(AF.hiddenParent)
-    end
-end
 
 local framesToHide = {}
 
@@ -38,16 +30,7 @@ end
 function DB.DisableFrame(frame, doNotReparent)
     if not frame then return end
 
-    frame:UnregisterAllEvents()
-    pcall(frame.Hide, frame)
-
-    if not doNotReparent then
-        frame:SetParent(AF.hiddenParent)
-        if not hookedFrames[frame] then
-            hookedFrames[frame] = true
-            hooksecurefunc(frame, "SetParent", Reparent)
-        end
-    end
+    F.DisableFrame(frame, doNotReparent)
 
     local health = frame.healthBar or frame.healthbar or frame.HealthBar
     if health then

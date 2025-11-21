@@ -95,11 +95,39 @@ function F.Hide(region)
 end
 
 ---------------------------------------------------------------------
+-- disable frame (forked from ElvUI)
+---------------------------------------------------------------------
+local hookedFrames = {}
+
+local function Reparent(self, parent)
+    if parent ~= AF.hiddenParent then
+        self:SetParent(AF.hiddenParent)
+    end
+end
+
+function F.DisableFrame(frame, doNotReparent)
+    if not frame then return end
+
+    frame:UnregisterAllEvents()
+    pcall(frame.Hide, frame)
+
+    if not doNotReparent then
+        frame:SetParent(AF.hiddenParent)
+        if not hookedFrames[frame] then
+            hookedFrames[frame] = true
+            hooksecurefunc(frame, "SetParent", Reparent)
+        end
+    end
+end
+
+---------------------------------------------------------------------
 -- disable edit mode
 ---------------------------------------------------------------------
 function F.DisableEditMode(region)
-    region.HighlightSystem = AF.noop
-    region.ClearHighlight = AF.noop
+    -- region.HighlightSystem = AF.noop --! taint?
+    -- region.ClearHighlight = AF.noop --! taint?
+    if not (region.HighlightSystem or region.ClearHighlight) then return end
+    hooksecurefunc(region, "HighlightSystem", region.ClearHighlight)
 end
 
 ---------------------------------------------------------------------
