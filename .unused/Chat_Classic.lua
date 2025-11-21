@@ -8,6 +8,8 @@ local C = BFI.modules.Chat
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local IsMacroEditBox = IsMacroEditBox
+
 local CHAT_FRAMES = _G.CHAT_FRAMES
 local DEFAULT_CHAT_FRAME = _G.DEFAULT_CHAT_FRAME
 local CHAT_FRAME_TEXTURES = _G.CHAT_FRAME_TEXTURES
@@ -19,15 +21,6 @@ local ChatFrameChannelButton = _G.ChatFrameChannelButton
 local ChatFrameToggleVoiceDeafenButton = _G.ChatFrameToggleVoiceDeafenButton
 local ChatFrameToggleVoiceMuteButton = _G.ChatFrameToggleVoiceMuteButton
 local QuickJoinToastButton = _G.QuickJoinToastButton
-local GeneralDockManager = _G.GeneralDockManager
-
-local ChatFrameUtil = ChatFrameUtil
-local ChatTypeInfo = _G.ChatTypeInfo
-
-local TAB_NORMAL_ALPHA = CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA or 0.6
-local TAB_SELECTED_ALPHA = CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA or 1.0
-
-local GetCVar = GetCVar
 
 -- Interface/AddOns/Blizzard_ChatFrameBase/Mainline/FloatingChatFrame.lua#L385
 C.CHAT_FONT_HEIGHTS = {8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
@@ -172,27 +165,24 @@ end
 ---------------------------------------------------------------------
 -- setup
 ---------------------------------------------------------------------
-local function CreateBackdrop(frame)
-    if frame.BFIBackdrop then return end
-
-    frame.BFIBackdrop = AF.CreateBorderedFrame(frame)
-    frame.BFIBackdrop:Hide()
-    AF.SetFrameLevel(frame.BFIBackdrop, -1)
-
-    AF.SetPoint(frame.BFIBackdrop, "TOPLEFT", frame, -3, 27)
-    AF.SetPoint(frame.BFIBackdrop, "BOTTOMRIGHT", frame, 3, -3)
+-- ignore FCF_FadeInChatFrame/FCF_FadeOutChatFrame
+-- make it a fixed alpha
+local function FixTabAlpha(tab, _, skip)
+    if skip then return end
+    local owner = tab.owner
+    local selected = _G.GeneralDockManager.selected
+    tab:SetAlpha((not owner.isDocked or owner == selected) and 1 or 0.6, true)
 end
 
 local function CreateScrollToBottomButton(frame)
-    if frame.BFIScrollToBottomButton then return end
-
     local b = AF.CreateIconButton(frame, AF.GetIcon("ArrowDoubleDown"), 18, 18, 0, AF.GetColorTable("white", 0.5))
-    frame.BFIScrollToBottomButton = b
     b:Hide()
     b:SetPoint("BOTTOMRIGHT")
     b:SetScript("OnClick", function()
         frame:ScrollToBottom()
     end)
+
+    frame.BFIScrollToBottomButton = b
 end
 
 local function CreateCopyButton(frame)
@@ -218,119 +208,29 @@ local function CreateMinimizeButton(frame)
     end)
 end
 
-local function UpdateButtonsVisibility(frame, elapsed)
-    frame._elapsed = (frame._elapsed or 0) + elapsed
-    if frame._elapsed >= 0.15 then
-        frame._elapsed = 0
-
-        frame.BFIScrollToBottomButton:SetShown(not frame:AtBottom())
-
-        local isMouseOver = frame:IsMouseOver()
-        if frame._isMouseOver ~= isMouseOver then
-            frame._isMouseOver = isMouseOver
-
-            -- print(frame:GetName(), "isMouseOver", isMouseOver)
-            frame.BFICopyButton:SetShown(isMouseOver)
-            frame.BFIMinimizeButton:SetShown(isMouseOver and not frame.isDocked)
-
-            if frame == DEFAULT_CHAT_FRAME then
-                ChatFrameMenuButton:SetShown(isMouseOver or ChatFrameMenuButton.menu)
-                ChatFrameChannelButton:SetShown(isMouseOver)
-                ChatFrameToggleVoiceDeafenButton:SetShown(isMouseOver and ChatFrameChannelButton.hasActiveVoiceChannel)
-                ChatFrameToggleVoiceMuteButton:SetShown(isMouseOver and ChatFrameChannelButton.hasActiveVoiceChannel)
-            end
-        end
-    end
-end
-
 local function GetTab(frame)
     -- mainly for temporary window
     if not frame.tab then
         local tab = _G[format("ChatFrame%sTab", frame:GetID())]
         frame.tab = tab
         tab.owner = frame
+        FixTabAlpha(tab)
+        hooksecurefunc(tab, "SetAlpha", FixTabAlpha)
 
         tab.underline = AF.CreateSeparator(tab, nil, 1, BFI.name)
-        tab.underline:SetIgnoreParentAlpha(true)
-        -- AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -1)
-        AF.SetPoint(tab.underline, "BOTTOMLEFT", 5, 2)
-        AF.SetPoint(tab.underline, "BOTTOMRIGHT", -5, 2)
+        AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -1)
         tab.underline:Hide()
         tab:HookScript("OnClick", HideChatCopyFrame)
     end
     return frame.tab
 end
 
-local function UpdateEditBoxPosition(editBox, isDocked)
-    local position = isDocked and C.config.editBoxDockedPosition or C.config.editBoxUndockedPosition
-
-    AF.ClearPoints(editBox)
-
-    local target = isDocked and chatContainer or editBox.chatFrame.BFIBackdrop
-
-    if position == "TOP" then
-        AF.SetPoint(editBox, "BOTTOMLEFT", target, "TOPLEFT", 0, 5)
-        AF.SetPoint(editBox, "BOTTOMRIGHT", target, "TOPRIGHT", 0, 5)
-    else -- "BOTTOM"
-        AF.SetPoint(editBox, "TOPLEFT", target, "BOTTOMLEFT", 0, -5)
-        AF.SetPoint(editBox, "TOPRIGHT", target, "BOTTOMRIGHT", 0, -5)
-    end
-end
-
-local function UpdateTabText()
-    local isIM = GetCVar("chatStyle") == "im"
-
-    for _, name in pairs(CHAT_FRAMES) do
-        local chatFrame = _G[name]
-        local tab = GetTab(chatFrame)
-
-        if isIM then
-            local active = chatFrame == ChatFrameUtil.GetLastActiveWindow().chatFrame
-            if active then
-                tab.Text:SetTextColor(AF.GetColorRGB(BFI.name, TAB_SELECTED_ALPHA))
-                tab.underline:SetColorTexture(AF.GetColorRGB(BFI.name, TAB_SELECTED_ALPHA))
-                tab.underline:Show()
-            elseif chatFrame.isDocked and tab.selected then
-                tab.Text:SetTextColor(AF.GetColorRGB("white", TAB_NORMAL_ALPHA))
-                tab.underline:SetColorTexture(AF.GetColorRGB("white", TAB_NORMAL_ALPHA))
-                tab.underline:Show()
-            else
-                tab.Text:SetTextColor(AF.GetColorRGB("white", TAB_NORMAL_ALPHA))
-                tab.underline:Hide()
-            end
-        else
-            if tab.selected and chatFrame.isDocked then
-                tab.Text:SetTextColor(AF.GetColorRGB(BFI.name, TAB_SELECTED_ALPHA))
-                tab.underline:SetColorTexture(AF.GetColorRGB(BFI.name, TAB_SELECTED_ALPHA))
-                tab.underline:Show()
-            elseif not chatFrame.isDocked then
-                tab.Text:SetTextColor(AF.GetColorRGB(BFI.name, TAB_SELECTED_ALPHA))
-                tab.underline:Hide()
-            else
-                tab.Text:SetTextColor(AF.GetColorRGB("white", TAB_NORMAL_ALPHA))
-                tab.underline:Hide()
-            end
-        end
-    end
-end
-
 local function UpdateFrameDocked(frame, isDocked)
-    CreateBackdrop(frame) -- UpdateFrameDocked may be called before SetupChatFrames
-
-    local tab = GetTab(frame)
-    tab.Text:ClearAllPoints()
-
-    if isDocked then
-        frame.BFIBackdrop:Hide()
-
-        tab.Text:SetPoint("CENTER")
-        tab.Text:SetJustifyH("CENTER")
-    else
-        frame.BFIBackdrop:Show()
-
-        tab:SetParent(frame)
-        tab.Text:SetPoint("LEFT", 7, 0)
-        tab.Text:SetJustifyH("LEFT")
+    if not isDocked then
+        local tab = GetTab(frame)
+        tab.Text:SetTextColor(AF.GetColorRGB(BFI.name))
+        frame.Background:Show()
+        tab.underline:Hide()
 
         if frame:GetID() == 2 then
             AF.ClearPoints(frame.Background)
@@ -339,47 +239,21 @@ local function UpdateFrameDocked(frame, isDocked)
         else
             AF.SetOutside(frame.Background, frame, 3)
         end
-    end
-
-    if isDocked and GetCVar("chatStyle") == "im" then
-        ChatFrameUtil.SetLastActiveWindow(frame.editBox)
-    end
-    AF.DelayedInvoke(0, UpdateTabText)
-    UpdateEditBoxPosition(frame.editBox, isDocked)
-end
-
-local function UpdateEditBox(editBox)
-    local chatType = editBox:GetAttribute("chatType")
-    if not chatType then return end
-
-    local info = ChatTypeInfo[chatType]
-    local target = editBox:GetAttribute("channelTarget")
-    local id = target and GetChannelName(target)
-
-    if chatType == "CHANNEL" and id then
-        if id == 0 then
-            editBox.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
-        else
-            info = ChatTypeInfo[chatType .. id]
-            editBox.BFIBackdrop:SetBackdropBorderColor(AF.ExtractColor(info))
-        end
     else
-        editBox.BFIBackdrop:SetBackdropBorderColor(AF.ExtractColor(info))
+        frame.Background:Hide()
     end
-
-	editBox:SetTextInsets(
-        5 + editBox.header:GetWidth() + (editBox.headerSuffix:IsShown() and editBox.headerSuffix:GetWidth() or 0) + editBox:UpdateLanguageHeader(),
-        5, 0, 0)
 end
 
-local function SetupChatFrames()
+local function SetupChat()
     for _, name in pairs(CHAT_FRAMES) do
         local frame = _G[name]
         -- local id = frame:GetID() -- 2:combatlog, 3:voice
 
         -- scorll to bottom
         F.Hide(frame.ScrollToBottomButton)
+        if not frame.BFIScrollToBottomButton then
             CreateScrollToBottomButton(frame)
+        end
 
         -- copy
         CreateCopyButton(frame)
@@ -397,12 +271,12 @@ local function SetupChatFrames()
         -- tab
         local tab = GetTab(frame)
         AF.SetFont(tab.Text, unpack(C.config.tabFont))
-        -- tab.Text:SetWidth(0)
-        -- tab.Text:SetHeight(0)
-        tab.Text:SetJustifyV("MIDDLE")
-        tab.Text:SetIgnoreParentAlpha(true)
+        tab.Text:ClearAllPoints()
+        tab.Text:SetWidth(0)
+        tab.Text:SetHeight(0)
+        tab.Text:SetPoint("CENTER", 0, -5)
+        tab.Text:SetJustifyH("CENTER")
         tab:SetPushedTextOffset(0, -1)
-        AF.SetHeight(tab, 22)
 
         for _, prefix in pairs(CHAT_TAB_TEXTURES) do
             local left = tab[prefix .. "Left"]
@@ -428,15 +302,15 @@ local function SetupChatFrames()
         -- editBox
         if frame.editBox then
             local editBox = frame.editBox
-            if not editBox._BFIStyled then
+            if not frame.editBox.skinned then
+            editBox.skinned = true
+            editBox:SetAltArrowKeyMode(false)
                 S.StyleEditBox(editBox)
-                editBox:SetAltArrowKeyMode(false)
-                hooksecurefunc(editBox, "UpdateHeader", UpdateEditBox)
-                -- hooksecurefunc(editBox, "Deactivate", editBox.Hide)
-                editBox.header:SetPoint("LEFT", 5, 0)
             end
+            AF.SetHeight(editBox, 24)
+            AF.SetWidth(editBox, C.config.width)
+            AF.LoadWidgetPosition(editBox, C.config.editBoxPosition, frame)
             editBox.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("background"))
-            editBox:SetHeight(C.config.font[2] + 10)
         end
 
         -- ButtonFrame
@@ -445,18 +319,11 @@ local function SetupChatFrames()
             frame.buttonFrame:Hide()
         end
 
-        -- backdrop
-        frame.Background:Hide()
-        CreateBackdrop(frame)
-
         -- misc
         frame:SetMaxLines(C.config.maxLines)
         frame:SetTimeVisible(C.config.fadeTime)
         frame:SetFading(C.config.fading)
         AF.SetFont(frame, unpack(C.config.font))
-
-        -- OnUpdate: update buttons visibility
-        frame:SetScript("OnUpdate", UpdateButtonsVisibility) -- ChatFrameMixin:OnUpdate
     end
 end
 
@@ -585,29 +452,68 @@ local function SetupDefaultChatFrame()
 
     -- QuickJoinToastButton
     QuickJoinToastButton:Hide()
-
-    -- GeneralDockManager
-    AF.SetHeight(GeneralDockManager, 22)
-    AF.SetHeight(GeneralDockManager.scrollFrame, 22) -- GeneralDockManagerScrollFrame
-    AF.SetHeight(GeneralDockManager.scrollFrame.child, 22) -- GeneralDockManagerScrollFrameChild
 end
 
 ---------------------------------------------------------------------
 -- hooks
 ---------------------------------------------------------------------
-local function FixTabName(frame, name)
+local function UpdateTabUnderline(frame, name)
     local tab = GetTab(frame)
     -- FIXME: WHY???
     if frame.chatType == "PET_BATTLE_COMBAT_LOG" then
         tab.Text:SetText(_G.PET_BATTLE_COMBAT_LOG)
     end
     -- tab.Text:SetText(frame.name)
+
+    C_Timer.After(0.1, function()
+        tab.underline:SetWidth(tab.Text:GetStringWidth() + 2)
+    end)
+end
+
+local function UpdateAllTabUnderlines()
+    C_Timer.After(1, function()
+        for _, name in pairs(CHAT_FRAMES) do
+            UpdateTabUnderline(_G[name])
+        end
+    end)
+end
+
+local function UpdateTabColor(tab, selected)
+    tab.selected = selected
+
+    if selected then
+        tab.Text:SetTextColor(AF.GetColorRGB(BFI.name))
+    else
+        tab.Text:SetTextColor(AF.GetColorRGB("white"))
+    end
+
+    if tab.underline then
+        tab.underline:SetShown(selected)
+    end
 end
 
 -- local function UpdateChatFont(dropdown, ...)
---     -- REVIEW: necessary?
+--     -- TODO: necessary?
 --     print(...)
 -- end
+
+local function UpdateScrollToBottomButton(frame, elapsed)
+    frame.__elapsed = (frame.__elapsed or 0) + elapsed
+    if frame.__elapsed >= 0.2 then
+        frame.__elapsed = 0
+
+        frame.BFIScrollToBottomButton:SetShown(not frame:AtBottom())
+        frame.BFICopyButton:SetShown(frame:IsMouseOver())
+        frame.BFIMinimizeButton:SetShown(not frame.isDocked and frame:IsMouseOver())
+
+        if frame == DEFAULT_CHAT_FRAME then
+            ChatFrameMenuButton:SetShown(frame:IsMouseOver() or ChatFrameMenuButton.menu)
+            ChatFrameChannelButton:SetShown(frame:IsMouseOver())
+            ChatFrameToggleVoiceDeafenButton:SetShown(frame:IsMouseOver() and ChatFrameChannelButton.hasActiveVoiceChannel)
+            ChatFrameToggleVoiceMuteButton:SetShown(frame:IsMouseOver() and ChatFrameChannelButton.hasActiveVoiceChannel)
+        end
+    end
+end
 
 local function UpdateCombatLog()
     if not C.config.enabled then return end
@@ -635,50 +541,49 @@ local function UpdateCombatLog()
 end
 -- AF.RegisterAddonLoaded("Blizzard_CombatLog", UpdateCombatLog)
 
-local function UpdateEditBoxFont(editBox)
-    AF.SetFont(editBox, unpack(C.config.font))
-    AF.SetFont(editBox.header, unpack(C.config.font))
-end
+local ChatTypeInfo = _G.ChatTypeInfo
+local function UpdateEditBox(editbox)
+    if IsMacroEditBox(editbox) then return end
 
-local function FixFirstTabPosition(dock)
-    if dock ~= GeneralDockManager then return end
-    for index, chatFrame in ipairs(dock.DOCKED_CHAT_FRAMES) do
-        if not chatFrame.isStaticDocked then
-            chatFrame.tab:SetPoint("LEFT")
-            break
+    local chatType = editbox:GetAttribute("chatType")
+    if not chatType then return end
+
+    local info = ChatTypeInfo[chatType]
+    local target = editbox:GetAttribute("channelTarget")
+    local id = target and GetChannelName(target)
+
+    if chatType == "CHANNEL" and id then
+        if id == 0 then
+            editbox.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+        else
+            info = ChatTypeInfo[chatType .. id]
+            editbox.BFIBackdrop:SetBackdropBorderColor(AF.ExtractColor(info))
         end
+    else
+        editbox.BFIBackdrop:SetBackdropBorderColor(AF.ExtractColor(info))
     end
 end
 
-local function UpdateTabColor(tab, selected)
-    tab.selected = selected
-
-    if tab.underline then
-        AF.DelayedInvoke(0, UpdateTabText)
-    end
-end
-
-local function UpdateTabColor_IM()
-    AF.DelayedInvoke(0, UpdateTabText)
+local function UpdateEditBoxFont(editbox)
+    AF.SetFont(editbox, unpack(C.config.font))
+    AF.SetFont(editbox.header, unpack(C.config.font))
 end
 
 local function InitHooks()
-    hooksecurefunc("FCF_SetWindowName", FixTabName)
+    hooksecurefunc("FCF_SetWindowName", UpdateTabUnderline)
+    hooksecurefunc("FCFTab_UpdateColors", UpdateTabColor)
+    -- hooksecurefunc("FCF_SetChatWindowFontSize", UpdateChatFont)
     hooksecurefunc("FCF_DockFrame", UpdateFrameDocked)
     hooksecurefunc("FCF_UnDockFrame", UpdateFrameDocked)
-    hooksecurefunc("FCF_OpenTemporaryWindow", SetupChatFrames) -- PET_BATTLE_COMBAT_LOG
-    hooksecurefunc("FCFDock_UpdateTabs", FixFirstTabPosition)
-    -- hooksecurefunc("FCF_SetChatWindowFontSize", UpdateChatFont)
+    hooksecurefunc("Blizzard_CombatLog_Update_QuickButtons", UpdateCombatLog)
+    hooksecurefunc("Blizzard_CombatLog_QuickButtonFrame_OnLoad", UpdateCombatLog)
+    hooksecurefunc("ChatFrame_OnUpdate", UpdateScrollToBottomButton)
+    hooksecurefunc("ChatEdit_UpdateHeader", UpdateEditBox)
+    hooksecurefunc("ChatEdit_ActivateChat", UpdateEditBoxFont)
+    hooksecurefunc("FCF_OpenTemporaryWindow", SetupChat) -- PET_BATTLE_COMBAT_LOG
     -- hooksecurefunc("FCFDock_SelectWindow", function()
     --     print("FCFDock_SelectWindow")
     -- end)
-    hooksecurefunc("Blizzard_CombatLog_Update_QuickButtons", UpdateCombatLog)
-    hooksecurefunc("Blizzard_CombatLog_QuickButtonFrame_OnLoad", UpdateCombatLog)
-
-    hooksecurefunc(ChatFrameUtil, "ActivateChat", UpdateEditBoxFont)
-
-    hooksecurefunc("FCFTab_UpdateColors", UpdateTabColor) -- GetCVar("chatStyle") == "classic/im"
-    hooksecurefunc(ChatFrameUtil, "SetLastActiveWindow", UpdateTabColor_IM) -- GetCVar("chatStyle") == "im"
 end
 
 ---------------------------------------------------------------------
@@ -710,15 +615,13 @@ local function UpdateChat(_, module)
     chatContainer.enabled = true
     chatContainer:Show()
 
-    SetupChatFrames()
+    SetupChat()
     UpdateCombatLog()
+    C:RegisterEvent("UPDATE_CHAT_WINDOWS", SetupChat)
+    C:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", SetupChat)
+    C:RegisterEvent("FIRST_FRAME_RENDERED", UpdateAllTabUnderlines)
 
-    C:RegisterEvent("UPDATE_CHAT_WINDOWS", SetupChatFrames)
-    C:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", SetupChatFrames)
-    C:RegisterEvent("FIRST_FRAME_RENDERED", function()
-        UpdateTabColor_IM()
-    end)
-
+    UpdateAllTabUnderlines()
     AF.SetFont(chatCopyFrame.scroll.eb, unpack(config.font))
 
     AF.UpdateMoverSave(chatContainer, config.position)
