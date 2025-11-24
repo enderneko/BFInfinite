@@ -205,16 +205,89 @@ local function CreateCopyButton(frame)
     b:SetScript("OnClick", ShowChatCopyFrame)
 end
 
+local function UpdateMinimizedColor(minFrame)
+    local r, g, b
+    if minFrame.selectedColorTable then
+        r, g ,b = AF.ExtractColor(minFrame.selectedColorTable)
+    else
+        r, g, b = AF.GetColorRGB(BFI.name)
+    end
+    minFrame:GetFontString():SetTextColor(r, g, b)
+    minFrame.glow:SetVertexColor(r, g, b)
+end
+
+local function StyleMinimizeFrame(frame)
+    local minFrame = frame.minFrame
+
+    if minFrame._BFIStyled then
+        UpdateMinimizedColor(minFrame)
+        return
+    end
+    minFrame._BFIStyled = true
+
+    AF.SetSize(minFrame, 180, 24)
+    S.RemoveRegions(minFrame)
+    S.CreateBackdrop(minFrame)
+    AF.SetBackdropHighlight(minFrame, minFrame.BFIBackdrop, "BFI")
+    minFrame:SetPushedTextOffset(0, -AF.GetOnePixelForRegion(minFrame))
+
+    -- maximize button
+    _G[minFrame:GetName() .. "MaximizeButton"]:Hide()
+    local button = AF.CreateIconButton(minFrame, AF.GetIcon("WindowRestore"), 20, 20, 2, AF.GetColorTable("white", 0.5))
+    AF.SetPoint(button, "RIGHT", -2, 0)
+    button:SetOnClick(function()
+        FCF_MaximizeFrame(frame)
+    end)
+    button:HookOnEnter(function()
+        minFrame:GetScript("OnEnter")(minFrame)
+    end)
+    button:HookOnLeave(function()
+        minFrame:GetScript("OnLeave")(minFrame)
+    end)
+
+    -- text
+    local text = minFrame:GetFontString()
+    AF.SetFont(text, C.config.tabFont)
+    AF.ClearPoints(text)
+    AF.SetPoint(text, "LEFT", 5, 0)
+    AF.SetPoint(text, "RIGHT", button, "LEFT", -5, 0)
+    -- text:SetTextColor(AF.GetColorRGB(BFI.name))
+
+    -- new message glow
+    local glow = AF.CreateTexture(minFrame, AF.GetTexture("Gradient_Linear_Bottom"), nil, "BORDER", -1)
+    glow:Hide()
+    glow:SetAllPoints()
+
+    minFrame.glow = glow
+    _G[minFrame:GetName() .. "Glow"] = glow
+
+    UpdateMinimizedColor(minFrame)
+end
+
+-- NOTE: this function is called before FCF_MinimizeFrame(StyleMinimizeFrame)
+-- hooksecurefunc("FCFMin_UpdateColors", function(minFrame)
+--     local r, g, b
+--     if minFrame.selectedColorTable then
+--         r, g ,b = AF.ExtractColor(minFrame.selectedColorTable)
+--     else
+--         r, g, b = AF.GetColorRGB(BFI.name)
+--     end
+--     print(minFrame:GetName(), "FCFMin_UpdateColors", r, g, b)
+--     minFrame:GetFontString():SetTextColor(r, g, b)
+--     minFrame.glow:SetVertexColor(r, g, b)
+-- end)
+
 local function CreateMinimizeButton(frame)
     if frame.BFIMinimizeButton then return end
 
-    local b = AF.CreateIconButton(frame, AF.GetIcon("Minimize"), 18, 18, 0, AF.GetColorTable("white", 0.5))
+    local b = AF.CreateIconButton(frame, AF.GetIcon("WindowMinimize"), 18, 18, 0, AF.GetColorTable("white", 0.5))
     frame.BFIMinimizeButton = b
     b:Hide()
     AF.SetPoint(b, "TOPRIGHT", -20, 0)
     b:SetOnClick(function()
-        FCF_DockFrame(frame)
-        frame.Background:Hide()
+        -- FCF_DockFrame(frame)
+        -- frame.Background:Hide()
+        FCF_MinimizeFrame(frame, frame.buttonSide)
     end)
 end
 
@@ -244,19 +317,28 @@ local function UpdateButtonsVisibility(frame, elapsed)
 end
 
 local function GetTab(frame)
-    -- mainly for temporary window
     if not frame.tab then
         local tab = _G[format("ChatFrame%sTab", frame:GetID())]
         frame.tab = tab
         tab.owner = frame
+        tab:HookScript("OnClick", HideChatCopyFrame)
 
+        -- underline
         tab.underline = AF.CreateSeparator(tab, nil, 1, BFI.name)
         tab.underline:SetIgnoreParentAlpha(true)
         -- AF.SetPoint(tab.underline, "TOP", tab.Text, "BOTTOM", 0, -1)
-        AF.SetPoint(tab.underline, "BOTTOMLEFT", 5, 2)
-        AF.SetPoint(tab.underline, "BOTTOMRIGHT", -5, 2)
+        AF.SetPoint(tab.underline, "BOTTOMLEFT", 2, 2)
+        AF.SetPoint(tab.underline, "BOTTOMRIGHT", -2, 2)
         tab.underline:Hide()
-        tab:HookScript("OnClick", HideChatCopyFrame)
+
+        -- glow
+        local glow = AF.CreateTexture(tab, AF.GetTexture("Gradient_Linear_Bottom"), nil, "BORDER", -1)
+        glow:Hide()
+        glow:SetPoint("BOTTOMLEFT", tab.underline)
+        glow:SetPoint("BOTTOMRIGHT", tab.underline)
+        glow:SetPoint("TOP")
+        tab.glow = glow
+        _G[tab:GetName() .. "Glow"] = glow
     end
     return frame.tab
 end
@@ -286,7 +368,7 @@ local function UpdateTabText()
 
         if isIM then
             local active = chatFrame == ChatFrameUtil.GetLastActiveWindow().chatFrame
-            if active then
+            if active and chatFrame:IsShown() then
                 tab.Text:SetTextColor(AF.GetColorRGB(BFI.name, TAB_SELECTED_ALPHA))
                 tab.underline:SetColorTexture(AF.GetColorRGB(BFI.name, TAB_SELECTED_ALPHA))
                 tab.underline:Show()
@@ -329,8 +411,12 @@ local function UpdateFrameDocked(frame, isDocked)
         frame.BFIBackdrop:Show()
 
         tab:SetParent(frame)
-        tab.Text:SetPoint("LEFT", 7, 0)
         tab.Text:SetJustifyH("LEFT")
+        if tab.conversationIcon and tab.conversationIcon:IsShown() then
+            tab.Text:SetPoint("LEFT", 20, 0)
+        else
+            tab.Text:SetPoint("LEFT", 7, 0)
+        end
 
         if frame:GetID() == 2 then
             AF.ClearPoints(frame.Background)
@@ -369,7 +455,8 @@ local function UpdateEditBox(editBox)
 
 	editBox:SetTextInsets(
         5 + editBox.header:GetWidth() + (editBox.headerSuffix:IsShown() and editBox.headerSuffix:GetWidth() or 0) + editBox:UpdateLanguageHeader(),
-        5, 0, 0)
+        CHAT_SHOW_IME and 23 or 5,
+        0, 0)
 end
 
 local function SetupChatFrames()
@@ -396,7 +483,7 @@ local function SetupChatFrames()
 
         -- tab
         local tab = GetTab(frame)
-        AF.SetFont(tab.Text, unpack(C.config.tabFont))
+        AF.SetFont(tab.Text, C.config.tabFont)
         -- tab.Text:SetWidth(0)
         -- tab.Text:SetHeight(0)
         tab.Text:SetJustifyV("MIDDLE")
@@ -434,6 +521,13 @@ local function SetupChatFrames()
                 hooksecurefunc(editBox, "UpdateHeader", UpdateEditBox)
                 -- hooksecurefunc(editBox, "Deactivate", editBox.Hide)
                 editBox.header:SetPoint("LEFT", 5, 0)
+                -- language
+                local lang = _G[editBox:GetName() .. "Language"]
+                lang:ClearAllPoints()
+                lang:SetPoint("RIGHT")
+                lang:GetNormalTexture():SetAlpha(0)
+                lang:SetSize(22, 22)
+                lang:SetPushedTextOffset(0, -AF.GetOnePixelForRegion(lang))
             end
             editBox.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("background"))
             editBox:SetHeight(C.config.font[2] + 10)
@@ -453,7 +547,7 @@ local function SetupChatFrames()
         frame:SetMaxLines(C.config.maxLines)
         frame:SetTimeVisible(C.config.fadeTime)
         frame:SetFading(C.config.fading)
-        AF.SetFont(frame, unpack(C.config.font))
+        AF.SetFont(frame, C.config.font)
 
         -- OnUpdate: update buttons visibility
         frame:SetScript("OnUpdate", UpdateButtonsVisibility) -- ChatFrameMixin:OnUpdate
@@ -623,7 +717,7 @@ local function UpdateCombatLog()
                 b:SetText("")
                 fs = b:GetFontString()
             end
-            AF.SetFont(fs, unpack(C.config.font))
+            AF.SetFont(fs, C.config.font)
         end
     end
 
@@ -636,8 +730,9 @@ end
 -- AF.RegisterAddonLoaded("Blizzard_CombatLog", UpdateCombatLog)
 
 local function UpdateEditBoxFont(editBox)
-    AF.SetFont(editBox, unpack(C.config.font))
-    AF.SetFont(editBox.header, unpack(C.config.font))
+    AF.SetFont(editBox, C.config.font)
+    AF.SetFont(editBox.header, C.config.font)
+    AF.SetFont(_G[editBox:GetName() .. "Language"]:GetFontString(), C.config.font)
 end
 
 local function FixFirstTabPosition(dock)
@@ -668,6 +763,7 @@ local function InitHooks()
     hooksecurefunc("FCF_UnDockFrame", UpdateFrameDocked)
     hooksecurefunc("FCF_OpenTemporaryWindow", SetupChatFrames) -- PET_BATTLE_COMBAT_LOG
     hooksecurefunc("FCFDock_UpdateTabs", FixFirstTabPosition)
+    hooksecurefunc("FCF_MinimizeFrame", StyleMinimizeFrame)
     -- hooksecurefunc("FCF_SetChatWindowFontSize", UpdateChatFont)
     -- hooksecurefunc("FCFDock_SelectWindow", function()
     --     print("FCFDock_SelectWindow")
@@ -715,11 +811,9 @@ local function UpdateChat(_, module)
 
     C:RegisterEvent("UPDATE_CHAT_WINDOWS", SetupChatFrames)
     C:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", SetupChatFrames)
-    C:RegisterEvent("FIRST_FRAME_RENDERED", function()
-        UpdateTabColor_IM()
-    end)
+    C:RegisterEvent("FIRST_FRAME_RENDERED", UpdateTabText)
 
-    AF.SetFont(chatCopyFrame.scroll.eb, unpack(config.font))
+    AF.SetFont(chatCopyFrame.scroll.eb, C.config.font)
 
     AF.UpdateMoverSave(chatContainer, config.position)
     AF.LoadPosition(chatContainer, config.position)
