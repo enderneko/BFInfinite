@@ -28,6 +28,7 @@ local TAB_NORMAL_ALPHA = CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA or 0.6
 local TAB_SELECTED_ALPHA = CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA or 1.0
 
 local GetCVar = GetCVar
+local SetCVar = SetCVar
 
 -- Interface/AddOns/Blizzard_ChatFrameBase/Mainline/FloatingChatFrame.lua#L385
 C.CHAT_FONT_HEIGHTS = {8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
@@ -117,12 +118,6 @@ local function FixColorES(text)
 end
 
 local chatCopyFrame
-local function UpdateText(eb, shouldUpdate)
-    if shouldUpdate then
-        eb:SetText(table.concat(lines, "\n"))
-    end
-    chatCopyFrame.scroll:ScrollToBottom()
-end
 
 local function CreateChatCopyFrame()
     chatCopyFrame = CreateFrame("Frame", "BFIChatCopyFrame", AF.UIParent)
@@ -132,14 +127,12 @@ local function CreateChatCopyFrame()
     chatCopyFrame:SetScript("OnMouseWheel", AF.noop)
     tinsert(_G.UISpecialFrames, "BFIChatCopyFrame")
 
-    chatCopyFrame.scroll = AF.CreateScrollEditBox(chatCopyFrame, nil, nil, 20, 20, 5)
+    chatCopyFrame.scroll = AF.CreateScrollEditBox(chatCopyFrame, nil, nil, 20, 20)
     chatCopyFrame.scroll:SetAllPoints()
     chatCopyFrame.scroll.eb:SetScript("OnEscapePressed", function()
         chatCopyFrame.scroll.eb:ClearFocus()
         chatCopyFrame:Hide()
     end)
-
-    chatCopyFrame.scroll.eb:HookScript("OnTextChanged", UpdateText)
 end
 
 local function ShowChatCopyFrame(b)
@@ -162,7 +155,10 @@ local function ShowChatCopyFrame(b)
     -- texplore(debug)
 
     chatCopyFrame:Show()
-    UpdateText(chatCopyFrame.scroll.eb, true)
+    chatCopyFrame.scroll:SetText(table.concat(lines, "\n"))
+    C_Timer.After(0.1, function()
+        chatCopyFrame.scroll:ScrollToBottom()
+    end)
 end
 
 local function HideChatCopyFrame()
@@ -821,6 +817,8 @@ local function UpdateChat(_, module)
     chatContainer:SetBackdropColor(AF.UnpackColor(config.bgColor))
     chatContainer:SetBackdropBorderColor(AF.UnpackColor(config.borderColor))
 
-    -- TODO: button size
+    SetCVar("chatStyle", config.chatStyle)
+    SetCVar("whisperMode", config.whisperMode)
+    SetCVar("showTimestamps", config.showTimestamps)
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateChat)

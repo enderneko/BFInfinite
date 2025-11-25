@@ -425,6 +425,8 @@ L["Chat Input Box"] = "聊天输入框"
 L["Message Lines"] = "消息保留行数"
 L["Message Fade Time"] = "消息淡出时间"
 L["Tab Font"] = "标签字体"
+L["Docked Position"] = "停靠时位置"
+L["Undocked Position"] = "分离时位置"
 
 ---------------------------------------------------------------------
 -- profiles

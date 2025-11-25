@@ -19,6 +19,9 @@ local defaults = {
     maxLines = 100,
     bgColor = AF.GetColorTable("background"),
     borderColor = AF.GetColorTable("border"),
+    chatStyle = "classic", -- "classic", "im"
+    whisperMode = "inline", --  "popout", "inline", "popout_and_inline"
+    showTimestamps = "[%H:%M]",
 }
 
 AF.RegisterCallback("BFI_UpdateProfile", function(_, t)

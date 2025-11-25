@@ -285,6 +285,10 @@ local function InitAndBackupCVars()
         "nameplateLargeBottomInset",
         "nameplateOtherTopInset",
         "nameplateOtherBottomInset",
+        -- chat
+        "chatStyle",
+        "whisperMode",
+        "showTimestamps",
     }
 
     if type(BFICVarBackup) ~= "table" then BFICVarBackup = {} end
