@@ -337,7 +337,7 @@ builder["buttonsPerRow"] = function(parent)
     local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_ButtonsPerRow", nil, 55)
     created["buttonsPerRow"] = pane
 
-    local buttonsPerRow = AF.CreateSlider(pane, L["Buttons Per Row"], 150, 1, 11, 1, nil, true)
+    local buttonsPerRow = AF.CreateSlider(pane, L["Buttons Per Row"], 150, 1, 12, 1, nil, true)
     AF.SetPoint(buttonsPerRow, "LEFT", 15, 0)
     buttonsPerRow:SetOnValueChanged(function(value)
         pane.t.cfg.buttonsPerRow = value

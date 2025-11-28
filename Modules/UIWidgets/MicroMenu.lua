@@ -12,6 +12,7 @@ local MICRO_BUTTONS = {
     "PlayerSpellsMicroButton",
     "AchievementMicroButton",
     "QuestLogMicroButton",
+    "HousingMicroButton",
     "GuildMicroButton",
     "LFDMicroButton",
     "CollectionsMicroButton",

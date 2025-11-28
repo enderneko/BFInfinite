@@ -13,7 +13,7 @@ local defaults = {
         width = 20,
         height = 25,
         spacing = 2,
-        buttonsPerRow = 11,
+        buttonsPerRow = 12,
     },
     powerBarWidget = {
         enabled = true,
