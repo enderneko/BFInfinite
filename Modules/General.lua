@@ -336,8 +336,8 @@ local fonts = {
     "ObjectiveTrackerFont20",
     "ObjectiveTrackerFont21",
     "ObjectiveTrackerFont22",
-    "ObjectiveTrackerLineFont",
-    "ObjectiveTrackerHeaderFont",
+    -- "ObjectiveTrackerLineFont",
+    -- "ObjectiveTrackerHeaderFont",
 
     "ChatBubbleFont",
 }
@@ -351,8 +351,8 @@ local fontSizeOverrides = {
     SystemFont_Shadow_Small2 = 12,
     SystemFont_Shadow_Small2_Outline = 12,
 
-    ObjectiveTrackerHeaderFont = 14,
-    ObjectiveTrackerLineFont = 13,
+    -- ObjectiveTrackerHeaderFont = 14,
+    -- ObjectiveTrackerLineFont = 13,
     ObjectiveTrackerFont12 = 12,
     ObjectiveTrackerFont13 = 13,
     ObjectiveTrackerFont14 = 14,

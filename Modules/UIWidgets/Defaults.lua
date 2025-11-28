@@ -86,7 +86,26 @@ local defaults = {
         markerSpacing = 2,
         arrangement = "left_to_right_then_up",
         showIfSolo = false,
-    }
+    },
+    objectiveTracker = {
+        enabled = true,
+        position = {"TOPRIGHT", -1, -200},
+        height = 400,
+        font = {"BFI", 12, "none", true},
+        order = {
+            "ScenarioObjectiveTracker", -- 地下城/挑战/试炼场/托加斯特，罪魂之塔/... - TRACKER_HEADER_DUNGEON
+            "UIWidgetObjectiveTracker", -- 场景战役(?) - TRACKER_HEADER_SCENARIO
+            "CampaignQuestObjectiveTracker", -- 战役(任务) - TRACKER_HEADER_CAMPAIGN_QUESTS
+            "WorldQuestObjectiveTracker", -- 世界任务 - TRACKER_HEADER_WORLD_QUESTS
+            "BonusObjectiveTracker", -- 奖励目标 - TRACKER_HEADER_BONUS_OBJECTIVES
+            "QuestObjectiveTracker", -- 任务 - TRACKER_HEADER_QUESTS
+            "AchievementObjectiveTracker", -- 成就 - TRACKER_HEADER_ACHIEVEMENTS
+            "AdventureObjectiveTracker", -- 藏品 - ADVENTURE_TRACKING_MODULE_HEADER_TEXT
+            "MonthlyActivitiesObjectiveTracker", -- 旅行者日志 - TRACKER_HEADER_MONTHLY_ACTIVITIES
+            "InitiativeTasksObjectiveTracker", -- 文化节 - TRACKER_HEADER_INITIATIVE_TASKS
+            "ProfessionsRecipeTracker", -- 专业技能 - PROFESSIONS_TRACKER_HEADER_PROFESSION
+        },
+    },
 }
 
 AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
