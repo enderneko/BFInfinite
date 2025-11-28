@@ -19,7 +19,7 @@ local commonRevisions = {
 }
 
 function F.ReviseCommon()
-    if BFIConfig.revision then
+    if BFIConfig.revision and BFIConfig.revision < BFI.versionNum then
         for _, revise in ipairs(commonRevisions) do
             if BFIConfig.revision < revise.ver then
                 revise.fn(BFIConfig)
@@ -53,7 +53,7 @@ local profileRevisions = {
 }
 
 function F.ReviseProfile(profile)
-    if profile.revision then
+    if profile.revision and profile.revision < BFI.versionNum then
         for _, revise in ipairs(profileRevisions) do
             if profile.revision < revise.ver then
                 revise.fn(profile)

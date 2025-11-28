@@ -80,6 +80,19 @@ function F.GetModuleDefaults(moduleClassName)
     end
 end
 
+function F.FixModule(profileTbl, moduleKey)
+    assert(not AF.IsBlank(moduleKey), "Fix: module is required")
+    local M = BFI.modules[F.GetModuleClassName(moduleKey)]
+    assert(M, "Fix: module not found: " .. moduleKey)
+    for k, v in next, M.GetDefaults() do
+        if not profileTbl[moduleKey][k] then
+            profileTbl[moduleKey][k] = v
+        else
+            AF.MergeMissingKeys(profileTbl[moduleKey][k], v)
+        end
+    end
+end
+
 ---------------------------------------------------------------------
 -- hide frame
 ---------------------------------------------------------------------

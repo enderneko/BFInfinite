@@ -24,7 +24,7 @@ local function CommunitiesGuildNewsFrame_OnEvent(self, event)
         end
     end
 end
-newsFrame:SetScript("OnEvent", CommunitiesGuildNewsFrame_OnEvent)
+-- newsFrame:SetScript("OnEvent", CommunitiesGuildNewsFrame_OnEvent)
 
 ---------------------------------------------------------------------
 -- FramerateFrame
