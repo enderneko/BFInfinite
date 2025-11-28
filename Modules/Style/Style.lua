@@ -112,16 +112,20 @@ end
 ---------------------------------------------------------------------
 -- remove Background
 ---------------------------------------------------------------------
+local backgrounds = {
+    "Bg",
+    "BG",
+    "Background",
+    "BlackBG",
+}
+
 function S.RemoveBackground(region)
     if not region then return end
-    if region.Bg then
-        region.Bg:SetAlpha(0)
-    end
-    if region.BG then
-        region.BG:SetAlpha(0)
-    end
-    if region.Background then
-        region.Background:SetAlpha(0)
+    for _, bgName in next, backgrounds do
+        local bg = region[bgName]
+        if bg then
+            bg:SetAlpha(0)
+        end
     end
 end
 
@@ -336,34 +340,52 @@ function S.StyleButton(button, color, hoverColor)
 end
 
 ---------------------------------------------------------------------
--- close button
+-- close/minimize/maximize button
 ---------------------------------------------------------------------
-local function CloseButton_UpdatePixels(button)
+local function IconButton_UpdatePixels(button)
     AF.DefaultUpdatePixels(button)
     AF.ReSize(button.BFIIcon)
+end
+
+local function SetupIconButton(button, color, icon, iconSize)
+    S.StyleButton(button, color)
+    AF.SetSize(button, 27, 20)
+
+    iconSize = iconSize or 16
+
+    button.BFIIcon = button:CreateTexture(nil, "ARTWORK")
+    AF.SetPoint(button.BFIIcon, "CENTER")
+    AF.SetSize(button.BFIIcon, iconSize, iconSize)
+    button.BFIIcon:SetTexture(icon)
+
+    AF.AddToPixelUpdater_CustomGroup("BFIStyled", button, IconButton_UpdatePixels)
 end
 
 function S.StyleCloseButton(button)
     assert(button, "StyleCloseButton: button is nil")
 
     if button._BFIStyled then return end
+    SetupIconButton(button, "red", AF.GetIcon("Close"))
+end
 
-    S.StyleButton(button, "red")
-    AF.SetSize(button, 20, 20)
+function S.StyleMinimizeButton(button)
+    assert(button, "StyleMinimizeButton: button is nil")
 
-    button.BFIIcon = button:CreateTexture(nil, "ARTWORK")
-    AF.SetPoint(button.BFIIcon, "CENTER")
-    AF.SetSize(button.BFIIcon, 16, 16)
-    button.BFIIcon:SetTexture(AF.GetIcon("Close"))
+    if button._BFIStyled then return end
+    SetupIconButton(button, "red", AF.GetIcon("ArrowDown1"), 20)
+end
 
-    button._BFIStyled = true
-    AF.AddToPixelUpdater_CustomGroup("BFIStyled", button, CloseButton_UpdatePixels)
+function S.StyleMaximizeButton(button)
+    assert(button, "StyleMaximizeButton: button is nil")
+
+    if button._BFIStyled then return end
+    SetupIconButton(button, "red", AF.GetIcon("ArrowUp1"), 20)
 end
 
 ---------------------------------------------------------------------
--- item button
+-- spell/icon button
 ---------------------------------------------------------------------
-function S.StyleItemButton(button)
+function S.StyleSpellItemButton(button)
     local name = button:GetName()
 
     S.CreateBackdrop(button, true, nil, 1)
@@ -374,7 +396,7 @@ function S.StyleItemButton(button)
         -- AF.SetOnePixelInside(iconTexture, button.BFIBackdrop)
     end
 
-    local iconBorder = name and _G[name .. "IconBorder"] or button.IconBorder
+    local iconBorder = name and _G[name .. "IconBorder"] or button.IconBorder or button.Border
     if iconBorder then
         S.StyleIconBorder(iconBorder)
     end
@@ -692,6 +714,21 @@ function S.StyleTitledFrame(frame)
     closeButton:ClearAllPoints()
     closeButton:SetPoint("TOPRIGHT")
     AF.SetFrameLevel(closeButton, 1, frame.BFIHeader)
+
+    -- minimize/maximize button
+    if frame.MaximizeMinimizeButton then
+        local maximizeButton = frame.MaximizeMinimizeButton.MaximizeButton
+        S.StyleMaximizeButton(maximizeButton)
+        AF.SetFrameLevel(maximizeButton, 1, frame.BFIHeader)
+        maximizeButton:ClearAllPoints()
+        AF.SetPoint(maximizeButton, "TOPRIGHT", closeButton, "TOPLEFT", 1, 0)
+
+        local minimizeButton = frame.MaximizeMinimizeButton.MinimizeButton
+        S.StyleMinimizeButton(minimizeButton)
+        AF.SetFrameLevel(minimizeButton, 1, frame.BFIHeader)
+        minimizeButton:ClearAllPoints()
+        AF.SetPoint(minimizeButton, "TOPRIGHT", closeButton, "TOPLEFT", 1, 0)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -757,7 +794,33 @@ function S.StyleTab(tab)
     -- tab.selectedTextX = 0
     -- tab.deselectedTextX = 0
 
-    AF.SetHeight(tab, 26)
+    AF.SetHeight(tab, 27)
+end
+
+---------------------------------------------------------------------
+-- tab system
+---------------------------------------------------------------------
+local function SetTabSelected(tab, isSelected)
+    tab.Text:SetPoint("CENTER", tab, "CENTER", 0, 0)
+    if not isSelected then
+        tab.BFIBackdrop:SetBackdropColor(AF.UnpackColor(tab._color))
+    else
+        tab.BFIBackdrop:SetBackdropColor(AF.UnpackColor(tab._hoverColor))
+    end
+end
+
+function S.StyleTabSystem(frame, skipRepositioning)
+    assert(frame, "StyleTabSystem: frame is nil")
+
+    if not skipRepositioning then
+        AF.ClearPoints(frame)
+        AF.SetPoint(frame, "TOPLEFT", frame:GetParent(), "BOTTOMLEFT", 0, -1)
+    end
+
+    for _, tab in next, frame.tabs do
+        S.StyleTab(tab)
+        hooksecurefunc(tab, "SetTabSelected", SetTabSelected)
+    end
 end
 
 ---------------------------------------------------------------------

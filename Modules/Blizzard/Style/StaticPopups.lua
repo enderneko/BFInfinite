@@ -53,7 +53,7 @@ local function StyleBlizzard()
         S.StyleEditBox(popup.MoneyInputFrame.gold, -4)
 
         -- ItemFrame (BlackMarket, Purchase, Upgrade, Refund ...)
-        S.StyleItemButton(popup.ItemFrame.Item)
+        S.StyleSpellItemButton(popup.ItemFrame.Item)
         popup.ItemFrame.NameFrame:SetAlpha(0) -- name background texture
     end
 end
