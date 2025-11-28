@@ -42,6 +42,7 @@ local function CreateContentPane()
     end)
     list:SetData({
         {text = L["Micro Menu"], id = "microMenu"},
+        {text = _G.HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL, id = "objectiveTracker"},
         {text = L["Ready"] .. " & " .. L["Pull"], id = "readyPull"},
         {text = L["Markers"], id = "markers", combatProtect = true},
     })

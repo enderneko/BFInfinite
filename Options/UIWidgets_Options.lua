@@ -52,7 +52,12 @@ local settings = {
         "width,height",
         "arrangement_complex",
         "markerSpacing",
-    }
+    },
+    objectiveTracker = {
+        "trackerOrder",
+        "height",
+        "font",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -148,7 +153,7 @@ builder["tips"] = function(parent)
 
     function pane.SetTips(text)
         tips:SetText(text)
-        C_Timer.After(0, UpdateHeight)
+        RunNextFrame(UpdateHeight)
     end
 
     pane.Load = AF.noop
@@ -245,6 +250,30 @@ builder["width,height"] = function(parent)
     function pane.Load(t)
         pane.t = t
         width:SetValue(t.cfg.width)
+        height:SetValue(t.cfg.height)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- height
+---------------------------------------------------------------------
+builder["height"] = function(parent)
+    if created["height"] then return created["height"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_Height", nil, 55)
+    created["height"] = pane
+
+    local height = AF.CreateSlider(pane, L["Height"], 150, 200, 1000, 1, nil, true)
+    AF.SetPoint(height, "LEFT", 15, 0)
+    height:SetOnValueChanged(function(value)
+        pane.t.cfg.height = value
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
         height:SetValue(t.cfg.height)
     end
 
@@ -559,6 +588,69 @@ builder["markerOptions"] = function(parent)
         worldMarkers:SetChecked(t.cfg.worldMarkers)
         showIfSolo:SetChecked(t.cfg.showIfSolo)
         showIfSolo:SetEnabled(t.cfg.targetMarkers)
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- trackerOrder
+---------------------------------------------------------------------
+builder["trackerOrder"] = function(parent)
+    if created["trackerOrder"] then return created["trackerOrder"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UIWidgetOption_TrackerOrder")
+    created["trackerOrder"] = pane
+
+    local sorter = AF.CreateDragSorter(pane, nil, 5, 200, 20, "VERTICAL")
+    AF.SetPoint(sorter, "TOPLEFT", 15, -35)
+    sorter:SetCallback(function()
+        AF.Fire("BFI_UpdateModule", "uiWidgets", pane.t.id)
+    end)
+
+    local tip = AF.CreateFontString(pane, AF.GetGradientText(L["Drag to reorder"], "BFI", "white"))
+    AF.SetPoint(tip, "BOTTOMLEFT", sorter, "TOPLEFT", 0, 10)
+
+    local trackers = {
+        {"ScenarioObjectiveTracker", _G.TRACKER_HEADER_DUNGEON},
+        {"UIWidgetObjectiveTracker", _G.TRACKER_HEADER_SCENARIO},
+        {"CampaignQuestObjectiveTracker", _G.TRACKER_HEADER_CAMPAIGN_QUESTS},
+        {"QuestObjectiveTracker", _G.TRACKER_HEADER_QUESTS},
+        {"AdventureObjectiveTracker", _G.ADVENTURE_TRACKING_MODULE_HEADER_TEXT},
+        {"AchievementObjectiveTracker", _G.TRACKER_HEADER_ACHIEVEMENTS},
+        {"MonthlyActivitiesObjectiveTracker", _G.TRACKER_HEADER_MONTHLY_ACTIVITIES},
+        {"InitiativeTasksObjectiveTracker", _G.TRACKER_HEADER_INITIATIVE_TASKS},
+        {"ProfessionsRecipeTracker", _G.PROFESSIONS_TRACKER_HEADER_PROFESSION},
+        {"BonusObjectiveTracker", _G.TRACKER_HEADER_BONUS_OBJECTIVES},
+        {"WorldQuestObjectiveTracker", _G.TRACKER_HEADER_WORLD_QUESTS},
+    }
+
+    local widgets = {}
+
+    for _, info in ipairs(trackers) do
+        local button = AF.CreateButton(sorter, info[2], "BFI_hover")
+        tinsert(widgets, button)
+        button.value = info[1]
+        button.tipText = info[2]
+        button:SetTextJustifyH("LEFT")
+        function button:update(index)
+            self:SetText(AF.WrapTextInColor(index, "darkgray") .. " " .. self.tipText)
+        end
+    end
+    sorter:SetWidgets(widgets, true)
+
+    RunNextFrame(function()
+        pane:SetHeight(sorter:GetHeight() + 45)
+
+        if parent._contentHeights then
+            parent._contentHeights[pane.index] = tostring(pane:GetHeight()) -- update height
+            AF.ReSize(parent) -- call AF.SetScrollContentHeight
+        end
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        sorter:SetConfigTable(t.cfg.order)
     end
 
     return pane

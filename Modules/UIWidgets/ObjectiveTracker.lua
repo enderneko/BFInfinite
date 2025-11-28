@@ -222,7 +222,7 @@ end
 
 local function SetupOrder(order)
     -- ObjectiveTrackerManager:OnPlayerEnteringWorld
-    print(GetTime(), "SetupOrder called")
+    -- print(GetTime(), "SetupOrder called")
     local orderedModules = {}
     for i, moduleName in ipairs(order) do
         tinsert(orderedModules, _G[moduleName])
