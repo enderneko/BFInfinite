@@ -5,9 +5,9 @@
 
     <!-- disable -->
     <Script file="Disable\Defaults.lua"/>
-    <Script file="Disable\UnitFrames.lua"/>
-    <Script file="Disable\ActionBars.lua"/>
-    <Script file="Disable\EditMode.lua"/>
+    <!-- <Script file="Disable\UnitFrames.lua"/> -->
+    <!-- <Script file="Disable\ActionBars.lua"/> -->
+    <!-- <Script file="Disable\EditMode.lua"/> -->
     <Script file="Disable\Misc.lua"/>
 
     <!-- style -->
