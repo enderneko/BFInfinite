@@ -307,8 +307,8 @@ local function SetupScenarioObjectiveTracker()
     end)
 end
 
-local function SetupQuestPOIButton()
-    local function UpdatePOIButtonScale(self, quest)
+local function SetupQuestBlock()
+    local function UpdatePOIButton(self, quest)
         local questID = quest:GetID()
         -- local block, isExistingBlock = questTracker:GetBlock(questID)
         local block = self.usedBlocks[self.blockTemplate][questID]
@@ -316,15 +316,42 @@ local function SetupQuestPOIButton()
             block.poiButton:SetScale(0.85)
         end
     end
+    hooksecurefunc(_G.QuestObjectiveTracker, "UpdateSingle", UpdatePOIButton)
+    hooksecurefunc(_G.CampaignQuestObjectiveTracker, "UpdateSingle", UpdatePOIButton)
 
-    hooksecurefunc(_G.QuestObjectiveTracker, "UpdateSingle", UpdatePOIButtonScale)
-    hooksecurefunc(_G.CampaignQuestObjectiveTracker, "UpdateSingle", UpdatePOIButtonScale)
+    local font = W.config.objectiveTracker.font
+
+    local function UpdateProgressBar(self, key)
+        local bar = self.usedProgressBars[key].Bar
+        if bar and not bar._BFIStyled then
+            S.StyleProgressBar(bar)
+            if bar.Label then
+                AF.SetFont(bar.Label, font)
+                bar.Label:SetPoint("CENTER")
+            end
+        end
+    end
+    hooksecurefunc(_G.QuestObjectiveTracker, "GetProgressBar", UpdateProgressBar)
+    hooksecurefunc(_G.CampaignQuestObjectiveTracker, "GetProgressBar", UpdateProgressBar)
+
+    local function UpdateTimerBar(self, key)
+        local bar = self.usedTimerBars[key].Bar
+        if bar and not bar._BFIStyled then
+            S.StyleProgressBar(bar)
+            AF.SetFont(bar.Label, font)
+            bar.Label:SetPoint("CENTER")
+        end
+    end
+    hooksecurefunc(_G.QuestObjectiveTracker, "GetTimerBar", UpdateTimerBar)
+    hooksecurefunc(_G.CampaignQuestObjectiveTracker, "GetTimerBar", UpdateTimerBar)
 end
 
 ---------------------------------------------------------------------
 -- fonts
 ---------------------------------------------------------------------
 local function UpdateFonts(font)
+    -- NOTE: some widgets require a reload to update fonts: progressBar, timerBar ...
+
     -- EditModeObjectiveTrackerSystemMixin:UpdateSystemSettingTextSize -> ObjectiveTrackerManager:SetTextSize
     AF.SetFont(ObjectiveTrackerLineFont, font)
     AF.SetFont(ObjectiveTrackerHeaderFont, font, font[2] + 1)
@@ -358,7 +385,7 @@ local function UpdateObjectiveTracker(_, module, which)
         SetupTracker()
         SetupManager()
         SetupScenarioObjectiveTracker()
-        SetupQuestPOIButton()
+        SetupQuestBlock()
     end
 
     trackerContainer.enabled = true
