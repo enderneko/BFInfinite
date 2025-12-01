@@ -349,16 +349,20 @@ end
 
 local function SetupIconButton(button, color, icon, iconSize)
     S.StyleButton(button, color)
-    AF.SetSize(button, 27, 20)
-
     iconSize = iconSize or 16
 
     button.BFIIcon = button:CreateTexture(nil, "ARTWORK")
     AF.SetPoint(button.BFIIcon, "CENTER")
     AF.SetSize(button.BFIIcon, iconSize, iconSize)
     button.BFIIcon:SetTexture(icon)
+    button.BFIIcon:SetDesaturated(not button:IsEnabled())
+    button.BFIIcon:SetVertexColor(AF.GetColorRGB(button:IsEnabled() and "white" or "disabled"))
 
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", button, IconButton_UpdatePixels)
+end
+
+function S.StyleIconButton(button, color, icon, iconSize)
+    SetupIconButton(button, color, icon, iconSize)
 end
 
 function S.StyleCloseButton(button)
@@ -366,6 +370,7 @@ function S.StyleCloseButton(button)
 
     if button._BFIStyled then return end
     SetupIconButton(button, "red", AF.GetIcon("Close"))
+    AF.SetSize(button, 27, 20)
 end
 
 function S.StyleMinimizeButton(button)
@@ -373,6 +378,7 @@ function S.StyleMinimizeButton(button)
 
     if button._BFIStyled then return end
     SetupIconButton(button, "red", AF.GetIcon("ArrowDown1"), 20)
+    AF.SetSize(button, 27, 20)
 end
 
 function S.StyleMaximizeButton(button)
@@ -380,6 +386,7 @@ function S.StyleMaximizeButton(button)
 
     if button._BFIStyled then return end
     SetupIconButton(button, "red", AF.GetIcon("ArrowUp1"), 20)
+    AF.SetSize(button, 27, 20)
 end
 
 ---------------------------------------------------------------------
@@ -510,11 +517,6 @@ function S.StyleDropdownButton(button)
     if button.Arrow then button.Arrow:SetAlpha(0) end
     if button.Button then button.Button:SetAlpha(0) end
 
-    -- local button = AF.CreateButton(dropdown, nil, "BFI_hover", 20)
-    -- AF.SetPoint(button, "TOPRIGHT", -2, -2)
-    -- AF.SetPoint(button, "BOTTOMRIGHT", -2, 2)
-    -- button:SetTexture(AF.GetIcon("ArrowDown1"), {16, 16}, {"CENTER", 0, 0})
-
     local arrow = AF.CreateTexture(button, AF.GetIcon("ArrowDown_Small"), "darkgray")
     button.BFIArrow = arrow
     AF.SetSize(arrow, 16, 16)
@@ -529,15 +531,22 @@ function S.StyleDropdownButton(button)
         self.BFIArrow:SetVertexColor(AF.GetColorRGB("darkgray"))
     end)
 
-    -- button:SetScript("OnClick", function()
-    --     if dropdown:IsMenuOpen() then
-    --         print("StyleDropdown: CloseMenu")
-    --         dropdown:CloseMenu()
-    --     -- else
-    --     --     print("StyleDropdown: OpenMenu")
-    --     --     dropdown:OpenMenu()
-    --     end
-    -- end)
+    -- if button:IsMenuOpen() then
+    --     print("StyleDropdown: CloseMenu")
+    --     arrow:SetTexture(AF.GetIcon("ArrowUp_Small"))
+    -- else
+    --     print("StyleDropdown: OpenMenu")
+    --     arrow:SetTexture(AF.GetIcon("ArrowDown_Small"))
+    -- end
+    button:HookScript("OnMouseDown", function()
+        arrow:AdjustPointsOffset(0, -AF.GetOnePixelForRegion(button))
+    end)
+    button:HookScript("OnMouseUp", function()
+        AF.RePoint(arrow)
+    end)
+    button:HookScript("OnHide", function()
+        AF.RePoint(arrow)
+    end)
 end
 
 ---------------------------------------------------------------------

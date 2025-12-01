@@ -12,6 +12,11 @@ local spellFrame
 local function StyleSpecFrame()
     local specFrame = spellFrame.SpecFrame
     S.RemoveBackground(specFrame)
+
+    -- button
+    for specContentFrame in specFrame.SpecContentFramePool:EnumerateActive() do
+        S.StyleButton(specContentFrame.ActivateButton)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -23,6 +28,10 @@ local function StyleTalentsFrame()
     talentsFrame.BlackBG:SetAlpha(0)
     talentsFrame.BottomBar:SetAlpha(0)
     talentsFrame.Background:SetAlpha(0.5)
+
+    S.StyleDropdownButton(talentsFrame.LoadSystem.Dropdown)
+    S.StyleEditBox(talentsFrame.SearchBox, -4, -2, nil, 2)
+    S.StyleButton(talentsFrame.ApplyButton, "BFI", "BFI")
 end
 
 ---------------------------------------------------------------------
@@ -32,12 +41,56 @@ local function StyleSpellBookFrame()
     local spellBookFrame = spellFrame.SpellBookFrame
     S.RemoveBackground(spellBookFrame)
     spellBookFrame.TopBar:SetAlpha(0)
-    S.StyleTabSystem(spellBookFrame.CategoryTabSystem, true)
-    S.StyleEditBox(spellBookFrame.SearchBox, -4)
 
-    local button = spellBookFrame.AssistedCombatRotationSpellFrame.Button
+    -- tab
+    local tabSystem = spellBookFrame.CategoryTabSystem
+    S.StyleTabSystem(tabSystem, true)
+    AF.ClearPoints(tabSystem)
+    AF.SetPoint(tabSystem, "BOTTOMLEFT", spellBookFrame.PagedSpellsFrame, "TOPLEFT", 10, 10)
+
+    -- search
+    local searchBox = spellBookFrame.SearchBox
+    S.StyleEditBox(searchBox, -4)
+    AF.ClearPoints(searchBox)
+    AF.SetPoint(searchBox, "BOTTOMLEFT", tabSystem, "BOTTOMRIGHT", 14, 0)
+    AF.SetHeight(searchBox, 27)
+
+    -- setting
+    hooksecurefunc(spellBookFrame, "UpdateAttic", function()
+        AF.ClearPoints(spellBookFrame.SettingsDropdown)
+        AF.SetPoint(spellBookFrame.SettingsDropdown, "LEFT", searchBox, "RIGHT", 5, 0)
+    end)
+
+    -- assisted
+    local assistedFrame = spellBookFrame.AssistedCombatRotationSpellFrame
+    S.RemoveTextures(assistedFrame)
+    AF.ClearPoints(assistedFrame)
+    AF.SetPoint(assistedFrame, "BOTTOMRIGHT", spellBookFrame.PagedSpellsFrame, "TOPRIGHT", -10, 10)
+
+    local button = assistedFrame.Button
     S.StyleSpellItemButton(button)
     button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+
+    -- page button
+    local prevButton = spellBookFrame.PagedSpellsFrame.PagingControls.PrevPageButton
+    S.StyleIconButton(prevButton, nil, AF.GetIcon("ArrowLeft2"), 16)
+    AF.SetSize(prevButton, 23, 23)
+
+    local nextButton = spellBookFrame.PagedSpellsFrame.PagingControls.NextPageButton
+    S.StyleButton(nextButton)
+    S.StyleIconButton(nextButton, nil, AF.GetIcon("ArrowRight2"), 16)
+    AF.SetSize(nextButton, 23, 23)
+
+    hooksecurefunc(spellBookFrame.PagedSpellsFrame.PagingControls, "LayoutChildren", function()
+        local pageText = spellBookFrame.PagedSpellsFrame.PagingControls.PageText
+        AF.ClearPoints(prevButton)
+        AF.SetPoint(prevButton, "RIGHT", pageText, "LEFT", -7, 0)
+        AF.ClearPoints(nextButton)
+        AF.SetPoint(nextButton, "LEFT", pageText, "RIGHT", 7, 0)
+    end)
+
+    -- help
+    spellBookFrame.HelpPlateButton:Hide()
 end
 
 ---------------------------------------------------------------------
