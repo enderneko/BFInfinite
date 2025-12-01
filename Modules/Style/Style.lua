@@ -833,6 +833,48 @@ function S.StyleTabSystem(frame, skipRepositioning)
 end
 
 ---------------------------------------------------------------------
+-- SpellSearchPreviewContainer
+---------------------------------------------------------------------
+function S.StyleSpellSearchPreviewContainer(container)
+    assert(container, "StyleSpellSearchPreviewContainer: container is nil")
+
+    if container._BFIStyled then return end
+    container._BFIStyled = true
+
+    S.RemoveTextures(container)
+
+    hooksecurefunc(container, "UpdateResultsDisplay", function(self)
+        if self.ScrollBox:HasDataProvider() then
+            local view = self.ScrollBox:GetView()
+            -- texplore(view)
+            RunNextFrame(function()
+                for _, button in view:EnumerateFrames() do
+                    if not button._BFIStyled then
+                        S.StyleButton(button)
+                        -- button._hoverColor = AF.GetColorTable("widget_highlight2")
+
+                        local icon = button.Icon
+                        S.StyleIcon(icon, true)
+                        AF.SetSize(icon, 15, 15)
+                        AF.ClearPoints(icon)
+                        AF.SetPoint(icon, "LEFT", 7, 0)
+                        AF.SetOnePixelOutside(icon.BFIBackdrop, icon)
+                        icon:SetTexture(button.resultInfo.icon)
+                        icon:SetAlpha(1)
+                        icon:Show()
+                    end
+                end
+            end)
+        else
+            for button in self.suggestedResultButtonsPool:EnumerateActive() do
+                S.StyleButton(button)
+                -- button._hoverColor = AF.GetColorTable("widget_highlight2")
+            end
+        end
+    end)
+end
+
+---------------------------------------------------------------------
 -- update pixels using OnUpdateExecutor
 ---------------------------------------------------------------------
 local start

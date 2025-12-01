@@ -32,6 +32,13 @@ local function StyleTalentsFrame()
     S.StyleDropdownButton(talentsFrame.LoadSystem.Dropdown)
     S.StyleEditBox(talentsFrame.SearchBox, -4, -2, nil, 2)
     S.StyleButton(talentsFrame.ApplyButton, "BFI", "BFI")
+    S.StyleButton(talentsFrame.InspectCopyButton, "BFI", "BFI")
+
+    local searchPreview = talentsFrame.SearchPreviewContainer
+    AF.ClearPoints(searchPreview)
+    AF.SetPoint(searchPreview, "TOPLEFT", talentsFrame.SearchBox, "BOTTOMLEFT", -4, 1)
+    AF.SetPoint(searchPreview, "TOPRIGHT", talentsFrame.SearchBox, "BOTTOMRIGHT", 0, 1)
+    S.StyleSpellSearchPreviewContainer(searchPreview)
 end
 
 ---------------------------------------------------------------------
@@ -54,6 +61,12 @@ local function StyleSpellBookFrame()
     AF.ClearPoints(searchBox)
     AF.SetPoint(searchBox, "BOTTOMLEFT", tabSystem, "BOTTOMRIGHT", 14, 0)
     AF.SetHeight(searchBox, 27)
+
+    local searchPreview = spellBookFrame.SearchPreviewContainer
+    AF.ClearPoints(searchPreview)
+    AF.SetPoint(searchPreview, "TOPLEFT", searchBox, "BOTTOMLEFT", -4, -1)
+    AF.SetPoint(searchPreview, "TOPRIGHT", searchBox, "BOTTOMRIGHT", 0, -1)
+    S.StyleSpellSearchPreviewContainer(searchPreview)
 
     -- setting
     hooksecurefunc(spellBookFrame, "UpdateAttic", function()
