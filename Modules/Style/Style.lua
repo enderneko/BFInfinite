@@ -520,8 +520,19 @@ function S.StyleDropdownButton(button)
     AF.ApplyDefaultBackdropWithColors(button, "widget")
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", button)
 
+    button:SetNormalTexture(AF.GetEmptyTexture())
+    button:SetPushedTexture(AF.GetEmptyTexture())
+    button:SetHighlightTexture(AF.GetEmptyTexture())
+    button:SetDisabledTexture(AF.GetEmptyTexture())
+
     if button.Arrow then button.Arrow:SetAlpha(0) end
     if button.Button then button.Button:SetAlpha(0) end
+    if button.Background then button.Background:SetAlpha(0) end
+    if button.Text then
+        button.Text:ClearAllPoints()
+        button.Text:SetPoint("CENTER")
+    end
+    button:SetPushedTextOffset(0, 0)
 
     local arrow = AF.CreateTexture(button, AF.GetIcon("ArrowDown_Small"), "darkgray")
     button.BFIArrow = arrow
@@ -546,13 +557,21 @@ function S.StyleDropdownButton(button)
     -- end
     button:HookScript("OnMouseDown", function()
         arrow:AdjustPointsOffset(0, -AF.GetOnePixelForRegion(button))
+        -- if button.Text then
+        --     button.Text:ClearPointsOffset()
+        -- end
     end)
-    button:HookScript("OnMouseUp", function()
+
+    local function ClearPointsOffset()
         AF.RePoint(arrow)
-    end)
-    button:HookScript("OnHide", function()
-        AF.RePoint(arrow)
-    end)
+        -- if button.Text then
+        --     button.Text:ClearPointsOffset()
+        -- end
+    end
+
+    button:HookScript("OnMouseUp", ClearPointsOffset)
+    button:HookScript("OnHide",ClearPointsOffset)
+    button:HookScript("OnDisable", ClearPointsOffset)
 end
 
 ---------------------------------------------------------------------
@@ -715,9 +734,11 @@ function S.StyleTitledFrame(frame)
     AF.RemoveFromPixelUpdater(frame.BFIHeader)
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader)
 
-    frame.BFIHeader.tex = frame.BFIHeader:CreateTexture(nil, "ARTWORK")
-    frame.BFIHeader.tex:SetColorTexture(AF.GetColorRGB("BFI", 0.025))
+    -- frame.BFIHeader.tex = frame.BFIHeader:CreateTexture(nil, "ARTWORK")
+    -- frame.BFIHeader.tex:SetColorTexture(AF.GetColorRGB("BFI", 0.025))
+    frame.BFIHeader.tex = AF.CreateGradientTexture(frame.BFIHeader, "HORIZONTAL", AF.GetColorTable("BFI", 0.3), AF.GetColorTable("BFI", 0), nil, "ARTWORK")
     AF.SetOnePixelInside(frame.BFIHeader.tex, frame.BFIHeader)
+    AF.RemoveFromPixelUpdater(frame.BFIHeader.tex)
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader.tex)
 
     frame.TitleContainer.TitleText:ClearAllPoints()
