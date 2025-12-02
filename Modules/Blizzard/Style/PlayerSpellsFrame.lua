@@ -13,7 +13,7 @@ local function StyleSpecFrame()
     local specFrame = spellFrame.SpecFrame
     S.RemoveBackground(specFrame)
 
-    -- button
+    -- activate button
     for specContentFrame in specFrame.SpecContentFramePool:EnumerateActive() do
         S.StyleButton(specContentFrame.ActivateButton)
     end
@@ -106,6 +106,19 @@ local function StyleSpellBookFrame()
     spellBookFrame.HelpPlateButton:Hide()
 end
 
+local function StyleHeroTalentsSelectionDialog()
+    local dialog = _G.HeroTalentsSelectionDialog
+    S.StyleTitledFrame(dialog)
+
+    -- activate button
+    hooksecurefunc(dialog, "ShowDialog", function()
+        for specContentFrame in dialog.SpecContentFramePool:EnumerateActive() do
+            S.StyleButton(specContentFrame.ActivateButton)
+            S.StyleButton(specContentFrame.ApplyChangesButton)
+        end
+    end)
+end
+
 ---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
@@ -114,11 +127,11 @@ local function StyleBlizzard()
 
     S.StyleTitledFrame(spellFrame)
     S.StyleTabSystem(spellFrame.TabSystem)
-    S.StyleTitledFrame(_G.HeroTalentsSelectionDialog)
 
     StyleSpecFrame()
     StyleTalentsFrame()
     StyleSpellBookFrame()
+    StyleHeroTalentsSelectionDialog()
 end
 -- AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
 AF.RegisterAddonLoaded("Blizzard_PlayerSpells", StyleBlizzard)
