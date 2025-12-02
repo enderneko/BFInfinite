@@ -47,7 +47,7 @@ local function GameTooltip_ShowProgressBar(tooltip)
     bar = bar.Bar
     if bar.BFIBackdrop then return end
 
-    S.StyleProgressBar(bar)
+    S.StyleStatusBar(bar, 1)
 end
 
 ---------------------------------------------------------------------

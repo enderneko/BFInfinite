@@ -413,7 +413,7 @@ function S.StyleSpellItemButton(button)
         normalTexture:SetAlpha(0)
     end
 
-    local highlightTexture = button.GetHighlightTexture and button:GetHighlightTexture()
+    local highlightTexture = name and (_G[name .. "Highlight"] or button.Highlight) or (button.GetHighlightTexture and button:GetHighlightTexture())
     if highlightTexture then
         AF.SetOnePixelInside(highlightTexture, button.BFIBackdrop)
         highlightTexture:SetColorTexture(AF.GetColorRGB("white", 0.25))
@@ -425,6 +425,12 @@ function S.StyleSpellItemButton(button)
         pushedTexture:SetColorTexture(AF.GetColorRGB("yellow", 0.25))
     end
     -- button:SetPushedTexture(AF.GetEmptyTexture())
+
+    local checkedTexture = button.GetCheckedTexture and button:GetCheckedTexture()
+    if checkedTexture then
+        AF.SetOnePixelInside(checkedTexture, button.BFIBackdrop)
+        checkedTexture:SetColorTexture(AF.GetColorRGB("BFI", 0.25))
+    end
 end
 
 ---------------------------------------------------------------------
@@ -472,14 +478,14 @@ end
 ---------------------------------------------------------------------
 -- progress bar
 ---------------------------------------------------------------------
-function S.StyleProgressBar(bar)
-    assert(bar, "StyleProgressBar: bar is nil")
+function S.StyleStatusBar(bar, backdropOffset)
+    assert(bar, "StyleStatusBar: bar is nil")
 
     if bar._BFIStyled then return end
     bar._BFIStyled = true
 
     S.RemoveTextures(bar)
-    S.CreateBackdrop(bar, nil, 1)
+    S.CreateBackdrop(bar, nil, backdropOffset)
     bar:SetStatusBarTexture(BFI.media.bar)
 end
 

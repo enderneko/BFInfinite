@@ -525,7 +525,7 @@ local function StyleEntry(entry)
         content.BackgroundHighlight.Right:SetAlpha(0)
 
         if content.ReputationBar then
-            S.StyleProgressBar(content.ReputationBar)
+            S.StyleStatusBar(content.ReputationBar)
         end
 
         if content.CurrencyIcon then

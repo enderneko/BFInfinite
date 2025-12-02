@@ -13,6 +13,7 @@
     <!-- style -->
     <Script file="Style\Tooltip.lua"/>
     <Script file="Style\CharacterFrame.lua"/>
+    <Script file="Style\ProfessionsBookFrame.lua"/>
     <Script file="Style\CommunitiesFrame.lua"/>
     <Script file="Style\PlayerSpellsFrame.lua"/>
     <Script file="Style\Menu.lua"/>

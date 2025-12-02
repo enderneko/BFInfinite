@@ -324,7 +324,7 @@ local function SetupQuestBlock()
     local function UpdateProgressBar(self, key)
         local bar = self.usedProgressBars[key].Bar
         if bar and not bar._BFIStyled then
-            S.StyleProgressBar(bar)
+            S.StyleStatusBar(bar)
             if bar.Label then
                 AF.SetFont(bar.Label, font)
                 bar.Label:SetPoint("CENTER")
@@ -337,7 +337,7 @@ local function SetupQuestBlock()
     local function UpdateTimerBar(self, key)
         local bar = self.usedTimerBars[key].Bar
         if bar and not bar._BFIStyled then
-            S.StyleProgressBar(bar)
+            S.StyleStatusBar(bar)
             AF.SetFont(bar.Label, font)
             bar.Label:SetPoint("CENTER")
         end
