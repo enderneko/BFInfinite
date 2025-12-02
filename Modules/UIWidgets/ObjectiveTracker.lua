@@ -33,16 +33,19 @@ end
 local function SetupTracker()
     F.DisableEditMode(tracker)
     tracker.isManagedFrame = false -- prevent re-parenting by Blizzard
-    tracker.systemInfo.isInDefaultPosition = false
     tracker.editModeHeight = 1000
     tracker.topModulePadding = 20 + 10 -- 38
     tracker.moduleSpacing = 7 -- 10
-    -- tracker.systemInfo.anchorInfo.point = "TOPRIGHT"
-    -- tracker.systemInfo.anchorInfo.relativeTo = trackerContainer.scrollContent
-    -- tracker.systemInfo.anchorInfo.relativePoint = "TOPRIGHT"
-    -- tracker.systemInfo.anchorInfo.offsetX = 0
-    -- tracker.systemInfo.anchorInfo.offsetY = 0
     tracker:SetClampedToScreen(false)
+
+    hooksecurefunc(tracker, "UpdateSystem", function()
+        tracker.systemInfo.isInDefaultPosition = false
+        -- tracker.systemInfo.anchorInfo.point = "TOPRIGHT"
+        -- tracker.systemInfo.anchorInfo.relativeTo = trackerContainer.scrollContent
+        -- tracker.systemInfo.anchorInfo.relativePoint = "TOPRIGHT"
+        -- tracker.systemInfo.anchorInfo.offsetX = 0
+        -- tracker.systemInfo.anchorInfo.offsetY = 0
+    end)
 
     --------------------------------------------------
     -- position
