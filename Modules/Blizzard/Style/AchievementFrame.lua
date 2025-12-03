@@ -1,6 +1,7 @@
 ---@type BFI
 local BFI = select(2, ...)
 local S = BFI.modules.Style
+local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -96,6 +97,19 @@ local function StyleCategories()
 
     S.RemoveNineSliceAndBackground(categories)
     S.StyleScrollBar(categories.ScrollBar)
+
+    local function UpdateEach(f)
+        if f.Button._BFIStyled then return end
+        S.StyleButton(f.Button)
+        f.Button:SetHeight(23) -- for spacing, or use ScrollBoxLinearBaseViewMixin:SetPadding
+        f.Button:BFI_HookHighlight()
+    end
+
+    local function Update(scrollBox)
+        scrollBox:ForEachFrame(UpdateEach)
+    end
+
+    hooksecurefunc(categories.ScrollBox, "Update", Update)
 end
 
 ---------------------------------------------------------------------
@@ -130,6 +144,7 @@ local function StyleStats()
 
     -- S.RemoveBackground(stats)
     _G.AchievementFrameStatsBG:Hide()
+    S.StyleScrollBar(stats.ScrollBar)
 
     -- AchivementGoldBorderBackdrop
     -- an anonymous frame
@@ -162,6 +177,127 @@ local function StyleAchievements()
             break
         end
     end
+
+    -- AchievementTemplateMixin:UpdatePlusMinusTexture
+    -- local function UpdatePlusMinusTexture(button)
+    --     local id = button.id
+    --     if ( not id ) then
+    --         return
+    --     end
+
+    --     local display = false
+    --     if GetAchievementNumCriteria(id) ~= 0 then
+    --         display = true
+    --     elseif button.completed and GetPreviousAchievement(id) then
+    --         display = true
+    --     elseif not button.completed and GetAchievementGuildRep(id) then
+    --         display = true
+    --     end
+
+    --     AF.SetSize(button.PlusMinus, 13, 13)
+
+    --     if display then
+    --         if button.collapsed then
+    --             button.PlusMinus:SetTexture(AF.GetIcon("Plus_Small"))
+    --         else
+    --             button.PlusMinus:SetTexture(AF.GetIcon("Minus_Small"))
+    --         end
+    --         button.PlusMinus:SetTexCoord(0, 1, 0, 1)
+    --         button.PlusMinus:Show()
+    --     else
+    --         button.PlusMinus:Hide()
+    --     end
+    -- end
+
+    achievements.ScrollBox:GetView():SetPadding(0, 0, 0, 0, 4)
+
+    local function UpdateEach(button)
+        if not button._BFIStyled then
+            button._BFIStyled = true
+
+            S.CreateBackdrop(button)
+            button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
+
+            S.StyleCheckButton(button.Tracked, 11)
+
+            S.RemoveNineSliceAndBackground(button)
+            button.Glow:Hide()
+            button.TitleBar:Hide()
+            F.Hide(button.Check)
+            button.RewardBackground:SetAlpha(0)
+            button:DisableDrawLayer("BORDER") -- XxxTsunami
+
+            button.Icon.frame:Hide()
+            button.Icon.bling:Hide()
+            S.StyleIcon(button.Icon.texture)
+            S.CreateBackdrop(button.Icon.texture, true, 1)
+
+            button.BFITitleBar = AF.CreateGradientTexture(button.BFIBackdrop, "VERTICAL", "none", "none", nil, "BORDER", -1)
+            button.BFITitleBar:SetPoint("TOPLEFT")
+            button.BFITitleBar:SetPoint("TOPRIGHT")
+            button.BFITitleBar:SetPoint("BOTTOM", button.Label, 0, -2)
+            button.BFITitleBar:Hide()
+
+            F.Hide(button.PlusMinus)
+            -- UpdatePlusMinusTexture(button)
+            -- hooksecurefunc(button, "UpdatePlusMinusTexture", UpdatePlusMinusTexture)
+
+            button.Highlight = AF.CreateBorderedFrame(button)
+            button.Highlight:SetAllPoints()
+            button.Highlight:SetBackgroundColor("none")
+            button.Highlight:SetBorderColor("BFI")
+            button.Highlight:Hide()
+        end
+
+        button.Label:SetTextColor(AF.GetColorRGB(button.completed and "white" or "gray"))
+        button.Description:SetTextColor(AF.GetColorRGB(button.completed and "white" or "gray"))
+        button.Reward:SetTextColor(AF.GetColorRGB(button.completed and "yellow_text" or "gray"))
+        button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(button.completed and "widget" or "widget_darker"))
+
+        if button.accountWide then
+            button.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable(button.completed and "skyblue" or "darkgray", 0.4), "none")
+            button.BFITitleBar:Show()
+        else
+            button.BFITitleBar:Hide()
+        end
+    end
+
+    local function Update(scrollBox)
+        scrollBox:ForEachFrame(UpdateEach)
+    end
+
+    hooksecurefunc(achievements.ScrollBox, "Update", Update)
+end
+
+---------------------------------------------------------------------
+-- AchievementFrameAchievementsObjectives
+---------------------------------------------------------------------
+local function StyleObjectives()
+    local objectives = _G.AchievementFrameAchievementsObjectives
+
+    hooksecurefunc("AchievementButton_LocalizeProgressBar", function(frame)
+        if frame._BFIStyled then return end
+        frame.Text:ClearAllPoints()
+        frame.Text:SetPoint("CENTER")
+        S.StyleStatusBar(frame, 1)
+    end)
+
+    hooksecurefunc("AchievementButton_LocalizeMiniAchievement", function(frame)
+        if frame._BFIStyled then return end
+        frame._BFIStyled = true
+
+        frame.Border:Hide()
+        frame.Shield:Hide()
+
+        AF.SetInside(frame.Icon, frame, 5, 5)
+        S.StyleIcon(frame.Icon)
+        S.CreateBackdrop(frame.Icon, true, 1)
+
+        local font, size = frame.Points:GetFont()
+        frame.Points:SetFont(font, size, "OUTLINE")
+        frame.Points:SetShadowOffset(0, 0)
+        frame.Points:SetShadowColor(0, 0, 0, 0)
+    end)
 end
 
 ---------------------------------------------------------------------
@@ -209,5 +345,6 @@ local function StyleBlizzard()
     StyleSummary()
     StyleStats()
     StyleAchievements()
+    StyleObjectives()
 end
 AF.RegisterAddonLoaded("Blizzard_AchievementUI", StyleBlizzard)
