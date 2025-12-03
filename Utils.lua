@@ -103,6 +103,7 @@ function F.Hide(region)
         region:SetParent(AF.hiddenParent)
     else
         region.Show = region.Hide
+        region.SetShown = region.Hide
     end
     region:Hide()
 end

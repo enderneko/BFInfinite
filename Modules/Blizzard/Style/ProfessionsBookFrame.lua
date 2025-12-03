@@ -21,7 +21,7 @@ local function CreateBGs(frame, isSecondary)
     end
     AF.SetWidth(bgLeft, 2)
 
-    local bgRight = AF.CreateGradientTexture(frame, "HORIZONTAL", AF.GetColorTable("background2", 0.5), AF.GetColorTable("background2", 0), nil, "BACKGROUND")
+    local bgRight = AF.CreateGradientTexture(frame, "HORIZONTAL", AF.GetColorTable("background_lighter", 0.5), AF.GetColorTable("background_lighter", 0), nil, "BACKGROUND")
     frame.bgRight = bgRight
     AF.SetPoint(bgRight, "TOPLEFT", bgLeft, "TOPRIGHT", 1, 0)
     AF.SetPoint(bgRight, "RIGHT")

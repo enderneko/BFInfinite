@@ -117,17 +117,35 @@ local backgrounds = {
     "BG",
     "Background",
     "BlackBG",
+    "ClassBackground",
 }
 
 function S.RemoveBackground(region)
     if not region then return end
+
+    local name = region.GetName and region:GetName()
+
     for _, bgName in next, backgrounds do
-        local bg = region[bgName]
+        local bg = name and _G[name .. bgName] or region[bgName]
         if bg then
             bg:SetAlpha(0)
         end
     end
 end
+
+---------------------------------------------------------------------
+-- remove NineSlice and Background
+---------------------------------------------------------------------
+function S.RemoveNineSliceAndBackground(frame)
+    assert(frame, "RemoveNineSliceAndBackground: frame is nil")
+
+    if frame.NineSlice then
+        frame.NineSlice:SetAlpha(0)
+    end
+
+    S.RemoveBackground(frame)
+end
+
 
 ---------------------------------------------------------------------
 -- create backdrop
@@ -300,6 +318,17 @@ local function Button_OnDisable(button)
     end
 end
 
+local function Button_HookHighlight(button)
+    hooksecurefunc(button, "LockHighlight", function()
+        button.isSelected = true
+        Button_OnEnter(button)
+    end)
+    hooksecurefunc(button, "UnlockHighlight", function()
+        button.isSelected = nil
+        Button_OnLeave(button)
+    end)
+end
+
 function S.StyleButton(button, color, hoverColor)
     assert(button, "StyleButton: button is nil")
     if button._BFIStyled then return end
@@ -332,6 +361,7 @@ function S.StyleButton(button, color, hoverColor)
     button.BFI_OnLeave = Button_OnLeave
     button.BFI_OnEnable = Button_OnEnable
     button.BFI_OnDisable = Button_OnDisable
+    button.BFI_HookHighlight = Button_HookHighlight
 
     button:SetPushedTextOffset(0, -AF.GetOnePixelForRegion(button))
     RegisterMouseDownUp(button)
@@ -436,7 +466,7 @@ end
 ---------------------------------------------------------------------
 -- check button
 ---------------------------------------------------------------------
-function S.StyleCheckButton(button)
+function S.StyleCheckButton(button, size)
     assert(button, "StyleCheckButton: button is nil")
 
     if button._BFIStyled then return end
@@ -448,7 +478,7 @@ function S.StyleCheckButton(button)
     button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
     AF.ClearPoints(button.BFIBackdrop)
     button.BFIBackdrop:SetPoint("CENTER")
-    AF.SetSize(button.BFIBackdrop, 15, 15)
+    AF.SetSize(button.BFIBackdrop, size or 15, size or 15)
 
     local checkedTexture = button:CreateTexture(nil, "ARTWORK")
     checkedTexture:SetColorTexture(AF.GetColorRGB("BFI", 0.7))
@@ -666,32 +696,6 @@ function S.StyleScrollBar(scrollBar)
 end
 
 ---------------------------------------------------------------------
--- remove NineSlice and Background
----------------------------------------------------------------------
-local backgrounds = {
-    "Bg",
-    "Background",
-    "ClassBackground",
-}
-
-function S.RemoveNineSliceAndBackground(frame)
-    assert(frame, "RemoveNineSliceAndBackground: frame is nil")
-
-    if frame.NineSlice then
-        frame.NineSlice:SetAlpha(0)
-    end
-
-    local name = frame.GetName and frame:GetName()
-
-    for _, bgName in next, backgrounds do
-        local bg = name and _G[name .. bgName]
-        if bg then bg:SetAlpha(0) end
-        bg = frame[bgName]
-        if bg then bg:SetAlpha(0) end
-    end
-end
-
----------------------------------------------------------------------
 -- titled frame
 ---------------------------------------------------------------------
 function S.StyleTitledFrame(frame)
@@ -736,7 +740,7 @@ function S.StyleTitledFrame(frame)
 
     -- frame.BFIHeader.tex = frame.BFIHeader:CreateTexture(nil, "ARTWORK")
     -- frame.BFIHeader.tex:SetColorTexture(AF.GetColorRGB("BFI", 0.025))
-    frame.BFIHeader.tex = AF.CreateGradientTexture(frame.BFIHeader, "HORIZONTAL", AF.GetColorTable("BFI", 0.3), AF.GetColorTable("BFI", 0), nil, "ARTWORK")
+    frame.BFIHeader.tex = AF.CreateGradientTexture(frame.BFIHeader, "HORIZONTAL", AF.GetColorTable("BFI", 0.4), AF.GetColorTable("BFI", 0), nil, "ARTWORK")
     AF.SetOnePixelInside(frame.BFIHeader.tex, frame.BFIHeader)
     AF.RemoveFromPixelUpdater(frame.BFIHeader.tex)
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader.tex)
@@ -862,6 +866,27 @@ end
 ---------------------------------------------------------------------
 -- SpellSearchPreviewContainer
 ---------------------------------------------------------------------
+local function SpellSearchPreview_UpdateEach(button)
+    if not button._BFIStyled then
+        S.StyleButton(button)
+        -- button._hoverColor = AF.GetColorTable("widget_highlight2")
+
+        local icon = button.Icon
+        S.StyleIcon(icon, true)
+        AF.SetSize(icon, 15, 15)
+        AF.ClearPoints(icon)
+        AF.SetPoint(icon, "LEFT", 7, 0)
+        AF.SetOnePixelOutside(icon.BFIBackdrop, icon)
+        icon:SetTexture(button.resultInfo.icon)
+        icon:SetAlpha(1)
+        icon:Show()
+    end
+end
+
+local function SpellSearchPreview_Update(scrollBox)
+    scrollBox:ForEachFrame(SpellSearchPreview_UpdateEach)
+end
+
 function S.StyleSpellSearchPreviewContainer(container)
     assert(container, "StyleSpellSearchPreviewContainer: container is nil")
 
@@ -872,26 +897,10 @@ function S.StyleSpellSearchPreviewContainer(container)
 
     hooksecurefunc(container, "UpdateResultsDisplay", function(self)
         if self.ScrollBox:HasDataProvider() then
-            local view = self.ScrollBox:GetView()
-            -- texplore(view)
-            RunNextFrame(function()
-                for _, button in view:EnumerateFrames() do
-                    if not button._BFIStyled then
-                        S.StyleButton(button)
-                        -- button._hoverColor = AF.GetColorTable("widget_highlight2")
-
-                        local icon = button.Icon
-                        S.StyleIcon(icon, true)
-                        AF.SetSize(icon, 15, 15)
-                        AF.ClearPoints(icon)
-                        AF.SetPoint(icon, "LEFT", 7, 0)
-                        AF.SetOnePixelOutside(icon.BFIBackdrop, icon)
-                        icon:SetTexture(button.resultInfo.icon)
-                        icon:SetAlpha(1)
-                        icon:Show()
-                    end
-                end
-            end)
+            if not self._BFIHooked then
+                self._BFIHooked = true
+                hooksecurefunc(self.ScrollBox, "Update", SpellSearchPreview_Update)
+            end
         else
             for button in self.suggestedResultButtonsPool:EnumerateActive() do
                 S.StyleButton(button)
