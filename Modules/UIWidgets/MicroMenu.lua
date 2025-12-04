@@ -59,7 +59,6 @@ local function CreateMicroMenu()
     microMenu:SetScript("OnLeave", microMenu.onLeave)
 
     -- buttons
-    _G.ResetMicroMenuPosition()
     microMenu.buttons = {}
     for _, b in pairs(MICRO_BUTTONS) do
         if _G[b] then

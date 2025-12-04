@@ -5,7 +5,10 @@ local L = BFI.L
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local SetCVar = SetCVar
+
 local chatPanel
+local chatFramePane, chatEditBoxPane
 
 ---------------------------------------------------------------------
 -- chat panel
@@ -18,7 +21,6 @@ end
 ---------------------------------------------------------------------
 -- chat frame pane
 ---------------------------------------------------------------------
-local chatFramePane
 local function CreateChatFramePane()
     chatFramePane = AF.CreateTitledPane(chatPanel, L["Chat Frame"], 350, 300)
     chatPanel.chatFramePane = chatFramePane
@@ -58,8 +60,54 @@ local function CreateChatFramePane()
         AF.Fire("BFI_UpdateModule", "chat")
     end)
 
+    local chatStyle = AF.CreateDropdown(chatFramePane, 150)
+    AF.SetPoint(chatStyle, "TOPLEFT", bgColor, "BOTTOMLEFT", 0, -35)
+    chatStyle:SetLabel(_G.CHAT_STYLE)
+    chatStyle:SetItems({
+        {text = _G.CLASSIC_STYLE, value = "classic"},
+        {text = _G.IM_STYLE, value = "im"},
+    })
+    chatStyle:SetOnSelect(function(value)
+        C.config.chatStyle = value
+        SetCVar("chatStyle", value)
+        chatEditBoxPane.undockedPosition:SetEnabled(value == "im")
+    end)
+
+    local whisperMode = AF.CreateDropdown(chatFramePane, 150)
+    AF.SetPoint(whisperMode, "TOPLEFT", chatStyle, 180, 0)
+    whisperMode:SetLabel(_G.WHISPER_MODE)
+    whisperMode:SetItems({
+        {text = _G.CONVERSATION_MODE_POPOUT, value = "popout"},
+        {text = _G.CONVERSATION_MODE_INLINE, value = "inline"},
+        {text = _G.CONVERSATION_MODE_POPOUT_AND_INLINE, value = "popout_and_inline"},
+    })
+    whisperMode:SetOnSelect(function(value)
+        C.config.whisperMode = value
+        SetCVar("whisperMode", value)
+    end)
+
+    -- local timeFormat = AF.CreateTimeFormatBox(chatFramePane, 150)
+    -- AF.SetPoint(timeFormat, "TOPLEFT", chatStyle, "BOTTOMLEFT", 0, -35)
+    -- timeFormat:SetOnFormatChanged(function(value)
+    --     C.config.showTimestamps = value
+    --     SetCVar("showTimestamps", value)
+    -- end)
+
+    -- local showTimestamps = AF.CreateCheckButton(chatFramePane, _G.TIMESTAMPS_LABEL)
+    -- AF.SetPoint(showTimestamps, "BOTTOMLEFT", timeFormat, "TOPLEFT", 0, 2)
+    -- showTimestamps:SetOnCheck(function(checked)
+    --     if checked then
+    --         C.config.showTimestamps = timeFormat:GetValue()
+    --         timeFormat:SetEnabled(true)
+    --     else
+    --         C.config.showTimestamps = "none"
+    --         timeFormat:SetEnabled(false)
+    --     end
+    --     SetCVar("showTimestamps", C.config.showTimestamps)
+    -- end)
+
     local fadeTime = AF.CreateDropdown(chatFramePane, 150)
-    AF.SetPoint(fadeTime, "TOPLEFT", bgColor, "BOTTOMLEFT", 0, -35)
+    AF.SetPoint(fadeTime, "TOPLEFT", chatStyle, "BOTTOMLEFT", 0, -35)
     fadeTime:SetLabel(L["Message Fade Time"])
     fadeTime:SetItems({
         {text = _G.NEVER, value = 0},
@@ -155,6 +203,11 @@ local function CreateChatFramePane()
         enabled:SetChecked(config.enabled)
         bgColor:SetColor(config.bgColor)
         borderColor:SetColor(config.borderColor)
+        chatStyle:SetSelectedValue(config.chatStyle)
+        whisperMode:SetSelectedValue(config.whisperMode)
+        -- showTimestamps:SetChecked(config.showTimestamps ~= "none")
+        -- timeFormat:SetEnabled(config.showTimestamps ~= "none")
+        -- timeFormat:SetValue(config.showTimestamps)
         fadeTime:SetSelectedValue(config.fadeTime)
         maxLines:SetSelectedValue(config.maxLines)
         width:SetValue(config.width)
@@ -166,51 +219,41 @@ end
 ---------------------------------------------------------------------
 -- chat editbox pane
 ---------------------------------------------------------------------
-local chatEditBoxPane
 local function CreateChatEditBoxPane()
     chatEditBoxPane = AF.CreateTitledPane(chatPanel, L["Chat Input Box"], 170, 300)
     chatPanel.chatEditBoxPane = chatEditBoxPane
     AF.SetPoint(chatEditBoxPane, "TOPLEFT", chatFramePane, "TOPRIGHT", 30, 0)
 
-    local anchorPoint = AF.CreateDropdown(chatEditBoxPane, 150)
-    AF.SetPoint(anchorPoint, "TOPLEFT", 10, -40)
-    anchorPoint:SetLabel(L["Anchor Point"])
-    anchorPoint:SetItems(AF.GetDropdownItems_AnchorPoint())
-    anchorPoint:SetOnSelect(function(value)
-        C.config.editBoxPosition[1] = value
+    local positions = {
+        {text = L["TOP"], value = "TOP"},
+        {text = L["BOTTOM"], value = "BOTTOM"},
+    }
+
+    local dockedPosition = AF.CreateDropdown(chatEditBoxPane, 150)
+    chatEditBoxPane.dockedPosition = dockedPosition
+    AF.SetPoint(dockedPosition, "TOPLEFT", 10, -40)
+    dockedPosition:SetLabel(L["Docked Position"])
+    dockedPosition:SetItems(positions)
+    dockedPosition:SetOnSelect(function(value)
+        C.config.editBoxDockedPosition = value
         AF.Fire("BFI_UpdateModule", "chat")
     end)
 
-    local relativePoint = AF.CreateDropdown(chatEditBoxPane, 150)
-    relativePoint:SetLabel(L["Relative Point"])
-    AF.SetPoint(relativePoint, "TOPLEFT", anchorPoint, "BOTTOMLEFT", 0, -30)
-    relativePoint:SetItems(AF.GetDropdownItems_AnchorPoint())
-    relativePoint:SetOnSelect(function(value)
-        C.config.editBoxPosition[2] = value
+    local undockedPosition = AF.CreateDropdown(chatEditBoxPane, 150)
+    chatEditBoxPane.undockedPosition = undockedPosition
+    undockedPosition:SetLabel(L["Undocked Position"])
+    AF.SetPoint(undockedPosition, "TOPLEFT", dockedPosition, "BOTTOMLEFT", 0, -30)
+    undockedPosition:SetItems(positions)
+    undockedPosition:SetOnSelect(function(value)
+        C.config.editBoxUndockedPosition = value
         AF.Fire("BFI_UpdateModule", "chat")
     end)
-
-    local xOffset = AF.CreateSlider(chatEditBoxPane, L["X Offset"], 150, -100, 100, 1, nil, true)
-    AF.SetPoint(xOffset, "TOPLEFT", relativePoint, "BOTTOMLEFT", 0, -30)
-    xOffset:SetAfterValueChanged(function(value)
-        C.config.editBoxPosition[3] = value
-        AF.Fire("BFI_UpdateModule", "chat")
-    end)
-
-    local yOffset = AF.CreateSlider(chatEditBoxPane, L["Y Offset"], 150, -100, 100, 1, nil, true)
-    AF.SetPoint(yOffset, "TOPLEFT", xOffset, "BOTTOMLEFT", 0, -45)
-    yOffset:SetAfterValueChanged(function(value)
-        C.config.editBoxPosition[4] = value
-        AF.Fire("BFI_UpdateModule", "chat")
-    end)
-
 
     function chatEditBoxPane.Load()
         local config = C.config
-        anchorPoint:SetSelectedValue(config.editBoxPosition[1])
-        relativePoint:SetSelectedValue(config.editBoxPosition[2])
-        xOffset:SetValue(config.editBoxPosition[3])
-        yOffset:SetValue(config.editBoxPosition[4])
+        dockedPosition:SetSelectedValue(config.editBoxDockedPosition)
+        undockedPosition:SetSelectedValue(config.editBoxUndockedPosition)
+        undockedPosition:SetEnabled(config.chatStyle == "im")
     end
 end
 

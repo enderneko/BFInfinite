@@ -18,7 +18,7 @@ local blizzard = {
     "MultiBarBottomRight",
     "MicroButtonAndBagsBar",
     "OverrideActionBar",
-    "MainMenuBar",
+    "MainActionBar",
     AF.isRetail and "StanceBar" or "StanceBarFrame",
     AF.isRetail and "PetActionBar" or "PetActionBarFrame",
     AF.isRetail and "PossessActionBar" or "PossessBarFrame",

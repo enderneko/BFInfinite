@@ -50,6 +50,12 @@ local profileRevisions = {
     --         -- do something for version 2
     --     end,
     -- },
+    {
+        ver = 3,
+        fn = function(profile)
+            profile.chat = BFI.modules.Chat.GetDefaults()
+        end,
+    }
 }
 
 function F.ReviseProfile(profile)

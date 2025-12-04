@@ -89,6 +89,10 @@ end
 ---------------------------------------------------------------------
 if LOCALE_zhCN then
     changelogs = [[
+<h1>r3-alpha (2025-12-04 10:40 GMT+8)</h1>
+<p>- 修复 11.2.7 下的异常</p>
+<br/>
+
 <h1>r2-alpha (2025-10-14 17:30 GMT+8)</h1>
 <p>- 新增职业强调色的支持</p>
 <p>- 修复单位框体的预设问题</p>
@@ -102,6 +106,10 @@ if LOCALE_zhCN then
     ]]
 else
     changelogs = [[
+<h1>r3-alpha (2025-12-04 10:40 GMT+8)</h1>
+<p>- Fixed issues on 11.2.7</p>
+<br/>
+
 <h1>r2-alpha (2025-10-14 17:30 GMT+8)</h1>
 <p>- Added class accent color support</p>
 <p>- Fixed Unit Frames preset issues</p>
