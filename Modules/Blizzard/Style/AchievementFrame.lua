@@ -8,6 +8,35 @@ local AF = _G.AbstractFramework
 local achievementFrame
 
 ---------------------------------------------------------------------
+-- general
+---------------------------------------------------------------------
+local function StyleAchievement(button)
+    S.CreateBackdrop(button)
+    button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
+
+    S.RemoveNineSliceAndBackground(button)
+    button.Glow:Hide()
+    button.TitleBar:Hide()
+
+    button.Icon.frame:Hide()
+    button.Icon.bling:Hide()
+    S.StyleIcon(button.Icon.texture)
+    S.CreateBackdrop(button.Icon.texture, true, 1)
+
+    button.BFITitleBar = AF.CreateGradientTexture(button.BFIBackdrop, "VERTICAL", "none", "none", nil, "BORDER", -1)
+    button.BFITitleBar:SetPoint("TOPLEFT")
+    button.BFITitleBar:SetPoint("TOPRIGHT")
+    button.BFITitleBar:SetPoint("BOTTOM", button.Label, 0, -1)
+    button.BFITitleBar:Hide()
+
+    button.Highlight = AF.CreateBorderedFrame(button)
+    button.Highlight:SetAllPoints()
+    button.Highlight:SetBackgroundColor("none")
+    button.Highlight:SetBorderColor("BFI")
+    button.Highlight:Hide()
+end
+
+---------------------------------------------------------------------
 -- AchievementFrame
 ---------------------------------------------------------------------
 local function StyleAchievementFrame()
@@ -131,6 +160,93 @@ local function StyleSummary()
             break
         end
     end
+
+    local function UpdateHeader(header)
+        header:SetPoint("TOPLEFT")
+        header:SetPoint("BOTTOMRIGHT")
+        header:SetTexture(AF.GetTexture("Gradient_Linear_Horizontal_CenterToEdges"))
+        header:SetTexCoord(0, 1, 0, 1)
+        header:SetVertexColor(AF.GetColorRGB("BFI", 0.2))
+    end
+
+    --------------------------------------------------
+    -- AchievementFrameSummaryAchievements
+    --------------------------------------------------
+    local achievements = _G.AchievementFrameSummaryAchievements
+    achievements:ClearAllPoints()
+    achievements:SetPoint("TOPLEFT", summary, "TOPLEFT", 5, 0)
+    achievements:SetPoint("TOPRIGHT", summary, "TOPRIGHT", -5, 0)
+
+    UpdateHeader(_G.AchievementFrameSummaryAchievementsHeaderHeader)
+
+    hooksecurefunc("AchievementFrameSummary_UpdateAchievements", function()
+        for i, button in ipairs(achievements.buttons) do
+            if not button._BFIStyled then
+                button._BFIStyled = true
+
+                StyleAchievement(button)
+
+                -- AF.ClearPoints(button.BFIBackdrop)
+                -- AF.SetPoint(button.BFIBackdrop, "TOPLEFT")
+                -- AF.SetPoint(bu)
+
+                button.Description:SetTextColor(AF.GetColorRGB("white"))
+
+                button:ClearAllPoints()
+                if i == 1 then
+                    button:SetPoint("TOPLEFT", _G.AchievementFrameSummaryAchievementsHeader, "BOTTOMLEFT", 18, -1)
+                    button:SetPoint("TOPRIGHT", _G.AchievementFrameSummaryAchievementsHeader, "BOTTOMRIGHT", -18, -1)
+                else
+                    button:SetPoint("TOPLEFT", achievements.buttons[i - 1], "BOTTOMLEFT", 0, -1)
+                    button:SetPoint("TOPRIGHT", achievements.buttons[i - 1], "BOTTOMRIGHT", 0, -1)
+                end
+            end
+
+            if button.accountWide then
+                button.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable("skyblue", 0.4), "none")
+                button.BFITitleBar:Show()
+            else
+                button.BFITitleBar:Hide()
+            end
+        end
+    end)
+
+    --------------------------------------------------
+    -- AchievementFrameSummaryCategories
+    --------------------------------------------------
+    local categories = _G.AchievementFrameSummaryCategories
+    categories:ClearAllPoints()
+    categories:SetPoint("TOPLEFT", achievements, "BOTTOMLEFT", 0, -10)
+    categories:SetPoint("TOPRIGHT", achievements, "BOTTOMRIGHT", 0, -10)
+
+    UpdateHeader(_G.AchievementFrameSummaryCategoriesHeaderTexture)
+
+    local function UpdateBar(bar)
+        local name = bar:GetName()
+        S.StyleStatusBar(bar, 1)
+        bar:SetStatusBarColor(AF.GetColorRGB("lime"))
+
+        local left = bar.Label or _G[name .. "Title"]
+        left:SetPoint("LEFT", 6, 0)
+
+        local right = bar.Text or _G[name .. "Text"]
+        right:SetPoint("RIGHT", -6, 0)
+
+        local highlight = AF.CreateBorderedFrame(_G[name .. "Button"])
+        _G[name .. "ButtonHighlight"] = highlight
+        highlight:SetAllPoints(bar.BFIBackdrop)
+        highlight:SetBackgroundColor("none")
+        highlight:SetBorderColor("BFI")
+        highlight:Hide()
+    end
+
+    local bar = _G.AchievementFrameSummaryCategoriesStatusBar
+    UpdateBar(bar)
+    bar:SetPoint("TOP", _G.AchievementFrameSummaryCategoriesHeader, "BOTTOM", 0, -2)
+
+    for i = 1, 12 do
+        UpdateBar(_G["AchievementFrameSummaryCategoriesCategory" .. i])
+    end
 end
 
 ---------------------------------------------------------------------
@@ -215,38 +331,16 @@ local function StyleAchievements()
         if not button._BFIStyled then
             button._BFIStyled = true
 
-            S.CreateBackdrop(button)
-            button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
+            StyleAchievement(button)
 
             S.StyleCheckButton(button.Tracked, 11)
-
-            S.RemoveNineSliceAndBackground(button)
-            button.Glow:Hide()
-            button.TitleBar:Hide()
             F.Hide(button.Check)
             button.RewardBackground:SetAlpha(0)
             button:DisableDrawLayer("BORDER") -- XxxTsunami
 
-            button.Icon.frame:Hide()
-            button.Icon.bling:Hide()
-            S.StyleIcon(button.Icon.texture)
-            S.CreateBackdrop(button.Icon.texture, true, 1)
-
-            button.BFITitleBar = AF.CreateGradientTexture(button.BFIBackdrop, "VERTICAL", "none", "none", nil, "BORDER", -1)
-            button.BFITitleBar:SetPoint("TOPLEFT")
-            button.BFITitleBar:SetPoint("TOPRIGHT")
-            button.BFITitleBar:SetPoint("BOTTOM", button.Label, 0, -2)
-            button.BFITitleBar:Hide()
-
             F.Hide(button.PlusMinus)
             -- UpdatePlusMinusTexture(button)
             -- hooksecurefunc(button, "UpdatePlusMinusTexture", UpdatePlusMinusTexture)
-
-            button.Highlight = AF.CreateBorderedFrame(button)
-            button.Highlight:SetAllPoints()
-            button.Highlight:SetBackgroundColor("none")
-            button.Highlight:SetBorderColor("BFI")
-            button.Highlight:Hide()
         end
 
         button.Label:SetTextColor(AF.GetColorRGB(button.completed and "white" or "gray"))
