@@ -525,7 +525,10 @@ local function StyleEntry(entry)
         content.BackgroundHighlight.Right:SetAlpha(0)
 
         if content.ReputationBar then
-            S.StyleStatusBar(content.ReputationBar)
+            S.StyleStatusBar(content.ReputationBar, 1)
+            content.ReputationBar:SetHeight(15)
+            content.ReputationBar.BarText:ClearAllPoints()
+            content.ReputationBar.BarText:SetPoint("CENTER")
         end
 
         if content.CurrencyIcon then
@@ -558,16 +561,18 @@ local function UpdateParagon(frame)
     end
 end
 
+local function ReputationFrame_ScrollBox_UpdateEach(frame)
+    -- if frame.elementData.isHeader and not frame.elementData.isHeaderWithRep then
+    if frame.Right then
+        StyleHeader(frame)
+    else
+        StyleEntry(frame)
+        UpdateParagon(frame)
+    end
+end
+
 local function ReputationFrame_ScrollBox_Update(scroll)
-    scroll:ForEachFrame(function(frame)
-        -- if frame.elementData.isHeader and not frame.elementData.isHeaderWithRep then
-        if frame.Right then
-            StyleHeader(frame)
-        else
-            StyleEntry(frame)
-            UpdateParagon(frame)
-        end
-    end)
+    scroll:ForEachFrame(ReputationFrame_ScrollBox_UpdateEach)
 end
 
 local function StyleReputationFrame()
@@ -590,6 +595,9 @@ local function StyleReputationFrame()
     S.StyleCheckButton(detailFrame.WatchFactionCheckbox)
     S.StyleScrollBar(detailFrame.ScrollingDescriptionScrollBar)
     S.StyleButton(detailFrame.ViewRenownButton)
+    detailFrame.ViewRenownButton:SetHeight(17)
+    detailFrame.ViewRenownButton:ClearAllPoints()
+    detailFrame.ViewRenownButton:SetPoint("BOTTOM", 0, 12)
 end
 
 ---------------------------------------------------------------------

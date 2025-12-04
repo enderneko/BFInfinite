@@ -60,12 +60,12 @@ local function StylePrimaryProfession(frame)
 
     -- bar
     frame.statusBar:ClearAllPoints()
-    frame.statusBar:SetPoint("LEFT", frame.professionName)
-    frame.statusBar:SetPoint("BOTTOM", 0, 2)
+    frame.statusBar:SetPoint("LEFT", frame.professionName, 1, 0)
+    frame.statusBar:SetPoint("BOTTOM", 0, 3)
 
     -- rank
     frame.rank:ClearAllPoints()
-    frame.rank:SetPoint("BOTTOMLEFT", frame.statusBar, "TOPLEFT", 0, 3)
+    frame.rank:SetPoint("BOTTOMLEFT", frame.statusBar, "TOPLEFT", -1, 5)
 end
 
 local function StyleSecondaryProfession(frame)
@@ -83,7 +83,7 @@ local function StyleSecondaryProfession(frame)
 
     -- bar
     frame.statusBar:ClearAllPoints()
-    frame.statusBar:SetPoint("TOPLEFT", frame.rank, "BOTTOMLEFT", 0, -3)
+    frame.statusBar:SetPoint("TOPLEFT", frame.rank, "BOTTOMLEFT", 1, -4)
 
     -- missingHeader
     frame.missingHeader:ClearAllPoints()
@@ -113,7 +113,9 @@ local function UpdateProfession(frame, index)
     end
 
     -- status bar and rank text
-    S.StyleStatusBar(frame.statusBar)
+    S.StyleStatusBar(frame.statusBar, 1)
+    frame.statusBar:SetStatusBarColor(AF.GetColorRGB("lime"))
+    frame.statusBar:SetHeight(15)
     if frame.icon then
         -- frame.statusBar:SetPoint("BOTTOMLEFT")
         frame.rank:ClearAllPoints()
