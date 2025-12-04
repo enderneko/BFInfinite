@@ -6,6 +6,7 @@ local F = BFI.funcs
 local AF = _G.AbstractFramework
 
 local achievementFrame
+local guildTab
 
 ---------------------------------------------------------------------
 -- general
@@ -186,12 +187,6 @@ local function StyleSummary()
 
                 StyleAchievement(button)
 
-                -- AF.ClearPoints(button.BFIBackdrop)
-                -- AF.SetPoint(button.BFIBackdrop, "TOPLEFT")
-                -- AF.SetPoint(bu)
-
-                button.Description:SetTextColor(AF.GetColorRGB("white"))
-
                 button:ClearAllPoints()
                 if i == 1 then
                     button:SetPoint("TOPLEFT", _G.AchievementFrameSummaryAchievementsHeader, "BOTTOMLEFT", 18, -1)
@@ -204,7 +199,11 @@ local function StyleSummary()
 
             button.Description:SetTextColor(AF.GetColorRGB("white"))
 
-            if button.accountWide then
+            if guildTab.isSelected then
+                -- button.saturatedStyle is nil if not completed
+                button.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable(button.saturatedStyle and "softlime" or "darkgray", 0.4), "none")
+                button.BFITitleBar:Show()
+            elseif button.accountWide then
                 button.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable("skyblue", 0.4), "none")
                 button.BFITitleBar:Show()
             else
@@ -388,6 +387,8 @@ local function StyleAchievements()
             button._BFIStyled = true
 
             StyleAchievement(button)
+            button.GuildCornerL:SetAlpha(0)
+            button.GuildCornerR:SetAlpha(0)
 
             S.StyleCheckButton(button.Tracked, 11)
             F.Hide(button.Check)
@@ -404,7 +405,11 @@ local function StyleAchievements()
         button.Reward:SetTextColor(AF.GetColorRGB(button.completed and "yellow_text" or "gray"))
         button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(button.completed and "widget" or "widget_darker"))
 
-        if button.accountWide then
+        if guildTab.isSelected then
+            -- button.saturatedStyle is nil if not completed
+            button.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable(button.saturatedStyle and "softlime" or "darkgray", 0.4), "none")
+            button.BFITitleBar:Show()
+        elseif button.accountWide then
             button.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable(button.completed and "skyblue" or "darkgray", 0.4), "none")
             button.BFITitleBar:Show()
         else
@@ -499,6 +504,7 @@ end
 ---------------------------------------------------------------------
 local function StyleBlizzard()
     achievementFrame = _G.AchievementFrame
+    guildTab = _G.AchievementFrameTab2
 
     StyleAchievementFrame()
     StyleTabs()
