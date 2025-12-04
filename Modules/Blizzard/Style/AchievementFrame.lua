@@ -202,6 +202,8 @@ local function StyleSummary()
                 end
             end
 
+            button.Description:SetTextColor(AF.GetColorRGB("white"))
+
             if button.accountWide then
                 button.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable("skyblue", 0.4), "none")
                 button.BFITitleBar:Show()
@@ -270,6 +272,60 @@ local function StyleStats()
             break
         end
     end
+
+    local function Stat_OnEnter(button)
+        if button.isHeader then return end
+        button.highlight:Show()
+    end
+
+    local function Stat_OnLeave(button)
+        button.highlight:Hide()
+    end
+
+    local function UpdateEach(button)
+        if not button._BFIStyled then
+            button._BFIStyled = true
+
+            S.RemoveTextures(button)
+
+            button.Middle:ClearAllPoints()
+            button.Middle:SetPoint("LEFT")
+            button.Middle:SetPoint("RIGHT")
+            button.Middle:SetHeight(22)
+            button.Middle:SetTexCoord(0, 1, 0, 1)
+            button.Middle:SetTexture(AF.GetTexture("Gradient_Linear_Horizontal_CenterToEdges"))
+            button.Middle:SetVertexColor(AF.GetColorRGB("BFI", 0.2))
+
+            button.Background:SetTexture(AF.GetPlainTexture())
+            button.Background:ClearAllPoints()
+            button.Background:SetPoint("LEFT")
+            button.Background:SetPoint("RIGHT")
+
+            local highlight = AF.CreateTexture(button, nil, "widget_highlight", "BACKGROUND", 2)
+            button.highlight = highlight
+            highlight:Hide()
+            highlight:SetAllPoints(button.Background)
+            button:HookScript("OnEnter", Stat_OnEnter)
+            button:HookScript("OnLeave", Stat_OnLeave)
+        end
+
+        local colorIndex = button:GetElementData().colorIndex
+        button.Background:SetTexCoord(0, 1, 0, 1)
+        button.Background:SetHeight(22)
+        button.Background:SetAlpha(1)
+        button.Background:SetBlendMode("DISABLE")
+        if colorIndex == 1 then
+            button.Background:SetVertexColor(AF.GetColorRGB("widget_darker"))
+        else
+            button.Background:SetVertexColor(AF.GetColorRGB("widget"))
+        end
+    end
+
+    local function Update(scrollBox)
+        scrollBox:ForEachFrame(UpdateEach)
+    end
+
+    hooksecurefunc(stats.ScrollBox, "Update", Update)
 end
 
 ---------------------------------------------------------------------
@@ -397,6 +453,8 @@ end
 ---------------------------------------------------------------------
 -- tabs
 ---------------------------------------------------------------------
+local PanelTemplates_SetTabEnabled = PanelTemplates_SetTabEnabled
+
 local function StyleTabs()
     local i = 1
     local tab, last = _G["AchievementFrameTab" .. i]
@@ -415,16 +473,25 @@ local function StyleTabs()
         tab = _G["AchievementFrameTab" .. i]
     end
 
-    hooksecurefunc("AchievementFrame_UpdateTabs", function()
+    local comparison = _G.AchievementFrameComparison
+
+    local function UpdateTabs()
+        PanelTemplates_SetTabEnabled(achievementFrame, 2, not comparison:IsShown())
+
         local i = 1
         local tab = _G["AchievementFrameTab" .. i]
         while tab do
             tab.Text:ClearAllPoints()
             tab.Text:SetPoint("CENTER", tab, "CENTER", 0, 0)
+            tab:Show()
             i = i + 1
             tab = _G["AchievementFrameTab" .. i]
         end
-    end)
+    end
+
+    hooksecurefunc("AchievementFrame_UpdateTabs", UpdateTabs) -- before
+    hooksecurefunc("AchievementFrame_SetTabs", UpdateTabs) -- after
+    hooksecurefunc("AchievementFrame_SetComparisonTabs", UpdateTabs) -- after
 end
 
 ---------------------------------------------------------------------
