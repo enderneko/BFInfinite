@@ -8,6 +8,10 @@ local AF = _G.AbstractFramework
 local achievementFrame
 local guildTab
 
+local UnitClassBase = UnitClassBase
+local PanelTemplates_SetTabEnabled = PanelTemplates_SetTabEnabled
+local GetNumFilteredAchievements = GetNumFilteredAchievements
+
 ---------------------------------------------------------------------
 -- shared
 ---------------------------------------------------------------------
@@ -576,8 +580,6 @@ end
 ---------------------------------------------------------------------
 -- tabs
 ---------------------------------------------------------------------
-local PanelTemplates_SetTabEnabled = PanelTemplates_SetTabEnabled
-
 local function StyleTabs()
     local i = 1
     local tab, last = _G["AchievementFrameTab" .. i]
@@ -618,6 +620,56 @@ local function StyleTabs()
 end
 
 ---------------------------------------------------------------------
+-- SearchPreviewContainer
+---------------------------------------------------------------------
+local function StyleSearchPreview()
+    local container = achievementFrame.SearchPreviewContainer
+    AF.ClearPoints(container)
+    AF.SetPoint(container, "TOPLEFT", achievementFrame.SearchBox, "BOTTOMLEFT", -4, -1)
+
+    S.RemoveTextures(container)
+    -- S.CreateBackdrop(container)
+    -- hooksecurefunc("AchievementFrame_ShowSearchPreviewResults", function()
+    --     local numResults = GetNumFilteredAchievements()
+    --     if numResults > 5 then
+    --         AF.SetPoint(container.BFIBackdrop, "BOTTOMRIGHT", container.ShowAllSearchResults, "BOTTOMRIGHT", 1, -1)
+    --     elseif numResults > 0 then
+    --         AF.SetPoint(container.BFIBackdrop, "BOTTOMRIGHT", container.searchPreviews[numResults], "BOTTOMRIGHT", 1, -1)
+    --     end
+    -- end)
+
+    local lastButton
+    for i, button in ipairs(container.searchPreviews) do
+        S.StyleButton(button)
+
+        S.StyleIcon(button.Icon, true)
+        button.Icon:SetAlpha(1)
+        button.Icon:Show()
+        button.Icon:ClearAllPoints()
+        button.Icon:SetPoint("LEFT", 3, 0)
+        button.Icon:SetSize(21, 21)
+
+        if i > 1 then
+            AF.ClearPoints(button)
+            AF.SetPoint(button, "TOPLEFT", lastButton, "BOTTOMLEFT", 0, 1)
+        end
+        lastButton = button
+    end
+    S.StyleButton(container.ShowAllSearchResults)
+    AF.ClearPoints(container.ShowAllSearchResults)
+    AF.SetPoint(container.ShowAllSearchResults, "TOPLEFT", lastButton, "BOTTOMLEFT", 0, 1)
+    AF.SetPoint(container.ShowAllSearchResults, "TOPRIGHT", lastButton, "BOTTOMRIGHT", 0, 1)
+end
+
+---------------------------------------------------------------------
+-- SearchResults
+---------------------------------------------------------------------
+local function StyleSearchResults()
+    local searchResults = achievementFrame.SearchResults
+    S.StyleTitledFrame(searchResults)
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function StyleBlizzard()
@@ -632,5 +684,7 @@ local function StyleBlizzard()
     StyleAchievements()
     StyleObjectives()
     StyleComparison()
+    StyleSearchPreview()
+    StyleSearchResults()
 end
 AF.RegisterAddonLoaded("Blizzard_AchievementUI", StyleBlizzard)

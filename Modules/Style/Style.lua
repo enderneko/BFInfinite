@@ -735,9 +735,6 @@ function S.StyleTitledFrame(frame)
     frame.BFIHeader:SetPoint("TOPLEFT")
     frame.BFIHeader:SetPoint("TOPRIGHT")
     AF.SetHeight(frame.BFIHeader, 20)
-    AF.SetFrameLevel(frame.BFIHeader, 0, frame.TitleContainer)
-    AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader)
-
     AF.RemoveFromPixelUpdater(frame.BFIHeader)
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader)
 
@@ -748,8 +745,19 @@ function S.StyleTitledFrame(frame)
     AF.RemoveFromPixelUpdater(frame.BFIHeader.tex)
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", frame.BFIHeader.tex)
 
-    frame.TitleContainer.TitleText:ClearAllPoints()
-    frame.TitleContainer.TitleText:SetPoint("CENTER", frame.BFIHeader)
+    if frame.TitleContainer then
+        -- new style
+        AF.SetFrameLevel(frame.BFIHeader, 0, frame.TitleContainer)
+        frame.TitleContainer.TitleText:ClearAllPoints()
+        frame.TitleContainer.TitleText:SetPoint("CENTER", frame.BFIHeader)
+    else
+        -- old style
+        AF.SetFrameLevel(frame.BFIHeader, 1, frame)
+        frame.TitleText:ClearAllPoints()
+        frame.TitleText:SetPoint("CENTER", frame.BFIHeader)
+        frame:DisableDrawLayer("BACKGROUND")
+        frame:DisableDrawLayer("BORDER")
+    end
 
     -- close button
     local closeButton = frame.CloseButton or (name and _G[name .. "CloseButton"])
@@ -759,14 +767,15 @@ function S.StyleTitledFrame(frame)
     AF.SetFrameLevel(closeButton, 1, frame.BFIHeader)
 
     -- minimize/maximize button
-    if frame.MaximizeMinimizeButton then
-        local maximizeButton = frame.MaximizeMinimizeButton.MaximizeButton
+    local maximizeMinimizeFrame = frame.MaximizeMinimizeButton or frame.MaximizeMinimizeFrame
+    if maximizeMinimizeFrame then
+        local maximizeButton = maximizeMinimizeFrame.MaximizeButton
         S.StyleMaximizeButton(maximizeButton)
         AF.SetFrameLevel(maximizeButton, 1, frame.BFIHeader)
         maximizeButton:ClearAllPoints()
         AF.SetPoint(maximizeButton, "TOPRIGHT", closeButton, "TOPLEFT", 1, 0)
 
-        local minimizeButton = frame.MaximizeMinimizeButton.MinimizeButton
+        local minimizeButton = maximizeMinimizeFrame.MinimizeButton
         S.StyleMinimizeButton(minimizeButton)
         AF.SetFrameLevel(minimizeButton, 1, frame.BFIHeader)
         minimizeButton:ClearAllPoints()
