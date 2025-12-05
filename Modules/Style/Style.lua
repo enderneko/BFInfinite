@@ -118,6 +118,8 @@ local backgrounds = {
     "Background",
     "BlackBG",
     "ClassBackground",
+    "Dark",
+    "Watermark",
 }
 
 function S.RemoveBackground(region)
@@ -559,10 +561,10 @@ function S.StyleDropdownButton(button)
     if button.Arrow then button.Arrow:SetAlpha(0) end
     if button.Button then button.Button:SetAlpha(0) end
     if button.Background then button.Background:SetAlpha(0) end
-    if button.Text then
-        button.Text:ClearAllPoints()
-        button.Text:SetPoint("CENTER")
-    end
+    -- if button.Text then
+    --     button.Text:ClearAllPoints()
+    --     button.Text:SetPoint("CENTER")
+    -- end
     button:SetPushedTextOffset(0, 0)
 
     local arrow = AF.CreateTexture(button, AF.GetIcon("ArrowDown_Small"), "darkgray")

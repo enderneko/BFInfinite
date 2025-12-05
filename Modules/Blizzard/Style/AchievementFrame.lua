@@ -9,32 +9,101 @@ local achievementFrame
 local guildTab
 
 ---------------------------------------------------------------------
--- general
+-- shared
 ---------------------------------------------------------------------
-local function StyleAchievement(button)
-    S.CreateBackdrop(button)
-    button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
+local function StyleAchievement(frame)
+    S.CreateBackdrop(frame)
+    frame.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
 
-    S.RemoveNineSliceAndBackground(button)
-    button.Glow:Hide()
-    button.TitleBar:Hide()
+    S.RemoveNineSliceAndBackground(frame)
+    frame.Glow:Hide()
+    frame.TitleBar:Hide()
 
-    button.Icon.frame:Hide()
-    button.Icon.bling:Hide()
-    S.StyleIcon(button.Icon.texture)
-    S.CreateBackdrop(button.Icon.texture, true, 1)
+    frame.Icon.frame:Hide()
+    frame.Icon.bling:Hide()
+    S.StyleIcon(frame.Icon.texture)
+    S.CreateBackdrop(frame.Icon.texture, true, 1)
 
-    button.BFITitleBar = AF.CreateGradientTexture(button.BFIBackdrop, "VERTICAL", "none", "none", nil, "BORDER", -1)
-    button.BFITitleBar:SetPoint("TOPLEFT")
-    button.BFITitleBar:SetPoint("TOPRIGHT")
-    button.BFITitleBar:SetPoint("BOTTOM", button.Label, 0, -1)
-    button.BFITitleBar:Hide()
+    frame.BFITitleBar = AF.CreateGradientTexture(frame.BFIBackdrop, "VERTICAL", "none", "none", nil, "BORDER", -1)
+    frame.BFITitleBar:Hide()
+    frame.BFITitleBar:SetPoint("TOPLEFT")
+    frame.BFITitleBar:SetPoint("TOPRIGHT")
+    if frame.Label then
+        frame.BFITitleBar:SetPoint("BOTTOM", frame.Label, 0, -1)
+    else
+        frame.BFITitleBar:SetHeight(24)
+    end
 
-    button.Highlight = AF.CreateBorderedFrame(button)
-    button.Highlight:SetAllPoints()
-    button.Highlight:SetBackgroundColor("none")
-    button.Highlight:SetBorderColor("BFI")
-    button.Highlight:Hide()
+    frame.Highlight = AF.CreateBorderedFrame(frame)
+    frame.Highlight:SetAllPoints()
+    frame.Highlight:SetBackgroundColor("none")
+    frame.Highlight:SetBorderColor("BFI")
+    frame.Highlight:Hide()
+end
+
+local function RemoveAchivementGoldBorderBackdrop(frame)
+    -- AchivementGoldBorderBackdrop, an anonymous frame
+    for _, region in next, {frame:GetChildren()} do
+        if region.backdropColorAlpha and region.backdropBorderColor then
+            region:Hide()
+            break
+        end
+    end
+end
+
+local function Stat_Highlight(button)
+    if button.isHeader then return end
+    button.highlight:Show()
+end
+
+local function Stat_Dehighlight(button)
+    button.highlight:Hide()
+end
+
+local function Stat_UpdateEach(button)
+    if not button._BFIStyled then
+        button._BFIStyled = true
+
+        S.RemoveTextures(button)
+
+        button.Title:ClearAllPoints()
+        button.Title:SetPoint("CENTER")
+
+        button.Middle:ClearAllPoints()
+        button.Middle:SetPoint("LEFT")
+        button.Middle:SetPoint("RIGHT")
+        button.Middle:SetHeight(22)
+        button.Middle:SetTexCoord(0, 1, 0, 1)
+        button.Middle:SetTexture(AF.GetTexture("Gradient_Linear_Horizontal_CenterToEdges"))
+        button.Middle:SetVertexColor(AF.GetColorRGB("BFI", 0.2))
+
+        button.Background:SetTexture(AF.GetPlainTexture())
+        button.Background:ClearAllPoints()
+        button.Background:SetPoint("LEFT")
+        button.Background:SetPoint("RIGHT")
+
+        local highlight = AF.CreateTexture(button, nil, "widget_highlight", "BACKGROUND", 2)
+        button.highlight = highlight
+        highlight:Hide()
+        highlight:SetAllPoints(button.Background)
+        button:HookScript("OnEnter", Stat_Highlight)
+        button:HookScript("OnLeave", Stat_Dehighlight)
+    end
+
+    local colorIndex = button:GetElementData().colorIndex
+    button.Background:SetTexCoord(0, 1, 0, 1)
+    button.Background:SetHeight(22)
+    button.Background:SetAlpha(1)
+    button.Background:SetBlendMode("DISABLE")
+    if colorIndex == 1 then
+        button.Background:SetVertexColor(AF.GetColorRGB("widget_darker"))
+    else
+        button.Background:SetVertexColor(AF.GetColorRGB("widget"))
+    end
+end
+
+local function Stat_Update(scrollBox)
+    scrollBox:ForEachFrame(Stat_UpdateEach)
 end
 
 ---------------------------------------------------------------------
@@ -152,15 +221,7 @@ local function StyleSummary()
     AF.SetPoint(summary, "BOTTOM", _G.AchievementFrameCategories)
 
     S.RemoveBackground(summary)
-
-    -- AchivementGoldBorderBackdrop
-    -- an anonymous frame
-    for _, region in next, {summary:GetChildren()} do
-        if region.backdropColorAlpha and region.backdropBorderColor then
-            region:Hide()
-            break
-        end
-    end
+    RemoveAchivementGoldBorderBackdrop(summary)
 
     local function UpdateHeader(header)
         header:SetPoint("TOPLEFT")
@@ -262,69 +323,8 @@ local function StyleStats()
     -- S.RemoveBackground(stats)
     _G.AchievementFrameStatsBG:Hide()
     S.StyleScrollBar(stats.ScrollBar)
-
-    -- AchivementGoldBorderBackdrop
-    -- an anonymous frame
-    for _, region in next, {stats:GetChildren()} do
-        if region.backdropColorAlpha and region.backdropBorderColor then
-            region:Hide()
-            break
-        end
-    end
-
-    local function Stat_OnEnter(button)
-        if button.isHeader then return end
-        button.highlight:Show()
-    end
-
-    local function Stat_OnLeave(button)
-        button.highlight:Hide()
-    end
-
-    local function UpdateEach(button)
-        if not button._BFIStyled then
-            button._BFIStyled = true
-
-            S.RemoveTextures(button)
-
-            button.Middle:ClearAllPoints()
-            button.Middle:SetPoint("LEFT")
-            button.Middle:SetPoint("RIGHT")
-            button.Middle:SetHeight(22)
-            button.Middle:SetTexCoord(0, 1, 0, 1)
-            button.Middle:SetTexture(AF.GetTexture("Gradient_Linear_Horizontal_CenterToEdges"))
-            button.Middle:SetVertexColor(AF.GetColorRGB("BFI", 0.2))
-
-            button.Background:SetTexture(AF.GetPlainTexture())
-            button.Background:ClearAllPoints()
-            button.Background:SetPoint("LEFT")
-            button.Background:SetPoint("RIGHT")
-
-            local highlight = AF.CreateTexture(button, nil, "widget_highlight", "BACKGROUND", 2)
-            button.highlight = highlight
-            highlight:Hide()
-            highlight:SetAllPoints(button.Background)
-            button:HookScript("OnEnter", Stat_OnEnter)
-            button:HookScript("OnLeave", Stat_OnLeave)
-        end
-
-        local colorIndex = button:GetElementData().colorIndex
-        button.Background:SetTexCoord(0, 1, 0, 1)
-        button.Background:SetHeight(22)
-        button.Background:SetAlpha(1)
-        button.Background:SetBlendMode("DISABLE")
-        if colorIndex == 1 then
-            button.Background:SetVertexColor(AF.GetColorRGB("widget_darker"))
-        else
-            button.Background:SetVertexColor(AF.GetColorRGB("widget"))
-        end
-    end
-
-    local function Update(scrollBox)
-        scrollBox:ForEachFrame(UpdateEach)
-    end
-
-    hooksecurefunc(stats.ScrollBox, "Update", Update)
+    RemoveAchivementGoldBorderBackdrop(stats)
+    hooksecurefunc(stats.ScrollBox, "Update", Stat_Update)
 end
 
 ---------------------------------------------------------------------
@@ -339,15 +339,7 @@ local function StyleAchievements()
     -- S.RemoveBackground(achievements)
     S.RemoveTextures(achievements) -- an anonymous texture
     S.StyleScrollBar(achievements.ScrollBar)
-
-    -- AchivementGoldBorderBackdrop
-    -- an anonymous frame
-    for _, region in next, {achievements:GetChildren()} do
-        if region.backdropColorAlpha and region.backdropBorderColor then
-            region:Hide()
-            break
-        end
-    end
+    RemoveAchivementGoldBorderBackdrop(achievements)
 
     -- AchievementTemplateMixin:UpdatePlusMinusTexture
     -- local function UpdatePlusMinusTexture(button)
@@ -456,6 +448,132 @@ local function StyleObjectives()
 end
 
 ---------------------------------------------------------------------
+-- AchievementFrameComparison
+---------------------------------------------------------------------
+local function StyleComparison()
+    local comparison = _G.AchievementFrameComparison
+    AF.ClearPoints(comparison)
+    AF.SetPoint(comparison, "TOPLEFT", _G.AchievementFrameCategories, "TOPRIGHT", 35, 0)
+    AF.SetPoint(comparison, "BOTTOM", _G.AchievementFrameCategories)
+
+    RemoveAchivementGoldBorderBackdrop(comparison)
+    S.RemoveTextures(comparison)
+
+    --------------------------------------------------
+    -- header
+    --------------------------------------------------
+    local header = _G["AchievementFrameComparisonHeader"]
+    -- header:Hide()
+    header.Shield:Hide()
+    _G["AchievementFrameComparisonHeaderBG"]:Hide()
+
+    local points = header.Points
+    points:SetSize(0, 0)
+    -- points:SetParent(achievementFrame.BFIHeader)
+    points:ClearAllPoints()
+    points:SetPoint("RIGHT", achievementFrame.SearchBox, "LEFT", -15, 0)
+
+    local name = _G["AchievementFrameComparisonHeaderName"]
+    name:SetSize(0, 0)
+    -- name:SetParent(achievementFrame.BFIHeader)
+    name:ClearAllPoints()
+    name:SetPoint("RIGHT", points, "LEFT", -5, 0)
+
+    hooksecurefunc("AchievementFrameComparison_SetUnit", function(unit)
+        local class = UnitClassBase(unit)
+        name:SetTextColor(AF.GetColorRGB(class))
+    end)
+
+    local portrait = _G["AchievementFrameComparisonHeaderPortrait"]
+    -- portrait:SetParent(achievementFrame.BFIHeader)
+    portrait:ClearAllPoints()
+    portrait:SetPoint("RIGHT", name, "LEFT", -5, 0)
+    AF.SetSize(portrait, 27, 20)
+    portrait:SetTexCoord(AF.CalcTexCoordPreCrop(nil, 27 / 20, 1, nil, true))
+    S.CreateBackdrop(portrait, true, 0, 1)
+
+    --------------------------------------------------
+    -- summary
+    --------------------------------------------------
+    local function UpdateSummary(frame)
+        S.RemoveNineSliceAndBackground(frame)
+        S.RemoveTextures(frame)
+        S.StyleStatusBar(frame.StatusBar, 1)
+        frame.StatusBar:SetStatusBarColor(AF.GetColorRGB("lime"))
+        frame.StatusBar.Title:ClearAllPoints()
+        frame.StatusBar.Title:SetPoint("LEFT", 6, 0)
+        frame.StatusBar.Text:ClearAllPoints()
+        frame.StatusBar.Text:SetPoint("RIGHT", -6, 0)
+    end
+
+    UpdateSummary(comparison.Summary.Player)
+    UpdateSummary(comparison.Summary.Friend)
+
+    --------------------------------------------------
+    -- AchievementContainer
+    --------------------------------------------------
+    local achievementContainer = comparison.AchievementContainer
+    S.StyleScrollBar(achievementContainer.ScrollBar)
+
+    local function Highlight(frame)
+        frame.Player.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
+        frame.Friend.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
+    end
+
+    local function Dehighlight(frame)
+        frame.Player.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+        frame.Friend.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+    end
+
+    local function UpdateEach(frame)
+        local player = frame.Player
+        local friend = frame.Friend
+
+        if not frame._BFIStyled then
+            frame._BFIStyled = true
+
+            StyleAchievement(player)
+            AF.SetPoint(player.BFIBackdrop, "BOTTOMRIGHT", -1, 0)
+            StyleAchievement(friend)
+
+            frame:HookScript("OnEnter", Highlight)
+            frame:HookScript("OnLeave", Dehighlight)
+        end
+
+        player.Label:SetTextColor(AF.GetColorRGB(player.completed and "white" or "gray"))
+        player.Description:SetTextColor(AF.GetColorRGB(player.completed and "white" or "gray"))
+        player.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(player.completed and "widget" or "widget_darker"))
+        friend.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(friend.completed and "widget" or "widget_darker"))
+
+        if player.accountWide then
+            player.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable(player.completed and "skyblue" or "darkgray", 0.4), "none")
+            player.BFITitleBar:Show()
+            friend.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable(friend.completed and "skyblue" or "darkgray", 0.4), "none")
+            friend.BFITitleBar:Show()
+        else
+            player.BFITitleBar:Hide()
+            friend.BFITitleBar:Hide()
+        end
+    end
+
+    local function Update(scrollBox)
+        scrollBox:ForEachFrame(UpdateEach)
+    end
+
+    hooksecurefunc(achievementContainer.ScrollBox, "Update", Update)
+    achievementContainer.ScrollBox:GetView():SetPadding(0, 0, 0, 0, 1)
+
+    --------------------------------------------------
+    -- StatContainer
+    --------------------------------------------------
+    local statContainer = comparison.StatContainer
+    S.StyleScrollBar(statContainer.ScrollBar)
+
+    hooksecurefunc(statContainer.ScrollBox, "Update", Stat_Update)
+    statContainer.ScrollBox:GetView():SetPadding(0, 0, 0, 4, 1)
+end
+
+---------------------------------------------------------------------
 -- tabs
 ---------------------------------------------------------------------
 local PanelTemplates_SetTabEnabled = PanelTemplates_SetTabEnabled
@@ -513,5 +631,6 @@ local function StyleBlizzard()
     StyleStats()
     StyleAchievements()
     StyleObjectives()
+    StyleComparison()
 end
 AF.RegisterAddonLoaded("Blizzard_AchievementUI", StyleBlizzard)
