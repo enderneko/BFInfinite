@@ -251,6 +251,7 @@ local function InitAndBackupCVars()
     local cvars = {
         "fstack_preferParentKeys",
         "screenshotQuality",
+        "showInGameNavigation",
         "CameraReduceUnexpectedMovement",
         "ActionButtonUseKeyDown",
         "chatMouseScroll",
@@ -313,6 +314,7 @@ local function InitAndBackupCVars()
         -- init some cvar
         SetCVar("fstack_preferParentKeys", 0)
         SetCVar("screenshotQuality", 10)
+        SetCVar("showInGameNavigation", 1)
         -- SetCVar("cameraDistanceMaxZoomFactor", 2.6)
         SetCVar("CameraReduceUnexpectedMovement", 1)
         -- SetCVar("ResampleAlwaysSharpen", 1)
