@@ -8,7 +8,7 @@ local AF = _G.AbstractFramework
 
 local LoadList, LoadOptions
 local currentMap
-local minimapLast, worldmapLast
+local minimapLast, worldMapLast
 
 ---------------------------------------------------------------------
 -- create
@@ -25,7 +25,7 @@ local function CreateMapsPanel()
     AF.SetPoint(switch, "TOPRIGHT", -15, -15)
     switch:SetLabels({
         {text = _G.MINIMAP_LABEL, value = "minimap"},
-        {text = _G.WORLDMAP_BUTTON, value = "worldmap", disabled = true},
+        {text = _G.WORLDMAP_BUTTON, value = "worldMap"},
     })
     switch:SetOnSelect(LoadList)
 end
@@ -94,8 +94,9 @@ LoadList = function(which)
         list:Select(minimapLast or "general_minimap")
     else
         list:SetData({
+            {text = L["General"], id = "general_worldMap"},
         })
-        list:Select(worldmapLast or "general")
+        list:Select(worldMapLast or "general_worldMap")
     end
 
     if lastScroll then
@@ -108,7 +109,7 @@ LoadOptions = function(self)
     if currentMap == "minimap" then
         minimapLast = self.id
     elseif currentMap == "worldmap" then
-        worldmapLast = self.id
+        worldMapLast = self.id
     end
 
     local scroll = contentPane.scrollSettings

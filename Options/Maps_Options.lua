@@ -18,6 +18,10 @@ local settings = {
     general_minimap = {
         "size",
     },
+    general_worldMap = {
+        mapFade = false,
+        mapFadeAlpha = 0.5,
+    },
     expansionButton = {
         "size",
         "position",

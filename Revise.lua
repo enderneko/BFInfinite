@@ -50,10 +50,22 @@ local profileRevisions = {
     --         -- do something for version 2
     --     end,
     -- },
+    {
+        ver = 3,
+        fn = function(profile)
+            profile.chat = BFI.modules.Chat.GetDefaults()
+        end,
+    },
+    {
+        ver = 4,
+        fn = function(profile)
+            profile.maps.worldMap = BFI.modules.Maps.GetDefaults().worldMap
+        end,
+    }
 }
 
-function F.ReviseProfile(profile)
-    if profile.revision and profile.revision < BFI.versionNum then
+function F.ReviseProfile(profile, force)
+    if (profile.revision and profile.revision < BFI.versionNum) or force then
         for _, revise in ipairs(profileRevisions) do
             if profile.revision < revise.ver then
                 revise.fn(profile)

@@ -97,6 +97,13 @@ local defaults = {
             },
         },
     },
+    worldMap = {
+        general = {
+            enabled = true,
+            mapFade = false,
+            mapFadeAlpha = 0.5,
+        },
+    },
 }
 
 AF.RegisterCallback("BFI_UpdateProfile", function(_, t)
