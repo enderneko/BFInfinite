@@ -876,6 +876,66 @@ function S.StyleTabSystem(frame, skipRepositioning)
 end
 
 ---------------------------------------------------------------------
+-- side tab - SidePanelTabButtonMixin
+---------------------------------------------------------------------
+local function SideTab_OnMouseDown(tab, button)
+    if button == "LeftButton" then
+        tab.Icon:SetPoint("CENTER", 0, -1)
+    end
+end
+
+local function SideTab_OnMouseUp(tab, button)
+    if button == "LeftButton" then
+        tab.Icon:SetPoint("CENTER")
+    end
+end
+
+local function SideTab_OnEnter(tab)
+    tab.SelectedTexture:Show()
+    if tab.tooltipText then
+        GameTooltip:SetOwner(tab, "ANCHOR_NONE")
+        GameTooltip:SetPoint("TOPLEFT", tab, "TOPRIGHT", 1, 0)
+        GameTooltip:SetText(tab.tooltipText)
+        GameTooltip:Show()
+    end
+end
+
+local function SideTab_OnLeave(tab)
+    if not tab._checked then
+        tab.SelectedTexture:Hide()
+    end
+    GameTooltip:Hide()
+end
+
+local function SideTab_SetChecked(tab, checked)
+    tab._checked = checked
+end
+
+function S.StyleSideTab(tab)
+    assert(tab, "StyleSideTab: tab is nil")
+
+    if tab._BFIStyled then return end
+    tab._BFIStyled = true
+
+    S.RemoveTextures(tab)
+    S.CreateBackdrop(tab)
+    tab.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
+
+    AF.SetSize(tab, 35, 50)
+    tab.Icon:SetPoint("CENTER")
+
+    tab.SelectedTexture = AF.CreateTexture(tab, nil, AF.GetColorTable("BFI", 0.6), "BORDER", -1)
+    tab.SelectedTexture:SetAllPoints()
+    tab.SelectedTexture:Hide()
+
+    tab:HookScript("OnMouseDown", SideTab_OnMouseDown)
+    tab:HookScript("OnMouseUp", SideTab_OnMouseUp)
+    tab:SetScript("OnEnter", SideTab_OnEnter)
+    tab:SetScript("OnLeave", SideTab_OnLeave)
+    hooksecurefunc(tab, "SetChecked", SideTab_SetChecked)
+end
+
+---------------------------------------------------------------------
 -- SpellSearchPreviewContainer
 ---------------------------------------------------------------------
 local function SpellSearchPreview_UpdateEach(button)
