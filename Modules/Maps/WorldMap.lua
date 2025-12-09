@@ -8,9 +8,10 @@ local AF = _G.AbstractFramework
 local WorldMapFrame = _G.WorldMapFrame
 local PlayerMovementFrameFader = PlayerMovementFrameFader
 
-local function MapFadePredicate()
-    return GetCVarBool("mapFade") and not WorldMapFrame:IsMouseOver()
-end
+--! taint!
+-- local function MapFadePredicate()
+--     return GetCVarBool("mapFade") and not WorldMapFrame:IsMouseOver()
+-- end
 
 ---------------------------------------------------------------------
 -- update
@@ -31,6 +32,7 @@ local function UpdateWorldMap(_, module, which)
     -- map fade
     SetCVar("mapFade", config.general.mapFade)
     -- original: PlayerMovementFrameFader.AddDeferredFrame(self, .5, 1.0, .5, function() return GetCVarBool("mapFade") and not self:IsMouseOver() end)
-    PlayerMovementFrameFader.AddDeferredFrame(WorldMapFrame, config.general.mapFadeAlpha, 1.0, 0.25, MapFadePredicate)
+    --! taint!
+    -- PlayerMovementFrameFader.AddDeferredFrame(WorldMapFrame, config.general.mapFadeAlpha, 1.0, 0.25, MapFadePredicate)
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateWorldMap)

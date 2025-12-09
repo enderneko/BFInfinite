@@ -62,16 +62,19 @@ local function StyleQuestsFrame()
     local function UpdateCollapsedState(collapseButton, collapsed)
         collapseButton.collapsed = collapsed
         local texture = collapsed and AF.GetIcon("Plus_Small") or AF.GetIcon("Minus_Small")
+        collapseButton.Icon:SetSize(16, 16)
         collapseButton.Icon:SetTexture(texture)
         collapseButton:SetHighlightTexture(texture)
     end
 
     local function UpdateCollapseButton(header)
         local collapseButton = header.CollapseButton
-        collapseButton.Icon:SetSize(16, 16)
+        -- collapseButton.Icon:SetSize(16, 16) -- SetAtlas(xx, true) will override size
         collapseButton.Icon:SetAlpha(0.5)
-        collapseButton.UpdateCollapsedState = UpdateCollapsedState
-        collapseButton:UpdateCollapsedState(collapseButton.collapsed)
+
+        -- collapseButton.UpdateCollapsedState = UpdateCollapsedState --! taint
+        hooksecurefunc(collapseButton, "UpdateCollapsedState", UpdateCollapsedState)
+        UpdateCollapsedState(collapseButton, collapseButton.collapsed)
     end
 
     --! CampaignHeaderTemplate (Frame)
@@ -115,7 +118,7 @@ local function StyleQuestsFrame()
         S.CreateBackdrop(checkbox)
         checkbox.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
 
-        checkbox.CheckMark = AF.CreateTexture(checkbox, nil, AF.GetColorTable("BFI", 0.7), "ARTWORK")
+        checkbox.CheckMark:SetColorTexture(AF.GetColorRGB("BFI", 0.7))
         AF.SetOnePixelInside(checkbox.CheckMark, checkbox)
 
         local highlight = AF.CreateTexture(checkbox, nil, AF.GetColorTable("BFI", 0.1), "HIGHLIGHT")
@@ -152,9 +155,9 @@ local function StyleQuestsFrame()
         end
 
         -- objective
-        -- for objective in scroll.objectiveFramePool:EnumerateActive() do
-        --     UpdateObjective(objective)
-        -- end
+        for objective in scroll.objectiveFramePool:EnumerateActive() do
+            UpdateObjective(objective)
+        end
     end)
 end
 
