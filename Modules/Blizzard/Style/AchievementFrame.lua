@@ -11,6 +11,10 @@ local guildTab
 local UnitClassBase = UnitClassBase
 local PanelTemplates_SetTabEnabled = PanelTemplates_SetTabEnabled
 local GetNumFilteredAchievements = GetNumFilteredAchievements
+local CRITERIA_TYPE_ACHIEVEMENT = _G.CRITERIA_TYPE_ACHIEVEMENT
+local EVALUATION_TREE_FLAG_PROGRESS_BAR = _G.EVALUATION_TREE_FLAG_PROGRESS_BAR
+local GetAchievementNumCriteria = GetAchievementNumCriteria
+local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
 
 ---------------------------------------------------------------------
 -- shared
@@ -448,6 +452,53 @@ local function StyleObjectives()
         frame.Points:SetFont(font, size, "OUTLINE")
         frame.Points:SetShadowOffset(0, 0)
         frame.Points:SetShadowColor(0, 0, 0, 0)
+    end)
+
+    hooksecurefunc("AchievementObjectives_DisplayCriteria", function(objectivesFrame, id)
+        local textStrings, progressBars, metas = 0, 0, 0
+        local numCriteria = GetAchievementNumCriteria(id)
+        local label, border, icon
+
+        for i = 1, numCriteria do
+            local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString = GetAchievementCriteriaInfo(id, i)
+            if criteriaType == CRITERIA_TYPE_ACHIEVEMENT and assetID then
+                metas = metas + 1
+                local metaCriteria = objectivesFrame:GetMeta(metas)
+                label = metaCriteria.Label
+                border = metaCriteria.Border
+                icon = metaCriteria.Icon
+
+                local highlight = metaCriteria:GetHighlightTexture()
+                highlight:SetTexture(AF.GetPlainTexture())
+                highlight:SetVertexColor(AF.GetColorRGB("highlight", 0.1))
+
+            elseif bit.band(flags, EVALUATION_TREE_FLAG_PROGRESS_BAR) == EVALUATION_TREE_FLAG_PROGRESS_BAR then
+                -- NOTE: already styled in AchievementButton_LocalizeProgressBar
+                label, border, icon = nil, nil, nil
+            else
+                textStrings = textStrings + 1
+			    local criteria = objectivesFrame:GetCriteria(textStrings)
+                label = criteria.Name
+                border, icon = nil, nil
+            end
+
+            if label then
+                if objectivesFrame.completed and completed then
+                    label:SetTextColor(AF.GetColorRGB("white"))
+                elseif completed then
+                    label:SetTextColor(AF.GetColorRGB("green"))
+                else
+                    label:SetTextColor(AF.GetColorRGB("darkgray"))
+                end
+                label:SetShadowOffset(1, -1)
+            end
+
+            if border and icon then
+                border:Hide()
+                AF.ApplyDefaultTexCoord(icon)
+                S.CreateBackdrop(icon, true, 1)
+            end
+        end
     end)
 end
 
