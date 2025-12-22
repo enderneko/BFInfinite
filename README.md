@@ -1,4 +1,4 @@
-# BFInfinite
+# BFInfinite (Boundless Forge Infinite)
 
 > BFI is still in early (alpha) development stage. Its features, APIs, and overall structure may change frequently.  
 > BFI 仍处于早期（Alpha）开发阶段，其功能、API 和架构可能频繁变动。
@@ -14,7 +14,7 @@
 
 ## Introduction | 简介
 
-**BFInfinite** is a World of Warcraft addon suite inspired by ElvUI, featuring unit frames, action bars, nameplates, UI enhancements, and more.  
+**BFI** is a World of Warcraft addon suite inspired by ElvUI, featuring unit frames, action bars, nameplates, UI enhancements, and more.  
 With a highly customizable and minimalist design, it aims to provide players with an unprecedented experience.  
 More features will continue to be added in the future to meet the personalized needs of different players.
 

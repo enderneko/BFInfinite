@@ -138,8 +138,8 @@ end
 -- disable edit mode
 ---------------------------------------------------------------------
 function F.DisableEditMode(region)
-    -- region.HighlightSystem = AF.noop --! taint?
-    -- region.ClearHighlight = AF.noop --! taint?
+    -- region.HighlightSystem = AF.noop --! taint
+    -- region.ClearHighlight = AF.noop --! taint
     if not (region.HighlightSystem or region.ClearHighlight) then return end
     hooksecurefunc(region, "HighlightSystem", region.ClearHighlight)
 end
