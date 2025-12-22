@@ -6,7 +6,6 @@ local S = BFI.modules.Style
 local AF = _G.AbstractFramework
 
 local GameMenuFrame = _G.GameMenuFrame
-local IsStoreEnabled = C_StorePublic.IsEnabled
 local HasExternalEventURL = C_ExternalEventURL.HasURL
 local GAMEMENU_EXTERNALEVENT = _G.GAMEMENU_EXTERNALEVENT
 local GAMEMENU_OPTIONS = _G.GAMEMENU_OPTIONS
@@ -15,6 +14,12 @@ local LOG_OUT = _G.LOG_OUT
 local EXIT_GAME = _G.EXIT_GAME
 local RETURN_TO_GAME = _G.RETURN_TO_GAME
 local ERR_NOT_IN_COMBAT = _G.ERR_NOT_IN_COMBAT
+
+local IsShop1Enabled = C_StorePublic.IsEnabled
+local IsShop2Enabled = C_CatalogShop.IsShop2Enabled
+local function IsStoreEnabled()
+    return IsShop1Enabled() or IsShop2Enabled()
+end
 
 ---------------------------------------------------------------------
 -- header
