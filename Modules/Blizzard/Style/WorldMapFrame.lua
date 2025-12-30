@@ -9,6 +9,17 @@ local map = _G.WorldMapFrame
 local quest = _G.QuestMapFrame
 
 ---------------------------------------------------------------------
+-- shared
+---------------------------------------------------------------------
+local function CreateBackdrop(frame)
+    S.CreateBackdrop(frame)
+    frame.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("background_lighter", 0.1))
+    AF.ClearPoints(frame.BFIBackdrop)
+    AF.SetPoint(frame.BFIBackdrop, "TOPLEFT", 0, 1)
+    AF.SetPoint(frame.BFIBackdrop, "BOTTOMRIGHT", 0, -1)
+end
+
+---------------------------------------------------------------------
 -- backdrop
 ---------------------------------------------------------------------
 local function StyleBackdrop()
@@ -41,7 +52,8 @@ local function StyleQuestsFrame()
     local scroll = quest.QuestsFrame.ScrollFrame -- QuestScrollFrame
     scroll.BorderFrame:Hide()
     scroll.Background:Hide()
-    -- S.CreateBackdrop(scroll)
+
+    CreateBackdrop(scroll)
     S.StyleScrollBar(scroll.ScrollBar)
     S.StyleEditBox(scroll.SearchBox, -4)
 
@@ -174,11 +186,40 @@ local function StyleQuestsFrame()
 end
 
 ---------------------------------------------------------------------
+-- QuestMapFrame.EventsFrame
+---------------------------------------------------------------------
+local function StyleEventsFrame()
+    local eventsFrame = quest.EventsFrame
+    S.RemoveTextures(eventsFrame) -- a weird yellow texture?
+    S.StyleScrollBar(eventsFrame.ScrollBar)
+    eventsFrame.BorderFrame:Hide()
+    eventsFrame.ScrollBox.Background:Hide()
+
+    CreateBackdrop(eventsFrame)
+end
+
+---------------------------------------------------------------------
+-- QuestMapFrame.MapLegend, MapLegendScrollFrame
+---------------------------------------------------------------------
+local function StyleMapLegend()
+    local legend = quest.MapLegend
+    legend.BorderFrame:Hide()
+
+    CreateBackdrop(legend)
+
+    local scroll = _G.MapLegendScrollFrame
+    S.StyleScrollBar(scroll.ScrollBar)
+    scroll.Background:Hide()
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function StyleBlizzard()
     StyleBackdrop()
     StyleQuestTabs()
     StyleQuestsFrame()
+    StyleEventsFrame()
+    StyleMapLegend()
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
