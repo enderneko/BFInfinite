@@ -54,7 +54,7 @@ local settings = {
         "markerSpacing",
     },
     objectiveTracker = {
-        "trackerOrder",
+        -- "trackerOrder",
         "height",
         "font",
     },

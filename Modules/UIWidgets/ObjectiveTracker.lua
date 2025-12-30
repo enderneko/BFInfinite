@@ -21,7 +21,15 @@ local GenerateClosure = GenerateClosure
 -- create
 ---------------------------------------------------------------------
 local function CreateTrackerContainer()
-    trackerContainer = AF.CreateScrollFrame(AF.UIParent, "BFI_ObjectiveTrackerContainer", 275, nil, "none", "none")
+    -- trackerContainer = AF.CreateScrollFrame(AF.UIParent, "BFI_ObjectiveTrackerContainer", 275, nil, "none", "none")
+    trackerContainer = AF.CreateFrame(AF.UIParent, "BFI_ObjectiveTrackerContainer", 275)
+
+    -- background
+    -- local background = AF.CreateTexture(tracker, nil, AF.GetColorTable("background", 0.5), "BACKGROUND")
+    -- trackerContainer.background = background
+    -- background:SetPoint("TOPLEFT", tracker.NineSlice)
+    -- -- background:SetPoint("TOPRIGHT", trackerContainer)
+    -- background:SetPoint("BOTTOMRIGHT", tracker.NineSlice)
 
     -- mover
     AF.CreateMover(trackerContainer, "BFI: " .. L["UI Widgets"], _G.HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)
@@ -108,7 +116,7 @@ local function SetupTracker()
     tracker.isManagedFrame = false
     tracker.isRightManagedFrame = false
     _G.UIParentRightManagedFrameContainer:RemoveManagedFrame(tracker)
-    -- tracker:SetParent(trackerContainer) --! will cause weird issues ... so I give up make it scrollable
+    -- tracker:SetParent(trackerContainer) --! will cause weird issues ... so I give up on making it scrollable
     tracker:ClearAllPoints()
     tracker:SetPoint("TOPRIGHT", trackerContainer.scrollContent)
     -- tracker:SetScript("OnShow", function(self)
@@ -507,12 +515,13 @@ local function UpdateObjectiveTracker(_, module, which)
     trackerContainer.enabled = true
 
     -- height
-    AF.SetHeight(trackerContainer, config.height)
+    trackerContainer:SetHeight(config.height)
     tracker.editModeHeight = config.height
     tracker:UpdateHeight()
 
     -- font
     UpdateFonts(config.font)
+    tracker:Update()
 
     -- order
     -- if which == "objectiveTracker" then
