@@ -212,12 +212,17 @@ local function SetupTracker()
     --     trackerContainer:SetContentHeight(height, true, true)
     -- end
 
+    local function UpdateHeaderAnimation(header)
+        S.RemoveTextures(header)
+    end
+
     hooksecurefunc(tracker, "AddModule", function(_, module)
         -- print("MODULE ADDED:", module.headerText)
         if not module._BFIHooked then
             module._BFIHooked = true
             -- hooksecurefunc(module, "UpdateHeight", UpdateScrollContentHeight)
             -- hooksecurefunc(module, "Hide", UpdateScrollContentHeight)
+            UpdateHeaderAnimation(module.Header)
             UpdateHeaderStyle(module)
         end
     end)
