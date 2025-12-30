@@ -1,0 +1,48 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+
+    <!-- <Include file="ObjectiveTrackerFonts.xml"/> -->
+    <Script file="ObjectiveTrackerManager.lua"/>
+    <Script file="ObjectiveTrackerShared.lua"/>
+    <Include file="ObjectiveTrackerShared.xml"/>
+    <Script file="ObjectiveTrackerBlock.lua"/>
+    <Include file="ObjectiveTrackerBlock.xml"/>
+    <Script file="ObjectiveTrackerModule.lua"/>
+    <Include file="ObjectiveTrackerModule.xml"/>
+    <Script file="ObjectiveTrackerContainer.lua"/>
+    <Include file="ObjectiveTrackerContainer.xml"/>
+
+    <Include file="ObjectiveTrackerAnimTemplates.xml"/>
+    <Script file="ObjectiveTrackerAnimTemplates.lua"/>
+
+    <Include file="ObjectiveTrackerQuestPOIBlock.xml"/>
+    <Script file="ObjectiveTrackerQuestPOIBlock.lua"/>
+
+    <Script file="AchievementObjectiveTracker.lua"/>
+    <Include file="AchievementObjectiveTracker.xml"/>
+    <Script file="MonthlyActivitiesObjectiveTracker.lua"/>
+    <Include file="MonthlyActivitiesObjectiveTracker.xml"/>
+    <Script file="ProfessionsRecipeTracker.lua"/>
+    <Include file="ProfessionsRecipeTracker.xml"/>
+    <Script file="ScenarioObjectiveTracker.lua"/>
+    <Include file="ScenarioObjectiveTracker.xml"/>
+    <Script file="AutoQuestPopUpTracker.lua"/>
+    <Include file="AutoQuestPopUpTracker.xml"/>
+    <Script file="QuestObjectiveTracker.lua"/>
+    <Include file="QuestObjectiveTracker.xml"/>
+    <Script file="CampaignQuestObjectiveTracker.lua"/>
+    <Include file="CampaignQuestObjectiveTracker.xml"/>
+    <Script file="BonusObjectiveTracker.lua"/>
+    <Include file="BonusObjectiveTracker.xml"/>
+    <Script file="AdventureObjectiveTracker.lua"/>
+    <Include file="AdventureObjectiveTracker.xml"/>
+    <Script file="ObjectiveTrackerUIWidgetContainer.lua"/>
+    <Include file="ObjectiveTrackerUIWidgetContainer.xml"/>
+    <Script file="WorldQuestObjectiveTracker.lua"/>
+    <Include file="WorldQuestObjectiveTracker.xml"/>
+    <Script file="InitiativeTasksObjectiveTracker.lua"/>
+    <Include file="InitiativeTasksObjectiveTracker.xml"/>
+
+    <Script file="ObjectiveTracker.lua"/>
+    <Include file="ObjectiveTracker.xml"/>
+</Ui>
