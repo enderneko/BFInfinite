@@ -348,6 +348,7 @@ local fontSizeOverrides = {
     GameFontNormalSmall = 12,
     -- GameFontHighlight = 13,
     GameFontHighlightSmall = 12,
+    SystemFont_Shadow_Small = 12,
     SystemFont_Shadow_Small2 = 12,
     SystemFont_Shadow_Small2_Outline = 12,
 

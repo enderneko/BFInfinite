@@ -196,6 +196,70 @@ local function StyleEventsFrame()
     eventsFrame.ScrollBox.Background:Hide()
 
     CreateBackdrop(eventsFrame)
+
+    local EntryType = EnumUtil.MakeEnum(
+        "OngoingHeader", -- "EventSchedulerOngoingHeaderTemplate"
+        "OngoingEvent", -- "EventSchedulerOngoingEntryTemplate"
+        "ScheduledHeader", -- "EventSchedulerScheduledHeaderTemplate"
+        "ScheduledEvent", -- "EventSchedulerScheduledEntryTemplate"
+        "Date", -- "EventSchedulerDateLabelTemplate"
+        "HiddenEventsLabel", -- "EventSchedulerHiddenEventsLabelTemplate"
+        "NoEventsLabel" -- "EventSchedulerNoEventsLabelTemplate"
+    )
+
+    local function UpdateEach(frame)
+        local data = frame:GetData()
+
+        local entryType = data.entryType
+        if entryType == EntryType.OngoingHeader or entryType == EntryType.ScheduledHeader then
+            -- header
+            if frame._BFIStyled then return end
+            -- style the frame
+            frame.Background:Hide()
+            S.CreateBackdrop(frame)
+            AF.ClearPoints(frame.BFIBackdrop)
+            frame.BFIBackdrop:SetPoint("LEFT")
+            frame.BFIBackdrop:SetPoint("RIGHT", -2, 0)
+            frame.BFIBackdrop:SetHeight(21)
+
+        elseif entryType == EntryType.OngoingEvent or entryType == EntryType.ScheduledEvent then
+            -- event entry
+            if entryType == EntryType.OngoingEvent then
+                frame.Background:SetColorTexture(AF.GetColorRGB(frame:HasRewardsClaimed() and "widget_darker" or "widget", 0.9))
+            end
+
+            if frame._BFIStyled then return end
+            -- style the frame
+            frame.Name:ClearAllPoints()
+            frame.Location:ClearAllPoints()
+            frame.Background:ClearAllPoints()
+            frame.Background:SetPoint("BOTTOMRIGHT", -3, 1)
+
+            frame.Highlight:SetAllPoints(frame.Background)
+            frame.Highlight:SetBlendMode("ADD")
+            frame.Highlight:SetColorTexture(AF.GetColorRGB("widget_highlight", 0.5))
+
+            if entryType == EntryType.OngoingEvent then
+                frame.Name:SetPoint("TOPLEFT", 37, -4)
+                frame.Location:SetPoint("BOTTOMLEFT", 37, 4)
+                frame.Background:SetPoint("TOPLEFT", 1, -1)
+            else
+                frame.Name:SetPoint("TOPLEFT", 22, -4)
+                frame.Location:SetPoint("BOTTOMLEFT", 22, 4)
+                frame.Background:SetPoint("TOPLEFT", 2, -1)
+                frame.Background:SetColorTexture(0.588, 0.482, 0.051, 0.45)
+            end
+
+        end
+
+        frame._BFIStyled = true
+    end
+
+    local function Update(scorllBox)
+        scorllBox:ForEachFrame(UpdateEach)
+    end
+
+    hooksecurefunc(eventsFrame.ScrollBox, "Update", Update)
 end
 
 ---------------------------------------------------------------------
