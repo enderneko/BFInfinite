@@ -101,6 +101,13 @@ local function StyleQuestsFrame()
         top:SetPoint("TOPRIGHT")
     end
 
+    --! CovenantCallingsHeaderTemplate (Button)
+    local function UpdateCovenantHeader(header)
+        if header._BFIStyled then return end
+        header._BFIStyled = true
+        UpdateCollapseButton(header)
+    end
+
     --! QuestLogHeaderTemplate/CampaignHeaderMinimalTemplate (Button)
     local function UpdateHeader(header)
         if header._BFIStyled then return end
@@ -142,6 +149,11 @@ local function StyleQuestsFrame()
         -- campain header minimal
         for header in scroll.campaignHeaderMinimalFramePool:EnumerateActive() do
             UpdateHeader(header)
+        end
+
+        -- covenant header
+        for header in scroll.covenantCallingsHeaderFramePool:EnumerateActive() do
+            UpdateCovenantHeader(header)
         end
 
         -- header
