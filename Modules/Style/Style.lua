@@ -372,7 +372,7 @@ function S.StyleButton(button, color, hoverColor)
 end
 
 ---------------------------------------------------------------------
--- close/minimize/maximize button
+-- icon button
 ---------------------------------------------------------------------
 local function IconButton_UpdatePixels(button)
     AF.DefaultUpdatePixels(button)
@@ -386,7 +386,11 @@ local function SetupIconButton(button, color, icon, iconSize)
     button.BFIIcon = button:CreateTexture(nil, "ARTWORK")
     AF.SetPoint(button.BFIIcon, "CENTER")
     AF.SetSize(button.BFIIcon, iconSize, iconSize)
-    button.BFIIcon:SetTexture(icon)
+    if AF.IsAtlas(icon) then
+        button.BFIIcon:SetAtlas(icon)
+    else
+        button.BFIIcon:SetTexture(icon)
+    end
     button.BFIIcon:SetDesaturated(not button:IsEnabled())
     button.BFIIcon:SetVertexColor(AF.GetColorRGB(button:IsEnabled() and "white" or "disabled"))
 

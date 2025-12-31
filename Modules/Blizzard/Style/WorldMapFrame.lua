@@ -151,7 +151,7 @@ local function StyleQuestsFrame()
     end
 
     hooksecurefunc("QuestLogQuests_Update", function()
-        print("QuestLogQuests_Update")
+        -- print("QuestLogQuests_Update")
 
         -- campaign header
         for header in scroll.campaignHeaderFramePool:EnumerateActive() do
@@ -277,6 +277,78 @@ local function StyleMapLegend()
 end
 
 ---------------------------------------------------------------------
+-- WorldMapMixin:AddOverlayFrames
+---------------------------------------------------------------------
+local function StyleOverlayFrames()
+    --------------------------------------------------
+    -- SidePanelToggle
+    --------------------------------------------------
+    local SidePanelToggle = map.SidePanelToggle
+    SidePanelToggle._BFIStyled = true
+    SidePanelToggle:SetSize(25, 25)
+    SidePanelToggle.OpenButton:SetSize(25, 25)
+    SidePanelToggle.CloseButton:SetSize(25, 25)
+    S.StyleIconButton(SidePanelToggle.OpenButton, "BFI_hover", AF.GetIcon("ArrowRight1"), 20)
+    S.StyleIconButton(SidePanelToggle.CloseButton, "BFI_hover", AF.GetIcon("ArrowLeft1"), 20)
+
+    --------------------------------------------------
+    -- NavBar
+    --------------------------------------------------
+    local NavBar = map.NavBar
+    NavBar._BFIStyled = true
+
+    --------------------------------------------------
+    -- other overlay frames
+    --------------------------------------------------
+    -- hooksecurefunc(map, "AddOverlayFrame", function(_, templateName, templateType, anchorPoint, relativeFrame, relativePoint, offsetX, offsetY)
+    --     print(templateName, templateType, AF.GetLast(map.overlayFrames))
+    -- end)
+    hooksecurefunc(map, "RefreshOverlayFrames", function()
+        for _, frame in next, map.overlayFrames do
+            if not frame._BFIStyled then
+                local objType = frame:GetObjectType()
+
+                if frame.Arrow then
+                    -- WorldMapFloorNavigationFrameTemplate -> WowStyle1DropdownTemplate
+                    S.StyleDropdownButton(frame)
+                    frame:ClearAllPoints()
+                    frame:SetPoint("TOPLEFT", map:GetCanvasContainer(), 2, -2)
+
+                elseif frame.FilterCounterBanner then
+                    -- WorldMapTrackingOptionsButtonTemplate
+                    frame:SetSize(25, 25)
+                    S.StyleIconButton(frame, nil, AF.GetIcon("Map-Filter-Button", BFI.name), 24)
+
+                    frame.FilterCounter:ClearAllPoints()
+                    frame.FilterCounter:SetPoint("RIGHT", frame, "LEFT", 2, 0)
+
+                    frame.FilterCounterBanner:ClearAllPoints()
+                    frame.FilterCounterBanner:SetPoint("TOPRIGHT", frame, "TOPLEFT")
+                    frame.FilterCounterBanner:SetPoint("BOTTOMRIGHT", frame, "BOTTOMLEFT")
+                    frame.FilterCounterBanner:SetWidth(50)
+                    frame.FilterCounterBanner:SetTexture(AF.GetTexture("Gradient_Linear_Right"))
+                    frame.FilterCounterBanner:SetVertexColor(AF.GetColorRGB("background", 0.5))
+                    frame.FilterCounterBanner:SetAlpha(1)
+                    frame.FilterCounterBanner:Show()
+
+                    frame.ResetButton:ClearAllPoints()
+                    frame.ResetButton:SetPoint("CENTER", frame, "TOPRIGHT", -2, -2)
+                    frame.ResetButton:SetSize(20, 20)
+
+                elseif frame.ActiveTexture then
+                    -- WorldMapTrackingPinButtonTemplate
+                    frame:SetSize(25, 25)
+                    S.StyleIconButton(frame, nil, "Waypoint-MapPin-Untracked", 23)
+                end
+
+                -- local type = frame:GetObjectType()
+                frame._BFIStyled = true
+            end
+        end
+    end)
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function StyleBlizzard()
@@ -285,5 +357,6 @@ local function StyleBlizzard()
     StyleQuestsFrame()
     StyleEventsFrame()
     StyleMapLegend()
+    StyleOverlayFrames()
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
