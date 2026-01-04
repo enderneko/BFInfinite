@@ -24,6 +24,7 @@ end
 ---------------------------------------------------------------------
 local function StyleBackdrop()
     F.Hide(map.BorderFrame.Tutorial)
+    map.BorderFrame.InsetBorderTop:Hide()
     S.StyleTitledFrame(map.BorderFrame)
     AF.SetFrameLevel(map.BorderFrame.BFIBg, -1, map)
 end
@@ -281,24 +282,169 @@ end
 ---------------------------------------------------------------------
 local function StyleOverlayFrames()
     --------------------------------------------------
-    -- SidePanelToggle
-    --------------------------------------------------
-    local SidePanelToggle = map.SidePanelToggle
-    SidePanelToggle._BFIStyled = true
-    SidePanelToggle:SetSize(25, 25)
-    SidePanelToggle.OpenButton:SetSize(25, 25)
-    SidePanelToggle.CloseButton:SetSize(25, 25)
-    S.StyleIconButton(SidePanelToggle.OpenButton, "BFI_hover", AF.GetIcon("ArrowRight1"), 20)
-    S.StyleIconButton(SidePanelToggle.CloseButton, "BFI_hover", AF.GetIcon("ArrowLeft1"), 20)
-
-    --------------------------------------------------
     -- NavBar
     --------------------------------------------------
-    local NavBar = map.NavBar
-    NavBar._BFIStyled = true
+    local function StyleNavBar(frame)
+        S.RemoveTextures(frame)
+        frame.overlay:Hide()
+
+        S.CreateBackdrop(frame)
+        AF.ClearPoints(frame.BFIBackdrop)
+        AF.SetPoint(frame.BFIBackdrop, "TOPLEFT", -1, -1)
+        AF.SetPoint(frame.BFIBackdrop, "BOTTOMRIGHT")
+        -- frame.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("background_lighter", 0.1))
+
+        frame:ClearAllPoints()
+        frame:SetPoint("TOPLEFT", map.TitleCanvasSpacerFrame, 10, -25)
+        frame:SetPoint("BOTTOMRIGHT", map.TitleCanvasSpacerFrame, "BOTTOMRIGHT", -4, 9)
+    end
+
+    -- map.NavBar.home.xoffset = 0
+    local function SetupTexture(obj, texture, color, alpha, offset)
+        obj:SetTexture(AF.GetTexture(texture))
+        obj:SetTexCoord(0, 1, 0, 1)
+        obj:SetVertexColor(AF.GetColorRGB(color, alpha))
+
+        if offset then
+            obj:ClearAllPoints()
+            obj:SetPoint("TOPLEFT")
+            obj:SetPoint("BOTTOMRIGHT", offset, 0)
+        end
+    end
+
+    local overflowButton = map.NavBar.overflow
+    S.RemoveTextures(overflowButton)
+    SetupTexture(overflowButton:GetNormalTexture(), "Gradient_Linear_Right", "widget_highlight", 0.8, overflowButton.xoffset)
+    SetupTexture(overflowButton:GetPushedTexture(), "Gradient_Linear_Right", "widget_highlight", 0.8, overflowButton.xoffset)
+    SetupTexture(overflowButton:GetHighlightTexture(), "Gradient_Linear_Right", "widget_highlight", 0.2, overflowButton.xoffset)
+
+    -- overflowButton icon
+    local icon = overflowButton:CreateTexture(nil, "ARTWORK", nil, 7)
+    overflowButton.icon = icon
+    AF.SetPoint(icon, "CENTER", overflowButton.xoffset / 2, 0)
+    AF.SetSize(icon, 16, 16)
+    icon:SetTexture(AF.GetIcon("ArrowLeft2"))
+    icon:SetVertexColor(AF.GetColorRGB("darkgray"))
+    overflowButton:SetScript("OnMouseDown", function()
+        icon:AdjustPointsOffset(0, -AF.GetOnePixelForRegion(overflowButton))
+    end)
+    overflowButton:SetScript("OnMouseUp", function()
+        AF.RePoint(icon)
+    end)
+    overflowButton:SetScript("OnShow", function()
+        AF.RePoint(icon)
+    end)
+    overflowButton:HookScript("OnEnter", function()
+        icon:SetVertexColor(AF.GetColorRGB("white"))
+    end)
+    overflowButton:HookScript("OnLeave", function()
+        icon:SetVertexColor(AF.GetColorRGB("darkgray"))
+    end)
+
+
+    local function MenuArrowButton_OnEnter(self)
+        self.BFIIcon:SetVertexColor(AF.GetColorRGB("white"))
+    end
+    local function MenuArrowButton_OnLeave(self)
+        self.BFIIcon:SetVertexColor(AF.GetColorRGB("darkgray"))
+    end
+
+    hooksecurefunc("NavBar_AddButton", function(self, buttonData)
+        for _, button in next, self.navList do
+            if not button._BFIStyled then
+                button._BFIStyled = true
+
+                S.RemoveTextures(button)
+                button:SetPushedTextOffset(0, -1)
+
+                local offset
+                if button == map.NavBar.home then
+                    offset = button.xoffset
+                end
+
+                local normalTexture = button:GetNormalTexture()
+                SetupTexture(normalTexture, "Gradient_Linear_Right", "widget_highlight", 0.8, offset)
+
+                local pushedTexture = button:GetPushedTexture()
+                SetupTexture(pushedTexture, "Gradient_Linear_Right", "widget_highlight", 0.8, offset)
+
+                local highlightTexture = button:GetHighlightTexture()
+                SetupTexture(highlightTexture, "Gradient_Linear_Right", "widget_highlight", 0.2, offset)
+
+                if button.selected then
+                    SetupTexture(button.selected, "Gradient_Linear_Right", "BFI", 0.2)
+                end
+
+                if button.MenuArrowButton then
+                    local MenuArrowButton = button.MenuArrowButton
+                    S.StyleIconButton(MenuArrowButton, nil, AF.GetIcon("ArrowDown2"), 16)
+                    AF.ClearBackdrop(MenuArrowButton.BFIBackdrop)
+                    MenuArrowButton.BFIBg:Hide()
+                    MenuArrowButton.BFIIcon:SetVertexColor(AF.GetColorRGB("darkgray"))
+                    MenuArrowButton:HookScript("OnEnter", MenuArrowButton_OnEnter)
+                    MenuArrowButton:HookScript("OnLeave", MenuArrowButton_OnLeave)
+                end
+            end
+        end
+    end)
 
     --------------------------------------------------
-    -- other overlay frames
+    -- SidePanelToggle
+    --------------------------------------------------
+    local function StyleSidePanelToggle(frame)
+        frame:SetSize(25, 25)
+        frame.OpenButton:SetSize(25, 25)
+        frame.CloseButton:SetSize(25, 25)
+        S.StyleIconButton(frame.OpenButton, "BFI_hover", AF.GetIcon("ArrowRight1"), 20)
+        S.StyleIconButton(frame.CloseButton, "BFI_hover", AF.GetIcon("ArrowLeft1"), 20)
+    end
+
+    --------------------------------------------------
+    -- FloorDropdown
+    --------------------------------------------------
+    local function StyleFloorDropdown(frame)
+        -- WorldMapFloorNavigationFrameTemplate -> WowStyle1DropdownTemplate
+        S.StyleDropdownButton(frame)
+        frame:ClearAllPoints()
+        frame:SetPoint("TOPLEFT", map:GetCanvasContainer(), 2, -2)
+    end
+
+    --------------------------------------------------
+    -- TrackingOptionsButton
+    --------------------------------------------------
+    local function StyleTrackingOptionsButton(frame)
+        -- WorldMapTrackingOptionsButtonTemplate
+        frame:SetSize(25, 25)
+        S.StyleIconButton(frame, nil, AF.GetIcon("Map-Filter-Button", BFI.name), 24)
+
+        frame.FilterCounter:ClearAllPoints()
+        frame.FilterCounter:SetPoint("RIGHT", frame, "LEFT", 2, 0)
+
+        frame.FilterCounterBanner:ClearAllPoints()
+        frame.FilterCounterBanner:SetPoint("TOPRIGHT", frame, "TOPLEFT")
+        frame.FilterCounterBanner:SetPoint("BOTTOMRIGHT", frame, "BOTTOMLEFT")
+        frame.FilterCounterBanner:SetWidth(50)
+        frame.FilterCounterBanner:SetTexture(AF.GetTexture("Gradient_Linear_Right"))
+        frame.FilterCounterBanner:SetVertexColor(AF.GetColorRGB("background", 0.5))
+        frame.FilterCounterBanner:SetAlpha(1)
+        frame.FilterCounterBanner:Show()
+
+        frame.ResetButton:ClearAllPoints()
+        frame.ResetButton:SetPoint("CENTER", frame, "TOPRIGHT", -2, -2)
+        frame.ResetButton:SetSize(20, 20)
+    end
+
+    --------------------------------------------------
+    -- TrackingPinButton
+    --------------------------------------------------
+    local function StyleTrackingPinButton(frame)
+        -- WorldMapTrackingPinButtonTemplate
+        frame:SetSize(25, 25)
+        S.StyleIconButton(frame, nil, "Waypoint-MapPin-Untracked", 23)
+    end
+
+    --------------------------------------------------
+    -- hook
     --------------------------------------------------
     -- hooksecurefunc(map, "AddOverlayFrame", function(_, templateName, templateType, anchorPoint, relativeFrame, relativePoint, offsetX, offsetY)
     --     print(templateName, templateType, AF.GetLast(map.overlayFrames))
@@ -306,42 +452,19 @@ local function StyleOverlayFrames()
     hooksecurefunc(map, "RefreshOverlayFrames", function()
         for _, frame in next, map.overlayFrames do
             if not frame._BFIStyled then
-                local objType = frame:GetObjectType()
 
-                if frame.Arrow then
-                    -- WorldMapFloorNavigationFrameTemplate -> WowStyle1DropdownTemplate
-                    S.StyleDropdownButton(frame)
-                    frame:ClearAllPoints()
-                    frame:SetPoint("TOPLEFT", map:GetCanvasContainer(), 2, -2)
-
+                if frame == map.NavBar then
+                    StyleNavBar(frame)
+                elseif frame == map.SidePanelToggle then
+                    StyleSidePanelToggle(frame)
+                elseif frame.Arrow then
+                    StyleFloorDropdown(frame)
                 elseif frame.FilterCounterBanner then
-                    -- WorldMapTrackingOptionsButtonTemplate
-                    frame:SetSize(25, 25)
-                    S.StyleIconButton(frame, nil, AF.GetIcon("Map-Filter-Button", BFI.name), 24)
-
-                    frame.FilterCounter:ClearAllPoints()
-                    frame.FilterCounter:SetPoint("RIGHT", frame, "LEFT", 2, 0)
-
-                    frame.FilterCounterBanner:ClearAllPoints()
-                    frame.FilterCounterBanner:SetPoint("TOPRIGHT", frame, "TOPLEFT")
-                    frame.FilterCounterBanner:SetPoint("BOTTOMRIGHT", frame, "BOTTOMLEFT")
-                    frame.FilterCounterBanner:SetWidth(50)
-                    frame.FilterCounterBanner:SetTexture(AF.GetTexture("Gradient_Linear_Right"))
-                    frame.FilterCounterBanner:SetVertexColor(AF.GetColorRGB("background", 0.5))
-                    frame.FilterCounterBanner:SetAlpha(1)
-                    frame.FilterCounterBanner:Show()
-
-                    frame.ResetButton:ClearAllPoints()
-                    frame.ResetButton:SetPoint("CENTER", frame, "TOPRIGHT", -2, -2)
-                    frame.ResetButton:SetSize(20, 20)
-
+                    StyleTrackingOptionsButton(frame)
                 elseif frame.ActiveTexture then
-                    -- WorldMapTrackingPinButtonTemplate
-                    frame:SetSize(25, 25)
-                    S.StyleIconButton(frame, nil, "Waypoint-MapPin-Untracked", 23)
+                    StyleTrackingPinButton(frame)
                 end
 
-                -- local type = frame:GetObjectType()
                 frame._BFIStyled = true
             end
         end
