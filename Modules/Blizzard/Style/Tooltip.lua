@@ -15,6 +15,7 @@ local function Style(tooltip, _, embedded)
     if tooltip.Delimiter2 then tooltip.Delimiter2:SetTexture() end
 
     AF.ApplyDefaultBackdropWithColors(tooltip.NineSlice)
+    AF.SetOnePixelInside(tooltip.NineSlice, tooltip)
 end
 
 ---------------------------------------------------------------------
@@ -69,6 +70,7 @@ local function StyleBlizzard()
         _G.WorldMapTooltip,
         _G.LibDBIconTooltip,
         _G.SettingsTooltip,
+        QuestMapLog_GetCampaignTooltip(), -- Interface\AddOns\Blizzard_UIPanels_Game\Mainline\WarCampaignTemplates.lua
     } do
         Style(tooltip)
     end
