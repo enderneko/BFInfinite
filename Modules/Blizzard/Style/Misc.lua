@@ -30,6 +30,9 @@ local function StyleQueueStatusFrame()
     end)
 end
 
+---------------------------------------------------------------------
+-- IconIntroTracker
+---------------------------------------------------------------------
 local function StyleIconIntroTracker()
     -- crop the new spells being added to the actionbars
     _G.IconIntroTracker:HookScript("OnEvent", function(self)
@@ -55,10 +58,21 @@ local function StyleIconIntroTracker()
 end
 
 ---------------------------------------------------------------------
+-- SetCheckButtonIsRadio
+---------------------------------------------------------------------
+local function HookSetCheckButtonIsRadio()
+    hooksecurefunc("SetCheckButtonIsRadio", function(button, isRadio)
+        if not button._BFIStyled then return end
+        S.ReStyleCheckButtonTexture(button)
+    end)
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function StyleBlizzard()
     StyleQueueStatusFrame()
     StyleIconIntroTracker()
+    HookSetCheckButtonIsRadio()
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)

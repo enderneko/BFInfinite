@@ -243,7 +243,9 @@ function S.StyleIconBorder(border, backdrop)
     -- apply color immediately
     local r, g, b, a = border:GetVertexColor()
     if r then
-        -- TODO: fix 1, 1, 1, 1
+        if r == 1 and g == 1 and b == 1 then
+            r, g, b = AF.GetColorRGB("border")
+        end
         backdrop:SetBackdropBorderColor(r, g, b, a)
     end
 
@@ -265,6 +267,30 @@ function S.StyleIconBorder(border, backdrop)
 end
 
 ---------------------------------------------------------------------
+-- LargeItemButtonTemplate
+---------------------------------------------------------------------
+function S.StyleLargeItemButton(button, borderColor)
+    assert(button, "StyleLargeItemButton: button is nil")
+
+    if button._BFIStyled then return end
+    button._BFIStyled = true
+
+    local icon = button.Icon
+    S.StyleIcon(icon, true)
+    S.StyleIconBorder(button.IconBorder, icon.BFIBackdrop)
+    if borderColor then
+        icon.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB(borderColor))
+    end
+
+    local nameFrame = button.NameFrame
+    nameFrame:SetTexture(AF.GetTexture("Gradient_Linear_Left"))
+    nameFrame:SetVertexColor(AF.GetColorRGB("widget_highlight"))
+    nameFrame:ClearAllPoints()
+    nameFrame:SetPoint("TOPLEFT", icon, "TOPRIGHT")
+    nameFrame:SetPoint("BOTTOMLEFT", icon, "BOTTOMRIGHT")
+end
+
+---------------------------------------------------------------------
 -- button
 ---------------------------------------------------------------------
 local function Button_OnEnter(button)
@@ -279,7 +305,8 @@ end
 
 local function RegisterMouseDownUp(button)
     button:SetScript("OnMouseDown", function()
-        if button:IsEnabled() then
+        if button:IsEnabled() and not button._pushed then
+            button._pushed = true
             if button.BFIText then
                 button.BFIText:AdjustPointsOffset(0, -AF.GetOnePixelForRegion(button))
             end
@@ -289,7 +316,8 @@ local function RegisterMouseDownUp(button)
         end
     end)
     button:SetScript("OnMouseUp", function()
-        if button:IsEnabled() then
+        if button:IsEnabled() and button._pushed then
+            button._pushed = nil
             if button.BFIText then
                 AF.RePoint(button.BFIText)
             end
@@ -487,18 +515,21 @@ function S.StyleCheckButton(button, size)
     AF.SetSize(button.BFIBackdrop, size or 15, size or 15)
 
     local checkedTexture = button:CreateTexture(nil, "ARTWORK")
-    checkedTexture:SetColorTexture(AF.GetColorRGB("BFI", 0.7))
+    checkedTexture:SetTexture(AF.GetPlainTexture())
+    checkedTexture:SetVertexColor(AF.GetColorRGB("BFI", 0.7))
     AF.SetOnePixelInside(checkedTexture, button.BFIBackdrop)
     button:SetCheckedTexture(checkedTexture)
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", checkedTexture)
 
     local highlightTexture = button:CreateTexture(nil, "ARTWORK")
-    highlightTexture:SetColorTexture(AF.GetColorRGB("BFI", 0.1))
+    highlightTexture:SetTexture(AF.GetPlainTexture())
+    highlightTexture:SetVertexColor(AF.GetColorRGB("BFI", 0.1))
     highlightTexture:SetAllPoints(checkedTexture)
     button:SetHighlightTexture(highlightTexture)
 
     local disabledTexture = button:CreateTexture(nil, "ARTWORK")
-    disabledTexture:SetColorTexture(AF.GetColorRGB("disabled", 0.7))
+    disabledTexture:SetTexture(AF.GetPlainTexture())
+    disabledTexture:SetVertexColor(AF.GetColorRGB("disabled", 0.7))
     disabledTexture:SetAllPoints(checkedTexture)
     button:SetDisabledCheckedTexture(disabledTexture)
 
@@ -509,6 +540,30 @@ function S.StyleCheckButton(button, size)
     button:HookScript("OnDisable", function(self)
         self.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("disabled", nil, 0.7))
     end)
+end
+
+function S.ReStyleCheckButtonTexture(button, isIndeterminate)
+    -- some check buttons update their textures dynamically, so we need to "fix" them
+    assert(button, "ReStyleCheckButtonTexture: button is nil")
+
+    button:SetNormalTexture(AF.GetEmptyTexture())
+    button:SetPushedTexture(AF.GetEmptyTexture())
+
+    local checkedTexture = button:GetCheckedTexture()
+    local disabledTexture = button:GetDisabledCheckedTexture()
+    local highlightTexture = button:GetHighlightTexture()
+
+    if isIndeterminate then
+        checkedTexture:SetTexture(AF.GetTexture("Triangle_BottomRight"))
+        disabledTexture:SetTexture(AF.GetTexture("Triangle_BottomRight"))
+    else
+        checkedTexture:SetTexture(AF.GetPlainTexture())
+        disabledTexture:SetTexture(AF.GetPlainTexture())
+    end
+    checkedTexture:SetVertexColor(AF.GetColorRGB("BFI", 0.7))
+    disabledTexture:SetVertexColor(AF.GetColorRGB("disabled", 0.7))
+    highlightTexture:SetTexture(AF.GetPlainTexture())
+    highlightTexture:SetVertexColor(AF.GetColorRGB("BFI", 0.1))
 end
 
 ---------------------------------------------------------------------
