@@ -601,6 +601,22 @@ function S.StyleEditBox(box, tlx, tly, brx, bry)
 end
 
 ---------------------------------------------------------------------
+-- InputScrollFrameTemplate
+---------------------------------------------------------------------
+function S.StyleInputScrollFrame(frame)
+    assert(frame, "StyleInputScrollFrame: frame is nil")
+
+    if frame._BFIStyled then return end
+    frame._BFIStyled = true
+
+    frame:DisableDrawLayer("BACKGROUND")
+    S.CreateBackdrop(frame)
+    frame.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
+    AF.ClearPoints(frame.BFIBackdrop)
+    AF.SetOutside(frame.BFIBackdrop, frame, 4)
+end
+
+---------------------------------------------------------------------
 -- dropdown button
 ---------------------------------------------------------------------
 function S.StyleDropdownButton(button)

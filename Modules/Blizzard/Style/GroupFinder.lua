@@ -7,6 +7,7 @@ local AF = _G.AbstractFramework
 
 local pveFrame = _G.PVEFrame
 local GroupFinderFrame = _G.GroupFinderFrame
+local LFGListFrame = _G.LFGListFrame
 
 ---------------------------------------------------------------------
 -- shared
@@ -31,6 +32,7 @@ local function StyleGroupButton(button)
     S.CreateBackdrop(button)
     button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
     button:HookScript("OnEnter", function(self)
+        if not self:IsEnabled() then return end
         self.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget_highlight"))
     end)
     button:HookScript("OnLeave", function(self)
@@ -59,6 +61,21 @@ local function StyleRoleButton(button)
     S.StyleCheckButton(button.checkButton, 14)
     button.checkButton.BFIBackdrop:ClearAllPoints()
     button.checkButton.BFIBackdrop:SetPoint("BOTTOMLEFT", 2, 2)
+end
+
+local function StyleRefreshButton(button)
+    button:SetSize(24, 24)
+    S.StyleIconButton(button, nil, 16, "yellow_text", "widget")
+    button.BFIIcon:SetTexture(AF.GetIcon("Refresh_Round"), nil, nil, "TRILINEAR")
+end
+
+local function StyleColumnHeader(header)
+    -- LFGListColumnHeaderTemplate
+    header:DisableDrawLayer("BACKGROUND")
+    S.CreateBackdrop(header)
+    AF.ClearPoints(header.BFIBackdrop)
+    AF.SetPoint(header.BFIBackdrop, "TOPLEFT")
+    AF.SetPoint(header.BFIBackdrop, "BOTTOMRIGHT", -1, 0)
 end
 
 ---------------------------------------------------------------------
@@ -140,7 +157,7 @@ local function StyleLFDQueueFrame()
         if not frame.BFIStyled then
             frame.BFIStyled = true
 
-            S.StyleIconButton(frame.expandOrCollapseButton, "red", AF.GetIcon("Plus_Small"), 12)
+            S.StyleIconButton(frame.expandOrCollapseButton, AF.GetIcon("Plus_Small"), 12, nil, "red")
             frame.expandOrCollapseButton:SetScript("OnMouseDown", nil)
             frame.expandOrCollapseButton:SetScript("OnMouseUp", nil)
 
@@ -183,11 +200,267 @@ local function StyleLFDQueueFrame()
 end
 
 ---------------------------------------------------------------------
+-- LFGListFrame
+---------------------------------------------------------------------
+local HasSearchResultInfo = C_LFGList.HasSearchResultInfo
+local GetApplicationInfo = C_LFGList.GetApplicationInfo
+local UnitIsGroupLeader = UnitIsGroupLeader
+
+local function StyleLFGListFrame()
+    local CategorySelection = LFGListFrame.CategorySelection
+    CategorySelection.Inset:Hide()
+
+    S.StyleButton(CategorySelection.StartGroupButton, "BFI")
+    S.StyleButton(CategorySelection.FindGroupButton, "BFI")
+
+    CategorySelection.StartGroupButton:SetPoint("BOTTOMLEFT", 0, 4)
+
+    -- LFGListCategoryTemplate - CategorySelection.CategoryButtons
+    local function StyleCategoryButton(self, btnIndex, categoryID, filters)
+        local button = self.CategoryButtons[btnIndex]
+
+        if button._BFIStyled then
+            local selected = self.selectedCategory == categoryID and self.selectedFilters == filters
+            button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB(selected and "BFI" or "border"))
+        else
+            button._BFIStyled = true
+            S.CreateBackdrop(button, true)
+
+            button:SetPushedTextOffset(0, -1)
+            button.Cover:Hide()
+            button.Icon:SetAllPoints()
+            button.SelectedTexture:SetTexture(AF.GetEmptyTexture())
+
+            local highlightTexture = button:GetHighlightTexture()
+            AF.SetOnePixelInside(highlightTexture, button.BFIBackdrop)
+            highlightTexture:SetTexture(AF.GetPlainTexture())
+            highlightTexture:SetVertexColor(AF.GetColorRGB("highlight_add"))
+        end
+    end
+
+    hooksecurefunc("LFGListCategorySelection_AddButton", StyleCategoryButton)
+
+    --------------------------------------------------
+    -- SearchPanel
+    --------------------------------------------------
+    local SearchPanel = LFGListFrame.SearchPanel
+
+    S.StyleButton(SearchPanel.BackButton, "BFI")
+    S.StyleButton(SearchPanel.SignUpButton, "BFI")
+    S.StyleButton(SearchPanel.BackToGroupButton, "BFI")
+    S.StyleButton(SearchPanel.ScrollBox.StartGroupButton, "BFI")
+    S.StyleScrollBar(SearchPanel.ScrollBar)
+
+    local ResultsInset = SearchPanel.ResultsInset
+    ResultsInset:SetPoint("TOPLEFT", 0, -81)
+    ResultsInset:SetPoint("BOTTOMRIGHT", -25, 29)
+    S.RemoveNineSliceAndBackground(ResultsInset)
+    S.CreateBackdrop(ResultsInset)
+    AF.SetOnePixelInside(SearchPanel.ScrollBox, ResultsInset)
+
+    SearchPanel.BackButton:SetPoint("BOTTOMLEFT", 0, 4)
+    SearchPanel.BackToGroupButton:SetPoint("BOTTOMLEFT", 0, 4)
+
+    local FilterButton = SearchPanel.FilterButton
+    S.StyleDropdownButton(FilterButton)
+    FilterButton:SetHeight(20)
+
+    local SearchBox = SearchPanel.SearchBox
+    S.StyleEditBox(SearchBox, -4)
+    SearchBox:SetHeight(20)
+    SearchBox:ClearAllPoints()
+    SearchBox:SetPoint("LEFT", ResultsInset, 4, 0)
+    SearchBox:SetPoint("RIGHT", FilterButton, "LEFT", -2, 0)
+    SearchBox:SetPoint("TOP", FilterButton)
+
+    local RefreshButton = SearchPanel.RefreshButton
+    StyleRefreshButton(RefreshButton)
+    RefreshButton:ClearAllPoints()
+    RefreshButton:SetPoint("CENTER", SearchPanel.CategoryName, 0, 1)
+    RefreshButton:SetPoint("RIGHT", FilterButton)
+
+    -- LFGListSearchEntryTemplate
+    hooksecurefunc("LFGListSearchPanel_InitButton", function(button, elementData)
+        if button._BFIStyled then return end
+        button._BFIStyled = true
+
+        button.Highlight:SetTexture(AF.GetPlainTexture())
+        button.Highlight:SetVertexColor(AF.GetColorRGB("white", 0.08))
+
+        button.CancelButton:SetSize(21, 21)
+        S.StyleIconButton(button.CancelButton, AF.GetIcon("ReadyCheck_NotReady"), 16, nil, "widget")
+    end)
+
+    hooksecurefunc("LFGListSearchEntry_Update", function(button)
+        button.BackgroundTexture:SetTexture(AF.GetPlainTexture())
+        if button.isNowFilteredOut then
+            button.BackgroundTexture:SetVertexColor(AF.GetColorRGB("red", 0.12))
+        elseif button.isApplication then
+            button.BackgroundTexture:SetVertexColor(AF.GetColorRGB("green", 0.12))
+        elseif button.isSelected then
+            button.BackgroundTexture:SetVertexColor(AF.GetColorRGB("yellow", 0.12))
+        else
+            -- button.BackgroundTexture:Hide()
+        end
+    end)
+
+    --------------------------------------------------
+    -- EntryCreation
+    --------------------------------------------------
+    local EntryCreation = LFGListFrame.EntryCreation
+
+    EntryCreation.Inset:Hide()
+
+    S.StyleDropdownButton(EntryCreation.GroupDropdown)
+    S.StyleDropdownButton(EntryCreation.ActivityDropdown)
+    S.StyleEditBox(EntryCreation.Name, -4)
+    S.StyleInputScrollFrame(EntryCreation.Description)
+    S.StyleDropdownButton(EntryCreation.PlayStyleDropdown)
+
+    S.StyleEditBox(EntryCreation.ItemLevel.EditBox, -4)
+    S.StyleCheckButton(EntryCreation.ItemLevel.CheckButton, 14)
+    S.StyleEditBox(EntryCreation.PvpItemLevel.EditBox, -4)
+    S.StyleCheckButton(EntryCreation.PvpItemLevel.CheckButton, 14)
+    S.StyleEditBox(EntryCreation.PVPRating.EditBox, -4)
+    S.StyleCheckButton(EntryCreation.PVPRating.CheckButton, 14)
+    S.StyleEditBox(EntryCreation.MythicPlusRating.EditBox, -4)
+    S.StyleCheckButton(EntryCreation.MythicPlusRating.CheckButton, 14)
+    S.StyleEditBox(EntryCreation.VoiceChat.EditBox, -4)
+    S.StyleCheckButton(EntryCreation.VoiceChat.CheckButton, 14)
+
+    S.StyleCheckButton(EntryCreation.CrossFactionGroup.CheckButton, 14)
+    S.StyleCheckButton(EntryCreation.PrivateGroup.CheckButton, 14)
+
+    S.StyleButton(EntryCreation.CancelButton, "BFI")
+    S.StyleButton(EntryCreation.ListGroupButton, "BFI")
+
+    EntryCreation.CancelButton:SetPoint("BOTTOMLEFT", 0, 4)
+
+    --------------------------------------------------
+    -- EntryCreation.ActivityFinder
+    --------------------------------------------------
+    local ActivityFinder = EntryCreation.ActivityFinder
+    ActivityFinder:SetPoint("TOPLEFT", -5, -21)
+    ActivityFinder:SetPoint("BOTTOMRIGHT", -1, 2)
+
+    ActivityFinder.Background:SetColorTexture(AF.GetColorRGB("mask", 0.5))
+
+    local Dialog = ActivityFinder.Dialog
+    Dialog.Bg:Hide()
+    Dialog.Border:Hide()
+    S.CreateBackdrop(Dialog)
+    S.RemoveNineSliceAndBackground(Dialog.BorderFrame)
+    S.CreateBackdrop(Dialog.BorderFrame)
+    S.StyleEditBox(Dialog.EntryBox, -4)
+    S.StyleScrollBar(Dialog.ScrollBar)
+    S.StyleButton(Dialog.SelectButton, "BFI")
+    S.StyleButton(Dialog.CancelButton, "BFI")
+
+    hooksecurefunc("LFGListEntryCreationActivityFinder_InitButton", function(button, elementData)
+        if button._BFIStyled then return end
+        button._BFIStyled = true
+
+        button:SetPushedTextOffset(0, 0)
+        button.Selected:SetTexture(AF.GetPlainTexture())
+        button.Selected:SetVertexColor(AF.GetColorRGB("highlight_add"))
+    end)
+
+    --------------------------------------------------
+    -- ApplicationViewer
+    --------------------------------------------------
+    local ApplicationViewer = LFGListFrame.ApplicationViewer
+
+    local InfoBackground = ApplicationViewer.InfoBackground
+    S.CreateBackdrop(InfoBackground, true)
+    InfoBackground:ClearAllPoints()
+    InfoBackground:SetPoint("TOPLEFT", 0, -23)
+    InfoBackground:SetSize(335, 95)
+    InfoBackground:SetTexCoord(AF.CalcTexCoordPreCrop(0.1, 335 / 95, 333 / 96, nil, true))
+
+    S.StyleCheckButton(ApplicationViewer.AutoAcceptButton, 14)
+
+    local RefreshButton = ApplicationViewer.RefreshButton
+    StyleRefreshButton(RefreshButton)
+    RefreshButton:ClearAllPoints()
+    RefreshButton:SetPoint("RIGHT", InfoBackground)
+    RefreshButton:SetPoint("BOTTOM", ApplicationViewer.NameColumnHeader)
+
+    -- ApplicationViewer.Inset:Hide()
+    ApplicationViewer.Inset:SetPoint("TOPLEFT", 0, -150)
+    ApplicationViewer.Inset:SetPoint("BOTTOMRIGHT", -25, 29)
+    S.RemoveNineSliceAndBackground(ApplicationViewer.Inset)
+    S.CreateBackdrop(ApplicationViewer.Inset)
+
+    AF.SetOnePixelInside(ApplicationViewer.UnempoweredCover, ApplicationViewer.Inset)
+    ApplicationViewer.UnempoweredCover.Background:SetColorTexture(AF.GetColorRGB("mask", 0.5))
+
+    StyleColumnHeader(ApplicationViewer.NameColumnHeader)
+    AF.AdjustPointsOffset(ApplicationViewer.NameColumnHeader, 0, 1)
+    StyleColumnHeader(ApplicationViewer.RoleColumnHeader)
+    StyleColumnHeader(ApplicationViewer.ItemLevelColumnHeader)
+    StyleColumnHeader(ApplicationViewer.RatingColumnHeader)
+
+    S.StyleScrollBar(ApplicationViewer.ScrollBar)
+    S.StyleButton(ApplicationViewer.BrowseGroupsButton, "BFI")
+    S.StyleButton(ApplicationViewer.RemoveEntryButton, "BFI")
+    S.StyleButton(ApplicationViewer.EditButton, "BFI")
+
+    ApplicationViewer.BrowseGroupsButton:SetPoint("BOTTOMLEFT", 0, 4)
+
+    hooksecurefunc("LFGListApplicationViewer_UpdateInfo", function(self)
+        self.RemoveEntryButton:ClearAllPoints()
+        if UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) then
+            self.RemoveEntryButton:SetPoint("BOTTOMRIGHT", self.EditButton, "BOTTOMLEFT", -2, 0)
+        else
+            self.RemoveEntryButton:SetPoint("BOTTOMLEFT", 0, 4)
+        end
+    end)
+
+    -- LFGListApplicantMemberTemplate
+    hooksecurefunc("LFGListApplicationViewer_InitButton", function(button, elementData)
+        if button._BFIStyled then return end
+        button._BFIStyled = true
+
+        -- button.DeclineButton:SetSize(21, 21)
+        S.StyleIconButton(button.DeclineButton, AF.GetIcon("ReadyCheck_NotReady"), 16, nil, "widget")
+        S.StyleButton(button.InviteButton, "widget")
+        -- button.InviteButtonSmall:SetSize(21, 21)
+        S.StyleIconButton(button.InviteButtonSmall, AF.GetIcon("ReadyCheck_Ready"), 16, nil, "widget")
+    end)
+
+    -- hooksecurefunc("LFGListApplicationViewer_UpdateApplicant", function(button, id)
+    --     button.InviteButton:Hide()
+    --     button.InviteButtonSmall:Show()
+    -- end)
+end
+
+---------------------------------------------------------------------
+-- LFDRoleCheckPopup
+---------------------------------------------------------------------
+local function StyleLFDRoleCheckPopup()
+
+end
+
+---------------------------------------------------------------------
+-- LFGInvitePopup
+---------------------------------------------------------------------
+local function StyleLFGInvitePopup()
+    --[[ test code - (inviter, roleTankAvailable, roleHealerAvailable, roleDamagerAvailable, allowMultipleRoles, isQuestSessionActive)
+    LFGInvitePopup_Update("BB7", true, true, true, true, true)
+    LFGInvitePopup:SetPoint("CENTER")
+    LFGInvitePopup:Show()
+    ]]
+end
+
+-- TODO: LFGDungeonReadyDialog
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 local function StyleBlizzard()
     StyleTabs()
     StylePVEFrame()
     StyleLFDQueueFrame()
+    StyleLFGListFrame()
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
