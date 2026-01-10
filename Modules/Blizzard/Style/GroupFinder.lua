@@ -5,13 +5,22 @@ local F = BFI.funcs
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
-local pveFrame = _G.PVEFrame
+local PVEFrame = _G.PVEFrame
 local GroupFinderFrame = _G.GroupFinderFrame
+local LFDQueueFrame = _G.LFDQueueFrame
 local LFGListFrame = _G.LFGListFrame
 
 ---------------------------------------------------------------------
 -- shared
 ---------------------------------------------------------------------
+local function CreateBackground(frame)
+    -- local bg = AF.CreateTexture(frame, nil, "background_lighter", "BACKGROUND")
+    local bg = AF.CreateGradientTexture(frame, "HORIZONTAL", AF.GetColorTable("BFI", 0), AF.GetColorTable("BFI", 0.05), nil, "BACKGROUND")
+    frame._BFIBackground = bg
+    AF.SetPoint(bg, "TOPLEFT", PVEFrame, 219, 0)
+    AF.SetPoint(bg, "BOTTOMRIGHT", -1, 1)
+end
+
 local function StyleGroupButton(button)
     -- S.StyleButton(button, "widget", "widget_highlight")
     button:ClearHighlightTexture()
@@ -91,7 +100,7 @@ local function StyleTabs()
         if last then
             AF.SetPoint(tab, "TOPLEFT", last, "TOPRIGHT", 1, 0)
         else
-            AF.SetPoint(tab, "TOPLEFT", pveFrame, "BOTTOMLEFT", 0, -1)
+            AF.SetPoint(tab, "TOPLEFT", PVEFrame, "BOTTOMLEFT", 0, -1)
         end
         last = tab
 
@@ -104,10 +113,14 @@ end
 -- PVEFrame
 ---------------------------------------------------------------------
 local function StylePVEFrame()
-    S.StyleTitledFrame(pveFrame)
+    S.StyleTitledFrame(PVEFrame)
     F.Hide(_G.PVEFrameLeftInset)
-    F.Hide(pveFrame.shadows)
-    S.RemoveTextures(pveFrame)
+    F.Hide(PVEFrame.shadows)
+    S.RemoveTextures(PVEFrame)
+
+    -- local bg = AF.CreateGradientTexture(PVEFrame, "HORIZONTAL", AF.GetColorTable("BFI", 0), AF.GetColorTable("BFI", 0.05), nil, "BACKGROUND", 1)
+    -- AF.SetPoint(bg, "TOPLEFT")
+    -- AF.SetPoint(bg, "BOTTOMRIGHT", PVEFrame, "BOTTOMLEFT", 219, 0)
 
     -- GroupFinderGroupButtonTemplate
     for i = 1, 4 do
@@ -130,11 +143,12 @@ end
 -- LFDQueueFrame
 ---------------------------------------------------------------------
 local function StyleLFDQueueFrame()
+    CreateBackground(LFDQueueFrame)
+
     S.RemoveTextures(_G.LFDParentFrame)
     _G.LFDQueueFrameBackground:Hide()
     _G.LFDParentFrameInset:Hide()
 
-    local LFDQueueFrame = _G.LFDQueueFrame
     S.StyleDropdownButton(LFDQueueFrame.TypeDropdown)
     S.StyleButton(_G.LFDQueueFrameFindGroupButton, "BFI")
 
@@ -207,6 +221,8 @@ local GetApplicationInfo = C_LFGList.GetApplicationInfo
 local UnitIsGroupLeader = UnitIsGroupLeader
 
 local function StyleLFGListFrame()
+    CreateBackground(_G.LFGListPVEStub)
+
     local CategorySelection = LFGListFrame.CategorySelection
     CategorySelection.Inset:Hide()
 
