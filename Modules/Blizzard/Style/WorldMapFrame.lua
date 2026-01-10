@@ -377,7 +377,7 @@ local function StyleOverlayFrames()
 
                 if button.MenuArrowButton then
                     local MenuArrowButton = button.MenuArrowButton
-                    S.StyleIconButton(MenuArrowButton, nil, AF.GetIcon("ArrowDown2"), 16)
+                    S.StyleIconButton(MenuArrowButton, AF.GetIcon("ArrowDown2"), 16)
                     AF.ClearBackdrop(MenuArrowButton.BFIBackdrop)
                     MenuArrowButton.BFIBg:Hide()
                     MenuArrowButton.BFIIcon:SetVertexColor(AF.GetColorRGB("darkgray"))
@@ -395,8 +395,8 @@ local function StyleOverlayFrames()
         frame:SetSize(25, 25)
         frame.OpenButton:SetSize(25, 25)
         frame.CloseButton:SetSize(25, 25)
-        S.StyleIconButton(frame.OpenButton, "BFI_hover", AF.GetIcon("ArrowRight1"), 20)
-        S.StyleIconButton(frame.CloseButton, "BFI_hover", AF.GetIcon("ArrowLeft1"), 20)
+        S.StyleIconButton(frame.OpenButton, AF.GetIcon("ArrowRight1"), 20, nil, "BFI_hover")
+        S.StyleIconButton(frame.CloseButton, AF.GetIcon("ArrowLeft1"), 20, nil, "BFI_hover")
     end
 
     --------------------------------------------------
@@ -415,7 +415,7 @@ local function StyleOverlayFrames()
     local function StyleTrackingOptionsButton(frame)
         -- WorldMapTrackingOptionsButtonTemplate
         frame:SetSize(25, 25)
-        S.StyleIconButton(frame, nil, AF.GetIcon("Map-Filter-Button", BFI.name), 24)
+        S.StyleIconButton(frame, AF.GetIcon("Map-Filter-Button", BFI.name), 24)
 
         frame.FilterCounter:ClearAllPoints()
         frame.FilterCounter:SetPoint("RIGHT", frame, "LEFT", 2, 0)
@@ -440,7 +440,7 @@ local function StyleOverlayFrames()
     local function StyleTrackingPinButton(frame)
         -- WorldMapTrackingPinButtonTemplate
         frame:SetSize(25, 25)
-        S.StyleIconButton(frame, nil, "Waypoint-MapPin-Untracked", 23)
+        S.StyleIconButton(frame, "Waypoint-MapPin-Untracked", 23)
     end
 
     --------------------------------------------------

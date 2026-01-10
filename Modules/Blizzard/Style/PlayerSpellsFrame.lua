@@ -86,12 +86,12 @@ local function StyleSpellBookFrame()
 
     -- page button
     local prevButton = spellBookFrame.PagedSpellsFrame.PagingControls.PrevPageButton
-    S.StyleIconButton(prevButton, nil, AF.GetIcon("ArrowLeft2"), 16)
+    S.StyleIconButton(prevButton, AF.GetIcon("ArrowLeft2"), 16)
     AF.SetSize(prevButton, 23, 23)
 
     local nextButton = spellBookFrame.PagedSpellsFrame.PagingControls.NextPageButton
     S.StyleButton(nextButton)
-    S.StyleIconButton(nextButton, nil, AF.GetIcon("ArrowRight2"), 16)
+    S.StyleIconButton(nextButton, AF.GetIcon("ArrowRight2"), 16)
     AF.SetSize(nextButton, 23, 23)
 
     hooksecurefunc(spellBookFrame.PagedSpellsFrame.PagingControls, "LayoutChildren", function()

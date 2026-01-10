@@ -294,6 +294,7 @@ end
 -- button
 ---------------------------------------------------------------------
 local function Button_OnEnter(button)
+    if not button:IsEnabled() then return end
     button.BFIBackdrop:SetBackdropColor(AF.UnpackColor(button._hoverColor))
 end
 
@@ -330,11 +331,11 @@ end
 
 local function Button_OnEnable(button)
     if button.BFIText then
-        button.BFIText:SetTextColor(AF.GetColorRGB("white"))
+        button.BFIText:SetTextColor(AF.UnpackColor(button._iconColor))
     end
     if button.BFIIcon then
         button.BFIIcon:SetDesaturated(false)
-        button.BFIIcon:SetVertexColor(AF.GetColorRGB("white"))
+        button.BFIIcon:SetVertexColor(AF.UnpackColor(button._iconColor))
     end
 end
 
@@ -407,9 +408,8 @@ local function IconButton_UpdatePixels(button)
     AF.ReSize(button.BFIIcon)
 end
 
-local function SetupIconButton(button, color, icon, iconSize)
-    S.StyleButton(button, color)
-    iconSize = iconSize or 16
+local function SetupIconButton(button, icon, iconSize, iconColor, color, hoverColor)
+    S.StyleButton(button, color, hoverColor)
 
     button.BFIIcon = button:CreateTexture(nil, "ARTWORK")
     AF.SetPoint(button.BFIIcon, "CENTER")
@@ -420,20 +420,21 @@ local function SetupIconButton(button, color, icon, iconSize)
         button.BFIIcon:SetTexture(icon)
     end
     button.BFIIcon:SetDesaturated(not button:IsEnabled())
-    button.BFIIcon:SetVertexColor(AF.GetColorRGB(button:IsEnabled() and "white" or "disabled"))
+    button.BFIIcon:SetVertexColor(AF.GetColorRGB(button:IsEnabled() and (iconColor or "white") or "disabled"))
+    button._iconColor = AF.GetColorTable(iconColor or "white")
 
     AF.AddToPixelUpdater_CustomGroup("BFIStyled", button, IconButton_UpdatePixels)
 end
 
-function S.StyleIconButton(button, color, icon, iconSize)
-    SetupIconButton(button, color, icon, iconSize)
+function S.StyleIconButton(button, icon, iconSize, iconColor, color, hoverColor)
+    SetupIconButton(button, icon, iconSize, iconColor, color, hoverColor)
 end
 
 function S.StyleCloseButton(button)
     assert(button, "StyleCloseButton: button is nil")
 
     if button._BFIStyled then return end
-    SetupIconButton(button, "red", AF.GetIcon("Close"))
+    SetupIconButton(button, AF.GetIcon("Close"), 16, nil, "red")
     AF.SetSize(button, 27, 20)
 end
 
@@ -441,7 +442,7 @@ function S.StyleMinimizeButton(button)
     assert(button, "StyleMinimizeButton: button is nil")
 
     if button._BFIStyled then return end
-    SetupIconButton(button, "red", AF.GetIcon("ArrowDown1"), 20)
+    SetupIconButton(button, AF.GetIcon("ArrowDown1"), 20, nil, "red")
     AF.SetSize(button, 27, 20)
 end
 
@@ -449,7 +450,7 @@ function S.StyleMaximizeButton(button)
     assert(button, "StyleMaximizeButton: button is nil")
 
     if button._BFIStyled then return end
-    SetupIconButton(button, "red", AF.GetIcon("ArrowUp1"), 20)
+    SetupIconButton(button, AF.GetIcon("ArrowUp1"), 20, nil, "red")
     AF.SetSize(button, 27, 20)
 end
 
@@ -625,6 +626,9 @@ function S.StyleDropdownButton(button)
     --     button.Text:SetPoint("CENTER")
     -- end
     button:SetPushedTextOffset(0, 0)
+    if button.displacedRegions then
+        wipe(button.displacedRegions) -- REVIEW: TAINT?
+    end
 
     local arrow = AF.CreateTexture(button, AF.GetIcon("ArrowDown_Small"), "darkgray")
     button.BFIArrow = arrow
