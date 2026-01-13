@@ -9,6 +9,7 @@ local PVEFrame = _G.PVEFrame
 local GroupFinderFrame = _G.GroupFinderFrame
 local LFDQueueFrame = _G.LFDQueueFrame
 local LFGListFrame = _G.LFGListFrame
+local RaidFinderQueueFrame = _G.RaidFinderQueueFrame
 
 ---------------------------------------------------------------------
 -- shared
@@ -17,7 +18,7 @@ local function CreateBackground(frame)
     -- local bg = AF.CreateTexture(frame, nil, "background_lighter", "BACKGROUND")
     local bg = AF.CreateGradientTexture(frame, "HORIZONTAL", AF.GetColorTable("BFI", 0), AF.GetColorTable("BFI", 0.05), nil, "BACKGROUND")
     frame._BFIBackground = bg
-    AF.SetPoint(bg, "TOPLEFT", PVEFrame, 219, 0)
+    AF.SetPoint(bg, "TOPLEFT", PVEFrame, 200, 0)
     AF.SetPoint(bg, "BOTTOMRIGHT", -1, 1)
 end
 
@@ -53,15 +54,15 @@ local function StyleRoleButton(button)
     -- LFDRoleButtonTemplate -> LFGRoleButtonWithBackgroundAndRewardTemplate -> LFGRoleButtonWithBackgroundTemplate -> LFGRoleButtonTemplate
 
     -- background
-    if button.background then
-        hooksecurefunc(button.background, "Hide", function(self)
-            self:Show()
-            self:SetDesaturated(true)
-        end)
-        hooksecurefunc(button.background, "Show", function(self)
-            self:SetDesaturated(false)
-        end)
-    end
+    -- if button.background then
+    --     hooksecurefunc(button.background, "Hide", function(self)
+    --         self:Show()
+    --         self:SetDesaturated(true)
+    --     end)
+    --     hooksecurefunc(button.background, "Show", function(self)
+    --         self:SetDesaturated(false)
+    --     end)
+    -- end
 
     -- incentiveIcon
 
@@ -85,6 +86,29 @@ local function StyleColumnHeader(header)
     AF.ClearPoints(header.BFIBackdrop)
     AF.SetPoint(header.BFIBackdrop, "TOPLEFT")
     AF.SetPoint(header.BFIBackdrop, "BOTTOMRIGHT", -1, 0)
+end
+
+local function StyleOverlayFrame(frame)
+    local name = frame:GetName()
+    _G[name .. "BlackFilter"]:SetColorTexture(AF.GetColorRGB("mask", 0.95))
+
+    local back = _G[name .. "BackfillButton"]
+    if back then
+        S.StyleButton(back, "red")
+        back:SetSize(130, 20)
+    end
+
+    local noBack = _G[name .. "NoBackfillButton"]
+    if noBack then
+        S.StyleButton(noBack, "red")
+        noBack:SetSize(130, 20)
+    end
+
+    local leaveQueueButton = _G[name .. "LeaveQueueButton"]
+    if leaveQueueButton then
+        S.StyleButton(leaveQueueButton, "red")
+        leaveQueueButton:SetSize(130, 20)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -197,6 +221,14 @@ local function StyleLFDQueueFrame()
     -- hooksecurefunc(_G.LFDQueueFrameFollower.ScrollBox, "Update", Update)
 
     --------------------------------------------------
+    -- overlays
+    --------------------------------------------------
+    StyleOverlayFrame(_G.LFDQueueFramePartyBackfill)
+    _G.LFDQueueFramePartyBackfill:SetPoint("BOTTOMRIGHT", -6, 28)
+    StyleOverlayFrame(_G.LFDQueueFrameNoLFDWhileLFR)
+    _G.LFDQueueFrameNoLFDWhileLFR:SetPoint("BOTTOMRIGHT", -6, 28)
+
+    --------------------------------------------------
     -- rewards
     --------------------------------------------------
     local rewardFrame = _G.LFDQueueFrameRandomScrollFrameChildFrame
@@ -211,6 +243,49 @@ local function StyleLFDQueueFrame()
         S.StyleLargeItemButton(_G[parentFrame:GetName() .. "Item" .. index])
     end
     hooksecurefunc("LFGRewardsFrame_SetItemButton", UpdateItemButton)
+end
+
+---------------------------------------------------------------------
+-- RaidFinderQueueFrame
+---------------------------------------------------------------------
+local function StyleRaidFinderQueueFrame()
+    CreateBackground(RaidFinderQueueFrame)
+
+    _G.RaidFinderFrameRoleBackground:Hide()
+    _G.RaidFinderFrameRoleInset:Hide()
+    _G.RaidFinderFrameBottomInset:Hide()
+    _G.RaidFinderQueueFrameBackground:Hide()
+
+    S.StyleDropdownButton(RaidFinderQueueFrame.SelectionDropdown)
+    S.StyleButton(_G.RaidFinderFrameFindRaidButton, "BFI")
+    S.StyleScrollBar(_G.RaidFinderQueueFrameScrollFrame.ScrollBar)
+
+    --------------------------------------------------
+    -- role buttons
+    --------------------------------------------------
+    StyleRoleButton(_G.RaidFinderQueueFrameRoleButtonTank)
+    StyleRoleButton(_G.RaidFinderQueueFrameRoleButtonHealer)
+    StyleRoleButton(_G.RaidFinderQueueFrameRoleButtonDPS)
+    StyleRoleButton(_G.RaidFinderQueueFrameRoleButtonLeader)
+
+    --------------------------------------------------
+    -- overlays
+    --------------------------------------------------
+    StyleOverlayFrame(_G.RaidFinderQueueFramePartyBackfill)
+    _G.RaidFinderQueueFramePartyBackfill:SetPoint("BOTTOMRIGHT", -6, 30)
+    StyleOverlayFrame(_G.RaidFinderQueueFrameIneligibleFrame)
+    _G.RaidFinderQueueFrameIneligibleFrame:SetPoint("BOTTOMRIGHT", -6, 30)
+
+    --------------------------------------------------
+    -- rewards
+    --------------------------------------------------
+    local rewardFrame = _G.RaidFinderQueueFrameScrollFrameChildFrame
+
+    -- moneyReward - LargeItemButtonTemplate
+    local moneyReward = rewardFrame.MoneyReward
+    S.StyleLargeItemButton(rewardFrame.MoneyReward)
+
+    -- NOTE: RaidFinderQueueFrameRewards_UpdateFrame -> LFGRewardsFrame_UpdateFrame -> LFGRewardsFrame_SetItemButton
 end
 
 ---------------------------------------------------------------------
@@ -478,5 +553,6 @@ local function StyleBlizzard()
     StylePVEFrame()
     StyleLFDQueueFrame()
     StyleLFGListFrame()
+    StyleRaidFinderQueueFrame()
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
