@@ -10,6 +10,8 @@ local GroupFinderFrame = _G.GroupFinderFrame
 local LFDQueueFrame = _G.LFDQueueFrame
 local LFGListFrame = _G.LFGListFrame
 local RaidFinderQueueFrame = _G.RaidFinderQueueFrame
+local PVPQueueFrame
+local WorldBattlesTexture -- atlasName
 local GetItemQualityByID = C_Item.GetItemQualityByID
 
 ---------------------------------------------------------------------
@@ -139,6 +141,49 @@ local function StyleConquestBar(bar)
     Reward.Ring:Hide()
     Reward.CircleMask:Hide()
     S.StyleIcon(Reward.Icon, true)
+end
+
+local function StylePVPCasualActivityButton(button)
+    -- PVPCasualStandardButtonTemplate -> PVPCasualActivityButton
+    if button._BFIStyled then return end
+    button._BFIStyled = true
+
+    button.SelectedTexture:SetTexture(AF.GetEmptyTexture())
+    button:SetNormalTexture(AF.GetEmptyTexture())
+    button:SetPushedTexture(AF.GetEmptyTexture())
+
+    S.CreateBackdrop(button, true)
+    AF.ClearPoints(button.BFIBackdrop)
+    AF.SetPoint(button.BFIBackdrop, "TOPLEFT")
+    AF.SetPoint(button.BFIBackdrop, "BOTTOMRIGHT", 0, 2)
+
+    local highlightTexture = button:GetHighlightTexture()
+    AF.SetOnePixelInside(highlightTexture, button.BFIBackdrop)
+    highlightTexture:SetTexture(AF.GetPlainTexture())
+    highlightTexture:SetVertexColor(AF.GetColorRGB("highlight_add"))
+
+    local bg = button.BFIBackdrop:CreateTexture(nil, "BACKGROUND")
+    bg:SetAllPoints(button:GetParent().WorldBattlesTexture)
+    bg:SetTexture(AF.GetTexture(WorldBattlesTexture, BFI.name))
+
+    local mask = button.BFIBackdrop:CreateMaskTexture(nil, "BACKGROUND")
+    mask:SetTexture(AF.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE", "NEAREST")
+    bg:AddMaskTexture(mask)
+    AF.SetOnePixelInside(mask, button.BFIBackdrop)
+
+    -- "PushedTextOffset"
+    button.Anchor:SetPoint("TOPLEFT", 0, 2)
+    button.Anchor:SetPoint("BOTTOMRIGHT", 0, 2)
+    button:SetScript("OnMouseDown", function(self)
+        if self:IsEnabled() then
+            self.Anchor:SetPoint("TOPLEFT", 0, 1)
+            self.Anchor:SetPoint("BOTTOMRIGHT", 0, 1)
+        end
+    end)
+    button:SetScript("OnMouseUp", function(self)
+        self.Anchor:SetPoint("TOPLEFT", 0, 2)
+        self.Anchor:SetPoint("BOTTOMRIGHT", 0, 2)
+    end)
 end
 
 ---------------------------------------------------------------------
@@ -602,7 +647,7 @@ AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
 --
 ---------------------------------------------------------------------
 local function StylePVPUIFrame()
-    local PVPQueueFrame = _G.PVPQueueFrame
+    PVPQueueFrame = _G.PVPQueueFrame
 
     for _, button in next, PVPQueueFrame.CategoryButtons do
         StyleGroupButton(button)
@@ -626,13 +671,15 @@ local function StylePVPUIFrame()
     -- end)
 end
 
+---------------------------------------------------------------------
+-- HonorFrame
+---------------------------------------------------------------------
 local function StyleHonorFrame()
     local HonorFrame = _G.HonorFrame
     HonorFrame.Inset:Hide()
     StyleConquestBar(HonorFrame.ConquestBar)
     StyleRoleList(HonorFrame.RoleList)
     S.StyleDropdownButton(HonorFrame.TypeDropdown)
-    S.StyleScrollBar(HonorFrame.SpecificScrollBar)
     S.StyleButton(HonorFrame.QueueButton, "BFI")
 
     --------------------------------------------------
@@ -641,55 +688,8 @@ local function StyleHonorFrame()
     local BonusFrame = HonorFrame.BonusFrame
     BonusFrame.ShadowOverlay:Hide()
 
-    local atlasName = BonusFrame.WorldBattlesTexture:GetAtlas()
+    WorldBattlesTexture = BonusFrame.WorldBattlesTexture:GetAtlas()
     BonusFrame.WorldBattlesTexture:Hide()
-
-    --------------------------------------------------
-    -- PVPCasualStandardButtonTemplate -> PVPCasualActivityButton
-    --------------------------------------------------
-    local function UpdateButton(button)
-        if button._BFIStyled then return end
-        button._BFIStyled = true
-
-        button.SelectedTexture:SetTexture(AF.GetEmptyTexture())
-        button:SetNormalTexture(AF.GetEmptyTexture())
-        button:SetPushedTexture(AF.GetEmptyTexture())
-
-        S.CreateBackdrop(button, true)
-        AF.ClearPoints(button.BFIBackdrop)
-        AF.SetPoint(button.BFIBackdrop, "TOPLEFT")
-        AF.SetPoint(button.BFIBackdrop, "BOTTOMRIGHT", 0, 2)
-
-        local highlightTexture = button:GetHighlightTexture()
-        AF.SetOnePixelInside(highlightTexture, button.BFIBackdrop)
-        highlightTexture:SetTexture(AF.GetPlainTexture())
-        highlightTexture:SetVertexColor(AF.GetColorRGB("highlight_add"))
-
-        local bg = button.BFIBackdrop:CreateTexture(nil, "BACKGROUND")
-        bg:SetAllPoints(BonusFrame.WorldBattlesTexture)
-        bg:SetTexture(AF.GetTexture(atlasName, BFI.name))
-
-        local mask = button.BFIBackdrop:CreateMaskTexture(nil, "BACKGROUND")
-        mask:SetTexture(AF.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE", "NEAREST")
-        bg:AddMaskTexture(mask)
-        AF.SetOnePixelInside(mask, button.BFIBackdrop)
-
-        -- "PushedTextOffset"
-        button.Anchor:SetPoint("TOPLEFT", 0, 2)
-        button:SetScript("OnMouseDown", function(self)
-            if self:IsEnabled() then
-		        self.Anchor:SetPoint("TOPLEFT", 0, 1)
-	        end
-        end)
-        button:SetScript("OnMouseUp", function(self)
-            self.Anchor:SetPoint("TOPLEFT", 0, 2)
-        end)
-
-        -- check selection
-        if BonusFrame.selectedButton == button then
-            button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
-        end
-    end
 
     local buttons = {
 		BonusFrame.RandomBGButton,
@@ -701,7 +701,11 @@ local function StyleHonorFrame()
 
     hooksecurefunc("HonorFrameBonusFrame_Update", function()
         for _, button in next, buttons do
-            UpdateButton(button)
+            StylePVPCasualActivityButton(button)
+            -- check selection
+            if BonusFrame.selectedButton == button then
+                button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
+            end
             -- test
             -- button.Reward.EnlistmentBonus:Show()
             -- button.Reward.RoleShortageBonus:Show()
@@ -765,9 +769,75 @@ local function StyleHonorFrame()
             rewardFrame.Icon.BFIBackdrop:SetBackdropBorderColor(AF.GetItemQualityColor(GetItemQualityByID(rewardFrame.itemID)))
         end
     end)
+
+    --------------------------------------------------
+    -- SpecificScrollBox
+    --------------------------------------------------
+    S.StyleScrollBar(HonorFrame.SpecificScrollBar)
 end
 
+---------------------------------------------------------------------
+-- HonorInset
+---------------------------------------------------------------------
+local function StyleHonorInset()
+    local HonorInset = PVPQueueFrame.HonorInset
+    S.RemoveNineSliceAndBackground(HonorInset)
+
+    local bg = AF.CreateGradientTexture(HonorInset, "VERTICAL", "none", AF.GetColorTable(AF.player.faction, 0.75), nil, "BACKGROUND")
+    bg:SetPoint("TOPLEFT", 0, 5)
+    bg:SetPoint("BOTTOMRIGHT", 0, -15)
+
+    local mask = HonorInset:CreateMaskTexture()
+    mask:SetTexture(AF.GetTexture("Square_Soft_Edge"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    mask:SetAllPoints(bg)
+    bg:AddMaskTexture(mask)
+end
+
+---------------------------------------------------------------------
+-- TrainingGroundsFrame
+---------------------------------------------------------------------
+local function StyleTrainingGroundsFrame()
+    local TrainingGroundsFrame = _G.TrainingGroundsFrame
+    TrainingGroundsFrame.Inset:Hide()
+    StyleConquestBar(TrainingGroundsFrame.ConquestBar)
+    StyleRoleList(TrainingGroundsFrame.RoleList)
+    S.StyleDropdownButton(TrainingGroundsFrame.TypeDropdown)
+    S.StyleButton(TrainingGroundsFrame.QueueButton, "BFI")
+
+    --------------------------------------------------
+    -- BonusTrainingGroundList
+    --------------------------------------------------
+    local BonusTrainingGroundList = TrainingGroundsFrame.BonusTrainingGroundList
+    BonusTrainingGroundList.ShadowOverlay:Hide()
+    BonusTrainingGroundList.WorldBattlesTexture:Hide()
+
+    for _, button in next, BonusTrainingGroundList.BonusTrainingGroundButtons do
+        StylePVPCasualActivityButton(button)
+    end
+
+    hooksecurefunc(BonusTrainingGroundList, "SetSelectedQueueOption", function()
+        for _, button in next, BonusTrainingGroundList.BonusTrainingGroundButtons do
+            if button:IsEnabled() and button:IsSelected() then
+                button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
+            else
+                button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+            end
+        end
+    end)
+
+    --------------------------------------------------
+    -- SpecificTrainingGroundList
+    --------------------------------------------------
+    local SpecificTrainingGroundList = TrainingGroundsFrame.SpecificTrainingGroundList
+    S.StyleScrollBar(SpecificTrainingGroundList.ScrollBar)
+end
+
+---------------------------------------------------------------------
+-- init
+---------------------------------------------------------------------
 AF.RegisterAddonLoaded("Blizzard_PVPUI", function()
     StylePVPUIFrame()
     StyleHonorFrame()
+    StyleHonorInset()
+    StyleTrainingGroundsFrame()
 end)
