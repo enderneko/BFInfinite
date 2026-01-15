@@ -570,7 +570,7 @@ end
 ---------------------------------------------------------------------
 -- progress bar
 ---------------------------------------------------------------------
-function S.StyleStatusBar(bar, backdropOffset)
+function S.StyleStatusBar(bar, backdropOffset, barTexture)
     assert(bar, "StyleStatusBar: bar is nil")
 
     if bar._BFIStyled then return end
@@ -579,7 +579,8 @@ function S.StyleStatusBar(bar, backdropOffset)
     S.RemoveTextures(bar)
     S.CreateBackdrop(bar, nil, backdropOffset)
     bar.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget_darker"))
-    bar:SetStatusBarTexture(BFI.media.bar)
+    bar:SetStatusBarTexture(barTexture or BFI.media.bar)
+    bar:GetStatusBarTexture():SetDrawLayer("BORDER", -1)
 end
 
 ---------------------------------------------------------------------

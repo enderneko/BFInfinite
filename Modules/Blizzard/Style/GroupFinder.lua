@@ -10,6 +10,7 @@ local GroupFinderFrame = _G.GroupFinderFrame
 local LFDQueueFrame = _G.LFDQueueFrame
 local LFGListFrame = _G.LFGListFrame
 local RaidFinderQueueFrame = _G.RaidFinderQueueFrame
+local GetItemQualityByID = C_Item.GetItemQualityByID
 
 ---------------------------------------------------------------------
 -- shared
@@ -25,19 +26,25 @@ end
 local function StyleGroupButton(button)
     -- S.StyleButton(button, "widget", "widget_highlight")
     button:ClearHighlightTexture()
-    button.bg:Hide()
-    button.ring:Hide()
+
+    local bg = button.bg or button.Background
+    bg:Hide()
+
+    local ring = button.ring or button.Ring
+    ring:Hide()
+
     button.CircleMask:Hide()
+
+    local icon = button.icon or button.Icon
+    AF.ClearPoints(icon)
+    AF.SetPoint(icon, "LEFT", button, 5, 0)
+    AF.SetSize(icon, 64, 64)
 
     local mask = button:CreateMaskTexture()
     button.iconMask = mask
     mask:SetTexture(AF.GetTexture("Square_Soft_Edge"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-    AF.SetInside(mask, button.icon, 7)
-    button.icon:AddMaskTexture(mask)
-
-    AF.ClearPoints(button.icon)
-    AF.SetPoint(button.icon, "LEFT", button, 5, 0)
-    AF.SetSize(button.icon, 64, 64)
+    AF.SetInside(mask, icon, 7)
+    icon:AddMaskTexture(mask)
 
     S.CreateBackdrop(button)
     button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget"))
@@ -111,12 +118,36 @@ local function StyleOverlayFrame(frame)
     end
 end
 
+local function StyleRoleList(roleList)
+    -- PVPRoleButtonTemplate -> LFGRoleButtonWithShortageRewardTemplate
+    for _, button in next, roleList.RoleIcons do
+        local checkButton = button.checkButton
+        checkButton:SetScale(1)
+        S.StyleCheckButton(checkButton, 12)
+        AF.ClearPoints(checkButton.BFIBackdrop)
+        checkButton.BFIBackdrop:SetPoint("BOTTOMLEFT", button, -1, -1)
+    end
+end
+
+local function StyleConquestBar(bar)
+    S.StyleStatusBar(bar)
+    bar.Border:Hide()
+    bar.Background:Hide()
+
+    local Reward = bar.Reward
+    Reward:SetPoint("LEFT", bar, "RIGHT", -8, 0)
+    Reward.Ring:Hide()
+    Reward.CircleMask:Hide()
+    S.StyleIcon(Reward.Icon, true)
+end
+
 ---------------------------------------------------------------------
 -- tabs
 ---------------------------------------------------------------------
 local function StyleTabs()
     local i = 1
     local tab, last = _G["PVEFrameTab" .. i]
+
     while tab do
         S.StyleTab(tab)
 
@@ -134,7 +165,11 @@ local function StyleTabs()
 end
 
 ---------------------------------------------------------------------
--- PVEFrame
+--   _____   _____ ___
+--  | _ \ \ / / __| __| _ __ _ _ __  ___
+--  |  _/\ V /| _|| _| '_/ _` | '  \/ -_)
+--  |_|   \_/ |___|_||_| \__,_|_|_|_\___|
+--
 ---------------------------------------------------------------------
 local function StylePVEFrame()
     S.StyleTitledFrame(PVEFrame)
@@ -550,9 +585,189 @@ end
 ---------------------------------------------------------------------
 local function StyleBlizzard()
     StyleTabs()
+
     StylePVEFrame()
     StyleLFDQueueFrame()
     StyleLFGListFrame()
     StyleRaidFinderQueueFrame()
 end
 AF.RegisterCallback("BFI_StyleBlizzard", StyleBlizzard)
+
+
+---------------------------------------------------------------------
+--   _____   _____ _   _ ___ ___
+--  | _ \ \ / / _ \ | | |_ _| __| _ __ _ _ __  ___
+--  |  _/\ V /|  _/ |_| || || _| '_/ _` | '  \/ -_)
+--  |_|   \_/ |_|  \___/|___|_||_| \__,_|_|_|_\___|
+--
+---------------------------------------------------------------------
+local function StylePVPUIFrame()
+    local PVPQueueFrame = _G.PVPQueueFrame
+
+    for _, button in next, PVPQueueFrame.CategoryButtons do
+        StyleGroupButton(button)
+    end
+
+    hooksecurefunc("PVPQueueFrame_SelectButton", function(index)
+        for i = 1, 4 do
+            local button = PVPQueueFrame.CategoryButtons[i]
+            if i == index then
+                button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
+            else
+                button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+            end
+        end
+    end)
+
+    --  hooksecurefunc("PVPUIFrame_UpdateRoleShortages", function(roleShortageBonus, roleButtons)
+    --     for _, button in next, roleButtons do
+    --         button:EnableRoleShortagePulseAnim(true)
+    --     end
+    -- end)
+end
+
+local function StyleHonorFrame()
+    local HonorFrame = _G.HonorFrame
+    HonorFrame.Inset:Hide()
+    StyleConquestBar(HonorFrame.ConquestBar)
+    StyleRoleList(HonorFrame.RoleList)
+    S.StyleDropdownButton(HonorFrame.TypeDropdown)
+    S.StyleScrollBar(HonorFrame.SpecificScrollBar)
+    S.StyleButton(HonorFrame.QueueButton, "BFI")
+
+    --------------------------------------------------
+    -- BonusFrame
+    --------------------------------------------------
+    local BonusFrame = HonorFrame.BonusFrame
+    BonusFrame.ShadowOverlay:Hide()
+
+    local atlasName = BonusFrame.WorldBattlesTexture:GetAtlas()
+    BonusFrame.WorldBattlesTexture:Hide()
+
+    --------------------------------------------------
+    -- PVPCasualStandardButtonTemplate -> PVPCasualActivityButton
+    --------------------------------------------------
+    local function UpdateButton(button)
+        if button._BFIStyled then return end
+        button._BFIStyled = true
+
+        button.SelectedTexture:SetTexture(AF.GetEmptyTexture())
+        button:SetNormalTexture(AF.GetEmptyTexture())
+        button:SetPushedTexture(AF.GetEmptyTexture())
+
+        S.CreateBackdrop(button, true)
+        AF.ClearPoints(button.BFIBackdrop)
+        AF.SetPoint(button.BFIBackdrop, "TOPLEFT")
+        AF.SetPoint(button.BFIBackdrop, "BOTTOMRIGHT", 0, 2)
+
+        local highlightTexture = button:GetHighlightTexture()
+        AF.SetOnePixelInside(highlightTexture, button.BFIBackdrop)
+        highlightTexture:SetTexture(AF.GetPlainTexture())
+        highlightTexture:SetVertexColor(AF.GetColorRGB("highlight_add"))
+
+        local bg = button.BFIBackdrop:CreateTexture(nil, "BACKGROUND")
+        bg:SetAllPoints(BonusFrame.WorldBattlesTexture)
+        bg:SetTexture(AF.GetTexture(atlasName, BFI.name))
+
+        local mask = button.BFIBackdrop:CreateMaskTexture(nil, "BACKGROUND")
+        mask:SetTexture(AF.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE", "NEAREST")
+        bg:AddMaskTexture(mask)
+        AF.SetOnePixelInside(mask, button.BFIBackdrop)
+
+        -- "PushedTextOffset"
+        button.Anchor:SetPoint("TOPLEFT", 0, 2)
+        button:SetScript("OnMouseDown", function(self)
+            if self:IsEnabled() then
+		        self.Anchor:SetPoint("TOPLEFT", 0, 1)
+	        end
+        end)
+        button:SetScript("OnMouseUp", function(self)
+            self.Anchor:SetPoint("TOPLEFT", 0, 2)
+        end)
+
+        -- check selection
+        if BonusFrame.selectedButton == button then
+            button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
+        end
+    end
+
+    local buttons = {
+		BonusFrame.RandomBGButton,
+		BonusFrame.Arena1Button,
+		BonusFrame.RandomEpicBGButton,
+		BonusFrame.BrawlButton,
+		BonusFrame.BrawlButton2,
+	}
+
+    hooksecurefunc("HonorFrameBonusFrame_Update", function()
+        for _, button in next, buttons do
+            UpdateButton(button)
+            -- test
+            -- button.Reward.EnlistmentBonus:Show()
+            -- button.Reward.RoleShortageBonus:Show()
+            -- button.Reward.RoleShortageBonus.Icon:SetTexture(QUESTION_MARK_ICON)
+        end
+    end)
+
+    hooksecurefunc("HonorFrameBonusFrame_SetButtonState", function(button, enable, minLevel)
+        if button.BFIBackdrop and not enable then
+            button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+        end
+    end)
+
+    hooksecurefunc("HonorFrameBonusFrame_SelectButton", function(button)
+        if not button.BFIBackdrop then return end
+        for _, b in next, buttons do
+            if b == button then
+                b.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
+            else
+                b.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+            end
+        end
+    end)
+
+    hooksecurefunc("PVPUIFrame_ConfigureRewardFrame", function(rewardFrame, honor, experience, itemRewards, currencyRewards, roleShortageBonus)
+        -- Reward: PVPCasualStandardButtonTemplate -> PVPRewardTemplate
+        if not rewardFrame._BFIStyled then
+            rewardFrame._BFIStyled = true
+            rewardFrame:SetSize(34, 34)
+            rewardFrame:SetHitRectInsets(0, 0, 0, 0)
+            rewardFrame.Border:Hide()
+            rewardFrame.Icon:RemoveMaskTexture(rewardFrame.CircleMask)
+            rewardFrame.Icon:SetAllPoints()
+            S.StyleIcon(rewardFrame.Icon, true)
+
+            -- EnlistmentBonus
+            local EnlistmentBonus = rewardFrame.EnlistmentBonus
+            EnlistmentBonus:DisableDrawLayer("ARTWORK") -- honorsystem-icon-enlistmentbonus
+            EnlistmentBonus:SetSize(16, 16)
+            EnlistmentBonus:ClearAllPoints()
+            EnlistmentBonus:SetPoint("CENTER", rewardFrame.Icon, "TOPRIGHT", -4, -4)
+            AF.SetFrameLevel(EnlistmentBonus, 2)
+            AF.ShowNormalGlow(EnlistmentBonus, "sand", 3)
+            EnlistmentBonus.Icon:SetAllPoints()
+            S.StyleIcon(EnlistmentBonus.Icon, true)
+
+            -- RoleShortageBonus
+            local RoleShortageBonus = rewardFrame.RoleShortageBonus
+            RoleShortageBonus.Border:Hide()
+            RoleShortageBonus:SetSize(16, 16)
+            RoleShortageBonus:ClearAllPoints()
+            RoleShortageBonus:SetPoint("CENTER", rewardFrame.Icon, "TOPRIGHT", -4, -4)
+            AF.SetFrameLevel(RoleShortageBonus, 2)
+            AF.ShowNormalGlow(RoleShortageBonus, "sand", 3)
+            RoleShortageBonus.Icon:SetAllPoints()
+            RoleShortageBonus:DisableDrawLayer("OVERLAY") -- CircleMaskScalable
+            S.StyleIcon(RoleShortageBonus.Icon, true)
+        end
+
+        if rewardFrame.itemID then
+            rewardFrame.Icon.BFIBackdrop:SetBackdropBorderColor(AF.GetItemQualityColor(GetItemQualityByID(rewardFrame.itemID)))
+        end
+    end)
+end
+
+AF.RegisterAddonLoaded("Blizzard_PVPUI", function()
+    StylePVPUIFrame()
+    StyleHonorFrame()
+end)
