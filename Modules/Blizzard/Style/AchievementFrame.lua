@@ -104,7 +104,7 @@ local function Stat_UpdateEach(button)
     button.Background:SetAlpha(1)
     button.Background:SetBlendMode("DISABLE")
     if colorIndex == 1 then
-        button.Background:SetVertexColor(AF.GetColorRGB("widget_darker"))
+        button.Background:SetVertexColor(AF.GetColorRGB("widget_dark"))
     else
         button.Background:SetVertexColor(AF.GetColorRGB("widget"))
     end
@@ -403,7 +403,7 @@ local function StyleAchievements()
         button.Label:SetTextColor(AF.GetColorRGB(button.completed and "white" or "gray"))
         button.Description:SetTextColor(AF.GetColorRGB(button.completed and "white" or "gray"))
         button.Reward:SetTextColor(AF.GetColorRGB(button.completed and "yellow_text" or "gray"))
-        button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(button.completed and "widget" or "widget_darker"))
+        button.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(button.completed and "widget" or "widget_dark"))
 
         if guildTab.isSelected then
             -- button.saturatedStyle is nil if not completed
@@ -597,8 +597,8 @@ local function StyleComparison()
 
         player.Label:SetTextColor(AF.GetColorRGB(player.completed and "white" or "gray"))
         player.Description:SetTextColor(AF.GetColorRGB(player.completed and "white" or "gray"))
-        player.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(player.completed and "widget" or "widget_darker"))
-        friend.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(friend.completed and "widget" or "widget_darker"))
+        player.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(player.completed and "widget" or "widget_dark"))
+        friend.BFIBackdrop:SetBackdropColor(AF.GetColorRGB(friend.completed and "widget" or "widget_dark"))
 
         if player.accountWide then
             player.BFITitleBar:SetColor("HORIZONTAL", AF.GetColorTable(player.completed and "skyblue" or "darkgray", 0.4), "none")

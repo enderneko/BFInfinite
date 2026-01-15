@@ -578,7 +578,7 @@ function S.StyleStatusBar(bar, backdropOffset, barTexture)
 
     S.RemoveTextures(bar)
     S.CreateBackdrop(bar, nil, backdropOffset)
-    bar.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget_darker"))
+    bar.BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget_dark"))
     bar:SetStatusBarTexture(barTexture or BFI.media.bar)
     bar:GetStatusBarTexture():SetDrawLayer("BORDER", -1)
 end

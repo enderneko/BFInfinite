@@ -226,7 +226,7 @@ local function StyleEventsFrame()
         elseif entryType == EntryType.OngoingEvent or entryType == EntryType.ScheduledEvent then
             -- event entry
             if entryType == EntryType.OngoingEvent then
-                frame.Background:SetColorTexture(AF.GetColorRGB(frame:HasRewardsClaimed() and "widget_darker" or "widget", 0.9))
+                frame.Background:SetColorTexture(AF.GetColorRGB(frame:HasRewardsClaimed() and "widget_dark" or "widget", 0.9))
             end
 
             if frame._BFIStyled then return end
