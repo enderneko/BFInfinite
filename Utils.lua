@@ -102,8 +102,8 @@ function F.Hide(region)
         region:UnregisterAllEvents()
         region:SetParent(AF.hiddenParent)
     else
-        -- region.Show = region.Hide --! TAINT
-        -- region.SetShown = region.Hide --! TAINT
+        -- region.Show = region.Hide -- TAINT!
+        -- region.SetShown = region.Hide -- TAINT!
         hooksecurefunc(region, "Show", region.Hide)
         hooksecurefunc(region, "SetShown", region.Hide)
     end
@@ -140,8 +140,8 @@ end
 -- disable edit mode
 ---------------------------------------------------------------------
 function F.DisableEditMode(region)
-    -- region.HighlightSystem = AF.noop --! TAINT
-    -- region.ClearHighlight = AF.noop --! TAINT
+    -- region.HighlightSystem = AF.noop -- TAINT!
+    -- region.ClearHighlight = AF.noop -- TAINT!
     if not (region.HighlightSystem or region.ClearHighlight) then return end
     hooksecurefunc(region, "HighlightSystem", region.ClearHighlight)
 end

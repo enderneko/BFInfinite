@@ -85,7 +85,7 @@ local function StyleQuestsFrame()
         -- collapseButton.Icon:SetSize(16, 16) -- SetAtlas(xx, true) will override size
         collapseButton.Icon:SetAlpha(0.5)
 
-        -- collapseButton.UpdateCollapsedState = UpdateCollapsedState --! taint
+        -- collapseButton.UpdateCollapsedState = UpdateCollapsedState -- TAINT!
         hooksecurefunc(collapseButton, "UpdateCollapsedState", UpdateCollapsedState)
         UpdateCollapsedState(collapseButton, collapseButton.collapsed)
     end

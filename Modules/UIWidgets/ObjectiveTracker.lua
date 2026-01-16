@@ -85,7 +85,7 @@ local function ApplyModuleOrder()
 end
 ]]
 
---[[ --! TAINT
+--[[ -- TAINT!
 local function SetupOrder(_, dirtyUpdate, skip)
     local order = W.config.objectiveTracker.order
     order = AF.TransposeTable(order)
@@ -103,7 +103,7 @@ end
 
 local function SetupTracker()
     F.DisableEditMode(tracker)
-    -- tracker.topModulePadding = 20 + 10 -- 38 --! TAINT
+    -- tracker.topModulePadding = 20 + 10 -- 38 -- TAINT!
     -- tracker.moduleSpacing = 7 -- 10
     tracker:SetClampedToScreen(false)
 
@@ -139,7 +139,7 @@ local function SetupTracker()
     --------------------------------------------------
     local function UpdateHeaderStyle(module)
         local header = module.Header
-        -- module.headerHeight = 20 --! TAINT
+        -- module.headerHeight = 20 -- TAINT!
         header:SetHeight(20)
 
         header.Text:SetTextColor(AF.GetColorRGB("BFI"))
@@ -168,7 +168,7 @@ local function SetupTracker()
             highlight:Hide()
         end)
         -- header:SetScript("OnMouseDown", function()
-        --     module:ToggleCollapsed() --! TAINT
+        --     module:ToggleCollapsed() -- TAINT!
         -- end)
 
         if module == tracker then
@@ -228,7 +228,7 @@ local function SetupTracker()
     end)
 
     --------------------------------------------------
-    -- update order --! TAINT everywhere, no idea how to make it work
+    -- update order -- TAINT! everywhere, no idea how to make it work
     --------------------------------------------------
     -- -- hooksecurefunc(tracker, "Update", ApplyModuleOrder)
     -- -- hooksecurefunc(tracker, "MarkDirty", ApplyModuleOrder)
@@ -312,7 +312,7 @@ local function SetupReward_Sub(sub)
     sub.ItemBorder:SetWidth(81)
 end
 
---! TAINT
+-- TAINT!
 -- local function SetupOrder(order)
 --     -- ObjectiveTrackerManager:OnPlayerEnteringWorld
 --     -- print(GetTime(), "SetupOrder called")
@@ -320,7 +320,7 @@ end
 --     for i, moduleName in ipairs(order) do
 --         tinsert(orderedModules, _G[moduleName])
 --     end
---     manager:AssignModulesOrder(orderedModules, true) --! TAINT, modified .uiOrder
+--     manager:AssignModulesOrder(orderedModules, true) -- TAINT!, modified .uiOrder
 --     for i, module in ipairs(orderedModules) do
 --         manager:SetModuleContainer(module, tracker)
 --     end
@@ -368,7 +368,7 @@ local function SetupManager()
 end
 
 local function SetupScenarioObjectiveTracker()
-    -- scenarioTracker.lineSpacing = 7 --! TAINT
+    -- scenarioTracker.lineSpacing = 7 -- TAINT!
 
     S.CreateBackdrop(scenarioTracker.StageBlock)
     AF.SetInside(scenarioTracker.StageBlock.BFIBackdrop, scenarioTracker.StageBlock.NormalBG, 3, 3)
