@@ -186,6 +186,50 @@ local function StylePVPCasualActivityButton(button)
     end)
 end
 
+-- PVPInstanceListEntryButtonTemplate
+local function StyleEntryButton(button)
+    if button._BFIStyled then
+        if button.SelectedTexture:IsShown() then
+            button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
+        else
+            button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("border"))
+        end
+    else
+        button._BFIStyled = true
+
+        button.Bg:Hide()
+        button.Border:Hide()
+        button.SelectedTexture:SetTexture(AF.GetEmptyTexture())
+
+        S.CreateBackdrop(button)
+        AF.ClearPoints(button.BFIBackdrop)
+        AF.SetPoint(button.BFIBackdrop, "TOPLEFT")
+        AF.SetPoint(button.BFIBackdrop, "BOTTOMRIGHT", 0, 1)
+
+        button.Icon:ClearAllPoints()
+        button.Icon:SetPoint("LEFT", button.BFIBackdrop, 3, 0)
+        button.Icon:SetSize(33, 33)
+        S.StyleIcon(button.Icon, true)
+
+        local NameText = button.NameText
+        NameText:ClearAllPoints()
+        NameText:SetPoint("LEFT", button.Icon, "RIGHT", 5, 0)
+
+        local SizeText = button.SizeText
+        SizeText:ClearAllPoints()
+        SizeText:SetPoint("BOTTOMRIGHT", button.BFIBackdrop, "RIGHT", -7, 2)
+
+        local InfoText = button.InfoText
+        InfoText:ClearAllPoints()
+        InfoText:SetPoint("TOPRIGHT", button.BFIBackdrop, "RIGHT", -7, -2)
+
+        local highlightTexture = button:GetHighlightTexture()
+        AF.SetOnePixelInside(highlightTexture, button.BFIBackdrop)
+        highlightTexture:SetTexture(AF.GetPlainTexture())
+        highlightTexture:SetVertexColor(AF.GetColorRGB("highlight_add"))
+    end
+end
+
 ---------------------------------------------------------------------
 -- tabs
 ---------------------------------------------------------------------
@@ -774,6 +818,14 @@ local function StyleHonorFrame()
     -- SpecificScrollBox
     --------------------------------------------------
     S.StyleScrollBar(HonorFrame.SpecificScrollBar)
+    -- HonorFrame.SpecificScrollBox:GetView():SetPadding(0, 0, 0, 0, 2) -- TAINT!
+
+    -- PVPSpecificBattlegroundButtonTemplate -> PVPInstanceListEntryButtonTemplate
+    local function Update(scrollBox)
+        scrollBox:ForEachFrame(StyleEntryButton)
+    end
+    hooksecurefunc(HonorFrame.SpecificScrollBox, "Update", Update)
+    -- HonorFrame_InitSpecificButton
 end
 
 ---------------------------------------------------------------------
@@ -830,6 +882,21 @@ local function StyleTrainingGroundsFrame()
     --------------------------------------------------
     local SpecificTrainingGroundList = TrainingGroundsFrame.SpecificTrainingGroundList
     S.StyleScrollBar(SpecificTrainingGroundList.ScrollBar)
+    -- SpecificTrainingGroundList.ScrollBox:GetView():SetPadding(0, 0, 0, 0, 2) -- TAINT! (actually no taint for this, but for that in HonorFrame)
+
+    -- PVPSpecificTrainingGroundButtonTemplate -> PVPInstanceListEntryButtonTemplate
+    local function Update(scrollBox)
+        scrollBox:ForEachFrame(StyleEntryButton)
+    end
+    hooksecurefunc(SpecificTrainingGroundList.ScrollBox, "Update", Update)
+
+    -- local selectionBehavior = ScrollUtil.AddSelectionBehavior(SpecificTrainingGroundList.ScrollBox, SelectionBehaviorFlags.Intrusive)
+    -- selectionBehavior:RegisterCallback(SelectionBehaviorMixin.Event.OnSelectionChanged, function(o, elementData, selected)
+    --     local button = SpecificTrainingGroundList.ScrollBox:FindFrame(elementData)
+    --     if button then
+    --         print(selected)
+    --     end
+    -- end, SpecificTrainingGroundList)
 end
 
 ---------------------------------------------------------------------
