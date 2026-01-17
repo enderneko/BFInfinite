@@ -175,7 +175,7 @@ local function StyleConquestBar(bar)
     S.StyleIcon(Reward.Icon, true)
 end
 
-local function StylePVPCasualActivityButton(button)
+local function StylePVPActivityButton(button, bgAnchorTo, bgTexture)
     -- PVPCasualStandardButtonTemplate -> PVPCasualActivityButton
     if button._BFIStyled then return end
     button._BFIStyled = true
@@ -195,8 +195,8 @@ local function StylePVPCasualActivityButton(button)
     highlightTexture:SetVertexColor(AF.GetColorRGB("highlight_add"))
 
     local bg = button.BFIBackdrop:CreateTexture(nil, "BACKGROUND")
-    bg:SetAllPoints(button:GetParent().WorldBattlesTexture)
-    bg:SetTexture(AF.GetTexture(WorldBattlesTexture, BFI.name))
+    bg:SetAllPoints(bgAnchorTo)
+    bg:SetTexture(AF.GetTexture(bgTexture, BFI.name))
 
     local mask = button.BFIBackdrop:CreateMaskTexture(nil, "BACKGROUND")
     mask:SetTexture(AF.GetPlainTexture(), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE", "NEAREST")
@@ -781,7 +781,7 @@ local function StyleHonorFrame()
 
     hooksecurefunc("HonorFrameBonusFrame_Update", function()
         for _, button in next, buttons do
-            StylePVPCasualActivityButton(button)
+            StylePVPActivityButton(button, BonusFrame.WorldBattlesTexture, WorldBattlesTexture)
             -- check selection
             if BonusFrame.selectedButton == button then
                 button.BFIBackdrop:SetBackdropBorderColor(AF.GetColorRGB("BFI"))
@@ -881,6 +881,24 @@ local function StyleHonorInset()
     mask:SetTexture(AF.GetTexture("Square_Soft_Edge"), "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     mask:SetAllPoints(bg)
     bg:AddMaskTexture(mask)
+
+    --------------------------------------------------
+    -- RatedPanel
+    --------------------------------------------------
+    local RatedPanel = HonorInset.RatedPanel
+
+    local SeasonRewardFrame = RatedPanel.SeasonRewardFrame
+    SeasonRewardFrame.CircleMask:Hide()
+    SeasonRewardFrame.Ring:Hide()
+    S.StyleIcon(SeasonRewardFrame.Icon, true)
+
+    hooksecurefunc(RatedPanel, "Update", function()
+        if SeasonRewardFrame.rewardItemID then
+            AF.LoadItemQualityAsync(SeasonRewardFrame.rewardItemID, function(quality)
+                SeasonRewardFrame.Icon.BFIBackdrop:SetBackdropBorderColor(AF.GetItemQualityColor(quality))
+            end)
+        end
+    end)
 end
 
 ---------------------------------------------------------------------
@@ -902,7 +920,7 @@ local function StyleTrainingGroundsFrame()
     BonusTrainingGroundList.WorldBattlesTexture:Hide()
 
     for _, button in next, BonusTrainingGroundList.BonusTrainingGroundButtons do
-        StylePVPCasualActivityButton(button)
+        StylePVPActivityButton(button, BonusTrainingGroundList.WorldBattlesTexture, WorldBattlesTexture)
     end
 
     hooksecurefunc(BonusTrainingGroundList, "SetSelectedQueueOption", function()
@@ -990,9 +1008,25 @@ end
 local function StyleConquestFrame()
     local ConquestFrame = _G.ConquestFrame
     ConquestFrame.Inset:Hide()
+    ConquestFrame.ShadowOverlay:Hide()
+    ConquestFrame.RatedBGTexture:Hide()
+
     StyleConquestBar(ConquestFrame.ConquestBar)
     StyleRoleList(ConquestFrame.RoleList)
     S.StyleButton(ConquestFrame.JoinButton, "BFI")
+
+    --------------------------------------------------
+    -- CONQUEST_BUTTONS
+    --------------------------------------------------
+    local CONQUEST_BUTTONS = _G.CONQUEST_BUTTONS
+    for _, button in next, CONQUEST_BUTTONS do
+        -- PVPRatedActivityButtonTemplate
+        if not button._BFIStyled then
+            button.TeamSizeText:ClearAllPoints()
+            button.TeamSizeText:SetPoint("BOTTOMLEFT", button.Anchor, "LEFT", 20, -2)
+        end
+        StylePVPActivityButton(button, ConquestFrame.RatedBGTexture, "pvpqueue-background-rated")
+    end
 end
 
 ---------------------------------------------------------------------
