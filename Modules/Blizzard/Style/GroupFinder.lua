@@ -12,7 +12,6 @@ local LFGListFrame = _G.LFGListFrame
 local RaidFinderQueueFrame = _G.RaidFinderQueueFrame
 local PVPQueueFrame
 local WorldBattlesTexture -- atlasName
-local GetItemQualityByID = C_Item.GetItemQualityByID
 
 ---------------------------------------------------------------------
 -- shared
@@ -59,8 +58,24 @@ local function StyleGroupButton(button)
     end)
 end
 
+local function SharedStyleRoleButton(button)
+    -- incentiveIcon
+    local incentiveIcon = button.incentiveIcon
+    if incentiveIcon then
+        if incentiveIcon.CircleMask then
+            incentiveIcon.CircleMask:Hide()
+        end
+        incentiveIcon.border:Hide()
+        S.StyleIcon(incentiveIcon.texture, true)
+    end
+
+    -- checkButton
+    button.checkButton:SetScale(1)
+end
+
 local function StyleRoleButton(button)
     -- LFDRoleButtonTemplate -> LFGRoleButtonWithBackgroundAndRewardTemplate -> LFGRoleButtonWithBackgroundTemplate -> LFGRoleButtonTemplate
+    SharedStyleRoleButton(button)
 
     -- background
     -- if button.background then
@@ -73,10 +88,7 @@ local function StyleRoleButton(button)
     --     end)
     -- end
 
-    -- incentiveIcon
-
     -- checkButton
-    button.checkButton:SetScale(1)
     S.StyleCheckButton(button.checkButton, 14)
     button.checkButton.BFIBackdrop:ClearAllPoints()
     button.checkButton.BFIBackdrop:SetPoint("BOTTOMLEFT", 2, 2)
@@ -123,11 +135,15 @@ end
 local function StyleRoleList(roleList)
     -- PVPRoleButtonTemplate -> LFGRoleButtonWithShortageRewardTemplate
     for _, button in next, roleList.RoleIcons do
+        SharedStyleRoleButton(button)
+
+        -- checkButton
         local checkButton = button.checkButton
-        checkButton:SetScale(1)
         S.StyleCheckButton(checkButton, 12)
         AF.ClearPoints(checkButton.BFIBackdrop)
         checkButton.BFIBackdrop:SetPoint("BOTTOMLEFT", button, -1, -1)
+
+        -- incentiveIcon
     end
 end
 
@@ -810,7 +826,9 @@ local function StyleHonorFrame()
         end
 
         if rewardFrame.itemID then
-            rewardFrame.Icon.BFIBackdrop:SetBackdropBorderColor(AF.GetItemQualityColor(GetItemQualityByID(rewardFrame.itemID)))
+            AF.LoadItemQualityAsync(rewardFrame.itemID, function(quality)
+                rewardFrame.Icon.BFIBackdrop:SetBackdropBorderColor(AF.GetItemQualityColor(quality))
+            end)
         end
     end)
 
@@ -900,6 +918,70 @@ local function StyleTrainingGroundsFrame()
 end
 
 ---------------------------------------------------------------------
+-- NewSeasonPopup
+---------------------------------------------------------------------
+local function StyleNewSeasonPopup()
+    local NewSeasonPopup = PVPQueueFrame.NewSeasonPopup
+    S.RemoveTextures(NewSeasonPopup)
+    S.StyleButton(NewSeasonPopup.Leave, "BFI")
+
+    S.CreateBackdrop(NewSeasonPopup)
+
+    local BFIBackdrop = NewSeasonPopup.BFIBackdrop
+    BFIBackdrop:EnableMouse(true)
+    AF.ClearPoints(BFIBackdrop)
+    AF.SetPoint(BFIBackdrop, "LEFT")
+    AF.SetPoint(BFIBackdrop, "TOP", PVEFrame.BFIHeader, "BOTTOM", 0, -1)
+    AF.SetPoint(BFIBackdrop, "BOTTOMRIGHT", PVEFrame.BFIBg, -2, 2)
+    BFIBackdrop:SetBackdropColor(AF.GetColorRGB("widget", 0.99))
+
+    --------------------------------------------------
+    -- reward
+    --------------------------------------------------
+    local SeasonRewardFrame = NewSeasonPopup.SeasonRewardFrame
+    SeasonRewardFrame.CircleMask:Hide()
+    SeasonRewardFrame.Ring:Hide()
+    S.StyleIcon(SeasonRewardFrame.Icon, true)
+
+    hooksecurefunc(SeasonRewardFrame, "Update", function(self)
+        if self.rewardItemID then
+            AF.LoadItemQualityAsync(self.rewardItemID, function(quality)
+                self.Icon.BFIBackdrop:SetBackdropBorderColor(AF.GetItemQualityColor(quality))
+            end)
+        end
+    end)
+
+    --------------------------------------------------
+    -- texts
+    --------------------------------------------------
+    local function UpdateText(text, color)
+        text:SetTextColor(AF.GetColorRGB(color))
+        text:SetShadowColor(AF.GetColorRGB("black"))
+        text:SetShadowOffset(1, -1)
+    end
+
+    NewSeasonPopup:HookScript("OnShow", function(self)
+        UpdateText(self.NewSeason, "yellow_text")
+        UpdateText(self.SeasonDescriptionHeader, "white")
+        for _, text in next, self.SeasonDescriptions do
+            UpdateText(text, "white")
+        end
+        UpdateText(self.SeasonRewardText, "yellow_text")
+    end)
+end
+
+---------------------------------------------------------------------
+-- ConquestFrame
+---------------------------------------------------------------------
+local function StyleConquestFrame()
+    local ConquestFrame = _G.ConquestFrame
+    ConquestFrame.Inset:Hide()
+    StyleConquestBar(ConquestFrame.ConquestBar)
+    StyleRoleList(ConquestFrame.RoleList)
+    S.StyleButton(ConquestFrame.JoinButton, "BFI")
+end
+
+---------------------------------------------------------------------
 -- init
 ---------------------------------------------------------------------
 AF.RegisterAddonLoaded("Blizzard_PVPUI", function()
@@ -907,4 +989,6 @@ AF.RegisterAddonLoaded("Blizzard_PVPUI", function()
     StyleHonorFrame()
     StyleHonorInset()
     StyleTrainingGroundsFrame()
+    StyleNewSeasonPopup()
+    StyleConquestFrame()
 end)
