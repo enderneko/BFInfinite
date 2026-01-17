@@ -62,10 +62,12 @@ local function SharedStyleRoleButton(button)
     -- incentiveIcon
     local incentiveIcon = button.incentiveIcon
     if incentiveIcon then
+        AF.SetFrameLevel(incentiveIcon, 2)
         if incentiveIcon.CircleMask then
             incentiveIcon.CircleMask:Hide()
         end
         incentiveIcon.border:Hide()
+        incentiveIcon.texture:SetAllPoints(incentiveIcon)
         S.StyleIcon(incentiveIcon.texture, true)
     end
 
@@ -88,10 +90,19 @@ local function StyleRoleButton(button)
     --     end)
     -- end
 
+    -- incentiveIcon
+    local incentiveIcon = button.incentiveIcon
+    if incentiveIcon then
+        AF.SetSize(incentiveIcon, 14, 14)
+        incentiveIcon:ClearAllPoints()
+        incentiveIcon:SetPoint("BOTTOMRIGHT", button, -1, 0)
+        AF.ShowCalloutGlow(incentiveIcon, true)
+    end
+
     -- checkButton
     S.StyleCheckButton(button.checkButton, 14)
     button.checkButton.BFIBackdrop:ClearAllPoints()
-    button.checkButton.BFIBackdrop:SetPoint("BOTTOMLEFT", 2, 2)
+    button.checkButton.BFIBackdrop:SetPoint("BOTTOMLEFT", button)
 end
 
 local function StyleRefreshButton(button)
@@ -144,6 +155,11 @@ local function StyleRoleList(roleList)
         checkButton.BFIBackdrop:SetPoint("BOTTOMLEFT", button, -1, -1)
 
         -- incentiveIcon
+        local incentiveIcon = button.incentiveIcon
+        AF.SetSize(incentiveIcon, 12, 12)
+        incentiveIcon:ClearAllPoints()
+        incentiveIcon:SetPoint("BOTTOMRIGHT", button, 0, -1)
+        AF.ShowNormalGlow(incentiveIcon, "sand", 3)
     end
 end
 
@@ -323,6 +339,10 @@ local function StyleLFDQueueFrame()
     StyleRoleButton(_G.LFDQueueFrameRoleButtonHealer)
     StyleRoleButton(_G.LFDQueueFrameRoleButtonDPS)
     StyleRoleButton(_G.LFDQueueFrameRoleButtonLeader)
+
+    C_Timer.After(5, function()
+        LFG_SetRoleIconIncentive(_G.LFDQueueFrameRoleButtonTank, LFG_ROLE_SHORTAGE_PLENTIFUL)
+    end)
 
     --------------------------------------------------
     -- scroll
@@ -752,12 +772,12 @@ local function StyleHonorFrame()
     BonusFrame.WorldBattlesTexture:Hide()
 
     local buttons = {
-		BonusFrame.RandomBGButton,
-		BonusFrame.Arena1Button,
-		BonusFrame.RandomEpicBGButton,
-		BonusFrame.BrawlButton,
-		BonusFrame.BrawlButton2,
-	}
+        BonusFrame.RandomBGButton,
+        BonusFrame.Arena1Button,
+        BonusFrame.RandomEpicBGButton,
+        BonusFrame.BrawlButton,
+        BonusFrame.BrawlButton2,
+    }
 
     hooksecurefunc("HonorFrameBonusFrame_Update", function()
         for _, button in next, buttons do
@@ -954,19 +974,13 @@ local function StyleNewSeasonPopup()
     --------------------------------------------------
     -- texts
     --------------------------------------------------
-    local function UpdateText(text, color)
-        text:SetTextColor(AF.GetColorRGB(color))
-        text:SetShadowColor(AF.GetColorRGB("black"))
-        text:SetShadowOffset(1, -1)
-    end
-
     NewSeasonPopup:HookScript("OnShow", function(self)
-        UpdateText(self.NewSeason, "yellow_text")
-        UpdateText(self.SeasonDescriptionHeader, "white")
+        AF.SetFontShadow(self.NewSeason, nil, "yellow_text")
+        AF.SetFontShadow(self.SeasonDescriptionHeader, nil, "white")
         for _, text in next, self.SeasonDescriptions do
-            UpdateText(text, "white")
+            AF.SetFontShadow(text, nil, "white")
         end
-        UpdateText(self.SeasonRewardText, "yellow_text")
+        AF.SetFontShadow(self.SeasonRewardText, nil, "yellow_text")
     end)
 end
 
