@@ -20,6 +20,7 @@
     <Script file="Style\PlayerSpellsFrame.lua"/>
     <Script file="Style\ProfessionsBookFrame.lua"/>
     <Script file="Style\GroupFinder.lua"/>
+    <Script file="Style\ChallengesUI.lua"/>
     <Script file="Style\StaticPopups.lua"/>
     <Script file="Style\Tooltip.lua"/>
     <Script file="Style\WeeklyRewardsFrame.lua"/>
