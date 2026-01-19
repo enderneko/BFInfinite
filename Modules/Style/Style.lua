@@ -186,6 +186,23 @@ function S.StyleIcon(icon, createBackdrop)
     end
 end
 
+function S.StyleIconFrame(frame, backdropOnIcon)
+    if frame.Border then
+        frame.Border:Hide()
+    end
+    if frame.CircleMask then
+        frame.CircleMask:Hide()
+    end
+
+    if backdropOnIcon then
+        S.StyleIcon(frame.Icon, true)
+    else
+        S.StyleIcon(frame.Icon)
+        frame.Icon:SetAllPoints(frame)
+        S.CreateBackdrop(frame, true, nil, 1)
+    end
+end
+
 ---------------------------------------------------------------------
 -- icon border
 ---------------------------------------------------------------------

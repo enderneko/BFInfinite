@@ -371,16 +371,56 @@ local function SetupScenarioObjectiveTracker()
     -- scenarioTracker.lineSpacing = 7 -- TAINT!
 
     S.CreateBackdrop(scenarioTracker.StageBlock)
-    AF.SetInside(scenarioTracker.StageBlock.BFIBackdrop, scenarioTracker.StageBlock.NormalBG, 3, 3)
+    AF.SetInside(scenarioTracker.StageBlock.BFIBackdrop, scenarioTracker.StageBlock.NormalBG, 4, 4)
 
     -- texture
     F.Hide(scenarioTracker.StageBlock.NormalBG)
     F.Hide(scenarioTracker.StageBlock.FinalBG)
     F.Hide(scenarioTracker.StageBlock.GlowTexture)
 
-    rewardsFrame:SetScale(1)
+    -- WidgetContainer: UIWidgetContainerTemplate -> UIWidgetContainerNoResizeTemplate
+    hooksecurefunc(scenarioTracker.StageBlock.WidgetContainer, "CreateWidget", function(self, widgetID, widgetType, widgetTypeInfo, widgetInfo)
+        -- https://warcraft.wiki.gg/wiki/UPDATE_UI_WIDGET
+        if widgetType == 29 then -- delve
+            -- UIWidgetTemplateScenarioHeaderDelves
+            local widget = self.widgetFrames[widgetID]
+            widget.Frame:Hide()
 
-    -- font
+            -- for spell in widget.spellPool:EnumerateActive() do
+            --     if not spell._BFIStyled then
+            --         spell._BFIStyled = true
+            --         print("Style Delve Spell:", spell)
+            --     end
+            -- end
+
+            local font = W.config.objectiveTracker.font
+            AF.SetFont(widget.HeaderText, font, font[2] + 4, "outline", false) -- QuestTitleFont
+            AF.SetFont(widget.TierFrame.Text, font, font[2] + 2, "none", true)
+
+            if not widget._BFIHooked then
+                widget._BFIHooked = true
+
+                hooksecurefunc(widget.CurrencyContainer, "Layout", function()
+                    local font = W.config.objectiveTracker.font
+                    for currencyFrame in widget.currencyPool:EnumerateActive() do
+                        AF.SetFont(currencyFrame.Text, font, font[2] + 1, "none", true)
+                    end
+                end)
+
+                hooksecurefunc(widget, "UpdateSpellFrameEffects", function(_, widgetInfo, spellInfo, spellFrame)
+                    -- UIWidgetBaseSpellTemplate
+                    -- print(spellInfo.spellID)
+                    S.StyleIconFrame(spellFrame)
+                    spellFrame:SetSize(21, 21)
+                    local r, g, b = AF.GetColorRGB("BFI")
+                    spellFrame.BFIBackdrop:SetBackdropBorderColor(AF.AdjustColorSaturationBrightness(r, g, b, 1, 0.7))
+                end)
+            end
+        end
+    end)
+
+    -- rewardsFrame
+    rewardsFrame:SetScale(1)
     hooksecurefunc(rewardsFrame, "DisplayRewards", function()
         local font = W.config.objectiveTracker.font
         AF.SetFont(rewardsFrame.Header, font, font[2] + 1, "outline", false)
