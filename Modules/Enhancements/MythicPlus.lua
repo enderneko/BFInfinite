@@ -415,7 +415,7 @@ local function UpdateTeleports()
         end
 
         local spell = GetTeleportSpell(f.mapID)
-        spell = 1044
+        -- spell = 1044
         if spell then
             local name = GetSpellName(spell)
             f.teleport:SetAttribute("spell", name)
