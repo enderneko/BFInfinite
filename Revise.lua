@@ -16,6 +16,12 @@ local commonRevisions = {
     --         -- do something for version 2
     --     end,
     -- },
+    {
+        ver = 4,
+        fn = function(config)
+            config.enhancements.mythicPlus = BFI.modules.Enhancements.GetDefaults().mythicPlus
+        end,
+    }
 }
 
 function F.ReviseCommon()

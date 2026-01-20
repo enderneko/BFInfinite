@@ -33,6 +33,12 @@ local defaults = {
             size = 15,
         }
     },
+    mythicPlus = {
+        enabled = true,
+        teleportButtons = {
+            enabled = true,
+        },
+    }
 }
 
 AF.RegisterCallback("BFI_UpdateConfig", function(_, module)
@@ -42,7 +48,7 @@ AF.RegisterCallback("BFI_UpdateConfig", function(_, module)
         BFIConfig.enhancements = AF.Copy(defaults)
     end
     E.config = BFIConfig.enhancements
-end)
+end, "high")
 
 function E.GetDefaults()
     return AF.Copy(defaults)

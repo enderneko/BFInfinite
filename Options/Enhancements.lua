@@ -38,9 +38,11 @@ local function CreateContentPane()
         b.ownerName = data.text
         b.cfg = E.config[data.id]
         b:SetTextColor(b.cfg.enabled and "white" or "disabled")
+        b.combatProtect = data.combatProtect
     end)
     list:SetData({
         {text = L["Equipment Info"], id = "equipmentInfo"},
+        {text = _G.CHALLENGES, id = "mythicPlus", combatProtect = true},
     })
 
     -- scroll
@@ -64,7 +66,13 @@ LoadOptions = function(self)
     local scroll = contentPane.scrollSettings
     local options = F.GetEnhancementOptions(scroll.scrollContent, self)
 
-        local heights = {}
+    if self.combatProtect then
+        AF.ApplyCombatProtectionToFrame(scroll.scrollContent, 0, 0, 0, 0)
+    else
+        AF.RemoveCombatProtectionFromFrame(scroll.scrollContent)
+    end
+
+    local heights = {}
     local last
 
     for i, pane in next, options do

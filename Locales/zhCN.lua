@@ -76,6 +76,7 @@ L["Hide At Full Durability"] = "满耐久时隐藏"
 L["Show Missing Enchantment and Gems"] = "显示缺失的附魔和宝石"
 L["Quality Color"] = "品质颜色"
 L["Glow Below"] = "低于此值时发光"
+L["Show Teleport Buttons on Mythic+ Tab"] = "在史诗钥石地下城页面显示传送按钮"
 
 ---------------------------------------------------------------------
 -- colors

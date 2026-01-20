@@ -71,7 +71,7 @@ AF.RegisterCallback("BFI_UpdateConfig", function(_, module)
         AF.AddColors(st)
     end
     C.config = BFIConfig.colors
-end)
+end, "high")
 
 function C.GetDefaults()
     return AF.Copy(defaults)

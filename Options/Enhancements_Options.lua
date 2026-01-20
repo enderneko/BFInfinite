@@ -20,6 +20,9 @@ local settings = {
         "durability",
         "missingEnhance",
     },
+    mythicPlus = {
+        "teleportButtons",
+    },
 }
 
 ---------------------------------------------------------------------
@@ -373,6 +376,31 @@ builder["missingEnhance"] = function(parent)
         anchorPoint:SetSelectedValue(t.cfg.missingEnhance.position[1])
         xOffset:SetValue(t.cfg.missingEnhance.position[2])
         yOffset:SetValue(t.cfg.missingEnhance.position[3])
+    end
+
+    return pane
+end
+
+---------------------------------------------------------------------
+-- teleportButtons
+---------------------------------------------------------------------
+builder["teleportButtons"] = function(parent)
+    if created["teleportButtons"] then return created["teleportButtons"] end
+
+    local pane = AF.CreateBorderedFrame(parent, "BFI_EnhancementOption_TeleportButtons", nil, 30)
+    created["teleportButtons"] = pane
+
+    local enabled = AF.CreateCheckButton(pane, L["Show Teleport Buttons on Mythic+ Tab"])
+    AF.SetPoint(enabled, "LEFT", 15, 0)
+
+    enabled:SetOnCheck(function(checked)
+        pane.t.cfg.teleportButtons.enabled = checked
+        AF.Fire("BFI_UpdateConfig", "enhancements", pane.t.id)
+    end)
+
+    function pane.Load(t)
+        pane.t = t
+        enabled:SetChecked(t.cfg.teleportButtons.enabled)
     end
 
     return pane
