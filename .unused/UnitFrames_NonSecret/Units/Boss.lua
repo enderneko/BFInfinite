@@ -1,0 +1,89 @@
+---@type BFI
+local BFI = select(2, ...)
+local L = BFI.L
+local UF = BFI.modules.UnitFrames
+---@type AbstractFramework
+local AF = _G.AbstractFramework
+
+local boss
+local indicators = {
+    "healthBar",
+    "powerBar",
+    "nameText",
+    "healthText",
+    "powerText",
+    "portrait",
+    "castBar",
+    "levelText",
+    "targetCounter",
+    "raidIcon",
+    "targetHighlight",
+    "mouseoverHighlight",
+    {"auras", "buffs", "HELPFUL"},
+    {"auras", "debuffs", "HARMFUL"},
+}
+
+---------------------------------------------------------------------
+-- create
+---------------------------------------------------------------------
+local function CreateBoss()
+    local name = "BFI_Boss"
+    boss = CreateFrame("Frame", name, AF.UIParent, "SecureFrameTemplate")
+    UF.AddToConfigMode("boss.container", boss)
+
+    for i = 1, 8 do
+        boss[i] = CreateFrame("Button", name .. i, boss, "BFIUnitButtonTemplate")
+        boss[i]:SetAttribute("unit", "boss" .. i)
+        UF.AddToConfigMode("boss", boss[i])
+        UF.CreateIndicators(boss[i], indicators)
+        UF.CreatePreviewRect(boss[i])
+        RegisterUnitWatch(boss[i])
+    end
+
+    boss.driverKey = "state-visibility"
+    boss.driverValue = "[@boss1,exists] show;hide"
+
+    -- mover
+    AF.CreateMover(boss, "BFI: " .. L["Unit Frames"], _G.BOSS)
+
+    -- pixel perfect
+    AF.AddToPixelUpdater_Auto(boss, nil, true)
+end
+
+---------------------------------------------------------------------
+-- update
+---------------------------------------------------------------------
+local function UpdateBoss(_, module, which, skipIndicatorUpdates)
+    if module and module ~= "unitFrames" then return end
+    if which and which ~= "boss" then return end
+
+    local config = UF.config.boss
+
+    if not (UF.config.general.enabled and config.general.enabled) then
+        if boss then
+            UnregisterAttributeDriver(boss)
+            for i = 1, 8 do
+                UnregisterUnitWatch(boss[i])
+                UF.DisableIndicators(boss[i])
+            end
+            boss.enabled = false -- for mover
+            boss:Hide()
+        end
+        return
+    end
+
+    if not boss then
+        CreateBoss()
+    end
+
+    boss.enabled = true -- for mover
+
+    -- setup
+    UF.SetupUnitGroup(boss, config, indicators, skipIndicatorUpdates)
+
+    if not UF.configModeEnabled then
+        -- visibility NOTE: show must invoke after settings applied
+        RegisterAttributeDriver(boss, boss.driverKey, boss.driverValue)
+    end
+end
+AF.RegisterCallback("BFI_UpdateModule", UpdateBoss)

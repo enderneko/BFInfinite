@@ -1,0 +1,49 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Script file="Presets.lua"/>
+    <Script file="UnitButton.lua"/>
+    <Include file="UnitButton.xml"/>
+    <!-- indicators -->
+    <Script file="Indicators\Auras.lua"/>
+    <Script file="Indicators\HealthBar.lua"/>
+    <Script file="Indicators\PowerBar.lua"/>
+    <Script file="Indicators\ExtraManaBar.lua"/>
+    <Script file="Indicators\CastBar.lua"/>
+    <Script file="Indicators\ClassPowerBar.lua"/>
+    <Script file="Indicators\NameText.lua"/>
+    <Script file="Indicators\HealthText.lua"/>
+    <Script file="Indicators\PowerText.lua"/>
+    <Script file="Indicators\LevelText.lua"/>
+    <Script file="Indicators\TargetCounter.lua"/>
+    <Script file="Indicators\Portrait.lua"/>
+    <Script file="Indicators\StaggerBar.lua"/>
+    <Script file="Indicators\CombatIcon.lua"/>
+    <Script file="Indicators\LeaderIcon.lua"/>
+    <Script file="Indicators\LeaderText.lua"/>
+    <Script file="Indicators\RangeText.lua"/>
+    <Script file="Indicators\StatusTimer.lua"/>
+    <Script file="Indicators\StatusIcon.lua"/>
+    <Script file="Indicators\RaidIcon.lua"/>
+    <Script file="Indicators\ReadyCheckIcon.lua"/>
+    <Script file="Indicators\RoleIcon.lua"/>
+    <Script file="Indicators\FactionIcon.lua"/>
+    <Script file="Indicators\RestingIndicator.lua"/>
+    <Script file="Indicators\TargetHighlight.lua"/>
+    <Script file="Indicators\MouseoverHighlight.lua"/>
+    <Script file="Indicators\ThreatGlow.lua"/>
+    <Script file="Indicators\IncDmgHealText.lua"/>
+    <!-- common -->
+    <Script file="Common.lua"/>
+    <Script file="ConfigMode.lua"/>
+    <!-- units -->
+    <Script file="Units\Player.lua"/>
+    <Script file="Units\Target.lua"/>
+    <Script file="Units\TargetTarget.lua"/>
+    <Script file="Units\Focus.lua"/>
+    <Script file="Units\FocusTarget.lua"/>
+    <Script file="Units\Pet.lua"/>
+    <Script file="Units\PetTarget.lua"/>
+    <Script file="Units\Party.lua"/>
+    <Script file="Units\Raid.lua"/>
+    <Script file="Units\Boss.lua"/>
+</Ui>

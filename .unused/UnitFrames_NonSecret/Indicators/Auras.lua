@@ -1,0 +1,797 @@
+---@type BFI
+local BFI = select(2, ...)
+local UF = BFI.modules.UnitFrames
+local A = BFI.modules.Auras
+---@type AbstractFramework
+local AF = _G.AbstractFramework
+
+local GetAuraDataBySlot = C_UnitAuras.GetAuraDataBySlot
+local GetAuraSlots = C_UnitAuras.GetAuraSlots
+local GetAuraDataByAuraInstanceID = C_UnitAuras.GetAuraDataByAuraInstanceID
+local UnitIsUnit = UnitIsUnit
+local UnitIsOwnerOrControllerOfUnit = UnitIsOwnerOrControllerOfUnit
+local UnitIsFriend = UnitIsFriend
+local UnitCanAttack = UnitCanAttack
+
+local Auras_UpdateSize
+
+---------------------------------------------------------------------
+-- sort
+---------------------------------------------------------------------
+local function SortAuras(a, b)
+    if a.priority ~= b.priority then
+        return a.priority < b.priority
+    end
+
+    if a.dispellable ~= b.dispellable then
+        return a.dispellable
+    end
+
+    if a.castByMe ~= b.castByMe then
+        return a.castByMe
+    end
+
+    if a.isBossAura ~= b.isBossAura then
+        return a.isBossAura
+    end
+
+    if a.noDuration ~= b.noDuration then
+        return b.noDuration
+    end
+
+    -- if a.expirationTime ~= b.expirationTime then
+    --     return a.expirationTime < b.expirationTime
+    -- end
+
+    -- if a.start ~= b.start then
+    --     -- print(a.name, b.name, a.start > b.start)
+    --     return a.start > b.start
+    -- end
+
+    return a.auraInstanceID < b.auraInstanceID
+end
+
+local function SortAuras_Whitelist(a, b)
+    if a.priority ~= b.priority then
+        return a.priority < b.priority
+    end
+end
+
+---------------------------------------------------------------------
+-- UpdateExtraData
+---------------------------------------------------------------------
+local function IsCastByMe(source)
+    return source and (UnitIsUnit("player", source) or UnitIsOwnerOrControllerOfUnit("player", source))
+end
+
+local function IsCastByUnit(source, unit)
+    -- return source and not UnitIsUnit(source, "player") and (UnitIsUnit(source, unit) or UnitIsOwnerOrControllerOfUnit(unit, source))
+    return source and (UnitIsUnit(source, unit) or UnitIsOwnerOrControllerOfUnit(unit, source))
+end
+
+local function IsDispellable(self, auraData)
+    if auraData.isHelpful then
+        return auraData.isStealable
+    end
+
+    if auraData.isHarmful and UnitIsFriend("player", self.root.unit) and not self.canAttack then
+        return AF.CanDispel(auraData.debuffType)
+    end
+end
+
+local function UpdateExtraData(self, auraData)
+    -- local icon = auraData.icon
+    -- local count = auraData.applications
+    -- local auraType = auraData.dispelName
+    -- local duration = auraData.duration
+    -- local source = auraData.sourceUnit
+    auraData.start = auraData.expirationTime - auraData.duration
+    auraData.castByMe = IsCastByMe(auraData.sourceUnit)
+    auraData.notCastByMe = not auraData.castByMe
+    auraData.castByOthers = auraData.isFromPlayerOrPlayerPet and not auraData.castByMe
+    auraData.castByUnit = IsCastByUnit(auraData.sourceUnit, self.root.unit)
+    auraData.castByNPC = not auraData.isFromPlayerOrPlayerPet
+    auraData.dispellable = IsDispellable(self, auraData)
+    -- auraData.castByBoss = auraData.isBossAura
+    -- auraData.castByUnknown = not auraData.sourceUnit
+    auraData.debuffType = AF.GetDebuffType(auraData)
+    auraData.noDuration = auraData.duration == 0
+
+    auraData.priority = A.GetAuraPriority(auraData.spellId)
+end
+
+---------------------------------------------------------------------
+-- filters
+---------------------------------------------------------------------
+local function CheckAuraFilter(self, auraData)
+    if self.auraFilter == "HARMFUL" then
+        return auraData.isHarmful
+    elseif self.auraFilter == "HELPFUL" then
+        return auraData.isHelpful
+    end
+end
+
+local function CheckAdvancedFilters(self, auraData)
+    for f in next, self.filters do
+        if auraData[f] then
+            return true
+        end
+    end
+end
+
+local function CheckWhitelist(self, auraData)
+    if self.whitelist[auraData.spellId] then
+        return true
+    end
+end
+
+local function CheckBlacklist(self, auraData)
+    if not (A.IsBlacklisted(auraData.spellId) or self.blacklist[auraData.spellId]) then
+        return true
+    end
+end
+
+---------------------------------------------------------------------
+-- UpdateAuraType
+---------------------------------------------------------------------
+local auraColorOrder = {"castByMe", "dispellable", "debuffType"}
+local function GetAuraType(self, auraData)
+    for _, type in next, self.colorTypes do
+        if auraData[type] then
+            if type == "debuffType" then
+                return auraData.debuffType
+            else
+                return type
+            end
+        end
+    end
+end
+
+---------------------------------------------------------------------
+-- ShowAura
+---------------------------------------------------------------------
+local function ShowAura(self, auraData)
+    if self.canAttack and self.subFrameFilter and auraData[self.subFrameFilter] then
+        self.subShown = self.subShown + 1
+        local aura = self.subFrame.slots[self.subShown]
+        aura.auraInstanceID = auraData.auraInstanceID -- tooltips
+        aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData), self.subFrameDesaturated)
+    else
+        self.mainShown = self.mainShown + 1
+        local aura = self.slots[self.mainShown]
+        aura.auraInstanceID = auraData.auraInstanceID -- tooltips
+        if self.isBlock then
+            aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData), nil, nil, A.GetAuraColor(auraData.spellId))
+        else
+            aura:SetCooldown(auraData.start, auraData.duration, auraData.applications, auraData.icon, GetAuraType(self, auraData))
+        end
+    end
+end
+
+---------------------------------------------------------------------
+-- UpdateSize
+---------------------------------------------------------------------
+local function UpdateSize(self)
+    if self.subFrameEnabled then
+        Auras_UpdateSize(self, self.mainShown)
+        Auras_UpdateSize(self.subFrame, self.subShown)
+        if self.mainShown == 0 then
+            AF.ClearPoints(self.subFrame)
+            self.subFrame:SetPoint(self.anchor)
+        else
+            AF.LoadWidgetPosition(self.subFrame, self.subFramePosition, self)
+        end
+    else
+        Auras_UpdateSize(self, self.numAuras)
+    end
+end
+
+---------------------------------------------------------------------
+-- HandleUpdateInfo
+---------------------------------------------------------------------
+local function HandleUpdateInfo(self, updateInfo)
+    local changed
+
+    if updateInfo.addedAuras then
+        for _, auraData in next, updateInfo.addedAuras do
+            if CheckAuraFilter(self, auraData) then
+                self.auras[auraData.auraInstanceID] = true
+                changed = true
+            end
+        end
+    end
+
+    if updateInfo.updatedAuraInstanceIDs then
+        for _, auraInstanceID in next, updateInfo.updatedAuraInstanceIDs do
+            if self.auras[auraInstanceID] then
+                changed = true
+                break
+            end
+        end
+    end
+
+    if updateInfo.removedAuraInstanceIDs then
+        for _, auraInstanceID in next, updateInfo.removedAuraInstanceIDs do
+            if self.auras[auraInstanceID] then
+                self.auras[auraInstanceID] = nil
+                changed = true
+            end
+        end
+    end
+
+    if changed then
+        -- reset
+        wipe(self.sortedAuras)
+
+        -- sort
+        for auraInstanceID in next, self.auras do
+            local auraData = GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID)
+            if auraData and self:CheckBasicFilter(auraData) then
+                UpdateExtraData(self, auraData)
+                if CheckAdvancedFilters(self, auraData) then
+                    tinsert(self.sortedAuras, auraData)
+                end
+            end
+        end
+        sort(self.sortedAuras, self.Comparator)
+
+        -- show
+        self.numAuras = 0
+        self.mainShown = 0
+        self.subShown = 0
+
+        for i, auraData in next, self.sortedAuras do
+            self.numAuras = self.numAuras + 1
+            ShowAura(self, auraData, i)
+            if self.numAuras == self.numSlots then break end
+        end
+
+        -- resize
+        UpdateSize(self)
+    end
+end
+
+---------------------------------------------------------------------
+-- ForEachAura
+---------------------------------------------------------------------
+local function ForEachAura(self, continuationToken, ...)
+    -- continuationToken is the first return value of GetAuraSlots()
+    local n = select("#", ...)
+    for i = 1, n do
+        local slot = select(i, ...)
+        local auraData = GetAuraDataBySlot(self.root.displayedUnit, slot)
+        if auraData and self:CheckBasicFilter(auraData) then
+            UpdateExtraData(self, auraData)
+            if CheckAdvancedFilters(self, auraData) then
+                self.auras[auraData.auraInstanceID] = true
+                tinsert(self.sortedAuras, auraData)
+            end
+        end
+    end
+end
+
+local function HandleAllAuras(self)
+    -- reset
+    wipe(self.auras)
+    wipe(self.sortedAuras)
+    self.numAuras = 0
+    self.mainShown = 0
+    self.subShown = 0
+
+    -- iterate
+    ForEachAura(self, GetAuraSlots(self.root.displayedUnit, self.auraFilter))
+
+    -- sort
+    sort(self.sortedAuras, self.Comparator)
+
+    -- show
+    for i, auraData in next, self.sortedAuras do
+        self.numAuras = self.numAuras + 1
+        ShowAura(self, auraData)
+        if self.numAuras == self.numSlots then break end
+    end
+
+    -- resize
+    UpdateSize(self)
+end
+
+---------------------------------------------------------------------
+-- UNIT_AURA
+---------------------------------------------------------------------
+local function UpdateAuras(self, event, unitId, updateInfo)
+    local unit = self.root.displayedUnit
+    if unitId and unitId ~= unit then return end
+
+    local isFullUpdate = not updateInfo or updateInfo.isFullUpdate
+
+    if isFullUpdate then
+        HandleAllAuras(self)
+    else
+        HandleUpdateInfo(self, updateInfo)
+    end
+end
+
+---------------------------------------------------------------------
+-- UNIT_FACTION
+---------------------------------------------------------------------
+local function UpdateFaction(self)
+    self.canAttack = UnitCanAttack("player", self.root.unit)
+end
+
+---------------------------------------------------------------------
+-- update
+---------------------------------------------------------------------
+local function Auras_Update(self)
+    -- print("Auras_Update", self:GetName(), self.root.displayedUnit)
+    UpdateFaction(self)
+    UpdateAuras(self)
+end
+
+---------------------------------------------------------------------
+-- enable
+---------------------------------------------------------------------
+local function Auras_Enable(self)
+    -- print("Auras_Enable", self:GetName(), self.root.displayedUnit)
+    self:RegisterEvent("UNIT_FACTION", UpdateFaction)
+    self:RegisterEvent("UNIT_AURA", UpdateAuras)
+
+    self:Show()
+    self:Update()
+end
+
+---------------------------------------------------------------------
+-- disable
+---------------------------------------------------------------------
+local function Auras_Disable(self)
+    self:UnregisterAllEvents()
+    self:Hide()
+    wipe(self.auras)
+    wipe(self.sortedAuras)
+    self.numAuras = 0
+    self.mainShown = 0
+    self.subShown = 0
+end
+
+---------------------------------------------------------------------
+-- BFI_UpdateConfig
+---------------------------------------------------------------------
+AF.RegisterCallback("BFI_UpdateConfig", function(_, module)
+    if module ~= "auras" then return end
+
+    for _, frame in next, BFI.vars.unitButtons do
+        if frame:IsVisible() then
+            local buffs = UF.GetIndicator(frame, "buffs")
+            if buffs and buffs.enabled then
+                Auras_Update(buffs)
+            end
+            local debuffs = UF.GetIndicator(frame, "debuffs")
+            if debuffs and debuffs.enabled then
+                Auras_Update(debuffs)
+            end
+        end
+    end
+end, "low")
+
+---------------------------------------------------------------------
+-- config
+---------------------------------------------------------------------
+Auras_UpdateSize = function(self, numAuras)
+    -- if not (self.width and self.height and self.orientation) then return end
+
+    -- hide unused
+    for i = numAuras + 1, self.numSlots do
+        self.slots[i]:Hide()
+    end
+
+    -- set size
+    local lines = ceil(numAuras / self.numPerLine)
+    numAuras = min(numAuras, self.numPerLine)
+
+    if self.isHorizontal then
+        AF.SetGridSize(self, self.width, self.height, self.spacingX, self.spacingY, numAuras, lines)
+    else
+        AF.SetGridSize(self, self.width, self.height, self.spacingX, self.spacingY, lines, numAuras)
+    end
+end
+
+local function Auras_SetSize(self, width, height)
+    self.width = width
+    self.height = height
+
+    for i = 1, self.numSlots do
+        AF.SetSize(self.slots[i], width, height)
+    end
+end
+
+local function Auras_SetOrientation(self, orientation)
+    self.orientation = orientation
+
+    assert(self.anchor, "[indicator] position must be set before SetOrientation")
+
+    self.isHorizontal = not strfind(orientation, "top")
+
+    local point1, point2, x, y
+    local newLinePoint2, newLineX, newLineY
+
+    if orientation == "left_to_right" then
+        if strfind(self.anchor, "^BOTTOM") then
+            point1 = "BOTTOMLEFT"
+            point2 = "BOTTOMRIGHT"
+            newLinePoint2 = "TOPLEFT"
+            y = 0
+            newLineY = self.spacingY
+        else
+            point1 = "TOPLEFT"
+            point2 = "TOPRIGHT"
+            newLinePoint2 = "BOTTOMLEFT"
+            y = 0
+            newLineY = -self.spacingY
+        end
+        x = self.spacingX
+        newLineX = 0
+
+    elseif orientation == "right_to_left" then
+        if strfind(self.anchor, "^BOTTOM") then
+            point1 = "BOTTOMRIGHT"
+            point2 = "BOTTOMLEFT"
+            newLinePoint2 = "TOPRIGHT"
+            y = 0
+            newLineY = self.spacingY
+        else
+            point1 = "TOPRIGHT"
+            point2 = "TOPLEFT"
+            newLinePoint2 = "BOTTOMRIGHT"
+            y = 0
+            newLineY = -self.spacingY
+        end
+        x = -self.spacingX
+        newLineX = 0
+
+    elseif orientation == "top_to_bottom" then
+        if strfind(self.anchor, "RIGHT$") then
+            point1 = "TOPRIGHT"
+            point2 = "BOTTOMRIGHT"
+            newLinePoint2 = "TOPLEFT"
+            x = 0
+            newLineX = -self.spacingX
+        else
+            point1 = "TOPLEFT"
+            point2 = "BOTTOMLEFT"
+            newLinePoint2 = "TOPRIGHT"
+            x = 0
+            newLineX = self.spacingX
+        end
+        y = -self.spacingY
+        newLineY = 0
+
+    elseif orientation == "bottom_to_top" then
+        if strfind(self.anchor, "RIGHT$") then
+            point1 = "BOTTOMRIGHT"
+            point2 = "TOPRIGHT"
+            newLinePoint2 = "BOTTOMLEFT"
+            x = 0
+            newLineX = -self.spacingX
+        else
+            point1 = "BOTTOMLEFT"
+            point2 = "TOPLEFT"
+            newLinePoint2 = "BOTTOMRIGHT"
+            x = 0
+            newLineX = self.spacingX
+        end
+        y = self.spacingY
+        newLineY = 0
+    end
+
+    for i = 1, self.numSlots do
+        AF.ClearPoints(self.slots[i])
+        if i == 1 then
+            AF.SetPoint(self.slots[i], point1)
+        elseif i % self.numPerLine == 1 then
+            AF.SetPoint(self.slots[i], point1, self.slots[i-self.numPerLine], newLinePoint2, newLineX, newLineY)
+        else
+            AF.SetPoint(self.slots[i], point1, self.slots[i-1], point2, x, y)
+        end
+    end
+end
+
+local function Auras_SetNumPerLine(self, numPerLine)
+    self.numPerLine = min(numPerLine, self.numSlots)
+end
+
+local function Auras_SetNumSlots(self, numSlots)
+    self.numSlots = numSlots
+
+    for i = 1, numSlots do
+        if not self.slots[i] then
+            self.slots[i] = AF.CreateAura(self, true)
+        end
+    end
+
+    -- hide if reduced
+    for i = numSlots + 1, #self.slots do
+        self.slots[i]:Hide()
+    end
+end
+
+local function Auras_SetupAuras(self, config)
+    for i = 1, self.numSlots do
+        local aura = self.slots[i]
+        aura.root = self.root
+        aura:EnableTooltip(config.tooltip, self.auraFilter == "HELPFUL")
+        -- aura:SetDesaturated(config.desaturated)
+        aura:SetCooldownStyle(config.cooldownStyle)
+        aura:SetupDurationText(config.durationText)
+        aura:SetupStackText(config.stackText)
+    end
+end
+
+local function Auras_UpdateSubFramePosition(self, orientation)
+    local point1, newLinePoint2, newLineX, newLineY
+
+    if orientation == "left_to_right" then
+        if strfind(self.anchor, "^BOTTOM") then
+            point1 = "BOTTOMLEFT"
+            newLinePoint2 = "TOPLEFT"
+            newLineY = self.spacingY
+        else
+            point1 = "TOPLEFT"
+            newLinePoint2 = "BOTTOMLEFT"
+            newLineY = -self.spacingY
+        end
+        newLineX = 0
+
+    elseif orientation == "right_to_left" then
+        if strfind(self.anchor, "^BOTTOM") then
+            point1 = "BOTTOMRIGHT"
+            newLinePoint2 = "TOPRIGHT"
+            newLineY = self.spacingY
+        else
+            point1 = "TOPRIGHT"
+            newLinePoint2 = "BOTTOMRIGHT"
+            newLineY = -self.spacingY
+        end
+        newLineX = 0
+
+    elseif orientation == "top_to_bottom" then
+        if strfind(self.anchor, "RIGHT$") then
+            point1 = "TOPRIGHT"
+            newLinePoint2 = "TOPLEFT"
+            newLineX = -self.spacingX
+        else
+            point1 = "TOPLEFT"
+            newLinePoint2 = "TOPRIGHT"
+            newLineX = self.spacingX
+        end
+        newLineY = 0
+
+    elseif orientation == "bottom_to_top" then
+        if strfind(self.anchor, "RIGHT$") then
+            point1 = "BOTTOMRIGHT"
+            newLinePoint2 = "BOTTOMLEFT"
+            newLineX = -self.spacingX
+        else
+            point1 = "BOTTOMLEFT"
+            newLinePoint2 = "BOTTOMRIGHT"
+            newLineX = self.spacingX
+        end
+        newLineY = 0
+    end
+
+    self.subFramePosition = {point1, newLinePoint2, newLineX, newLineY}
+    AF.SetPoint(self.subFrame, point1, self, newLinePoint2, newLineX, newLineY)
+end
+
+local function Auras_OnHide(self)
+    for i = 1, self.numSlots do
+        self.slots[i]:Hide()
+    end
+
+    if self.subFrameEnabled then
+        for i = 1, self.numSlots do
+            self.subFrame.slots[i]:Hide()
+        end
+    end
+end
+
+local function Auras_LoadConfig(self, config)
+    -- texplore(config)
+    AF.SetFrameLevel(self, config.frameLevel, self.root)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
+
+    self.anchor = config.position[1]
+    self.spacingX = config.spacingX
+    self.spacingY = config.spacingY
+    self.isBlock = strfind(config.cooldownStyle, "^block")
+    self.tooltipEnabled = config.tooltip.enabled
+
+    Auras_SetNumSlots(self, config.numTotal)
+    Auras_SetSize(self, config.width, config.height)
+    Auras_SetNumPerLine(self, config.numPerLine)
+    Auras_SetOrientation(self, config.orientation)
+    Auras_SetupAuras(self, config)
+    Auras_UpdateSize(self, 0)
+
+    if config.mode == "whitelist" then
+        -- use whitelist
+        self.whitelist = AF.TransposeSpellTable(config.whitelist)
+        -- comparator
+        self.Comparator = SortAuras_Whitelist
+        -- basic filter
+        self.CheckBasicFilter = CheckWhitelist
+    else
+        -- blacklist
+        self.blacklist = AF.TransposeSpellTable(config.blacklist)
+        -- comparator
+        self.Comparator = SortAuras
+        -- basic filter
+        self.CheckBasicFilter = CheckBlacklist
+    end
+
+    -- filters
+    wipe(self.filters)
+    if self.overallFilter then
+        -- always add overall filter
+        self.filters[self.overallFilter] = true
+    end
+    for f, v in pairs(config.filters) do
+        if v then
+            self.filters[f] = true
+        end
+    end
+
+    -- auraTypeColor
+    wipe(self.colorTypes)
+    for _, type in pairs(auraColorOrder) do
+        if config.auraTypeColor[type] then
+            tinsert(self.colorTypes, type)
+        end
+    end
+
+    -- subFrame
+    if config.subFrame then
+        self.subFrameEnabled = config.subFrame.enabled
+        self.subFrameDesaturated = config.subFrame.desaturated
+
+        if config.subFrame.enabled then
+            self.subFrameFilter = config.subFrame.filter
+            self.subFrame:Show()
+
+            self.subFrame.anchor = config.position[1]
+            self.subFrame.spacingX = config.spacingX
+            self.subFrame.spacingY = config.spacingY
+
+            Auras_SetNumSlots(self.subFrame, config.numTotal)
+            Auras_SetSize(self.subFrame, config.subFrame.width, config.subFrame.height)
+            Auras_SetNumPerLine(self.subFrame, config.numPerLine)
+            Auras_SetOrientation(self.subFrame, config.orientation)
+            Auras_SetupAuras(self.subFrame, config)
+            Auras_UpdateSize(self, 0)
+            Auras_UpdateSubFramePosition(self, config.orientation)
+        else
+            self.subFrameFilter = nil
+            self.subFrame:Hide()
+        end
+    end
+end
+
+local function Auras_UpdatePixels(self)
+    AF.ReSize(self)
+    AF.RePoint(self)
+    for _, slot in next, self.slots do
+        slot:UpdatePixels()
+    end
+    if self.subFrame then
+        AF.ReSize(self.subFrame)
+        AF.RePoint(self.subFrame)
+        for _, slot in next, self.subFrame.slots do
+            slot:UpdatePixels()
+        end
+    end
+end
+
+---------------------------------------------------------------------
+-- config mode
+---------------------------------------------------------------------
+local function ConfigMode_RefreshAuras(self)
+    local icon = self.auraFilter == "HELPFUL" and 135953 or 136071
+    if self.isBlock then
+        for i = 1, self.numSlots do
+            self.slots[i]:SetCooldown(GetTime(), 15, i, icon, nil, nil, nil, AF.GetColorRGB("BFI"))
+            self.slots[i]:EnableMouse(false)
+        end
+    else
+        for i = 1, self.numSlots do
+            self.slots[i]:SetCooldown(GetTime(), 15, i, icon)
+            self.slots[i]:EnableMouse(false)
+        end
+    end
+    Auras_UpdateSize(self, self.numSlots)
+end
+
+local function Auras_EnableConfigMode(self)
+    self:UnregisterAllEvents()
+    self.Enable = Auras_EnableConfigMode
+    self.Update = AF.noop
+
+    if self.enabled then
+        if self.configModeTicker then
+            self.configModeTicker:Cancel()
+        end
+        ConfigMode_RefreshAuras(self)
+        self.configModeTicker = C_Timer.NewTicker(15, function()
+            ConfigMode_RefreshAuras(self)
+        end)
+        self:Show()
+    else
+        if self.configModeTicker then
+            self.configModeTicker:Cancel()
+            self.configModeTicker = nil
+        end
+        self:Hide()
+    end
+end
+
+local function Auras_DisableConfigMode(self)
+    self.Enable = Auras_Enable
+    self.Update = Auras_Update
+
+    if self.configModeTicker then
+        self.configModeTicker:Cancel()
+        self.configModeTicker = nil
+    end
+
+    if self.tooltipEnabled then
+        for i = 1, self.numSlots do
+            self.slots[i]:EnableMouse(true)
+        end
+    end
+end
+
+---------------------------------------------------------------------
+-- create
+---------------------------------------------------------------------
+function UF.CreateAuras(parent, name, auraFilter, hasSubFrame)
+    local frame = CreateFrame("Frame", name, parent)
+
+    frame.root = parent
+    frame.auraFilter = auraFilter
+    -- frame.overallFilter = sourceFilter
+
+    -- events
+    AF.AddEventHandler(frame)
+
+    -- slots
+    frame.slots = {}
+
+    -- subFrame
+    if hasSubFrame then
+        frame.subFrame = CreateFrame("Frame", nil, frame)
+        frame.subFrame.root = parent
+        frame.subFrame.slots = {}
+    end
+
+    -- data
+    frame.auras = {}
+    frame.sortedAuras = {}
+    frame.numAuras = 0
+    frame.mainShown = 0
+    frame.subShown = 0
+    frame.filters = {}
+    frame.colorTypes = {}
+
+    -- scripts
+    frame:SetScript("OnHide", Auras_OnHide)
+
+    -- functions
+    frame.Enable = Auras_Enable
+    frame.Disable = Auras_Disable
+    frame.Update = Auras_Update
+    frame.EnableConfigMode = Auras_EnableConfigMode
+    frame.DisableConfigMode = Auras_DisableConfigMode
+    frame.LoadConfig = Auras_LoadConfig
+
+    -- pixel perfect
+    AF.AddToPixelUpdater_Auto(frame, Auras_UpdatePixels)
+
+    return frame
+end
