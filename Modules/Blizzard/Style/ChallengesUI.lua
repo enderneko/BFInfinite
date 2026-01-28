@@ -115,10 +115,15 @@ local function StyleSeasonChangeNoticeFrame()
     --------------------------------------------------
     -- texts
     --------------------------------------------------
-    AF.SetFontShadow(SeasonChangeNoticeFrame.NewSeason, nil, "yellow_text")
-    AF.SetFontShadow(SeasonChangeNoticeFrame.SeasonDescription, nil, "white")
-    AF.SetFontShadow(SeasonChangeNoticeFrame.SeasonDescription2, nil, "white")
-    AF.SetFontShadow(SeasonChangeNoticeFrame.SeasonDescription3, nil, "white")
+    local function UpdateText(text, color)
+        text:SetTextColor(AF.GetColorRGB(color))
+        AF.SetFontShadow(text)
+    end
+
+    UpdateText(SeasonChangeNoticeFrame.NewSeason, "yellow_text")
+    UpdateText(SeasonChangeNoticeFrame.SeasonDescription, "white")
+    UpdateText(SeasonChangeNoticeFrame.SeasonDescription2, "white")
+    UpdateText(SeasonChangeNoticeFrame.SeasonDescription3, "white")
 end
 
 AF.RegisterAddonLoaded("Blizzard_ChallengesUI", function()

@@ -992,13 +992,18 @@ local function StyleNewSeasonPopup()
     --------------------------------------------------
     -- texts
     --------------------------------------------------
+    local function UpdateText(text, color)
+        text:SetTextColor(AF.GetColorRGB(color))
+        AF.SetFontShadow(text)
+    end
+
     NewSeasonPopup:HookScript("OnShow", function(self)
-        AF.SetFontShadow(self.NewSeason, nil, "yellow_text")
-        AF.SetFontShadow(self.SeasonDescriptionHeader, nil, "white")
+        UpdateText(self.NewSeason, "yellow_text")
+        UpdateText(self.SeasonDescriptionHeader, "white")
         for _, text in next, self.SeasonDescriptions do
-            AF.SetFontShadow(text, nil, "white")
+            UpdateText(text, "white")
         end
-        AF.SetFontShadow(self.SeasonRewardText, nil, "yellow_text")
+        UpdateText(self.SeasonRewardText, "yellow_text")
     end)
 end
 
