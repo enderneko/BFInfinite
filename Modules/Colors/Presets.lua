@@ -10,6 +10,9 @@ local uf_colors = {
     uf = {0.135, 0.135, 0.135, 1}, -- unitframe foreground
     uf_loss = {0.6, 0, 0, 1}, -- unitframe background
     uf_power = {0.7, 0.7, 0.7, 1}, -- unitframe background
+    uf_health_low = {1, 0.1, 0.1, 1},
+    uf_health_medium = {1, 0.85, 0.1, 1},
+    uf_health_high = {0.1, 1, 0.1, 1},
 
     target_highlight = AF.GetColorTable("BFI", 0.6),
     mouseover_highlight = {1, 1, 1, 0.6},

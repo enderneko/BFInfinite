@@ -428,7 +428,12 @@ local function GetColorItems(which)
         tinsert(items, {text = L["Class (Dark)"], value = "class_color_dark"})
     end
 
-    if which:find("^power") or which:find("^classPower") then
+    if which:find("^health") then
+        AF.InsertAll(items, {
+            {text = L["Health (Linear)"], value = "health_color_linear"},
+            {text = L["Health (Step)"], value = "health_color_step"}
+        })
+    elseif which:find("^power") or which:find("^classPower") then
         tinsert(items, {text = L["Power"], value = "power_color"})
         if not which:find("Text$") then
             tinsert(items, {text = L["Power (Dark)"], value = "power_color_dark"})
@@ -959,6 +964,14 @@ end
 ---------------------------------------------------------------------
 -- pane for bar colors
 ---------------------------------------------------------------------
+local function GetThresholdItems()
+    local items = {}
+    for i = 100, 0, -5 do
+        items[#items + 1] = {text = i .. "%", value = i / 100}
+    end
+    return items
+end
+
 local function CreatePaneForBarColors(parent, colorType, frameName, label, gradientLabel, alphaLabel)
     local pane = AF.CreateBorderedFrame(parent, frameName, nil, 103)
 
@@ -967,10 +980,10 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
     colorDropdown:SetLabel(label)
     AF.SetPoint(colorDropdown, "TOPLEFT", 15, -25)
 
-    local orientationDropdown = AF.CreateDropdown(pane, 150)
-    orientationDropdown:SetLabel(gradientLabel)
-    AF.SetPoint(orientationDropdown, "TOPLEFT", colorDropdown, 185, 0)
-    orientationDropdown:SetItems({
+    local gradientDropdown = AF.CreateDropdown(pane, 150)
+    gradientDropdown:SetLabel(gradientLabel)
+    AF.SetPoint(gradientDropdown, "TOPLEFT", colorDropdown, 185, 0)
+    gradientDropdown:SetItems({
         {text = L["Disabled"], value = "disabled"},
         {text = L["Horizontal"], value = "horizontal"},
         {text = L["Horizontal (Flipped)"], value = "horizontal_flipped"},
@@ -984,10 +997,12 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
             pane.t.cfg[colorType].rgb[1] = r
             pane.t.cfg[colorType].rgb[2] = g
             pane.t.cfg[colorType].rgb[3] = b
+            pane.t.cfg[colorType].rgb[4] = a
         else
             pane.t.cfg[colorType].rgb[1][1] = r
             pane.t.cfg[colorType].rgb[1][2] = g
             pane.t.cfg[colorType].rgb[1][3] = b
+            pane.t.cfg[colorType].rgb[1][4] = a
         end
         LoadIndicatorConfig(pane.t)
     end)
@@ -997,13 +1012,58 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
         pane.t.cfg[colorType].rgb[2][1] = r
         pane.t.cfg[colorType].rgb[2][2] = g
         pane.t.cfg[colorType].rgb[2][3] = b
+        pane.t.cfg[colorType].rgb[2][4] = a
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local colorPicker3 = AF.CreateColorPicker(pane, nil, true)
+    AF.SetPoint(colorPicker3, "LEFT", colorPicker2, 80, 0)
+    colorPicker3:SetOnChange(function(r, g, b, a)
+        pane.t.cfg[colorType].rgb[3][1] = r
+        pane.t.cfg[colorType].rgb[3][2] = g
+        pane.t.cfg[colorType].rgb[3][3] = b
+        pane.t.cfg[colorType].rgb[3][4] = a
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local colorPicker4 = AF.CreateColorPicker(pane, nil, true)
+    AF.SetPoint(colorPicker4, "BOTTOMRIGHT", gradientDropdown, "TOPRIGHT", 0, 2)
+    colorPicker4:SetOnChange(function(r, g, b, a)
+        pane.t.cfg[colorType].rgb[4][1] = r
+        pane.t.cfg[colorType].rgb[4][2] = g
+        pane.t.cfg[colorType].rgb[4][3] = b
+        pane.t.cfg[colorType].rgb[4][4] = a
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local threshold1Dropdown = AF.CreateDropdown(pane, 50, nil, "vertical", nil, "CENTER")
+    threshold1Dropdown:SetItems(GetThresholdItems())
+    AF.SetPoint(threshold1Dropdown, "LEFT", colorPicker1, "RIGHT", 2, 0)
+    threshold1Dropdown:SetOnSelect(function(value)
+        pane.t.cfg[colorType].thresholds[1] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local threshold2Dropdown = AF.CreateDropdown(pane, 50, nil, "vertical", nil, "CENTER")
+    threshold2Dropdown:SetItems(GetThresholdItems())
+    AF.SetPoint(threshold2Dropdown, "LEFT", colorPicker2, "RIGHT", 2, 0)
+    threshold2Dropdown:SetOnSelect(function(value)
+        pane.t.cfg[colorType].thresholds[2] = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    local threshold3Dropdown = AF.CreateDropdown(pane, 50, nil, "vertical", nil, "CENTER")
+    threshold3Dropdown:SetItems(GetThresholdItems())
+    AF.SetPoint(threshold3Dropdown, "LEFT", colorPicker3, "RIGHT", 2, 0)
+    threshold3Dropdown:SetOnSelect(function(value)
+        pane.t.cfg[colorType].thresholds[3] = value
         LoadIndicatorConfig(pane.t)
     end)
 
     local colorAlphaSlider1 = AF.CreateSlider(pane, alphaLabel .. " 1", 150, 0, 1, 0.01, true, true)
     AF.SetPoint(colorAlphaSlider1, "TOPLEFT", colorDropdown, 0, -45)
     colorAlphaSlider1:SetOnValueChanged(function(value)
-        if pane.t.cfg[colorType].gradient == "disabled" then
+        if type(pane.t.cfg[colorType].alpha) == "number" then
             pane.t.cfg[colorType].alpha = value
         else
             pane.t.cfg[colorType].alpha[1] = value
@@ -1014,7 +1074,12 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
     local colorAlphaSlider2 = AF.CreateSlider(pane, alphaLabel .. " 2", 150, 0, 1, 0.01, true, true)
     AF.SetPoint(colorAlphaSlider2, "TOPLEFT", colorAlphaSlider1, 185, 0)
     colorAlphaSlider2:SetOnValueChanged(function(value)
-        pane.t.cfg[colorType].alpha[2] = value
+        if type(pane.t.cfg[colorType].alpha) == "number" then
+            -- for curveType with gradient enabled
+            pane.t.cfg[colorType].alpha = value
+        else
+            pane.t.cfg[colorType].alpha[2] = value
+        end
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -1022,45 +1087,120 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
         AF.ClearPoints(colorPicker1)
         AF.ClearPoints(colorPicker2)
 
-        if color.type:find("^class") or color.type:find("^power") or color.type:find("^mana") then
-            if color.gradient == "disabled" then
-                colorPicker1:Hide()
-                colorPicker2:Hide()
+        colorPicker1:EnableAlpha(false)
+        colorPicker2:EnableAlpha(false)
 
+        colorPicker1:Hide()
+        colorPicker2:Hide()
+        colorPicker3:Hide()
+        colorPicker4:Hide()
+        threshold1Dropdown:Hide()
+        threshold2Dropdown:Hide()
+        threshold3Dropdown:Hide()
+        colorAlphaSlider1:Hide()
+        colorAlphaSlider2:Hide()
+
+        gradientDropdown:SetEnabled(true)
+
+        if color.type:find("^health") then
+            colorPicker1:EnableAlpha(true)
+            colorPicker2:EnableAlpha(true)
+
+            colorPicker1:Show()
+            colorPicker2:Show()
+            colorPicker3:Show()
+            threshold1Dropdown:Show()
+            threshold2Dropdown:Show()
+            threshold3Dropdown:Show()
+
+            -- REVIEW: CreateColor does not accept secret value for now!
+            color.gradient = "disabled"
+            gradientDropdown:SetSelectedValue("disabled")
+            gradientDropdown:SetEnabled(false)
+
+            if color.gradient == "disabled" then
+                if #color.rgb ~= 3 then
+                    color.rgb = {
+                        AF.GetColorTable("uf_health_low"),
+                        AF.GetColorTable("uf_health_medium"),
+                        AF.GetColorTable("uf_health_high"),
+                    }
+                end
+            else
+                if #color.rgb ~= 4 or type(color.rgb[1]) ~= "table" then
+                    color.rgb = {
+                        AF.GetColorTable("uf_health_low"),
+                        AF.GetColorTable("uf_health_medium"),
+                        AF.GetColorTable("uf_health_high"),
+                        AF.GetColorTable("white"), -- for gradient
+                    }
+                end
+
+                colorPicker4:Show()
+                colorPicker4:SetColor(color.rgb[4])
+            end
+
+            if type(color.alpha) ~= "number" then color.alpha = 1 end
+            if type(color.thresholds) ~= "table" then
+                color.thresholds = {0.2, 0.5, 0.8}
+            end
+
+            AF.SetPoint(colorPicker1, "TOPLEFT", colorAlphaSlider1)
+            AF.SetPoint(colorPicker2, "LEFT", colorPicker1, 80, 0)
+
+            colorPicker1:SetColor(color.rgb[1])
+            colorPicker2:SetColor(color.rgb[2])
+            colorPicker3:SetColor(color.rgb[3])
+            threshold1Dropdown:SetSelectedValue(color.thresholds[1])
+            threshold2Dropdown:SetSelectedValue(color.thresholds[2])
+            threshold3Dropdown:SetSelectedValue(color.thresholds[3])
+
+        elseif color.type:find("^class") or color.type:find("^power") or color.type:find("^mana") then
+            colorAlphaSlider1:Show()
+            colorAlphaSlider2:Show()
+
+            color.thresholds = nil
+
+            if color.gradient == "disabled" then
                 if type(color.alpha) ~= "number" then color.alpha = 1 end
+                wipe(color.rgb)
                 colorAlphaSlider1:SetValue(color.alpha)
                 colorAlphaSlider2:SetEnabled(false)
             else
-                AF.SetPoint(colorPicker1, "BOTTOMRIGHT", colorDropdown, "TOPRIGHT", 0, 2)
+                AF.SetPoint(colorPicker1, "BOTTOMRIGHT", gradientDropdown, "TOPRIGHT", 0, 2)
                 colorPicker1:Show()
-                colorPicker2:Hide()
 
                 if type(color.alpha) ~= "table" then color.alpha = {1, 1} end
                 colorAlphaSlider1:SetValue(color.alpha[1])
                 colorAlphaSlider2:SetValue(color.alpha[2])
                 colorAlphaSlider2:SetEnabled(true)
 
-                if #color.rgb ~= 4 then color.rgb = {1, 1, 1, 1} end
+                if #color.rgb ~= 4 or type(color.rgb[1]) ~= "number" then
+                    color.rgb = AF.GetColorTable("white")
+                end
                 colorPicker1:SetColor(color.rgb)
             end
 
         else -- custom_color
+            colorAlphaSlider1:Show()
+            colorAlphaSlider2:Show()
+            AF.SetPoint(colorPicker1, "BOTTOMRIGHT", colorDropdown, "TOPRIGHT", 0, 2)
+
+            color.thresholds = nil
+
             if color.gradient == "disabled" then
-                AF.SetPoint(colorPicker1, "BOTTOMRIGHT", colorDropdown, "TOPRIGHT", 0, 2)
                 colorPicker1:Show()
-                colorPicker2:Hide()
 
                 if type(color.alpha) ~= "number" then color.alpha = 1 end
                 colorAlphaSlider1:SetValue(color.alpha)
                 colorAlphaSlider2:SetEnabled(false)
 
-                if #color.rgb ~= 4 then
+                if #color.rgb ~= 4 or type(color.rgb[1]) ~= "number" then
                     color.rgb = colorType == "color" and AF.GetColorTable("uf") or AF.GetColorTable("uf_loss")
                 end
                 colorPicker1:SetColor(color.rgb)
             else
-                AF.SetPoint(colorPicker2, "BOTTOMRIGHT", colorDropdown, "TOPRIGHT", 0, 2)
-                AF.SetPoint(colorPicker1, "BOTTOMRIGHT", colorPicker2, "BOTTOMLEFT", -2, 0)
+                AF.SetPoint(colorPicker2, "BOTTOMRIGHT", gradientDropdown, "TOPRIGHT", 0, 2)
                 colorPicker1:Show()
                 colorPicker2:Show()
 
@@ -1069,7 +1209,12 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
                 colorAlphaSlider2:SetValue(color.alpha[2])
                 colorAlphaSlider2:SetEnabled(true)
 
-                if #color.rgb ~= 2 then color.rgb = {AF.GetColorTable("blazing_tangerine"), AF.GetColorTable("vivid_raspberry")} end
+                if #color.rgb ~= 2 then
+                    color.rgb = {
+                        AF.GetColorTable("blazing_tangerine"),
+                        AF.GetColorTable("vivid_raspberry")
+                    }
+                end
                 colorPicker1:SetColor(color.rgb[1])
                 colorPicker2:SetColor(color.rgb[2])
             end
@@ -1083,7 +1228,7 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
         LoadIndicatorConfig(pane.t)
     end)
 
-    orientationDropdown:SetOnSelect(function(value)
+    gradientDropdown:SetOnSelect(function(value)
         AF.HideColorPicker()
         pane.t.cfg[colorType].gradient = value
         UpdateColorWidgets(pane.t.cfg[colorType])
@@ -1095,7 +1240,7 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
 
         colorDropdown:SetItems(GetColorItems(t.id))
         colorDropdown:SetSelectedValue(t.cfg[colorType].type)
-        orientationDropdown:SetSelectedValue(t.cfg[colorType].gradient)
+        gradientDropdown:SetSelectedValue(t.cfg[colorType].gradient)
         UpdateColorWidgets(t.cfg[colorType])
     end
 

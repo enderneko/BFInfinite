@@ -158,3 +158,25 @@ function F.GetLootSpecInfo()
     local _, name, _, icon = GetSpecializationInfoByID(id)
     return id, name, icon
 end
+
+---------------------------------------------------------------------
+-- color curve
+---------------------------------------------------------------------
+function F.GetColorCurve(type, thresholds, colors)
+    local points = {}
+
+    for i = 1, #thresholds do
+        local x = thresholds[i]
+        local y = colors[i]
+        if x and y then
+            points[i] = {
+                position = x,
+                color = {y[1], y[2], y[3], y[4] or 1}
+            }
+        end
+    end
+
+    type = type and type:match(".*_([^_]+)$")
+
+    return AF.CreateBlizzardColorCurve(points, type)
+end

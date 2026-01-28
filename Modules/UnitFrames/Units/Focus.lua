@@ -34,7 +34,7 @@ local function CreateFocus()
     focus = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     focus:SetAttribute("unit", "focus")
 
-    focus.skipDataCache = true -- BFI.vars.guids/names
+    focus._skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
     AF.CreateMover(focus, "BFI: " .. L["Unit Frames"], L["Focus"])
