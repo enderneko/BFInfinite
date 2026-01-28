@@ -137,10 +137,11 @@ local function Overlay_UpdateDurability(overlay)
         local color = E.config.equipmentInfo.durability.color
 
         local p = current / maximum
-        local r, g, b = AF.ColorGradient(p,
-            color.low[1], color.low[2], color.low[3],
-            color.medium[1], color.medium[2], color.medium[3],
-            color.high[1], color.high[2], color.high[3]
+        local r, g, b = AF.ColorGradient(
+            p,
+            color.low,
+            color.medium,
+            color.high
         )
         overlay.durability:SetStatusBarColor(r, g, b)
 

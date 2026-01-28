@@ -15,7 +15,7 @@ local SetRaidTargetIconTexture = SetRaidTargetIconTexture
 -- update
 ---------------------------------------------------------------------
 local function RaidIcon_Update(self)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if not unit then return end
 
     local index = GetRaidTargetIndex(unit)

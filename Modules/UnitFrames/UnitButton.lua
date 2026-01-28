@@ -49,12 +49,11 @@ local UnitClassBase = AF.UnitClassBase
 ---------------------------------------------------------------------
 -- states
 ---------------------------------------------------------------------
-local function UnitButton_UpdateBaseStates(self)
+local function UnitButton_UpdateStates(self)
     local unit = self.unit
     if not unit then return end
 
-    self.states.name = UnitName(unit)
-    self.states.fullName = AF.UnitFullName(unit)
+    self.states.name = GetUnitName(unit, true)
     self.states.class = UnitClassBase(unit)
     self.states.guid = UnitGUID(unit)
     self.states.isPlayer = UnitIsPlayer(unit)
@@ -62,84 +61,35 @@ local function UnitButton_UpdateBaseStates(self)
 
     if self.states.inVehicle then
         if unit == "player" then
-            self.displayedUnit = "vehicle"
+            self.effectiveUnit = "vehicle"
         elseif strfind(unit, "%d$") then
             local prefix, id = strmatch(unit, "([^%d]+)([%d]+)")
-            self.displayedUnit = prefix.."pet"..id
+            self.effectiveUnit = prefix .. "pet" .. id
         else
-            self.displayedUnit = unit.."pet"
+            self.effectiveUnit = unit .. "pet"
         end
     else
-        self.displayedUnit = self.unit
+        self.effectiveUnit = self.unit
     end
 
     if unit == "pet" then
         if UnitHasVehicleUI("player") then
-            self.displayedUnit = "player"
+            self.effectiveUnit = "player"
         else
-            self.displayedUnit = "pet"
+            self.effectiveUnit = "pet"
         end
     end
-end
-
----------------------------------------------------------------------
--- health states
----------------------------------------------------------------------
--- local function UnitButton_UpdateHealthStates(self)
---     local unit = self.displayedUnit
---     if not unit then return end
-
---     local health = UnitHealth(unit)
---     local healthMax = UnitHealthMax(unit)
-
---     self.states.health = health
---     self.states.healthMax = healthMax
---     self.states.totalAbsorbs = UnitGetTotalAbsorbs(unit)
-
---     if healthMax == 0 then
---         self.states.healthPercent = 0
---     else
---         self.states.healthPercent = health / healthMax
---     end
-
---     self.states.wasDead = self.states.isDead
---     self.states.isDead = health == 0
-
---     self.states.wasDeadOrGhost = self.states.isDeadOrGhost
---     self.states.isDeadOrGhost = UnitIsDeadOrGhost(unit)
-
---     if self.states.wasDead ~= self.states.isDead or self.states.wasDeadOrGhost ~= self.states.isDeadOrGhost then
---     end
--- end
-
----------------------------------------------------------------------
--- power states
----------------------------------------------------------------------
--- local function UnitButton_UpdatePowerStates(self)
---     local unit = self.displayedUnit
---     if not unit then return end
-
---     self.states.power = UnitPower(unit)
---     self.states.powerMax = UnitPowerMax(unit)
---     self.states.powerType, self.states.powerTypeToken = UnitPowerType(unit)
--- end
-
----------------------------------------------------------------------
--- all states
----------------------------------------------------------------------
-local function UnitButton_UpdateAllStates(self)
-    UnitButton_UpdateBaseStates(self)
-    -- UnitButton_UpdateHealthStates(self)
-    -- UnitButton_UpdatePowerStates(self)
 end
 
 ---------------------------------------------------------------------
 -- range
 ---------------------------------------------------------------------
 local function UnitButton_UpdateInRange(self, ir)
+    if true then return end -- FIXME: disable for now
+
     if not self.oorAlpha then return end
 
-    local unit = self.displayedUnit
+    local unit = self.effectiveUnit
     if not unit then return end
 
     local inRange = AF.IsInRange(unit)
@@ -162,11 +112,11 @@ end
 local function UnitButton_UpdateAll(self, force)
     if not self:IsVisible() or self.inConfigMode then return end
 
+    -- states
+    UnitButton_UpdateStates(self)
+
     -- update indicators
     UF.UpdateIndicators(self, force)
-
-    -- states
-    UnitButton_UpdateAllStates(self)
 
     -- range
     UnitButton_UpdateInRange(self)
@@ -176,22 +126,11 @@ end
 -- events
 ---------------------------------------------------------------------
 local function UnitButton_RegisterEvents(self)
-    -- health states
-    -- self:RegisterEvent("UNIT_HEALTH")
-    -- self:RegisterEvent("UNIT_MAXHEALTH")
-    -- self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
-
-    -- powers states
-    -- self:RegisterEvent("UNIT_POWER_UPDATE")
-    -- self:RegisterEvent("UNIT_MAXPOWER")
-    -- self:RegisterEvent("UNIT_DISPLAYPOWER")
-
-    self:RegisterEvent("UNIT_CONNECTION")
-    self:RegisterEvent("UNIT_ENTERED_VEHICLE")
-    self:RegisterEvent("UNIT_EXITED_VEHICLE")
-    -- self:RegisterEvent("PARTY_MEMBER_ENABLE")
-    -- self:RegisterEvent("PARTY_MEMBER_DISABLE")
-    -- self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    self:RegisterUnitEvent("UNIT_CONNECTION", self.unit)
+    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", self.unit)
+    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", self.unit)
+    self:RegisterEvent("UNIT_FLAGS")
+    self:RegisterEvent("UNIT_NAME_UPDATE")
 
     if self._updateOnGroupUpdate then
         self:RegisterEvent("GROUP_ROSTER_UPDATE")
@@ -211,26 +150,19 @@ local function UnitButton_UnregisterEvents(self)
 end
 
 local function UnitButton_OnEvent(self, event, unit, arg)
-    if unit and (self.displayedUnit == unit or self.unit == unit) then
-        if  event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "UNIT_CONNECTION" then
+    if unit and (self.effectiveUnit == unit or self.unit == unit) then
+        if event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "UNIT_CONNECTION"
+            or event == "UNIT_FLAGS" or event == "UNIT_NAME_UPDATE"
+        then
             self._updateRequired = true
-
-        -- elseif event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" or event == "UNIT_ABSORB_AMOUNT_CHANGED" then
-        --     UnitButton_UpdateHealthStates(self)
-
-        -- elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER" or event == "UNIT_DISPLAYPOWER" then
-        --     UnitButton_UpdatePowerStates(self)
         end
-
     else
         if event == "GROUP_ROSTER_UPDATE" then
             self._updateRequired = true
-
         elseif event == "PLAYER_TARGET_CHANGED" then
             if UnitExists(self.unit) then
                 UnitButton_UpdateAll(self, true)
             end
-
         elseif event == "UNIT_TARGET" then
             if self._updateOnUnitTargetChanged == unit and not UnitIsUnit("player", unit) then
                 if UnitExists(self.unit) then
@@ -255,37 +187,33 @@ local function UnitButton_OnTick(self)
     if self.__tickCount >= 2 then -- every 0.5 second
         self.__tickCount = 0
 
-        if self.unit and self.displayedUnit then
-            local displayedGuid = UnitGUID(self.displayedUnit)
-            if displayedGuid ~= self.__displayedGuid then
-                -- NOTE: displayed unit entity changed
-                self.__displayedGuid = displayedGuid
-
-                wipe(self.states)
-                UnitButton_UpdateAll(self, not strfind(self.unit, "target$"))
-            end
+        if self.unit and self.effectiveUnit then
+            local displayedGuid = UnitGUID(self.effectiveUnit)
+            self.__displayedGuid = displayedGuid
 
             local guid = UnitGUID(self.unit)
-            if guid and guid ~= self.__unitGuid then
-                -- NOTE: unit entity changed
-                self.__unitGuid = guid
+            self.__unitGuid = guid
 
-                if not self.skipDataCache then
-                    BFI.vars.guids[guid] = self.unit
-                end
+            -- NOTE: player GUID is non-secret, but be careful with "(enemy)target" units
+            if UnitIsPlayer(self.unit) and not self._skipDataCache then
+                if guid and guid ~= self.__unitGuid then
+                    -- NOTE: unit entity changed
 
-                if self.enableUnitButtonMapping then
-                    BFI.vars.units[self.unit] = self
-                end
+                    if not self._skipDataCache then
+                        BFI.vars.guids[guid] = self.unit
+                    end
 
-                -- NOTE: only save players' names
-                if UnitIsPlayer(self.unit) then
+                    if self._enableUnitButtonMapping then
+                        BFI.vars.units[self.unit] = self
+                    end
+
+                    -- NOTE: save players' names
                     local name = GetUnitName(self.unit, true)
                     if (name and self.__nameRetries and self.__nameRetries >= 4) or (name and name ~= UNKNOWN and name ~= UNKNOWNOBJECT) then
                         self.__unitName = name
                         self.__nameRetries = nil
 
-                        if not self.skipDataCache then
+                        if not self._skipDataCache then
                             BFI.vars.names[name] = self.unit
                         end
                     else
@@ -300,14 +228,12 @@ local function UnitButton_OnTick(self)
 
     UnitButton_UpdateInRange(self)
 
-    if self._updateRequired then
+    if self._refreshOnUpdate then
+        --! for Xtarget
+        UnitButton_UpdateAll(self)
+    elseif self._updateRequired then
         self._updateRequired = nil
         UnitButton_UpdateAll(self, true)
-    end
-
-    --! for Xtarget
-    if self._refreshOnUpdate then
-        UnitButton_UpdateAll(self)
     end
 end
 
@@ -323,11 +249,11 @@ end
 -- onShow/Hide
 ---------------------------------------------------------------------
 local function UnitButton_OnShow(self)
-    -- print(GetTime(), "OnShow", self:GetName(), self.displayedUnit)
+    -- print(GetTime(), "OnShow", self:GetName(), self.effectiveUnit)
     self._updateRequired = nil -- prevent UnitButton_UpdateAll twice. when convert party <-> raid, GROUP_ROSTER_UPDATE fired.
 
     UnitButton_RegisterEvents(self)
-    UnitButton_UpdateAllStates(self)
+    UnitButton_UpdateStates(self)
     UnitButton_UpdateInRange(self)
     UF.OnButtonShow(self)
     -- local success, result = pcall(UnitButton_UpdateAll, self, true)
@@ -337,19 +263,19 @@ local function UnitButton_OnShow(self)
 end
 
 local function UnitButton_OnHide(self)
-    -- print(GetTime(), "OnHide", self:GetName(), self.displayedUnit)
+    -- print(GetTime(), "OnHide", self:GetName(), self.effectiveUnit)
     UnitButton_UnregisterEvents(self)
     UF.OnButtonHide(self)
 
     if self.__unitGuid then
-        if not self.skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
+        if not self._skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
         self.__unitGuid = nil
     end
     if self.__unitName then
-        if not self.skipDataCache then BFI.vars.names[self.__unitName] = nil end
+        if not self._skipDataCache then BFI.vars.names[self.__unitName] = nil end
         self.__unitName = nil
     end
-    if self.unit and self.enableUnitButtonMapping then
+    if self.unit and self._enableUnitButtonMapping then
         BFI.vars.units[self.unit] = nil
     end
     self.__displayedGuid = nil
@@ -361,17 +287,18 @@ end
 ---------------------------------------------------------------------
 local function UnitButton_OnAttributeChanged(self, name, value)
     if name == "unit" then
+        -- print(GetTime(), "OnAttributeChanged", self:GetName(), name, value)
         if not value or value ~= self.unit then
             -- NOTE: when unitId for this button changes
             if self.__unitGuid then -- self.__unitGuid is deleted when hide
-                if not self.skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
+                if not self._skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
                 self.__unitGuid = nil
             end
             if self.__unitName then
-                if not self.skipDataCache then BFI.vars.names[self.__unitName] = nil end
+                if not self._skipDataCache then BFI.vars.names[self.__unitName] = nil end
                 self.__unitName = nil
             end
-            if self.unit and self.enableUnitButtonMapping then
+            if self.unit and self._enableUnitButtonMapping then
                 BFI.vars.units[self.unit] = nil
             end
             wipe(self.states)
@@ -385,7 +312,7 @@ local function UnitButton_OnAttributeChanged(self, name, value)
         if type(value) == "string" then
             -- print(GetTime(), "UnitButton_OnAttributeChanged", self:GetName(), value)
             self.unit = value
-            self.displayedUnit = value
+            self.effectiveUnit = value
         end
     end
 end
@@ -400,7 +327,7 @@ local function UnitButton_OnEnter(self)
             GameTooltip:SetPoint(self.tooltip.position[1], self, self.tooltip.position[2], self.tooltip.position[3], self.tooltip.position[4])
         elseif self.tooltip.anchorTo == "parent" then -- party/raid
             GameTooltip:SetOwner(self, "ANCHOR_NONE")
-            GameTooltip:SetPoint(self.tooltip.position[1], self:GetParent():GetParent(), self.tooltip.position[2], self.tooltip.position[3], self.tooltip.position  [4])
+            GameTooltip:SetPoint(self.tooltip.position[1], self:GetParent():GetParent(), self.tooltip.position[2], self.tooltip.position[3], self.tooltip.position[4])
         else -- default
             GameTooltip_SetDefaultAnchor(GameTooltip, self)
         end

@@ -34,7 +34,7 @@ local function CreateFocusTarget()
     focustarget:SetAttribute("unit", "focustarget")
     focustarget._refreshOnUpdate = true
     focustarget._updateOnUnitTargetChanged = "focus"
-    focustarget.skipDataCache = true -- BFI.vars.guids/names
+    focustarget._skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
     AF.CreateMover(focustarget, "BFI: " .. L["Unit Frames"], L["Focus Target"])

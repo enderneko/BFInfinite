@@ -225,7 +225,7 @@ local function HandleUpdateInfo(self, updateInfo)
 
         -- sort
         for auraInstanceID in next, self.auras do
-            local auraData = GetAuraDataByAuraInstanceID(self.root.displayedUnit, auraInstanceID)
+            local auraData = GetAuraDataByAuraInstanceID(self.root.effectiveUnit, auraInstanceID)
             if auraData and self:CheckBasicFilter(auraData) then
                 UpdateExtraData(self, auraData)
                 if CheckAdvancedFilters(self, auraData) then
@@ -259,7 +259,7 @@ local function ForEachAura(self, continuationToken, ...)
     local n = select("#", ...)
     for i = 1, n do
         local slot = select(i, ...)
-        local auraData = GetAuraDataBySlot(self.root.displayedUnit, slot)
+        local auraData = GetAuraDataBySlot(self.root.effectiveUnit, slot)
         if auraData and self:CheckBasicFilter(auraData) then
             UpdateExtraData(self, auraData)
             if CheckAdvancedFilters(self, auraData) then
@@ -279,7 +279,7 @@ local function HandleAllAuras(self)
     self.subShown = 0
 
     -- iterate
-    ForEachAura(self, GetAuraSlots(self.root.displayedUnit, self.auraFilter))
+    ForEachAura(self, GetAuraSlots(self.root.effectiveUnit, self.auraFilter))
 
     -- sort
     sort(self.sortedAuras, self.Comparator)
@@ -299,7 +299,7 @@ end
 -- UNIT_AURA
 ---------------------------------------------------------------------
 local function UpdateAuras(self, event, unitId, updateInfo)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unitId ~= unit then return end
 
     local isFullUpdate = not updateInfo or updateInfo.isFullUpdate
@@ -322,7 +322,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function Auras_Update(self)
-    -- print("Auras_Update", self:GetName(), self.root.displayedUnit)
+    -- print("Auras_Update", self:GetName(), self.root.effectiveUnit)
     UpdateFaction(self)
     UpdateAuras(self)
 end
@@ -331,7 +331,7 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function Auras_Enable(self)
-    -- print("Auras_Enable", self:GetName(), self.root.displayedUnit)
+    -- print("Auras_Enable", self:GetName(), self.root.effectiveUnit)
     self:RegisterEvent("UNIT_FACTION", UpdateFaction)
     self:RegisterEvent("UNIT_AURA", UpdateAuras)
 

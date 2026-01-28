@@ -426,7 +426,7 @@ end
 -- show / hide
 ---------------------------------------------------------------------
 local function Show(np)
-    np.unit = np.bUnitFrame.displayedUnit
+    np.unit = np.bUnitFrame.effectiveUnit
     np.elapsed = 0.25 -- update now
     np.guid = UnitGUID(np.unit)
     np.widgetsOnly = UnitNameplateShowsWidgetsOnly(np.unit)

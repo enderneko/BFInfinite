@@ -980,6 +980,8 @@ local function UpdateMinimap(_, module, which)
     LoadInstanceDifficultyFrameConfig(config.instanceDifficulty)
     LoadAddonButtonTrayConfig(config.addonButtonTray)
     LoadCoordsFrameConfig(config.coordinates)
-    LoadPingTextConfig(config.ping)
+    if not AF.isRetail then
+        LoadPingTextConfig(config.ping)
+    end
 end
 AF.RegisterCallback("BFI_UpdateModule", UpdateMinimap)

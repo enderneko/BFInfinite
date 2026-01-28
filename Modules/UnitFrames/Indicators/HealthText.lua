@@ -21,7 +21,7 @@ local FormatNumber = AF.FormatNumber
 -- value
 ---------------------------------------------------------------------
 local function UpdateHealth(self, event, unitId)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     self.health = UnitHealth(unit)
@@ -54,7 +54,7 @@ end
 -- color
 ---------------------------------------------------------------------
 local function UpdateColor(self, event, unitId)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     -- color

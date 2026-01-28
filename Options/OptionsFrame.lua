@@ -23,7 +23,7 @@ local list = {
     "auras",
     -- "social",
     "SEPARATOR",
-    "-unitFrames",
+    "unitFrames",
     "-nameplates",
     "-actionBars",
     "-buffsDebuffs",

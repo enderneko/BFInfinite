@@ -455,7 +455,7 @@ end
 local function CastBar_SetTexture(self, texture)
     texture = AF.LSM_GetBarTexture(texture)
     self.texture = texture
-    self.bar.fg:SetTexture(texture)
+    self.bar.fill:SetTexture(texture)
     self.status:SetTexture(texture)
     for _, pip in pairs(self.pips) do
         pip.texture:SetTexture(texture)
@@ -509,14 +509,14 @@ local function CastBar_SetupSpark(self, config)
     self.spark:ClearAllPoints()
     if config.height == 0 then
         if config.width == 1 then
-            self.spark:SetPoint("TOPRIGHT", self.bar.fg.mask)
-            self.spark:SetPoint("BOTTOMRIGHT", self.bar.fg.mask)
+            self.spark:SetPoint("TOPRIGHT", self.bar.fill.mask)
+            self.spark:SetPoint("BOTTOMRIGHT", self.bar.fill.mask)
         else
-            self.spark:SetPoint("TOP", self.bar.fg.mask, "TOPRIGHT")
-            self.spark:SetPoint("BOTTOM", self.bar.fg.mask, "BOTTOMRIGHT")
+            self.spark:SetPoint("TOP", self.bar.fill.mask, "TOPRIGHT")
+            self.spark:SetPoint("BOTTOM", self.bar.fill.mask, "BOTTOMRIGHT")
         end
     else
-        self.spark:SetPoint("CENTER", self.bar.fg.mask, "RIGHT")
+        self.spark:SetPoint("CENTER", self.bar.fill.mask, "RIGHT")
         AF.SetHeight(self.spark, config.height)
     end
 
@@ -666,7 +666,7 @@ function NP.CreateCastBar(parent, name)
     local bar = AF.CreateSimpleStatusBar(frame, nil, true)
     frame.bar = bar
     AF.SetOnePixelInside(bar, frame)
-    bar.fg:SetDrawLayer("ARTWORK", 0)
+    bar.fill:SetDrawLayer("ARTWORK", 0)
     AF.SetFrameLevel(bar, 1, frame)
     AF.RemoveFromPixelUpdater(bar)
 

@@ -34,7 +34,7 @@ local function CreatePetTarget()
     pettarget:SetAttribute("unit", "pettarget")
     pettarget._refreshOnUpdate = true
     pettarget._updateOnUnitTargetChanged = "pet"
-    pettarget.skipDataCache = true -- BFI.vars.guids/names
+    pettarget._skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
     AF.CreateMover(pettarget, "BFI: " .. L["Unit Frames"], L["Pet Target"])

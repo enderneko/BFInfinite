@@ -14,7 +14,7 @@ local GetThreatStatusColor = GetThreatStatusColor
 -- threat
 ---------------------------------------------------------------------
 local function UpdateThreat(self, event, unitId)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     local status = UnitThreatSituation(unit)

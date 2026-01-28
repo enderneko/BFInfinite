@@ -15,7 +15,7 @@ local UnitAffectingCombat = UnitAffectingCombat
 -- show/hide
 ---------------------------------------------------------------------
 local function UpdateCombatIcon(self)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
 
     if UnitAffectingCombat(unit) then
         self:Show()

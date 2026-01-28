@@ -13,7 +13,7 @@ local UnitIsUnit = UnitIsUnit
 -- target
 ---------------------------------------------------------------------
 local function UpdateTarget(self)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if not unit then return end
 
     if self.enabled and UnitIsUnit(unit, "target") then

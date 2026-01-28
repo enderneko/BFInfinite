@@ -110,7 +110,7 @@ local function GetPowerColor(self, unit, colorTable)
 end
 
 local function UpdatePowerColor(self, event, unitId)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     -- color
@@ -134,7 +134,7 @@ end
 -- value
 ---------------------------------------------------------------------
 local function UpdatePowerMax(self, event, unitId)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     self.powerMax = UnitPowerMax(unit)
@@ -142,7 +142,7 @@ local function UpdatePowerMax(self, event, unitId)
 end
 
 local function UpdatePower(self, event, unitId)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     self.power = UnitPower(unit)

@@ -35,7 +35,7 @@ end
 -- level
 ---------------------------------------------------------------------
 local function UpdateCounter(self)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
 
     local n = 0
     for member in AF.IterateGroupPlayers() do

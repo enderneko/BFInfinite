@@ -176,7 +176,7 @@ local function EnableConfigModeForGroup(group)
         frame:Hide()
         frame:SetAttribute("unit", "player")
         frame.unit = "player"
-        frame.displayedUnit = "player"
+        frame.effectiveUnit = "player"
         frame:EnableMouse(false)
 
         -- force show indicators

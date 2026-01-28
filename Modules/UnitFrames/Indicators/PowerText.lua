@@ -20,7 +20,7 @@ local FormatNumber = AF.FormatNumber
 -- value
 ---------------------------------------------------------------------
 local function UpdatePower(self, event, unitId)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     self.power = UnitPower(unit)
@@ -51,7 +51,7 @@ end
 -- color
 ---------------------------------------------------------------------
 local function UpdateColor(self, event, unitId)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     local class = UnitClassBase(unit)

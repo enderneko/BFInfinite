@@ -20,7 +20,7 @@ end
 
 --! only for non-smooth health bar
 -- local function UpdatePortrait3DCutaway(self, _, unitId)
---     local unit = self.root.displayedUnit
+--     local unit = self.root.effectiveUnit
 --     if unitId and unit ~= unitId then return end
 
 --     local cur = UnitHealth(unit)
@@ -75,7 +75,7 @@ local function UpdatePortraitClassIcon(self, unit)
 end
 
 local function UpdatePortrait(self, event, unitId)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     if self.style == "3d" then
@@ -133,7 +133,7 @@ local function Portrait_LoadConfig(self, config)
     --         self.cutaway = true
     --         self.healthBar = self.root.indicators.healthBar
     --         AF.SetPoint(self, "TOPLEFT")
-    --         AF.SetPoint(self, "BOTTOMRIGHT", self.healthBar.fg.mask)
+    --         AF.SetPoint(self, "BOTTOMRIGHT", self.healthBar.fill.mask)
     --         self:SetBackdropColor(0, 0, 0, 0)
     --         self:SetBackdropBorderColor(0, 0, 0, 0)
     --     else

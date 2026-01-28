@@ -300,7 +300,7 @@ local function UpdateExperienceBar(_, module, which)
         experienceBar:SetColor(config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha)
     end
 
-    local anchorTo = experienceBar.fg.mask
+    local anchorTo = experienceBar.fill.mask
 
     -- completed
     experienceBar.completeEnabled = config.completedQuests.enabled

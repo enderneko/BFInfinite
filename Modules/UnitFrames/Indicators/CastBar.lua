@@ -268,7 +268,7 @@ local function UpdateEmpowerPips(self, numStages)
     self.curStage = 0
 
     for stage = 1, numStages do
-        local duration = GetUnitEmpowerStageDuration(self.root.displayedUnit, stage - 1) / 1000
+        local duration = GetUnitEmpowerStageDuration(self.root.effectiveUnit, stage - 1) / 1000
         totalDuration = totalDuration + duration
         self.stageBounds[stage] = totalDuration
 
@@ -283,7 +283,7 @@ local function UpdateEmpowerPips(self, numStages)
         if stage == numStages then
             pip:SetPoint("RIGHT")
         else
-            local nextDuration = GetUnitEmpowerStageDuration(self.root.displayedUnit, stage) / 1000
+            local nextDuration = GetUnitEmpowerStageDuration(self.root.effectiveUnit, stage) / 1000
             pip:SetWidth(nextDuration / self.duration * width)
         end
 
@@ -299,7 +299,7 @@ end
 -- interruptible
 ---------------------------------------------------------------------
 local function CastInterruptible(self, event, unit)
-    if unit and unit ~= self.root.displayedUnit then return end
+    if unit and unit ~= self.root.effectiveUnit then return end
 
     if event then
         self.notInterruptible = event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE"
@@ -383,7 +383,7 @@ end
 ---------------------------------------------------------------------
 local function UpdateLatency(self, event, unit)
     if not self.showLatency then return end
-    if unit and unit ~= self.root.displayedUnit then return end
+    if unit and unit ~= self.root.effectiveUnit then return end
 
     if event == "CURRENT_SPELL_CAST_CHANGED" then
         self.changeTime = GetTime()
@@ -442,7 +442,7 @@ local function ShowOverlay(self, failed)
 end
 
 local function CastFail(self, event, unit, castGUID, castSpellID)
-    if unit and unit ~= self.root.displayedUnit then return end
+    if unit and unit ~= self.root.effectiveUnit then return end
 
     if self.castGUID ~= castGUID or self.castSpellID ~= castSpellID then return end
 
@@ -453,7 +453,7 @@ local function CastFail(self, event, unit, castGUID, castSpellID)
 end
 
 local function CastStop(self, event, unit, castGUID, castSpellID, empowerComplete)
-    if unit and unit ~= self.root.displayedUnit then return end
+    if unit and unit ~= self.root.effectiveUnit then return end
 
     if event then
         if event == "UNIT_SPELLCAST_CHANNEL_STOP" then
@@ -491,7 +491,7 @@ end
 -- update
 ---------------------------------------------------------------------
 local function CastUpdate(self, event, unitId, castGUID, castSpellID)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     local name, startTime, endTime, _
@@ -598,7 +598,7 @@ local function OnUpdate(self, elapsed)
 end
 
 local function CastStart(self, event, unitId, castGUID, castSpellID)
-    local unit = self.root.displayedUnit
+    local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
     local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID, isEmpowered, numEmpowerStages = UnitCastingInfo(unit)
@@ -771,7 +771,7 @@ end
 local function CastBar_SetTexture(self, texture)
     texture = AF.LSM_GetBarTexture(texture)
     self.texture = texture
-    self.bar.fg:SetTexture(texture)
+    self.bar.fill:SetTexture(texture)
     self.status:SetTexture(texture)
     for _, pip in pairs(self.pips) do
         pip.texture:SetTexture(texture)
@@ -824,14 +824,14 @@ local function CastBar_SetupSpark(self, config)
     self.spark:ClearAllPoints()
     if config.height == 0 then
         if config.width == 1 then
-            self.spark:SetPoint("TOPRIGHT", self.bar.fg.mask)
-            self.spark:SetPoint("BOTTOMRIGHT", self.bar.fg.mask)
+            self.spark:SetPoint("TOPRIGHT", self.bar.fill.mask)
+            self.spark:SetPoint("BOTTOMRIGHT", self.bar.fill.mask)
         else
-            self.spark:SetPoint("TOP", self.bar.fg.mask, "TOPRIGHT")
-            self.spark:SetPoint("BOTTOM", self.bar.fg.mask, "BOTTOMRIGHT")
+            self.spark:SetPoint("TOP", self.bar.fill.mask, "TOPRIGHT")
+            self.spark:SetPoint("BOTTOM", self.bar.fill.mask, "BOTTOMRIGHT")
         end
     else
-        self.spark:SetPoint("CENTER", self.bar.fg.mask, "RIGHT")
+        self.spark:SetPoint("CENTER", self.bar.fill.mask, "RIGHT")
         AF.SetHeight(self.spark, config.height)
     end
 
@@ -1023,7 +1023,7 @@ local function CastBar_EnableConfigMode(self)
                 CastStart(self)
             elseif self._elapsed >= 1.5 and self._previewInterrupt and not self._isPreviewInterrupt then
                 self._isPreviewInterrupt = true
-                CastFail(self, nil, self.root.displayedUnit, self.castGUID, self.castSpellID)
+                CastFail(self, nil, self.root.effectiveUnit, self.castGUID, self.castSpellID)
                 self._elapsed = self._elapsed + 1.5
             end
         end)
@@ -1099,7 +1099,7 @@ function UF.CreateCastBar(parent, name)
     local bar = AF.CreateSimpleStatusBar(frame, nil, true)
     frame.bar = bar
     AF.SetOnePixelInside(bar, frame)
-    bar.fg:SetDrawLayer("ARTWORK", 0)
+    bar.fill:SetDrawLayer("ARTWORK", 0)
     AF.SetFrameLevel(bar, 1, frame)
 
     -- spark

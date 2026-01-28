@@ -264,8 +264,8 @@ local function UpdateShield(self, event, unitId)
             self.shield:SetPoint("BOTTOMRIGHT", self.bg)
         else
             self.shield:ClearAllPoints()
-            self.shield:SetPoint("TOPLEFT", self.fg.mask, "TOPRIGHT")
-            self.shield:SetPoint("BOTTOMLEFT", self.fg.mask, "BOTTOMRIGHT")
+            self.shield:SetPoint("TOPLEFT", self.fill.mask, "TOPRIGHT")
+            self.shield:SetPoint("BOTTOMLEFT", self.fill.mask, "BOTTOMRIGHT")
         end
 
         if overs then -- overshield
@@ -409,7 +409,7 @@ local function MouseoverHighlight_Setup(self, config)
 end
 
 local function HealthBar_SetTexture(self, texture)
-    self.fg:SetTexture(texture)
+    self.fill:SetTexture(texture)
     self.loss:SetTexture(texture)
 end
 
@@ -484,8 +484,8 @@ function NP.CreateHealthBar(parent, name)
     local shield = bar:CreateTexture(name.."Stripe", "ARTWORK", nil, 2)
     bar.shield = shield
     shield:Hide()
-    shield:SetPoint("TOPLEFT", bar.fg.mask, "TOPRIGHT")
-    shield:SetPoint("BOTTOMLEFT", bar.fg.mask, "BOTTOMRIGHT")
+    shield:SetPoint("TOPLEFT", bar.fill.mask, "TOPRIGHT")
+    shield:SetPoint("BOTTOMLEFT", bar.fill.mask, "BOTTOMRIGHT")
     shield:SetTexture(AF.GetTexture("Stripe"), "REPEAT", "REPEAT")
     shield:SetHorizTile(true)
     shield:SetVertTile(true)
@@ -512,8 +512,8 @@ function NP.CreateHealthBar(parent, name)
     bar.fullOvershieldGlowR = fullOvershieldGlowR
     fullOvershieldGlowR:Hide()
     fullOvershieldGlowR:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
-    AF.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fg.mask)
-    AF.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fg.mask)
+    AF.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fill.mask)
+    AF.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fill.mask)
     AF.SetWidth(fullOvershieldGlowR, 4)
 
     -- mouseover highlight

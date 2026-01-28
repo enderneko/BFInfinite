@@ -32,10 +32,10 @@ local function CreateTargetTarget()
     local name = "BFI_TargetTarget"
     targettarget = CreateFrame("Button", name, UF.Parent, "BFIUnitButtonTemplate")
     targettarget:SetAttribute("unit", "targettarget")
-    targettarget._refreshOnUpdate = true
+    -- targettarget._refreshOnUpdate = true
     targettarget._updateOnPlayerTargetChanged = true
     targettarget._updateOnUnitTargetChanged = "target"
-    targettarget.skipDataCache = true -- BFI.vars.guids/names
+    targettarget._skipDataCache = true -- BFI.vars.guids/names
 
     -- mover
     AF.CreateMover(targettarget, "BFI: " .. L["Unit Frames"], L["Target Target"])

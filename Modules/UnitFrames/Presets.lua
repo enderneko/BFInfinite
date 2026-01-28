@@ -2054,7 +2054,7 @@ local default_1 = {
                     color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
-                    enabled = true,
+                    enabled = false,
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
@@ -2741,7 +2741,7 @@ local default_1 = {
                     color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
-                    enabled = true,
+                    enabled = false,
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
@@ -3419,7 +3419,7 @@ local default_1 = {
                     color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
-                    enabled = true,
+                    enabled = false,
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
@@ -4644,7 +4644,7 @@ local default_2 = {
                     color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
-                    enabled = true,
+                    enabled = false,
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
@@ -5330,7 +5330,7 @@ local default_2 = {
                     color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
-                    enabled = true,
+                    enabled = false,
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
@@ -6008,7 +6008,7 @@ local default_2 = {
                     color = AF.GetColorTable("white", 0.05)
                 },
                 healPrediction = {
-                    enabled = true,
+                    enabled = false,
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },

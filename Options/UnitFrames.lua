@@ -301,8 +301,8 @@ local function CreateGeneralOptionsPane()
                 self.shield:SetPoint("TOPRIGHT", self.bg)
                 self.shield:SetPoint("BOTTOMRIGHT", self.bg)
             else
-                self.shield:SetPoint("TOPLEFT", self.fg.mask, "TOPRIGHT")
-                self.shield:SetPoint("BOTTOMLEFT", self.fg.mask, "BOTTOMRIGHT")
+                self.shield:SetPoint("TOPLEFT", self.fill.mask, "TOPRIGHT")
+                self.shield:SetPoint("BOTTOMLEFT", self.fill.mask, "BOTTOMRIGHT")
             end
 
             self.overshieldGlow:Hide()
@@ -513,7 +513,7 @@ local function CreateGeneralOptionsPane()
         AF.SetPoint(preview, "CENTER", 0, 9)
 
         preview.unit = "player"
-        preview.displayedUnit = "player"
+        preview.effectiveUnit = "player"
         preview.states = {}
         preview.indicators = {}
 
