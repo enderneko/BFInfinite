@@ -19,9 +19,10 @@ local uf_colors = {
 
     -- cast_background = {0.175, 0.175, 0.175, 1},
 
-    shield = {1, 1, 1, 1},
-    absorb = {1, 0.1, 0.1, 1},
     heal_prediction = {1, 1, 1, 0.4},
+    damage_absorb = {1, 1, 1, 1},
+    damage_absorb_border = {1, 0.827, 0, 1},
+    heal_absorb = {1, 0.1, 0.1, 1},
 
     aura_percent = {1, 1, 0},
     aura_seconds = {1, 0.3, 0.3},

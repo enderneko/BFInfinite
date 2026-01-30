@@ -62,132 +62,6 @@ local function UpdateHealth(self, event, unitId)
 end
 
 ---------------------------------------------------------------------
--- shield
----------------------------------------------------------------------
--- local function UpdateShield(self, event, unitId)
---     local unit = self.root.effectiveUnit
---     if unitId and unit ~= unitId then return end
-
---     -- overshieldGlow
---     if not self.shieldEnabled or not self.overshieldGlowEnabled then
---         self.overshieldGlow:Hide()
---         self.overshieldGlowR:Hide()
---     end
-
---     if not self.shieldEnabled then
---         self.shield:Hide()
---         return
---     end
-
---     self.shields = UnitGetTotalAbsorbs(unit)
-
---     if self.shields > 0 then
---         local barWidth = self:GetBarWidth()
-
---         UpdateHealthStates(self)
---         self.shieldPercent = self.shields / self.healthMax
-
---         local overs = self.shieldPercent + self.healthPercent > 1
-
---         if self.shieldReverseFill and overs then -- reverse
---             self.shield:ClearAllPoints()
---             self.shield:SetPoint("TOPRIGHT", self.bg)
---             self.shield:SetPoint("BOTTOMRIGHT", self.bg)
---         else
---             self.shield:ClearAllPoints()
---             self.shield:SetPoint("TOPLEFT", self.fill.mask, "TOPRIGHT")
---             self.shield:SetPoint("BOTTOMLEFT", self.fill.mask, "BOTTOMRIGHT")
---         end
-
---         if overs then -- overshield
---             if self.shieldReverseFill then -- reverse
---                 local p = self.shieldPercent
---                 if p > 1 then p = 1 end
---                 self.shield:SetWidth(p * barWidth)
---                 self.shield:Show()
-
---                 if self.overshieldGlowEnabled then
---                     if p == 1 then
---                         self.overshieldGlowR:Hide()
---                         self.fullOvershieldGlowR:Show()
---                     else
---                         self.overshieldGlowR:Show()
---                         self.fullOvershieldGlowR:Hide()
---                     end
---                 end
---                 self.overshieldGlow:Hide()
---             else -- normal
---                 local p = 1 - self.healthPercent
---                 if p ~= 0 then
---                     self.shield:SetWidth(p * barWidth)
---                     self.shield:Show()
---                 else
---                     self.shield:Hide()
---                 end
-
---                 if self.overshieldGlowEnabled then
---                     self.overshieldGlow:Show()
---                 end
---                 self.overshieldGlowR:Hide()
---                 self.fullOvershieldGlowR:Hide()
---             end
---         else
---             self.shield:SetWidth(self.shieldPercent * barWidth)
---             self.shield:Show()
---             self.overshieldGlow:Hide()
---             self.overshieldGlowR:Hide()
---             self.fullOvershieldGlowR:Hide()
---         end
---     else
---         self.shield:Hide()
---         self.overshieldGlow:Hide()
---         self.overshieldGlowR:Hide()
---         self.fullOvershieldGlowR:Hide()
---     end
--- end
-
----------------------------------------------------------------------
--- healAbsorb
----------------------------------------------------------------------
-local function UpdateHealAbsorb(self, event, unitId)
-    local unit = self.root.effectiveUnit
-    -- if unitId and unit ~= unitId then return end
-
-    -- overabsorbGlow
-    if not self.healAbsorbEnabled or not self.overabsorbGlowEnabled then
-        self.overabsorbGlow:Hide()
-    end
-
-    if not self.healAbsorbEnabled then
-        self.healAbsorb:Hide()
-        return
-    end
-
-    self.healAbsorbs = UnitGetTotalHealAbsorbs(unit)
-
-    if self.healAbsorbs > 0 then
-        local barWidth = self:GetBarWidth()
-
-        UpdateHealthStates(self)
-        self.healAbsorbPercent = self.healAbsorbs / self.healthMax
-
-        local p = min(self.healthPercent, self.healAbsorbPercent)
-
-        self.healAbsorb:SetWidth(p * barWidth)
-        self.healAbsorb:Show()
-
-        if self.overabsorbGlowEnabled and self.healAbsorbPercent > self.healthPercent then
-            self.overabsorbGlow:Show()
-        else
-            self.overabsorbGlow:Hide()
-        end
-    else
-        self.healAbsorb:Hide()
-        self.overabsorbGlow:Hide()
-    end
-end
-
----------------------------------------------------------------------
 -- color
 ---------------------------------------------------------------------
 local function GetClassColor(type, class, inVehicle)
@@ -397,6 +271,16 @@ local function UpdateDamageAbsorb(self, event, unitId)
 end
 
 ---------------------------------------------------------------------
+-- healAbsorb
+---------------------------------------------------------------------
+local function UpdateHealAbsorb(self, event, unitId)
+    local unit = self.root.effectiveUnit
+    -- if unitId and unit ~= unitId then return end
+
+    self:UpdateHealAbsorb(unit)
+end
+
+---------------------------------------------------------------------
 -- dispel highlight
 ---------------------------------------------------------------------
 local function ForEachAura(self, continuationToken, ...)
@@ -460,7 +344,9 @@ local function HealthBar_Update(self)
     if self.shieldEnabled then
         UpdateDamageAbsorb(self)
     end
-    -- UpdateHealAbsorb(self)
+    if self.healAbsorbEnabled then
+        UpdateHealAbsorb(self)
+    end
     -- UpdateDispelHighlight(self)
 end
 
@@ -473,7 +359,6 @@ local function HealthBar_Enable(self)
 
     self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateHealth)--, UpdateShield, UpdateHealAbsorb, UpdateHealPrediction)
     self:RegisterUnitEvent("UNIT_MAXHEALTH", effectiveUnit, UpdateHealthMax, UpdateHealth)--, UpdateShield, UpdateHealAbsorb, UpdateHealPrediction)
-    -- self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", UpdateHealAbsorb)
 
     if self.color.type:find("^health") then
         self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateHealthColor_Curve)
@@ -491,6 +376,16 @@ local function HealthBar_Enable(self)
         self:RegisterUnitEvent("UNIT_FACTION", unit, UpdateHealthLossColor)
     end
 
+    if self.healPredictionEnabled then
+        self:RegisterUnitEvent("UNIT_HEAL_PREDICTION", effectiveUnit, UpdateHealPrediction)
+        self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateHealPrediction)
+        self:RegisterUnitEvent("UNIT_MAXHEALTH", effectiveUnit, UpdateHealPrediction)
+    else
+        self:UnregisterEvent("UNIT_HEAL_PREDICTION")
+        self:UnregisterEvent("UNIT_HEALTH", UpdateHealPrediction)
+        self:UnregisterEvent("UNIT_MAXHEALTH", UpdateHealPrediction)
+    end
+
     if self.shieldEnabled then
         self:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", effectiveUnit, UpdateDamageAbsorb)
         self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateDamageAbsorb)
@@ -501,14 +396,14 @@ local function HealthBar_Enable(self)
         self:UnregisterEvent("UNIT_MAXHEALTH", UpdateDamageAbsorb)
     end
 
-    if self.healPredictionEnabled then
-        self:RegisterUnitEvent("UNIT_HEAL_PREDICTION", effectiveUnit, UpdateHealPrediction)
-        self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateHealPrediction)
-        self:RegisterUnitEvent("UNIT_MAXHEALTH", effectiveUnit, UpdateHealPrediction)
+    if self.healAbsorbEnabled then
+        self:RegisterUnitEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", effectiveUnit, UpdateHealAbsorb)
+        self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateHealAbsorb)
+        self:RegisterUnitEvent("UNIT_MAXHEALTH", effectiveUnit, UpdateHealAbsorb)
     else
-        self:UnregisterEvent("UNIT_HEAL_PREDICTION")
-        self:UnregisterEvent("UNIT_HEALTH", UpdateHealPrediction)
-        self:UnregisterEvent("UNIT_MAXHEALTH", UpdateHealPrediction)
+        self:UnregisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
+        self:UnregisterEvent("UNIT_HEALTH", UpdateHealAbsorb)
+        self:UnregisterEvent("UNIT_MAXHEALTH", UpdateHealAbsorb)
     end
 
     -- if self.dispelHighlightEnabled then
@@ -530,35 +425,11 @@ local function HealthBar_Disable(self)
     self:UnregisterAllEvents()
     self:Hide()
     self:Reset()
-    -- self.health = nil
-    -- self.healthMax = nil
-    -- self.shields = nil
-    -- self.shieldPercent = nil
-    -- self.healAbsorbs = nil
-    -- self.healAbsorbPercent = nil
 end
 
 ---------------------------------------------------------------------
 -- base
 ---------------------------------------------------------------------
-local function OvershieldGlow_SetColor(self, color)
-    self.overshieldGlow:SetVertexColor(AF.UnpackColor(color))
-    self.overshieldGlowR:SetVertexColor(AF.UnpackColor(color))
-end
-
-local function HealAbsorbBar_SetTexture(self, texture)
-    if texture == "default" then
-        texture = AF.GetTexture("Stripe")
-    else
-        texture = AF.LSM_GetBarTexture(texture)
-    end
-    self.healAbsorb:SetTexture(texture, "REPEAT", "REPEAT")
-end
-
-local function HealAbsorbBar_SetColor(self, color)
-    self.healAbsorb:SetVertexColor(AF.UnpackColor(color))
-end
-
 local function OverabsorbGlow_SetColor(self, color)
     self.overabsorbGlow:SetVertexColor(AF.UnpackColor(color))
 end
@@ -579,11 +450,6 @@ end
 
 local function MouseoverHighlight_OnLeave(self)
     self.indicators.healthBar.mouseoverHighlight:Hide()
-end
-
-local function HealthBar_SetTexture(self, texture)
-    self:SetTexture(texture)
-    -- self.dispelHighlight:SetTexture(texture)
 end
 
 local function HealthBar_UpdatePixels(self)
@@ -609,21 +475,32 @@ local function HealthBar_LoadConfig(self, config)
         self:SetHealPredictionColor(AF.UnpackColor(config.healPrediction.color))
     end
 
-    self:EnableDamageAbsorb(config.shield.enabled)
-    self:LSM_SetDamageAbsorbTexture(config.shield.texture)
-    self:SetDamageAbsorbColor(AF.UnpackColor(config.shield.color))
-    self:SetDamageAbsorbStyle("normal", config.shield.reverseFill)
+    self:EnableDamageAbsorb(config.damageAbsorb.enabled)
+    self:LSM_SetDamageAbsorbTexture(config.damageAbsorb.texture)
+    self:SetDamageAbsorbColor(AF.UnpackColor(config.damageAbsorb.color))
+    self:SetDamageAbsorbExcessGlowColor(AF.UnpackColor(config.damageAbsorb.excessGlow.color))
+    if config.damageAbsorb.style == "border" then
+        self:SetupDamageAbsorb_BorderStyle(config.damageAbsorb.thickness)
+    elseif config.damageAbsorb.style == "overlay" then
+        self:SetupDamageAbsorb_OverlayStyle(config.damageAbsorb.excessGlow.enabled)
+    else
+        self:SetupDamageAbsorb_NormalStyle(config.damageAbsorb.reverseFill, config.damageAbsorb.excessGlow.enabled)
+    end
+
+    self:EnableHealAbsorb(config.healAbsorb.enabled)
+    self:LSM_SetHealAbsorbTexture(config.healAbsorb.texture)
+    self:SetHealAbsorbColor(AF.UnpackColor(config.healAbsorb.color))
+    self:SetHealAbsorbExcessGlowColor(AF.UnpackColor(config.healAbsorb.excessGlow.color))
+    if config.healAbsorb.style == "overlay" then
+        self:SetupHealAbsorb_OverlayStyle(config.healAbsorb.excessGlow.enabled)
+    else
+        self:SetupHealAbsorb_NormalStyle(config.healAbsorb.excessGlow.enabled)
+    end
 
     self:SetBackgroundColor(AF.UnpackColor(config.bgColor))
     self:SetBorderColor(AF.UnpackColor(config.borderColor))
 
     self:SetSmoothing(config.smoothing)
-
-    -- OvershieldGlow_SetColor(self, config.overshieldGlow.color)
-
-    -- HealAbsorbBar_SetTexture(self, config.healAbsorb.texture)
-    -- HealAbsorbBar_SetColor(self, config.healAbsorb.color)
-    -- OverabsorbGlow_SetColor(self, config.overabsorbGlow.color)
 
     -- MouseoverHighlight_SetColor(self, config.mouseoverHighlight.color)
 
@@ -645,11 +522,8 @@ local function HealthBar_LoadConfig(self, config)
         self.UpdateHealthLossColor = UpdateHealthLossColor
     end
 
-    -- self.shieldReverseFill = config.shield.reverseFill
-    self.shieldEnabled = config.shield.enabled
-    -- self.overshieldGlowEnabled = config.overshieldGlow.enabled
-    -- self.healAbsorbEnabled = config.healAbsorb.enabled
-    -- self.overabsorbGlowEnabled = config.overabsorbGlow.enabled
+    self.shieldEnabled = config.damageAbsorb.enabled
+    self.healAbsorbEnabled = config.healAbsorb.enabled
     self.healPredictionEnabled = config.healPrediction.enabled
     self.healPredictionUseCustomColor = config.healPrediction.useCustomColor
     -- self.mouseoverHighlightEnabled = config.mouseoverHighlight.enabled

@@ -160,24 +160,26 @@ local default_groups = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = true,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = true,
@@ -566,24 +568,26 @@ local default_groups = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = true,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = false,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = true,
@@ -845,24 +849,26 @@ local default_groups = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = true,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = true,
@@ -1174,24 +1180,30 @@ local default_1 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = true,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 overabsorbGlow = {
                     enabled = true,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb"),
                 },
                 dispelHighlight = {
                     enabled = true,
@@ -1657,24 +1669,30 @@ local default_1 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = true,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 overabsorbGlow = {
                     enabled = true,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb"),
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -2058,24 +2076,26 @@ local default_1 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = false,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -2396,24 +2416,26 @@ local default_1 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = true,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -2745,24 +2767,30 @@ local default_1 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = false,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 overabsorbGlow = {
                     enabled = false,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb"),
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -3083,24 +3111,26 @@ local default_1 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = false,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -3423,24 +3453,26 @@ local default_1 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = false,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -3764,24 +3796,26 @@ local default_2 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = true,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = true,
@@ -4247,24 +4281,26 @@ local default_2 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = true,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -4648,24 +4684,26 @@ local default_2 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = false,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -4986,24 +5024,26 @@ local default_2 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = true,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = true,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = true,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = true,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -5334,24 +5374,26 @@ local default_2 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = false,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -5672,24 +5714,30 @@ local default_2 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = false,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 overabsorbGlow = {
                     enabled = false,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb"),
                 },
                 dispelHighlight = {
                     enabled = false,
@@ -6012,24 +6060,26 @@ local default_2 = {
                     useCustomColor = true,
                     color = AF.GetColorTable("heal_prediction"),
                 },
-                shield = {
+                damageAbsorb = {
                     enabled = false,
+                    style = "border",
                     texture = "default",
-                    color = AF.GetColorTable("shield", 0.4),
+                    color = AF.GetColorTable("damage_absorb_border", 0.9),
                     reverseFill = true,
-                },
-                overshieldGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("shield", 0.9),
+                    thickness = 1,
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("damage_absorb", 0.9),
+                    },
                 },
                 healAbsorb = {
                     enabled = false,
                     texture = "default",
-                    color = AF.GetColorTable("absorb", 0.5),
-                },
-                overabsorbGlow = {
-                    enabled = false,
-                    color = AF.GetColorTable("absorb"),
+                    color = AF.GetColorTable("heal_absorb", 0.4),
+                    excessGlow = {
+                        enabled = false,
+                        color = AF.GetColorTable("heal_absorb", 0.9),
+                    },
                 },
                 dispelHighlight = {
                     enabled = false,

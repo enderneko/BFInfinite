@@ -59,8 +59,8 @@ local settings = {
         "bgColor,borderColor",
         "smoothing",
         "healPrediction",
-        "shield,overshieldGlow",
-        "healAbsorb,overabsorbGlow",
+        "damageAbsorb",
+        "healAbsorb",
         "mouseoverHighlight",
         "dispelHighlight",
         "frameLevel",
@@ -992,47 +992,32 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
     })
 
     local colorPicker1 = AF.CreateColorPicker(pane)
-    colorPicker1:SetOnChange(function(r, g, b, a)
+    colorPicker1:SetOnChange(function(r, g, b)
         if #pane.t.cfg[colorType].rgb == 4 then
-            pane.t.cfg[colorType].rgb[1] = r
-            pane.t.cfg[colorType].rgb[2] = g
-            pane.t.cfg[colorType].rgb[3] = b
-            pane.t.cfg[colorType].rgb[4] = a
+            AF.FillColorTable(pane.t.cfg[colorType].rgb, r, g, b)
         else
-            pane.t.cfg[colorType].rgb[1][1] = r
-            pane.t.cfg[colorType].rgb[1][2] = g
-            pane.t.cfg[colorType].rgb[1][3] = b
-            pane.t.cfg[colorType].rgb[1][4] = a
+            AF.FillColorTable(pane.t.cfg[colorType].rgb[1], r, g, b)
         end
         LoadIndicatorConfig(pane.t)
     end)
 
     local colorPicker2 = AF.CreateColorPicker(pane)
-    colorPicker2:SetOnChange(function(r, g, b, a)
-        pane.t.cfg[colorType].rgb[2][1] = r
-        pane.t.cfg[colorType].rgb[2][2] = g
-        pane.t.cfg[colorType].rgb[2][3] = b
-        pane.t.cfg[colorType].rgb[2][4] = a
+    colorPicker2:SetOnChange(function(r, g, b)
+        AF.FillColorTable(pane.t.cfg[colorType].rgb[2], r, g, b)
         LoadIndicatorConfig(pane.t)
     end)
 
     local colorPicker3 = AF.CreateColorPicker(pane, nil, true)
     AF.SetPoint(colorPicker3, "LEFT", colorPicker2, 80, 0)
     colorPicker3:SetOnChange(function(r, g, b, a)
-        pane.t.cfg[colorType].rgb[3][1] = r
-        pane.t.cfg[colorType].rgb[3][2] = g
-        pane.t.cfg[colorType].rgb[3][3] = b
-        pane.t.cfg[colorType].rgb[3][4] = a
+        AF.FillColorTable(pane.t.cfg[colorType].rgb[3], r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 
     local colorPicker4 = AF.CreateColorPicker(pane, nil, true)
     AF.SetPoint(colorPicker4, "BOTTOMRIGHT", gradientDropdown, "TOPRIGHT", 0, 2)
     colorPicker4:SetOnChange(function(r, g, b, a)
-        pane.t.cfg[colorType].rgb[4][1] = r
-        pane.t.cfg[colorType].rgb[4][2] = g
-        pane.t.cfg[colorType].rgb[4][3] = b
-        pane.t.cfg[colorType].rgb[4][4] = a
+        AF.FillColorTable(pane.t.cfg[colorType].rgb[4], r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -1279,10 +1264,7 @@ builder["bgColor,borderColor"] = function(parent)
     local bgColor = AF.CreateColorPicker(pane, L["Background Color"], true)
     AF.SetPoint(bgColor, "LEFT", 15, 0)
     bgColor:SetOnChange(function(r, g, b, a)
-        pane.t.cfg.bgColor[1] = r
-        pane.t.cfg.bgColor[2] = g
-        pane.t.cfg.bgColor[3] = b
-        pane.t.cfg.bgColor[4] = a
+        AF.FillColorTable(pane.t.cfg.bgColor, r, g, b, a)
         if pane.t.id:find("^general") then
             AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
         else
@@ -1293,10 +1275,7 @@ builder["bgColor,borderColor"] = function(parent)
     local borderColor = AF.CreateColorPicker(pane, L["Border Color"], true)
     AF.SetPoint(borderColor, "TOPLEFT", bgColor, 185, 0)
     borderColor:SetOnChange(function(r, g, b, a)
-        pane.t.cfg.borderColor[1] = r
-        pane.t.cfg.borderColor[2] = g
-        pane.t.cfg.borderColor[3] = b
-        pane.t.cfg.borderColor[4] = a
+        AF.FillColorTable(pane.t.cfg.borderColor, r, g, b, a)
         if pane.t.id:find("^general") then
             AF.Fire("BFI_UpdateModule", "unitFrames", pane.t.owner, true)
         else
@@ -1335,10 +1314,7 @@ builder["healPrediction"] = function(parent)
     local customColorPicker = AF.CreateColorPicker(pane, L["Custom Color"], true)
     AF.SetPoint(customColorPicker, "TOPLEFT", customColorCheckButton, "TOPRIGHT", 2, 0)
     customColorPicker:SetOnChange(function(r, g, b, a)
-        pane.t.cfg.healPrediction.color[1] = r
-        pane.t.cfg.healPrediction.color[2] = g
-        pane.t.cfg.healPrediction.color[3] = b
-        pane.t.cfg.healPrediction.color[4] = a
+        AF.FillColorTable(pane.t.cfg.healPrediction.color, r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -1371,81 +1347,119 @@ builder["healPrediction"] = function(parent)
 end
 
 ---------------------------------------------------------------------
--- shield,overshieldGlow
+-- damageAbsorb
 ---------------------------------------------------------------------
-builder["shield,overshieldGlow"] = function(parent)
-    if created["shield,overshieldGlow"] then return created["shield,overshieldGlow"] end
+builder["damageAbsorb"] = function(parent)
+    if created["damageAbsorb"] then return created["damageAbsorb"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_Shields", nil, 78)
-    created["shield,overshieldGlow"] = pane
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_DamageAbsorb", nil, 78)
+    created["damageAbsorb"] = pane
 
-    local shieldDropdown = AF.CreateDropdown(pane, 150)
-    AF.SetPoint(shieldDropdown, "TOPLEFT", 15, -25)
+    local styleDropdown = AF.CreateDropdown(pane, 150)
+    AF.SetPoint(styleDropdown, "TOPLEFT", 15, -25)
+    styleDropdown:SetItems({
+        {text = L["Normal"], value = "normal"},
+        {text = L["Overlay"], value = "overlay"},
+        {text = L["Border"], value = "border"},
+    })
+
+    local enabled = AF.CreateCheckButton(pane, L["Damage Absorb"])
+    AF.SetPoint(enabled, "BOTTOMLEFT", styleDropdown, "TOPLEFT", 0, 2)
+
+    local textureDropdown = AF.CreateDropdown(pane, 150)
+    AF.SetPoint(textureDropdown, "TOPLEFT", styleDropdown, 185, 0)
+    textureDropdown:SetLabel(L["Texture"])
     local items = AF.LSM_GetBarTextureDropdownItems()
     tinsert(items, 1, {text = L["Default"], value = "default"})
-    shieldDropdown:SetItems(items)
+    textureDropdown:SetItems(items)
 
-    local shieldCheckButton = AF.CreateCheckButton(pane, L["Shield"])
-    AF.SetPoint(shieldCheckButton, "BOTTOMLEFT", shieldDropdown, "TOPLEFT", 0, 2)
-
-    local shieldColorPicker = AF.CreateColorPicker(pane, nil, true)
-    AF.SetPoint(shieldColorPicker, "BOTTOMRIGHT", shieldDropdown, "TOPRIGHT", 0, 2)
-    shieldColorPicker:SetOnChange(function(r, g, b, a)
-        pane.t.cfg.shield.color[1] = r
-        pane.t.cfg.shield.color[2] = g
-        pane.t.cfg.shield.color[3] = b
-        pane.t.cfg.shield.color[4] = a
+    local thicknessSlider = AF.CreateSlider(pane, L["Thickness"], 150, 1, 20, 1, nil, true)
+    AF.SetPoint(thicknessSlider, "TOPLEFT", styleDropdown, 185, 0)
+    thicknessSlider:SetOnValueChanged(function(value)
+        pane.t.cfg.damageAbsorb.thickness = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    local shieldReverseFillCheckButton = AF.CreateCheckButton(pane, L["Reverse Fill"])
-    AF.SetPoint(shieldReverseFillCheckButton, "TOPLEFT", shieldDropdown, "BOTTOMLEFT", 0, -10)
-    shieldReverseFillCheckButton:SetOnCheck(function(checked)
-        pane.t.cfg.shield.reverseFill = checked
+    local colorPicker = AF.CreateColorPicker(pane, nil, true)
+    AF.SetPoint(colorPicker, "BOTTOMRIGHT", textureDropdown, "TOPRIGHT", 0, 2)
+    colorPicker:SetOnChange(function(r, g, b, a)
+        AF.FillColorTable(pane.t.cfg.damageAbsorb.color, r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 
-    local overshieldGlowCheckButton = AF.CreateCheckButton(pane)
-    AF.SetPoint(overshieldGlowCheckButton, "LEFT", shieldDropdown, 185, 0)
+    local reverseFillCheckButton = AF.CreateCheckButton(pane, L["Reverse Fill"])
+    AF.SetPoint(reverseFillCheckButton, "TOPLEFT", styleDropdown, "BOTTOMLEFT", 0, -10)
+    reverseFillCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.damageAbsorb.reverseFill = checked
+        LoadIndicatorConfig(pane.t)
+    end)
 
-    local overshieldGlowColorPicker = AF.CreateColorPicker(pane, L["Overshield Texture"], true)
-    AF.SetPoint(overshieldGlowColorPicker, "TOPLEFT", overshieldGlowCheckButton, "TOPRIGHT", 2, 0)
-    overshieldGlowColorPicker:SetOnChange(function(r, g, b, a)
-        pane.t.cfg.overshieldGlow.color[1] = r
-        pane.t.cfg.overshieldGlow.color[2] = g
-        pane.t.cfg.overshieldGlow.color[3] = b
-        pane.t.cfg.overshieldGlow.color[4] = a
+    local excessGlowCheckButton = AF.CreateCheckButton(pane)
+    AF.SetPoint(excessGlowCheckButton, "TOPLEFT", reverseFillCheckButton, 185, 0)
+
+    local excessGlowColorPicker = AF.CreateColorPicker(pane, L["Excess Glow Texture"], true)
+    AF.SetPoint(excessGlowColorPicker, "TOPLEFT", excessGlowCheckButton, "TOPRIGHT", 2, 0)
+    excessGlowColorPicker:SetOnChange(function(r, g, b, a)
+        AF.FillColorTable(pane.t.cfg.damageAbsorb.excessGlow.color, r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 
     local function UpdateWidgets()
         AF.HideColorPicker()
 
-        AF.SetEnabled(pane.t.cfg.shield.enabled, shieldDropdown, shieldColorPicker, shieldReverseFillCheckButton)
-        AF.SetEnabled(pane.t.cfg.overshieldGlow.enabled, overshieldGlowColorPicker)
+        AF.SetEnabled(pane.t.cfg.damageAbsorb.enabled, styleDropdown, textureDropdown, colorPicker, thicknessSlider)
+        AF.SetEnabled(pane.t.cfg.damageAbsorb.enabled and pane.t.cfg.damageAbsorb.style ~= "border", reverseFillCheckButton, excessGlowCheckButton)
+        AF.SetEnabled(pane.t.cfg.damageAbsorb.enabled and pane.t.cfg.damageAbsorb.excessGlow.enabled and pane.t.cfg.damageAbsorb.style ~= "border", excessGlowColorPicker)
 
-        shieldCheckButton:SetChecked(pane.t.cfg.shield.enabled)
-        shieldDropdown:SetSelectedValue(pane.t.cfg.shield.texture)
-        shieldColorPicker:SetColor(pane.t.cfg.shield.color)
-        shieldReverseFillCheckButton:SetChecked(pane.t.cfg.shield.reverseFill)
+        AF.ClearPoints(colorPicker)
+        if pane.t.cfg.damageAbsorb.style == "border" then
+            textureDropdown:Hide()
+            thicknessSlider:Show()
+            AF.SetPoint(colorPicker, "BOTTOMRIGHT", thicknessSlider, "TOPRIGHT", 0, 2)
+        else
+            textureDropdown:Show()
+            thicknessSlider:Hide()
+            AF.SetPoint(colorPicker, "BOTTOMRIGHT", textureDropdown, "TOPRIGHT", 0, 2)
+        end
 
-        overshieldGlowCheckButton:SetChecked(pane.t.cfg.overshieldGlow.enabled)
-        overshieldGlowColorPicker:SetColor(pane.t.cfg.overshieldGlow.color)
+        enabled:SetChecked(pane.t.cfg.damageAbsorb.enabled)
+        styleDropdown:SetSelectedValue(pane.t.cfg.damageAbsorb.style)
+        textureDropdown:SetSelectedValue(pane.t.cfg.damageAbsorb.texture)
+        colorPicker:SetColor(pane.t.cfg.damageAbsorb.color)
+        reverseFillCheckButton:SetChecked(pane.t.cfg.damageAbsorb.reverseFill)
+        thicknessSlider:SetValue(pane.t.cfg.damageAbsorb.thickness)
+
+        excessGlowCheckButton:SetChecked(pane.t.cfg.damageAbsorb.excessGlow.enabled)
+        excessGlowColorPicker:SetColor(pane.t.cfg.damageAbsorb.excessGlow.color)
     end
 
-    shieldDropdown:SetOnSelect(function(value)
-        pane.t.cfg.shield.texture = value
-        LoadIndicatorConfig(pane.t)
-    end)
+    styleDropdown:SetOnSelect(function(value)
+        if pane.t.cfg.damageAbsorb.style == value then return end
 
-    shieldCheckButton:SetOnCheck(function(checked)
-        pane.t.cfg.shield.enabled = checked
+        if value == "border" then
+            AF.FillColorTable(pane.t.cfg.damageAbsorb.color, AF.GetColorRGB("damage_absorb_border"))
+        else
+            AF.FillColorTable(pane.t.cfg.damageAbsorb.color, AF.GetColorRGB("damage_absorb", 0.4))
+        end
+
+        pane.t.cfg.damageAbsorb.style = value
         UpdateWidgets()
         LoadIndicatorConfig(pane.t)
     end)
 
-    overshieldGlowCheckButton:SetOnCheck(function(checked)
-        pane.t.cfg.overshieldGlow.enabled = checked
+    textureDropdown:SetOnSelect(function(value)
+        pane.t.cfg.damageAbsorb.texture = value
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    enabled:SetOnCheck(function(checked)
+        pane.t.cfg.damageAbsorb.enabled = checked
+        UpdateWidgets()
+        LoadIndicatorConfig(pane.t)
+    end)
+
+    excessGlowCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.damageAbsorb.excessGlow.enabled = checked
         UpdateWidgets()
         LoadIndicatorConfig(pane.t)
     end)
@@ -1459,73 +1473,67 @@ builder["shield,overshieldGlow"] = function(parent)
 end
 
 ---------------------------------------------------------------------
--- healAbsorb,overabsorbGlow
+-- healAbsorb
 ---------------------------------------------------------------------
-builder["healAbsorb,overabsorbGlow"] = function(parent)
-    if created["healAbsorb,overabsorbGlow"] then return created["healAbsorb,overabsorbGlow"] end
+builder["healAbsorb"] = function(parent)
+    if created["healAbsorb"] then return created["healAbsorb"] end
 
-    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_HealAbsorbs", nil, 54)
-    created["healAbsorb,overabsorbGlow"] = pane
+    local pane = AF.CreateBorderedFrame(parent, "BFI_UnitFrameOption_HealAbsorb", nil, 54)
+    created["healAbsorb"] = pane
 
-    local absorbDropdown = AF.CreateDropdown(pane, 150)
-    AF.SetPoint(absorbDropdown, "TOPLEFT", 15, -25)
+    local textureDropdown = AF.CreateDropdown(pane, 150)
+    AF.SetPoint(textureDropdown, "TOPLEFT", 15, -25)
     local items = AF.LSM_GetBarTextureDropdownItems()
     tinsert(items, 1, {text = L["Default"], value = "default"})
-    absorbDropdown:SetItems(items)
+    textureDropdown:SetItems(items)
 
-    local absorbCheckButton = AF.CreateCheckButton(pane, L["Heal Absorb"])
-    AF.SetPoint(absorbCheckButton, "BOTTOMLEFT", absorbDropdown, "TOPLEFT", 0, 2)
+    local enabled = AF.CreateCheckButton(pane, L["Heal Absorb"])
+    AF.SetPoint(enabled, "BOTTOMLEFT", textureDropdown, "TOPLEFT", 0, 2)
 
-    local absorbColorPicker = AF.CreateColorPicker(pane, nil, true)
-    AF.SetPoint(absorbColorPicker, "BOTTOMRIGHT", absorbDropdown, "TOPRIGHT", 0, 2)
-    absorbColorPicker:SetOnChange(function(r, g, b, a)
-        pane.t.cfg.healAbsorb.color[1] = r
-        pane.t.cfg.healAbsorb.color[2] = g
-        pane.t.cfg.healAbsorb.color[3] = b
-        pane.t.cfg.healAbsorb.color[4] = a
+    local colorPicker = AF.CreateColorPicker(pane, nil, true)
+    AF.SetPoint(colorPicker, "BOTTOMRIGHT", textureDropdown, "TOPRIGHT", 0, 2)
+    colorPicker:SetOnChange(function(r, g, b, a)
+        AF.FillColorTable(pane.t.cfg.healAbsorb.color, r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 
-    local overabsorbGlowCheckButton = AF.CreateCheckButton(pane)
-    AF.SetPoint(overabsorbGlowCheckButton, "LEFT", absorbDropdown, 185, 0)
+    local excessGlowCheckButton = AF.CreateCheckButton(pane)
+    AF.SetPoint(excessGlowCheckButton, "LEFT", textureDropdown, 185, 0)
 
-    local overabsorbGlowColorPicker = AF.CreateColorPicker(pane, L["Overabsorb Texture"], true)
-    AF.SetPoint(overabsorbGlowColorPicker, "TOPLEFT", overabsorbGlowCheckButton, "TOPRIGHT", 2, 0)
-    overabsorbGlowColorPicker:SetOnChange(function(r, g, b, a)
-        pane.t.cfg.overabsorbGlow.color[1] = r
-        pane.t.cfg.overabsorbGlow.color[2] = g
-        pane.t.cfg.overabsorbGlow.color[3] = b
-        pane.t.cfg.overabsorbGlow.color[4] = a
+    local excessGlowColorPicker = AF.CreateColorPicker(pane, L["Excess Glow Texture"], true)
+    AF.SetPoint(excessGlowColorPicker, "TOPLEFT", excessGlowCheckButton, "TOPRIGHT", 2, 0)
+    excessGlowColorPicker:SetOnChange(function(r, g, b, a)
+        AF.FillColorTable(pane.t.cfg.healAbsorb.excessGlow.color, r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 
     local function UpdateWidgets()
         AF.HideColorPicker()
 
-        AF.SetEnabled(pane.t.cfg.healAbsorb.enabled, absorbDropdown, absorbColorPicker)
-        AF.SetEnabled(pane.t.cfg.overabsorbGlow.enabled, overabsorbGlowColorPicker)
+        AF.SetEnabled(pane.t.cfg.healAbsorb.enabled, textureDropdown, colorPicker, excessGlowCheckButton)
+        AF.SetEnabled(pane.t.cfg.healAbsorb.enabled and pane.t.cfg.healAbsorb.excessGlow.enabled, excessGlowColorPicker)
 
-        absorbCheckButton:SetChecked(pane.t.cfg.healAbsorb.enabled)
-        absorbDropdown:SetSelectedValue(pane.t.cfg.healAbsorb.texture)
-        absorbColorPicker:SetColor(pane.t.cfg.healAbsorb.color)
+        enabled:SetChecked(pane.t.cfg.healAbsorb.enabled)
+        textureDropdown:SetSelectedValue(pane.t.cfg.healAbsorb.texture)
+        colorPicker:SetColor(pane.t.cfg.healAbsorb.color)
 
-        overabsorbGlowCheckButton:SetChecked(pane.t.cfg.overabsorbGlow.enabled)
-        overabsorbGlowColorPicker:SetColor(pane.t.cfg.overabsorbGlow.color)
+        excessGlowCheckButton:SetChecked(pane.t.cfg.healAbsorb.excessGlow.enabled)
+        excessGlowColorPicker:SetColor(pane.t.cfg.healAbsorb.excessGlow.color)
     end
 
-    absorbDropdown:SetOnSelect(function(value)
+    textureDropdown:SetOnSelect(function(value)
         pane.t.cfg.healAbsorb.texture = value
         LoadIndicatorConfig(pane.t)
     end)
 
-    absorbCheckButton:SetOnCheck(function(checked)
+    enabled:SetOnCheck(function(checked)
         pane.t.cfg.healAbsorb.enabled = checked
         UpdateWidgets()
         LoadIndicatorConfig(pane.t)
     end)
 
-    overabsorbGlowCheckButton:SetOnCheck(function(checked)
-        pane.t.cfg.overabsorbGlow.enabled = checked
+    excessGlowCheckButton:SetOnCheck(function(checked)
+        pane.t.cfg.healAbsorb.excessGlow.enabled = checked
         UpdateWidgets()
         LoadIndicatorConfig(pane.t)
     end)
@@ -1553,10 +1561,7 @@ builder["mouseoverHighlight"] = function(parent)
     local mouseoverHighlightColorPicker = AF.CreateColorPicker(pane, L["Mouseover Highlight Color"], true)
     AF.SetPoint(mouseoverHighlightColorPicker, "TOPLEFT", mouseoverHighlightCheckButton, "TOPRIGHT", 2, 0)
     mouseoverHighlightColorPicker:SetOnChange(function(r, g, b, a)
-        pane.t.cfg.mouseoverHighlight.color[1] = r
-        pane.t.cfg.mouseoverHighlight.color[2] = g
-        pane.t.cfg.mouseoverHighlight.color[3] = b
-        pane.t.cfg.mouseoverHighlight.color[4] = a
+        AF.FillColorTable(pane.t.cfg.mouseoverHighlight.color, r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -2000,9 +2005,7 @@ builder["castBarNameText"] = function(parent)
     local colorPicker = AF.CreateColorPicker(pane, AF.GetGradientText(L["Name Text"], "BFI", "white"))
     AF.SetPoint(colorPicker, "TOPLEFT", enabledCheckButton, "TOPRIGHT", 2, 0)
     colorPicker:SetOnChange(function(r, g, b)
-        pane.t.cfg.nameText.color[1] = r
-        pane.t.cfg.nameText.color[2] = g
-        pane.t.cfg.nameText.color[3] = b
+        AF.FillColorTable(pane.t.cfg.nameText.color, r, g, b)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -2132,9 +2135,7 @@ builder["castBarDurationText"] = function(parent)
     local colorPicker = AF.CreateColorPicker(pane, AF.GetGradientText(L["Duration Text"], "BFI", "white"))
     AF.SetPoint(colorPicker, "TOPLEFT", enabledCheckButton, "TOPRIGHT", 2, 0)
     colorPicker:SetOnChange(function(r, g, b)
-        pane.t.cfg.durationText.color[1] = r
-        pane.t.cfg.durationText.color[2] = g
-        pane.t.cfg.durationText.color[3] = b
+        AF.FillColorTable(pane.t.cfg.durationText.color, r, g, b)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -2340,9 +2341,7 @@ local function CreateFontPositionExtraPane(parent, textType, frameName, label, e
     local colorPicker = AF.CreateColorPicker(pane)
     AF.SetPoint(colorPicker, "BOTTOMRIGHT", fontDropdown, "TOPRIGHT", 0, 2)
     colorPicker:SetOnChange(function(r, g, b)
-        pane.t.cfg[textType].color[1] = r
-        pane.t.cfg[textType].color[2] = g
-        pane.t.cfg[textType].color[3] = b
+        AF.FillColorTable(pane.t.cfg[textType].color, r, g, b)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -2462,9 +2461,7 @@ local function CreateFontPositionExtraPane(parent, textType, frameName, label, e
         normalColorPicker = AF.CreateColorPicker(pane, L["Normal"])
         AF.SetPoint(normalColorPicker, "TOPLEFT", xOffset, "BOTTOMLEFT", 0, -35)
         normalColorPicker:SetOnChange(function(r, g, b)
-            pane.t.cfg[textType].color.normal[1] = r
-            pane.t.cfg[textType].color.normal[2] = g
-            pane.t.cfg[textType].color.normal[3] = b
+            AF.FillColorTable(pane.t.cfg[textType].color.normal, r, g, b)
             LoadIndicatorConfig(pane.t)
         end)
 
@@ -2474,9 +2471,7 @@ local function CreateFontPositionExtraPane(parent, textType, frameName, label, e
         percentColorPicker = AF.CreateColorPicker(pane, L["Remaining Time"] .. " <")
         AF.SetPoint(percentColorPicker, "TOPLEFT", percentCheckButton, "TOPRIGHT", 2, 0)
         percentColorPicker:SetOnChange(function(r, g, b)
-            pane.t.cfg[textType].color.percent.rgb[1] = r
-            pane.t.cfg[textType].color.percent.rgb[2] = g
-            pane.t.cfg[textType].color.percent.rgb[3] = b
+            AF.FillColorTable(pane.t.cfg[textType].color.percent.rgb, r, g, b)
             LoadIndicatorConfig(pane.t)
         end)
 
@@ -2510,9 +2505,7 @@ local function CreateFontPositionExtraPane(parent, textType, frameName, label, e
         secondsColorPicker = AF.CreateColorPicker(pane, L["Remaining Time"] .. " <")
         AF.SetPoint(secondsColorPicker, "TOPLEFT", secondsCheckButton, "TOPRIGHT", 2, 0)
         secondsColorPicker:SetOnChange(function(r, g, b)
-            pane.t.cfg[textType].color.seconds.rgb[1] = r
-            pane.t.cfg[textType].color.seconds.rgb[2] = g
-            pane.t.cfg[textType].color.seconds.rgb[3] = b
+            AF.FillColorTable(pane.t.cfg[textType].color.seconds.rgb, r, g, b)
             LoadIndicatorConfig(pane.t)
         end)
 
@@ -2874,9 +2867,7 @@ builder["font,color"] = function(parent)
     local colorPicker = AF.CreateColorPicker(pane)
     AF.SetPoint(colorPicker, "BOTTOMRIGHT", colorDropdown, "TOPRIGHT", 0, 2)
     colorPicker:SetOnChange(function(r, g, b)
-        pane.t.cfg.color.rgb[1] = r
-        pane.t.cfg.color.rgb[2] = g
-        pane.t.cfg.color.rgb[3] = b
+        AF.FillColorTable(pane.t.cfg.color.rgb, r, g, b)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -3003,9 +2994,7 @@ builder["damage,healing"] = function(parent)
     local damageColorPicker = AF.CreateColorPicker(pane, L["Damage"])
     AF.SetPoint(damageColorPicker, "TOPLEFT", damageCheckButton, "TOPRIGHT", 2, 0)
     damageColorPicker:SetOnConfirm(function(r, g, b)
-        pane.t.cfg.types.damage.color[1] = r
-        pane.t.cfg.types.damage.color[2] = g
-        pane.t.cfg.types.damage.color[3] = b
+        AF.FillColorTable(pane.t.cfg.types.damage.color, r, g, b)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -3021,9 +3010,7 @@ builder["damage,healing"] = function(parent)
     local healingColorPicker = AF.CreateColorPicker(pane, L["Healing"])
     AF.SetPoint(healingColorPicker, "TOPLEFT", healingCheckButton, "TOPRIGHT", 2, 0)
     healingColorPicker:SetOnConfirm(function(r, g, b)
-        pane.t.cfg.types.healing.color[1] = r
-        pane.t.cfg.types.healing.color[2] = g
-        pane.t.cfg.types.healing.color[3] = b
+        AF.FillColorTable(pane.t.cfg.types.healing.color, r, g, b)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -3705,10 +3692,7 @@ builder["color"] = function(parent)
     local colorPicker = AF.CreateColorPicker(pane, L["Color"], true)
     AF.SetPoint(colorPicker, "LEFT", 15, 0)
     colorPicker:SetOnChange(function(r, g, b, a)
-        pane.t.cfg.color[1] = r
-        pane.t.cfg.color[2] = g
-        pane.t.cfg.color[3] = b
-        pane.t.cfg.color[4] = a
+        AF.FillColorTable(pane.t.cfg.color, r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 

@@ -151,12 +151,12 @@ do
             },
             shield = {
                 enabled = true,
-                color = AF.GetColorTable("shield", 0.6),
+                color = AF.GetColorTable("damage_absorb", 0.6),
                 reverseFill = true,
             },
             overshieldGlow = {
                 enabled = true,
-                color = AF.GetColorTable("shield"),
+                color = AF.GetColorTable("damage_absorb"),
             },
             thresholds = {
                 enabled = false,
