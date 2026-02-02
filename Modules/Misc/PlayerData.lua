@@ -5,6 +5,7 @@ local M = BFI.modules.Misc
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local issecretvalue = issecretvalue or AF.noop_false
 local UnitClassBase = AF.UnitClassBase
 local UnitLevel = UnitLevel
 local GetNumGuildMembers = GetNumGuildMembers
@@ -118,7 +119,7 @@ function CacheGroup(_, event)
 
     for unit in AF.IterateGroupPlayers() do
         local name = AF.UnitFullName(unit)
-        if name then
+        if not issecretvalue(name) and name then
             local class = UnitClassBase(unit)
             nameToClass[name] = class
 
@@ -130,7 +131,7 @@ function CacheGroup(_, event)
         end
 
         local shortName = UnitName(unit)
-        if shortName then
+        if not issecretvalue(shortName) and shortName then
             nameToClass[shortName] = UnitClassBase(unit)
         end
     end
