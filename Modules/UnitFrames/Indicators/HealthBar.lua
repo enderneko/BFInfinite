@@ -281,56 +281,6 @@ local function UpdateHealAbsorb(self, event, unitId)
 end
 
 ---------------------------------------------------------------------
--- dispel highlight
----------------------------------------------------------------------
-local function ForEachAura(self, continuationToken, ...)
-    -- continuationToken is the first return value of GetAuraSlots()
-    local n = select("#", ...)
-    for i = 1, n do
-        local slot = select(i, ...)
-        local auraData = GetAuraDataBySlot(self.root.effectiveUnit, slot)
-        local auraType = AF.GetDebuffType(auraData)
-        if auraType then
-            self.dispelTypes[auraType] = true
-        end
-    end
-end
-
-local dispel_order = {"Magic", "Curse", "Disease", "Poison", "Bleed"}
-
-local function UpdateDispelHighlight(self, event, unitId)
-    local unit = self.root.effectiveUnit
-    -- if unitId and unit ~= unitId then return end
-    if UnitCanAttack("player", unit) then return end
-
-    if not self.dispelHighlightEnabled then
-        self.dispelHighlight:Hide()
-        return
-    end
-
-    -- reset
-    wipe(self.dispelTypes)
-
-    -- iterate
-    ForEachAura(self, GetAuraSlots(self.root.effectiveUnit, "HARMFUL"))
-
-    -- show
-    local found
-
-    for _, type in next, dispel_order do
-        if self.dispelTypes[type] then
-            if not self.dispelHighlightOnlyDispellable or AF.CanDispel(type) then
-                self.dispelHighlight:SetVertexColor(AF.GetAuraTypeColor(type, self.dispelHighlightAlpha))
-                found = true
-                break
-            end
-        end
-    end
-
-    self.dispelHighlight:SetShown(found)
-end
-
----------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
 local function HealthBar_Update(self)
@@ -347,7 +297,9 @@ local function HealthBar_Update(self)
     if self.healAbsorbEnabled then
         UpdateHealAbsorb(self)
     end
-    -- UpdateDispelHighlight(self)
+    if self.dispelHighlightEnabled then
+        self:UpdateDispelHighlight()
+    end
 end
 
 ---------------------------------------------------------------------
@@ -406,11 +358,9 @@ local function HealthBar_Enable(self)
         self:UnregisterEvent("UNIT_MAXHEALTH", UpdateHealAbsorb)
     end
 
-    -- if self.dispelHighlightEnabled then
-    --     self:RegisterEvent("UNIT_AURA", UpdateDispelHighlight)
-    -- else
-    --     self:UnregisterEvent("UNIT_AURA")
-    -- end
+    if self.dispelHighlightEnabled then
+        self:EnableDispelHighlight(effectiveUnit, self.dispelHighlightOnlyDispellable)
+    end
 
     self:Show()
     -- C_Timer.After(1, function()
@@ -423,40 +373,9 @@ end
 ---------------------------------------------------------------------
 local function HealthBar_Disable(self)
     self:UnregisterAllEvents()
+    self:DisableDispelHighlight()
     self:Hide()
     self:Reset()
-end
-
----------------------------------------------------------------------
--- base
----------------------------------------------------------------------
-local function OverabsorbGlow_SetColor(self, color)
-    self.overabsorbGlow:SetVertexColor(AF.UnpackColor(color))
-end
-
-local function DispelHighlight_Setup(self, config)
-    self.dispelHighlight:SetBlendMode(config.blendMode)
-end
-
-local function MouseoverHighlight_SetColor(self, color)
-    self.mouseoverHighlight:SetColorTexture(AF.UnpackColor(color))
-end
-
-local function MouseoverHighlight_OnEnter(self)
-    if self.indicators.healthBar.mouseoverHighlightEnabled then
-        self.indicators.healthBar.mouseoverHighlight:Show()
-    end
-end
-
-local function MouseoverHighlight_OnLeave(self)
-    self.indicators.healthBar.mouseoverHighlight:Hide()
-end
-
-local function HealthBar_UpdatePixels(self)
-    self:DefaultUpdatePixels()
-    -- AF.ReSize(self.overshieldGlow)
-    -- AF.ReSize(self.overshieldGlowR)
-    -- AF.RePoint(self.overshieldGlowR)
 end
 
 ---------------------------------------------------------------------
@@ -466,15 +385,20 @@ local function HealthBar_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
+    self:SetSmoothing(config.smoothing)
 
     self:LSM_SetTexture(config.texture)
+    self:SetBackgroundColor(AF.UnpackColor(config.bgColor))
+    self:SetBorderColor(AF.UnpackColor(config.borderColor))
 
+    -- heal prediction
     self:EnableHealPrediction(config.healPrediction.enabled)
     self:LSM_SetHealPredictionTexture(config.texture)
     if config.healPrediction.useCustomColor then
         self:SetHealPredictionColor(AF.UnpackColor(config.healPrediction.color))
     end
 
+    -- damage absorb
     self:EnableDamageAbsorb(config.damageAbsorb.enabled)
     self:LSM_SetDamageAbsorbTexture(config.damageAbsorb.texture)
     self:SetDamageAbsorbColor(AF.UnpackColor(config.damageAbsorb.color))
@@ -487,6 +411,7 @@ local function HealthBar_LoadConfig(self, config)
         self:SetupDamageAbsorb_NormalStyle(config.damageAbsorb.reverseFill, config.damageAbsorb.excessGlow.enabled)
     end
 
+    -- heal absorb
     self:EnableHealAbsorb(config.healAbsorb.enabled)
     self:LSM_SetHealAbsorbTexture(config.healAbsorb.texture)
     self:SetHealAbsorbColor(AF.UnpackColor(config.healAbsorb.color))
@@ -497,12 +422,16 @@ local function HealthBar_LoadConfig(self, config)
         self:SetupHealAbsorb_NormalStyle(config.healAbsorb.excessGlow.enabled)
     end
 
-    self:SetBackgroundColor(AF.UnpackColor(config.bgColor))
-    self:SetBorderColor(AF.UnpackColor(config.borderColor))
+    -- dispel highlight
+    self:SetDispelHighlightBlendMode(config.dispelHighlight.blendMode)
+    self:SetDispelHighlightAlpha(config.dispelHighlight.alpha)
+    if not config.dispelHighlight.enabled then
+        self:DisableDispelHighlight()
+    end
 
-    self:SetSmoothing(config.smoothing)
-
-    -- MouseoverHighlight_SetColor(self, config.mouseoverHighlight.color)
+    -- mouseover highlight
+    self:EnableMouseoverHighlight(config.mouseoverHighlight.enabled)
+    self:SetMouseoverHighlightColor(AF.UnpackColor(config.mouseoverHighlight.color))
 
     -- DispelHighlight_Setup(self, config.dispelHighlight)
 
@@ -526,10 +455,8 @@ local function HealthBar_LoadConfig(self, config)
     self.healAbsorbEnabled = config.healAbsorb.enabled
     self.healPredictionEnabled = config.healPrediction.enabled
     self.healPredictionUseCustomColor = config.healPrediction.useCustomColor
-    -- self.mouseoverHighlightEnabled = config.mouseoverHighlight.enabled
-    -- self.dispelHighlightEnabled = config.dispelHighlight.enabled
-    -- self.dispelHighlightAlpha = config.dispelHighlight.alpha
-    -- self.dispelHighlightOnlyDispellable = config.dispelHighlight.dispellable
+    self.dispelHighlightEnabled = config.dispelHighlight.enabled
+    self.dispelHighlightOnlyDispellable = config.dispelHighlight.dispellable
 end
 
 ---------------------------------------------------------------------
@@ -583,69 +510,6 @@ function UF.CreateHealthBar(parent, name)
     -- events
     AF.AddEventHandler(bar)
 
-    -- -- shield
-    -- local shield = bar:CreateTexture(name .. "Shield", "ARTWORK", nil, 2)
-    -- bar.shield = shield
-    -- shield:Hide()
-    -- shield:SetPoint("TOPLEFT", bar.fill.mask, "TOPRIGHT")
-    -- shield:SetPoint("BOTTOMLEFT", bar.fill.mask, "BOTTOMRIGHT")
-    -- shield:SetHorizTile(true)
-    -- shield:SetVertTile(true)
-
-    -- -- overshield
-    -- local overshieldGlow = bar:CreateTexture(name .. "OvershieldGlow", "ARTWORK", nil, 3)
-    -- bar.overshieldGlow = overshieldGlow
-    -- overshieldGlow:Hide()
-    -- overshieldGlow:SetTexture(AF.GetTexture("Overshield", BFI.name))
-    -- AF.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss.mask)
-    -- AF.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss.mask)
-    -- AF.SetWidth(overshieldGlow, 4)
-
-    -- -- overshieldR
-    -- local overshieldGlowR = bar:CreateTexture(name .. "OvershieldGlowR", "ARTWORK", nil, 3)
-    -- bar.overshieldGlowR = overshieldGlowR
-    -- overshieldGlowR:Hide()
-    -- overshieldGlowR:SetTexture(AF.GetTexture("OvershieldR", BFI.name))
-    -- AF.SetPoint(overshieldGlowR, "TOP", shield, "TOPLEFT")
-    -- AF.SetPoint(overshieldGlowR, "BOTTOM", shield, "BOTTOMLEFT")
-    -- AF.SetWidth(overshieldGlowR, 6)
-
-    -- local fullOvershieldGlowR = bar:CreateTexture(name .. "FullOvershieldGlowR", "ARTWORK", nil, 3)
-    -- bar.fullOvershieldGlowR = fullOvershieldGlowR
-    -- fullOvershieldGlowR:Hide()
-    -- fullOvershieldGlowR:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
-    -- AF.SetPoint(fullOvershieldGlowR, "TOPLEFT", bar.fill.mask)
-    -- AF.SetPoint(fullOvershieldGlowR, "BOTTOMLEFT", bar.fill.mask)
-    -- AF.SetWidth(fullOvershieldGlowR, 4)
-
-    -- -- healAbsorb
-    -- local healAbsorb = bar:CreateTexture(name .. "HealAbsorb", "ARTWORK", nil, 4)
-    -- bar.healAbsorb = healAbsorb
-    -- healAbsorb:Hide()
-    -- healAbsorb:SetPoint("TOPRIGHT", bar.fill.mask)
-    -- healAbsorb:SetPoint("BOTTOMRIGHT", bar.fill.mask)
-    -- healAbsorb:SetHorizTile(true)
-    -- healAbsorb:SetVertTile(true)
-
-    -- -- overabsorb
-    -- local overabsorbGlow = bar:CreateTexture(name .. "OverabsorbGlow", "ARTWORK", nil, 5)
-    -- bar.overabsorbGlow = overabsorbGlow
-    -- overabsorbGlow:Hide()
-    -- overabsorbGlow:SetTexture(AF.GetTexture("Overabsorb", BFI.name))
-    -- AF.SetPoint(overabsorbGlow, "TOPLEFT", bar.fill.mask)
-    -- AF.SetPoint(overabsorbGlow, "BOTTOMLEFT", bar.fill.mask)
-    -- AF.SetWidth(overabsorbGlow, 4)
-
-    -- -- mouseover highlight
-    -- local mouseoverHighlight = bar:CreateTexture(name .. "MouseoverHighlight", "ARTWORK", nil, 7)
-    -- -- local mouseoverHighlight = AF.CreateGradientTexture(bar, "VERTICAL", nil, {1, 1, 1, 0.1}, nil, "ARTWORK", 7)
-    -- bar.mouseoverHighlight = mouseoverHighlight
-    -- mouseoverHighlight:SetAllPoints(bar.bg)
-    -- mouseoverHighlight:Hide()
-
-    -- parent:HookScript("OnEnter", MouseoverHighlight_OnEnter)
-    -- parent:HookScript("OnLeave", MouseoverHighlight_OnLeave)
-
     -- -- dispel highlight
     -- local dispelHighlight = bar:CreateTexture(name .. "DispelHighlight", "ARTWORK", nil, 1)
     -- bar.dispelHighlight = dispelHighlight
@@ -663,7 +527,7 @@ function UF.CreateHealthBar(parent, name)
     bar.LoadConfig = HealthBar_LoadConfig
 
     -- pixel perfect
-    AF.AddToPixelUpdater_Auto(bar, HealthBar_UpdatePixels)
+    AF.AddToPixelUpdater_Auto(bar, bar.DefaultUpdatePixels)
 
     return bar
 end
