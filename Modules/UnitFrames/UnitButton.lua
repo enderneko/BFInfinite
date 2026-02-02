@@ -4,6 +4,7 @@ local UF = BFI.modules.UnitFrames
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local issecretvalue = issecretvalue
 local UnitGUID = UnitGUID
 local UnitName = UnitName
 local GetUnitName = GetUnitName
@@ -176,8 +177,8 @@ end
 ---------------------------------------------------------------------
 -- onUpdate
 ---------------------------------------------------------------------
-BFI.vars.guids = {} -- guid to unitid
-BFI.vars.names = {} -- name to unitid
+-- BFI.vars.guids = {} -- guid to unitid
+-- BFI.vars.names = {} -- name to unitid
 BFI.vars.units = {} -- unitid to button
 
 local UNKNOWN = _G.UNKNOWN
@@ -188,39 +189,38 @@ local function UnitButton_OnTick(self)
         self.__tickCount = 0
 
         if self.unit and self.effectiveUnit then
-            local displayedGuid = UnitGUID(self.effectiveUnit)
-            self.__displayedGuid = displayedGuid
+            self.__effectiveGuid = UnitGUID(self.effectiveUnit)
 
             local guid = UnitGUID(self.unit)
-            self.__unitGuid = guid
 
             -- NOTE: player GUID is non-secret, but be careful with "(enemy)target" units
-            if UnitIsPlayer(self.unit) and not self._skipDataCache then
+            if not issecretvalue(guid) and UnitIsPlayer(self.unit) and not self._skipDataCache then
                 if guid and guid ~= self.__unitGuid then
                     -- NOTE: unit entity changed
+                    self.__unitGuid = guid
 
-                    if not self._skipDataCache then
-                        BFI.vars.guids[guid] = self.unit
-                    end
+                    -- if not self._skipDataCache then
+                    --     BFI.vars.guids[guid] = self.unit
+                    -- end
 
                     if self._enableUnitButtonMapping then
                         BFI.vars.units[self.unit] = self
                     end
 
                     -- NOTE: save players' names
-                    local name = GetUnitName(self.unit, true)
-                    if (name and self.__nameRetries and self.__nameRetries >= 4) or (name and name ~= UNKNOWN and name ~= UNKNOWNOBJECT) then
-                        self.__unitName = name
-                        self.__nameRetries = nil
+                    -- local name = GetUnitName(self.unit, true)
+                    -- if (name and self.__nameRetries and self.__nameRetries >= 4) or (name and name ~= UNKNOWN and name ~= UNKNOWNOBJECT) then
+                    --     self.__unitName = name
+                    --     self.__nameRetries = nil
 
-                        if not self._skipDataCache then
-                            BFI.vars.names[name] = self.unit
-                        end
-                    else
-                        -- NOTE: update on next tick
-                        self.__nameRetries = (self.__nameRetries or 0) + 1
-                        self.__unitGuid = nil
-                    end
+                    --     if not self._skipDataCache then
+                    --         BFI.vars.names[name] = self.unit
+                    --     end
+                    -- else
+                    --     -- NOTE: update on next tick
+                    --     self.__nameRetries = (self.__nameRetries or 0) + 1
+                    --     self.__unitGuid = nil
+                    -- end
                 end
             end
         end
@@ -249,7 +249,7 @@ end
 -- onShow/Hide
 ---------------------------------------------------------------------
 local function UnitButton_OnShow(self)
-    -- print(GetTime(), "OnShow", self:GetName(), self.effectiveUnit)
+    -- print(AF.WrapTextInColor(GetTime(), "darkgray"), "[OnShow]", self:GetName(), self.effectiveUnit)
     self._updateRequired = nil -- prevent UnitButton_UpdateAll twice. when convert party <-> raid, GROUP_ROSTER_UPDATE fired.
 
     UnitButton_RegisterEvents(self)
@@ -263,56 +263,66 @@ local function UnitButton_OnShow(self)
 end
 
 local function UnitButton_OnHide(self)
-    -- print(GetTime(), "OnHide", self:GetName(), self.effectiveUnit)
+    -- print(AF.WrapTextInColor(GetTime(), "darkgray"), "[OnHide]", self:GetName(), self.effectiveUnit)
     UnitButton_UnregisterEvents(self)
     UF.OnButtonHide(self)
 
-    if self.__unitGuid then
-        if not self._skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
-        self.__unitGuid = nil
-    end
-    if self.__unitName then
-        if not self._skipDataCache then BFI.vars.names[self.__unitName] = nil end
-        self.__unitName = nil
-    end
+    -- if self.__unitGuid then
+    --     if not self._skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
+    --     self.__unitGuid = nil
+    -- end
+    -- if self.__unitName then
+    --     if not self._skipDataCache then BFI.vars.names[self.__unitName] = nil end
+    --     self.__unitName = nil
+    -- end
     if self.unit and self._enableUnitButtonMapping then
         BFI.vars.units[self.unit] = nil
     end
-    self.__displayedGuid = nil
+
+    self.__unitGuid = nil
+    self.__effectiveGuid = nil
     wipe(self.states)
 end
 
 ---------------------------------------------------------------------
 -- onAttributeChanged
 ---------------------------------------------------------------------
+local function UnitButton_OnUnitChanged(self)
+    print(AF.WrapTextInColor(GetTime(), "darkgray"), "[OnUnitChanged]", self:GetName(), self.effectiveUnit)
+
+    -- TODO: private auras indicator
+
+    UnitButton_UpdateStates(self)
+    UnitButton_UpdateInRange(self)
+    UF.OnButtonShow(self)
+end
+
 local function UnitButton_OnAttributeChanged(self, name, value)
     if name == "unit" then
-        -- print(GetTime(), "OnAttributeChanged", self:GetName(), name, value)
+        -- print(AF.WrapTextInColor(GetTime(), "darkgray"), "OnAttributeChanged", self:GetName(), name, value)
         if not value or value ~= self.unit then
             -- NOTE: when unitId for this button changes
-            if self.__unitGuid then -- self.__unitGuid is deleted when hide
-                if not self._skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
-                self.__unitGuid = nil
-            end
-            if self.__unitName then
-                if not self._skipDataCache then BFI.vars.names[self.__unitName] = nil end
-                self.__unitName = nil
-            end
+            -- if self.__unitGuid then -- self.__unitGuid is deleted when hide
+            --     if not self._skipDataCache then BFI.vars.guids[self.__unitGuid] = nil end
+            --     self.__unitGuid = nil
+            -- end
+            -- if self.__unitName then
+            --     if not self._skipDataCache then BFI.vars.names[self.__unitName] = nil end
+            --     self.__unitName = nil
+            -- end
             if self.unit and self._enableUnitButtonMapping then
                 BFI.vars.units[self.unit] = nil
             end
             wipe(self.states)
         end
 
-        -- private auras
-        -- if self.unit ~= value then
-        --     self.indicators.privateAuras:UpdatePrivateAuraAnchor(value)
-        -- end
-
-        if type(value) == "string" then
-            -- print(GetTime(), "UnitButton_OnAttributeChanged", self:GetName(), value)
+        if value and value ~= self.unit then
+            -- print(AF.WrapTextInColor(GetTime(), "darkgray"), "UnitButton_OnAttributeChanged", self:GetName(), value)
             self.unit = value
             self.effectiveUnit = value
+            if self._updateOnUnitChange then
+                UnitButton_OnUnitChanged(self)
+            end
         end
     end
 end
@@ -365,7 +375,7 @@ local function UnitButton_SetupPing(button)
     button:SetAttribute("ping-receiver", true)
 
     function button:GetTargetPingGUID()
-        return button.__unitGuid
+        return button.__effectiveGuid
     end
 end
 
