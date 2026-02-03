@@ -138,7 +138,7 @@ local function UpdatePowerMax(self, event, unitId)
     if unitId and unit ~= unitId then return end
 
     self.powerMax = UnitPowerMax(unit)
-    self:SetBarMinMaxValues(0, self.powerMax)
+    self:SetMinMaxValues(0, self.powerMax)
 end
 
 local function UpdatePower(self, event, unitId)
@@ -146,7 +146,7 @@ local function UpdatePower(self, event, unitId)
     if unitId and unit ~= unitId then return end
 
     self.power = UnitPower(unit)
-    self:SetBarValue(self.power)
+    self:SetValue(self.power)
 end
 
 local function UpdateAll(self, event, unitId)
@@ -159,16 +159,18 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function PowerBar_Enable(self)
+    local effectiveUnit = self.root.effectiveUnit
+
     if self.frequent then
-        self:RegisterEvent("UNIT_POWER_FREQUENT", UpdatePower)
+        self:RegisterUnitEvent("UNIT_POWER_FREQUENT", effectiveUnit, UpdatePower)
         self:UnregisterEvent("UNIT_POWER_UPDATE")
     else
-        self:RegisterEvent("UNIT_POWER_UPDATE", UpdatePower)
+        self:RegisterUnitEvent("UNIT_POWER_UPDATE", effectiveUnit, UpdatePower)
         self:UnregisterEvent("UNIT_POWER_FREQUENT")
     end
-    self:RegisterEvent("UNIT_MAXPOWER", UpdatePowerMax)
-    self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateAll)
-    self:RegisterEvent("UNIT_FACTION", UpdatePowerColor)
+    self:RegisterUnitEvent("UNIT_MAXPOWER", effectiveUnit, UpdatePowerMax)
+    self:RegisterUnitEvent("UNIT_DISPLAYPOWER", effectiveUnit, UpdateAll)
+    self:RegisterUnitEvent("UNIT_FACTION", effectiveUnit, UpdatePowerColor)
 
     self:Show()
     self:Update()
@@ -189,7 +191,7 @@ local function PowerBar_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
 
-    self:SetTexture(AF.LSM_GetBarTexture(config.texture))
+    self:LSM_SetTexture(config.texture)
     self:SetBackgroundColor(AF.UnpackColor(config.bgColor))
     self:SetBorderColor(AF.UnpackColor(config.borderColor))
     self:SetSmoothing(config.smoothing)
@@ -230,7 +232,7 @@ end
 ---------------------------------------------------------------------
 function UF.CreatePowerBar(parent, name)
     -- bar
-    local bar = AF.CreateSimpleStatusBar(parent, name)
+    local bar = AF.CreateSecretPowerBar(parent, name)
     bar.root = parent
     bar:Hide()
 

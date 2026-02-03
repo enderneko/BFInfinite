@@ -142,7 +142,11 @@ local function UnitButton_RegisterEvents(self)
     end
 
     if self._updateOnUnitTargetChanged then
-        self:RegisterEvent("UNIT_TARGET")
+        self:RegisterUnitEvent("UNIT_TARGET", self._updateOnUnitTargetChanged)
+    end
+
+    if self._updateOnEvent then
+        self:RegisterEvent(self._updateOnEvent)
     end
 end
 
@@ -170,6 +174,8 @@ local function UnitButton_OnEvent(self, event, unit, arg)
                     UnitButton_UpdateAll(self, true)
                 end
             end
+        elseif event == self._updateOnEvent then
+            self._updateRequired = true
         end
     end
 end

@@ -16,7 +16,9 @@ local function UpdateTarget(self)
     local unit = self.root.effectiveUnit
     if not unit then return end
 
-    if self.enabled and UnitIsUnit(unit, "target") then
+    local matched = UnitIsUnit(unit, "target")
+
+    if self.enabled and not issecretvalue(matched) and matched then
         self:Show()
     else
         self:Hide()

@@ -8,7 +8,11 @@ local UF = BFI.modules.UnitFrames
 -- local functions
 ---------------------------------------------------------------------
 local UnitIsUnit = UnitIsUnit
+local UnitIsPlayer = UnitIsPlayer
+local UnitCanAttack = UnitCanAttack
 local UnitClassBase = AF.UnitClassBase
+local IsInGroup = IsInGroup
+local issecretvalue = issecretvalue
 
 ---------------------------------------------------------------------
 -- color
@@ -39,7 +43,9 @@ local function UpdateCounter(self)
 
     local n = 0
     for member in AF.IterateGroupPlayers() do
-        if UnitIsUnit(member.."target", unit) then
+        local target = member .. "target"
+        local matched = UnitIsUnit(target, unit)
+        if not issecretvalue(matched) and matched then
             n = n + 1
         end
     end
@@ -63,12 +69,12 @@ local function Check(self)
     end
 end
 
-local function DelayedCheck(self)
-    if self.timer then self.timer:Cancel() end
-    self.timer = C_Timer.NewTimer(0.5, function()
-        Check(self)
-    end)
-end
+-- local function DelayedCheck(self)
+--     if self.timer then self.timer:Cancel() end
+--     self.timer = C_Timer.NewTimer(0.5, function()
+--         Check(self)
+--     end)
+-- end
 
 ---------------------------------------------------------------------
 -- update
@@ -84,7 +90,9 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function TargetCounter_Enable(self)
-    self:RegisterEvent("GROUP_ROSTER_UPDATE", DelayedCheck)
+    -- self:RegisterEvent("GROUP_ROSTER_UPDATE", DelayedCheck)
+    self:RegisterEvent("GROUP_JOINED", Check)
+    self:RegisterEvent("GROUP_LEFT", Check)
     Check(self)
 end
 

@@ -43,7 +43,7 @@ end
 local timers = {}
 local function ShowTimer(self)
     local guid = UnitGUID(self.root.unit)
-    if not guid then return end
+    if not guid or issecretvalue(guid) then return end
 
     if not timers[guid] then
         timers[guid] = {status = self.status, start = GetTime()}
@@ -59,7 +59,7 @@ end
 
 local function HideTimer(self)
     local guid = UnitGUID(self.root.unit)
-    if guid then
+    if guid and not issecretvalue(guid) then
         timers[guid] = nil
     end
     self.updater:Hide()
@@ -77,14 +77,14 @@ local function SetStatus(self, status)
         self.status = status and L[status]
     end
 
+    self:SetText(self.status or "")
+
     if self.showTimer then
         if status then
             ShowTimer(self)
         else
             HideTimer(self)
         end
-    else
-        self:SetText(self.status or "")
     end
 end
 

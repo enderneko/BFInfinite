@@ -134,6 +134,7 @@ function UF.CreateNameText(parent, name)
 
     local secretText = parent:CreateFontString(name .. "_Secret", "OVERLAY")
     text.secretText = secretText
+    secretText:SetWordWrap(false)
     secretText.root = parent
     secretText:Hide()
 

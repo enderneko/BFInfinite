@@ -15,7 +15,7 @@ local uf_colors = {
     uf_health_high = {0.1, 1, 0.1, 1},
 
     target_highlight = AF.GetColorTable("BFI", 0.6),
-    mouseover_highlight = {1, 1, 1, 0.6},
+    mouseover_highlight = {1, 1, 1, 0.5},
 
     -- cast_background = {0.175, 0.175, 0.175, 1},
 

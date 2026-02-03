@@ -21,7 +21,7 @@ local function RaidIcon_Update(self)
     local index = GetRaidTargetIndex(unit)
     if index then
         SetRaidTargetIconTexture(self.icon, index)
-        G.SetGlyph(self.text, G.Marker[index])
+        -- G.SetGlyph(self.text, G.Marker[index])
         self:Show()
     else
         self:Hide()
@@ -43,15 +43,15 @@ local function RaidIcon_LoadConfig(self, config)
     AF.SetFrameLevel(self, config.frameLevel, self.root)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.size, config.size)
-    G.SetFont(self.text, config.size, "outline")
+    -- G.SetFont(self.text, config.size, "outline")
 
-    if UF.config.general.raidIconStyle == "af" then
-        self.text:Show()
-        self.icon:Hide()
-    else -- "icon"
-        self.icon:Show()
-        self.text:Hide()
-    end
+    -- if UF.config.general.raidIconStyle == "af" then
+    --     self.text:Show()
+    --     self.icon:Hide()
+    -- else -- "icon"
+    --     self.icon:Show()
+    --     self.text:Hide()
+    -- end
 end
 
 ---------------------------------------------------------------------
@@ -91,9 +91,9 @@ function UF.CreateRaidIcon(parent, name)
     icon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons")
 
     -- text
-    local text = frame:CreateFontString(nil, "ARTWORK")
-    frame.text = text
-    text:SetPoint("CENTER")
+    -- local text = frame:CreateFontString(nil, "ARTWORK")
+    -- frame.text = text
+    -- text:SetPoint("CENTER")
 
     -- events
     AF.AddEventHandler(frame)

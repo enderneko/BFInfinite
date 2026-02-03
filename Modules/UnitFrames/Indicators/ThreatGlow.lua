@@ -38,7 +38,7 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function ThreatGlow_Enable(self)
-    self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+    self:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", self.root.effectiveUnit, UpdateThreat)
     self:Update()
 end
 

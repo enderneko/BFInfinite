@@ -108,7 +108,7 @@ local default_general = {
     general = {
         enabled = true,
         frameStrata = "LOW",
-        raidIconStyle = "af", -- af, blizzard
+        raidIconStyle = "blizzard", -- af, blizzard
     },
 }
 

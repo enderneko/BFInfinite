@@ -265,7 +265,7 @@ local function CreateGeneralOptionsPane()
     raidIconStyle:SetLabel(L["Raid Icon Style"])
     raidIconStyle:SetItems({
         {text = L["Blizzard"], value = "blizzard"},
-        {text = "AF", value = "af"},
+        {text = "AF", value = "af", disabled = true},
     })
     raidIconStyle:SetOnSelect(function(value)
         UF.config.general.raidIconStyle = value
@@ -667,7 +667,7 @@ local settings = {
         boss = {
             "general_boss",
             "healthBar", "powerBar", "portrait", "castBar",
-            "nameText", "healthText", "powerText", "levelText", "targetCounter",
+            "nameText", "healthText", "powerText", "levelText", -- "targetCounter",
             "buffs", "debuffs",
             "raidIcon",
             "targetHighlight", "mouseoverHighlight",

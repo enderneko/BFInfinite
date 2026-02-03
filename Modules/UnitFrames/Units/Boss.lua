@@ -15,7 +15,7 @@ local indicators = {
     "portrait",
     "castBar",
     "levelText",
-    "targetCounter",
+    -- "targetCounter", -- not possible with secrets
     "raidIcon",
     "targetHighlight",
     "mouseoverHighlight",

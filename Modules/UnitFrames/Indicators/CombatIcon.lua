@@ -36,8 +36,9 @@ end
 ---------------------------------------------------------------------
 local function CombatIcon_Enable(self)
     if UnitIsUnit(self.root.unit, "player") then
-        self:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateCombatIcon)
-        self:RegisterEvent("PLAYER_REGEN_DISABLED", UpdateCombatIcon)
+        -- self:RegisterEvent("PLAYER_REGEN_ENABLED", UpdateCombatIcon)
+        -- self:RegisterEvent("PLAYER_REGEN_DISABLED", UpdateCombatIcon)
+        self:RegisterEvent("PLAYER_IN_COMBAT_CHANGED", UpdateCombatIcon)
     else
         if not self.ticker then
             self.ticker = C_Timer.NewTicker(0.5, function()
