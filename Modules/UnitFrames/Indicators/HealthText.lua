@@ -15,7 +15,11 @@ local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
 local UnitClassBase = AF.UnitClassBase
-local FormatNumber = AF.FormatNumber
+local FormatNumber = AF.FormatSecretNumber
+local CurveConstants_ScaleTo100 = CurveConstants.ScaleTo100
+local FormatSecretPercentage = AF.FormatSecretPercentage
+local RemoveContiguousSpaces = C_StringUtil.RemoveContiguousSpaces
+local TruncateWhenZero = C_StringUtil.TruncateWhenZero
 
 ---------------------------------------------------------------------
 -- value
@@ -25,17 +29,14 @@ local function UpdateHealth(self, event, unitId)
     if unitId and unit ~= unitId then return end
 
     self.health = UnitHealth(unit)
-    self.healthMax = UnitHealthMax(unit)
+    -- self.healthMax = UnitHealthMax(unit)
+    self.healthPercent = UnitHealthPercent(unit, nil, CurveConstants_ScaleTo100)
     self.totalAbsorbs = UnitGetTotalAbsorbs(unit)
 
-    if self.healthMax == 0 then
-        self.healthMax = 1
-    end
-
-    if self.hideIfFull and self.health >= self.healthMax and self.totalAbsorbs == 0 then
-        self:Hide()
-        return
-    end
+    -- if self.hideIfFull and self.health >= self.healthMax and self.totalAbsorbs == 0 then
+    --     self:Hide()
+    --     return
+    -- end
 
     if UnitIsGhost(unit) then
         self:SetText(L["GHOST"])
@@ -45,7 +46,9 @@ local function UpdateHealth(self, event, unitId)
         self:SetFormattedText("%s%s%s",
             self.GetNumeric(self.health, self.totalAbsorbs),
             self.delimiter,
-            self.GetPercent(self.health, self.healthMax, self.totalAbsorbs))
+            -- self.GetPercent(self.health, self.healthMax, self.totalAbsorbs)
+            self.GetPercent(self.healthPercent)
+        )
     end
     self:Show()
 end
@@ -111,28 +114,21 @@ local numeric = {
     end,
 
     current_absorbs = function(current, absorbs)
-        if absorbs == 0 then
-            return current
-        else
-            return format("%s+%s", current, absorbs)
-        end
+        -- return RemoveContiguousSpaces(format("%s %s", current, TruncateWhenZero(absorbs)), 1)
+        return format("%s+%s", current, absorbs)
     end,
 
-    current_absorbs_sum = function(current, absorbs)
-        return current + absorbs
-    end,
+    -- current_absorbs_sum = function(current, absorbs)
+    --     return current + absorbs
+    -- end,
 
     current_absorbs_short = function(current, absorbs)
-        if absorbs == 0 then
-            return FormatNumber(current)
-        else
-            return format("%s+%s", FormatNumber(current), FormatNumber(absorbs))
-        end
+        return format("%s+%s", FormatNumber(current), FormatNumber(absorbs))
     end,
 
-    current_absorbs_short_sum = function(current, absorbs)
-        return FormatNumber(current + absorbs)
-    end,
+    -- current_absorbs_short_sum = function(current, absorbs)
+    --     return FormatNumber(current + absorbs)
+    -- end,
 }
 
 ---------------------------------------------------------------------
@@ -143,37 +139,37 @@ local percent = {
         return ""
     end,
 
-    current = function(current, max, absorbs)
-        return format("%d%%", current/max*100)
+    current = function(percent)
+        return format("%d%%", percent)
     end,
 
-    current_decimal = function(current, max, absorbs)
-        return format("%.1f%%", current/max*100):gsub("%.0%%$", "%%")
+    current_decimal = function(percent)
+        return format("%s%%", FormatSecretPercentage(percent))
     end,
 
-    current_absorbs = function(current, max, absorbs)
-        if absorbs == 0 then
-            return format("%d%%", current/max*100)
-        else
-            return format("%d%%+%d%%", current/max*100, absorbs/max*100)
-        end
-    end,
+    -- current_absorbs = function(current, max, absorbs)
+    --     if absorbs == 0 then
+    --         return format("%d%%", current/max*100)
+    --     else
+    --         return format("%d%%+%d%%", current/max*100, absorbs/max*100)
+    --     end
+    -- end,
 
-    current_absorbs_decimal = function(current, max, absorbs)
-        if absorbs == 0 then
-            return format("%.1f%%", current/max*100):gsub("%.0%%$", "%%")
-        else
-            return format("%.1f%%+%.1f%%", current/max*100, absorbs/max*100):gsub("%.0%%", "%%")
-        end
-    end,
+    -- current_absorbs_decimal = function(current, max, absorbs)
+    --     if absorbs == 0 then
+    --         return format("%.1f%%", current/max*100) -- :gsub("%.0%%$", "%%")
+    --     else
+    --         return format("%.1f%%+%.1f%%", current/max*100, absorbs/max*100) -- :gsub("%.0%%", "%%")
+    --     end
+    -- end,
 
-    current_absorbs_sum = function(current, max, absorbs)
-        return format("%d%%", (current+absorbs)/max*100)
-    end,
+    -- current_absorbs_sum = function(current, max, absorbs)
+    --     return format("%d%%", (current+absorbs)/max*100)
+    -- end,
 
-    current_absorbs_sum_decimal = function(current, max, absorbs)
-        return format("%.1f%%", (current+absorbs)/max*100):gsub("%.0%%$", "%%")
-    end,
+    -- current_absorbs_sum_decimal = function(current, max, absorbs)
+    --     return format("%.1f%%", (current+absorbs)/max*100):gsub("%.0%%$", "%%")
+    -- end,
 }
 
 ---------------------------------------------------------------------
@@ -184,37 +180,37 @@ local percent_np = {
         return ""
     end,
 
-    current = function(current, max, absorbs)
-        return format("%d", current/max*100)
+    current = function(percent)
+        return format("%d", percent)
     end,
 
-    current_decimal = function(current, max, absorbs)
-        return format("%.1f", current/max*100):gsub("%.0$", "")
+    current_decimal = function(percent)
+        return FormatSecretPercentage(percent)
     end,
 
-    current_absorbs = function(current, max, absorbs)
-        if absorbs == 0 then
-            return format("%d", current/max*100)
-        else
-            return format("%d+%d", current/max*100, absorbs/max*100)
-        end
-    end,
+    -- current_absorbs = function(current, max, absorbs)
+    --     if absorbs == 0 then
+    --         return format("%d", current/max*100)
+    --     else
+    --         return format("%d+%d", current/max*100, absorbs/max*100)
+    --     end
+    -- end,
 
-    current_absorbs_decimal = function(current, max, absorbs)
-        if absorbs == 0 then
-            return format("%.1f", current/max*100):gsub("%.0$", "")
-        else
-            return format("%.1f+%.1f", current/max*100, absorbs/max*100):gsub("%.0", "")
-        end
-    end,
+    -- current_absorbs_decimal = function(current, max, absorbs)
+    --     if absorbs == 0 then
+    --         return format("%.1f", current/max*100):gsub("%.0$", "")
+    --     else
+    --         return format("%.1f+%.1f", current/max*100, absorbs/max*100):gsub("%.0", "")
+    --     end
+    -- end,
 
-    current_absorbs_sum = function(current, max, absorbs)
-        return format("%d", (current+absorbs)/max*100)
-    end,
+    -- current_absorbs_sum = function(current, max, absorbs)
+    --     return format("%d", (current+absorbs)/max*100)
+    -- end,
 
-    current_absorbs_sum_decimal = function(current, max, absorbs)
-        return format("%.1f", (current+absorbs)/max*100):gsub("%.0$", "")
-    end,
+    -- current_absorbs_sum_decimal = function(current, max, absorbs)
+    --     return format("%.1f", (current+absorbs)/max*100):gsub("%.0$", "")
+    -- end,
 }
 
 ---------------------------------------------------------------------
@@ -235,9 +231,9 @@ local function HealthText_SetFormat(self, format)
     end
 
     if format.useAsianUnits and AF.isAsian then
-        FormatNumber = AF.FormatNumber_Asian
+        FormatNumber = AF.FormatSecretNumber_Asian
     else
-        FormatNumber = AF.FormatNumber
+        FormatNumber = AF.FormatSecretNumber
     end
 end
 

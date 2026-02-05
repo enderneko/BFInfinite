@@ -222,7 +222,7 @@ local default_groups = {
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
-                    percent = "current_absorbs_sum_decimal",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -911,7 +911,7 @@ local default_groups = {
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
-                    percent = "current_absorbs_sum_decimal",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -1282,8 +1282,8 @@ local default_1 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -1734,8 +1734,8 @@ local default_1 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -2137,8 +2137,8 @@ local default_1 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -2478,7 +2478,7 @@ local default_1 = {
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
-                    percent = "current_absorbs_sum",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -2832,8 +2832,8 @@ local default_1 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -3173,7 +3173,7 @@ local default_1 = {
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
-                    percent = "current_absorbs_sum_decimal",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -3514,8 +3514,8 @@ local default_1 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -3894,8 +3894,8 @@ local default_2 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -4342,8 +4342,8 @@ local default_2 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -4745,8 +4745,8 @@ local default_2 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -5086,7 +5086,7 @@ local default_2 = {
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
-                    percent = "current_absorbs_sum",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -5435,8 +5435,8 @@ local default_2 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -5780,7 +5780,7 @@ local default_2 = {
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
                     numeric = "none",
-                    percent = "current_absorbs_sum_decimal",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,
@@ -6121,8 +6121,8 @@ local default_2 = {
                 font = {"BFI", 12, "none", true},
                 color = {type = "custom_color", rgb = AF.GetColorTable("white")}, -- class/custom
                 format = {
-                    numeric = "current_absorbs_short",
-                    percent = "current_absorbs_sum_decimal",
+                    numeric = "current_short",
+                    percent = "current_decimal",
                     delimiter = " | ",
                     showPercentSign = true,
                     useAsianUnits = false,

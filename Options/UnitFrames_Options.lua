@@ -347,17 +347,17 @@ local function GetFormatItems(which)
             {text = L["Current (Short)"], value = "current_short"},
             {text = L["Current + Shields"], value = "current_absorbs"},
             {text = L["Current + Shields (Short)"], value = "current_absorbs_short"},
-            {text = L["Effective"], value = "current_absorbs_sum"},
-            {text = L["Effective (Short)"], value = "current_absorbs_short_sum"},
+            {text = L["Effective"], value = "current_absorbs_sum", disabled = AF.isRetail},
+            {text = L["Effective (Short)"], value = "current_absorbs_short_sum", disabled = AF.isRetail},
         }
         percent = {
             {text = _G.NONE, value = "none"},
             {text = L["Current"], value = "current"},
             {text = L["Current (Decimal)"], value = "current_decimal"},
-            {text = L["Current + Shields"], value = "current_absorbs"},
-            {text = L["Current + Shields (Decimal)"], value = "current_absorbs_decimal"},
-            {text = L["Effective"], value = "current_absorbs_sum"},
-            {text = L["Effective (Decimal)"], value = "current_absorbs_sum_decimal"},
+            {text = L["Current + Shields"], value = "current_absorbs", disabled = AF.isRetail},
+            {text = L["Current + Shields (Decimal)"], value = "current_absorbs_decimal", disabled = AF.isRetail},
+            {text = L["Effective"], value = "current_absorbs_sum", disabled = AF.isRetail},
+            {text = L["Effective (Decimal)"], value = "current_absorbs_sum_decimal", disabled = AF.isRetail},
         }
     elseif which == "incDmgHealText" then
         numeric = {
@@ -2805,6 +2805,7 @@ builder["hideIfFull"] = function(parent)
     created["hideIfFull"] = pane
 
     local hideIfFullCheckButton = AF.CreateCheckButton(pane, L["Hide When Full"])
+    hideIfFullCheckButton:SetEnabled(not AF.isRetail) -- REVIEW: for healthText
     AF.SetPoint(hideIfFullCheckButton, "LEFT", 15, 0)
     hideIfFullCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.hideIfFull = checked
