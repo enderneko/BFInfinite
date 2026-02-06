@@ -26,7 +26,7 @@ local TruncateWhenZero = C_StringUtil.TruncateWhenZero
 ---------------------------------------------------------------------
 local function UpdateHealth(self, event, unitId)
     local unit = self.root.effectiveUnit
-    if unitId and unit ~= unitId then return end
+    -- if unitId and unit ~= unitId then return end
 
     self.health = UnitHealth(unit)
     -- self.healthMax = UnitHealthMax(unit)
@@ -58,7 +58,7 @@ end
 ---------------------------------------------------------------------
 local function UpdateColor(self, event, unitId)
     local unit = self.root.effectiveUnit
-    if unitId and unit ~= unitId then return end
+    -- if unitId and unit ~= unitId then return end
 
     -- color
     local r, g, b

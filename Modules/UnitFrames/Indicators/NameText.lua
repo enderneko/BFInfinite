@@ -17,7 +17,7 @@ local issecretvalue = issecretvalue
 ---------------------------------------------------------------------
 local function UpdateName(self, event, unitId)
     local unit = self.root.effectiveUnit
-    if unitId and unit ~= unitId then return end
+    -- if unitId and unit ~= unitId then return end
 
     local name = UnitName(unit)
     if not name then
@@ -59,19 +59,6 @@ local function NameText_Update(self)
 end
 
 ---------------------------------------------------------------------
--- show/hide
----------------------------------------------------------------------
--- local function NameText_Show(self)
---     self.normalText:Show()
---     self.secretText:Show()
--- end
-
--- local function NameText_Hide(self)
---     self.normalText:Hide()
---     self.secretText:Hide()
--- end
-
----------------------------------------------------------------------
 -- enable
 ---------------------------------------------------------------------
 local function NameText_Enable(self)
@@ -88,15 +75,8 @@ end
 -- load
 ---------------------------------------------------------------------
 local function NameText_LoadConfig(self, config)
-    -- AF.SetFont(self.secretText, unpack(config.font))
-    -- UF.LoadIndicatorPosition(self.secretText, config.position, config.anchorTo, config.parent)
-    -- AF.SetFont(self.normalText, unpack(config.font))
-    -- UF.LoadIndicatorPosition(self.normalText, config.position, config.anchorTo, config.parent)
-
     self:SetFont(config.font)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
-
-    -- self.length = config.length
     self:SetLength(config.length)
     self.color = config.color
 end
@@ -126,23 +106,10 @@ function UF.CreateNameText(parent, name)
     local text = AF.CreateSecretNameText(parent, name)
     text.root = parent
 
-    -- local secretText = parent:CreateFontString(name .. "_Secret", "OVERLAY")
-    -- text.secretText = secretText
-    -- secretText:SetWordWrap(false)
-    -- secretText.root = parent
-    -- secretText:Hide()
-
-    -- local normalText = parent:CreateFontString(name .. "_Normal", "OVERLAY")
-    -- text.normalText = normalText
-    -- normalText.root = parent
-    -- normalText:Hide()
-
     -- events
     AF.AddEventHandler(text)
 
     -- functions
-    -- text.Show = NameText_Show
-    -- text.Hide = NameText_Hide
     text.Enable = NameText_Enable
     text.Update = NameText_Update
     text.EnableConfigMode = NameText_EnableConfigMode

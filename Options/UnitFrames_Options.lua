@@ -2786,6 +2786,10 @@ builder["hideIfFull,hideIfEmpty"] = function(parent)
         LoadIndicatorConfig(pane.t)
     end)
 
+    -- REVIEW:
+    hideIfFullCheckButton:SetEnabled(not AF.isRetail)
+    hideIfEmptyCheckButton:SetEnabled(not AF.isRetail)
+
     function pane.Load(t)
         pane.t = t
         hideIfFullCheckButton:SetChecked(t.cfg.hideIfFull)
@@ -2805,12 +2809,14 @@ builder["hideIfFull"] = function(parent)
     created["hideIfFull"] = pane
 
     local hideIfFullCheckButton = AF.CreateCheckButton(pane, L["Hide When Full"])
-    hideIfFullCheckButton:SetEnabled(not AF.isRetail) -- REVIEW: for healthText
     AF.SetPoint(hideIfFullCheckButton, "LEFT", 15, 0)
     hideIfFullCheckButton:SetOnCheck(function(checked)
         pane.t.cfg.hideIfFull = checked
         LoadIndicatorConfig(pane.t)
     end)
+
+    -- REVIEW:
+    hideIfFullCheckButton:SetEnabled(not AF.isRetail)
 
     function pane.Load(t)
         pane.t = t

@@ -12,38 +12,38 @@ local gsub = string.gsub
 local format = string.format
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
+local UnitPowerPercent = UnitPowerPercent
 local UnitPowerType = UnitPowerType
 local UnitClassBase = AF.UnitClassBase
-local FormatNumber = AF.FormatNumber
+local FormatNumber = AF.FormatSecretNumber
+local FormatSecretPercentage = AF.FormatSecretPercentage
+local CurveConstants_ScaleTo100 = CurveConstants.ScaleTo100
 
 ---------------------------------------------------------------------
 -- value
 ---------------------------------------------------------------------
 local function UpdatePower(self, event, unitId)
     local unit = self.root.effectiveUnit
-    if unitId and unit ~= unitId then return end
+    -- if unitId and unit ~= unitId then return end
 
     self.power = UnitPower(unit)
-    self.powerMax = UnitPowerMax(unit)
+    -- self.powerMax = UnitPowerMax(unit)
+    self.powerPercent = UnitPowerPercent(unit, nil, nil, CurveConstants_ScaleTo100)
 
-    if self.powerMax == 0 then
-        self.powerMax = 1
-    end
+    -- if self.hideIfEmpty and self.power == 0 then
+    --     self:Hide()
+    --     return
+    -- end
 
-    if self.hideIfEmpty and self.power == 0 then
-        self:Hide()
-        return
-    end
-
-    if self.hideIfFull and self.power >= self.powerMax then
-        self:Hide()
-        return
-    end
+    -- if self.hideIfFull and self.power >= self.powerMax then
+    --     self:Hide()
+    --     return
+    -- end
 
     self:SetFormattedText("%s%s%s",
         self.GetNumeric(self.power),
         self.delimiter,
-        self.GetPercent(self.power, self.powerMax))
+        self.GetPercent(self.powerPercent))
     self:Show()
 end
 
@@ -52,7 +52,7 @@ end
 ---------------------------------------------------------------------
 local function UpdateColor(self, event, unitId)
     local unit = self.root.effectiveUnit
-    if unitId and unit ~= unitId then return end
+    -- if unitId and unit ~= unitId then return end
 
     local class = UnitClassBase(unit)
 
@@ -77,15 +77,17 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function PowerText_Enable(self)
+    local effectiveUnit = self.root.effectiveUnit
+
     if self.frequent then
-        self:RegisterEvent("UNIT_POWER_FREQUENT", UpdatePower)
+        self:RegisterUnitEvent("UNIT_POWER_FREQUENT", effectiveUnit, UpdatePower)
         self:UnregisterEvent("UNIT_POWER_UPDATE")
     else
-        self:RegisterEvent("UNIT_POWER_UPDATE", UpdatePower)
+        self:RegisterUnitEvent("UNIT_POWER_UPDATE", effectiveUnit, UpdatePower)
         self:UnregisterEvent("UNIT_POWER_FREQUENT")
     end
-    self:RegisterEvent("UNIT_MAXPOWER", UpdatePower)
-    self:RegisterEvent("UNIT_DISPLAYPOWER", UpdateColor, UpdatePower)
+    self:RegisterUnitEvent("UNIT_MAXPOWER", effectiveUnit, UpdatePower)
+    self:RegisterUnitEvent("UNIT_DISPLAYPOWER", effectiveUnit, UpdateColor, UpdatePower)
 
     self:Show()
     self:Update()
@@ -124,12 +126,12 @@ local percent = {
         return ""
     end,
 
-    current = function(current, max)
-        return format("%d%%", current/max*100)
+    current = function(percent)
+        return format("%d%%", percent)
     end,
 
-    current_decimal = function(current, max)
-        return format("%.1f%%", current/max*100):gsub("%.0%%$", "%%")
+    current_decimal = function(percent)
+        return format("%s%%", FormatSecretPercentage(percent))
     end,
 }
 
@@ -141,12 +143,12 @@ local percent_np = {
         return ""
     end,
 
-    current = function(current, max)
-        return format("%d", current/max*100)
+    current = function(percent)
+        return format("%d", percent)
     end,
 
-    current_decimal = function(current, max)
-        return format("%.1f", current/max*100):gsub("%.0$", "")
+    current_decimal = function(percent)
+        return format("%s", FormatSecretPercentage(percent))
     end,
 }
 
@@ -168,9 +170,9 @@ local function PowerText_SetFormat(self, format)
     end
 
     if format.useAsianUnits and AF.isAsian then
-        FormatNumber = AF.FormatNumber_Asian
+        FormatNumber = AF.FormatSecretNumber_Asian
     else
-        FormatNumber = AF.FormatNumber
+        FormatNumber = AF.FormatSecretNumber
     end
 end
 
@@ -184,8 +186,8 @@ local function PowerText_LoadConfig(self, config)
 
     self.color = config.color
     self.frequent = config.frequent
-    self.hideIfFull = config.hideIfFull
-    self.hideIfEmpty = config.hideIfEmpty
+    -- self.hideIfFull = config.hideIfFull
+    -- self.hideIfEmpty = config.hideIfEmpty
 end
 
 ---------------------------------------------------------------------
