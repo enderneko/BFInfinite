@@ -210,11 +210,11 @@ function UF.LoadIndicatorPosition(self, position, anchorTo, parent)
         self:SetParent(parent)
     end
 
-    local success = pcall(LoadPosition, self, position, anchorTo)
+    local success, result = pcall(LoadPosition, self, position, anchorTo)
     if not success then
         -- Cannot anchor to itself
         -- Cannot anchor to a region dependent on it
-        AF.Fire("BFI_IncorrectAnchor", self)
+        AF.Fire("BFI_IncorrectAnchor", self:GetName(), result)
     end
 end
 

@@ -21,14 +21,13 @@ local function UpdateName(self, event, unitId)
 
     local name = UnitName(unit)
     if not name then
-        self.normalText:SetText("")
-        self.secretText:SetText("")
+        self:SetText(nil)
+        self:SetColor(AF.GetColorRGB("darkgray"))
         return
     end
 
-    local class = UnitClassBase(unit)
-
     -- color
+    local class = UnitClassBase(unit)
     local r, g, b
     if self.color.type == "class_color" then
         if AF.UnitIsPlayer(unit) then
@@ -48,20 +47,8 @@ local function UpdateName(self, event, unitId)
         end
     end
 
-    -- length
-    if issecretvalue(name) then
-        self.normalText:SetText("")
-        self.secretText:SetWidth(self.secretText:GetParent():GetWidth() * self.length)
-        self.secretText:SetText(name)
-        self.secretText:SetTextColor(r, g, b)
-    else
-        self.secretText:SetText("")
-        -- https://warcraft.wiki.gg/wiki/API_FrameScriptObject_HasSecretAspect
-        -- print(self:HasSecretAspect(Enum.SecretAspect.Text))
-        -- self:SetToDefaults() -- NOTE: NOT IDEAL, resets all other settings
-        AF.SetText(self.normalText, name, self.length)
-        self.normalText:SetTextColor(r, g, b)
-    end
+    self:SetText(name)
+    self:SetColor(r, g, b)
 end
 
 ---------------------------------------------------------------------
@@ -74,15 +61,15 @@ end
 ---------------------------------------------------------------------
 -- show/hide
 ---------------------------------------------------------------------
-local function NameText_Show(self)
-    self.normalText:Show()
-    self.secretText:Show()
-end
+-- local function NameText_Show(self)
+--     self.normalText:Show()
+--     self.secretText:Show()
+-- end
 
-local function NameText_Hide(self)
-    self.normalText:Hide()
-    self.secretText:Hide()
-end
+-- local function NameText_Hide(self)
+--     self.normalText:Hide()
+--     self.secretText:Hide()
+-- end
 
 ---------------------------------------------------------------------
 -- enable
@@ -99,12 +86,16 @@ end
 -- load
 ---------------------------------------------------------------------
 local function NameText_LoadConfig(self, config)
-    AF.SetFont(self.secretText, unpack(config.font))
-    UF.LoadIndicatorPosition(self.secretText, config.position, config.anchorTo, config.parent)
-    AF.SetFont(self.normalText, unpack(config.font))
-    UF.LoadIndicatorPosition(self.normalText, config.position, config.anchorTo, config.parent)
+    -- AF.SetFont(self.secretText, unpack(config.font))
+    -- UF.LoadIndicatorPosition(self.secretText, config.position, config.anchorTo, config.parent)
+    -- AF.SetFont(self.normalText, unpack(config.font))
+    -- UF.LoadIndicatorPosition(self.normalText, config.position, config.anchorTo, config.parent)
 
-    self.length = config.length
+    self:SetFont(config.font)
+    UF.LoadIndicatorPosition(self, config.position, config.anchorTo, config.parent)
+
+    -- self.length = config.length
+    self:SetLength(config.length)
     self.color = config.color
 end
 
@@ -130,25 +121,26 @@ end
 -- create
 ---------------------------------------------------------------------
 function UF.CreateNameText(parent, name)
-    local text = {root = parent}
+    local text = AF.CreateSecretNameText(parent, name)
+    text.root = parent
 
-    local secretText = parent:CreateFontString(name .. "_Secret", "OVERLAY")
-    text.secretText = secretText
-    secretText:SetWordWrap(false)
-    secretText.root = parent
-    secretText:Hide()
+    -- local secretText = parent:CreateFontString(name .. "_Secret", "OVERLAY")
+    -- text.secretText = secretText
+    -- secretText:SetWordWrap(false)
+    -- secretText.root = parent
+    -- secretText:Hide()
 
-    local normalText = parent:CreateFontString(name .. "_Normal", "OVERLAY")
-    text.normalText = normalText
-    normalText.root = parent
-    normalText:Hide()
+    -- local normalText = parent:CreateFontString(name .. "_Normal", "OVERLAY")
+    -- text.normalText = normalText
+    -- normalText.root = parent
+    -- normalText:Hide()
 
     -- events
     AF.AddEventHandler(text)
 
     -- functions
-    text.Show = NameText_Show
-    text.Hide = NameText_Hide
+    -- text.Show = NameText_Show
+    -- text.Hide = NameText_Hide
     text.Enable = NameText_Enable
     text.Update = NameText_Update
     text.EnableConfigMode = NameText_EnableConfigMode
