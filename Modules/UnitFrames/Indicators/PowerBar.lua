@@ -64,7 +64,7 @@ local function GetPowerColor(self, unit, colorTable)
     self.powerType = select(2, UnitPowerType(unit))
 
     local class = UnitClassBase(unit)
-    local inVehicle = UnitHasVehicleUI(unit)
+    -- local inVehicle = UnitHasVehicleUI(unit)
     local isPlayer = AF.UnitIsPlayer(unit)
 
     local orientation, r1, g1, b1, a1, r2, g2, b2, a2
@@ -76,7 +76,7 @@ local function GetPowerColor(self, unit, colorTable)
             r1, g1, b1 = GetPowerTypeColor(colorTable.type, self.powerType, unit)
         elseif colorTable.type:find("^class") then
             if isPlayer then
-                r1, g1, b1 = GetClassColor(colorTable.type, class, inVehicle)
+                r1, g1, b1 = GetClassColor(colorTable.type, class)
             else
                 r1, g1, b1 = GetReactionColor(colorTable.type, unit)
             end

@@ -20,7 +20,8 @@ local UnitHasVehicleUI = UnitHasVehicleUI
 ---------------------------------------------------------------------
 local should_show_extra_mana = {
     DRUID = function()
-        return UnitPowerType("player") == Enum.PowerType.Rage or UnitPowerType("player") == Enum.PowerType.LunarPower
+        local powerType = UnitPowerType("player")
+        return powerType == Enum.PowerType.Rage or powerType == Enum.PowerType.Energy or powerType == Enum.PowerType.LunarPower
     end,
     PRIEST = function()
         return UnitPowerType("player") == Enum.PowerType.Insanity
@@ -129,7 +130,7 @@ local function UpdateManaMax(self, event, unitId, powerType)
     if powerType and powerType ~= "MANA" then return end
 
     self.manaMax = UnitPowerMax("player", 0)
-    self:SetBarMinMaxValues(0, self.manaMax)
+    self:SetMinMaxValues(0, self.manaMax)
 end
 
 local function UpdateMana(self, event, unitId, powerType)
@@ -137,13 +138,13 @@ local function UpdateMana(self, event, unitId, powerType)
     if powerType and powerType ~= "MANA" then return end
 
     self.mana = UnitPower("player", 0)
-    self:SetBarValue(self.mana)
+    self:SetValue(self.mana)
 
-    if self.hideIfFull and self.mana / self.manaMax >= 0.99 then
-        self:Hide()
-    else
-        self:Show()
-    end
+    -- if self.hideIfFull and self.mana / self.manaMax >= 0.99 then
+    --     self:Hide()
+    -- else
+    --     self:Show()
+    -- end
 end
 
 ---------------------------------------------------------------------
@@ -151,6 +152,8 @@ end
 ---------------------------------------------------------------------
 local function Check(self, event, unitId)
     if unitId and unitId ~= "player" then return end
+
+    print(self.hideIfHasClassPower, UF.ShouldShowClassPower(), UF.ShouldShowExtraMana())
 
     if (self.hideIfHasClassPower and UF.ShouldShowClassPower())
         or not UF.ShouldShowExtraMana() then
@@ -166,13 +169,13 @@ local function Check(self, event, unitId)
     self._enabled = true
 
     -- register events
-    self:RegisterEvent("UNIT_MAXPOWER", UpdateManaMax)
+    self:RegisterUnitEvent("UNIT_MAXPOWER", "player", UpdateManaMax)
     if self.frequent then
         self:UnregisterEvent("UNIT_POWER_UPDATE")
-        self:RegisterEvent("UNIT_POWER_FREQUENT", UpdateMana)
+        self:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player", UpdateMana)
     else
         self:UnregisterEvent("UNIT_POWER_FREQUENT")
-        self:RegisterEvent("UNIT_POWER_UPDATE", UpdateMana)
+        self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player", UpdateMana)
     end
 
     -- update now
@@ -186,9 +189,9 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function ExtraManaBar_Enable(self)
-    self:RegisterEvent("UNIT_DISPLAYPOWER", Check)
-    self:RegisterEvent("UNIT_ENTERED_VEHICLE", Check)
-    self:RegisterEvent("UNIT_EXITED_VEHICLE", Check)
+    self:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player", Check)
+    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player", Check)
+    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player", Check)
 
     Check(self)
 end
@@ -212,16 +215,16 @@ local function ExtraManaBar_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
 
-    self:SetTexture(AF.LSM_GetBarTexture(config.texture))
-    self:SetBackgroundColor(unpack(config.bgColor))
-    self:SetBorderColor(unpack(config.borderColor))
+    self:LSM_SetTexture(config.texture)
+    self:SetBackgroundColor(AF.UnpackColor(config.bgColor))
+    self:SetBorderColor(AF.UnpackColor(config.borderColor))
     self:SetSmoothing(config.smoothing)
 
     self.color = config.color
     self.lossColor = config.lossColor
     self.frequent = config.frequent
     self.hideIfHasClassPower = config.hideIfHasClassPower
-    self.hideIfFull = config.hideIfFull
+    -- self.hideIfFull = config.hideIfFull
 end
 
 ---------------------------------------------------------------------
@@ -257,7 +260,7 @@ end
 ---------------------------------------------------------------------
 function UF.CreateExtraManaBar(parent, name)
     -- bar
-    local bar = AF.CreateSimpleStatusBar(parent, name)
+    local bar = AF.CreateSecretPowerBar(parent, name)
     bar.root = parent
 
     -- events

@@ -62,7 +62,7 @@ local function Check(self, event, unitId)
     self._enabled = true
 
     -- register events
-    self:RegisterEvent("UNIT_AURA", UpdateStagger)
+    self:RegisterUnitEvent("UNIT_AURA", "player", UpdateStagger)
 
     -- update now
     self:Show()
@@ -79,8 +79,8 @@ local function StaggerBar_Enable(self)
     end
 
     self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Check)
-    self:RegisterEvent("UNIT_ENTERED_VEHICLE", Check)
-    self:RegisterEvent("UNIT_EXITED_VEHICLE", Check)
+    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player", Check)
+    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player", Check)
 
     Check(self)
 end

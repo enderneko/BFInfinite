@@ -2279,6 +2279,9 @@ builder["hideIfHasClassPower,hideIfFull"] = function(parent)
         LoadIndicatorConfig(pane.t)
     end)
 
+    -- REVIEW:
+    hideIfFullCheckButton:SetEnabled(not AF.isRetail)
+
     function pane.Load(t)
         pane.t = t
         hideIfHasClassPowerCheckButton:SetChecked(t.cfg.hideIfHasClassPower)
@@ -2608,7 +2611,7 @@ end
 builder["textWithFormat"] = function(parent)
     if created["textWithFormat"] then return created["textWithFormat"] end
 
-    created["textWithFormat"] = CreateFontPositionExtraPane(parent, "text", "BFI_UnitFrameOption_TextWithFormat", L["Text"], true)
+    created["textWithFormat"] = CreateFontPositionExtraPane(parent, "text", "BFI_UnitFrameOption_TextWithFormat", L["Text"], "format")
     return created["textWithFormat"]
 end
 
