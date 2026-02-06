@@ -75,8 +75,10 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function NameText_Enable(self)
-    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateName)
-    self:RegisterEvent("UNIT_FACTION", UpdateName)
+    local effectiveUnit = self.root.effectiveUnit
+
+    self:RegisterUnitEvent("UNIT_NAME_UPDATE", effectiveUnit, UpdateName)
+    self:RegisterUnitEvent("UNIT_FACTION", effectiveUnit, UpdateName)
 
     self:Show()
     self:Update()

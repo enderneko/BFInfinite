@@ -79,11 +79,13 @@ end
 -- enable
 ---------------------------------------------------------------------
 local function HealthText_Enable(self)
-    self:RegisterEvent("UNIT_HEALTH", UpdateHealth)
-    self:RegisterEvent("UNIT_MAXHEALTH", UpdateHealth)
-    self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", UpdateHealth)
-    self:RegisterEvent("UNIT_NAME_UPDATE", UpdateColor)
-    -- self:RegisterEvent("UNIT_FACTION", UpdateColor)
+    local effectiveUnit = self.root.effectiveUnit
+
+    self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateHealth)
+    self:RegisterUnitEvent("UNIT_MAXHEALTH", effectiveUnit, UpdateHealth)
+    self:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", effectiveUnit, UpdateHealth)
+    self:RegisterUnitEvent("UNIT_NAME_UPDATE", effectiveUnit, UpdateColor)
+    -- self:RegisterUnitEvent("UNIT_FACTION", effectiveUnit, UpdateColor)
 
     self:Show()
     self:Update()
