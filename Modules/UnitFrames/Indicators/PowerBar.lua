@@ -63,6 +63,11 @@ local function GetPowerColor(self, unit, colorTable)
 
     self.powerType = select(2, UnitPowerType(unit))
 
+    local ctype = colorTable.type
+    local gradient = colorTable.gradient
+    local rgb = colorTable.rgb
+    local alpha = colorTable.alpha
+
     local class = UnitClassBase(unit)
     -- local inVehicle = UnitHasVehicleUI(unit)
     local isPlayer = AF.UnitIsPlayer(unit)
@@ -72,36 +77,36 @@ local function GetPowerColor(self, unit, colorTable)
     if isPlayer and not UnitIsConnected(unit) then
         r1, g1, b1 = AF.GetColorRGB("OFFLINE")
     else
-        if colorTable.type:find("^power") then
-            r1, g1, b1 = GetPowerTypeColor(colorTable.type, self.powerType, unit)
-        elseif colorTable.type:find("^class") then
+        if ctype:find("^power") then
+            r1, g1, b1 = GetPowerTypeColor(ctype, self.powerType, unit)
+        elseif ctype:find("^class") then
             if isPlayer then
-                r1, g1, b1 = GetClassColor(colorTable.type, class)
+                r1, g1, b1 = GetClassColor(ctype, class)
             else
-                r1, g1, b1 = GetReactionColor(colorTable.type, unit)
+                r1, g1, b1 = GetReactionColor(ctype, unit)
             end
         else
-            if colorTable.gradient == "disabled" then
-                r1, g1, b1 = AF.UnpackColor(colorTable.rgb)
+            if gradient == "disabled" then
+                r1, g1, b1 = AF.UnpackColor(rgb)
             else
-                r1, g1, b1 = AF.UnpackColor(colorTable.rgb[1])
+                r1, g1, b1 = AF.UnpackColor(rgb[1])
             end
         end
     end
 
-    if colorTable.gradient == "disabled" then
-        a1 = colorTable.alpha
+    if gradient == "disabled" then
+        a1 = alpha
         return nil, r1, g1, b1, a1
     else
-        a1, a2 = colorTable.alpha[1], colorTable.alpha[2]
-        if #colorTable.rgb == 4 then
-            r2, g2, b2 = AF.UnpackColor(colorTable.rgb)
+        a1, a2 = alpha[1], alpha[2]
+        if #rgb == 4 then
+            r2, g2, b2 = AF.UnpackColor(rgb)
         else
-            r2, g2, b2 = AF.UnpackColor(colorTable.rgb[2])
+            r2, g2, b2 = AF.UnpackColor(rgb[2])
         end
 
-        orientation = colorTable.gradient:find("^vertical") and "VERTICAL" or "HORIZONTAL"
-        if colorTable.gradient:find("flipped$") then
+        orientation = gradient:find("^vertical") and "VERTICAL" or "HORIZONTAL"
+        if gradient:find("flipped$") then
             return orientation, r2, g2, b2, a2, r1, g1, b1, a1
         else
             return orientation, r1, g1, b1, a1, r2, g2, b2, a2

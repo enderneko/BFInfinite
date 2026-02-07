@@ -992,18 +992,18 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
     })
 
     local colorPicker1 = AF.CreateColorPicker(pane)
-    colorPicker1:SetOnChange(function(r, g, b)
-        if #pane.t.cfg[colorType].rgb == 4 then
-            AF.FillColorTable(pane.t.cfg[colorType].rgb, r, g, b)
+    colorPicker1:SetOnChange(function(r, g, b, a)
+        if type(pane.t.cfg[colorType].rgb[1]) == "table" then
+            AF.FillColorTable(pane.t.cfg[colorType].rgb[1], r, g, b, a)
         else
-            AF.FillColorTable(pane.t.cfg[colorType].rgb[1], r, g, b)
+            AF.FillColorTable(pane.t.cfg[colorType].rgb, r, g, b, a)
         end
         LoadIndicatorConfig(pane.t)
     end)
 
     local colorPicker2 = AF.CreateColorPicker(pane)
-    colorPicker2:SetOnChange(function(r, g, b)
-        AF.FillColorTable(pane.t.cfg[colorType].rgb[2], r, g, b)
+    colorPicker2:SetOnChange(function(r, g, b, a)
+        AF.FillColorTable(pane.t.cfg[colorType].rgb[2], r, g, b, a)
         LoadIndicatorConfig(pane.t)
     end)
 
@@ -1160,7 +1160,7 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
                 colorAlphaSlider2:SetValue(color.alpha[2])
                 colorAlphaSlider2:SetEnabled(true)
 
-                if #color.rgb ~= 4 or type(color.rgb[1]) ~= "number" then
+                if type(color.rgb[1]) ~= "number" then
                     color.rgb = AF.GetColorTable("white")
                 end
                 colorPicker1:SetColor(color.rgb)
@@ -1180,8 +1180,8 @@ local function CreatePaneForBarColors(parent, colorType, frameName, label, gradi
                 colorAlphaSlider1:SetValue(color.alpha)
                 colorAlphaSlider2:SetEnabled(false)
 
-                if #color.rgb ~= 4 or type(color.rgb[1]) ~= "number" then
-                    color.rgb = colorType == "color" and AF.GetColorTable("uf") or AF.GetColorTable("uf_loss")
+                if type(color.rgb[1]) ~= "number" then
+                    color.rgb = colorType == "fillColor" and AF.GetColorTable("uf") or AF.GetColorTable("uf_loss")
                 end
                 colorPicker1:SetColor(color.rgb)
             else
@@ -1238,7 +1238,7 @@ end
 builder["barColor"] = function(parent)
     if created["barColor"] then return created["barColor"] end
 
-    created["barColor"] = CreatePaneForBarColors(parent, "color", "BFI_UnitFrameOption_BarColor", L["Bar Color"], L["Bar Gradient"], L["Bar Alpha"])
+    created["barColor"] = CreatePaneForBarColors(parent, "fillColor", "BFI_UnitFrameOption_BarColor", L["Bar Color"], L["Bar Gradient"], L["Bar Alpha"])
     return created["barColor"]
 end
 
@@ -1248,7 +1248,7 @@ end
 builder["barLossColor"] = function(parent)
     if created["barLossColor"] then return created["barLossColor"] end
 
-    created["barLossColor"] = CreatePaneForBarColors(parent, "lossColor", "BFI_UnitFrameOption_BarLossColor", L["Loss Color"], L["Loss Gradient"], L["Loss Alpha"])
+    created["barLossColor"] = CreatePaneForBarColors(parent, "unfillColor", "BFI_UnitFrameOption_BarLossColor", L["Loss Color"], L["Loss Gradient"], L["Loss Alpha"])
     return created["barLossColor"]
 end
 
