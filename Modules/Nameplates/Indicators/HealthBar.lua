@@ -80,8 +80,8 @@ local function UpdateHealthColor(self)
 
     -- healthBar
     local r, g, b, lossR, lossG, lossB = GetHealthColor(self, unit)
-    self:SetColor(r, g, b, self.colorAlpha)
-    self:SetLossColor(lossR, lossG, lossB, self.lossColor.alpha)
+    self:SetFillColor(r, g, b, self.colorAlpha)
+    self:SetUnfillColor(lossR, lossG, lossB, self.lossColor.alpha)
 end
 
 ---------------------------------------------------------------------
@@ -410,7 +410,7 @@ end
 
 local function HealthBar_SetTexture(self, texture)
     self.fill:SetTexture(texture)
-    self.loss:SetTexture(texture)
+    self.unfill:SetTexture(texture)
 end
 
 local function Thresholds_Setup(self, config)
@@ -495,8 +495,8 @@ function NP.CreateHealthBar(parent, name)
     bar.overshieldGlow = overshieldGlow
     overshieldGlow:Hide()
     overshieldGlow:SetTexture(AF.GetTexture("Overshield", BFI.name))
-    AF.SetPoint(overshieldGlow, "TOPRIGHT", bar.loss.mask)
-    AF.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.loss.mask)
+    AF.SetPoint(overshieldGlow, "TOPRIGHT", bar.unfill.mask)
+    AF.SetPoint(overshieldGlow, "BOTTOMRIGHT", bar.unfill.mask)
     AF.SetWidth(overshieldGlow, 4)
 
     -- overshieldR

@@ -185,7 +185,7 @@ end
 ---------------------------------------------------------------------
 local function CreateExperienceBar()
     experienceBar = AF.CreateSimpleStatusBar(AF.UIParent, "BFI_ExperienceBar")
-    experienceBar.loss:Hide()
+    experienceBar.unfill:Hide()
     experienceBar:Hide()
 
     AF.CreateMover(experienceBar, "BFI: " .. L["Data Bars"], L["Experience Bar"])
@@ -292,12 +292,12 @@ local function UpdateExperienceBar(_, module, which)
     -- main
     experienceBar:SetTexture(texture)
     if config.color.type == "gradient" then
-        experienceBar:SetGradientColor(nil,
+        experienceBar:SetGradientFillColor(nil,
             config.color.startColor[1], config.color.startColor[2], config.color.startColor[3], config.color.startAlpha,
             config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha
         )
     else -- solid
-        experienceBar:SetColor(config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha)
+        experienceBar:SetFillColor(config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha)
     end
 
     local anchorTo = experienceBar.fill.mask

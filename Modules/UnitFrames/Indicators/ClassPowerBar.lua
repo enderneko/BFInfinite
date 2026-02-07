@@ -203,27 +203,27 @@ end
 local function UpdatePowerColor(self, event, unitId)
     if unitId and unitId ~= self.unit then return end
 
-    -- bar
-    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetClassPowerColor(self, self.config.color)
+    -- fill
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetClassPowerColor(self, self.config.fillColor)
     if r2 then
         for i = 1, self.numPowerBars do
-            self.bars[i]:SetGradientColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+            self.bars[i]:SetGradientFillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
         end
     else
         for i = 1, self.numPowerBars do
-            self.bars[i]:SetColor(r1, g1, b1, a1)
+            self.bars[i]:SetFillColor(r1, g1, b1, a1)
         end
     end
 
-    -- loss
-    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetClassPowerColor(self, self.config.lossColor)
+    -- unfill
+    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetClassPowerColor(self, self.config.unfillColor)
     if r2 then
         for i = 1, self.numPowerBars do
-            self.bars[i]:SetGradientLossColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+            self.bars[i]:SetGradientUnfillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
         end
     else
         for i = 1, self.numPowerBars do
-            self.bars[i]:SetLossColor(r1, g1, b1, a1)
+            self.bars[i]:SetUnfillColor(r1, g1, b1, a1)
         end
     end
 end

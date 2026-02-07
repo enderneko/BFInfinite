@@ -72,7 +72,7 @@ local function InitAltPowerBar()
     AF.AddEventHandler(altPowerBarHolder)
 
     altPowerBar = AF.CreateSimpleStatusBar(altPowerBarHolder, "BFI_AltPowerBar")
-    altPowerBar.loss:Hide()
+    altPowerBar.unfill:Hide()
     altPowerBar:SetAllPoints()
 
     altPowerBar.leftText = AF.CreateFontString(altPowerBar)
@@ -120,7 +120,7 @@ local function UpdateAltPowerBar(_, module, which)
     else
         -- bar
         altPowerBar:SetTexture(AF.LSM_GetBarTexture(config.texture))
-        altPowerBar:SetColor(AF.UnpackColor(config.color))
+        altPowerBar:SetFillColor(AF.UnpackColor(config.color))
         altPowerBar:SetBackgroundColor(AF.UnpackColor(config.bgColor))
         altPowerBar:SetBorderColor(AF.UnpackColor(config.borderColor))
 

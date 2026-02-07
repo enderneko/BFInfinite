@@ -158,12 +158,12 @@ local function UpdateRep(self)
     local color = FACTION_COLORS[reaction]
     local config = DB.config.reputationBar.color
     if config.type == "gradient" then
-        self:SetGradientColor(nil,
+        self:SetGradientFillColor(nil,
             color.r, color.g, color.b, config.startAlpha,
             config.endColor[1], config.endColor[2], config.endColor[3], config.endAlpha
         )
     else
-        self:SetColor(color.r, color.g, color.b, config.endAlpha)
+        self:SetFillColor(color.r, color.g, color.b, config.endAlpha)
     end
 
     -- text
@@ -202,7 +202,7 @@ end
 ---------------------------------------------------------------------
 local function CreateReputationBar()
     reputationBar = AF.CreateSimpleStatusBar(AF.UIParent, "BFI_ReputationBar")
-    reputationBar.loss:Hide()
+    reputationBar.unfill:Hide()
     reputationBar:Hide()
 
     AF.CreateMover(reputationBar, "BFI: " .. L["Data Bars"], L["Reputation Bar"])

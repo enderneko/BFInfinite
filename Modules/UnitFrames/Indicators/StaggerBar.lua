@@ -27,18 +27,19 @@ local function UpdateStagger(self, event, unitId)
 
     local p = stagger / staggerMax
     if p >= 0.6 then
-        self:SetColor(AF.GetColorRGB("STAGGER_RED"))
+        self:SetFillColor(AF.GetColorRGB("STAGGER_RED"))
     elseif p >= 0.3 then
-        self:SetColor(AF.GetColorRGB("STAGGER_YELLOW"))
+        self:SetFillColor(AF.GetColorRGB("STAGGER_YELLOW"))
     else
-        self:SetColor(AF.GetColorRGB("STAGGER_GREEN"))
+        self:SetFillColor(AF.GetColorRGB("STAGGER_GREEN"))
     end
 
     if self.textEnabled then
         self.text:SetFormattedText("%s%s%s",
             self.GetNumeric(stagger),
             self.delimiter,
-            self.GetPercent(p))
+            self.GetPercent(p)
+        )
     end
 
     self:SetBarMinMaxValues(0, staggerMax)
@@ -230,7 +231,7 @@ function UF.CreateStaggerBar(parent, name)
     bar.root = parent
     bar:Hide()
 
-    bar:SetLossColor(0, 0, 0, 0)
+    bar:SetUnfillColor(0, 0, 0, 0)
 
     -- text
     bar.text = bar:CreateFontString(nil, "OVERLAY")

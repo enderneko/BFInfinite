@@ -151,12 +151,12 @@ local function UpdateHealthColor(self, event, unitId)
     local unit = self.root.unit
     -- if unitId and unit ~= unitId then return end
 
-    -- color
-    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor(self, unit, self.color)
+    -- fill
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor(self, unit, self.fillColor)
     if orientation then
-        self:SetGradientColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+        self:SetGradientFillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
     else
-        self:SetColor(r1, g1, b1, a1)
+        self:SetFillColor(r1, g1, b1, a1)
     end
 
     -- healPrediction
@@ -169,11 +169,11 @@ local function UpdateHealthLossColor(self, event, unitId)
     local unit = self.root.unit
     -- if unitId and unit ~= unitId then return end
 
-    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor(self, unit, self.lossColor, true)
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor(self, unit, self.unfillColor, true)
     if orientation then
-        self:SetGradientLossColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+        self:SetGradientUnfillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
     else
-        self:SetLossColor(r1, g1, b1, a1)
+        self:SetUnfillColor(r1, g1, b1, a1)
     end
 end
 
@@ -224,12 +224,12 @@ local function UpdateHealthColor_Curve(self, event, unitId)
     local unit = self.root.effectiveUnit
     -- if unitId and unit ~= unitId then return end
 
-    -- color
-    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor_Curve(self, unit, self.color, self.curve)
+    -- fill
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor_Curve(self, unit, self.fillColor, self.curve)
     if orientation then
-        self:SetGradientColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+        self:SetGradientFillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
     else
-        self:SetColor(r1, g1, b1, a1)
+        self:SetFillColor(r1, g1, b1, a1)
     end
 
     -- healPrediction
@@ -242,11 +242,11 @@ local function UpdateHealthLossColor_Curve(self, event, unitId)
     local unit = self.root.effectiveUnit
     -- if unitId and unit ~= unitId then return end
 
-    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor_Curve(self, unit, self.lossColor, self.lossCurve, true)
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetHealthColor_Curve(self, unit, self.unfillColor, self.lossCurve, true)
     if orientation then
-        self:SetGradientLossColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+        self:SetGradientUnfillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
     else
-        self:SetLossColor(r1, g1, b1, a1)
+        self:SetUnfillColor(r1, g1, b1, a1)
     end
 end
 
@@ -312,7 +312,7 @@ local function HealthBar_Enable(self)
     self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateHealth)--, UpdateShield, UpdateHealAbsorb, UpdateHealPrediction)
     self:RegisterUnitEvent("UNIT_MAXHEALTH", effectiveUnit, UpdateHealthMax, UpdateHealth)--, UpdateShield, UpdateHealAbsorb, UpdateHealPrediction)
 
-    if self.color.type:find("^health") then
+    if self.fillColor.type:find("^health") then
         self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateHealthColor_Curve)
         self:UnregisterEvent("UNIT_FACTION", UpdateHealthColor)
     else
@@ -320,7 +320,7 @@ local function HealthBar_Enable(self)
         self:RegisterUnitEvent("UNIT_FACTION", unit, UpdateHealthColor)
     end
 
-    if self.lossColor.type:find("^health") then
+    if self.unfillColor.type:find("^health") then
         self:RegisterUnitEvent("UNIT_HEALTH", effectiveUnit, UpdateHealthLossColor_Curve)
         self:UnregisterEvent("UNIT_FACTION", UpdateHealthLossColor)
     else
@@ -435,18 +435,18 @@ local function HealthBar_LoadConfig(self, config)
 
     -- DispelHighlight_Setup(self, config.dispelHighlight)
 
-    self.color = config.color
-    if self.color.type:find("^health") then
+    self.fillColor = config.fillColor
+    if self.fillColor.type:find("^health") then
         self.UpdateHealthColor = UpdateHealthColor_Curve
-        self.curve = F.GetColorCurve(self.color.type, self.color.thresholds, self.color.rgb)
+        self.curve = F.GetColorCurve(self.fillColor.type, self.fillColor.thresholds, self.fillColor.rgb)
     else
         self.UpdateHealthColor = UpdateHealthColor
     end
 
-    self.lossColor = config.lossColor
-    if self.lossColor.type:find("^health") then
+    self.unfillColor = config.unfillColor
+    if self.unfillColor.type:find("^health") then
         self.UpdateHealthLossColor = UpdateHealthLossColor_Curve
-        self.lossCurve = F.GetColorCurve(self.lossColor.type, self.lossColor.thresholds, self.lossColor.rgb)
+        self.lossCurve = F.GetColorCurve(self.unfillColor.type, self.unfillColor.thresholds, self.unfillColor.rgb)
     else
         self.UpdateHealthLossColor = UpdateHealthLossColor
     end

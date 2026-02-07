@@ -113,20 +113,20 @@ local function UpdatePowerColor(self, event, unitId)
     local unit = self.root.effectiveUnit
     if unitId and unit ~= unitId then return end
 
-    -- color
-    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetPowerColor(self, unit, self.color)
+    -- fill
+    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetPowerColor(self, unit, self.fillColor)
     if orientation then
-        self:SetGradientColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+        self:SetGradientFillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
     else
-        self:SetColor(r1, g1, b1, a1)
+        self:SetFillColor(r1, g1, b1, a1)
     end
 
-    -- lossColor
-    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetPowerColor(self, unit, self.lossColor)
+    -- unfill
+    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetPowerColor(self, unit, self.unfillColor)
     if orientation then
-        self:SetGradientLossColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+        self:SetGradientUnfillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
     else
-        self:SetLossColor(r1, g1, b1, a1)
+        self:SetUnfillColor(r1, g1, b1, a1)
     end
 end
 
@@ -196,8 +196,8 @@ local function PowerBar_LoadConfig(self, config)
     self:SetBorderColor(AF.UnpackColor(config.borderColor))
     self:SetSmoothing(config.smoothing)
 
-    self.color = config.color
-    self.lossColor = config.lossColor
+    self.fillColor = config.fillColor
+    self.unfillColor = config.unfillColor
     self.frequent = config.frequent
 end
 

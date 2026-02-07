@@ -108,7 +108,7 @@ end
 ---------------------------------------------------------------------
 local function CreateHonorBar()
     honorBar = AF.CreateSimpleStatusBar(AF.UIParent, "BFI_HonorBar")
-    honorBar.loss:Hide()
+    honorBar.unfill:Hide()
     honorBar:Hide()
 
     AF.CreateMover(honorBar, "BFI: " .. L["Data Bars"], L["Honor Bar"])
@@ -165,12 +165,12 @@ local function UpdateHonorBar(_, module, which)
     AF.SetSize(honorBar, config.width, config.height)
 
     if config.color.type == "gradient" then
-        honorBar:SetGradientColor(nil,
+        honorBar:SetGradientFillColor(nil,
             config.color.startColor[1], config.color.startColor[2], config.color.startColor[3], config.color.startAlpha,
             config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha
         )
     else -- solid
-        honorBar:SetColor(config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha)
+        honorBar:SetFillColor(config.color.endColor[1], config.color.endColor[2], config.color.endColor[3], config.color.endAlpha)
     end
     honorBar:SetBorderColor(AF.UnpackColor(config.borderColor))
     honorBar:SetBackgroundColor(AF.UnpackColor(config.bgColor))
