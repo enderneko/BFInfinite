@@ -71,7 +71,7 @@ function eventHandler:ADDON_LOADED(arg)
         if type(BFIConfig.general.font) ~= "table" then
             BFIConfig.general.font = {
                 common = {
-                    font = "BFI Default",
+                    font = "Noto_AP",
                     overrideAF = false,
                     overrideBlizzard = false,
                     blizzardFontSizeDelta = 0,

@@ -200,8 +200,8 @@ local fontPane
 
 local function CreateFontPane()
     local _BFI = AF.WrapTextInColor("BFI", "BFI")
-    local _BFI_DEFAULT = AF.WrapTextInColor("BFI Default", "BFI")
-    local _BFI_COMBAT = AF.WrapTextInColor("BFI Combat", "BFI")
+    local _BFI_DEFAULT = AF.WrapTextInColor("Noto_AP", "BFI")
+    local _BFI_COMBAT = AF.WrapTextInColor("Noto_Dolphin", "BFI")
 
     fontPane = AF.CreateTitledPane(generalPanel, L["Fonts"], 180, 200)
     generalPanel.fontPane = fontPane
@@ -218,8 +218,8 @@ local function CreateFontPane()
         " ",
         L["The %s and %s fonts mainly support English and Simplified Chinese"]:format(_BFI_DEFAULT, _BFI_COMBAT),
         " ",
-        AF.WrapTextInColor("BFI Default: NotoSansCJKsc + Accidental Presidency", "gray"),
-        AF.WrapTextInColor("BFI Combat: NotoSansCJKsc + Dolphin", "gray")
+        AF.WrapTextInColor("Noto_AP: NotoSansCJKsc + Accidental Presidency", "gray"),
+        AF.WrapTextInColor("Noto_Dolphin: NotoSansCJKsc + Dolphin", "gray")
 )
 
     local items = AF.LSM_GetFontDropdownItems()
