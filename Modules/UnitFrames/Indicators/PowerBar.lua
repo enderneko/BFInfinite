@@ -5,187 +5,27 @@ local AF = _G.AbstractFramework
 local UF = BFI.modules.UnitFrames
 
 ---------------------------------------------------------------------
--- local functions
+-- update
 ---------------------------------------------------------------------
-local UnitPower = UnitPower
-local UnitPowerMax = UnitPowerMax
-local UnitPowerType = UnitPowerType
--- local UnitHasVehicleUI = UnitHasVehicleUI
-local UnitIsConnected = UnitIsConnected
-local UnitClassBase = AF.UnitClassBase
-
----------------------------------------------------------------------
--- GetClassColor
----------------------------------------------------------------------
-local function GetClassColor(type, class, inVehicle)
-    if type == "class_color" then
-        -- if inVehicle then
-        --     return AF.GetColorRGB("FRIENDLY")
-        -- else
-            return AF.GetClassColor(class)
-        -- end
-    elseif type == "class_color_dark" then
-        -- if inVehicle then
-        --     return AF.GetColorRGB("FRIENDLY", nil, 0.2)
-        -- else
-            return AF.GetClassColor(class, nil, 0.2)
-        -- end
-    end
-end
-
----------------------------------------------------------------------
--- GetReactionColor
----------------------------------------------------------------------
-local function GetReactionColor(type, unit)
-    if type == "class_color" then
-        return AF.GetReactionColor(unit)
-    elseif type == "class_color_dark" then
-        return AF.GetReactionColor(unit, nil, 0.2)
-    end
-end
-
----------------------------------------------------------------------
--- GetPowerTypeColor
----------------------------------------------------------------------
-local function GetPowerTypeColor(type, power, unit)
-    if type == "power_color" then
-        return AF.GetPowerColor(power, unit)
-    elseif type == "power_color_dark" then
-        return AF.GetPowerColor(power, unit, nil, 0.2)
-    end
-end
-
----------------------------------------------------------------------
--- color
----------------------------------------------------------------------
-local function GetPowerColor(self, unit, colorTable)
-    if not colorTable then return end
-
-    self.powerType = select(2, UnitPowerType(unit))
-
-    local ctype = colorTable.type
-    local gradient = colorTable.gradient
-    local rgb = colorTable.rgb
-    local alpha = colorTable.alpha
-
-    local class = UnitClassBase(unit)
-    -- local inVehicle = UnitHasVehicleUI(unit)
-    local isPlayer = AF.UnitIsPlayer(unit)
-
-    local orientation, r1, g1, b1, a1, r2, g2, b2, a2
-
-    if isPlayer and not UnitIsConnected(unit) then
-        r1, g1, b1 = AF.GetColorRGB("OFFLINE")
-    else
-        if ctype:find("^power") then
-            r1, g1, b1 = GetPowerTypeColor(ctype, self.powerType, unit)
-        elseif ctype:find("^class") then
-            if isPlayer then
-                r1, g1, b1 = GetClassColor(ctype, class)
-            else
-                r1, g1, b1 = GetReactionColor(ctype, unit)
-            end
-        else
-            if gradient == "disabled" then
-                r1, g1, b1 = AF.UnpackColor(rgb)
-            else
-                r1, g1, b1 = AF.UnpackColor(rgb[1])
-            end
-        end
-    end
-
-    if gradient == "disabled" then
-        a1 = alpha
-        return nil, r1, g1, b1, a1
-    else
-        a1, a2 = alpha[1], alpha[2]
-        if #rgb == 4 then
-            r2, g2, b2 = AF.UnpackColor(rgb)
-        else
-            r2, g2, b2 = AF.UnpackColor(rgb[2])
-        end
-
-        orientation = gradient:find("^vertical") and "VERTICAL" or "HORIZONTAL"
-        if gradient:find("flipped$") then
-            return orientation, r2, g2, b2, a2, r1, g1, b1, a1
-        else
-            return orientation, r1, g1, b1, a1, r2, g2, b2, a2
-        end
-    end
-end
-
-local function UpdatePowerColor(self, event, unitId)
-    local unit = self.root.effectiveUnit
-    if unitId and unit ~= unitId then return end
-
-    -- fill
-    local orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetPowerColor(self, unit, self.fillColor)
-    if orientation then
-        self:SetGradientFillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
-    else
-        self:SetFillColor(r1, g1, b1, a1)
-    end
-
-    -- unfill
-    orientation, r1, g1, b1, a1, r2, g2, b2, a2 = GetPowerColor(self, unit, self.unfillColor)
-    if orientation then
-        self:SetGradientUnfillColor(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
-    else
-        self:SetUnfillColor(r1, g1, b1, a1)
-    end
-end
-
----------------------------------------------------------------------
--- value
----------------------------------------------------------------------
-local function UpdatePowerMax(self, event, unitId)
-    local unit = self.root.effectiveUnit
-    if unitId and unit ~= unitId then return end
-
-    self.powerMax = UnitPowerMax(unit)
-    self:SetMinMaxValues(0, self.powerMax)
-end
-
-local function UpdatePower(self, event, unitId)
-    local unit = self.root.effectiveUnit
-    if unitId and unit ~= unitId then return end
-
-    self.power = UnitPower(unit)
-    self:SetValue(self.power)
-end
-
-local function UpdateAll(self, event, unitId)
-    UpdatePowerColor(self, event, unitId)
-    UpdatePowerMax(self, event, unitId)
-    UpdatePower(self, event, unitId)
+local function PowerBar_Update(self)
+    self:UpdateAll()
 end
 
 ---------------------------------------------------------------------
 -- enable
 ---------------------------------------------------------------------
 local function PowerBar_Enable(self)
-    local effectiveUnit = self.root.effectiveUnit
-
-    if self.frequent then
-        self:RegisterUnitEvent("UNIT_POWER_FREQUENT", effectiveUnit, UpdatePower)
-        self:UnregisterEvent("UNIT_POWER_UPDATE")
-    else
-        self:RegisterUnitEvent("UNIT_POWER_UPDATE", effectiveUnit, UpdatePower)
-        self:UnregisterEvent("UNIT_POWER_FREQUENT")
-    end
-    self:RegisterUnitEvent("UNIT_MAXPOWER", effectiveUnit, UpdatePowerMax)
-    self:RegisterUnitEvent("UNIT_DISPLAYPOWER", effectiveUnit, UpdateAll)
-    self:RegisterUnitEvent("UNIT_FACTION", effectiveUnit, UpdatePowerColor)
-
+    self:SetUnit(self.root.effectiveUnit)
     self:Show()
     self:Update()
 end
 
 ---------------------------------------------------------------------
--- update
+-- disable
 ---------------------------------------------------------------------
-local function PowerBar_Update(self)
-    UpdateAll(self)
+local function HealthBar_Disable(self)
+    self:ClearUnit()
+    self:Hide()
 end
 
 ---------------------------------------------------------------------
@@ -196,14 +36,14 @@ local function PowerBar_LoadConfig(self, config)
     UF.LoadIndicatorPosition(self, config.position, config.anchorTo)
     AF.SetSize(self, config.width, config.height)
 
+    self:SetupFillColor(config.fillColor)
+    self:SetupUnfillColor(config.unfillColor)
+
     self:LSM_SetTexture(config.texture)
     self:SetBackgroundColor(AF.UnpackColor(config.bgColor))
     self:SetBorderColor(AF.UnpackColor(config.borderColor))
     self:SetSmoothing(config.smoothing)
-
-    self.fillColor = config.fillColor
-    self.unfillColor = config.unfillColor
-    self.frequent = config.frequent
+    self:EnableFrequentUpdates(config.frequent)
 end
 
 ---------------------------------------------------------------------

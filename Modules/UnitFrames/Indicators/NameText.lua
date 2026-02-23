@@ -5,68 +5,17 @@ local AF = _G.AbstractFramework
 local UF = BFI.modules.UnitFrames
 
 ---------------------------------------------------------------------
--- local functions
----------------------------------------------------------------------
-local UnitName = UnitName
-local UnitIsConnected = UnitIsConnected
-local UnitClassBase = AF.UnitClassBase
-local issecretvalue = issecretvalue
-
----------------------------------------------------------------------
--- name
----------------------------------------------------------------------
-local function UpdateName(self, event, unitId)
-    local unit = self.root.effectiveUnit
-    -- if unitId and unit ~= unitId then return end
-
-    local name = UnitName(unit)
-    if not name then
-        self:SetText(nil)
-        self:SetColor(AF.GetColorRGB("darkgray"))
-        return
-    end
-
-    -- color
-    local class = UnitClassBase(unit)
-    local r, g, b
-    if self.color.type == "class_color" then
-        if AF.UnitIsPlayer(unit) then
-            r, g, b = AF.GetClassColor(class)
-        else
-            r, g, b = AF.GetReactionColor(unit)
-        end
-    else
-        if AF.UnitIsPlayer(unit) then
-            if not UnitIsConnected(unit) then
-                r, g, b = AF.GetClassColor(class)
-            else
-                r, g, b = unpack(self.color.rgb)
-            end
-        else
-            r, g, b = unpack(self.color.rgb)
-        end
-    end
-
-    self:SetText(name)
-    self:SetColor(r, g, b)
-end
-
----------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------
 local function NameText_Update(self)
-    UpdateName(self)
+    self:UpdateName()
 end
 
 ---------------------------------------------------------------------
 -- enable
 ---------------------------------------------------------------------
 local function NameText_Enable(self)
-    local effectiveUnit = self.root.effectiveUnit
-
-    self:RegisterUnitEvent("UNIT_NAME_UPDATE", effectiveUnit, UpdateName)
-    self:RegisterUnitEvent("UNIT_FACTION", effectiveUnit, UpdateName)
-
+    self:SetUnit(self.root.effectiveUnit)
     self:Show()
     self:Update()
 end
@@ -89,7 +38,7 @@ local function NameText_EnableConfigMode(self)
     self.Enable = NameText_EnableConfigMode
     self.Update = AF.noop
 
-    UpdateName(self)
+    self:UpdateName()
 
     self:SetShown(self.enabled)
 end
