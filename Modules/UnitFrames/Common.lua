@@ -14,8 +14,8 @@ UF.Parent:SetAllPoints(AF.UIParent)
 AF.RegisterCallback("BFI_UpdateModule", function()
     -- NOTE: in case of reload during pet battle
     RegisterAttributeDriver(UF.Parent, "state-visibility", "[petbattle] hide; show")
-    AF.UnregisterCallback("BFI_UpdateModule", "UF_Parent")
-end, "low", "UF_Parent")
+    AF.UnregisterCallback("BFI_UpdateModule", "BFIUF_Parent")
+end, "low", "BFIUF_Parent")
 
 -- hide during minigame
 -- UF.Parent:RegisterEvent("CLIENT_SCENE_OPENED")
